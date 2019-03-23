@@ -311,7 +311,7 @@ TEST_CASE("[Widget]")
         widget->setVisible(false);
         widget->setEnabled(false);
         widget->setPosition(50, "15%");
-        widget->setSize("30%", "70");
+        widget->setSize("min(20% - (10 * 5), 100)", "70");
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));

@@ -61,22 +61,22 @@ struct WidgetProperties
     virtual PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const
     {
         PropertyValueMap pairs;
-        pairs["Left"] = {"Float", tgui::to_string(widget->getPosition().x)};
-        pairs["Top"] = {"Float", tgui::to_string(widget->getPosition().y)};
-        pairs["Width"] = {"Float", tgui::to_string(widget->getSize().x)};
-        pairs["Height"] = {"Float", tgui::to_string(widget->getSize().y)};
+        pairs["Left"] = {"String", widget->getPositionLayout().x.toString()};
+        pairs["Top"] = {"String", widget->getPositionLayout().y.toString()};
+        pairs["Width"] = {"String", widget->getSizeLayout().x.toString()};
+        pairs["Height"] = {"String", widget->getSizeLayout().y.toString()};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
 
         PropertyValueMap rendererPairs;
         const auto renderer = widget->getSharedRenderer();
         rendererPairs["Opacity"] = {"Float", tgui::to_string(renderer->getOpacity())};
-        rendererPairs["Font"] = {"Font", renderer->getFont().getId()};
+        rendererPairs["OpacityDisabled"] = {"Float", tgui::to_string(renderer->getOpacityDisabled())};
+        rendererPairs["Font"] = {"Font", tgui::Serializer::serialize(renderer->getFont())};
         rendererPairs["TransparentTexture"] = {"Bool", tgui::Serializer::serialize(renderer->getTransparentTexture())};
         return {pairs, rendererPairs};
     }
 
-protected:
 
     static bool parseBoolean(std::string str, bool defaultValue)
     {

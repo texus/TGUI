@@ -740,7 +740,7 @@ namespace tgui
                 throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
 
             for (const auto& tabText : node->propertyValuePairs["tabs"]->valueList)
-                add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
+                add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString(), false);
         }
 
         if (node->propertyValuePairs["tabsvisible"])

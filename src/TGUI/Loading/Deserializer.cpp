@@ -106,7 +106,9 @@ namespace tgui
             else
                 font->loadFromFile(filename);
 
-            return Font(font);
+            // We create the SFML font manually first, as passing the string to the Font constructor would cause
+            // an endless recursive call to this function.
+            return Font{font};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

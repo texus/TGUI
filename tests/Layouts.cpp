@@ -211,8 +211,11 @@ TEST_CASE("[Layouts]")
     {
         SECTION("percentages")
         {
-            Layout layout{"50%"};
-            REQUIRE(layout.toString() == "0.5 * &.innersize");
+            Layout layout{"100%"};
+            REQUIRE(layout.toString() == "100%");
+
+            Layout layout2{"50%"};
+            REQUIRE(layout2.toString() == "50%");
 
             auto button = std::make_shared<tgui::Button>();
             button->setPosition({"40%", "30%"});

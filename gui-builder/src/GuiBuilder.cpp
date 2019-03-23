@@ -23,18 +23,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include "WidgetProperties/BitmapButtonProperties.hpp"
 #include "WidgetProperties/ButtonProperties.hpp"
+#include "WidgetProperties/ChildWindowProperties.hpp"
 #include "WidgetProperties/ComboBoxProperties.hpp"
 #include "WidgetProperties/EditBoxProperties.hpp"
+#include "WidgetProperties/GroupProperties.hpp"
+#include "WidgetProperties/KnobProperties.hpp"
 #include "WidgetProperties/LabelProperties.hpp"
 #include "WidgetProperties/ListBoxProperties.hpp"
 #include "WidgetProperties/PanelProperties.hpp"
 #include "WidgetProperties/PictureProperties.hpp"
 #include "WidgetProperties/ProgressBarProperties.hpp"
 #include "WidgetProperties/RadioButtonProperties.hpp"
+#include "WidgetProperties/RangeSliderProperties.hpp"
+#include "WidgetProperties/ScrollablePanelProperties.hpp"
 #include "WidgetProperties/ScrollbarProperties.hpp"
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
+#include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextBoxProperties.hpp"
 #include "GuiBuilder.hpp"
 
@@ -196,19 +203,26 @@ GuiBuilder::GuiBuilder() :
 {
     m_window.setFramerateLimit(60);
 
+    m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
     m_widgetProperties["CheckBox"] = std::make_unique<RadioButtonProperties>();
+    m_widgetProperties["ChildWindow"] = std::make_unique<ChildWindowProperties>();
     m_widgetProperties["ComboBox"] = std::make_unique<ComboBoxProperties>();
     m_widgetProperties["EditBox"] = std::make_unique<EditBoxProperties>();
+    m_widgetProperties["Group"] = std::make_unique<GroupProperties>();
+    m_widgetProperties["Knob"] = std::make_unique<KnobProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
     m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
     m_widgetProperties["Picture"] = std::make_unique<PictureProperties>();
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
     m_widgetProperties["RadioButton"] = std::make_unique<RadioButtonProperties>();
+    m_widgetProperties["RangeSlider"] = std::make_unique<RangeSliderProperties>();
+    m_widgetProperties["ScrollablePanel"] = std::make_unique<ScrollablePanelProperties>();
     m_widgetProperties["Scrollbar"] = std::make_unique<ScrollbarProperties>();
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
+    m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
 
     std::ifstream stateInputFile{"GuiBuilderState.txt"};
@@ -232,6 +246,10 @@ GuiBuilder::GuiBuilder() :
         m_themes["themes/BabyBlue.txt"] = {"themes/BabyBlue.txt"};
         m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
     }
+
+    sf::Image icon;
+    if (icon.loadFromFile("resources/Icon.png"))
+        m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     loadStartScreen();
 }
@@ -312,10 +330,33 @@ void GuiBuilder::mainLoop()
                     if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
                         removeSelectedWidget();
                 }
+                else if (event.key.code == sf::Keyboard::Key::Escape)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus())
+                        m_selectedForm->selectParent();
+                }
                 else if ((event.key.code == sf::Keyboard::Key::S) && event.key.control)
                 {
                     if (m_selectedForm)
                         m_selectedForm->save();
+                }
+                else if ((event.key.code == sf::Keyboard::Key::C) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                        copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+                }
+                else if ((event.key.code == sf::Keyboard::Key::V) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus())
+                        pasteWidgetFromInternalClipboard();
+                }
+                else if ((event.key.code == sf::Keyboard::Key::X) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                    {
+                        copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+                        removeSelectedWidget();
+                    }
                 }
             }
 
@@ -324,6 +365,10 @@ void GuiBuilder::mainLoop()
 
         m_window.clear({200, 200, 200});
         m_gui.draw();
+
+        if (m_selectedForm && m_selectedForm->hasFocus())
+            m_selectedForm->drawExtra(m_window);
+
         m_window.display();
     }
 }
@@ -337,7 +382,6 @@ void GuiBuilder::reloadProperties()
 
     if (selectedWidget)
     {
-        topPosition += 35;
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const sf::String& value){
                 if (selectedWidget->name != value)
@@ -353,11 +397,8 @@ void GuiBuilder::reloadProperties()
         {
             addPropertyValueWidgets(topPosition, property,
                 [=](const sf::String& value){
-                    if (property.second.second != value)
-                    {
+                    if (updateWidgetProperty(property.first, value))
                         m_selectedForm->setChanged(true);
-                        updateWidgetProperty(property.first, value);
-                    }
                 });
         }
 
@@ -372,10 +413,9 @@ void GuiBuilder::reloadProperties()
             {
                 addPropertyValueWidgets(topPosition, property,
                     [=](const sf::String& value){
-                        if (property.second.second != value)
+                        if (updateWidgetProperty(property.first, value))
                         {
                             m_selectedForm->setChanged(true);
-                            updateWidgetProperty(property.first, value);
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
@@ -426,21 +466,10 @@ void GuiBuilder::widgetSelected(tgui::Widget::Ptr widget)
 {
     initProperties();
 
-	if (widget)
-	{
+    if (widget)
         m_selectedWidgetComboBox->setSelectedItemById(tgui::to_string(widget.get()));
-
-		std::vector<sf::String> widgetHierarchy;
-		fillWidgetHierarchy(widgetHierarchy, widget.get());
-		std::reverse(widgetHierarchy.begin(), widgetHierarchy.end());
-
-		m_widgetHierarchyTree->selectItem(widgetHierarchy);
-	}
-	else
-	{
-        m_selectedWidgetComboBox->setSelectedItemById("Form");
-		m_widgetHierarchyTree->deselectItem();
-	}
+    else
+        m_selectedWidgetComboBox->setSelectedItemById("form");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -495,6 +524,7 @@ void GuiBuilder::closeForm(Form* form)
             {
                 // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
                 m_window.close();
+                m_forms.clear();
             }
             else if (event.type == sf::Event::Resized)
             {
@@ -553,21 +583,20 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_selectedWidgetComboBox->setSelectedItemById("form");
     m_selectedWidgetComboBox->connect("ItemSelected", [this](std::string, std::string id){ m_selectedForm->selectWidgetById(id); });
 
-
     m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
     m_menuBar->connect("MouseEntered", [](tgui::Widget::Ptr menuBar, std::string){ menuBar->moveToFront(); });
-    m_menuBar->connect("MenuItemClicked", [this](std::string item){ menuBarItemClicked(item); });
-
-	auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
-	m_widgetHierarchyTree = tgui::TreeView::create();
-	hierarchyWindow->add(m_widgetHierarchyTree, "WidgetsTreeView");
-	m_widgetHierarchyTree->setSize(tgui::bindWidth(hierarchyWindow), tgui::bindHeight(hierarchyWindow));
-
-	m_widgetHierarchyTree->connect("ItemSelected", [this](std::string name) 
-	{
-		if(!name.empty())
-			m_selectedForm->selectWidgetByName(name); 
-	});
+    m_menuBar->connectMenuItem({"File", "New / Load"}, [this]{ menuBarCallbackNewOrLoadFile(); });
+    m_menuBar->connectMenuItem({"File", "Save"}, [this]{ menuBarCallbackSaveFile(); });
+    m_menuBar->connectMenuItem({"File", "Quit"}, [this]{ menuBarCallbackQuit(); });
+    m_menuBar->connectMenuItem({"Themes", "Edit"}, [this]{ menuBarCallbackEditThemes(); });
+    m_menuBar->connectMenuItem({"Widget", "Bring to front"}, [this]{ menuBarCallbackBringWidgetToFront(); });
+    m_menuBar->connectMenuItem({"Widget", "Send to back"}, [this]{ menuBarCallbackSendWidgetToBack(); });
+    m_menuBar->connectMenuItem({"Widget", "Cut"}, [this]{ menuBarCallbackCutWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Copy"}, [this]{ menuBarCallbackCopyWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Paste"}, [this]{ menuBarCallbackPasteWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
+    m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
+    m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
 
     loadToolbox();
     initProperties();
@@ -581,20 +610,27 @@ void GuiBuilder::loadToolbox()
     auto toolbox = toolboxWindow->get<tgui::ScrollablePanel>("Widgets");
 
     const auto widgets = std::vector<std::pair<std::string, std::function<tgui::Widget::Ptr()>>>{
+        {"BitmapButton", []{ return tgui::BitmapButton::create("BitBtn"); }},
         {"Button", []{ return tgui::Button::create("Button"); }},
         {"CheckBox", []{ return tgui::CheckBox::create(); }},
+        {"ChildWindow", []{ return tgui::ChildWindow::create(); }},
         {"ComboBox", []{ return tgui::ComboBox::create(); }},
         {"EditBox", []{ return tgui::EditBox::create(); }},
+        {"Group", []{ return tgui::Group::create({150, 150}); }},
+        {"Knob", []{ return tgui::Knob::create(); }},
         {"Label", []{ return tgui::Label::create("Label"); }},
         {"ListBox", []{ return tgui::ListBox::create(); }},
-        {"Panel", []{ return tgui::Panel::create({100, 50}); }},
+        {"Panel", []{ return tgui::Panel::create({150, 150}); }},
         {"Picture", []{ return tgui::Picture::create("resources/DefaultPicture.png"); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
+        {"RangeSlider", []{ return tgui::RangeSlider::create(); }},
+        {"ScrollablePanel", []{ return tgui::ScrollablePanel::create({150, 150}); }},
         {"Scrollbar", []{ return tgui::Scrollbar::create(); }},
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
-        {"TextBox", []{ return tgui::TextBox::create(); }}
+        {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
+        {"TextBox", []{ return tgui::TextBox::create(); }},
     };
 
     float topPosition = 0;
@@ -656,8 +692,6 @@ void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget)
     const std::string name = m_selectedForm->addWidget(widget, parent);
     m_selectedWidgetComboBox->addItem(name, id);
     m_selectedWidgetComboBox->setSelectedItemById(id);
-
-	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -678,8 +712,6 @@ void GuiBuilder::recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Co
         if (newWidgets[i]->isContainer())
             recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(oldWidgets[i]), std::static_pointer_cast<tgui::Container>(newWidgets[i]));
     }
-
-	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -698,33 +730,41 @@ void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
     m_selectedWidgetComboBox->setSelectedItemById(id);
     m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
     initProperties();
-	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::updateWidgetProperty(const std::string& property, const std::string& value)
+bool GuiBuilder::updateWidgetProperty(const std::string& property, const std::string& value)
 {
+    sf::String oldValue;
+    if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())
+        oldValue = m_propertyValuePairs.first[property].second;
+    else
+        oldValue = m_propertyValuePairs.second[property].second;
+
+    if (oldValue == value)
+        return false;
+
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
-    try {
+    bool valueChanged;
+    try
+    {
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, value);
+        valueChanged = true;
     }
-    catch (const tgui::Exception& e) {
+    catch (const tgui::Exception& e)
+    {
         std::cout << "Exception caught when setting property: " << e.what() << std::endl;
 
-        sf::String oldValue;
-        if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())
-            oldValue = m_propertyValuePairs.first[property].second;
-        else
-            oldValue = m_propertyValuePairs.second[property].second;
-
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, oldValue);
+        valueChanged = false;
     }
 
     reloadProperties(); // reload all properties in case something else changed
     m_selectedForm->updateSelectionSquarePositions(); // update the position of the selection squares in case the position or size of the widget changed
+    return valueChanged;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,42 +774,23 @@ void GuiBuilder::initProperties()
     m_propertiesContainer->removeAllWidgets();
 
     auto selectedWidget = m_selectedForm->getSelectedWidget();
+
+    m_menuBar->setMenuItemEnabled({"Widget", "Bring to front"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Send to back"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Cut"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Copy"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Paste"}, !m_copiedWidgetType.empty());
+    m_menuBar->setMenuItemEnabled({"Widget", "Delete"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuEnabled("Widget", (selectedWidget != nullptr) || !m_copiedWidgetType.empty());
+
     if (selectedWidget)
     {
         const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-        auto buttonCopy = tgui::Button::create("Copy");
-        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonCopy->setPosition({0, 0});
-        buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
-        m_propertiesContainer->add(buttonCopy);
-
-        auto buttonRemove = tgui::Button::create("Remove");
-        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 1.f / 3.f), 0});
-        buttonRemove->connect("Pressed", [this]{ removeSelectedWidget(); });
-        m_propertiesContainer->add(buttonRemove);
-
-        auto buttonToFront = tgui::Button::create("ToFront");
-        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 4, 25});
-        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 2.f / 3.f), 0});
-        buttonToFront->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToFront(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToFront);
-
-        auto buttonToBack = tgui::Button::create("ToBack");
-        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 3.f / 3.f), 0});
-        buttonToBack->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToBack(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToBack);
-
-        const auto smallestTextsize = std::min({buttonCopy->getTextSize(), buttonRemove->getTextSize(), buttonToFront->getTextSize(), buttonToBack->getTextSize()});
-        buttonCopy->setTextSize(smallestTextsize);
-        buttonRemove->setTextSize(smallestTextsize);
-        buttonToFront->setTextSize(smallestTextsize);
-        buttonToBack->setTextSize(smallestTextsize);
 
         auto rendererComboBox = tgui::ComboBox::create();
         rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, EDIT_BOX_HEIGHT});
         rendererComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        rendererComboBox->setChangeItemOnScroll(false);
 
         for (auto& theme : m_themes)
             rendererComboBox->addItem(theme.first);
@@ -828,8 +849,14 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueTextStyle(property, value, onChange, topPosition);
     else if (type == "Outline")
         addPropertyValueOutline(property, value, onChange, topPosition);
+    else if (type == "MultilineString")
+        addPropertyValueMultilineString(property, value, onChange, topPosition);
+    else if (type == "List<String>")
+        addPropertyValueStringList(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
+    else if (type == "ChildWindowTitleButtons")
+        addPropertyValueChildWindowTitleButtons(property, value, onChange, topPosition);
     else if (type.substr(0, 5) == "Enum{")
     {
         const std::vector<std::string> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
@@ -843,11 +870,6 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
     else if (type == "Texture")
     {
         // TODO: Open dialog where filename, bounding rect and middle rect can be chosen
-        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
-    }
-    else if (type == "List<String>")
-    {
-        // TODO: Open dialog with list box and edit box where items can be added and removed to list
         addPropertyValueEditBox(property, value, onChange, topPosition, 0);
     }
     else
@@ -874,8 +896,6 @@ void GuiBuilder::changeWidgetName(const std::string& name)
 
     m_selectedForm->setSelectedWidgetName(name);
     m_selectedWidgetComboBox->changeItemById(tgui::to_string(m_selectedForm->getSelectedWidget()->ptr.get()), name);
-
-	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -902,7 +922,6 @@ void GuiBuilder::removeSelectedWidget()
     m_selectedForm->removeWidget(id);
     m_selectedWidgetComboBox->removeItemById(id);
     m_selectedWidgetComboBox->setSelectedItemById("form");
-	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -912,7 +931,6 @@ void GuiBuilder::loadForm()
     if (!m_selectedForm->load())
     {
         loadStartScreen();
-		widgetHierarchyChanged();
         return;
     }
 
@@ -939,93 +957,8 @@ void GuiBuilder::loadForm()
         }
     }
 
-	widgetHierarchyChanged();
     initSelectedWidgetComboBoxAfterLoad();
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
-{
-    if (menuItem == "New / Load")
-    {
-        while (!m_forms.empty())
-            closeForm(m_forms[0].get());
-    }
-    else if (menuItem == "Save")
-    {
-        m_selectedForm->save();
-    }
-    else if (menuItem == "Quit")
-    {
-        while (!m_forms.empty())
-            closeForm(m_forms[0].get());
-
-        m_window.close();
-    }
-    else if (menuItem == "Edit")
-    {
-        auto editThemesWindow = openWindowWithFocus();
-        editThemesWindow->setTitle("Edit themes");
-        editThemesWindow->setSize({320, 280});
-        editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
-
-        auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
-        auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
-        auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
-        auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
-
-        themesList->removeAllItems();
-        for (auto& theme : m_themes)
-        {
-            if (!theme.second.getPrimary().empty())
-                themesList->addItem(theme.second.getPrimary());
-        }
-
-        themesList->connect("ItemSelected", [=](std::string item){
-            if (item.empty())
-                buttonDelete->setEnabled(false);
-            else
-                buttonDelete->setEnabled(true);
-        });
-
-        newThemeEditBox->connect("TextChanged", [=](std::string text){
-            if (text.empty())
-                buttonAdd->setEnabled(false);
-            else
-                buttonAdd->setEnabled(true);
-        });
-
-        buttonAdd->connect("Pressed", [=]{
-            try
-            {
-                const std::string filename = newThemeEditBox->getText();
-                if (!themesList->contains(filename))
-                {
-                    tgui::Theme theme{filename};
-                    themesList->addItem(filename);
-                    m_themes[filename] = theme;
-                }
-            }
-            catch (const tgui::Exception& e)
-            {
-                std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
-            }
-
-            initProperties();
-        });
-
-        buttonDelete->connect("Pressed", [=]{
-            auto item = themesList->getSelectedItem();
-            m_themes.erase(item);
-            themesList->removeItem(item);
-            buttonDelete->setEnabled(false);
-            initProperties();
-        });
-    }
-}
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1046,12 +979,44 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
         m_gui.remove(panel);
     });
 
+    const bool tabUsageEnabled = m_gui.isTabKeyUsageEnabled();
     window->connect({"Closed", "EscapeKeyPressed"}, [=]{
         m_gui.remove(window);
         m_gui.remove(panel);
+        m_gui.setTabKeyUsageEnabled(tabUsageEnabled);
     });
 
     return window;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo)
+{
+    m_copiedWidgetType = widgetInfo->ptr->getWidgetType();
+    m_copiedWidgetTheme = widgetInfo->theme;
+    m_copiedWidgetPropertyValuePairs = m_widgetProperties.at(m_copiedWidgetType)->initProperties(widgetInfo->ptr);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::pasteWidgetFromInternalClipboard()
+{
+    if (m_copiedWidgetType.empty())
+        return;
+
+    auto widget = tgui::WidgetFactory::getConstructFunction(m_copiedWidgetType)();
+    createNewWidget(widget);
+
+    for (const auto& property : m_copiedWidgetPropertyValuePairs.first)
+        updateWidgetProperty(property.first, property.second.second);
+    for (const auto& property : m_copiedWidgetPropertyValuePairs.second)
+        updateWidgetProperty(property.first, property.second.second);
+
+    m_selectedForm->getSelectedWidget()->theme = m_copiedWidgetTheme;
+    initProperties();
+
+    m_selectedForm->setChanged(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1090,6 +1055,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const std::string& prop
         buttonMore = tgui::Button::create();
         buttonMore->setText(L"\u22EF");
         buttonMore->setTextSize(18);
+        buttonMore->connect("Focused", [=]{ m_propertiesContainer->focusNextWidget(); });
         m_propertiesContainer->add(buttonMore, "ValueButton" + property);
     }
 
@@ -1110,6 +1076,7 @@ void GuiBuilder::addPropertyValueBool(const std::string& property, const sf::Str
     {
         valueComboBox = tgui::ComboBox::create();
         valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        valueComboBox->setChangeItemOnScroll(false);
         valueComboBox->addItem("False");
         valueComboBox->addItem("True");
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
@@ -1240,6 +1207,144 @@ void GuiBuilder::addPropertyValueOutline(const std::string& property, const sf::
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::addPropertyValueMultilineString(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto multilineStringWindow = openWindowWithFocus();
+        multilineStringWindow->setTitle("Set multiline text");
+        multilineStringWindow->setSize(470, 220);
+        multilineStringWindow->loadWidgetsFromFile("resources/forms/SetMultilineString.txt");
+
+        auto textBox = multilineStringWindow->get<tgui::TextBox>("TextBox");
+        textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+        textBox->connect("TextChanged", [=]{ onChange(tgui::Serializer::serialize(textBox->getText())); });
+        textBox->setFocused(true);
+
+        m_gui.setTabKeyUsageEnabled(false);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueStringList(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto setArrowColor = [](tgui::BitmapButton::Ptr button, sf::Color color){
+        tgui::Texture texture = button->getImage();
+        texture.setColor(color);
+        button->setImage(texture);
+    };
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto stringListWindow = openWindowWithFocus();
+        stringListWindow->setTitle("Set string list");
+        stringListWindow->setSize(352, 215);
+        stringListWindow->loadWidgetsFromFile("resources/forms/SetStringList.txt");
+
+        auto listBox = stringListWindow->get<tgui::ListBox>("ListBox");
+        auto editBox = stringListWindow->get<tgui::EditBox>("EditBox");
+        auto buttonAdd = stringListWindow->get<tgui::Button>("BtnAdd");
+        auto buttonRemove = stringListWindow->get<tgui::Button>("BtnRemove");
+        auto buttonArrowUp = stringListWindow->get<tgui::BitmapButton>("BtnArrowUp");
+        auto buttonArrowDown = stringListWindow->get<tgui::BitmapButton>("BtnArrowDown");
+
+        std::vector<sf::String> items = WidgetProperties::deserializeList(value);
+        for (const auto& item : items)
+            listBox->addItem(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, item).getString());
+
+        setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+        setArrowColor(buttonArrowDown, buttonArrowDown->getSharedRenderer()->getTextColorDisabled());
+        buttonRemove->setEnabled(false);
+        buttonArrowUp->setEnabled(false);
+        buttonArrowDown->setEnabled(false);
+
+        listBox->connect("ItemSelected", [=]{
+            const int index = listBox->getSelectedItemIndex();
+            if (index >= 0)
+                buttonRemove->setEnabled(true);
+            else
+                buttonRemove->setEnabled(false);
+
+            if (index > 0)
+            {
+                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColor());
+                buttonArrowUp->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+                buttonArrowUp->setEnabled(false);
+            }
+
+            if ((index >= 0) && (static_cast<std::size_t>(index) + 1 < listBox->getItemCount()))
+            {
+                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColor());
+                buttonArrowDown->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+                buttonArrowDown->setEnabled(false);
+            }
+        });
+
+        auto updateValue = [=]{
+            onChange(WidgetProperties::serializeList(listBox->getItems()));
+        };
+
+        buttonArrowUp->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            sf::String value1 = listBox->getItemByIndex(index - 1);
+            sf::String value2 = listBox->getItemByIndex(index);
+            listBox->changeItemByIndex(index - 1, value2);
+            listBox->changeItemByIndex(index, value1);
+            listBox->setSelectedItemByIndex(index - 1);
+            updateValue();
+        });
+
+        buttonArrowDown->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            sf::String value1 = listBox->getItemByIndex(index);
+            sf::String value2 = listBox->getItemByIndex(index + 1);
+            listBox->changeItemByIndex(index, value2);
+            listBox->changeItemByIndex(index + 1, value1);
+            listBox->setSelectedItemByIndex(index + 1);
+            updateValue();
+        });
+
+        buttonRemove->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            listBox->removeItemByIndex(index);
+            if (listBox->getItemCount() > 0)
+            {
+                if (index == listBox->getItemCount())
+                    listBox->setSelectedItemByIndex(index - 1);
+                else
+                    listBox->setSelectedItemByIndex(index);
+            }
+
+            updateValue();
+        });
+
+        auto addItem = [=]{
+            listBox->addItem(editBox->getText());
+            listBox->setSelectedItemByIndex(listBox->getItemCount() - 1);
+            editBox->setText("");
+            editBox->setFocused(true);
+            updateValue();
+        };
+        buttonAdd->connect("Pressed", addItem);
+        editBox->connect("ReturnKeyPressed", addItem);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
@@ -1292,6 +1397,56 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const std::string& proper
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::addPropertyValueChildWindowTitleButtons(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto titleButtonWindow = openWindowWithFocus();
+        titleButtonWindow->setTitle("Set title buttons");
+        titleButtonWindow->setSize(125, 125);
+        titleButtonWindow->loadWidgetsFromFile("resources/forms/SetChildWindowTitleButtons.txt");
+
+        auto checkClose = titleButtonWindow->get<tgui::RadioButton>("CheckBoxClose");
+        auto checkMaximize = titleButtonWindow->get<tgui::RadioButton>("CheckBoxMaximize");
+        auto checkMinimize = titleButtonWindow->get<tgui::RadioButton>("CheckBoxMinimize");
+
+        for (const auto& elem : tgui::Deserializer::split(value, '|'))
+        {
+            std::string titleButtonStr = tgui::toLower(tgui::trim(elem));
+            if (titleButtonStr == "close")
+                checkClose->setChecked(true);
+            else if (titleButtonStr == "maximize")
+                checkMaximize->setChecked(true);
+            else if (titleButtonStr == "minimize")
+                checkMinimize->setChecked(true);
+        }
+
+        auto updateTitleButtons = [=]{
+            std::string newValue;
+            if (checkMinimize->isChecked())
+                newValue += " | Minimize";
+            if (checkMaximize->isChecked())
+                newValue += " | Maximize";
+            if (checkClose->isChecked())
+                newValue += " | Close";
+
+            if (!newValue.empty())
+                newValue.erase(0, 3);
+            else
+                newValue = "None";
+
+            onChange(newValue);
+        };
+        checkClose->connect("Changed", updateTitleButtons);
+        checkMaximize->connect("Changed", updateTitleButtons);
+        checkMinimize->connect("Changed", updateTitleButtons);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues)
 {
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
@@ -1301,6 +1456,7 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
     {
         valueComboBox = tgui::ComboBox::create();
         valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        valueComboBox->setChangeItemOnScroll(false);
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
 
         for (const auto& enumValue : enumValues)
@@ -1319,6 +1475,139 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
     }
 
     valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackNewOrLoadFile()
+{
+    while (!m_forms.empty())
+        closeForm(m_forms[0].get());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackSaveFile()
+{
+    m_selectedForm->save();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackQuit()
+{
+    while (!m_forms.empty())
+        closeForm(m_forms[0].get());
+
+    m_window.close();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackEditThemes()
+{
+    auto editThemesWindow = openWindowWithFocus();
+    editThemesWindow->setTitle("Edit themes");
+    editThemesWindow->setSize({320, 280});
+    editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
+
+    auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
+    auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
+    auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
+    auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
+
+    themesList->removeAllItems();
+    for (auto& theme : m_themes)
+    {
+        if (!theme.second.getPrimary().empty())
+            themesList->addItem(theme.second.getPrimary());
+    }
+
+    themesList->connect("ItemSelected", [=](std::string item){
+        if (item.empty())
+            buttonDelete->setEnabled(false);
+        else
+            buttonDelete->setEnabled(true);
+    });
+
+    newThemeEditBox->connect("TextChanged", [=](std::string text){
+        if (text.empty())
+            buttonAdd->setEnabled(false);
+        else
+            buttonAdd->setEnabled(true);
+    });
+
+    buttonAdd->connect("Pressed", [=]{
+        try
+        {
+            const std::string filename = newThemeEditBox->getText();
+            if (!themesList->contains(filename))
+            {
+                tgui::Theme theme{filename};
+                themesList->addItem(filename);
+                m_themes[filename] = theme;
+            }
+        }
+        catch (const tgui::Exception& e)
+        {
+            std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
+        }
+
+        initProperties();
+    });
+
+    buttonDelete->connect("Pressed", [=]{
+        auto item = themesList->getSelectedItem();
+        m_themes.erase(item);
+        themesList->removeItem(item);
+        buttonDelete->setEnabled(false);
+        initProperties();
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackBringWidgetToFront()
+{
+    m_selectedForm->getSelectedWidget()->ptr->moveToFront();
+    m_selectedForm->setChanged(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackSendWidgetToBack()
+{
+    m_selectedForm->getSelectedWidget()->ptr->moveToBack();
+    m_selectedForm->setChanged(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackCutWidget()
+{
+    copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+    removeSelectedWidget();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackCopyWidget()
+{
+    copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackPasteWidget()
+{
+    pasteWidgetFromInternalClipboard();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackDeleteWidget()
+{
+    removeSelectedWidget();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1409,3 +1698,24 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackKeyboardShortcuts()
+{
+    auto keyboardShortcutsWindow = openWindowWithFocus();
+    keyboardShortcutsWindow->setTitle("Keyboard shortcuts");
+    keyboardShortcutsWindow->setSize(375, 310);
+    keyboardShortcutsWindow->loadWidgetsFromFile("resources/forms/KeyboardShortcuts.txt");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackAbout()
+{
+    auto aboutWindow = openWindowWithFocus();
+    aboutWindow->setTitle("About");
+    aboutWindow->setSize(365, 130);
+    aboutWindow->loadWidgetsFromFile("resources/forms/About.txt");
+
+    auto labelVersion = aboutWindow->get<tgui::Label>("LabelVersion");
+    labelVersion->setText(tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH));
+}

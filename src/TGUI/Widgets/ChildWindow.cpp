@@ -563,7 +563,7 @@ namespace tgui
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
             // Move the child window, but don't allow the dragging position to leave the screen
-            sf::Vector2f newPosition;
+            Vector2f newPosition;
             if (getPosition().x + pos.x <= 0)
                 newPosition.x = -m_draggingPosition.x + 1;
             else if (m_parent && getPosition().x + pos.x >= m_parent->getSize().x)
@@ -877,11 +877,11 @@ namespace tgui
     {
         auto node = Container::save(renderers);
 
-        if (m_titleAlignment == ChildWindow::TitleAlignment::Left)
+        if (m_titleAlignment == TitleAlignment::Left)
             node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
-        else if (m_titleAlignment == ChildWindow::TitleAlignment::Center)
+        else if (m_titleAlignment == TitleAlignment::Center)
             node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_titleAlignment == ChildWindow::TitleAlignment::Right)
+        else if (m_titleAlignment == TitleAlignment::Right)
             node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         if (getTitle().getSize() > 0)
@@ -901,11 +901,11 @@ namespace tgui
             node->propertyValuePairs["MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_maximumSize.x) + ", " + to_string(m_maximumSize.y) + ")");
 
         std::string serializedTitleButtons;
-        if (m_titleButtons & ChildWindow::TitleButton::Minimize)
+        if (m_titleButtons & TitleButton::Minimize)
             serializedTitleButtons += " | Minimize";
-        if (m_titleButtons & ChildWindow::TitleButton::Maximize)
+        if (m_titleButtons & TitleButton::Maximize)
             serializedTitleButtons += " | Maximize";
-        if (m_titleButtons & ChildWindow::TitleButton::Close)
+        if (m_titleButtons & TitleButton::Close)
             serializedTitleButtons += " | Close";
 
         if (!serializedTitleButtons.empty())
@@ -927,28 +927,28 @@ namespace tgui
         if (node->propertyValuePairs["titlealignment"])
         {
             if (toLower(node->propertyValuePairs["titlealignment"]->value) == "left")
-                setTitleAlignment(ChildWindow::TitleAlignment::Left);
+                setTitleAlignment(TitleAlignment::Left);
             else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "center")
-                setTitleAlignment(ChildWindow::TitleAlignment::Center);
+                setTitleAlignment(TitleAlignment::Center);
             else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "right")
-                setTitleAlignment(ChildWindow::TitleAlignment::Right);
+                setTitleAlignment(TitleAlignment::Right);
             else
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
         if (node->propertyValuePairs["titlebuttons"])
         {
-            int decodedTitleButtons = ChildWindow::TitleButton::None;
+            int decodedTitleButtons = TitleButton::None;
             std::vector<std::string> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
                 std::string requestedTitleButton = toLower(trim(elem));
                 if (requestedTitleButton == "close")
-                    decodedTitleButtons |= sf::Text::Bold;
+                    decodedTitleButtons |= TitleButton::Close;
                 else if (requestedTitleButton == "maximize")
-                    decodedTitleButtons |= sf::Text::Italic;
+                    decodedTitleButtons |= TitleButton::Maximize;
                 else if (requestedTitleButton == "minimize")
-                    decodedTitleButtons |= sf::Text::Underlined;
+                    decodedTitleButtons |= TitleButton::Minimize;
             }
 
             setTitleButtons(decodedTitleButtons);

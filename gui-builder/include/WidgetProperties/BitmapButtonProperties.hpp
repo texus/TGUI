@@ -23,24 +23,33 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
-#define TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
+#ifndef TGUI_GUI_BUILDER_BITMAP_BUTTON_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_BITMAP_BUTTON_PROPERTIES_HPP
 
-#include "GroupProperties.hpp"
-#include <TGUI/Widgets/Panel.hpp>
+#include "ButtonProperties.hpp"
+#include <TGUI/Widgets/BitmapButton.hpp>
 
-struct PanelProperties : GroupProperties
+struct BitmapButtonProperties : ButtonProperties
 {
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    {
+        auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
+        if (property == "Image")
+            button->setImage(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == "ImageScaling")
+            button->setImageScaling(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
+        else
+            ButtonProperties::updateProperty(widget, property, value);
+    }
+
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pair = GroupProperties::initProperties(widget);
-        auto panel = std::dynamic_pointer_cast<tgui::Panel>(widget);
-
-        const auto renderer = panel->getSharedRenderer();
-        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        auto pair = ButtonProperties::initProperties(widget);
+        auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
+        pair.first["Image"] = {"Texture", tgui::Serializer::serialize(button->getImage())};
+        pair.first["ImageScaling"] = {"Float", tgui::Serializer::serialize(button->getImageScaling())};
         return pair;
     }
 };
 
-#endif // TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_BITMAP_BUTTON_PROPERTIES_HPP

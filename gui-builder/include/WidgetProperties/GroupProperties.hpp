@@ -23,24 +23,23 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
-#define TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
+#ifndef TGUI_GUI_BUILDER_GROUP_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_GROUP_PROPERTIES_HPP
 
-#include "GroupProperties.hpp"
-#include <TGUI/Widgets/Panel.hpp>
+#include "WidgetProperties.hpp"
+#include <TGUI/Widgets/Group.hpp>
 
-struct PanelProperties : GroupProperties
+struct GroupProperties : WidgetProperties
 {
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pair = GroupProperties::initProperties(widget);
-        auto panel = std::dynamic_pointer_cast<tgui::Panel>(widget);
+        auto pair = WidgetProperties::initProperties(widget);
+        auto panel = std::dynamic_pointer_cast<tgui::Group>(widget);
 
         const auto renderer = panel->getSharedRenderer();
-        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         return pair;
     }
 };
 
-#endif // TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_GROUP_PROPERTIES_HPP

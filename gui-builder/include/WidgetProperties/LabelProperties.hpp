@@ -31,11 +31,13 @@
 
 struct LabelProperties : WidgetProperties
 {
+    // TODO: Scrollbar renderer
+
     void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
     {
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
         if (property == "Text")
-            label->setText(value);
+            label->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
             label->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "HorizontalAlignment")
@@ -58,7 +60,7 @@ struct LabelProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
-        pair.first["Text"] = {"String", label->getText()};
+        pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(label->getText())};
         pair.first["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
         pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
         pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
@@ -74,6 +76,7 @@ struct LabelProperties : WidgetProperties
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
         return pair;
     }
 

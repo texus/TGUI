@@ -64,10 +64,6 @@ namespace tgui
             node->name = name;
             for (const auto& pair : renderer->propertyValuePairs)
             {
-                // Skip "font = null"
-                if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
-                    continue;
-
                 if (pair.second.getType() == ObjectConverter::Type::RendererData)
                 {
                     std::stringstream ss{ObjectConverter{pair.second}.getString()};
@@ -81,7 +77,19 @@ namespace tgui
                     node->children.push_back(std::move(rendererRootNode));
                 }
                 else
-                    node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
+                {
+                    sf::String value = ObjectConverter{pair.second}.getString();
+
+                    // Skip empty values
+                    if (value.isEmpty())
+                        continue;
+
+                    // Skip "font = null"
+                    if (pair.first == "font" && value == "null")
+                        continue;
+
+                    node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(value);
+                }
             }
 
             return node;

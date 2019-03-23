@@ -61,6 +61,7 @@ namespace tgui
         m_listBox                        {ListBox::copy(other.m_listBox)},
         m_text                           {other.m_text},
         m_defaultText                    {other.m_defaultText},
+        m_changeItemOnScroll             {other.m_changeItemOnScroll},
         m_expandDirection                {other.m_expandDirection},
         m_spriteBackground               {other.m_spriteBackground},
         m_spriteArrow                    {other.m_spriteArrow},
@@ -86,6 +87,7 @@ namespace tgui
         m_listBox                        {std::move(other.m_listBox)},
         m_text                           {std::move(other.m_text)},
         m_defaultText                    {std::move(other.m_defaultText)},
+        m_changeItemOnScroll             {std::move(other.m_changeItemOnScroll)},
         m_expandDirection                {std::move(other.m_expandDirection)},
         m_spriteBackground               {std::move(other.m_spriteBackground)},
         m_spriteArrow                    {std::move(other.m_spriteArrow)},
@@ -116,6 +118,7 @@ namespace tgui
             std::swap(m_listBox,                         temp.m_listBox);
             std::swap(m_text,                            temp.m_text);
             std::swap(m_defaultText,                     temp.m_defaultText);
+            std::swap(m_changeItemOnScroll,              temp.m_changeItemOnScroll);
             std::swap(m_expandDirection,                 temp.m_expandDirection);
             std::swap(m_spriteBackground,                temp.m_spriteBackground);
             std::swap(m_spriteArrow,                     temp.m_spriteArrow);
@@ -145,6 +148,7 @@ namespace tgui
             m_listBox                         = std::move(other.m_listBox);
             m_text                            = std::move(other.m_text);
             m_defaultText                     = std::move(other.m_defaultText);
+            m_changeItemOnScroll              = std::move(other.m_changeItemOnScroll);
             m_expandDirection                 = std::move(other.m_expandDirection);
             m_spriteBackground                = std::move(other.m_spriteBackground);
             m_spriteArrow                     = std::move(other.m_spriteArrow);
@@ -273,8 +277,14 @@ namespace tgui
 
     bool ComboBox::setSelectedItem(const sf::String& itemName)
     {
+        const int previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
+
         const bool ret = m_listBox->setSelectedItem(itemName);
         m_text.setString(m_listBox->getSelectedItem());
+
+        if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
+            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+
         return ret;
     }
 
@@ -282,8 +292,14 @@ namespace tgui
 
     bool ComboBox::setSelectedItemById(const sf::String& id)
     {
+        const int previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
+
         const bool ret = m_listBox->setSelectedItemById(id);
         m_text.setString(m_listBox->getSelectedItem());
+
+        if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
+            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+
         return ret;
     }
 
@@ -291,8 +307,14 @@ namespace tgui
 
     bool ComboBox::setSelectedItemByIndex(std::size_t index)
     {
+        const int previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
+
         const bool ret = m_listBox->setSelectedItemByIndex(index);
         m_text.setString(m_listBox->getSelectedItem());
+
+        if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
+            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+
         return ret;
     }
 
@@ -505,6 +527,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setChangeItemOnScroll(bool changeOnScroll)
+    {
+        m_changeItemOnScroll = changeOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::getChangeItemOnScroll() const
+    {
+        return m_changeItemOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setParent(Container* parent)
     {
         hideListBox();
@@ -548,6 +584,10 @@ namespace tgui
 
     bool ComboBox::mouseWheelScrolled(float delta, Vector2f)
     {
+        // Don't do anything when changing item on scroll is disabled
+        if (!m_changeItemOnScroll)
+            return false;
+
         // Only act to scrolling when the list is not being shown
         if (m_listBox->isVisible())
             return false;
@@ -560,6 +600,7 @@ namespace tgui
             {
                 m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
                 m_text.setString(m_listBox->getSelectedItem());
+                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
             }
         }
         else // You are scrolling up
@@ -569,6 +610,7 @@ namespace tgui
             {
                 m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));
                 m_text.setString(m_listBox->getSelectedItem());
+                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
             }
         }
 
@@ -724,6 +766,7 @@ namespace tgui
         node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(getTextSize()));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
+        node->propertyValuePairs["ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
 
         if (getExpandDirection() == ComboBox::ExpandDirection::Down)
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
@@ -784,6 +827,8 @@ namespace tgui
             setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
             setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+        if (node->propertyValuePairs["changeitemonscroll"])
+            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["changeitemonscroll"]->value).getBool();
 
         if (node->propertyValuePairs["expanddirection"])
         {
@@ -826,52 +871,60 @@ namespace tgui
 
     void ComboBox::showListBox()
     {
-        if (!m_listBox->isVisible() && getParent())
+        if (m_listBox->isVisible() || !getParent())
+            return;
+
+        m_previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
+
+        m_listBox->setVisible(true);
+
+        // Find the GuiContainer that contains the combo box
+        Container* container = getParent();
+        while (container->getParent() != nullptr)
+            container = container->getParent();
+
+        ExpandDirection direction = m_expandDirection;
+        if (direction == ExpandDirection::Automatic)
         {
-            m_listBox->setVisible(true);
-
-            // Find the GuiContainer that contains the combo box
-            Container* container = getParent();
-            while (container->getParent() != nullptr)
-                container = container->getParent();
-
-            ExpandDirection direction = m_expandDirection;
-            if (direction == ExpandDirection::Automatic)
-            {
-                if ((getAbsolutePosition().y + getSize().y + m_listBox->getSize().y - m_bordersCached.getBottom() > container->getSize().y)
-                 && (getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop() > 0))
-                    direction = ExpandDirection::Up;
-                else
-                    direction = ExpandDirection::Down;
-            }
-
-            if (direction == ExpandDirection::Down)
-                m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
-            else if (direction == ExpandDirection::Up)
-                m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
-
-            container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
-            m_listBox->setFocused(true);
+            if ((getAbsolutePosition().y + getSize().y + m_listBox->getSize().y - m_bordersCached.getBottom() > container->getSize().y)
+             && (getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop() > 0))
+                direction = ExpandDirection::Up;
+            else
+                direction = ExpandDirection::Down;
         }
+
+        if (direction == ExpandDirection::Down)
+            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
+        else if (direction == ExpandDirection::Up)
+            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
+
+        container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
+        m_listBox->setFocused(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::hideListBox()
     {
-        // If the list was open then close it now
-        if (m_listBox->isVisible())
+        if (!m_listBox->isVisible())
+            return;
+
+        m_listBox->setVisible(false);
+        m_listBox->mouseNoLongerOnWidget();
+
+        // Find the GuiContainer in order to remove the ListBox from it
+        Widget* container = this;
+        while (container->getParent() != nullptr)
+            container = container->getParent();
+
+        if (container != this)
+            static_cast<Container*>(container)->remove(m_listBox);
+
+        const int selectedItemIndex = m_listBox->getSelectedItemIndex();
+        if (selectedItemIndex != m_previousSelectedItemIndex)
         {
-            m_listBox->setVisible(false);
-            m_listBox->mouseNoLongerOnWidget();
-
-            // Find the GuiContainer in order to remove the ListBox from it
-            Widget* container = this;
-            while (container->getParent() != nullptr)
-                container = container->getParent();
-
-            if (container != this)
-                static_cast<Container*>(container)->remove(m_listBox);
+            m_text.setString(m_listBox->getSelectedItem());
+            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
         }
     }
 
@@ -880,11 +933,6 @@ namespace tgui
     void ComboBox::initListBox()
     {
         m_listBox->setVisible(false);
-
-        m_listBox->connect("ItemSelected", [this](){
-                                                m_text.setString(m_listBox->getSelectedItem());
-                                                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
-                                            });
 
         m_listBox->connect("Unfocused", [this](){
                                                     if (!m_mouseHover)

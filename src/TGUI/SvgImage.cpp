@@ -98,7 +98,7 @@ namespace tgui
         const float scaleY = size.y / static_cast<float>(m_svg->height);
 
         auto pixels = std::make_unique<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, scaleX, scaleY, pixels.get(), size.x, size.y, size.x * 4);
+        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY), pixels.get(), size.x, size.y, size.x * 4);
 
         texture.update(pixels.get(), size.x, size.y, 0, 0);
     }

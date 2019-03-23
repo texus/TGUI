@@ -1,0 +1,21 @@
+TextBox."TextBox" {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (10, 10);
+    Size = (450, 200);
+    Text = "";
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = white;
+        bordercolor = black;
+        borders = (1, 1, 1, 1);
+        caretcolor = black;
+        caretwidth = 1;
+        padding = (0, 0, 0, 0);
+        selectedtextbackgroundcolor = #006EFF;
+        selectedtextcolor = white;
+        textcolor = #3C3C3C;
+        texturebackground = None;
+    }
+}

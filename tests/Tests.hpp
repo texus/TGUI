@@ -101,7 +101,15 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
         // Assignment operator
         WidgetType temp2;
         temp2 = temp1;
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#endif
         temp2 = temp2;
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
 
         // Move constructor
         WidgetType temp3 = std::move(temp2);

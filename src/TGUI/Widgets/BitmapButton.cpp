@@ -39,9 +39,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BitmapButton::Ptr BitmapButton::create()
+    BitmapButton::Ptr BitmapButton::create(const sf::String& text)
     {
-        return std::make_shared<BitmapButton>();
+        auto button = std::make_shared<BitmapButton>();
+
+        if (!text.isEmpty())
+            button->setText(text);
+
+        return button;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -264,6 +264,15 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
     }
 
+    SECTION("ChangeItemOnScroll")
+    {
+        REQUIRE(comboBox->getChangeItemOnScroll());
+        comboBox->setChangeItemOnScroll(false);
+        REQUIRE(!comboBox->getChangeItemOnScroll());
+        comboBox->setChangeItemOnScroll(true);
+        REQUIRE(comboBox->getChangeItemOnScroll());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")
@@ -289,9 +298,10 @@ TEST_CASE("[ComboBox]")
             comboBox->setSize(150, 24);
             comboBox->getRenderer()->setBorders(2);
             comboBox->addItem("1");
-            comboBox->addItem("2");
+            comboBox->addItem("2", "id2");
             comboBox->addItem("3");
             comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+            comboBox->setChangeItemOnScroll(true);
 
             const sf::Vector2f mousePosOnComboBox = {100, 15};
             const sf::Vector2f mousePosOnItem1 = {100, 40};
@@ -321,7 +331,6 @@ TEST_CASE("[ComboBox]")
 
             SECTION("Mouse wheel scroll")
             {
-                REQUIRE(itemSelectedCount == 0);
                 container->mouseWheelScrolled(-1, mousePosOnComboBox);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 1);
@@ -332,10 +341,34 @@ TEST_CASE("[ComboBox]")
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 3);
 
+                // Changing item by scrolling can be disabled
+                comboBox->setChangeItemOnScroll(false);
+                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                comboBox->setChangeItemOnScroll(true);
+
                 // Scrolling on the combo box has no effect when the list is open
                 mouseClick(mousePosOnComboBox);
                 container->mouseWheelScrolled(-1, mousePosOnComboBox);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                REQUIRE(itemSelectedCount == 3);
+            }
+
+            SECTION("Programmatically")
+            {
+                comboBox->setSelectedItem("1");
+                REQUIRE(itemSelectedCount == 1);
+                comboBox->setSelectedItem("1");
+                REQUIRE(itemSelectedCount == 1);
+
+                comboBox->setSelectedItemById("id2");
+                REQUIRE(itemSelectedCount == 2);
+                comboBox->setSelectedItemById("id2");
+                REQUIRE(itemSelectedCount == 2);
+
+                comboBox->setSelectedItemByIndex(0);
+                REQUIRE(itemSelectedCount == 3);
+                comboBox->setSelectedItemByIndex(0);
                 REQUIRE(itemSelectedCount == 3);
             }
         }
@@ -467,6 +500,7 @@ TEST_CASE("[ComboBox]")
         comboBox->setMaximumItems(5);
         comboBox->setSelectedItem("Item 2");
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
+        comboBox->setChangeItemOnScroll(false);
 
         testSavingWidget("ComboBox", comboBox);
     }

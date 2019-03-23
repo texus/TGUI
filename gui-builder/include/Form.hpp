@@ -48,7 +48,11 @@ public:
     void setSelectedWidgetRenderer(const std::string& renderer);
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
+<<<<<<< HEAD
 	void selectWidgetByName(const std::string& name);
+=======
+    void selectParent();
+>>>>>>> 416994f93cc172d49a19ff612f414406d7ba4cdd
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
     void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);
@@ -61,6 +65,7 @@ public:
     bool hasFocus() const;
     bool load();
     void save();
+    void drawExtra(sf::RenderWindow& window) const;
 
 private:
     void importLoadedWidgets(tgui::Container::Ptr parent);
@@ -69,6 +74,7 @@ private:
     void onFormMousePress(sf::Vector2f pos);
     void onDrag(sf::Vector2i mousePos);
     void selectWidget(std::shared_ptr<WidgetInfo> widget);
+    void drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const;
 
 private:
 

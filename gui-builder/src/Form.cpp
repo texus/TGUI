@@ -239,8 +239,10 @@ void Form::updateSelectionSquarePositions()
 
     // The positions given to the squares where those of its center
     for (auto& square : m_selectionSquares)
+    {
         square->setPosition({std::round(square->getPosition().x - (square->getSize().y / 2.f)),
                              std::round(square->getPosition().y - (square->getSize().x / 2.f))});
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +257,23 @@ void Form::selectWidgetById(const std::string& id)
 void Form::selectWidgetByName(const std::string& name)
 {
 	selectWidget(getWidgetByName(name));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::selectParent()
+{
+    if (!m_selectedWidget)
+        return;
+
+    // If the widget was added directly to the form then select the form
+    if (m_selectedWidget->ptr->getParent() == m_widgetsContainer.get())
+    {
+        selectWidget(nullptr);
+        return;
+    }
+
+    selectWidget(m_widgets[tgui::to_string(m_selectedWidget->ptr->getParent())]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +348,51 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     }
     else
     {
-        // TODO: Select other widget
+        sf::Vector2f selectedWidgetPoint;
+        if (keyEvent.code == sf::Keyboard::Left)
+            selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+        else if (keyEvent.code == sf::Keyboard::Right)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+        else if (keyEvent.code == sf::Keyboard::Up)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y};
+        else if (keyEvent.code == sf::Keyboard::Down)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y + selectedWidget->getSize().y};
+
+        float closestDistance = std::numeric_limits<float>::infinity();
+        tgui::Widget::Ptr closestWidget = nullptr;
+        const auto widgets = selectedWidget->getParent()->getWidgets();
+        for (const auto& widget : widgets)
+        {
+            if (widget == selectedWidget)
+                continue;
+
+            sf::Vector2f widgetPoint;
+            if (keyEvent.code == sf::Keyboard::Left)
+                widgetPoint = {widget->getPosition().x + widget->getSize().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
+            else if (keyEvent.code == sf::Keyboard::Right)
+                widgetPoint = {widget->getPosition().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
+            else if (keyEvent.code == sf::Keyboard::Up)
+                widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y + widget->getSize().y};
+            else if (keyEvent.code == sf::Keyboard::Down)
+                widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y};
+
+            // Don't allow going in the opposite direction when there are no widgets on the chosen side
+            if (((keyEvent.code == sf::Keyboard::Left) && (widgetPoint.x >= selectedWidgetPoint.x))
+             || ((keyEvent.code == sf::Keyboard::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
+             || ((keyEvent.code == sf::Keyboard::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
+             || ((keyEvent.code == sf::Keyboard::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
+                continue;
+
+            const float distance = std::abs(widgetPoint.x - selectedWidgetPoint.x) + std::abs(widgetPoint.y - selectedWidgetPoint.y);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestWidget = widget;
+            }
+        }
+
+        if (closestWidget)
+            selectWidget(m_widgets[tgui::to_string(closestWidget.get())]);
     }
 }
 
@@ -418,6 +481,46 @@ void Form::save()
 {
     setChanged(false);
     m_widgetsContainer->saveWidgetsToFile(getFilename());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::drawExtra(sf::RenderWindow& window) const
+{
+    if (!m_selectedWidget)
+        return;
+
+    if (!m_draggingWidget && !m_draggingSelectionSquare
+     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl)
+     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift))
+        return;
+
+    const auto selectedWidget = m_selectedWidget->ptr;
+    const sf::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
+    const sf::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
+    const auto widgets = selectedWidget->getParent()->getWidgets();
+    for (const auto& widget : widgets)
+    {
+        if (widget == selectedWidget)
+            continue;
+
+        const sf::Vector2f topLeft = widget->getAbsolutePosition();
+        const sf::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
+
+        const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float minY = std::min({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+        const float maxY = std::max({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+
+        if ((topLeft.x == selectedTopLeft.x) || (topLeft.x == selectedBottomRight.x))
+            drawLine(window, {topLeft.x, minY}, {topLeft.x, maxY});
+        if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
+            drawLine(window, {minX, topLeft.y}, {maxX, topLeft.y});
+        if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
+            drawLine(window, {bottomRight.x, minY}, {bottomRight.x, maxY});
+        if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
+            drawLine(window, {minX, bottomRight.y}, {maxX, bottomRight.y});
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -728,4 +831,15 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
     }
 
     m_guiBuilder->widgetSelected(widget ? widget->ptr : nullptr);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const
+{
+    sf::Vertex line[2] = {
+        {startPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}},
+        {endPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}}
+    };
+    window.draw(line, 2, sf::Lines);
 }
