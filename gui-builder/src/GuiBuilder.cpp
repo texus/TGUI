@@ -247,6 +247,10 @@ GuiBuilder::GuiBuilder() :
         m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
     }
 
+    sf::Image icon;
+    if (icon.loadFromFile("resources/Icon.png"))
+        m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
     loadStartScreen();
 }
 
