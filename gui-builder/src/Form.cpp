@@ -303,7 +303,51 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     }
     else
     {
-        // TODO: Select other widget
+        sf::Vector2f selectedWidgetPoint;
+        if (keyEvent.code == sf::Keyboard::Left)
+            selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+        else if (keyEvent.code == sf::Keyboard::Right)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+        else if (keyEvent.code == sf::Keyboard::Up)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y};
+        else if (keyEvent.code == sf::Keyboard::Down)
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y + selectedWidget->getSize().y};
+
+        float closestDistance = std::numeric_limits<float>::infinity();
+        tgui::Widget::Ptr closestWidget = nullptr;
+        const auto widgets = selectedWidget->getParent()->getWidgets();
+        for (const auto& widget : widgets)
+        {
+            if (widget == selectedWidget)
+                continue;
+
+            sf::Vector2f widgetPoint;
+            if (keyEvent.code == sf::Keyboard::Left)
+                widgetPoint = {widget->getPosition().x + widget->getSize().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
+            else if (keyEvent.code == sf::Keyboard::Right)
+                widgetPoint = {widget->getPosition().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
+            else if (keyEvent.code == sf::Keyboard::Up)
+                widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y + widget->getSize().y};
+            else if (keyEvent.code == sf::Keyboard::Down)
+                widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y};
+
+            // Don't allow going in the opposite direction when there are no widgets on the chosen side
+            if (((keyEvent.code == sf::Keyboard::Left) && (widgetPoint.x >= selectedWidgetPoint.x))
+             || ((keyEvent.code == sf::Keyboard::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
+             || ((keyEvent.code == sf::Keyboard::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
+             || ((keyEvent.code == sf::Keyboard::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
+                continue;
+
+            const float distance = std::abs(widgetPoint.x - selectedWidgetPoint.x) + std::abs(widgetPoint.y - selectedWidgetPoint.y);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestWidget = widget;
+            }
+        }
+
+        if (closestWidget)
+            selectWidget(m_widgets[tgui::to_string(closestWidget.get())]);
     }
 }
 
@@ -425,11 +469,11 @@ void Form::drawExtra(sf::RenderWindow& window) const
 
         if ((topLeft.x == selectedTopLeft.x) || (topLeft.x == selectedBottomRight.x))
             drawLine(window, {topLeft.x, minY}, {topLeft.x, maxY});
-        else if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
+        if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
             drawLine(window, {minX, topLeft.y}, {maxX, topLeft.y});
-        else if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
+        if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
             drawLine(window, {bottomRight.x, minY}, {bottomRight.x, maxY});
-        else if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
+        if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
             drawLine(window, {minX, bottomRight.y}, {maxX, bottomRight.y});
     }
 }
