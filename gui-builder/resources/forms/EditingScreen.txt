@@ -83,7 +83,7 @@ ChildWindow.PropertiesWindow {
 
 ChildWindow.ToolboxWindow {
     Position = (0, 20);
-    Size = (12%, "&.h - MenuBar.h - 20");
+    Size = (12%, "&.h * 0.5 - MenuBar.h - 20");
     Title = "Toolbox";
     TitleAlignment = Center;
     TitleButtons = None;
@@ -108,8 +108,8 @@ ChildWindow.ToolboxWindow {
 }
 
 ChildWindow.HierarchyWindow {
-    Position = (0, 20);
-    Size = (12%, "&.h - MenuBar.h - 20");
+    Position = (0, ToolboxWindow.h + MenuBar.h + 20);
+    Size = (12%, "&.h * 0.5 - 20");
     Title = "Widgets hierarchy";
     TitleAlignment = Center;
     TitleButtons = None;
