@@ -107,6 +107,35 @@ ChildWindow.ToolboxWindow {
     }
 }
 
+ChildWindow.HierarchyWindow {
+    Position = (0, 20);
+    Size = (12%, "&.h - MenuBar.h - 20");
+    Title = "Widgets hierarchy";
+    TitleAlignment = Center;
+    TitleButtons = None;
+
+    Renderer {
+        backgroundcolor = #E6E6E6;
+        bordercolor = Black;
+        bordercolorfocused = Blue;
+        borders = (1, 1, 1, 1);
+        distancetoside = 3;
+        paddingbetweenbuttons = 1;
+        titlebarcolor = White;
+        titlecolor = Black;
+    }
+
+    ScrollablePanel.Widgets {
+        Size = (100%, 100%);
+        Renderer {
+            backgroundcolor = #E6E6E6;
+        }
+		
+		TreeView.WidgetsTree {
+		}
+    }
+}
+
 ChildWindow.Form {
     Position = ("((&.w - ToolboxWindow.w - PropertiesWindow.w - w) / 2) + ToolboxWindow.w", "(&.h - h) / 2");
     Size = (800, 600);

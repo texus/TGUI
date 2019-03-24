@@ -48,11 +48,8 @@ public:
     void setSelectedWidgetRenderer(const std::string& renderer);
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
-<<<<<<< HEAD
 	void selectWidgetByName(const std::string& name);
-=======
     void selectParent();
->>>>>>> 416994f93cc172d49a19ff612f414406d7ba4cdd
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
     void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);

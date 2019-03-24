@@ -597,6 +597,17 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
     m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
     m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
+	
+	auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
+	m_widgetHierarchyTree = tgui::TreeView::create();
+	hierarchyWindow->add(m_widgetHierarchyTree, "WidgetsTree");
+	m_widgetHierarchyTree->setSize(tgui::bindWidth(hierarchyWindow), tgui::bindHeight(hierarchyWindow));
+
+	m_widgetHierarchyTree->connect("ItemSelected", [this](std::string name)
+	{
+		if (!name.empty())
+			m_selectedForm->selectWidgetByName(name);
+	});
 
     loadToolbox();
     initProperties();
@@ -692,6 +703,8 @@ void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget)
     const std::string name = m_selectedForm->addWidget(widget, parent);
     m_selectedWidgetComboBox->addItem(name, id);
     m_selectedWidgetComboBox->setSelectedItemById(id);
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -712,6 +725,8 @@ void GuiBuilder::recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Co
         if (newWidgets[i]->isContainer())
             recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(oldWidgets[i]), std::static_pointer_cast<tgui::Container>(newWidgets[i]));
     }
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -730,6 +745,7 @@ void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
     m_selectedWidgetComboBox->setSelectedItemById(id);
     m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
     initProperties();
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -896,6 +912,8 @@ void GuiBuilder::changeWidgetName(const std::string& name)
 
     m_selectedForm->setSelectedWidgetName(name);
     m_selectedWidgetComboBox->changeItemById(tgui::to_string(m_selectedForm->getSelectedWidget()->ptr.get()), name);
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -931,6 +949,7 @@ void GuiBuilder::loadForm()
     if (!m_selectedForm->load())
     {
         loadStartScreen();
+		widgetHierarchyChanged();
         return;
     }
 
@@ -957,6 +976,7 @@ void GuiBuilder::loadForm()
         }
     }
 
+	widgetHierarchyChanged();
     initSelectedWidgetComboBoxAfterLoad();
 }
 
