@@ -773,7 +773,7 @@ namespace tgui
         m_verticalScrollbar->mouseNoLongerOnWidget();
         m_horizontalScrollbar->mouseNoLongerOnWidget();
 
-        m_hoveredItem = -1;
+        updateHoveredItem(-1);
         m_possibleDoubleClick = false;
         updateSelectedAndHoveringItemColors();
     }
