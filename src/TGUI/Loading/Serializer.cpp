@@ -175,7 +175,8 @@ namespace tgui
 
             std::string result = "\"" + texture.getId() + "\"";
 
-            if (texture.getData()->rect != sf::IntRect{})
+            if ((texture.getData()->rect != sf::IntRect{}) && texture.getData()->image
+             && (texture.getData()->rect != sf::IntRect{0, 0, static_cast<int>(texture.getData()->image->getSize().x), static_cast<int>(texture.getData()->image->getSize().y)}))
             {
                 result += " Part(" + to_string(texture.getData()->rect.left) + ", " + to_string(texture.getData()->rect.top)
                             + ", " + to_string(texture.getData()->rect.width) + ", " + to_string(texture.getData()->rect.height) + ")";

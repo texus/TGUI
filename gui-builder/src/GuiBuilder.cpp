@@ -853,6 +853,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueMultilineString(property, value, onChange, topPosition);
     else if (type == "List<String>")
         addPropertyValueStringList(property, value, onChange, topPosition);
+    else if (type == "Texture")
+        addPropertyValueTexture(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type == "ChildWindowTitleButtons")
@@ -865,11 +867,6 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
     else if (type == "Font")
     {
         // TODO: Allowing picking font from list (e.g. managed similar to themes) or via file dialog.
-        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
-    }
-    else if (type == "Texture")
-    {
-        // TODO: Open dialog where filename, bounding rect and middle rect can be chosen
         addPropertyValueEditBox(property, value, onChange, topPosition, 0);
     }
     else
@@ -966,7 +963,7 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
 {
     auto panel = tgui::Panel::create({"100%", "100%"});
     panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-    m_gui.add(panel, "TransparentBlackBackground");
+    m_gui.add(panel);
 
     auto window = tgui::ChildWindow::create();
     window->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
@@ -974,17 +971,15 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
 
     window->setFocused(true);
 
-    panel->connect("Clicked", [=]{
-        m_gui.remove(window);
-        m_gui.remove(panel);
-    });
-
     const bool tabUsageEnabled = m_gui.isTabKeyUsageEnabled();
-    window->connect({"Closed", "EscapeKeyPressed"}, [=]{
+    auto closeWindow = [=]{
         m_gui.remove(window);
         m_gui.remove(panel);
         m_gui.setTabKeyUsageEnabled(tabUsageEnabled);
-    });
+    };
+
+    panel->connect("Clicked", closeWindow);
+    window->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
 
     return window;
 }
@@ -1340,6 +1335,178 @@ void GuiBuilder::addPropertyValueStringList(const std::string& property, const s
         };
         buttonAdd->connect("Pressed", addItem);
         editBox->connect("ReturnKeyPressed", addItem);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueTexture(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto textureWindow = openWindowWithFocus();
+        textureWindow->setTitle("Set texture");
+        textureWindow->setSize(235, 235);
+        textureWindow->loadWidgetsFromFile("resources/forms/SetTexture.txt");
+
+        auto previewCanvas = textureWindow->get<tgui::Canvas>("ImagePreview");
+        auto buttonSelectFile = textureWindow->get<tgui::Button>("BtnSelectFile");
+        auto editBoxPartRect = textureWindow->get<tgui::EditBox>("EditPartRect");
+        auto editBoxMiddleRect = textureWindow->get<tgui::EditBox>("EditMiddleRect");
+
+        auto deserializeRect = [=](std::string str) -> sf::IntRect {
+            if (str.empty())
+                return {};
+
+            if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
+                str = str.substr(1, str.length() - 2);
+
+            const std::vector<std::string> tokens = tgui::Deserializer::split(str, ',');
+            if (tokens.size() == 4)
+                return {tgui::stoi(tokens[0]), tgui::stoi(tokens[1]), tgui::stoi(tokens[2]), tgui::stoi(tokens[3])};
+            else
+                return {};
+        };
+
+        previewCanvas->setUserData(std::make_shared<tgui::Texture>());
+
+        auto updateForm = [=](sf::String filename, sf::IntRect partRect, sf::IntRect middleRect, bool resetPartRect, bool resetMiddleRect, bool resetSize){
+            auto texture = previewCanvas->getUserData<std::shared_ptr<tgui::Texture>>();
+            if (resetSize)
+            {
+                try
+                {
+                    texture->load(filename, partRect, middleRect);
+                    onChange(tgui::Serializer::serialize(*texture));
+                }
+                catch (tgui::Exception& e)
+                {
+                }
+
+                buttonSelectFile->setUserData(filename); // Not using texture.getId() as it would be empty if file didn't exist
+            }
+
+            const sf::Vector2f imageSize = texture->getImageSize();
+            const sf::Vector2f extraSpace{20, 135};
+            const sf::Vector2f minSize{235, 140};
+            const tgui::Layout2d maxSize{tgui::bindWidth(m_gui) - 50, tgui::bindHeight(m_gui) - 50};
+            const tgui::Layout scaling = tgui::bindMin(1.f, tgui::bindMin((maxSize.x - extraSpace.x) / imageSize.x, (maxSize.y - extraSpace.y) / imageSize.y));
+            if (resetSize)
+            {
+                previewCanvas->onSizeChange.setEnabled(false);
+                previewCanvas->setSize({imageSize.x * scaling, imageSize.y * scaling});
+                previewCanvas->onSizeChange.setEnabled(true);
+
+                textureWindow->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
+            }
+
+            if (resetPartRect)
+            {
+                if (texture->getData() && (texture->getData()->rect == sf::IntRect{}))
+                    partRect = {0, 0, static_cast<int>(imageSize.x), static_cast<int>(imageSize.y)};
+                else
+                    partRect = texture->getData() ? texture->getData()->rect : sf::IntRect{};
+
+                editBoxPartRect->onTextChange.setEnabled(false);
+                editBoxPartRect->setText("(" + tgui::to_string(partRect.left) + ", " + tgui::to_string(partRect.top)
+                    + ", " + tgui::to_string(partRect.width) + ", " + tgui::to_string(partRect.height) + ")");
+                editBoxPartRect->onTextChange.setEnabled(true);
+            }
+
+            if (resetMiddleRect)
+            {
+                middleRect = texture->getMiddleRect();
+
+                editBoxMiddleRect->onTextChange.setEnabled(false);
+                editBoxMiddleRect->setText("(" + tgui::to_string(middleRect.left) + ", " + tgui::to_string(middleRect.top)
+                    + ", " + tgui::to_string(middleRect.width) + ", " + tgui::to_string(middleRect.height) + ")");
+                editBoxMiddleRect->onTextChange.setEnabled(true);
+            }
+
+            tgui::Sprite sprite{*texture};
+            sprite.setScale({scaling.getValue(), scaling.getValue()});
+
+            previewCanvas->clear(sf::Color::Transparent);
+            previewCanvas->draw(sprite);
+
+            if ((middleRect != sf::IntRect{}) && (middleRect != sf::IntRect{0, 0, static_cast<int>(imageSize.x), static_cast<int>(imageSize.y)}))
+            {
+                std::vector<sf::Vertex> lines;
+                if ((middleRect.left != 0) || (middleRect.width != static_cast<int>(imageSize.x)))
+                {
+                    lines.push_back({sf::Vector2f{middleRect.left + 0.5f, 0} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.push_back({sf::Vector2f{middleRect.left + 0.5f, imageSize.y} * scaling.getValue(), sf::Color{255, 128, 255}});
+
+                    lines.push_back({sf::Vector2f{middleRect.left + middleRect.width - 0.5f, 0} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.push_back({sf::Vector2f{middleRect.left + middleRect.width - 0.5f, imageSize.y} * scaling.getValue(), sf::Color{255, 128, 255}});
+                }
+
+                if ((middleRect.top != 0) || (middleRect.height != static_cast<int>(imageSize.y)))
+                {
+                    lines.push_back({sf::Vector2f{0, middleRect.top + 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.push_back({sf::Vector2f{imageSize.x, middleRect.top + 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
+
+                    lines.push_back({sf::Vector2f{0, middleRect.top + middleRect.height - 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.push_back({sf::Vector2f{imageSize.x, middleRect.top + middleRect.height - 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
+                }
+
+                if (!lines.empty())
+                    previewCanvas->draw(lines.data(), lines.size(), sf::Lines);
+            }
+
+            previewCanvas->display();
+        };
+
+        editBoxPartRect->connect("TextChanged", [=]{
+            updateForm(buttonSelectFile->getUserData<sf::String>(), deserializeRect(editBoxPartRect->getText()), {}, false, true, true);
+        });
+        editBoxMiddleRect->connect("TextChanged", [=]{
+            updateForm(buttonSelectFile->getUserData<sf::String>(), deserializeRect(editBoxPartRect->getText()), deserializeRect(editBoxMiddleRect->getText()), false, false, true);
+        });
+        previewCanvas->connect("SizeChanged", [=]{
+            updateForm(buttonSelectFile->getUserData<sf::String>(), deserializeRect(editBoxPartRect->getText()), deserializeRect(editBoxMiddleRect->getText()), false, false, false);
+        });
+
+        tgui::Texture originalTexture;
+        try
+        {
+            originalTexture = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Texture, value).getTexture();
+        }
+        catch (tgui::Exception& e)
+        {
+            std::cout << "Exception caught when loading image: " << e.what() << std::endl;
+        }
+
+        sf::String originalFilename = originalTexture.getId();
+        sf::IntRect originalPartRect = originalTexture.getData() ? originalTexture.getData()->rect : sf::IntRect{};
+        sf::IntRect originalMiddleRect = originalTexture.getMiddleRect();
+        updateForm(originalFilename, originalPartRect, originalMiddleRect, true, true, true);
+
+        buttonSelectFile->connect("pressed", [=]{
+            auto filenameWindow = openWindowWithFocus();
+            filenameWindow->setTitle("Load image");
+            filenameWindow->setSize(400, 100);
+            filenameWindow->loadWidgetsFromFile("resources/forms/LoadFile.txt");
+
+            auto editBoxFilename = filenameWindow->get<tgui::EditBox>("EditFilename");
+            auto buttonLoadImage = filenameWindow->get<tgui::Button>("BtnLoad");
+            auto buttonCancelLoadingImage = filenameWindow->get<tgui::Button>("BtnCancel");
+
+            editBoxFilename->setText(buttonSelectFile->getUserData<sf::String>());
+            editBoxFilename->setFocused(true);
+
+            buttonCancelLoadingImage->connect("pressed", [=]{ filenameWindow->close(); });
+            buttonLoadImage->connect("pressed", [=]{
+                updateForm(editBoxFilename->getText(), {}, {}, true, true, true);
+                filenameWindow->close();
+            });
+            editBoxFilename->connect("ReturnKeyPressed", [=]{
+                updateForm(editBoxFilename->getText(), {}, {}, true, true, true);
+                filenameWindow->close();
+            });
+        });
     });
 }
 

@@ -38,6 +38,11 @@
 
 namespace tgui
 {
+    Sprite::Sprite(const Texture& texture)
+    {
+        setTexture(texture);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Sprite::setTexture(const Texture& texture)

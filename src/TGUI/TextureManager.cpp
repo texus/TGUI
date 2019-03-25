@@ -93,7 +93,12 @@ namespace tgui
                 if (partRect == sf::IntRect{})
                     loadFromImageSuccess = data->texture.loadFromImage(*data->image);
                 else
-                    loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
+                {
+                    if ((partRect.left < static_cast<int>(data->image->getSize().x)) && (partRect.top < static_cast<int>(data->image->getSize().y)))
+                        loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
+                    else
+                        loadFromImageSuccess = false;
+                }
 
                 if (loadFromImageSuccess)
                     return data;
@@ -101,7 +106,11 @@ namespace tgui
         }
 
         // The image could not be loaded
-        m_imageMap.erase(imageIt);
+        if (imageIt->second.size() > 1)
+            imageIt->second.pop_back();
+        else
+            m_imageMap.erase(imageIt);
+
         return nullptr;
     }
 

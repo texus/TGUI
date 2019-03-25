@@ -1,0 +1,144 @@
+Renderer.1 {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    caretcolor = black;
+    caretwidth = 1;
+    defaulttextcolor = #A0A0A0;
+    padding = (0, 0, 0, 0);
+    selectedtextbackgroundcolor = #006EFF;
+    selectedtextcolor = white;
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    texture = None;
+    texturedisabled = None;
+    texturefocused = None;
+    texturehover = None;
+}
+
+Renderer.2 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = #3C3C3C;
+}
+
+Renderer.3 {
+    backgroundcolor = #F5F5F5;
+    bordercolor = #3C3C3C;
+    borders = (1, 1, 1, 1);
+    textcolor = #3C3C3C;
+}
+
+Canvas.ImagePreview {
+    Position = ((&.w - w) / 2, 10);
+    Size = (100, 100);
+}
+
+Button.BtnSelectFile {
+    Position = ((&.w - w) / 2, &.h - 115);
+    Size = (100, 22);
+    Text = "Select file";
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = #F5F5F5;
+        backgroundcolordisabled = #E6E6E6;
+        backgroundcolordown = #EBEBEB;
+        backgroundcolorhover = white;
+        bordercolor = #3C3C3C;
+        bordercolordisabled = #7D7D7D;
+        bordercolordown = black;
+        bordercolorfocused = #1E1EB4;
+        bordercolorhover = black;
+        borders = (1, 1, 1, 1);
+        textcolor = #3C3C3C;
+        textcolordisabled = #7D7D7D;
+        textcolordown = black;
+        textcolorhover = black;
+        texture = None;
+        texturedisabled = None;
+        texturedown = None;
+        texturefocused = None;
+        texturehover = None;
+    }
+}
+
+Label."Widget3" {
+    AutoSize = true;
+    Position = ((&.w - 215) / 2, (&.h - 75) + 2);
+    ScrollbarPolicy = Never;
+    Size = (34.2, 18);
+    Text = "Part:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+EditBox.EditPartRect {
+    Position = (((&.w - 215) / 2) + 52, &.h - 75);
+    Size = (138, 22);
+    TextSize = 13;
+    renderer = &1;
+}
+
+EditBox.EditMiddleRect {
+    Position = (((&.w - 215) / 2) + 52, &.h - 40);
+    Size = (138, 22);
+    TextSize = 13;
+    renderer = &1;
+}
+
+Label."Widget6" {
+    AutoSize = true;
+    Position = ((&.w - 215) / 2, (&.h - 40) + 2);
+    ScrollbarPolicy = Never;
+    Size = (48.2, 18);
+    Text = "Middle:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+Picture.InfoPartRect {
+    Position = (((&.w - 215) / 2) + 198, (&.h - 75) + 3);
+    Size = (16, 16);
+
+    Renderer {
+        texture = "resources/Info.png";
+        transparenttexture = false;
+    }
+
+    ToolTip {
+        TimeToDisplay = 0;
+
+        Label {
+            AutoSize = true;
+            Text = "Part of the image to load (left, top, width, height)";
+            TextSize = 13;
+            renderer = &3;
+        }
+    }
+}
+
+Picture.InfoMiddleRect {
+    Position = (((&.w - 215) / 2) + 198, (&.h - 40) + 3);
+    Size = (16, 16);
+
+    Renderer {
+        texture = "resources/Info.png";
+    }
+
+    ToolTip {
+        TimeToDisplay = 0;
+
+        Label {
+            AutoSize = true;
+            Text = "Middle part of the image (relative to Part rect) which defines how the image is scaled";
+            TextSize = 13;
+            renderer = &3;
+        }
+    }
+}

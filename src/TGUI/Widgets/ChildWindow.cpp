@@ -64,12 +64,9 @@ namespace tgui
         setTitleButtons(titleButtons);
         setSize({400, 300});
 
-        m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
-        m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
-        m_closeButton->connect("pressed", [this](){
-                if (!onClose.emit(this))
-                    destroy();
-            });
+        m_maximizeButton->connect("pressed", [this]{ onMaximize.emit(this); });
+        m_minimizeButton->connect("pressed", [this]{ onMinimize.emit(this); });
+        m_closeButton->connect("pressed", [this]{ close(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +350,14 @@ namespace tgui
     unsigned int ChildWindow::getTitleButtons() const
     {
         return m_titleButtons;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::close()
+    {
+        if (!onClose.emit(this))
+            destroy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

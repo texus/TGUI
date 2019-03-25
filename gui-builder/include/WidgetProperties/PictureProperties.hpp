@@ -36,6 +36,21 @@ struct PictureProperties : WidgetProperties
         auto picture = std::dynamic_pointer_cast<tgui::Picture>(widget);
         if (property == "IgnoreMouseEvents")
             picture->ignoreMouseEvents(parseBoolean(value, false));
+        else if (property == "Texture")
+        {
+            const tgui::Texture& oldTexture = picture->getSharedRenderer()->getTexture();
+            const sf::String oldFilename = oldTexture.getId();
+            const sf::IntRect oldPartRect = oldTexture.getData() ? oldTexture.getData()->rect : sf::IntRect{};
+
+            picture->getRenderer()->setProperty(property, value);
+
+            const tgui::Texture& newTexture = picture->getSharedRenderer()->getTexture();
+            const sf::String newFilename = newTexture.getId();
+            const sf::IntRect newPartRect = newTexture.getData() ? newTexture.getData()->rect : sf::IntRect{};
+            const sf::Vector2f imageSize = newTexture.getImageSize();
+            if (((newFilename != oldFilename) || (newPartRect != oldPartRect)) && (imageSize.x != 0) && (imageSize.y != 0))
+                picture->setSize(imageSize);
+        }
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

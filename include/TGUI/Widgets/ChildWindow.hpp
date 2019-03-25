@@ -269,13 +269,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Try to close the window
+        ///
+        /// This will trigger the Closed signal. If no callback is requested then the window will be closed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void close();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destroys the window
         ///
         /// When no callback is requested when closing the window, this function will be called automatically.
         ///
-        /// When you requested a callback then you get the opportunity to cancel the closing of the window.
+        /// When you requested a callback on close then you get the opportunity to cancel the closing of the window.
         /// If you want to keep it open then don't do anything, if you want to close it then just call this function.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void destroy();
 

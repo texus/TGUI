@@ -104,16 +104,21 @@ namespace tgui
 
     void Canvas::setSize(const Layout2d& size)
     {
-        Widget::setSize(size);
+        Vector2f newSize = size.getValue();
 
-        if (getSize() != Vector2f{})
+        if ((newSize.x > 0) && (newSize.y > 0))
         {
-            m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
-            m_sprite.setTexture(m_renderTexture.getTexture(), true);
+            if ((m_renderTexture.getSize().x < static_cast<unsigned int>(newSize.x)) || (m_renderTexture.getSize().y < static_cast<unsigned int>(newSize.y)))
+                m_renderTexture.create(static_cast<unsigned int>(newSize.x), static_cast<unsigned int>(newSize.y));
+
+            m_sprite.setTexture(m_renderTexture.getTexture());
+            m_sprite.setTextureRect(sf::IntRect{0, 0, static_cast<int>(newSize.x), static_cast<int>(newSize.y)});
 
             m_renderTexture.clear();
             m_renderTexture.display();
         }
+
+        Widget::setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +144,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Canvas::draw(const tgui::Sprite& sprite, const sf::RenderStates& states)
+    {
+        sprite.draw(m_renderTexture, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Canvas::display()
     {
         m_renderTexture.display();
@@ -158,6 +170,9 @@ namespace tgui
 
     void Canvas::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        if ((getSize().x <= 0) || (getSize().y <= 0))
+            return;
+
         states.transform.translate(getPosition());
         target.draw(m_sprite, states);
     }
