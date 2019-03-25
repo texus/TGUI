@@ -150,7 +150,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool emit(const Widget* widget)
         {
-            if (m_handlers.empty())
+            if (m_handlers.empty() || !m_enabled)
                 return false;
 
             internal_signal::parameters[0] = static_cast<const void*>(&widget);
@@ -176,6 +176,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether this signal calls the connected functions when triggered
+        ///
+        /// @param enabled  Is the signal enabled?
+        ///
+        /// Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the
+        /// handler and connecting it again a few lines later.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setEnabled(bool enabled)
+        {
+            m_enabled = enabled;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether this signal calls the connected functions when triggered
+        ///
+        /// @param Is the signal enabled?
+        ///
+        /// Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the
+        /// handler and connecting it again a few lines later.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isEnabled() const
+        {
+            return m_enabled;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
@@ -196,6 +224,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+        bool m_enabled = true;
         std::string m_name;
         std::map<unsigned int, std::function<void()>> m_handlers;
     };

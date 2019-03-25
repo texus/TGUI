@@ -64,6 +64,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Signal::Signal(const Signal& other) :
+        m_enabled {other.m_enabled},
         m_name    {other.m_name},
         m_handlers{} // signal handlers are not copied with the widget
     {
@@ -75,6 +76,7 @@ namespace tgui
     {
         if (this != &other)
         {
+            m_enabled = other.m_enabled;
             m_name = other.m_name;
             m_handlers.clear(); // signal handlers are not copied with the widget
         }

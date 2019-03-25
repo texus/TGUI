@@ -7,6 +7,7 @@ TGUI 0.8.5  (TBD)
 - Added RightClicked signal to ListView
 - Added functions to ListView to change existing items
 - Support typing tabs in TextBox (if tab usage is disabled in gui)
+- Added function to signals to temporarily disable callbacks
 - ChildWindow can now have a different border color in focused state
 - EditBox::setInputValidator now returns false when regex was invalid
 - Let ComboBox send the ItemSelected event only after the mouse is released
