@@ -50,8 +50,8 @@ private:
     struct CopiedWidget
     {
         std::string theme;
-        std::string widgetType;
-        PropertyValueMapPair propertyValuePairs;
+        tgui::Widget::Ptr widget;
+        tgui::Widget::Ptr originalWidget;
         std::vector<CopiedWidget> childWidgets;
     };
 

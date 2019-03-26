@@ -962,8 +962,9 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
 {
     CopiedWidget copiedWidget;
     copiedWidget.theme = widgetInfo->theme;
-    copiedWidget.widgetType = widgetInfo->ptr->getWidgetType();
-    copiedWidget.propertyValuePairs = m_widgetProperties.at(copiedWidget.widgetType)->initProperties(widgetInfo->ptr);
+    copiedWidget.widget = widgetInfo->ptr->clone();
+    copiedWidget.originalWidget = widgetInfo->ptr;
+    copiedWidget.widget->getRenderer(); // Make sure renderer isn't still shared
 
     if (widgetInfo->ptr->isContainer())
     {
@@ -973,6 +974,9 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
             const auto& childWidgetInfo = m_selectedForm->getWidget(tgui::to_string(childWidget.get()));
             copyWidgetRecursive(copiedWidget.childWidgets, childWidgetInfo);
         }
+
+        // Remove the widgets inside the container itself as we stored them separately
+        copiedWidget.widget->cast<tgui::Container>()->removeAllWidgets();
     }
 
     copiedWidgetList.push_back(std::move(copiedWidget));
@@ -982,32 +986,8 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
 
 void GuiBuilder::pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent)
 {
-    auto widget = tgui::WidgetFactory::getConstructFunction(copiedWidget.widgetType)();
+    auto widget = copiedWidget.widget->clone(); // Clone again, as we may be pasting same widget multiple times
     createNewWidget(widget, parent, false);
-
-    // Copy renderer properties before widget properties. Currently Picture requires copying texture before copying size.
-    for (const auto& property : copiedWidget.propertyValuePairs.second)
-    {
-        try
-        {
-            m_widgetProperties.at(widget->getWidgetType())->updateProperty(widget, property.first, property.second.second);
-        }
-        catch (const tgui::Exception& e)
-        {
-            std::cout << "Exception caught when pasting copied renderer property: " << e.what() << std::endl;
-        }
-    }
-    for (const auto& property : copiedWidget.propertyValuePairs.first)
-    {
-        try
-        {
-            m_widgetProperties.at(widget->getWidgetType())->updateProperty(widget, property.first, property.second.second);
-        }
-        catch (const tgui::Exception& e)
-        {
-            std::cout << "Exception caught when pasting copied property: " << e.what() << std::endl;
-        }
-    }
 
     m_selectedForm->getWidget(tgui::to_string(widget.get()))->theme = copiedWidget.theme;
 }
@@ -1027,16 +1007,14 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
     if (m_copiedWidgets.empty())
         return;
 
-    auto widget = tgui::WidgetFactory::getConstructFunction(m_copiedWidgets[0].widgetType)();
+    // When selecting a container and pressing ctrl+C immediately followed by ctrl+V, the the new container should be a sibling
+    // of the old one, not a child. So don't try to paste a container inside itself.
+    if (m_selectedForm->getSelectedWidget() && (m_selectedForm->getSelectedWidget()->ptr == m_copiedWidgets[0].originalWidget))
+        m_selectedForm->selectParent();
+
+    auto widget = m_copiedWidgets[0].widget->clone(); // Clone again, as we may be pasting same widget multiple times
     createNewWidget(widget);
-
-    // Copy renderer properties before widget properties. Currently Picture requires copying texture before copying size.
-    for (const auto& property : m_copiedWidgets[0].propertyValuePairs.second)
-        updateWidgetProperty(property.first, property.second.second);
-    for (const auto& property : m_copiedWidgets[0].propertyValuePairs.first)
-        updateWidgetProperty(property.first, property.second.second);
-
-    m_selectedForm->getSelectedWidget()->theme = m_copiedWidgets[0].theme;
+    m_selectedForm->getWidget(tgui::to_string(widget.get()))->theme = m_copiedWidgets[0].theme;
 
     // Copy child widgets
     if (!m_copiedWidgets[0].childWidgets.empty())
