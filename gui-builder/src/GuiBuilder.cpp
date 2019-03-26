@@ -685,57 +685,23 @@ void GuiBuilder::loadToolbox()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget)
+void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
 {
-    tgui::Container* parent = nullptr;
-    tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget() ? m_selectedForm->getSelectedWidget()->ptr : nullptr;
-    if (selectedWidget && selectedWidget->isContainer())
-        parent = static_cast<tgui::Container*>(selectedWidget.get());
-    else if (selectedWidget)
-        parent = selectedWidget->getParent();
-
-    const std::string id = tgui::to_string(widget.get());
-    const std::string name = m_selectedForm->addWidget(widget, parent);
-    m_selectedWidgetComboBox->addItem(name, id);
-    m_selectedWidgetComboBox->setSelectedItemById(id);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void GuiBuilder::recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer)
-{
-    const auto& oldWidgets = oldContainer->getWidgets();
-    const auto& newWidgets = newContainer->getWidgets();
-    assert(oldWidgets.size() == newWidgets.size());
-
-    for (std::size_t i = 0; i < newWidgets.size(); ++i)
+    if (!parent)
     {
-        const std::string name = m_selectedForm->addExistingWidget(newWidgets[i]);
-        m_selectedWidgetComboBox->addItem(name, tgui::to_string(newWidgets[i].get()));
-
-        m_selectedForm->getWidget(tgui::to_string(newWidgets[i].get()))->theme = m_selectedForm->getWidget(tgui::to_string(oldWidgets[i].get()))->theme;
-
-        if (newWidgets[i]->isContainer())
-            recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(oldWidgets[i]), std::static_pointer_cast<tgui::Container>(newWidgets[i]));
+        tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget() ? m_selectedForm->getSelectedWidget()->ptr : nullptr;
+        if (selectedWidget && selectedWidget->isContainer())
+            parent = static_cast<tgui::Container*>(selectedWidget.get());
+        else if (selectedWidget)
+            parent = selectedWidget->getParent();
     }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
-{
-    tgui::Widget::Ptr widget = widgetInfo->ptr->clone();
 
     const std::string id = tgui::to_string(widget.get());
-    const std::string name = m_selectedForm->addWidget(widget, widgetInfo->ptr->getParent());
+    const std::string name = m_selectedForm->addWidget(widget, parent, selectNewWidget);
     m_selectedWidgetComboBox->addItem(name, id);
 
-    if (widget->isContainer())
-        recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(widgetInfo->ptr), std::static_pointer_cast<tgui::Container>(widget));
-
-    m_selectedWidgetComboBox->setSelectedItemById(id);
-    m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
-    initProperties();
+    if (selectNewWidget)
+        m_selectedWidgetComboBox->setSelectedItemById(id);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -785,9 +751,9 @@ void GuiBuilder::initProperties()
     m_menuBar->setMenuItemEnabled({"Widget", "Send to back"}, (selectedWidget != nullptr));
     m_menuBar->setMenuItemEnabled({"Widget", "Cut"}, (selectedWidget != nullptr));
     m_menuBar->setMenuItemEnabled({"Widget", "Copy"}, (selectedWidget != nullptr));
-    m_menuBar->setMenuItemEnabled({"Widget", "Paste"}, !m_copiedWidgetType.empty());
+    m_menuBar->setMenuItemEnabled({"Widget", "Paste"}, !m_copiedWidgets.empty());
     m_menuBar->setMenuItemEnabled({"Widget", "Delete"}, (selectedWidget != nullptr));
-    m_menuBar->setMenuEnabled("Widget", (selectedWidget != nullptr) || !m_copiedWidgetType.empty());
+    m_menuBar->setMenuEnabled("Widget", (selectedWidget != nullptr) || !m_copiedWidgets.empty());
 
     if (selectedWidget)
     {
@@ -992,27 +958,93 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo)
+{
+    CopiedWidget copiedWidget;
+    copiedWidget.theme = widgetInfo->theme;
+    copiedWidget.widgetType = widgetInfo->ptr->getWidgetType();
+    copiedWidget.propertyValuePairs = m_widgetProperties.at(copiedWidget.widgetType)->initProperties(widgetInfo->ptr);
+
+    if (widgetInfo->ptr->isContainer())
+    {
+        const auto& container = widgetInfo->ptr->cast<tgui::Container>();
+        for (const auto& childWidget : container->getWidgets())
+        {
+            const auto& childWidgetInfo = m_selectedForm->getWidget(tgui::to_string(childWidget.get()));
+            copyWidgetRecursive(copiedWidget.childWidgets, childWidgetInfo);
+        }
+    }
+
+    copiedWidgetList.push_back(std::move(copiedWidget));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent)
+{
+    auto widget = tgui::WidgetFactory::getConstructFunction(copiedWidget.widgetType)();
+    createNewWidget(widget, parent, false);
+
+    // Copy renderer properties before widget properties. Currently Picture requires copying texture before copying size.
+    for (const auto& property : copiedWidget.propertyValuePairs.second)
+    {
+        try
+        {
+            m_widgetProperties.at(widget->getWidgetType())->updateProperty(widget, property.first, property.second.second);
+        }
+        catch (const tgui::Exception& e)
+        {
+            std::cout << "Exception caught when pasting copied renderer property: " << e.what() << std::endl;
+        }
+    }
+    for (const auto& property : copiedWidget.propertyValuePairs.first)
+    {
+        try
+        {
+            m_widgetProperties.at(widget->getWidgetType())->updateProperty(widget, property.first, property.second.second);
+        }
+        catch (const tgui::Exception& e)
+        {
+            std::cout << "Exception caught when pasting copied property: " << e.what() << std::endl;
+        }
+    }
+
+    m_selectedForm->getWidget(tgui::to_string(widget.get()))->theme = copiedWidget.theme;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo)
 {
-    m_copiedWidgetType = widgetInfo->ptr->getWidgetType();
-    m_copiedWidgetTheme = widgetInfo->theme;
-    m_copiedWidgetPropertyValuePairs = m_widgetProperties.at(m_copiedWidgetType)->initProperties(widgetInfo->ptr);
+    m_copiedWidgets.clear();
+    copyWidgetRecursive(m_copiedWidgets, widgetInfo);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::pasteWidgetFromInternalClipboard()
 {
-    if (m_copiedWidgetType.empty())
+    if (m_copiedWidgets.empty())
         return;
 
-    auto widget = tgui::WidgetFactory::getConstructFunction(m_copiedWidgetType)();
+    auto widget = tgui::WidgetFactory::getConstructFunction(m_copiedWidgets[0].widgetType)();
     createNewWidget(widget);
 
-    for (const auto& property : m_copiedWidgetPropertyValuePairs.first)
+    // Copy renderer properties before widget properties. Currently Picture requires copying texture before copying size.
+    for (const auto& property : m_copiedWidgets[0].propertyValuePairs.second)
         updateWidgetProperty(property.first, property.second.second);
-    for (const auto& property : m_copiedWidgetPropertyValuePairs.second)
+    for (const auto& property : m_copiedWidgets[0].propertyValuePairs.first)
         updateWidgetProperty(property.first, property.second.second);
+
+    m_selectedForm->getSelectedWidget()->theme = m_copiedWidgets[0].theme;
+
+    // Copy child widgets
+    if (!m_copiedWidgets[0].childWidgets.empty())
+    {
+        const auto& container = widget->cast<tgui::Container>();
+        for (const auto& copiedChild : m_copiedWidgets[0].childWidgets)
+            pasteWidgetRecursive(copiedChild, container.get());
+    }
 
     // Move the widget a bit down and to the right to visually show that the new widget has been created.
     // If the widget lies outside its parent then move its position so that it becomes visible.
@@ -1033,7 +1065,6 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
         updateWidgetProperty("Top", std::to_string(newY));
     }
 
-    m_selectedForm->getSelectedWidget()->theme = m_copiedWidgetTheme;
     initProperties();
 
     m_selectedForm->setChanged(true);

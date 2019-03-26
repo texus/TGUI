@@ -47,12 +47,18 @@ private:
     using PropertyValuePair = std::pair<std::string, std::pair<std::string, std::string>>;
     using OnValueChangeFunc = std::function<void(const sf::String& value)>;
 
+    struct CopiedWidget
+    {
+        std::string theme;
+        std::string widgetType;
+        PropertyValueMapPair propertyValuePairs;
+        std::vector<CopiedWidget> childWidgets;
+    };
+
     void loadStartScreen();
     void loadEditingScreen(const std::string& filename);
     void loadToolbox();
-    void createNewWidget(tgui::Widget::Ptr widget);
-    void recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer);
-    void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
+    void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
     bool updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
@@ -62,6 +68,8 @@ private:
     void loadForm();
     tgui::ChildWindow::Ptr openWindowWithFocus();
 
+    void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
+    void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
 
@@ -109,9 +117,7 @@ private:
     std::map<std::string, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
 
-    std::string m_copiedWidgetType;
-    std::string m_copiedWidgetTheme;
-    PropertyValueMapPair m_copiedWidgetPropertyValuePairs;
+    std::vector<CopiedWidget> m_copiedWidgets;
 
     std::map<std::string, tgui::Theme> m_themes;
     std::string m_defaultTheme;

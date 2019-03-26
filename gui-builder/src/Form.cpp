@@ -67,7 +67,7 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent)
+std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
 {
     const std::string id = tgui::to_string(widget.get());
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
@@ -80,7 +80,8 @@ std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent)
     else
         m_widgetsContainer->add(widget, name);
 
-    selectWidget(m_widgets[id]);
+    if (selectNewWidget)
+        selectWidget(m_widgets[id]);
 
     setChanged(true);
     return name;

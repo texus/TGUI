@@ -36,7 +36,7 @@ class Form
 {
 public:
     Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
-    std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent);
+    std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget = true);
     std::string addExistingWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
