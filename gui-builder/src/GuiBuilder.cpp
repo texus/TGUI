@@ -670,7 +670,13 @@ void GuiBuilder::loadToolbox()
                 selectedWidget->ptr->setRenderer(renderer);
             }
             else
+            {
                 selectedWidget->theme = "Custom";
+                auto rendererComboBox = m_propertiesContainer->get<tgui::ComboBox>("RendererSelectorComboBox");
+                rendererComboBox->setSelectedItem(selectedWidget->theme);
+            }
+
+            m_selectedForm->focus();
         });
 
         topPosition += verticalLayout->getSize().y;
@@ -1007,6 +1013,25 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
         updateWidgetProperty(property.first, property.second.second);
     for (const auto& property : m_copiedWidgetPropertyValuePairs.second)
         updateWidgetProperty(property.first, property.second.second);
+
+    // Move the widget a bit down and to the right to visually show that the new widget has been created.
+    // If the widget lies outside its parent then move its position so that it becomes visible.
+    if (widget->getPositionLayout().x.isConstant())
+    {
+        float newX = widget->getPosition().x + 10;
+        if (newX + (widget->getSize().x / 2.f) > widget->getParent()->getSize().x)
+            newX = widget->getParent()->getSize().x -  (widget->getSize().x / 2.f);
+
+        updateWidgetProperty("Left", std::to_string(newX));
+    }
+    if (widget->getPositionLayout().y.isConstant())
+    {
+        float newY = widget->getPosition().y + 10;
+        if (newY + (widget->getSize().y / 2.f) > widget->getParent()->getSize().y)
+            newY = widget->getParent()->getSize().y -  (widget->getSize().y / 2.f);
+
+        updateWidgetProperty("Top", std::to_string(newY));
+    }
 
     m_selectedForm->getSelectedWidget()->theme = m_copiedWidgetTheme;
     initProperties();

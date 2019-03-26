@@ -190,6 +190,14 @@ void Form::updateSelectionSquarePositions()
         parentWidget = parentWidget->getParent();
     }
 
+    // Exception for ChildWindow as its size is currently its client size instead of the full size
+    if (widget->getWidgetType() == "ChildWindow")
+    {
+        auto renderer = widget->cast<tgui::ChildWindow>()->getSharedRenderer();
+        position.x += renderer->getBorders().getLeft();
+        position.y += renderer->getBorders().getTop() + renderer->getTitleBarHeight() + renderer->getBorderBelowTitleBar();
+    }
+
     m_selectionSquares[0]->setPosition({position.x,                               position.y});
     m_selectionSquares[1]->setPosition({position.x + (widget->getSize().x / 2.f), position.y});
     m_selectionSquares[2]->setPosition({position.x + widget->getSize().x,         position.y});
@@ -405,6 +413,13 @@ bool Form::isChanged() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Form::focus()
+{
+    m_formWindow->setFocused(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 bool Form::hasFocus() const
 {
     return m_formWindow->isFocused();
@@ -521,7 +536,7 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vec
     for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
     {
         tgui::Widget::Ptr widget = *it;
-        if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getSize().x, widget->getSize().y}.contains(pos))
+        if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getFullSize().x, widget->getFullSize().y}.contains(pos))
         {
             if (widget->isContainer())
             {

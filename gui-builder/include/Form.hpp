@@ -36,7 +36,7 @@ class Form
 {
 public:
     Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
-    std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr);
+    std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent);
     std::string addExistingWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
@@ -56,6 +56,7 @@ public:
     sf::Vector2i getSize() const;
     void setChanged(bool changed);
     bool isChanged() const;
+    void focus();
     bool hasFocus() const;
     bool load();
     void save();
