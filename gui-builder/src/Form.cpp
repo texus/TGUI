@@ -149,30 +149,8 @@ void Form::setSelectedWidgetName(const std::string& name)
 {
     assert(m_selectedWidget != nullptr);
 
-    bool widgetFound = false;
-    auto widgets = m_widgetsContainer->getWidgets();
-    for (auto& widget : widgets)
-    {
-        if (widgetFound)
-        {
-            // These widgets appeared after the selected widgets and thus have to be displayed in front of it.
-            // By removing and re-adding the selected widget we however changed the order, which we are correcting here.
-            widget->moveToFront();
-        }
-        else
-        {
-            if (widget == m_selectedWidget->ptr)
-            {
-                // Remove the selected widget and add it again with a different name
-                tgui::Container* parent = widget->getParent();
-                parent->remove(m_selectedWidget->ptr);
-                parent->add(m_selectedWidget->ptr, name);
-
-                m_selectedWidget->name = name;
-                widgetFound = true;
-            }
-        }
-    }
+    m_selectedWidget->ptr->getParent()->setWidgetName(m_selectedWidget->ptr, name);
+    m_selectedWidget->name = name;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
