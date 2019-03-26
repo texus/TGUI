@@ -51,6 +51,17 @@ TEST_CASE("[Layouts]")
         REQUIRE(l4.getValue() == sf::Vector2f(0, 0));
         REQUIRE(l5.getValue() == sf::Vector2f(10, 50));
         REQUIRE(l6.getValue() == sf::Vector2f(0.2f, -3.5f));
+
+        REQUIRE(l1.isConstant());
+        REQUIRE(l2.isConstant());
+        REQUIRE(l3.isConstant());
+
+        REQUIRE(l4.x.isConstant());
+        REQUIRE(l4.y.isConstant());
+        REQUIRE(l5.x.isConstant());
+        REQUIRE(l5.y.isConstant());
+        REQUIRE(l6.x.isConstant());
+        REQUIRE(l6.y.isConstant());
     }
 
     SECTION("copying layouts")
@@ -131,6 +142,8 @@ TEST_CASE("[Layouts]")
             auto button1 = std::make_shared<tgui::Button>();
             button1->setSize(300, 50);
             button1->setPosition(40, 60);
+
+            REQUIRE(!bindLeft(button1).isConstant());
 
             auto button2 = std::make_shared<tgui::Button>();
             button2->setPosition(bindLeft(button1), bindTop(button1));
@@ -217,6 +230,8 @@ TEST_CASE("[Layouts]")
             Layout layout2{"50%"};
             REQUIRE(layout2.toString() == "50%");
 
+            REQUIRE(!layout.isConstant());
+
             auto button = std::make_shared<tgui::Button>();
             button->setPosition({"40%", "30%"});
             button->setSize({"20%", "10%"});
@@ -260,11 +275,11 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("max(2,1)").getValue() == 2);
 
             REQUIRE(Layout("2").toString() == "2");
-            REQUIRE(Layout("+2").toString() == "0 + 2");
-            REQUIRE(Layout("-2").toString() == "0 - 2");
+            REQUIRE(Layout("+2").toString() == "2");
+            REQUIRE(Layout("-2").toString() == "-2");
             REQUIRE(Layout("(2)").toString() == "2");
-            REQUIRE(Layout("-(-2)").toString() == "0 - (0 - 2)");
-            REQUIRE(Layout("+(+2)").toString() == "0 + (0 + 2)");
+            REQUIRE(Layout("-(-2)").toString() == "2");
+            REQUIRE(Layout("+(+2)").toString() == "2");
             REQUIRE(Layout("2 + 3").toString() == "2 + 3");
             REQUIRE(Layout("2 - 3").toString() == "2 - 3");
             REQUIRE(Layout("2 + -3").toString() == "(2 + 0) - 3");
@@ -272,6 +287,14 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("5 / 3").toString() == "5 / 3");
             REQUIRE(Layout("min(1,2)").toString() == "min(1, 2)");
             REQUIRE(Layout("max(2,1)").toString() == "max(2, 1)");
+
+            REQUIRE(!Layout("2 + 3").isConstant());
+            REQUIRE(!Layout("2 - 3").isConstant());
+            REQUIRE(!Layout("2 + -3").isConstant());
+            REQUIRE(!Layout("2 * 3").isConstant());
+            REQUIRE(!Layout("5 / 3").isConstant());
+            REQUIRE(!Layout("min(1,2)").isConstant());
+            REQUIRE(!Layout("max(2,1)").isConstant());
 
             REQUIRE(Layout("5 + 3 * 2 - 1").getValue() == 10);
             REQUIRE(Layout("5 + 3 * (2 - 1)").getValue() == 8);
@@ -284,7 +307,7 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("5 + 3 * (2 - 1)").toString() == "5 + (3 * (2 - 1))");
             REQUIRE(Layout("(5 + 3) * 2 - 1").toString() == "((5 + 3) * 2) - 1");
             REQUIRE(Layout("min(5 + min(2, 3), max(2, 1) * 3)").toString() == "min(5 + min(2, 3), max(2, 1) * 3)");
-            REQUIRE(Layout("6 * (max(2,1) + (1 - (5))) / (-3)").toString() == "(6 * (max(2, 1) + (1 - 5))) / (0 - 3)");
+            REQUIRE(Layout("6 * (max(2,1) + (1 - (5))) / (-3)").toString() == "(6 * (max(2, 1) + (1 - 5))) / -3");
 
             REQUIRE(Layout("(5 + 3) * 2 - 1").toString() == "((5 + 3) * 2) - 1");
 

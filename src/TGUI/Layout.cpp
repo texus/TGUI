@@ -262,9 +262,20 @@ namespace tgui
 
                 assert(nextOperandIt != operands.end());
 
-                (*operandIt) = Layout{operators[i],
-                                      std::make_unique<Layout>(*operandIt),
-                                      std::make_unique<Layout>(*nextOperandIt)};
+                // Handle unary plus or minus
+                if ((operandIt->m_operation == Operation::Value) && (nextOperandIt->m_operation == Operation::Value) && (operandIt->m_value == 0))
+                {
+                    if (operators[i] == Operation::Minus)
+                        nextOperandIt->m_value = -nextOperandIt->m_value;
+
+                    *operandIt = *nextOperandIt;
+                }
+                else // Normal addition or subtraction
+                {
+                    *operandIt = Layout{operators[i],
+                                        std::make_unique<Layout>(*operandIt),
+                                        std::make_unique<Layout>(*nextOperandIt)};
+                }
 
                 operands.erase(nextOperandIt);
             }
