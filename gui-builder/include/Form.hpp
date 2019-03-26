@@ -40,12 +40,15 @@ public:
     std::string addExistingWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
+    std::shared_ptr<WidgetInfo> getWidgetByName(const std::string& name) const;
     std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
+    std::shared_ptr<tgui::Group> getRootWidgetsGroup() const;
     std::shared_ptr<WidgetInfo> getSelectedWidget() const;
     void setSelectedWidgetName(const std::string& name);
     void setSelectedWidgetRenderer(const std::string& renderer);
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
+    void selectWidgetByName(const std::string& name);
     void selectParent();
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();

@@ -121,6 +121,31 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        bool selectItemImpl(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes, int& index)
+        {
+            for (auto it = nodes.begin(); it != nodes.end(); ++it)
+            {
+                TreeView::Node& node = *(*it);
+
+                if (node.expanded)
+                    index++;
+
+                if (node.text.getString() == hierarchy[parentIndex])
+                {
+                    const unsigned int nextParentIndex = parentIndex + 1;
+
+                    if (nextParentIndex == hierarchy.size())
+                        return true;
+                    else
+                        return selectItemImpl(hierarchy, parentIndex + 1, node.nodes, index);
+                }
+            }
+
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         bool removeItemImpl(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
         {
             for (auto it = nodes.begin(); it != nodes.end(); ++it)
@@ -464,6 +489,19 @@ namespace tgui
     {
         expandOrCollapseAll(m_nodes, false);
         markNodesDirty();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TreeView::selectItem(const std::vector<sf::String>& hierarchy)
+    {
+        int index = -1;
+        const bool ret = selectItemImpl(hierarchy, 0, m_nodes, index);
+
+        if (ret)
+            updateSelectedItem(index);
+
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,10 @@ private:
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
 
+    void widgetHierarchyChanged();
+    void fillWidgetHierarchyTreeRecursively(std::vector<sf::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
+    bool fillWidgetHierarchy(std::vector<sf::String>& hierarchy, tgui::Widget* widget);
+
     tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
     tgui::Button::Ptr addPropertyValueButtonMore(const std::string& property, float topPosition);
     void addPropertyValueBool(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
@@ -110,6 +114,8 @@ private:
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
+
+    tgui::TreeView::Ptr m_widgetHierarchyTree;
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
