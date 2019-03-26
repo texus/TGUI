@@ -886,8 +886,30 @@ void GuiBuilder::removeSelectedWidget()
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
-    const std::string id = tgui::to_string(selectedWidget->ptr.get());
+    // Remove the child widgets from the combo box
+    if (selectedWidget->ptr->isContainer())
+    {
+        std::vector<std::string> childIds;
+        std::stack<tgui::Container::Ptr> parentsToSearch;
+        parentsToSearch.push(selectedWidget->ptr->cast<tgui::Container>());
+        while (!parentsToSearch.empty())
+        {
+            tgui::Container::Ptr parent = parentsToSearch.top();
+            parentsToSearch.pop();
+            for (const auto& widget : parent->getWidgets())
+            {
+                childIds.push_back(tgui::to_string(widget.get()));
+                if (widget->isContainer())
+                    parentsToSearch.push(widget->cast<tgui::Container>());
+            }
+        }
 
+        for (const auto& childId : childIds)
+            m_selectedWidgetComboBox->removeItemById(childId);
+    }
+
+    // Now remove the widget itself
+    const std::string id = tgui::to_string(selectedWidget->ptr.get());
     m_selectedForm->removeWidget(id);
     m_selectedWidgetComboBox->removeItemById(id);
     m_selectedWidgetComboBox->setSelectedItemById("form");

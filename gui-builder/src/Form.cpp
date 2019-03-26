@@ -107,8 +107,31 @@ void Form::removeWidget(const std::string& id)
 {
     const auto widget = m_widgets[id];
     assert(widget != nullptr);
-    widget->ptr->getParent()->remove(widget->ptr);
 
+    // Remove the child widgets
+    if (widget->ptr->isContainer())
+    {
+        std::vector<std::string> childIds;
+        std::stack<tgui::Container::Ptr> parentsToSearch;
+        parentsToSearch.push(widget->ptr->cast<tgui::Container>());
+        while (!parentsToSearch.empty())
+        {
+            tgui::Container::Ptr parent = parentsToSearch.top();
+            parentsToSearch.pop();
+            for (const auto& childWidget : parent->getWidgets())
+            {
+                childIds.push_back(tgui::to_string(childWidget.get()));
+                if (childWidget->isContainer())
+                    parentsToSearch.push(childWidget->cast<tgui::Container>());
+            }
+        }
+
+        for (const auto& childId : childIds)
+            m_widgets.erase(childId);
+    }
+
+    // Now remove the widget itself
+    widget->ptr->getParent()->remove(widget->ptr);
     m_widgets.erase(id);
     setChanged(true);
 }
