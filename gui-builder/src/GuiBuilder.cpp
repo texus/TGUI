@@ -470,6 +470,8 @@ void GuiBuilder::widgetSelected(tgui::Widget::Ptr widget)
         m_selectedWidgetComboBox->setSelectedItemById(tgui::to_string(widget.get()));
     else
         m_selectedWidgetComboBox->setSelectedItemById("form");
+
+    updateSelectedWidgetHierarchy();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -929,6 +931,8 @@ void GuiBuilder::removeSelectedWidget()
     m_selectedForm->removeWidget(id);
     m_selectedWidgetComboBox->removeItemById(id);
     m_selectedWidgetComboBox->setSelectedItemById("form");
+
+    widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1853,6 +1857,46 @@ void GuiBuilder::menuBarCallbackDeleteWidget()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::updateSelectedWidgetHierarchy()
+{
+    m_widgetHierarchyTree->onItemSelect.setEnabled(false);
+
+    m_widgetHierarchyTree->deselectItem();
+    if (m_selectedForm->getSelectedWidget())
+    {
+        std::stack<std::vector<tgui::TreeView::ConstNode>> treeNodes;
+        for (const auto& node : m_widgetHierarchyTree->getNodes())
+            treeNodes.push({node});
+        while (!treeNodes.empty())
+        {
+            std::vector<tgui::TreeView::ConstNode> nodeList = treeNodes.top();
+            treeNodes.pop();
+
+            if (nodeList.back().text == m_selectedForm->getSelectedWidget()->name)
+            {
+                std::vector<sf::String> hierarchy;
+                for (const auto& node : nodeList)
+                    hierarchy.push_back(node.text);
+
+                m_widgetHierarchyTree->selectItem(hierarchy);
+                break;
+            }
+
+            for (const auto& node : nodeList.back().nodes)
+            {
+                treeNodes.push(nodeList);
+                treeNodes.top().push_back(node);
+            }
+        }
+    }
+    else
+        m_widgetHierarchyTree->selectItem({m_selectedForm->getFilename()});
+
+    m_widgetHierarchyTree->onItemSelect.setEnabled(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<sf::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget)
 {
     m_widgetHierarchyTree->addItem(hierarchy);
@@ -1880,6 +1924,8 @@ void GuiBuilder::widgetHierarchyChanged()
 
     std::vector<sf::String> widgetHiearchy{m_selectedForm->getFilename()};
     fillWidgetHierarchyTreeRecursively(widgetHiearchy, m_selectedForm->getRootWidgetsGroup());
+
+    updateSelectedWidgetHierarchy();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

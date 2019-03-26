@@ -74,6 +74,7 @@ private:
     void pasteWidgetFromInternalClipboard();
 
     void widgetHierarchyChanged();
+    void updateSelectedWidgetHierarchy();
     void fillWidgetHierarchyTreeRecursively(std::vector<sf::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
     bool fillWidgetHierarchy(std::vector<sf::String>& hierarchy, tgui::Widget* widget);
 
