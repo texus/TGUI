@@ -121,31 +121,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool selectItemImpl(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes, int& index)
-        {
-            for (auto it = nodes.begin(); it != nodes.end(); ++it)
-            {
-                TreeView::Node& node = *(*it);
-
-                if (node.expanded)
-                    index++;
-
-                if (node.text.getString() == hierarchy[parentIndex])
-                {
-                    const unsigned int nextParentIndex = parentIndex + 1;
-
-                    if (nextParentIndex == hierarchy.size())
-                        return true;
-                    else
-                        return selectItemImpl(hierarchy, parentIndex + 1, node.nodes, index);
-                }
-            }
-
-            return false;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         bool removeItemImpl(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
         {
             for (auto it = nodes.begin(); it != nodes.end(); ++it)
@@ -495,13 +470,27 @@ namespace tgui
 
     bool TreeView::selectItem(const std::vector<sf::String>& hierarchy)
     {
-        int index = -1;
-        const bool ret = selectItemImpl(hierarchy, 0, m_nodes, index);
+        // Make sure the parent of the item we are selecting is expanded
+        if (hierarchy.size() >= 2)
+        {
+            if (!expandOrCollapse(std::vector<sf::String>(hierarchy.begin(), hierarchy.end()-1), true))
+                return false;
+        }
 
-        if (ret)
-            updateSelectedItem(index);
+        auto* node = findNode(m_nodes, hierarchy, 0);
+        if (!node)
+            return false;
 
-        return ret;
+        for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+        {
+            if (m_visibleNodes[i].get() == node)
+            {
+                updateSelectedItem(i);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1299,22 +1288,55 @@ namespace tgui
             if (!node)
                 return false;
 
-            node->expanded = expand;
+            bool nodeChanged = false;
+            if (expand)
+            {
+                // When expanding, also expand all parents
+                auto* nodeToExpand = node;
+                while (nodeToExpand)
+                {
+                    if (nodeToExpand->expanded != expand)
+                    {
+                        nodeToExpand->expanded = expand;
+                        nodeChanged = true;
+                    }
+
+                    nodeToExpand = nodeToExpand->parent;
+                }
+            }
+            else // Collapsing
+            {
+                if (node->expanded != expand)
+                {
+                    node->expanded = expand;
+                    nodeChanged = true;
+                }
+            }
+
+
+            if (nodeChanged)
+                markNodesDirty();
+
+            return true;
         }
         else // Root node
         {
             for (auto& node : m_nodes)
             {
-                if (node->text.getString() == hierarchy.back())
+                if (node->text.getString() != hierarchy.back())
+                    continue;
+
+                if (node->expanded != expand)
                 {
                     node->expanded = expand;
-                    break;
+                    markNodesDirty();
                 }
+
+                return true;
             }
         }
 
-        markNodesDirty();
-        return true;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@ TGUI 0.8.5  (TBD)
 - Support typing tabs in TextBox (if tab usage is disabled in gui)
 - Added function to signals to temporarily disable callbacks
 - ChildWindow can now have a different border color in focused state
+- Added function to select item in TreeView
 - EditBox::setInputValidator now returns false when regex was invalid
 - Let ComboBox send the ItemSelected event only after the mouse is released
 - TitleBarHeight property of default renderer was ignored in ChildWindow

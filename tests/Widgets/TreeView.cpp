@@ -176,6 +176,42 @@ TEST_CASE("[TreeView]")
         REQUIRE(treeView->getNodes()[0].expanded);
         REQUIRE(treeView->getNodes()[1].expanded);
         REQUIRE(treeView->getNodes()[1].nodes[0].expanded);
+
+        // Expanding child will expand all parents
+        treeView->collapseAll();
+        treeView->expand({"Vehicles", "Parts", "Wheel"});
+        REQUIRE(!treeView->getNodes()[0].expanded);
+        REQUIRE(treeView->getNodes()[1].expanded);
+        REQUIRE(treeView->getNodes()[1].nodes[0].expanded);
+        REQUIRE(treeView->getNodes()[1].nodes[0].nodes[0].expanded);
+    }
+
+    SECTION("Selecting items")
+    {
+        treeView->addItem({"Smilies", "Neither"});
+        treeView->addItem({"Vehicles", "Parts", "Wheel"});
+
+        REQUIRE(treeView->getSelectedItem().empty());
+
+        REQUIRE(treeView->selectItem({"Vehicles"}));
+        REQUIRE(treeView->getSelectedItem() == std::vector<sf::String>{"Vehicles"});
+
+        REQUIRE(!treeView->selectItem({"Unexisting"}));
+        REQUIRE(treeView->getSelectedItem() == std::vector<sf::String>{"Vehicles"});
+
+        REQUIRE(treeView->selectItem({"Smilies", "Neither"}));
+        REQUIRE(treeView->getSelectedItem() == std::vector<sf::String>{"Smilies", "Neither"});
+
+        REQUIRE(!treeView->selectItem({"Vehicles", "Parts", "Unexisting"}));
+        REQUIRE(treeView->getSelectedItem() == std::vector<sf::String>{"Smilies", "Neither"});
+
+        treeView->collapseAll();
+        REQUIRE(treeView->selectItem({"Vehicles", "Parts", "Wheel"}));
+        REQUIRE(treeView->getSelectedItem() == std::vector<sf::String>{"Vehicles", "Parts", "Wheel"});
+        REQUIRE(treeView->selectItem({"Vehicles", "Parts", "Wheel"}));
+
+        treeView->deselectItem();
+        REQUIRE(treeView->getSelectedItem().empty());
     }
 
     SECTION("ItemHeight")
