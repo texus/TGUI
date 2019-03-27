@@ -438,12 +438,12 @@ namespace tgui
         // Expand the region if the child window is resizable (to make the borders easier to click on)
         if (m_resizable)
         {
-            region.left -= std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getLeft());
-            region.top -= std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getTop());
-            region.width += std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getLeft())
-                            + std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getRight());
-            region.height += std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getTop())
-                             + std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getBottom());
+            region.left -= std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getLeft());
+            region.top -= std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getTop());
+            region.width += std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getLeft())
+                            + std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getRight());
+            region.height += std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getTop())
+                             + std::max(0.f, m_minimumResizableBorderWidthCached - m_bordersCached.getBottom());
         }
 
         if (region.contains(pos))
@@ -790,7 +790,7 @@ namespace tgui
         }
         else if (property == "minimumresizableborderwidth")
         {
-            m_MinimumResizableBorderWidthCached = getSharedRenderer()->getMinimumResizableBorderWidth();
+            m_minimumResizableBorderWidthCached = getSharedRenderer()->getMinimumResizableBorderWidth();
         }
         else if (property == "showtextontitlebuttons")
         {

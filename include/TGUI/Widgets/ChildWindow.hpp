@@ -517,7 +517,7 @@ namespace tgui
         float   m_borderBelowTitleBarCached = 0;
         float   m_distanceToSideCached = 0;
         float   m_paddingBetweenButtonsCached = 0;
-        float   m_MinimumResizableBorderWidthCached = 5;
+        float   m_minimumResizableBorderWidthCached = 5;
         bool    m_showTextOnTitleButtonsCached = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
