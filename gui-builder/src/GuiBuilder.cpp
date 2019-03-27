@@ -601,14 +601,9 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
     m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
 
-    // TODO: Move TreeView into EditingScreen.txt
-    auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
-    m_widgetHierarchyTree = tgui::TreeView::create();
-    hierarchyWindow->add(m_widgetHierarchyTree, "WidgetsTree");
-    m_widgetHierarchyTree->setSize(tgui::bindWidth(hierarchyWindow), tgui::bindHeight(hierarchyWindow));
-
-    m_widgetHierarchyTree->connect("ItemSelected", [this](std::string name)
-    {
+    const auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
+    m_widgetHierarchyTree = hierarchyWindow->get<tgui::TreeView>("WidgetsTree");
+    m_widgetHierarchyTree->connect("ItemSelected", [this](std::string name){
         if (!name.empty())
             m_selectedForm->selectWidgetByName(name);
     });

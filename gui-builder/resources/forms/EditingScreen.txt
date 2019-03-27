@@ -124,6 +124,25 @@ ChildWindow.HierarchyWindow {
         titlebarcolor = White;
         titlecolor = Black;
     }
+
+    TreeView.WidgetsTree {
+        ItemHeight = 20;
+        Size = (100%, 100%);
+        TextSize = 13;
+
+        Renderer {
+            backgroundcolor = #F5F5F5;
+            backgroundcolorhover = white;
+            bordercolor = black;
+            borders = (0, 0, 0, 0);
+            padding = (0, 0, 0, 0);
+            selectedbackgroundcolor = #006EFF;
+            selectedbackgroundcolorhover = #1E96FF;
+            selectedtextcolor = white;
+            textcolor = #3C3C3C;
+            textcolorhover = black;
+        }
+    }
 }
 
 ChildWindow.Form {
