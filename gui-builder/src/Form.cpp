@@ -308,13 +308,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     if (keyEvent.shift && keyEvent.control)
     {
         if (keyEvent.code == sf::Keyboard::Left)
-            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
         else if (keyEvent.code == sf::Keyboard::Right)
-            selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
         else if (keyEvent.code == sf::Keyboard::Up)
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - MOVE_STEP});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
         else if (keyEvent.code == sf::Keyboard::Down)
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + MOVE_STEP});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -323,13 +323,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     else if (keyEvent.shift)
     {
         if (keyEvent.code == sf::Keyboard::Left)
-            selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSize().y});
+            selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSizeLayout().y});
         else if (keyEvent.code == sf::Keyboard::Right)
-            selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSize().y});
+            selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
         else if (keyEvent.code == sf::Keyboard::Up)
-            selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y - 1});
+            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1});
         else if (keyEvent.code == sf::Keyboard::Down)
-            selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y + 1});
+            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -338,13 +338,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     else if (keyEvent.control)
     {
         if (keyEvent.code == sf::Keyboard::Left)
-            selectedWidget->setPosition({selectedWidget->getPosition().x - 1, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x - 1, selectedWidget->getPositionLayout().y});
         else if (keyEvent.code == sf::Keyboard::Right)
-            selectedWidget->setPosition({selectedWidget->getPosition().x + 1, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x + 1, selectedWidget->getPositionLayout().y});
         else if (keyEvent.code == sf::Keyboard::Up)
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - 1});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - 1});
         else if (keyEvent.code == sf::Keyboard::Down)
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + 1});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + 1});
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -624,28 +624,28 @@ void Form::onDrag(sf::Vector2i mousePos)
     {
         while (pos.x - m_draggingPos.x >= MOVE_STEP)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
             m_draggingPos.x += MOVE_STEP;
             updated = true;
         }
 
         while (m_draggingPos.x - pos.x >= MOVE_STEP)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
             m_draggingPos.x -= MOVE_STEP;
             updated = true;
         }
 
         while (pos.y - m_draggingPos.y >= MOVE_STEP)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + MOVE_STEP});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
             m_draggingPos.y += MOVE_STEP;
             updated = true;
         }
 
         while (m_draggingPos.y - pos.y >= MOVE_STEP)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - MOVE_STEP});
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
             m_draggingPos.y -= MOVE_STEP;
             updated = true;
         }
@@ -657,16 +657,16 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.y - m_draggingPos.y >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + MOVE_STEP});
-                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y - MOVE_STEP});
+                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - MOVE_STEP});
                 m_draggingPos.y += MOVE_STEP;
                 updated = true;
             }
 
             while (m_draggingPos.y - pos.y >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - MOVE_STEP});
-                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y + MOVE_STEP});
+                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + MOVE_STEP});
                 m_draggingPos.y -= MOVE_STEP;
                 updated = true;
             }
@@ -675,14 +675,14 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
-                selectedWidget->setSize({selectedWidget->getSize().x + MOVE_STEP, selectedWidget->getSize().y});
+                selectedWidget->setSize({selectedWidget->getSize().x + MOVE_STEP, selectedWidget->getSizeLayout().y});
                 m_draggingPos.x += MOVE_STEP;
                 updated = true;
             }
 
             while (m_draggingPos.x - pos.x >= MOVE_STEP)
             {
-                selectedWidget->setSize({selectedWidget->getSize().x - MOVE_STEP, selectedWidget->getSize().y});
+                selectedWidget->setSize({selectedWidget->getSize().x - MOVE_STEP, selectedWidget->getSizeLayout().y});
                 m_draggingPos.x -= MOVE_STEP;
                 updated = true;
             }
@@ -691,14 +691,14 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.y - m_draggingPos.y >= MOVE_STEP)
             {
-                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y + MOVE_STEP});
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + MOVE_STEP});
                 m_draggingPos.y += MOVE_STEP;
                 updated = true;
             }
 
             while (m_draggingPos.y - pos.y >= MOVE_STEP)
             {
-                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y - MOVE_STEP});
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - MOVE_STEP});
                 m_draggingPos.y -= MOVE_STEP;
                 updated = true;
             }
@@ -707,16 +707,16 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPosition().y});
-                selectedWidget->setSize({selectedWidget->getSize().x - MOVE_STEP, selectedWidget->getSize().y});
+                selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
+                selectedWidget->setSize({selectedWidget->getSize().x - MOVE_STEP, selectedWidget->getSizeLayout().y});
                 m_draggingPos.x += MOVE_STEP;
                 updated = true;
             }
 
             while (m_draggingPos.x - pos.x >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPosition().y});
-                selectedWidget->setSize({selectedWidget->getSize().x + MOVE_STEP, selectedWidget->getSize().y});
+                selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
+                selectedWidget->setSize({selectedWidget->getSize().x + MOVE_STEP, selectedWidget->getSizeLayout().y});
                 m_draggingPos.x -= MOVE_STEP;
                 updated = true;
             }
