@@ -26,6 +26,7 @@
 #include "Form.hpp"
 #include "GuiBuilder.hpp"
 
+#include <stack>
 #include <cassert>
 #include <cmath>
 

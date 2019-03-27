@@ -51,6 +51,7 @@
 #include <string>
 #include <cctype> // isdigit
 #include <cmath> // max
+#include <stack>
 #include <map>
 
 #ifdef SFML_SYSTEM_WINDOWS
