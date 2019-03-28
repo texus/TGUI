@@ -473,7 +473,12 @@ namespace tgui
                 for (std::size_t i = 0; i < node->children.size(); ++i)
                 {
                     for (const auto& line : convertNodesToLines(node->children[i]))
-                        output.emplace_back("    " + line);
+                    {
+                        if (!line.empty())
+                            output.emplace_back("    " + line);
+                        else
+                            output.emplace_back("");
+                    }
 
                     if (i < node->children.size() - 1)
                         output.emplace_back("");
