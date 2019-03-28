@@ -368,6 +368,10 @@ namespace tgui
         if (m_textSize > 0)
             node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
 
+        // Don't store size when auto-sizing
+        if (m_autoSize)
+            node->propertyValuePairs.erase("Size");
+
         return node;
     }
 
