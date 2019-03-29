@@ -37,7 +37,6 @@ class Form
 public:
     Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
     std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget = true);
-    std::string addExistingWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
     std::shared_ptr<WidgetInfo> getWidgetByName(const std::string& name) const;
@@ -84,7 +83,6 @@ private:
     std::shared_ptr<WidgetInfo> m_selectedWidget = nullptr;
     std::array<tgui::Button::Ptr, 8> m_selectionSquares;
     std::map<std::string, std::shared_ptr<WidgetInfo>> m_widgets;
-    unsigned int m_idCounter = 0;
     bool m_changed = false;
     bool m_draggingWidget = false;
     tgui::Button::Ptr m_draggingSelectionSquare;

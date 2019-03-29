@@ -73,7 +73,26 @@ std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, b
     const std::string id = tgui::to_string(widget.get());
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
 
-    const std::string name = "Widget" + tgui::to_string(++m_idCounter);
+    const std::string widgetType = widget->getWidgetType();
+    bool foundAvailableName = false;
+    unsigned int count = 0;
+    std::string name;
+    while (!foundAvailableName)
+    {
+        name = widgetType + tgui::to_string(++count);
+
+        foundAvailableName = true;
+        for (const auto& pair : m_widgets)
+        {
+            const auto& widgetInfo = pair.second;
+            if (widgetInfo && (widgetInfo->name == name))
+            {
+                foundAvailableName = false;
+                break;
+            }
+        }
+    }
+
     m_widgets[id]->name = name;
 
     if (parent)
@@ -83,20 +102,6 @@ std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, b
 
     if (selectNewWidget)
         selectWidget(m_widgets[id]);
-
-    setChanged(true);
-    return name;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-std::string Form::addExistingWidget(tgui::Widget::Ptr widget)
-{
-    const std::string id = tgui::to_string(widget.get());
-    m_widgets[id] = std::make_shared<WidgetInfo>(widget);
-
-    const std::string name = "Widget" + tgui::to_string(++m_idCounter);
-    m_widgets[id]->name = name;
 
     setChanged(true);
     return name;
@@ -565,14 +570,6 @@ void Form::importLoadedWidgets(tgui::Container::Ptr parent)
         m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
         m_widgets[id]->name = widgetNames[i];
         m_widgets[id]->theme = "Custom";
-
-        // Keep track of the highest id found in widgets with default names, to avoid creating new widgets with confusing names
-        if ((widgetNames[i].getSize() >= 7) && (widgetNames[i].substring(0, 6) == "Widget"))
-        {
-            const std::string potentialNumber = widgetNames[i].substring(6);
-            if (std::all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit))
-                m_idCounter = std::max(m_idCounter, static_cast<unsigned int>(tgui::stoi(potentialNumber)));
-        }
 
         if (widgets[i]->isContainer())
             importLoadedWidgets(std::static_pointer_cast<tgui::Container>(widgets[i]));
