@@ -38,7 +38,7 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
     m_guiBuilder      {guiBuilder},
     m_formWindow      {formWindow},
     m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
-    m_widgetsContainer{m_scrollablePanel->get<tgui::Group>("WidgetContainer")},
+    m_widgetsContainer{m_scrollablePanel->get<tgui::Panel>("WidgetContainer")},
     m_filename        {filename}
 {
     m_widgets["form"] = nullptr;
@@ -294,6 +294,23 @@ void Form::mouseReleased()
 {
     m_draggingWidget = false;
     m_draggingSelectionSquare = nullptr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool Form::rightMouseClick(sf::Vector2i pos)
+{
+    sf::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
+    if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getSize()}.contains(relativeWindowPos))
+        return false;
+
+    const sf::Vector2f relativePanelPos{
+        (pos.x - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().x),
+        (pos.y - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().y)};
+
+    onFormMousePress(relativePanelPos);
+    mouseReleased();
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -52,6 +52,7 @@ public:
     void selectParent();
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
+    bool rightMouseClick(sf::Vector2i pos);
     void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);
     void setFilename(const sf::String& filename);
     sf::String getFilename() const;

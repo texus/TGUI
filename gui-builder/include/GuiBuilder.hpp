@@ -69,6 +69,7 @@ private:
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
+    void removePopupMenu();
     void createNewForm(const sf::String& filename);
     bool loadForm(const sf::String& filename);
     tgui::ChildWindow::Ptr openWindowWithFocus();
@@ -122,8 +123,8 @@ private:
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
-
     tgui::TreeView::Ptr m_widgetHierarchyTree;
+    tgui::ListBox::Ptr m_popupMenu;
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
