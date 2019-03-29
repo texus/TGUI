@@ -1246,10 +1246,11 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
 
     // If widget still has same parent then move the widget a bit down and to the right to visually show that the new widget has been created.
     // If the widget lies outside its parent then move its position so that it becomes visible.
+    bool originalWidgetMovedSinceCopy = (widget->getPosition() != m_copiedWidgets[0].originalWidget->getPosition());
     if (widget->getPositionLayout().x.isConstant())
     {
         float newX = widget->getPosition().x;
-        if (widget->getParent() == m_copiedWidgets[0].originalWidget->getParent())
+        if ((widget->getParent() == m_copiedWidgets[0].originalWidget->getParent()) && !originalWidgetMovedSinceCopy)
             newX += 10;
         if (newX + (widget->getSize().x / 2.f) > widget->getParent()->getSize().x)
             newX = widget->getParent()->getSize().x -  (widget->getSize().x / 2.f);
@@ -1259,7 +1260,7 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
     if (widget->getPositionLayout().y.isConstant())
     {
         float newY = widget->getPosition().y;
-        if (widget->getParent() == m_copiedWidgets[0].originalWidget->getParent())
+        if ((widget->getParent() == m_copiedWidgets[0].originalWidget->getParent()) && !originalWidgetMovedSinceCopy)
             newY += 10;
         if (newY + (widget->getSize().y / 2.f) > widget->getParent()->getSize().y)
             newY = widget->getParent()->getSize().y -  (widget->getSize().y / 2.f);
