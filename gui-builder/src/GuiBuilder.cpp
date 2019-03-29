@@ -2076,6 +2076,8 @@ void GuiBuilder::menuBarCallbackBringWidgetToFront()
 {
     m_selectedForm->getSelectedWidget()->ptr->moveToFront();
     m_selectedForm->setChanged(true);
+
+    widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2084,6 +2086,8 @@ void GuiBuilder::menuBarCallbackSendWidgetToBack()
 {
     m_selectedForm->getSelectedWidget()->ptr->moveToBack();
     m_selectedForm->setChanged(true);
+
+    widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
