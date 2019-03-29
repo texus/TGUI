@@ -666,8 +666,7 @@ void GuiBuilder::loadStartScreen()
     auto panel = m_gui.get<tgui::Panel>("MainPanel");
     panel->get("PnlNewForm")->connect("Clicked", [=]{
         showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
-            loadEditingScreen(filename);
-            m_selectedForm->setChanged(true);
+            createNewForm(filename);
         });
     });
     panel->get("PnlLoadForm")->connect("Clicked", [=]{
@@ -1071,6 +1070,38 @@ void GuiBuilder::removeSelectedWidget()
     m_selectedWidgetComboBox->setSelectedItemById("form");
 
     widgetHierarchyChanged();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::createNewForm(const sf::String& filename)
+{
+    if (checkIfFileExists(filename))
+    {
+        auto panel = tgui::Panel::create({"100%", "100%"});
+        panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+        m_gui.add(panel);
+
+        auto messageBox = tgui::MessageBox::create("Create form", "The form already exists, are you certain you want to overwrite it?", {"Yes", "No"});
+        messageBox->setPosition("(&.size - size) / 2");
+        m_gui.add(messageBox);
+
+        messageBox->connect("ButtonPressed", [=](const sf::String& button){
+            m_gui.remove(panel);
+            m_gui.remove(messageBox);
+
+            if (button == "Yes")
+            {
+                loadEditingScreen(filename);
+                m_selectedForm->setChanged(true);
+            }
+        });
+    }
+    else // File didn't exist yet, so we can just create it
+    {
+        loadEditingScreen(filename);
+        m_selectedForm->setChanged(true);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1860,8 +1891,7 @@ void GuiBuilder::menuBarCallbackNewForm()
     loadStartScreen();
 
     showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
-        loadEditingScreen(filename);
-        m_selectedForm->setChanged(true);
+        createNewForm(filename);
     });
 }
 

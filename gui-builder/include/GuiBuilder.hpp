@@ -69,6 +69,7 @@ private:
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
+    void createNewForm(const sf::String& filename);
     bool loadForm(const sf::String& filename);
     tgui::ChildWindow::Ptr openWindowWithFocus();
 

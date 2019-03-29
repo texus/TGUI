@@ -1,6 +1,7 @@
 TGUI 0.8.5  (TBD)
 -----------------
 
+- Big improvements to Gui Builder
 - Svg images are now supported
 - ComboBox can now contain some text when no item is selected
 - Added function to ComboBox to disallow changing the selected item by scrolling the mouse wheel
