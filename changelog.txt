@@ -9,6 +9,7 @@ TGUI 0.8.5  (TBD)
 - Added functions to ListView to change existing items
 - Support typing tabs in TextBox (if tab usage is disabled in gui)
 - Added function to signals to temporarily disable callbacks
+- Added addition and subtraction operators to Outline
 - ChildWindow can now have a different border color in focused state
 - Added function to select item in TreeView
 - EditBox::setInputValidator now returns false when regex was invalid

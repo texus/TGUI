@@ -130,6 +130,53 @@ TEST_CASE("[Outline]")
             REQUIRE(!(outline1 != outline4));
             REQUIRE(!(outline4 != outline4));
         }
+
+        SECTION("+")
+        {
+            REQUIRE(outline1 + outline3 == tgui::Outline{7, 9, 11, 13});
+            REQUIRE(outline4 + outline4 == tgui::Outline{2, 4, 6, 8});
+
+            REQUIRE(outline1 + outline3 == outline3 + outline1);
+        }
+
+        SECTION("-")
+        {
+            REQUIRE(outline1 - outline3 == tgui::Outline{-5, -5, -5, -5});
+            REQUIRE(outline3 - outline1 == tgui::Outline{5, 5, 5, 5});
+            REQUIRE(outline4 - outline4 == tgui::Outline{0, 0, 0, 0});
+        }
+
+        SECTION("+=")
+        {
+            outline1 += outline3;
+            REQUIRE(outline1 == tgui::Outline{7, 9, 11, 13});
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#endif
+            outline4 += outline4;
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
+            REQUIRE(outline4 == tgui::Outline{2, 4, 6, 8});
+        }
+
+        SECTION("-=")
+        {
+            outline1 -= outline3;
+            REQUIRE(outline1 == tgui::Outline{-5, -5, -5, -5});
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#endif
+            outline4 -= outline4;
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
+            REQUIRE(outline4 == tgui::Outline{0, 0, 0, 0});
+        }
     }
 
     SECTION("toString")

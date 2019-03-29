@@ -191,6 +191,61 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds two outlines together (e.g. to add padding and borders)
+        ///
+        /// @param other  The outline to add together with this instance
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR Outline operator+(const Outline& other) const
+        {
+            return {getLeft() + other.getLeft(),
+                    getTop() + other.getTop(),
+                    getRight() + other.getRight(),
+                    getBottom() + other.getBottom()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Subtracts two outlines from each other
+        ///
+        /// @param other  The outline to subtract from this instance
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR Outline operator-(const Outline& other) const
+        {
+            return {getLeft() - other.getLeft(),
+                    getTop() - other.getTop(),
+                    getRight() - other.getRight(),
+                    getBottom() - other.getBottom()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds an outline to this instance (e.g. to add padding and borders)
+        ///
+        /// @param other  The outline to add to this instance
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR Outline& operator+=(const Outline& other)
+        {
+            m_left = getLeft() + other.getLeft();
+            m_top = getTop() + other.getTop();
+            m_right = getRight() + other.getRight();
+            m_bottom = getBottom() + other.getBottom();
+            return *this;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Subtracts an outline from this instance
+        ///
+        /// @param other  The outline to subtract from this instance
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR Outline& operator-=(const Outline& other)
+        {
+            m_left = getLeft() - other.getLeft();
+            m_top = getTop() - other.getTop();
+            m_right = getRight() - other.getRight();
+            m_bottom = getBottom() - other.getBottom();
+            return *this;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Update the size to which the outline depends on if its values are relative
         ///
