@@ -54,6 +54,11 @@
 #include <stack>
 #include <map>
 
+#ifdef TGUI_USE_FILESYSTEM
+  // Only tested with GCC, requires c++17 (and GCC 9 unless -lstdc++fs is added to linker)
+  #include <filesystem>
+#endif
+
 #ifdef SFML_SYSTEM_WINDOWS
     #include <direct.h> // _getcwd
     #define getcwd _getcwd
@@ -69,6 +74,15 @@ static const float EDIT_BOX_HEIGHT = 24;
 
 namespace
 {
+    bool checkIfFileExists(const sf::String& filename)
+    {
+#ifdef TGUI_USE_FILESYSTEM
+        return std::filesystem::exists((char32_t*)filename.toUtf32().data());
+#else
+        return static_cast<bool>(std::ifstream(filename.toAnsiString()));
+#endif
+    }
+
     bool compareRenderers(std::map<std::string, tgui::ObjectConverter> themePropertyValuePairs, std::map<std::string, tgui::ObjectConverter> widgetPropertyValuePairs)
     {
         for (auto themeIt = themePropertyValuePairs.begin(); themeIt != themePropertyValuePairs.end(); ++themeIt)
@@ -226,28 +240,6 @@ GuiBuilder::GuiBuilder() :
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
 
-    std::ifstream stateInputFile{"GuiBuilderState.txt"};
-    if (stateInputFile.is_open())
-    {
-        std::stringstream stream;
-        stream << stateInputFile.rdbuf();
-
-        const auto node = tgui::DataIO::parse(stream);
-        m_lastOpenedFile = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["lastopenedfile"]->value).getString();
-        for (const auto& theme : node->propertyValuePairs["themes"]->valueList)
-        {
-            const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
-            m_themes[deserializedTheme] = {deserializedTheme};
-        }
-    }
-    else
-    {
-        m_lastOpenedFile = "form.txt";
-        m_themes["themes/Black.txt"] = {"themes/Black.txt"};
-        m_themes["themes/BabyBlue.txt"] = {"themes/BabyBlue.txt"};
-        m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
-    }
-
     sf::Image icon;
     if (icon.loadFromFile("resources/Icon.png"))
         m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -259,32 +251,7 @@ GuiBuilder::GuiBuilder() :
 
 GuiBuilder::~GuiBuilder()
 {
-    auto node = std::make_unique<tgui::DataIO::Node>();
-    node->propertyValuePairs["LastOpenedFile"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Serializer::serialize(m_lastOpenedFile));
-
-    if (m_themes.size() > 1)
-    {
-        auto themeIt = m_themes.begin();
-        if (themeIt->first == "White")
-            themeIt++;
-
-        std::string themeList = "[" + tgui::Serializer::serialize(themeIt->first);
-        for (; themeIt != m_themes.end(); ++themeIt)
-        {
-            if (themeIt->first != "White")
-                themeList += ", " + tgui::Serializer::serialize(themeIt->first);
-        }
-
-        themeList += "]";
-        node->propertyValuePairs["Themes"] = std::make_unique<tgui::DataIO::ValueNode>(themeList);
-    }
-
-    std::stringstream stream;
-    tgui::DataIO::emit(node, stream);
-
-    std::ofstream stateOutputFile{"GuiBuilderState.txt"};
-    if (stateOutputFile.is_open())
-        stateOutputFile << stream.rdbuf();
+    saveGuiBuilderState();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,6 +338,109 @@ void GuiBuilder::mainLoop()
             m_selectedForm->drawExtra(m_window);
 
         m_window.display();
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool GuiBuilder::loadGuiBuilderState()
+{
+    m_recentFiles.clear();
+
+    std::ifstream stateInputFile{"GuiBuilderState.txt"};
+    if (!stateInputFile.is_open())
+        return false;
+
+    std::stringstream stream;
+    stream << stateInputFile.rdbuf();
+
+    const auto node = tgui::DataIO::parse(stream);
+
+    if (node->propertyValuePairs["recentfiles"])
+    {
+        for (const auto& value : node->propertyValuePairs["recentfiles"]->valueList)
+        {
+            sf::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
+            if (checkIfFileExists(filename))
+            {
+                m_recentFiles.push_back(filename);
+                if (m_recentFiles.size() == 5)
+                    break;
+            }
+        }
+    }
+
+    if (node->propertyValuePairs["themes"])
+    {
+        for (const auto& theme : node->propertyValuePairs["themes"]->valueList)
+        {
+            const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
+            m_themes[deserializedTheme] = {deserializedTheme};
+        }
+    }
+
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::saveGuiBuilderState()
+{
+    auto node = std::make_unique<tgui::DataIO::Node>();
+
+    // Save the list of recent opened forms
+    std::string recentFileList;
+    for (auto fileIt = m_recentFiles.begin(); fileIt != m_recentFiles.end(); ++fileIt)
+    {
+        if (!checkIfFileExists(*fileIt))
+            continue;
+
+        if (recentFileList.empty())
+            recentFileList = "[" + tgui::Serializer::serialize(*fileIt);
+        else
+            recentFileList += ", " + tgui::Serializer::serialize(*fileIt);
+    }
+    if (!recentFileList.empty())
+    {
+        recentFileList += "]";
+        node->propertyValuePairs["RecentFiles"] = std::make_unique<tgui::DataIO::ValueNode>(recentFileList);
+    }
+
+    // Save the list of themes
+    if (m_themes.size() > 1)
+    {
+        auto themeIt = m_themes.begin();
+        if (themeIt->first == "White")
+            themeIt++;
+
+        std::string themeList = "[" + tgui::Serializer::serialize(themeIt->first);
+        for (; themeIt != m_themes.end(); ++themeIt)
+        {
+            if (themeIt->first != "White")
+                themeList += ", " + tgui::Serializer::serialize(themeIt->first);
+        }
+
+        themeList += "]";
+        node->propertyValuePairs["Themes"] = std::make_unique<tgui::DataIO::ValueNode>(themeList);
+    }
+
+    std::stringstream stream;
+    tgui::DataIO::emit(node, stream);
+
+    std::ofstream stateOutputFile{"GuiBuilderState.txt"};
+    if (stateOutputFile.is_open())
+        stateOutputFile << stream.rdbuf();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::formSaved(const sf::String& filename)
+{
+    if (m_recentFiles.empty() || (m_recentFiles.front() != filename))
+    {
+        m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const sf::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
+        m_recentFiles.insert(m_recentFiles.begin(), filename);
+        saveGuiBuilderState();
     }
 }
 
@@ -546,6 +616,34 @@ void GuiBuilder::closeForm(Form* form)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::showLoadFileWindow(const sf::String& title, const sf::String& loadButtonCaption, const sf::String& defaultFilename, const std::function<void(const sf::String&)>& onLoad)
+{
+    auto filenameWindow = openWindowWithFocus();
+    filenameWindow->setTitle(title);
+    filenameWindow->setSize(400, 100);
+    filenameWindow->loadWidgetsFromFile("resources/forms/LoadFile.txt");
+
+    auto editBoxFilename = filenameWindow->get<tgui::EditBox>("EditFilename");
+    auto buttonLoad = filenameWindow->get<tgui::Button>("BtnLoad");
+    auto buttonCancelLoadingImage = filenameWindow->get<tgui::Button>("BtnCancel");
+
+    buttonLoad->setText(loadButtonCaption);
+    editBoxFilename->setText(defaultFilename);
+    editBoxFilename->setFocused(true);
+
+    buttonCancelLoadingImage->connect("pressed", [=]{ filenameWindow->close(); });
+    buttonLoad->connect("pressed", [=]{
+        onLoad(editBoxFilename->getText());
+        filenameWindow->close();
+    });
+    editBoxFilename->connect("ReturnKeyPressed", [=]{
+        onLoad(editBoxFilename->getText());
+        filenameWindow->close();
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::loadStartScreen()
 {
     while (!m_forms.empty())
@@ -558,20 +656,50 @@ void GuiBuilder::loadStartScreen()
     m_gui.removeAllWidgets();
     m_gui.loadWidgetsFromFile("resources/forms/StartScreen.txt");
 
-    auto filenameEditBox = m_gui.get<tgui::Panel>("MainPanel")->get<tgui::EditBox>("FilenameEditBox");
-    filenameEditBox->setText(m_lastOpenedFile);
+    if (!loadGuiBuilderState())
+    {
+        m_themes["themes/Black.txt"] = {"themes/Black.txt"};
+        m_themes["themes/BabyBlue.txt"] = {"themes/BabyBlue.txt"};
+        m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
+    }
 
-    m_gui.get<tgui::Panel>("MainPanel")->get("NewButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); m_selectedForm->setChanged(true); });
+    auto panel = m_gui.get<tgui::Panel>("MainPanel");
+    panel->get("PnlNewForm")->connect("Clicked", [=]{
+        showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
+            loadEditingScreen(filename);
+            m_selectedForm->setChanged(true);
+        });
+    });
+    panel->get("PnlLoadForm")->connect("Clicked", [=]{
+        showLoadFileWindow("Load form", "Load", "form.txt", [this](const sf::String& filename){ loadForm(filename); });
+    });
 
-    m_gui.get<tgui::Panel>("MainPanel")->get("LoadButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); loadForm(); });
+    if (m_recentFiles.empty())
+        panel->get("LblNoRecentFiles")->setVisible(true);
+    else
+    {
+        for (unsigned int i = 0; (i < 5) && (i < m_recentFiles.size()); ++i)
+        {
+            auto labelRecentForm = panel->get<tgui::Label>("LblRecentForm" + tgui::to_string(i+1));
+            labelRecentForm->setText(m_recentFiles[i]);
+            labelRecentForm->setVisible(true);
+            labelRecentForm->connect("Clicked", [=,filename=m_recentFiles[i]]{ loadForm(filename); });
+
+            auto buttonRemoveFormFromList = panel->get("BtnDeleteRecentForm" + tgui::to_string(i+1));
+            buttonRemoveFormFromList->setVisible(true);
+            buttonRemoveFormFromList->connect("Clicked", [this,filename=m_recentFiles[i]]{
+                m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const sf::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
+                saveGuiBuilderState();
+                loadStartScreen();
+            });
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::loadEditingScreen(const std::string& filename)
 {
-    m_lastOpenedFile = filename;
-
     m_gui.removeAllWidgets();
     m_gui.loadWidgetsFromFile("resources/forms/EditingScreen.txt");
 
@@ -588,7 +716,8 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
 
     m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
     m_menuBar->connect("MouseEntered", [](tgui::Widget::Ptr menuBar, std::string){ menuBar->moveToFront(); });
-    m_menuBar->connectMenuItem({"File", "New / Load"}, [this]{ menuBarCallbackNewOrLoadFile(); });
+    m_menuBar->connectMenuItem({"File", "New"}, [this]{ menuBarCallbackNewForm(); });
+    m_menuBar->connectMenuItem({"File", "Load"}, [this]{ menuBarCallbackLoadForm(); });
     m_menuBar->connectMenuItem({"File", "Save"}, [this]{ menuBarCallbackSaveFile(); });
     m_menuBar->connectMenuItem({"File", "Quit"}, [this]{ menuBarCallbackQuit(); });
     m_menuBar->connectMenuItem({"Themes", "Edit"}, [this]{ menuBarCallbackEditThemes(); });
@@ -600,6 +729,19 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
     m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
     m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
+
+    m_menuBar->removeSubMenuItems({"File", "Recent"});
+    bool addedRecentFile = false;
+    for (const auto& recentFile : m_recentFiles)
+    {
+        if (filename == recentFile)
+            continue;
+
+        addedRecentFile = true;
+        m_menuBar->addMenuItem({"File", "Recent", recentFile});
+        m_menuBar->connectMenuItem({"File", "Recent", recentFile}, [this,recentFile]{ menuBarCallbackLoadRecent(recentFile); });
+    }
+    m_menuBar->setMenuItemEnabled({"File", "Recent"}, addedRecentFile);
 
     const auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
     m_widgetHierarchyTree = hierarchyWindow->get<tgui::TreeView>("WidgetsTree");
@@ -933,13 +1075,15 @@ void GuiBuilder::removeSelectedWidget()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::loadForm()
+bool GuiBuilder::loadForm(const sf::String& filename)
 {
+    loadEditingScreen(filename);
+
     if (!m_selectedForm->load())
     {
         loadStartScreen();
         widgetHierarchyChanged();
-        return;
+        return false;
     }
 
     // Try to match renderers with themes (this could create false positives but it is better than not being able to load themes at all)
@@ -967,6 +1111,11 @@ void GuiBuilder::loadForm()
 
     widgetHierarchyChanged();
     initSelectedWidgetComboBoxAfterLoad();
+
+    m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const sf::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
+    m_recentFiles.insert(m_recentFiles.begin(), filename);
+    saveGuiBuilderState();
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1064,11 +1213,13 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
             pasteWidgetRecursive(copiedChild, container.get());
     }
 
-    // Move the widget a bit down and to the right to visually show that the new widget has been created.
+    // If widget still has same parent then move the widget a bit down and to the right to visually show that the new widget has been created.
     // If the widget lies outside its parent then move its position so that it becomes visible.
     if (widget->getPositionLayout().x.isConstant())
     {
-        float newX = widget->getPosition().x + 10;
+        float newX = widget->getPosition().x;
+        if (widget->getParent() == m_copiedWidgets[0].originalWidget->getParent())
+            newX += 10;
         if (newX + (widget->getSize().x / 2.f) > widget->getParent()->getSize().x)
             newX = widget->getParent()->getSize().x -  (widget->getSize().x / 2.f);
 
@@ -1076,7 +1227,9 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
     }
     if (widget->getPositionLayout().y.isConstant())
     {
-        float newY = widget->getPosition().y + 10;
+        float newY = widget->getPosition().y;
+        if (widget->getParent() == m_copiedWidgets[0].originalWidget->getParent())
+            newY += 10;
         if (newY + (widget->getSize().y / 2.f) > widget->getParent()->getSize().y)
             newY = widget->getParent()->getSize().y -  (widget->getSize().y / 2.f);
 
@@ -1559,26 +1712,8 @@ void GuiBuilder::addPropertyValueTexture(const std::string& property, const sf::
         updateForm(originalFilename, originalPartRect, originalMiddleRect, true, true, true);
 
         buttonSelectFile->connect("pressed", [=]{
-            auto filenameWindow = openWindowWithFocus();
-            filenameWindow->setTitle("Load image");
-            filenameWindow->setSize(400, 100);
-            filenameWindow->loadWidgetsFromFile("resources/forms/LoadFile.txt");
-
-            auto editBoxFilename = filenameWindow->get<tgui::EditBox>("EditFilename");
-            auto buttonLoadImage = filenameWindow->get<tgui::Button>("BtnLoad");
-            auto buttonCancelLoadingImage = filenameWindow->get<tgui::Button>("BtnCancel");
-
-            editBoxFilename->setText(buttonSelectFile->getUserData<sf::String>());
-            editBoxFilename->setFocused(true);
-
-            buttonCancelLoadingImage->connect("pressed", [=]{ filenameWindow->close(); });
-            buttonLoadImage->connect("pressed", [=]{
-                updateForm(editBoxFilename->getText(), {}, {}, true, true, true);
-                filenameWindow->close();
-            });
-            editBoxFilename->connect("ReturnKeyPressed", [=]{
-                updateForm(editBoxFilename->getText(), {}, {}, true, true, true);
-                filenameWindow->close();
+            showLoadFileWindow("Load image", "Load", buttonSelectFile->getUserData<sf::String>(), [=](const sf::String& filename){
+                updateForm(filename, {}, {}, true, true, true);
             });
         });
     });
@@ -1720,10 +1855,33 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::menuBarCallbackNewOrLoadFile()
+void GuiBuilder::menuBarCallbackNewForm()
 {
-    while (!m_forms.empty())
-        closeForm(m_forms[0].get());
+    loadStartScreen();
+
+    showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
+        loadEditingScreen(filename);
+        m_selectedForm->setChanged(true);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackLoadForm()
+{
+    loadStartScreen();
+
+    showLoadFileWindow("Load form", "Load", "form.txt", [this](const sf::String& filename){
+        loadForm(filename);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackLoadRecent(const sf::String& filename)
+{
+    loadStartScreen();
+    loadForm(filename);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1795,6 +1953,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
         }
 
         initProperties();
+        saveGuiBuilderState();
     });
 
     buttonDelete->connect("Pressed", [=]{
@@ -1803,6 +1962,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
         themesList->removeItem(item);
         buttonDelete->setEnabled(false);
         initProperties();
+        saveGuiBuilderState();
     });
 }
 

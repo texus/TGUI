@@ -70,6 +70,28 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        bool removeSubMenusImpl(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
+        {
+            for (auto it = menus.begin(); it != menus.end(); ++it)
+            {
+                if (it->text.getString() != hierarchy[parentIndex])
+                    continue;
+
+                if (parentIndex + 1 == hierarchy.size())
+                {
+                    it->menuItems.clear();
+                    return true;
+                }
+                else
+                    return removeSubMenusImpl(hierarchy, parentIndex + 1, it->menuItems);
+            }
+
+            // The hierarchy doesn't exist
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         void setTextSizeImpl(std::vector<MenuBar::Menu>& menus, unsigned int textSize)
         {
             for (auto& menu : menus)
@@ -325,6 +347,23 @@ namespace tgui
             return false;
 
         return removeMenuImpl(hierarchy, removeParentsWhenEmpty, 0, m_menus);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::removeMenuItems(const sf::String& menu)
+    {
+        return removeSubMenuItems(std::vector<sf::String>{menu});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::removeSubMenuItems(const std::vector<sf::String>& hierarchy)
+    {
+        if (hierarchy.empty())
+            return false;
+
+        return removeSubMenusImpl(hierarchy, 0, m_menus);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

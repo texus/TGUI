@@ -1,86 +1,225 @@
+Renderer.1 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = #3C3C3C;
+}
+
+Renderer.2 {
+    backgroundcolor = #D7D7D7;
+    bordercolor = black;
+    borders = (1, 1, 1, 1);
+}
+
+Renderer.3 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = blue;
+    textstyle = Underlined;
+}
+
 Panel.MainPanel {
-    Position = ("(&.w - w) / 2", "(&.h - h) / 2");
-    Size = (400, 200);
+    Position = ((&.w - w) / 2, (&.h - h) / 2);
+    Size = (512, 370);
 
     Renderer {
         backgroundcolor = #E6E6E6;
-        bordercolor = Black;
-        borders = (2, 2, 2, 2);
+        bordercolor = black;
+        borders = (1, 1, 1, 1);
     }
 
-    Label {
+    Panel.PnlNewForm {
+        Position = (270, 30);
+        Size = (200, 124);
+        renderer = &2;
+    
+        Label.Widget17 {
+            AutoSize = true;
+            IgnoreMouseEvents = true;
+            Position = ((&.w - w) / 2, 80);
+            ScrollbarPolicy = Never;
+            Size = (161.4, 24);
+            Text = "Create new form";
+            TextSize = 18;
+            renderer = &1;
+        }
+    
+        Picture.Widget36 {
+            IgnoreMouseEvents = true;
+            Position = ((&.w - w) / 2, 22);
+            Size = (48, 48);
+        
+            Renderer {
+                texture = "resources/NewFile.png";
+                transparenttexture = false;
+            }
+        }
+    }
+
+    Label.Widget21 {
         AutoSize = true;
-        Position = (50, 35);
-        Size = (74, 19);
-        Text = "Filename";
-        TextSize = 16;
+        Position = (120, 180);
+        ScrollbarPolicy = Never;
+        Size = (102.2, 18);
+        Text = "Recent forms";
+        TextSize = 13;
     
         Renderer {
-            backgroundcolor = Transparent;
+            backgroundcolor = transparent;
             bordercolor = #3C3C3C;
             borders = (0, 0, 0, 0);
             textcolor = #3C3C3C;
+            textstyle = Bold;
         }
     }
 
-    EditBox.FilenameEditBox {
-        Position = (50, 60);
-        Size = (300, 30);
-        TextSize = 15;
+    Picture.BtnDeleteRecentForm1 {
+        Position = (150, 210);
+        Size = (16, 16);
+        Visible = false;
     
         Renderer {
-            backgroundcolor = #F5F5F5;
-            backgroundcolorhover = White;
-            bordercolor = #3C3C3C;
-            bordercolorhover = Black;
-            borders = (2, 2, 2, 2);
-            caretcolor = Black;
-            caretwidth = 1;
-            defaulttextcolor = #A0A0A0;
-            padding = (4, 2, 4, 2);
-            selectedtextbackgroundcolor = #006EFF;
-            selectedtextcolor = White;
-            textcolor = #3C3C3C;
+            texture = "resources/Trash.png";
+            transparenttexture = false;
         }
     }
 
-    Button.LoadButton {
-        Position = (50, 130);
-        Size = (125, 30);
-        Text = "Load";
-        TextSize = 17;
+    Label.LblRecentForm1 {
+        AutoSize = true;
+        Position = (171, 209);
+        ScrollbarPolicy = Never;
+        Size = (56.2, 18);
+        Text = "form.txt";
+        TextSize = 13;
+        Visible = false;
+        renderer = &3;
+    }
+
+    Label.LblRecentForm2 {
+        AutoSize = true;
+        Position = (171, 239);
+        ScrollbarPolicy = Never;
+        Size = (56.2, 18);
+        Text = "form.txt";
+        TextSize = 13;
+        Visible = false;
+        renderer = &3;
+    }
+
+    Label.LblRecentForm3 {
+        AutoSize = true;
+        Position = (171, 269);
+        ScrollbarPolicy = Never;
+        Size = (56.2, 18);
+        Text = "form.txt";
+        TextSize = 13;
+        Visible = false;
+        renderer = &3;
+    }
+
+    Label.LblRecentForm5 {
+        AutoSize = true;
+        Position = (171, 329);
+        ScrollbarPolicy = Never;
+        Size = (56.2, 18);
+        Text = "form.txt";
+        TextSize = 13;
+        Visible = false;
+        renderer = &3;
+    }
+
+    Label.LblRecentForm4 {
+        AutoSize = true;
+        Position = (171, 299);
+        ScrollbarPolicy = Never;
+        Size = (56.2, 18);
+        Text = "form.txt";
+        TextSize = 13;
+        Visible = false;
+        renderer = &3;
+    }
+
+    Picture.BtnDeleteRecentForm2 {
+        Position = (150, 240);
+        Size = (16, 16);
+        Visible = false;
     
         Renderer {
-            backgroundcolor = #F5F5F5;
-            backgroundcolordown = #EBEBEB;
-            backgroundcolorhover = White;
-            bordercolor = #3C3C3C;
-            bordercolordown = Black;
-            bordercolorhover = Black;
-            borders = (2, 2, 2, 2);
-            textcolor = #3C3C3C;
-            textcolordown = Black;
-            textcolorhover = Black;
+            texture = "resources/Trash.png";
+            transparenttexture = false;
         }
     }
 
-    Button.NewButton {
-        Position = (225, 130);
-        Size = (125, 30);
-        Text = "New";
-        TextSize = 17;
+    Picture.BtnDeleteRecentForm3 {
+        Position = (150, 270);
+        Size = (16, 16);
+        Visible = false;
     
         Renderer {
-            backgroundcolor = #F5F5F5;
-            backgroundcolordown = #EBEBEB;
-            backgroundcolorhover = White;
-            bordercolor = #3C3C3C;
-            bordercolordown = Black;
-            bordercolorhover = Black;
-            borders = (2, 2, 2, 2);
-            textcolor = #3C3C3C;
-            textcolordown = Black;
-            textcolorhover = Black;
+            texture = "resources/Trash.png";
+            transparenttexture = false;
+        }
+    }
+
+    Picture.BtnDeleteRecentForm4 {
+        Position = (150, 300);
+        Size = (16, 16);
+        Visible = false;
+    
+        Renderer {
+            texture = "resources/Trash.png";
+            transparenttexture = false;
+        }
+    }
+
+    Picture.BtnDeleteRecentForm5 {
+        Position = (150, 330);
+        Size = (16, 16);
+        Visible = false;
+    
+        Renderer {
+            texture = "resources/Trash.png";
+            transparenttexture = false;
+        }
+    }
+
+    Label.LblNoRecentFiles {
+        AutoSize = true;
+        Position = (150, 210);
+        ScrollbarPolicy = Never;
+        Size = (95.2, 18);
+        Text = "No recent files";
+        TextSize = 13;
+        Visible = false;
+        renderer = &1;
+    }
+
+    Panel.PnlLoadForm {
+        Position = (40, 30);
+        Size = (200, 124);
+        renderer = &2;
+    
+        Picture.Widget34 {
+            IgnoreMouseEvents = true;
+            Position = ((&.w - w) / 2, 22);
+            Size = (48, 48);
+        
+            Renderer {
+                texture = "resources/LoadFile.png";
+                transparenttexture = false;
+            }
+        }
+    
+        Label.Widget35 {
+            AutoSize = true;
+            IgnoreMouseEvents = true;
+            Position = ((&.w - w) / 2, 80);
+            ScrollbarPolicy = Never;
+            Size = (177.4, 24);
+            Text = "Load existing form";
+            TextSize = 18;
+            renderer = &1;
         }
     }
 }

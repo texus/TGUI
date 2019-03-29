@@ -301,6 +301,31 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes all menu items from a menu
+        ///
+        /// @param menu      The name of the menu for which all menu items should be removed
+        ///
+        /// @return True when the menu existed and its children were removed, false when menu was not found
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeMenuItems(const sf::String& menu);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes a all menu items below a (sub) menu
+        ///
+        /// @param hierarchy Hierarchy of the menu item, starting with the menu and ending with the sub menu containing the items
+        ///
+        /// @return True when the menu item existed and its children were removed, false when hierarchy was incorrect
+        ///
+        /// @code
+        /// menuBar->removeSubMenuItems({"File", "Recent files"});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeSubMenuItems(const std::vector<sf::String>& hierarchy);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable an entire menu
         /// @param menu     The name of the menu to enable or disable
         /// @param enabled  Should the menu be enabled or disabled?

@@ -13,8 +13,28 @@ MenuBar.MenuBar {
     }
 
     Menu {
-        Items = ["New / Load", "Save", "Quit"];
         Name = "File";
+
+        Menu {
+            Name = "New";
+        }
+
+        Menu {
+            Name = "Load";
+        }
+
+        Menu {
+            Name = "Recent";
+            Enabled = false;
+        }
+
+        Menu {
+            Name = "Save";
+        }
+
+        Menu {
+            Name = "Quit";
+        }
     }
 
     Menu {

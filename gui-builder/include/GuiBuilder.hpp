@@ -40,6 +40,7 @@ public:
 
     void reloadProperties();
     void widgetSelected(tgui::Widget::Ptr widget);
+    void formSaved(const sf::String& filename);
     void closeForm(Form* form);
 
 private:
@@ -55,9 +56,12 @@ private:
         std::vector<CopiedWidget> childWidgets;
     };
 
+    bool loadGuiBuilderState();
+    void saveGuiBuilderState();
     void loadStartScreen();
     void loadEditingScreen(const std::string& filename);
     void loadToolbox();
+    void showLoadFileWindow(const sf::String& title, const sf::String& loadButtonCaption, const sf::String& defaultFilename, const std::function<void(const sf::String&)>& onLoad);
     void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
     bool updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
@@ -65,7 +69,7 @@ private:
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
-    void loadForm();
+    bool loadForm(const sf::String& filename);
     tgui::ChildWindow::Ptr openWindowWithFocus();
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
@@ -91,7 +95,9 @@ private:
     void addPropertyValueChildWindowTitleButtons(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
 
-    void menuBarCallbackNewOrLoadFile();
+    void menuBarCallbackNewForm();
+    void menuBarCallbackLoadForm();
+    void menuBarCallbackLoadRecent(const sf::String& filename);
     void menuBarCallbackSaveFile();
     void menuBarCallbackQuit();
     void menuBarCallbackEditThemes();
@@ -106,7 +112,7 @@ private:
 
 private:
 
-    std::string m_lastOpenedFile;
+    std::vector<sf::String> m_recentFiles;
 
     sf::RenderWindow m_window;
     tgui::Gui m_gui;

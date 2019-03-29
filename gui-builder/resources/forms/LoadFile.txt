@@ -64,18 +64,17 @@ EditBox.EditFilename {
     }
 }
 
-Button.BtnLoad {
-    Position = (260, 60);
-    Size = (49, 22);
-    Text = Load;
-    TextSize = 13;
-    renderer = &1;
-}
-
 Button.BtnCancel {
     Position = (324, 60);
     Size = (61, 22);
     Text = Cancel;
+    TextSize = 13;
+    renderer = &1;
+}
+
+Button.BtnLoad {
+    Position = ((btncancel.left - 15) - width, 60);
+    Text = Load;
     TextSize = 13;
     renderer = &1;
 }
