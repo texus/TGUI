@@ -290,17 +290,17 @@ void GuiBuilder::mainLoop()
                 if ((event.key.code == sf::Keyboard::Key::Left) || (event.key.code == sf::Keyboard::Key::Right)
                  || (event.key.code == sf::Keyboard::Key::Up) || (event.key.code == sf::Keyboard::Key::Down))
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus())
+                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         m_selectedForm->arrowKeyPressed(event.key);
                 }
                 else if (event.key.code == sf::Keyboard::Key::Delete)
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                    if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         removeSelectedWidget();
                 }
                 else if (event.key.code == sf::Keyboard::Key::Escape)
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus())
+                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         m_selectedForm->selectParent();
                 }
                 else if ((event.key.code == sf::Keyboard::Key::S) && event.key.control)
@@ -310,17 +310,17 @@ void GuiBuilder::mainLoop()
                 }
                 else if ((event.key.code == sf::Keyboard::Key::C) && event.key.control)
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                    if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
                 }
                 else if ((event.key.code == sf::Keyboard::Key::V) && event.key.control)
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus())
+                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         pasteWidgetFromInternalClipboard();
                 }
                 else if ((event.key.code == sf::Keyboard::Key::X) && event.key.control)
                 {
-                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                    if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                     {
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
                         removeSelectedWidget();
