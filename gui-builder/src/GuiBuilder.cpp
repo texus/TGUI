@@ -1280,6 +1280,9 @@ void GuiBuilder::pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Co
     createNewWidget(widget, parent, false);
 
     m_selectedForm->getWidget(tgui::to_string(widget.get()))->theme = copiedWidget.theme;
+
+    for (const auto& copiedChild : copiedWidget.childWidgets)
+        pasteWidgetRecursive(copiedChild, widget->cast<tgui::Container>().get());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
