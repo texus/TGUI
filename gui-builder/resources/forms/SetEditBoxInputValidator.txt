@@ -24,24 +24,24 @@ Renderer.1 {
     textureuncheckedhover = None;
 }
 
-RadioButton."CheckAny" {
+RadioButton.CheckAny {
     Checked = true;
     Position = (20, 20);
     Size = (18, 18);
-    Text = "Anything";
+    Text = Anything;
     TextSize = 13;
     renderer = &1;
 }
 
-RadioButton."CheckInt" {
+RadioButton.CheckInt {
     Position = (20, 50);
     Size = (18, 18);
-    Text = "Int";
+    Text = Int;
     TextSize = 13;
     renderer = &1;
 }
 
-RadioButton."CheckUInt" {
+RadioButton.CheckUInt {
     Position = (20, 80);
     Size = (18, 18);
     Text = "Unsigned int";
@@ -49,23 +49,23 @@ RadioButton."CheckUInt" {
     renderer = &1;
 }
 
-RadioButton."CheckFloat" {
+RadioButton.CheckFloat {
     Position = (20, 110);
     Size = (18, 18);
-    Text = "Float";
+    Text = Float;
     TextSize = 13;
     renderer = &1;
 }
 
-RadioButton."CheckCustom" {
+RadioButton.CheckCustom {
     Position = (20, 140);
     Size = (18, 18);
-    Text = "Custom";
+    Text = Custom;
     TextSize = 13;
     renderer = &1;
 }
 
-EditBox."EditValidator" {
+EditBox.EditValidator {
     Position = (20, 170);
     Size = (150, 22);
     Text = ".*";

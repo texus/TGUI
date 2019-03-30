@@ -13,50 +13,50 @@ MenuBar.MenuBar {
     }
 
     Menu {
-        Name = "File";
+        Text = File;
 
         Menu {
-            Name = "New";
+            Text = New;
         }
 
         Menu {
-            Name = "Load";
+            Text = Load;
         }
 
         Menu {
-            Name = "Recent";
             Enabled = false;
+            Text = Recent;
         }
 
         Menu {
-            Name = "Save";
+            Text = Save;
         }
 
         Menu {
-            Name = "Quit";
+            Text = Quit;
         }
     }
 
     Menu {
-        Items = ["Edit"];
-        Name = "Themes";
+        Items = [Edit];
+        Text = Themes;
     }
 
     Menu {
-        Items = ["Bring to front", "Send to back", "Cut", "Copy", "Paste", "Delete"];
-        Name = "Widget";
+        Items = ["Bring to front", "Send to back", Cut, Copy, Paste, Delete];
+        Text = Widget;
     }
 
     Menu {
-        Items = ["Keyboard shortcuts", "About"];
-        Name = "Help";
+        Items = ["Keyboard shortcuts", About];
+        Text = Help;
     }
 }
 
 ChildWindow.PropertiesWindow {
-    Position = ("&.w - w", MenuBar.h);
-    Size = (24%, "&.h - MenuBar.h - 20");
-    Title = "Properties";
+    Position = (&.w - w, menubar.h);
+    Size = (24%, (&.h - menubar.h) - 20);
+    Title = Properties;
     TitleAlignment = Center;
     TitleButtons = None;
 
@@ -69,15 +69,29 @@ ChildWindow.PropertiesWindow {
         paddingbetweenbuttons = 1;
         titlebarcolor = White;
         titlecolor = Black;
+
+        closebutton {
+            backgroundcolor = #F5F5F5;
+            backgroundcolordown = #EBEBEB;
+            backgroundcolorhover = white;
+            bordercolor = #3C3C3C;
+            bordercolordown = black;
+            bordercolorhover = black;
+            borders = (1, 1, 1, 1);
+            textcolor = #3C3C3C;
+            textcolordown = black;
+            textcolorhover = black;
+        }
     }
 
     ComboBox.SelectedWidgetComboBox {
-        Position = (10, 10);
-        Size = (100% - 20, 24);
+        ChangeItemOnScroll = false;
+        ExpandDirection = Down;
         ItemsToDisplay = 15;
         MaximumItems = 0;
+        Position = (10, 10);
+        Size = (100% - 20, 24);
         TextSize = 13;
-        ChangeItemOnScroll = false;
 
         Renderer {
             arrowbackgroundcolor = #F5F5F5;
@@ -93,8 +107,10 @@ ChildWindow.PropertiesWindow {
     }
 
     ScrollablePanel.Properties {
-        Position = (10, 10 + 24 + 10);
-        Size = ("&.w - x - 5", "&.h - y - 10");
+        ContentSize = (0, 0);
+        Position = (10, (10 + 24) + 10);
+        Size = ((&.w - x) - 5, (&.h - y) - 10);
+
         Renderer {
             backgroundcolor = #E6E6E6;
         }
@@ -103,8 +119,8 @@ ChildWindow.PropertiesWindow {
 
 ChildWindow.ToolboxWindow {
     Position = (0, 20);
-    Size = (12%, "&.h * 0.5 - MenuBar.h - 20");
-    Title = "Toolbox";
+    Size = (12%, ((&.h * 0.5) - menubar.h) - 20);
+    Title = Toolbox;
     TitleAlignment = Center;
     TitleButtons = None;
 
@@ -117,10 +133,25 @@ ChildWindow.ToolboxWindow {
         paddingbetweenbuttons = 1;
         titlebarcolor = White;
         titlecolor = Black;
+
+        closebutton {
+            backgroundcolor = #F5F5F5;
+            backgroundcolordown = #EBEBEB;
+            backgroundcolorhover = white;
+            bordercolor = #3C3C3C;
+            bordercolordown = black;
+            bordercolorhover = black;
+            borders = (1, 1, 1, 1);
+            textcolor = #3C3C3C;
+            textcolordown = black;
+            textcolorhover = black;
+        }
     }
 
     ScrollablePanel.Widgets {
+        ContentSize = (0, 0);
         Size = (100%, 100%);
+
         Renderer {
             backgroundcolor = #E6E6E6;
         }
@@ -128,8 +159,8 @@ ChildWindow.ToolboxWindow {
 }
 
 ChildWindow.HierarchyWindow {
-    Position = (0, ToolboxWindow.h + MenuBar.h + 20);
-    Size = (12%, "&.h * 0.5 - 20");
+    Position = (0, (toolboxwindow.h + menubar.h) + 20);
+    Size = (12%, (&.h * 0.5) - 20);
     Title = "Widgets hierarchy";
     TitleAlignment = Center;
     TitleButtons = None;
@@ -143,6 +174,19 @@ ChildWindow.HierarchyWindow {
         paddingbetweenbuttons = 1;
         titlebarcolor = White;
         titlecolor = Black;
+
+        closebutton {
+            backgroundcolor = #F5F5F5;
+            backgroundcolordown = #EBEBEB;
+            backgroundcolorhover = white;
+            bordercolor = #3C3C3C;
+            bordercolordown = black;
+            bordercolorhover = black;
+            borders = (1, 1, 1, 1);
+            textcolor = #3C3C3C;
+            textcolordown = black;
+            textcolorhover = black;
+        }
     }
 
     TreeView.WidgetsTree {
@@ -166,11 +210,11 @@ ChildWindow.HierarchyWindow {
 }
 
 ChildWindow.Form {
-    Position = ("((&.w - ToolboxWindow.w - PropertiesWindow.w - w) / 2) + ToolboxWindow.w", "(&.h - h) / 2");
+    Position = (((((&.w - toolboxwindow.w) - propertieswindow.w) - w) / 2) + toolboxwindow.w, (&.h - h) / 2);
+    Resizable = true;
     Size = (800, 600);
     TitleAlignment = Center;
     TitleButtons = Close;
-    Resizable = true;
 
     Renderer {
         backgroundcolor = #E6E6E6;
@@ -180,6 +224,7 @@ ChildWindow.Form {
         distancetoside = 3;
         paddingbetweenbuttons = 1;
         showtextontitlebuttons = true;
+        texturetitlebar = None;
         titlebarcolor = White;
         titlecolor = Black;
 
@@ -189,15 +234,20 @@ ChildWindow.Form {
     }
 
     ScrollablePanel.ScrollablePanel {
+        ContentSize = (0, 0);
+        Size = (100%, 100%);
+
         Renderer {
             backgroundcolor = #D7D7D7;
         }
 
         Panel.WidgetContainer {
             Enabled = false;
+            Size = (100%, 100%);
 
             Renderer {
                 backgroundcolor = #E6E6E6;
+                borders = (0, 0, 0, 0);
             }
         }
     }

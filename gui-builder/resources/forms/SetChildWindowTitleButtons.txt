@@ -24,26 +24,26 @@ Renderer.1 {
     textureuncheckedhover = None;
 }
 
-CheckBox."CheckBoxClose" {
+CheckBox.CheckBoxClose {
     Position = (20, 20);
     Size = (18, 18);
-    Text = "Close";
+    Text = Close;
     TextSize = 13;
     renderer = &1;
 }
 
-CheckBox."CheckBoxMaximize" {
+CheckBox.CheckBoxMaximize {
     Position = (20, 50);
     Size = (18, 18);
-    Text = "Maximize";
+    Text = Maximize;
     TextSize = 13;
     renderer = &1;
 }
 
-CheckBox."CheckBoxMinimize" {
+CheckBox.CheckBoxMinimize {
     Position = (20, 80);
     Size = (18, 18);
-    Text = "Minimize";
+    Text = Minimize;
     TextSize = 13;
     renderer = &1;
 }

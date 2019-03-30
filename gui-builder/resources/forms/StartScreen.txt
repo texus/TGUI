@@ -33,7 +33,7 @@ Panel.MainPanel {
         Position = (270, 30);
         Size = (200, 124);
         renderer = &2;
-    
+
         Label.Widget17 {
             AutoSize = true;
             IgnoreMouseEvents = true;
@@ -44,12 +44,12 @@ Panel.MainPanel {
             TextSize = 18;
             renderer = &1;
         }
-    
+
         Picture.Widget36 {
             IgnoreMouseEvents = true;
             Position = ((&.w - w) / 2, 22);
             Size = (48, 48);
-        
+
             Renderer {
                 texture = "resources/NewFile.png";
                 transparenttexture = false;
@@ -64,7 +64,7 @@ Panel.MainPanel {
         Size = (102.2, 18);
         Text = "Recent forms";
         TextSize = 13;
-    
+
         Renderer {
             backgroundcolor = transparent;
             bordercolor = #3C3C3C;
@@ -78,7 +78,7 @@ Panel.MainPanel {
         Position = (150, 210);
         Size = (16, 16);
         Visible = false;
-    
+
         Renderer {
             texture = "resources/Trash.png";
             transparenttexture = false;
@@ -144,7 +144,7 @@ Panel.MainPanel {
         Position = (150, 240);
         Size = (16, 16);
         Visible = false;
-    
+
         Renderer {
             texture = "resources/Trash.png";
             transparenttexture = false;
@@ -155,7 +155,7 @@ Panel.MainPanel {
         Position = (150, 270);
         Size = (16, 16);
         Visible = false;
-    
+
         Renderer {
             texture = "resources/Trash.png";
             transparenttexture = false;
@@ -166,7 +166,7 @@ Panel.MainPanel {
         Position = (150, 300);
         Size = (16, 16);
         Visible = false;
-    
+
         Renderer {
             texture = "resources/Trash.png";
             transparenttexture = false;
@@ -177,7 +177,7 @@ Panel.MainPanel {
         Position = (150, 330);
         Size = (16, 16);
         Visible = false;
-    
+
         Renderer {
             texture = "resources/Trash.png";
             transparenttexture = false;
@@ -199,18 +199,18 @@ Panel.MainPanel {
         Position = (40, 30);
         Size = (200, 124);
         renderer = &2;
-    
+
         Picture.Widget34 {
             IgnoreMouseEvents = true;
             Position = ((&.w - w) / 2, 22);
             Size = (48, 48);
-        
+
             Renderer {
                 texture = "resources/LoadFile.png";
                 transparenttexture = false;
             }
         }
-    
+
         Label.Widget35 {
             AutoSize = true;
             IgnoreMouseEvents = true;

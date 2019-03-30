@@ -42,7 +42,7 @@ Renderer.2 {
     texturehover = None;
 }
 
-ListBox."ListBox" {
+ListBox.ListBox {
     ItemHeight = 20;
     MaximumItems = 0;
     Position = (10, 10);
@@ -64,7 +64,7 @@ ListBox."ListBox" {
     }
 }
 
-Button."BtnRemove" {
+Button.BtnRemove {
     Position = (320, 130);
     Size = (23, 22);
     Text = "-";
@@ -72,7 +72,7 @@ Button."BtnRemove" {
     renderer = &2;
 }
 
-EditBox."EditBox" {
+EditBox.EditBox {
     Position = (10, 182);
     Size = (280, 22);
     TextSize = 13;
@@ -100,15 +100,15 @@ EditBox."EditBox" {
     }
 }
 
-Button."BtnAdd" {
+Button.BtnAdd {
     Position = (300, 182);
     Size = (43, 22);
-    Text = "Add";
+    Text = Add;
     TextSize = 13;
     renderer = &2;
 }
 
-BitmapButton."BtnArrowUp" {
+BitmapButton.BtnArrowUp {
     Image = "resources/ArrowUp.png";
     ImageScaling = 0;
     Position = (320, 30);
@@ -117,7 +117,7 @@ BitmapButton."BtnArrowUp" {
     renderer = &1;
 }
 
-BitmapButton."BtnArrowDown" {
+BitmapButton.BtnArrowDown {
     Image = "resources/ArrowDown.png";
     ImageScaling = 0;
     Position = (320, 71);

@@ -27,7 +27,7 @@ Renderer.2 {
     textcolor = #3C3C3C;
 }
 
-Label."Widget1" {
+Label.Widget1 {
     AutoSize = true;
     Position = (20, 20);
     ScrollbarPolicy = Never;
@@ -37,7 +37,7 @@ Label."Widget1" {
     renderer = &2;
 }
 
-Label."Widget2" {
+Label.Widget2 {
     AutoSize = true;
     Position = (20, 50);
     ScrollbarPolicy = Never;
@@ -47,7 +47,7 @@ Label."Widget2" {
     renderer = &2;
 }
 
-Label."Widget3" {
+Label.Widget3 {
     AutoSize = true;
     Position = (20, 80);
     ScrollbarPolicy = Never;
@@ -57,7 +57,7 @@ Label."Widget3" {
     renderer = &2;
 }
 
-Label."Widget4" {
+Label.Widget4 {
     AutoSize = true;
     Position = (20, 110);
     ScrollbarPolicy = Never;
@@ -67,7 +67,7 @@ Label."Widget4" {
     renderer = &2;
 }
 
-EditBox."EditLeft" {
+EditBox.EditLeft {
     InputValidator = "[0-9]*%?";
     Position = (85, 17);
     Size = (40, 22);
@@ -75,7 +75,7 @@ EditBox."EditLeft" {
     renderer = &1;
 }
 
-EditBox."EditTop" {
+EditBox.EditTop {
     InputValidator = "[0-9]*%?";
     Position = (85, 47);
     Size = (40, 22);
@@ -83,7 +83,7 @@ EditBox."EditTop" {
     renderer = &1;
 }
 
-EditBox."EditRight" {
+EditBox.EditRight {
     InputValidator = "[0-9]*%?";
     Position = (85, 77);
     Size = (40, 22);
@@ -91,7 +91,7 @@ EditBox."EditRight" {
     renderer = &1;
 }
 
-EditBox."EditBottom" {
+EditBox.EditBottom {
     InputValidator = "[0-9]*%?";
     Position = (85, 107);
     Size = (40, 22);

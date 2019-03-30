@@ -1,4 +1,4 @@
-TextBox."TextBox" {
+TextBox.TextBox {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
     Position = (10, 10);

@@ -5,17 +5,17 @@ Renderer.1 {
     textcolor = #3C3C3C;
 }
 
-Label."Widget1" {
+Label.Widget1 {
     AutoSize = true;
     Position = (10, 10);
     ScrollbarPolicy = Never;
     Size = (48.2, 18);
-    Text = "Arrows";
+    Text = Arrows;
     TextSize = 13;
     renderer = &1;
 }
 
-Label."Widget2" {
+Label.Widget2 {
     AutoSize = true;
     Position = (10, 70);
     ScrollbarPolicy = Never;
@@ -25,7 +25,7 @@ Label."Widget2" {
     renderer = &1;
 }
 
-Label."Widget3" {
+Label.Widget3 {
     AutoSize = true;
     Position = (10, 40);
     ScrollbarPolicy = Never;
@@ -35,7 +35,7 @@ Label."Widget3" {
     renderer = &1;
 }
 
-Label."Widget4" {
+Label.Widget4 {
     AutoSize = true;
     Position = (10, 100);
     ScrollbarPolicy = Never;
@@ -45,7 +45,7 @@ Label."Widget4" {
     renderer = &1;
 }
 
-Label."Widget5" {
+Label.Widget5 {
     AutoSize = true;
     Position = (10, 220);
     ScrollbarPolicy = Never;
@@ -55,7 +55,7 @@ Label."Widget5" {
     renderer = &1;
 }
 
-Label."Widget6" {
+Label.Widget6 {
     AutoSize = true;
     Position = (10, 250);
     ScrollbarPolicy = Never;
@@ -65,7 +65,7 @@ Label."Widget6" {
     renderer = &1;
 }
 
-Label."Widget7" {
+Label.Widget7 {
     AutoSize = true;
     Position = (10, 190);
     ScrollbarPolicy = Never;
@@ -75,27 +75,27 @@ Label."Widget7" {
     renderer = &1;
 }
 
-Label."Widget8" {
+Label.Widget8 {
     AutoSize = true;
     Position = (10, 160);
     ScrollbarPolicy = Never;
     Size = (24.2, 18);
-    Text = "Del";
+    Text = Del;
     TextSize = 13;
     renderer = &1;
 }
 
-Label."Widget9" {
+Label.Widget9 {
     AutoSize = true;
     Position = (10, 130);
     ScrollbarPolicy = Never;
     Size = (25.2, 18);
-    Text = "Esc";
+    Text = Esc;
     TextSize = 13;
     renderer = &1;
 }
 
-Label."Widget10" {
+Label.Widget10 {
     AutoSize = true;
     Position = (10, 280);
     ScrollbarPolicy = Never;
@@ -105,7 +105,7 @@ Label."Widget10" {
     renderer = &1;
 }
 
-Label."Widget11" {
+Label.Widget11 {
     AutoSize = true;
     Position = (180, 10);
     ScrollbarPolicy = Never;
@@ -115,7 +115,7 @@ Label."Widget11" {
     renderer = &1;
 }
 
-Label."Widget12" {
+Label.Widget12 {
     AutoSize = true;
     Position = (180, 40);
     ScrollbarPolicy = Never;
@@ -125,7 +125,7 @@ Label."Widget12" {
     renderer = &1;
 }
 
-Label."Widget13" {
+Label.Widget13 {
     AutoSize = true;
     Position = (180, 70);
     ScrollbarPolicy = Never;
@@ -135,7 +135,7 @@ Label."Widget13" {
     renderer = &1;
 }
 
-Label."Widget14" {
+Label.Widget14 {
     AutoSize = true;
     Position = (180, 100);
     ScrollbarPolicy = Never;
@@ -145,7 +145,7 @@ Label."Widget14" {
     renderer = &1;
 }
 
-Label."Widget15" {
+Label.Widget15 {
     AutoSize = true;
     Position = (180, 130);
     ScrollbarPolicy = Never;
@@ -155,7 +155,7 @@ Label."Widget15" {
     renderer = &1;
 }
 
-Label."Widget16" {
+Label.Widget16 {
     AutoSize = true;
     Position = (180, 160);
     ScrollbarPolicy = Never;
@@ -165,7 +165,7 @@ Label."Widget16" {
     renderer = &1;
 }
 
-Label."Widget17" {
+Label.Widget17 {
     AutoSize = true;
     Position = (180, 190);
     ScrollbarPolicy = Never;
@@ -175,7 +175,7 @@ Label."Widget17" {
     renderer = &1;
 }
 
-Label."Widget18" {
+Label.Widget18 {
     AutoSize = true;
     Position = (180, 220);
     ScrollbarPolicy = Never;
@@ -185,7 +185,7 @@ Label."Widget18" {
     renderer = &1;
 }
 
-Label."Widget19" {
+Label.Widget19 {
     AutoSize = true;
     Position = (180, 250);
     ScrollbarPolicy = Never;
@@ -195,7 +195,7 @@ Label."Widget19" {
     renderer = &1;
 }
 
-Label."Widget20" {
+Label.Widget20 {
     AutoSize = true;
     Position = (180, 280);
     ScrollbarPolicy = Never;

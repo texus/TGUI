@@ -37,6 +37,9 @@ Renderer.3 {
 Canvas.ImagePreview {
     Position = ((&.w - w) / 2, 10);
     Size = (100, 100);
+
+    Renderer {
+    }
 }
 
 Button.BtnSelectFile {
@@ -68,7 +71,7 @@ Button.BtnSelectFile {
     }
 }
 
-Label."Widget3" {
+Label.Widget3 {
     AutoSize = true;
     Position = ((&.w - 215) / 2, (&.h - 75) + 2);
     ScrollbarPolicy = Never;
@@ -92,7 +95,7 @@ EditBox.EditMiddleRect {
     renderer = &1;
 }
 
-Label."Widget6" {
+Label.Widget6 {
     AutoSize = true;
     Position = ((&.w - 215) / 2, (&.h - 40) + 2);
     ScrollbarPolicy = Never;
@@ -106,20 +109,23 @@ Picture.InfoPartRect {
     Position = (((&.w - 215) / 2) + 198, (&.h - 75) + 3);
     Size = (16, 16);
 
-    Renderer {
-        texture = "resources/Info.png";
-        transparenttexture = false;
-    }
-
     ToolTip {
+        DistanceToMouse = (5,20);
         TimeToDisplay = 0;
 
         Label {
             AutoSize = true;
+            ScrollbarPolicy = Never;
+            Size = (320.2, 20);
             Text = "Part of the image to load (left, top, width, height)";
             TextSize = 13;
             renderer = &3;
         }
+    }
+
+    Renderer {
+        texture = "resources/Info.png";
+        transparenttexture = false;
     }
 }
 
@@ -127,18 +133,21 @@ Picture.InfoMiddleRect {
     Position = (((&.w - 215) / 2) + 198, (&.h - 40) + 3);
     Size = (16, 16);
 
-    Renderer {
-        texture = "resources/Info.png";
-    }
-
     ToolTip {
+        DistanceToMouse = (5,20);
         TimeToDisplay = 0;
 
         Label {
             AutoSize = true;
+            ScrollbarPolicy = Never;
+            Size = (550.2, 20);
             Text = "Middle part of the image (relative to Part rect) which defines how the image is scaled";
             TextSize = 13;
             renderer = &3;
         }
+    }
+
+    Renderer {
+        texture = "resources/Info.png";
     }
 }

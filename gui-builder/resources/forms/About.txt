@@ -5,7 +5,7 @@ Renderer.1 {
     textcolor = #3C3C3C;
 }
 
-Picture."Widget1" {
+Picture.Widget1 {
     Position = (10, 5);
     Size = (64, 64);
 
@@ -15,7 +15,7 @@ Picture."Widget1" {
     }
 }
 
-Label."Widget2" {
+Label.Widget2 {
     AutoSize = true;
     Position = (80, 17);
     ScrollbarPolicy = Never;
@@ -25,7 +25,7 @@ Label."Widget2" {
     renderer = &1;
 }
 
-Label."Widget3" {
+Label.Widget3 {
     AutoSize = true;
     Position = (110, 85);
     ScrollbarPolicy = Never;
@@ -35,7 +35,7 @@ Label."Widget3" {
     renderer = &1;
 }
 
-Label."LabelVersion" {
+Label.LabelVersion {
     AutoSize = true;
     Position = (195, 85);
     ScrollbarPolicy = Never;

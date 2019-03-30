@@ -24,31 +24,31 @@ Renderer.1 {
     textureuncheckedhover = None;
 }
 
-CheckBox."CheckBoxBold" {
+CheckBox.CheckBoxBold {
     Position = (20, 20);
     Size = (18, 18);
-    Text = "Bold";
+    Text = Bold;
     TextSize = 13;
     renderer = &1;
 }
 
-CheckBox."CheckBoxItalic" {
+CheckBox.CheckBoxItalic {
     Position = (20, 50);
     Size = (18, 18);
-    Text = "Italic";
+    Text = Italic;
     TextSize = 13;
     renderer = &1;
 }
 
-CheckBox."CheckBoxUnderlined" {
+CheckBox.CheckBoxUnderlined {
     Position = (20, 80);
     Size = (18, 18);
-    Text = "Underlined";
+    Text = Underlined;
     TextSize = 13;
     renderer = &1;
 }
 
-CheckBox."CheckBoxStrikeThrough" {
+CheckBox.CheckBoxStrikeThrough {
     Position = (20, 110);
     Size = (18, 18);
     Text = "Strike through";

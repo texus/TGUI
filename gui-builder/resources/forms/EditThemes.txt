@@ -1,12 +1,16 @@
-Renderer.ButtonRenderer {
+Renderer.1 {
     backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
     backgroundcolordown = #EBEBEB;
     backgroundcolorhover = white;
     bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
     bordercolordown = black;
+    bordercolorfocused = #1E1EB4;
     bordercolorhover = black;
-    borders = (2, 2, 2, 2);
+    borders = (1, 1, 1, 1);
     textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
     textcolordown = black;
     textcolorhover = black;
     texture = None;
@@ -18,6 +22,7 @@ Renderer.ButtonRenderer {
 
 ListBox.ThemesList {
     ItemHeight = 20;
+    MaximumItems = 0;
     Position = (10, 10);
     Size = (300, 200);
     TextSize = 12;
@@ -26,7 +31,7 @@ ListBox.ThemesList {
         backgroundcolor = #F5F5F5;
         backgroundcolorhover = white;
         bordercolor = black;
-        borders = (2, 2, 2, 2);
+        borders = (1, 1, 1, 1);
         padding = (0, 0, 0, 0);
         selectedbackgroundcolor = #006EFF;
         selectedbackgroundcolorhover = #1E96FF;
@@ -44,17 +49,20 @@ EditBox.NewThemeEditBox {
 
     Renderer {
         backgroundcolor = #F5F5F5;
+        backgroundcolordisabled = #E6E6E6;
         backgroundcolorhover = white;
         bordercolor = #3C3C3C;
+        bordercolordisabled = #7D7D7D;
         bordercolorhover = black;
-        borders = (2, 2, 2, 2);
+        borders = (1, 1, 1, 1);
         caretcolor = black;
         caretwidth = 1;
         defaulttextcolor = #A0A0A0;
-        padding = (4, 2, 4, 2);
+        padding = (0, 0, 0, 0);
         selectedtextbackgroundcolor = #006EFF;
         selectedtextcolor = white;
         textcolor = #3C3C3C;
+        textcolordisabled = #7D7D7D;
         texture = None;
         texturedisabled = None;
         texturefocused = None;
@@ -66,16 +74,16 @@ Button.ButtonAdd {
     Enabled = false;
     Position = (120, 250);
     Size = (90, 22);
-    Text = "Add";
+    Text = Add;
     TextSize = 12;
-    renderer = &ButtonRenderer;
+    renderer = &1;
 }
 
 Button.ButtonDelete {
     Enabled = false;
     Position = (220, 250);
     Size = (90, 22);
-    Text = "Delete";
+    Text = Delete;
     TextSize = 12;
-    renderer = &ButtonRenderer;
+    renderer = &1;
 }
