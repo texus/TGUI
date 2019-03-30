@@ -205,12 +205,24 @@ std::shared_ptr<WidgetInfo> Form::getSelectedWidget() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::setSelectedWidgetName(const std::string& name)
+bool Form::setSelectedWidgetName(const std::string& name)
 {
     assert(m_selectedWidget != nullptr);
 
+    // Don't allow setting a name that is already used by a different widget
+    for (const auto& pair : m_widgets)
+    {
+        const auto& widgetInfo = pair.second;
+        if (widgetInfo && (widgetInfo->name == name))
+        {
+            if (widgetInfo->ptr != m_selectedWidget->ptr)
+                return false;
+        }
+    }
+
     m_selectedWidget->ptr->getParent()->setWidgetName(m_selectedWidget->ptr, name);
     m_selectedWidget->name = name;
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

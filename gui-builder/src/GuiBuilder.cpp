@@ -511,10 +511,7 @@ void GuiBuilder::reloadProperties()
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const sf::String& value){
                 if (selectedWidget->name != value)
-                {
-                    m_selectedForm->setChanged(true);
                     changeWidgetName(value);
-                }
             });
 
         topPosition += 10;
@@ -1071,10 +1068,17 @@ void GuiBuilder::changeWidgetName(const std::string& name)
 {
     assert(m_selectedForm->getSelectedWidget() != nullptr);
 
-    m_selectedForm->setSelectedWidgetName(name);
+    if (!m_selectedForm->setSelectedWidgetName(name))
+    {
+        // A widget with this name already existed, so reset the value of the edit box
+        reloadProperties();
+        return;
+    }
+
     m_selectedWidgetComboBox->changeItemById(tgui::to_string(m_selectedForm->getSelectedWidget()->ptr.get()), name);
 
     widgetHierarchyChanged();
+    m_selectedForm->setChanged(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

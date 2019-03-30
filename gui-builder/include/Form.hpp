@@ -43,7 +43,7 @@ public:
     std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
     std::shared_ptr<tgui::Group> getRootWidgetsGroup() const;
     std::shared_ptr<WidgetInfo> getSelectedWidget() const;
-    void setSelectedWidgetName(const std::string& name);
+    bool setSelectedWidgetName(const std::string& name);
     void setSelectedWidgetRenderer(const std::string& renderer);
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
