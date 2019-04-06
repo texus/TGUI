@@ -1,5 +1,5 @@
-TGUI 0.8.5  (TBD)
------------------
+TGUI 0.8.5  (6 April 2019)
+--------------------------
 
 - Big improvements to Gui Builder
 - Svg images are now supported
