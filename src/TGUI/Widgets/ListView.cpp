@@ -1593,7 +1593,7 @@ namespace tgui
 
         unsigned int maximum = static_cast<unsigned int>(m_items.size() * m_itemHeight);
         if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
-            maximum += (m_items.size() - 1) * m_gridLinesWidth;
+            maximum += static_cast<unsigned int>((m_items.size() - 1) * m_gridLinesWidth);
 
         m_verticalScrollbar->setMaximum(maximum);
         updateScrollbars();

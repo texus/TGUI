@@ -192,7 +192,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether this signal calls the connected functions when triggered
         ///
-        /// @param Is the signal enabled?
+        /// @return Is the signal enabled?
         ///
         /// Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the
         /// handler and connecting it again a few lines later.

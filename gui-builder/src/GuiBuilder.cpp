@@ -1717,7 +1717,7 @@ void GuiBuilder::addPropertyValueTexture(const std::string& property, const sf::
                     texture->load(filename, partRect, middleRect);
                     onChange(tgui::Serializer::serialize(*texture));
                 }
-                catch (tgui::Exception& e)
+                catch (tgui::Exception&)
                 {
                 }
 

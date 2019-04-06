@@ -151,13 +151,13 @@ TEST_CASE("[Outline]")
             outline1 += outline3;
             REQUIRE(outline1 == tgui::Outline{7, 9, 11, 13});
 
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wself-assign-overloaded"
 #endif
             outline4 += outline4;
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#if defined(__clang__)
+    #pragma clang diagnostic pop
 #endif
             REQUIRE(outline4 == tgui::Outline{2, 4, 6, 8});
         }
@@ -167,13 +167,13 @@ TEST_CASE("[Outline]")
             outline1 -= outline3;
             REQUIRE(outline1 == tgui::Outline{-5, -5, -5, -5});
 
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wself-assign-overloaded"
 #endif
             outline4 -= outline4;
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#if defined(__clang__)
+    #pragma clang diagnostic pop
 #endif
             REQUIRE(outline4 == tgui::Outline{0, 0, 0, 0});
         }

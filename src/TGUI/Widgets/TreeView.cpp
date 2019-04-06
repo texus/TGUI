@@ -107,14 +107,14 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void expandOrCollapseAll(std::vector<std::shared_ptr<TreeView::Node>>& nodes, bool expand)
+        void expandOrCollapseAll(std::vector<std::shared_ptr<TreeView::Node>>& nodes, bool expandNode)
         {
             for (auto& node : nodes)
             {
                 if (!node->nodes.empty())
                 {
-                    node->expanded = expand;
-                    expandOrCollapseAll(node->nodes, expand);
+                    node->expanded = expandNode;
+                    expandOrCollapseAll(node->nodes, expandNode);
                 }
             }
         }
@@ -1277,7 +1277,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TreeView::expandOrCollapse(const std::vector<sf::String>& hierarchy, bool expand)
+    bool TreeView::expandOrCollapse(const std::vector<sf::String>& hierarchy, bool expandNode)
     {
         if (hierarchy.empty())
             return false;
@@ -1289,15 +1289,15 @@ namespace tgui
                 return false;
 
             bool nodeChanged = false;
-            if (expand)
+            if (expandNode)
             {
                 // When expanding, also expand all parents
                 auto* nodeToExpand = node;
                 while (nodeToExpand)
                 {
-                    if (nodeToExpand->expanded != expand)
+                    if (nodeToExpand->expanded != expandNode)
                     {
-                        nodeToExpand->expanded = expand;
+                        nodeToExpand->expanded = expandNode;
                         nodeChanged = true;
                     }
 
@@ -1306,9 +1306,9 @@ namespace tgui
             }
             else // Collapsing
             {
-                if (node->expanded != expand)
+                if (node->expanded != expandNode)
                 {
-                    node->expanded = expand;
+                    node->expanded = expandNode;
                     nodeChanged = true;
                 }
             }
@@ -1326,9 +1326,9 @@ namespace tgui
                 if (node->text.getString() != hierarchy.back())
                     continue;
 
-                if (node->expanded != expand)
+                if (node->expanded != expandNode)
                 {
-                    node->expanded = expand;
+                    node->expanded = expandNode;
                     markNodesDirty();
                 }
 

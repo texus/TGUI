@@ -149,7 +149,7 @@ TEST_CASE("[ChildWindow]")
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
         REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButton::None);
 
-        int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
+        unsigned int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
         childWindow->setTitleButtons(buttons);
         REQUIRE(childWindow->getTitleButtons() == buttons);
     }
