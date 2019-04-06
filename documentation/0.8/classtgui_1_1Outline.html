@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -152,6 +152,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4569f2c420bcf521327d3030f67087dd"><td class="memItemLeft" align="right" valign="top">TGUI_CONSTEXPR bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Outline.html#a4569f2c420bcf521327d3030f67087dd">operator!=</a> (const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;outline) const</td></tr>
 <tr class="memdesc:a4569f2c420bcf521327d3030f67087dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two outlines.  <a href="#a4569f2c420bcf521327d3030f67087dd">More...</a><br /></td></tr>
 <tr class="separator:a4569f2c420bcf521327d3030f67087dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91536522ad0865f023abf2dea03dbe29"><td class="memItemLeft" align="right" valign="top">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Outline.html#a91536522ad0865f023abf2dea03dbe29">operator+</a> (const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;other) const</td></tr>
+<tr class="memdesc:a91536522ad0865f023abf2dea03dbe29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds two outlines together (e.g. to add padding and borders)  <a href="#a91536522ad0865f023abf2dea03dbe29">More...</a><br /></td></tr>
+<tr class="separator:a91536522ad0865f023abf2dea03dbe29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbe7213a436ca36c7a5852ffff6b501d"><td class="memItemLeft" align="right" valign="top">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Outline.html#acbe7213a436ca36c7a5852ffff6b501d">operator-</a> (const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;other) const</td></tr>
+<tr class="memdesc:acbe7213a436ca36c7a5852ffff6b501d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtracts two outlines from each other.  <a href="#acbe7213a436ca36c7a5852ffff6b501d">More...</a><br /></td></tr>
+<tr class="separator:acbe7213a436ca36c7a5852ffff6b501d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff1d29814407b67703521014d4b10ced"><td class="memItemLeft" align="right" valign="top">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Outline.html#aff1d29814407b67703521014d4b10ced">operator+=</a> (const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;other)</td></tr>
+<tr class="memdesc:aff1d29814407b67703521014d4b10ced"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an outline to this instance (e.g. to add padding and borders)  <a href="#aff1d29814407b67703521014d4b10ced">More...</a><br /></td></tr>
+<tr class="separator:aff1d29814407b67703521014d4b10ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace99e2d9c26164a991d9b802dd433934"><td class="memItemLeft" align="right" valign="top">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Outline.html#ace99e2d9c26164a991d9b802dd433934">operator-=</a> (const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;other)</td></tr>
+<tr class="memdesc:ace99e2d9c26164a991d9b802dd433934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtracts an outline from this instance.  <a href="#ace99e2d9c26164a991d9b802dd433934">More...</a><br /></td></tr>
+<tr class="separator:ace99e2d9c26164a991d9b802dd433934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a060abb8c7aa96b41b61ef3b7166fbca7"></a>
@@ -504,6 +516,142 @@ template&lt;typename T , typename  = typename std::enable_if&lt;std::is_arithmet
 
 </div>
 </div>
+<a id="a91536522ad0865f023abf2dea03dbe29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91536522ad0865f023abf2dea03dbe29">&#9670;&nbsp;</a></span>operator+()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a> tgui::Outline::operator+ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds two outlines together (e.g. to add padding and borders) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The outline to add together with this instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aff1d29814407b67703521014d4b10ced"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff1d29814407b67703521014d4b10ced">&#9670;&nbsp;</a></span>operator+=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a>&amp; tgui::Outline::operator+= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds an outline to this instance (e.g. to add padding and borders) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The outline to add to this instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acbe7213a436ca36c7a5852ffff6b501d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbe7213a436ca36c7a5852ffff6b501d">&#9670;&nbsp;</a></span>operator-()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a> tgui::Outline::operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Subtracts two outlines from each other. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The outline to subtract from this instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ace99e2d9c26164a991d9b802dd433934"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace99e2d9c26164a991d9b802dd433934">&#9670;&nbsp;</a></span>operator-=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_CONSTEXPR <a class="el" href="classtgui_1_1Outline.html">Outline</a>&amp; tgui::Outline::operator-= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Outline.html">Outline</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Subtracts an outline from this instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The outline to subtract from this instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aa5b5ae8c1fe1582660855a04d6573634"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5b5ae8c1fe1582660855a04d6573634">&#9670;&nbsp;</a></span>operator==()</h2>
 
@@ -546,7 +694,7 @@ template&lt;typename T , typename  = typename std::enable_if&lt;std::is_arithmet
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

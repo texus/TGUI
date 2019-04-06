@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -232,6 +232,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad232902740d29c00219ac095e996bcaf"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#ad232902740d29c00219ac095e996bcaf">getTitleButtons</a> () const</td></tr>
 <tr class="memdesc:ad232902740d29c00219ac095e996bcaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the title bar buttons.  <a href="#ad232902740d29c00219ac095e996bcaf">More...</a><br /></td></tr>
 <tr class="separator:ad232902740d29c00219ac095e996bcaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf6d675971eea2ab8fcc769330c7789a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#adf6d675971eea2ab8fcc769330c7789a">close</a> ()</td></tr>
+<tr class="memdesc:adf6d675971eea2ab8fcc769330c7789a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to close the window.  <a href="#adf6d675971eea2ab8fcc769330c7789a">More...</a><br /></td></tr>
+<tr class="separator:adf6d675971eea2ab8fcc769330c7789a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ead33733a59560ac727658bb3c1a153"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a7ead33733a59560ac727658bb3c1a153">destroy</a> ()</td></tr>
 <tr class="memdesc:a7ead33733a59560ac727658bb3c1a153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the window.  <a href="#a7ead33733a59560ac727658bb3c1a153">More...</a><br /></td></tr>
 <tr class="separator:a7ead33733a59560ac727658bb3c1a153"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -704,6 +707,26 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="adf6d675971eea2ab8fcc769330c7789a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf6d675971eea2ab8fcc769330c7789a">&#9670;&nbsp;</a></span>close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChildWindow::close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Try to close the window. </p>
+<p>This will trigger the Closed signal. If no callback is requested then the window will be closed. </p>
+
+</div>
+</div>
 <a id="af00e0bb4f9c216943cce302c7798839d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af00e0bb4f9c216943cce302c7798839d">&#9670;&nbsp;</a></span>copy()</h2>
 
@@ -795,7 +818,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 <p>Destroys the window. </p>
 <p>When no callback is requested when closing the window, this function will be called automatically.</p>
-<p>When you requested a callback then you get the opportunity to cancel the closing of the window. If you want to keep it open then don't do anything, if you want to close it then just call this function. </p><pre class="fragment"></pre> 
+<p>When you requested a callback on close then you get the opportunity to cancel the closing of the window. If you want to keep it open then don't do anything, if you want to close it then just call this function. </p>
+
 </div>
 </div>
 <a id="ab5c50ae5718d18fcef8e1bb0ad3b658a"></a>
@@ -1356,8 +1380,32 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="afc57c2d17eebd0a528e7f5ca8e088011"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc57c2d17eebd0a528e7f5ca8e088011">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setPosition</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sets the position of the widget </p>
+<p>This function completely overwrites the previous position. See the move function to apply an offset based on the previous position instead. The default position of a transformable widget is (0, 0).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>New position</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd>move, <a class="el" href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb" title="Gets the position of the widget.">getPosition</a></dd></dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Place the widget on an exact position</span></div><div class="line">widget-&gt;setPosition({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget relative to the size of its parent</span></div><div class="line">widget-&gt;setPosition({<span class="stringliteral">&quot;5%&quot;</span>, <span class="stringliteral">&quot;10%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget 50 pixels below another widget and automatically move it when the other widget moves</span></div><div class="line">widget-&gt;setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a57b85bc10c1447e62d65739a39fca865"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57b85bc10c1447e62d65739a39fca865">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a57b85bc10c1447e62d65739a39fca865">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1387,30 +1435,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setPosition overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
-</div>
-</div>
-<a id="afc57c2d17eebd0a528e7f5ca8e088011"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc57c2d17eebd0a528e7f5ca8e088011">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setPosition</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>sets the position of the widget </p>
-<p>This function completely overwrites the previous position. See the move function to apply an offset based on the previous position instead. The default position of a transformable widget is (0, 0).</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">position</td><td>New position</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd>move, <a class="el" href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb" title="Gets the position of the widget.">getPosition</a></dd></dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Place the widget on an exact position</span></div><div class="line">widget-&gt;setPosition({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget relative to the size of its parent</span></div><div class="line">widget-&gt;setPosition({<span class="stringliteral">&quot;5%&quot;</span>, <span class="stringliteral">&quot;10%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget 50 pixels below another widget and automatically move it when the other widget moves</span></div><div class="line">widget-&gt;setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a18b504e1403ebd9e196c74b1e25aea3f"></a>
@@ -1502,8 +1526,30 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1532,28 +1578,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setSize overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
-</div>
-</div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a69864fc6ae18e77dea50cd92c3bd66c5"></a>
@@ -1667,7 +1691,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

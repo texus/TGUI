@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -192,6 +192,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a34974780df1204ff628f8d3171167004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a34974780df1204ff628f8d3171167004">draw</a> (const sf::Vertex *vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates &amp;states=sf::RenderStates::Default)</td></tr>
 <tr class="memdesc:a34974780df1204ff628f8d3171167004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws primitives defined by an array of vertices.  <a href="#a34974780df1204ff628f8d3171167004">More...</a><br /></td></tr>
 <tr class="separator:a34974780df1204ff628f8d3171167004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26f052f890c6dda920a6a719d265827b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a26f052f890c6dda920a6a719d265827b">draw</a> (const <a class="el" href="classtgui_1_1Sprite.html">tgui::Sprite</a> &amp;sprite, const sf::RenderStates &amp;states=sf::RenderStates::Default)</td></tr>
+<tr class="memdesc:a26f052f890c6dda920a6a719d265827b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a TGUI sprite to the canvas.  <a href="#a26f052f890c6dda920a6a719d265827b">More...</a><br /></td></tr>
+<tr class="separator:a26f052f890c6dda920a6a719d265827b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a981f49f8ba69e74ce3862a03b5669817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a981f49f8ba69e74ce3862a03b5669817">display</a> ()</td></tr>
 <tr class="memdesc:a981f49f8ba69e74ce3862a03b5669817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the contents of the canvas.  <a href="#a981f49f8ba69e74ce3862a03b5669817">More...</a><br /></td></tr>
 <tr class="separator:a981f49f8ba69e74ce3862a03b5669817"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -678,7 +681,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div>
 </div>
 <a id="a42e78efa5c2467e3887709837dab3582"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42e78efa5c2467e3887709837dab3582">&#9670;&nbsp;</a></span>draw() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e78efa5c2467e3887709837dab3582">&#9670;&nbsp;</a></span>draw() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -715,7 +718,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div>
 </div>
 <a id="a34974780df1204ff628f8d3171167004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34974780df1204ff628f8d3171167004">&#9670;&nbsp;</a></span>draw() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a34974780df1204ff628f8d3171167004">&#9670;&nbsp;</a></span>draw() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -765,8 +768,45 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
+<a id="a26f052f890c6dda920a6a719d265827b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26f052f890c6dda920a6a719d265827b">&#9670;&nbsp;</a></span>draw() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Canvas::draw </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Sprite.html">tgui::Sprite</a> &amp;&#160;</td>
+          <td class="paramname"><em>sprite</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::RenderStates &amp;&#160;</td>
+          <td class="paramname"><em>states</em> = <code>sf::RenderStates::Default</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws a TGUI sprite to the canvas. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sprite</td><td><a class="el" href="classtgui_1_1Sprite.html">Sprite</a> to draw </td></tr>
+    <tr><td class="paramname">states</td><td>Render states to use for drawing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a44b0c7fe2b54c9a48efe54a781880cb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44b0c7fe2b54c9a48efe54a781880cb0">&#9670;&nbsp;</a></span>draw() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a44b0c7fe2b54c9a48efe54a781880cb0">&#9670;&nbsp;</a></span>draw() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -884,8 +924,30 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -916,28 +978,6 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/Widgets/<a class="el" href="Canvas_8hpp_source.html">Canvas.hpp</a></li>
 </ul>
@@ -945,7 +985,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

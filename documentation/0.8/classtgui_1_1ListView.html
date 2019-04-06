@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -229,6 +229,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:af996d92f93ecfc559acf597eb2f3eadb"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#af996d92f93ecfc559acf597eb2f3eadb">addItem</a> (const std::vector&lt; sf::String &gt; &amp;item)</td></tr>
 <tr class="memdesc:af996d92f93ecfc559acf597eb2f3eadb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an item with values for multiple columns to the list.  <a href="#af996d92f93ecfc559acf597eb2f3eadb">More...</a><br /></td></tr>
 <tr class="separator:af996d92f93ecfc559acf597eb2f3eadb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9ba0c92895fb26c1923e4ca5d78fd83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#ac9ba0c92895fb26c1923e4ca5d78fd83">addMultipleItems</a> (const std::vector&lt; std::vector&lt; sf::String &gt;&gt; &amp;items)</td></tr>
+<tr class="memdesc:ac9ba0c92895fb26c1923e4ca5d78fd83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds multiple items to the list.  <a href="#ac9ba0c92895fb26c1923e4ca5d78fd83">More...</a><br /></td></tr>
+<tr class="separator:ac9ba0c92895fb26c1923e4ca5d78fd83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ba6f2779be6b91d07eda22ccd8ceb53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#a5ba6f2779be6b91d07eda22ccd8ceb53">changeItem</a> (std::size_t index, const std::vector&lt; sf::String &gt; &amp;item)</td></tr>
+<tr class="memdesc:a5ba6f2779be6b91d07eda22ccd8ceb53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes an item with values for multiple columns to the list.  <a href="#a5ba6f2779be6b91d07eda22ccd8ceb53">More...</a><br /></td></tr>
+<tr class="separator:a5ba6f2779be6b91d07eda22ccd8ceb53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afadfba5413e5e32437aeb3c45444a2d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#afadfba5413e5e32437aeb3c45444a2d8">changeSubItem</a> (std::size_t index, std::size_t column, const sf::String &amp;item)</td></tr>
+<tr class="memdesc:afadfba5413e5e32437aeb3c45444a2d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the caption of a single value in the item.  <a href="#afadfba5413e5e32437aeb3c45444a2d8">More...</a><br /></td></tr>
+<tr class="separator:afadfba5413e5e32437aeb3c45444a2d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad597c67727927eacb94a63598a86119a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#ad597c67727927eacb94a63598a86119a">removeItem</a> (std::size_t index)</td></tr>
 <tr class="memdesc:ad597c67727927eacb94a63598a86119a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the item from the list view.  <a href="#ad597c67727927eacb94a63598a86119a">More...</a><br /></td></tr>
 <tr class="separator:ad597c67727927eacb94a63598a86119a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -533,6 +542,10 @@ SignalInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 SignalInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#acf4579ce237e07b36d373ea6179f6257">onDoubleClick</a> = {&quot;DoubleClicked&quot;}</td></tr>
 <tr class="memdesc:acf4579ce237e07b36d373ea6179f6257"><td class="mdescLeft">&#160;</td><td class="mdescRight">An item was double clicked. Optional parameter: selected item index. <br /></td></tr>
 <tr class="separator:acf4579ce237e07b36d373ea6179f6257"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af94dffbe905006e69aecd7593972747e"><td class="memItemLeft" align="right" valign="top"><a id="af94dffbe905006e69aecd7593972747e"></a>
+SignalInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListView.html#af94dffbe905006e69aecd7593972747e">onRightClick</a> = {&quot;RightClicked&quot;}</td></tr>
+<tr class="memdesc:af94dffbe905006e69aecd7593972747e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item) <br /></td></tr>
+<tr class="separator:af94dffbe905006e69aecd7593972747e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a3835e82146cd20f070cb1363bc183976 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a3835e82146cd20f070cb1363bc183976"></a>
 SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a3835e82146cd20f070cb1363bc183976">onPositionChange</a> = {&quot;PositionChanged&quot;}</td></tr>
@@ -725,6 +738,115 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Index of the item that was just added </dd></dl>
+
+</div>
+</div>
+<a id="ac9ba0c92895fb26c1923e4ca5d78fd83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9ba0c92895fb26c1923e4ca5d78fd83">&#9670;&nbsp;</a></span>addMultipleItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ListView::addMultipleItems </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::vector&lt; sf::String &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>items</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds multiple items to the list. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">items</td><td>List of items that should be passed to the addItem </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5ba6f2779be6b91d07eda22ccd8ceb53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ba6f2779be6b91d07eda22ccd8ceb53">&#9670;&nbsp;</a></span>changeItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::ListView::changeItem </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes an item with values for multiple columns to the list. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>Index of the item to update </td></tr>
+    <tr><td class="paramname">item</td><td>Texts for each column</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the item was updated, false when the index was too high </dd></dl>
+
+</div>
+</div>
+<a id="afadfba5413e5e32437aeb3c45444a2d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afadfba5413e5e32437aeb3c45444a2d8">&#9670;&nbsp;</a></span>changeSubItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::ListView::changeSubItem </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>column</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the caption of a single value in the item. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>Index of the item to update </td></tr>
+    <tr><td class="paramname">column</td><td>Index of the column to change </td></tr>
+    <tr><td class="paramname">item</td><td>Texts for the given column for the given item</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the item was updated, false when the index was too high </dd></dl>
 
 </div>
 </div>
@@ -2137,30 +2259,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
-</div>
-</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2189,6 +2289,28 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setSize overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
+</div>
+</div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a77b1521ee1112ec204411f7684f9a71a"></a>
@@ -2252,7 +2374,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

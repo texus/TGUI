@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -214,6 +214,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:adaca60982b10eff922fac43291102b86"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#adaca60982b10eff922fac43291102b86">removeMenuItem</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy, bool removeParentsWhenEmpty=true)</td></tr>
 <tr class="memdesc:adaca60982b10eff922fac43291102b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a menu item (or sub menu item)  <a href="#adaca60982b10eff922fac43291102b86">More...</a><br /></td></tr>
 <tr class="separator:adaca60982b10eff922fac43291102b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ed1ca155b15c6863ae66efcedcd82e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a10ed1ca155b15c6863ae66efcedcd82e">removeMenuItems</a> (const sf::String &amp;menu)</td></tr>
+<tr class="memdesc:a10ed1ca155b15c6863ae66efcedcd82e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all menu items from a menu.  <a href="#a10ed1ca155b15c6863ae66efcedcd82e">More...</a><br /></td></tr>
+<tr class="separator:a10ed1ca155b15c6863ae66efcedcd82e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35f2a3815412a176b1cf2a7d0d6b46ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a35f2a3815412a176b1cf2a7d0d6b46ca">removeSubMenuItems</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy)</td></tr>
+<tr class="memdesc:a35f2a3815412a176b1cf2a7d0d6b46ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a all menu items below a (sub) menu.  <a href="#a35f2a3815412a176b1cf2a7d0d6b46ca">More...</a><br /></td></tr>
+<tr class="separator:a35f2a3815412a176b1cf2a7d0d6b46ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b1754a1091408d810b1482b7f746320"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a7b1754a1091408d810b1482b7f746320">setMenuEnabled</a> (const sf::String &amp;menu, bool enabled)</td></tr>
 <tr class="memdesc:a7b1754a1091408d810b1482b7f746320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable an entire menu.  <a href="#a7b1754a1091408d810b1482b7f746320">More...</a><br /></td></tr>
 <tr class="separator:a7b1754a1091408d810b1482b7f746320"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1224,6 +1230,60 @@ template&lt;typename Func , typename... Args&gt; </div>
 <div class="fragment"><div class="line">menuBar-&gt;removeMenuItem({<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Save&quot;</span>});</div><div class="line">menuBar-&gt;removeMenuItem({<span class="stringliteral">&quot;View&quot;</span>, <span class="stringliteral">&quot;Messages&quot;</span>, <span class="stringliteral">&quot;Tags&quot;</span>, <span class="stringliteral">&quot;Important&quot;</span>});</div></div><!-- fragment --> 
 </div>
 </div>
+<a id="a10ed1ca155b15c6863ae66efcedcd82e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10ed1ca155b15c6863ae66efcedcd82e">&#9670;&nbsp;</a></span>removeMenuItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::removeMenuItems </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes all menu items from a menu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td>The name of the menu for which all menu items should be removed</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu existed and its children were removed, false when menu was not found <pre class="fragment"></pre> </dd></dl>
+
+</div>
+</div>
+<a id="a35f2a3815412a176b1cf2a7d0d6b46ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35f2a3815412a176b1cf2a7d0d6b46ca">&#9670;&nbsp;</a></span>removeSubMenuItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::removeSubMenuItems </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes a all menu items below a (sub) menu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of the menu item, starting with the menu and ending with the sub menu containing the items</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu item existed and its children were removed, false when hierarchy was incorrect</dd></dl>
+<div class="fragment"><div class="line">menuBar-&gt;removeSubMenuItems({<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Recent files&quot;</span>});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a4efea15156bfee3f158bb75e1bcb6e11"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4efea15156bfee3f158bb75e1bcb6e11">&#9670;&nbsp;</a></span>rendererChanged()</h2>
 
@@ -1613,7 +1673,7 @@ template&lt;typename Func , typename... Args&gt; </div>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

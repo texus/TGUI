@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -174,6 +174,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a23450691cda16616e9e42d1156ae483e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Signal.html#a23450691cda16616e9e42d1156ae483e">getName</a> () const</td></tr>
 <tr class="memdesc:a23450691cda16616e9e42d1156ae483e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name given to the signal.  <a href="#a23450691cda16616e9e42d1156ae483e">More...</a><br /></td></tr>
 <tr class="separator:a23450691cda16616e9e42d1156ae483e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a622f121299da5a2d72ec31c423420882"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Signal.html#a622f121299da5a2d72ec31c423420882">setEnabled</a> (bool enabled)</td></tr>
+<tr class="memdesc:a622f121299da5a2d72ec31c423420882"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether this signal calls the connected functions when triggered.  <a href="#a622f121299da5a2d72ec31c423420882">More...</a><br /></td></tr>
+<tr class="separator:a622f121299da5a2d72ec31c423420882"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f666511f09d5611ae5072191f8ab51a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Signal.html#a3f666511f09d5611ae5072191f8ab51a">isEnabled</a> () const</td></tr>
+<tr class="memdesc:a3f666511f09d5611ae5072191f8ab51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether this signal calls the connected functions when triggered.  <a href="#a3f666511f09d5611ae5072191f8ab51a">More...</a><br /></td></tr>
+<tr class="separator:a3f666511f09d5611ae5072191f8ab51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classtgui_1_1Signal.html" title="Signal to which the user can subscribe to get callbacks from.">Signal</a> to which the user can subscribe to get callbacks from. </p>
@@ -368,6 +374,70 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="a3f666511f09d5611ae5072191f8ab51a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f666511f09d5611ae5072191f8ab51a">&#9670;&nbsp;</a></span>isEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::Signal::isEnabled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether this signal calls the connected functions when triggered. </p>
+<dl class="section return"><dt>Returns</dt><dd>Is the signal enabled?</dd></dl>
+<p>Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the handler and connecting it again a few lines later. </p>
+
+</div>
+</div>
+<a id="a622f121299da5a2d72ec31c423420882"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a622f121299da5a2d72ec31c423420882">&#9670;&nbsp;</a></span>setEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Signal::setEnabled </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Changes whether this signal calls the connected functions when triggered. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enabled</td><td>Is the signal enabled?</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the handler and connecting it again a few lines later. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/<a class="el" href="Signal_8hpp_source.html">Signal.hpp</a></li>
 </ul>
@@ -375,7 +445,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

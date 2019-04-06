@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -134,6 +134,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab98dd223295bdec57639ea9675c29bfc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Color.html#ab98dd223295bdec57639ea9675c29bfc">Color</a> (std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha=255)</td></tr>
 <tr class="memdesc:ab98dd223295bdec57639ea9675c29bfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the object from an the RGB or RGBA values.  <a href="#ab98dd223295bdec57639ea9675c29bfc">More...</a><br /></td></tr>
 <tr class="separator:ab98dd223295bdec57639ea9675c29bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99905076376cc1453650b4231bd47f53"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Color.html#a99905076376cc1453650b4231bd47f53">Color</a> (const sf::String &amp;string)</td></tr>
+<tr class="memdesc:a99905076376cc1453650b4231bd47f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the object from a string.  <a href="#a99905076376cc1453650b4231bd47f53">More...</a><br /></td></tr>
+<tr class="separator:a99905076376cc1453650b4231bd47f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c5b792182dc46b1d1425b165d9697fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Color.html#a5c5b792182dc46b1d1425b165d9697fe">Color</a> (const std::string &amp;string)</td></tr>
 <tr class="memdesc:a5c5b792182dc46b1d1425b165d9697fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the object from a string.  <a href="#a5c5b792182dc46b1d1425b165d9697fe">More...</a><br /></td></tr>
 <tr class="separator:a5c5b792182dc46b1d1425b165d9697fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -229,7 +232,7 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 </ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8ea3b13a43927304e4dfa390b91f8d7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ea3b13a43927304e4dfa390b91f8d7b">&#9670;&nbsp;</a></span>Color() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ea3b13a43927304e4dfa390b91f8d7b">&#9670;&nbsp;</a></span>Color() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +260,7 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 </div>
 </div>
 <a id="a9c74477778994d5c16678a7cdf1ac174"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c74477778994d5c16678a7cdf1ac174">&#9670;&nbsp;</a></span>Color() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c74477778994d5c16678a7cdf1ac174">&#9670;&nbsp;</a></span>Color() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,7 +294,7 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 </div>
 </div>
 <a id="ab98dd223295bdec57639ea9675c29bfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab98dd223295bdec57639ea9675c29bfc">&#9670;&nbsp;</a></span>Color() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab98dd223295bdec57639ea9675c29bfc">&#9670;&nbsp;</a></span>Color() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -349,8 +352,35 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 
 </div>
 </div>
+<a id="a99905076376cc1453650b4231bd47f53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99905076376cc1453650b4231bd47f53">&#9670;&nbsp;</a></span>Color() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tgui::Color::Color </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates the object from a string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>String to be deserialized as color</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The <a class="el" href="classtgui_1_1Deserializer.html" title="Deserializes a settable property.">Deserializer</a> class is used to convert the string into a color. </p>
+
+</div>
+</div>
 <a id="a5c5b792182dc46b1d1425b165d9697fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c5b792182dc46b1d1425b165d9697fe">&#9670;&nbsp;</a></span>Color() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c5b792182dc46b1d1425b165d9697fe">&#9670;&nbsp;</a></span>Color() <span class="overload">[5/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -377,7 +407,7 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 </div>
 </div>
 <a id="aa9e4053a43d22fa354a676cb28a92706"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9e4053a43d22fa354a676cb28a92706">&#9670;&nbsp;</a></span>Color() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9e4053a43d22fa354a676cb28a92706">&#9670;&nbsp;</a></span>Color() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -531,7 +561,7 @@ static const <a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><t
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

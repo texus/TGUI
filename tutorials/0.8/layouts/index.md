@@ -38,3 +38,10 @@ There are also bind functions to refer to widgets directly without them needing 
 button2->setSize(bindSize(button1));
 button2->setPosition({bindRight(button1) + 50, bindTop(button1)});
 ```
+
+### Minimum / maximum
+Expressions can also contain min or max to select the minimum or maximum of sub-expressions. The following example centers a picture in the window, filling as much space as possible while keeping the entire picture visible and maintaining its 4:3 ratio.
+```c++
+pic->setPosition("(&.size - size) / 2");
+pic->setSize({"min(&.width, &.height * 4/3)", "min(&.height, &.width * 3/4)"});
+```

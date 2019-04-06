@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -175,6 +175,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a38af100b1391ccc2901612674d141881"><td class="memItemLeft" align="right" valign="top">const sf::String &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a38af100b1391ccc2901612674d141881">getText</a> () const</td></tr>
 <tr class="memdesc:a38af100b1391ccc2901612674d141881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the text of the text box.  <a href="#a38af100b1391ccc2901612674d141881">More...</a><br /></td></tr>
 <tr class="separator:a38af100b1391ccc2901612674d141881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0df26a66f6dc3e7af62a9a448c2b087"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#aa0df26a66f6dc3e7af62a9a448c2b087">setSelectedText</a> (std::size_t selectionStartIndex, std::size_t selectionEndIndex)</td></tr>
+<tr class="memdesc:aa0df26a66f6dc3e7af62a9a448c2b087"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes which part of the text is selected.  <a href="#aa0df26a66f6dc3e7af62a9a448c2b087">More...</a><br /></td></tr>
+<tr class="separator:aa0df26a66f6dc3e7af62a9a448c2b087"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af641d12f009b8b547e381acb054ed240"><td class="memItemLeft" align="right" valign="top">sf::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#af641d12f009b8b547e381acb054ed240">getSelectedText</a> () const</td></tr>
 <tr class="memdesc:af641d12f009b8b547e381acb054ed240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the text that you currently have selected.  <a href="#af641d12f009b8b547e381acb054ed240">More...</a><br /></td></tr>
 <tr class="separator:af641d12f009b8b547e381acb054ed240"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1225,6 +1228,43 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>When the text box is read-only, you can no longer delete characters and type text. Selecting text, copying text and even calling the setText function will still work. </p><pre class="fragment"></pre> 
 </div>
 </div>
+<a id="aa0df26a66f6dc3e7af62a9a448c2b087"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0df26a66f6dc3e7af62a9a448c2b087">&#9670;&nbsp;</a></span>setSelectedText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::TextBox::setSelectedText </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>selectionStartIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>selectionEndIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes which part of the text is selected. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">selectionStartIndex</td><td>Amount of characters before the start of the selection </td></tr>
+    <tr><td class="paramname">selectionEndIndex</td><td>Amount of characters before the end of the selection </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a434d8c1dd0932bfbf7ef2bbf74fe77aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a434d8c1dd0932bfbf7ef2bbf74fe77aa">&#9670;&nbsp;</a></span>setSize() <span class="overload">[1/3]</span></h2>
 
@@ -1429,7 +1469,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

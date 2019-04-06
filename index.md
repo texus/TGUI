@@ -4,7 +4,7 @@ title: Texus' Graphical User Interface
 redirect_from: "/v0.7-dev/index.html"
 ---
 
-TGUI is an easy to use cross-platform c++ GUI library for [SFML](https://www.sfml-dev.org).
+TGUI is a cross-platform c++ GUI library for [SFML](https://www.sfml-dev.org).
 
 A .Net binding for the library is available at [tgui.net](https://tgui.net).
 
@@ -20,21 +20,30 @@ The gui is easy to use, with only a few lines you can e.g. have a fully function
 
 <div>
   <div class="HomePageLargerColumn">
-    <h3>Cross-platform</h3>
-    <p>TGUI will work on all platforms that SFML supports. This means that you can use it on <b>Windows</b>, <b>Linux</b>, <b>Mac OS X</b>, <b>FreeBSD</b> and experimentally on <b>Raspberry Pi</b>, <b>Android</b> and <b>iOS</b>.</p>
+    <h3>Gui Builder</h3>
+    <p>TGUI comes with its own Gui Builder, which allows designing your gui more easily.</p>
   </div>
+  <div class="HomePageSmallerColumn">
+    <a href="/resources/GuiBuilder-0.8.5.png" onclick="return showLightBox(event, href);"><img src="/resources/GuiBuilder-0.8.5-small.jpg" alt="Gui Builder" width="360" height="195" /></a>
+  </div>
+</div>
+
+<div>
   <div class="HomePageSmallerColumn">
     <img src="/resources/CrossPlatform.jpg" alt="Cross Platform" width="340" height="185" />
   </div>
+  <div class="HomePageLargerColumn">
+    <h3>Cross-platform</h3>
+    <p>TGUI will work on all platforms that SFML supports. This means that you can use it on <b>Windows</b>, <b>Linux</b>, <b>Mac OS X</b>, <b>FreeBSD</b> and experimentally on <b>Raspberry Pi</b>, <b>Android</b> and <b>iOS</b>.</p>
+  </div>
 </div>
 
-
-<div class="HomePageSmallerColumn">
-  <img src="/resources/UniqueCallbackSystem.png" alt="Unique Callback System" width="364" height="195" />
-</div>
 <div class="HomePageLargerColumn">
   <h3>Unique Callback System</h3>
   <p>The callback system was written specifically for TGUI and aims to be as easy as possible. You will not have to call std::bind yourself when passing parameters and you can leave parameters unbound which the widgets can use to pass information.</p>
+</div>
+<div class="HomePageSmallerColumn">
+  <img src="/resources/UniqueCallbackSystem.png" alt="Unique Callback System" width="364" height="195" />
 </div>
 
 

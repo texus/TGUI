@@ -8,6 +8,7 @@ var searchData=
   ['addline',['addLine',['../classtgui_1_1ChatBox.html#ad4f3a6b72787f598db549478093a0079',1,'tgui::ChatBox::addLine(const sf::String &amp;text)'],['../classtgui_1_1ChatBox.html#a321e6ed36b7b7a8811e3699015362e73',1,'tgui::ChatBox::addLine(const sf::String &amp;text, Color color)'],['../classtgui_1_1ChatBox.html#a922070b653fe002f9078ab922a29d8fe',1,'tgui::ChatBox::addLine(const sf::String &amp;text, Color color, TextStyle style)']]],
   ['addmenu',['addMenu',['../classtgui_1_1MenuBar.html#a0c396d8974348871bd19957b6108d3e2',1,'tgui::MenuBar']]],
   ['addmenuitem',['addMenuItem',['../classtgui_1_1MenuBar.html#ac5eadf1233b439a0a1aa4f6f6f987004',1,'tgui::MenuBar::addMenuItem(const sf::String &amp;text)'],['../classtgui_1_1MenuBar.html#a6e06072507a5085cec4e3a06a5ae3ed8',1,'tgui::MenuBar::addMenuItem(const sf::String &amp;menu, const sf::String &amp;text)'],['../classtgui_1_1MenuBar.html#a0f379fc83bc2440cc12f36128b33bf02',1,'tgui::MenuBar::addMenuItem(const std::vector&lt; sf::String &gt; &amp;hierarchy, bool createParents=true)']]],
+  ['addmultipleitems',['addMultipleItems',['../classtgui_1_1ListView.html#ac9ba0c92895fb26c1923e4ca5d78fd83',1,'tgui::ListView']]],
   ['addrenderer',['addRenderer',['../classtgui_1_1Theme.html#afaf85705c14acc2910e7282765cc317a',1,'tgui::Theme']]],
   ['addspace',['addSpace',['../classtgui_1_1BoxLayoutRatios.html#a9e720efa9853496fb194e85d083c615b',1,'tgui::BoxLayoutRatios']]],
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],

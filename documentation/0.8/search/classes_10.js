@@ -17,5 +17,6 @@ var searchData=
   ['sliderrenderer',['SliderRenderer',['../classtgui_1_1SliderRenderer.html',1,'tgui']]],
   ['spinbutton',['SpinButton',['../classtgui_1_1SpinButton.html',1,'tgui']]],
   ['spinbuttonrenderer',['SpinButtonRenderer',['../classtgui_1_1SpinButtonRenderer.html',1,'tgui']]],
-  ['sprite',['Sprite',['../classtgui_1_1Sprite.html',1,'tgui']]]
+  ['sprite',['Sprite',['../classtgui_1_1Sprite.html',1,'tgui']]],
+  ['svgimage',['SvgImage',['../classtgui_1_1SvgImage.html',1,'tgui']]]
 ];

@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -252,9 +252,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a86f7d52002e38c016524992190cbb53b"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a86f7d52002e38c016524992190cbb53b">getCaretPosition</a> () const</td></tr>
 <tr class="memdesc:a86f7d52002e38c016524992190cbb53b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns after which character the blinking cursor is currently located.  <a href="#a86f7d52002e38c016524992190cbb53b">More...</a><br /></td></tr>
 <tr class="separator:a86f7d52002e38c016524992190cbb53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63373603e9d2e70d2f21766041712ade"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a63373603e9d2e70d2f21766041712ade">setInputValidator</a> (const std::string &amp;regex=&quot;.*&quot;)</td></tr>
-<tr class="memdesc:a63373603e9d2e70d2f21766041712ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines how the text input should look like.  <a href="#a63373603e9d2e70d2f21766041712ade">More...</a><br /></td></tr>
-<tr class="separator:a63373603e9d2e70d2f21766041712ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec7beb2d0d9123e7c22cdb957bb3c6df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#aec7beb2d0d9123e7c22cdb957bb3c6df">setInputValidator</a> (const std::string &amp;regex=&quot;.*&quot;)</td></tr>
+<tr class="memdesc:aec7beb2d0d9123e7c22cdb957bb3c6df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines how the text input should look like.  <a href="#aec7beb2d0d9123e7c22cdb957bb3c6df">More...</a><br /></td></tr>
+<tr class="separator:aec7beb2d0d9123e7c22cdb957bb3c6df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa50835df7fabb66a9a164e4bdcd9088e"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#aa50835df7fabb66a9a164e4bdcd9088e">getInputValidator</a> () const</td></tr>
 <tr class="memdesc:aa50835df7fabb66a9a164e4bdcd9088e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the regex to which the text is matched.  <a href="#aa50835df7fabb66a9a164e4bdcd9088e">More...</a><br /></td></tr>
 <tr class="separator:aa50835df7fabb66a9a164e4bdcd9088e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1325,14 +1325,14 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="a63373603e9d2e70d2f21766041712ade"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63373603e9d2e70d2f21766041712ade">&#9670;&nbsp;</a></span>setInputValidator()</h2>
+<a id="aec7beb2d0d9123e7c22cdb957bb3c6df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec7beb2d0d9123e7c22cdb957bb3c6df">&#9670;&nbsp;</a></span>setInputValidator()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void tgui::EditBox::setInputValidator </td>
+          <td class="memname">bool tgui::EditBox::setInputValidator </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>regex</em> = <code>&quot;.*&quot;</code></td><td>)</td>
@@ -1348,6 +1348,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>True when validator was changed, false when std::regex_error was thrown internally.</dd></dl>
 <p>When the regex does not match when calling the setText function then the edit box contents will be cleared. When it does not match when the user types a character in the edit box, then the input character is rejected.</p>
 <p>Examples: </p><div class="fragment"><div class="line">edit1-&gt;setInputValidator(<a class="code" href="structtgui_1_1EditBox_1_1Validator.html#a1318efc0dc671aff9d03f81100ca33d4">EditBox::Validator::Int</a>);</div><div class="line">edit2-&gt;setInputValidator(<span class="stringliteral">&quot;[a-zA-Z][a-zA-Z0-9]*&quot;</span>);</div></div><!-- fragment --> 
 </div>
@@ -1615,7 +1616,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

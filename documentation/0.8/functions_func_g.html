@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -258,6 +258,7 @@ $(function() {
 </li>
 <li>getBorderColorFocused()
 : <a class="el" href="classtgui_1_1ButtonRenderer.html#a6925354289d313219817ca9fd4412444">tgui::ButtonRenderer</a>
+, <a class="el" href="classtgui_1_1ChildWindowRenderer.html#a5623d0a6a91b24abbf663af02dba3266">tgui::ChildWindowRenderer</a>
 , <a class="el" href="classtgui_1_1EditBoxRenderer.html#a9cf31acf37a36711e9f63a294984c76d">tgui::EditBoxRenderer</a>
 , <a class="el" href="classtgui_1_1RadioButtonRenderer.html#a86288fcdb95316cc5b446c3f6b3d19b4">tgui::RadioButtonRenderer</a>
 </li>
@@ -312,6 +313,9 @@ $(function() {
 <li>getCaretWidth()
 : <a class="el" href="classtgui_1_1EditBoxRenderer.html#a9aed0945f40738c8018cfda8cd4e8831">tgui::EditBoxRenderer</a>
 , <a class="el" href="classtgui_1_1TextBoxRenderer.html#add35f5dd89b6fb5df06644823bdf7fa3">tgui::TextBoxRenderer</a>
+</li>
+<li>getChangeItemOnScroll()
+: <a class="el" href="classtgui_1_1ComboBox.html#a43b8375df55807ccd9bb414f0560a82d">tgui::ComboBox</a>
 </li>
 <li>getCharacterSize()
 : <a class="el" href="classtgui_1_1Text.html#a67b8ef540ce2f4acb645b3531965ee2e">tgui::Text</a>
@@ -378,13 +382,16 @@ $(function() {
 : <a class="el" href="classtgui_1_1Theme.html#a653926fa2bf472907d99fdb46e0df80d">tgui::Theme</a>
 </li>
 <li>getDefaultText()
-: <a class="el" href="classtgui_1_1EditBox.html#abd39d02c8e0ebe8ff09c2f971f41075c">tgui::EditBox</a>
+: <a class="el" href="classtgui_1_1ComboBox.html#aaa3db3c9e276b80174a3c86c326b6d8b">tgui::ComboBox</a>
+, <a class="el" href="classtgui_1_1EditBox.html#abd39d02c8e0ebe8ff09c2f971f41075c">tgui::EditBox</a>
 </li>
 <li>getDefaultTextColor()
-: <a class="el" href="classtgui_1_1EditBoxRenderer.html#ab391213c5dce596e0ffc53df1cb88811">tgui::EditBoxRenderer</a>
+: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#a480e1bd265488b7b490f35084799fd6e">tgui::ComboBoxRenderer</a>
+, <a class="el" href="classtgui_1_1EditBoxRenderer.html#ab391213c5dce596e0ffc53df1cb88811">tgui::EditBoxRenderer</a>
 </li>
 <li>getDefaultTextStyle()
-: <a class="el" href="classtgui_1_1EditBoxRenderer.html#a4c6258921193df99cd0bd219d8d17bbd">tgui::EditBoxRenderer</a>
+: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#accde44e98ebf524455f44ddab108195d">tgui::ComboBoxRenderer</a>
+, <a class="el" href="classtgui_1_1EditBoxRenderer.html#a4c6258921193df99cd0bd219d8d17bbd">tgui::EditBoxRenderer</a>
 </li>
 <li>getDefaultWidth()
 : <a class="el" href="classtgui_1_1Scrollbar.html#a5bab42bb09beeb3e21347b0ba7976d74">tgui::Scrollbar</a>
@@ -523,6 +530,9 @@ $(function() {
 <li>getItemById()
 : <a class="el" href="classtgui_1_1ComboBox.html#a7efeec7678ba1416c8f87ce4e6afe46a">tgui::ComboBox</a>
 , <a class="el" href="classtgui_1_1ListBox.html#abacd908f5f27b38ee835a50f9d1b092a">tgui::ListBox</a>
+</li>
+<li>getItemByIndex()
+: <a class="el" href="classtgui_1_1ListBox.html#a81d51cf3138a48dac03fd7121b915adc">tgui::ListBox</a>
 </li>
 <li>getItemCount()
 : <a class="el" href="classtgui_1_1ComboBox.html#a2d5a80423ff10441d06221b4e991e5c9">tgui::ComboBox</a>
@@ -930,6 +940,7 @@ $(function() {
 <li>getSize()
 : <a class="el" href="classtgui_1_1FloatRect.html#a6a86f8c4d5d6ffc055d4a2e3b279e8c7">tgui::FloatRect</a>
 , <a class="el" href="classtgui_1_1Sprite.html#ae6fc7dd413a6f7a654cd3ccb500a9fe9">tgui::Sprite</a>
+, <a class="el" href="classtgui_1_1SvgImage.html#a7bd455ff883186bd01d6ff0c3455e531">tgui::SvgImage</a>
 , <a class="el" href="classtgui_1_1Text.html#acef07f636b1732278c7315ab668e231e">tgui::Text</a>
 , <a class="el" href="classtgui_1_1Widget.html#aa8b069137ac262db75bbc75c068d8f76">tgui::Widget</a>
 </li>
@@ -1076,7 +1087,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1EditBoxRenderer.html#a1f05a6eda074da54f37fc4dcfe162e24">tgui::EditBoxRenderer</a>
 , <a class="el" href="classtgui_1_1ObjectConverter.html#acbf409cb7305444e2dbb4c2db6cf2931">tgui::ObjectConverter</a>
 , <a class="el" href="classtgui_1_1PictureRenderer.html#a09b808188cc6f400575ad031e64ff046">tgui::PictureRenderer</a>
-, <a class="el" href="classtgui_1_1Sprite.html#a1c52b448ce409d330e2dc39a6689638f">tgui::Sprite</a>
+, <a class="el" href="classtgui_1_1Sprite.html#a315bc8c2e983607e76bf9a63c901b9f3">tgui::Sprite</a>
 , <a class="el" href="classtgui_1_1TextureManager.html#af349f7a32a3e8d3516fb3e72b6db2d50">tgui::TextureManager</a>
 </li>
 <li>getTextureArrow()
@@ -1319,7 +1330,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">tgui::Widget</a>
 </li>
 <li>getWidgetPadding()
-: <a class="el" href="classtgui_1_1Grid.html#a9336f7c7e1dc31c47702d7ccaa1c8553">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#a7a902811092ff4b6084973b7c76f8ed5">tgui::Grid</a>
 </li>
 <li>getWidgets()
 : <a class="el" href="classtgui_1_1Container.html#a65ebb83c695089c8073a4d116d1339f3">tgui::Container</a>
@@ -1329,20 +1340,20 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#a74f39d58b9fee9233d1c9235d466f56a">tgui::Widget</a>
 </li>
 <li>Grid()
-: <a class="el" href="classtgui_1_1Grid.html#ad40bc031a9d8ede279b5086ab1084ace">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c">tgui::Grid</a>
 </li>
 <li>Group()
 : <a class="el" href="classtgui_1_1Group.html#acc8a0bf2008a89c1e4200e2be25d5d7a">tgui::Group</a>
 </li>
 <li>Gui()
-: <a class="el" href="classtgui_1_1Gui.html#aaf24c9b2f9d11a7db7f8d4b49ee488fa">tgui::Gui</a>
+: <a class="el" href="classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9">tgui::Gui</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:01 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

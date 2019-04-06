@@ -7,6 +7,26 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 5
+      date: 6 April 2019
+      changes: |
+        Big improvements to Gui Builder
+        Svg images are now supported
+        ComboBox can now contain some text when no item is selected
+        Added function to ComboBox to disallow changing the selected item by scrolling the mouse wheel
+        Added RightClicked signal to ListView
+        Added functions to ListView to change existing items
+        Support typing tabs in TextBox (if tab usage is disabled in gui)
+        Added function to signals to temporarily disable callbacks
+        Added addition and subtraction operators to Outline
+        ChildWindow can now have a different border color in focused state
+        Added function to select item in TreeView
+        EditBox::setInputValidator now returns false when regex was invalid
+        Let ComboBox send the ItemSelected event only after the mouse is released
+        TitleBarHeight property of default renderer was ignored in ChildWindow
+        Label didn't ignore events after ignoreMouseEvents was called
+        Adding space around widgets in Grid to fill the given size wasn't working properly
+        Loading widget from file failed when min or max was used in layout strings
     - version: 4
       date: 23 February 2019
       changes: |

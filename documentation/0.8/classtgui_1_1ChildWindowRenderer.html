@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -164,6 +164,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9e2306b4ff3e2fb95a50954f16ee9f60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a9e2306b4ff3e2fb95a50954f16ee9f60">getBorderColor</a> () const</td></tr>
 <tr class="memdesc:a9e2306b4ff3e2fb95a50954f16ee9f60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the color of the borders.  <a href="#a9e2306b4ff3e2fb95a50954f16ee9f60">More...</a><br /></td></tr>
 <tr class="separator:a9e2306b4ff3e2fb95a50954f16ee9f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94f4e85e4346af54fd346339b2e2e814"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a94f4e85e4346af54fd346339b2e2e814">setBorderColorFocused</a> (<a class="el" href="classtgui_1_1Color.html">Color</a> color)</td></tr>
+<tr class="memdesc:a94f4e85e4346af54fd346339b2e2e814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the color of the borders when the widget is focused.  <a href="#a94f4e85e4346af54fd346339b2e2e814">More...</a><br /></td></tr>
+<tr class="separator:a94f4e85e4346af54fd346339b2e2e814"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5623d0a6a91b24abbf663af02dba3266"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a5623d0a6a91b24abbf663af02dba3266">getBorderColorFocused</a> () const</td></tr>
+<tr class="memdesc:a5623d0a6a91b24abbf663af02dba3266"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the color of the borders when the widget is focused.  <a href="#a5623d0a6a91b24abbf663af02dba3266">More...</a><br /></td></tr>
+<tr class="separator:a5623d0a6a91b24abbf663af02dba3266"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebac2c3c5e7ae11789fe24deef0ab93c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#aebac2c3c5e7ae11789fe24deef0ab93c">setBorderBelowTitleBar</a> (float border)</td></tr>
 <tr class="memdesc:aebac2c3c5e7ae11789fe24deef0ab93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the distance between the title bar and the actual contents of the child window.  <a href="#aebac2c3c5e7ae11789fe24deef0ab93c">More...</a><br /></td></tr>
 <tr class="separator:aebac2c3c5e7ae11789fe24deef0ab93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -340,6 +346,26 @@ Public Member Functions</h2></td></tr>
 
 <p>Returns the color of the borders. </p>
 <dl class="section return"><dt>Returns</dt><dd>border color <pre class="fragment"></pre> </dd></dl>
+
+</div>
+</div>
+<a id="a5623d0a6a91b24abbf663af02dba3266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5623d0a6a91b24abbf663af02dba3266">&#9670;&nbsp;</a></span>getBorderColorFocused()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1Color.html">Color</a> tgui::ChildWindowRenderer::getBorderColorFocused </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the color of the borders when the widget is focused. </p>
+<dl class="section return"><dt>Returns</dt><dd>focused border color </dd></dl>
 
 </div>
 </div>
@@ -656,6 +682,32 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">color</td><td>New border color <pre class="fragment"></pre> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a94f4e85e4346af54fd346339b2e2e814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94f4e85e4346af54fd346339b2e2e814">&#9670;&nbsp;</a></span>setBorderColorFocused()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChildWindowRenderer::setBorderColorFocused </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the color of the borders when the widget is focused. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>New focused border color </td></tr>
   </table>
   </dd>
 </dl>
@@ -1012,7 +1064,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

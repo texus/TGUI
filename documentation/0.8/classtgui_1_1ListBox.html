@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -199,6 +199,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abacd908f5f27b38ee835a50f9d1b092a"><td class="memItemLeft" align="right" valign="top">sf::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#abacd908f5f27b38ee835a50f9d1b092a">getItemById</a> (const sf::String &amp;id) const</td></tr>
 <tr class="memdesc:abacd908f5f27b38ee835a50f9d1b092a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the item name of the item with the given id.  <a href="#abacd908f5f27b38ee835a50f9d1b092a">More...</a><br /></td></tr>
 <tr class="separator:abacd908f5f27b38ee835a50f9d1b092a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d51cf3138a48dac03fd7121b915adc"><td class="memItemLeft" align="right" valign="top">sf::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#a81d51cf3138a48dac03fd7121b915adc">getItemByIndex</a> (std::size_t index) const</td></tr>
+<tr class="memdesc:a81d51cf3138a48dac03fd7121b915adc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the item name of the item at the given index.  <a href="#a81d51cf3138a48dac03fd7121b915adc">More...</a><br /></td></tr>
+<tr class="separator:a81d51cf3138a48dac03fd7121b915adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac461bf98496378cfac29c9051e90a5bb"><td class="memItemLeft" align="right" valign="top">sf::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#ac461bf98496378cfac29c9051e90a5bb">getSelectedItem</a> () const</td></tr>
 <tr class="memdesc:ac461bf98496378cfac29c9051e90a5bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the currently selected item.  <a href="#ac461bf98496378cfac29c9051e90a5bb">More...</a><br /></td></tr>
 <tr class="separator:ac461bf98496378cfac29c9051e90a5bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -957,6 +960,33 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="a81d51cf3138a48dac03fd7121b915adc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81d51cf3138a48dac03fd7121b915adc">&#9670;&nbsp;</a></span>getItemByIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sf::String tgui::ListBox::getItemByIndex </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the item name of the item at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The index of the item to return</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The requested item, or an empty string when the index was too high </dd></dl>
+
+</div>
+</div>
 <a id="a0e60af99e300edce678f31297fc1d0f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0e60af99e300edce678f31297fc1d0f9">&#9670;&nbsp;</a></span>getItemCount()</h2>
 
@@ -1520,32 +1550,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="afc57c2d17eebd0a528e7f5ca8e088011"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc57c2d17eebd0a528e7f5ca8e088011">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setPosition</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>sets the position of the widget </p>
-<p>This function completely overwrites the previous position. See the move function to apply an offset based on the previous position instead. The default position of a transformable widget is (0, 0).</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">position</td><td>New position</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd>move, <a class="el" href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb" title="Gets the position of the widget.">getPosition</a></dd></dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Place the widget on an exact position</span></div><div class="line">widget-&gt;setPosition({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget relative to the size of its parent</span></div><div class="line">widget-&gt;setPosition({<span class="stringliteral">&quot;5%&quot;</span>, <span class="stringliteral">&quot;10%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget 50 pixels below another widget and automatically move it when the other widget moves</span></div><div class="line">widget-&gt;setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});</div></div><!-- fragment --> 
-</div>
-</div>
 <a id="a57b85bc10c1447e62d65739a39fca865"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57b85bc10c1447e62d65739a39fca865">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a57b85bc10c1447e62d65739a39fca865">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1575,6 +1581,30 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setPosition overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
+</div>
+</div>
+<a id="afc57c2d17eebd0a528e7f5ca8e088011"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc57c2d17eebd0a528e7f5ca8e088011">&#9670;&nbsp;</a></span>setPosition() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setPosition</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sets the position of the widget </p>
+<p>This function completely overwrites the previous position. See the move function to apply an offset based on the previous position instead. The default position of a transformable widget is (0, 0).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>New position</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd>move, <a class="el" href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb" title="Gets the position of the widget.">getPosition</a></dd></dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Place the widget on an exact position</span></div><div class="line">widget-&gt;setPosition({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget relative to the size of its parent</span></div><div class="line">widget-&gt;setPosition({<span class="stringliteral">&quot;5%&quot;</span>, <span class="stringliteral">&quot;10%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Place the widget 50 pixels below another widget and automatically move it when the other widget moves</span></div><div class="line">widget-&gt;setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a5e43b23dae5ed28a17cd4ee2aefb1f5b"></a>
@@ -1802,7 +1832,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

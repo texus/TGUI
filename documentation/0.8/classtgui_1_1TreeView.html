@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -172,6 +172,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TreeView.html#a5eb044dfc92d14570dd1fe9edbdcb958">collapseAll</a> ()</td></tr>
 <tr class="memdesc:a5eb044dfc92d14570dd1fe9edbdcb958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collapses all items. <br /></td></tr>
 <tr class="separator:a5eb044dfc92d14570dd1fe9edbdcb958"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81df800f294f4b42823632c8145afba6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TreeView.html#a81df800f294f4b42823632c8145afba6">selectItem</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy)</td></tr>
+<tr class="memdesc:a81df800f294f4b42823632c8145afba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects an item in the tree view.  <a href="#a81df800f294f4b42823632c8145afba6">More...</a><br /></td></tr>
+<tr class="separator:a81df800f294f4b42823632c8145afba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fabe09019d86492883aae4377e04b20"><td class="memItemLeft" align="right" valign="top"><a id="a1fabe09019d86492883aae4377e04b20"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TreeView.html#a1fabe09019d86492883aae4377e04b20">deselectItem</a> ()</td></tr>
 <tr class="memdesc:a1fabe09019d86492883aae4377e04b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deselect the item if one was selected. <br /></td></tr>
@@ -982,6 +985,33 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 
 </div>
 </div>
+<a id="a81df800f294f4b42823632c8145afba6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81df800f294f4b42823632c8145afba6">&#9670;&nbsp;</a></span>selectItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::TreeView::selectItem </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Selects an item in the tree view. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of items, with the last item being the leaf item, which is being selected</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the item was selected, false when hierarchy was incorrect </dd></dl>
+
+</div>
+</div>
 <a id="aa01525063ac6a8ab91b9835e3732f771"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa01525063ac6a8ab91b9835e3732f771">&#9670;&nbsp;</a></span>setItemHeight()</h2>
 
@@ -1044,8 +1074,30 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 
 </div>
 </div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1074,28 +1126,6 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setSize overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
-</div>
-</div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a660ed8f06a380f9289a5f24008d32935"></a>
@@ -1133,7 +1163,7 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:01 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>

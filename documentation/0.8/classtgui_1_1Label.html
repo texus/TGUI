@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.4</span>
+   &#160;<span id="projectnumber">0.8.5</span>
    </div>
   </td>
  </tr>
@@ -243,6 +243,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1613cb1e6d01a09be47339b9521e9329"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a1613cb1e6d01a09be47339b9521e9329">canGainFocus</a> () const override</td></tr>
 <tr class="memdesc:a1613cb1e6d01a09be47339b9521e9329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the widget can gain focus.  <a href="#a1613cb1e6d01a09be47339b9521e9329">More...</a><br /></td></tr>
 <tr class="separator:a1613cb1e6d01a09be47339b9521e9329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07f6755e582a1fa534738bc1978d4b4b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a07f6755e582a1fa534738bc1978d4b4b">mouseOnWidget</a> (<a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> pos) const override</td></tr>
+<tr class="memdesc:a07f6755e582a1fa534738bc1978d4b4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="#a07f6755e582a1fa534738bc1978d4b4b">More...</a><br /></td></tr>
+<tr class="separator:a07f6755e582a1fa534738bc1978d4b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d627071dceb23a4d47f21ba731a8cd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a0d627071dceb23a4d47f21ba731a8cd4">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const override</td></tr>
 <tr class="memdesc:a0d627071dceb23a4d47f21ba731a8cd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the widget to a render target.  <a href="#a0d627071dceb23a4d47f21ba731a8cd4">More...</a><br /></td></tr>
 <tr class="separator:a0d627071dceb23a4d47f21ba731a8cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -256,9 +259,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa24c0d5b57f4e61d46438fd1d659a676">ClickableWidget</a> ()</td></tr>
 <tr class="memdesc:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="classtgui_1_1ClickableWidget.html#aa24c0d5b57f4e61d46438fd1d659a676">More...</a><br /></td></tr>
 <tr class="separator:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a046d7ca7d0dcb10b55519319576ce99e inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a046d7ca7d0dcb10b55519319576ce99e">mouseOnWidget</a> (<a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> pos) const override</td></tr>
-<tr class="memdesc:a046d7ca7d0dcb10b55519319576ce99e inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="classtgui_1_1ClickableWidget.html#a046d7ca7d0dcb10b55519319576ce99e">More...</a><br /></td></tr>
-<tr class="separator:a046d7ca7d0dcb10b55519319576ce99e inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a60c5722d15d0733f6743bf57c86d1c6a inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a60c5722d15d0733f6743bf57c86d1c6a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a> ()</td></tr>
@@ -1036,6 +1036,37 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="a07f6755e582a1fa534738bc1978d4b4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07f6755e582a1fa534738bc1978d4b4b">&#9670;&nbsp;</a></span>mouseOnWidget()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::Label::mouseOnWidget </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget. </p>
+<dl class="section return"><dt>Returns</dt><dd>Is the mouse on top of the widget? </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a046d7ca7d0dcb10b55519319576ce99e">tgui::ClickableWidget</a>.</p>
+
+</div>
+</div>
 <a id="a1262ba43f1472706a3cdbe84d93a9108"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1262ba43f1472706a3cdbe84d93a9108">&#9670;&nbsp;</a></span>rendererChanged()</h2>
 
@@ -1218,8 +1249,30 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1248,28 +1301,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setSize overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
 
-</div>
-</div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a40250b2d3b859306b33cf255c293dfd9"></a>
@@ -1359,7 +1390,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 23 2019 13:00:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 6 2019 13:10:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>
