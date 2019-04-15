@@ -8,7 +8,10 @@ jobs:
   - stage: Unit tests
     name: Linux (gcc 6)
     os: linux
+    dist: xenial
     env: COMPILER=g++-6
+    services:
+    - xvfb
     addons:
       apt:
         sources:
@@ -17,6 +20,7 @@ jobs:
         - g++-6
         - libudev-dev
         - libxrandr-dev
+        - libgl1-mesa-dev
     cache:
       directories:
       - $HOME/SFML-2.5.0_LINUX
@@ -28,6 +32,7 @@ jobs:
   - stage: Cross-platform tests
     name: Linux (gcc 4.9)
     os: linux
+    dist: xenial
     env: COMPILER=g++-4.9
     addons:
       apt:
@@ -37,6 +42,7 @@ jobs:
         - g++-4.9
         - libudev-dev
         - libxrandr-dev
+        - libgl1-mesa-dev
     cache:
       ccache: true
       directories:

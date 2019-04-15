@@ -3,8 +3,6 @@ set -eo pipefail
 export SFML_VERSION=2.5.0
 export SFML_ROOT=$HOME/SFML-${SFML_VERSION}_LINUX
 export BUILD_FOLDER=build_$CXX
-export DISPLAY=:99.0
-sh -e /etc/init.d/xvfb start
 
 if [[ ! -d "$SFML_ROOT/lib" ]]; then
   echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
