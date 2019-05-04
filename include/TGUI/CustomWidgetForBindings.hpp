@@ -227,7 +227,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void mouseNoLongerDown() override;
+        void leftMouseButtonNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +299,7 @@ namespace tgui
         std::function<void(std::uint32_t)>              implTextEntered;
         std::function<bool(float, sf::Vector2f)>        implMouseWheelScrolled;
         std::function<void()>                           implMouseNoLongerOnWidget;
-        std::function<void()>                           implMouseNoLongerDown;
+        std::function<void()>                           implMouseNoLongerDown; // TODO: Rename
         std::function<void()>                           implMouseEnteredWidget;
         std::function<void()>                           implMouseLeftWidget;
         std::function<bool(const std::string&)>         implRendererChanged;

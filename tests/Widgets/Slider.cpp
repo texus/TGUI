@@ -197,7 +197,7 @@ TEST_CASE("[Slider]")
                     REQUIRE(slider->getValue() == 14);
                     REQUIRE(valueChangedCount == 1);
                     slider->leftMouseReleased({71, 10});
-                    slider->mouseNoLongerDown();
+                    slider->leftMouseButtonNoLongerDown();
                     REQUIRE(valueChangedCount == 1);
                 }
 
@@ -232,7 +232,7 @@ TEST_CASE("[Slider]")
                     REQUIRE(slider->getValue() == 16);
                     REQUIRE(valueChangedCount == 1);
                     slider->leftMouseReleased({10, 71});
-                    slider->mouseNoLongerDown();
+                    slider->leftMouseButtonNoLongerDown();
                     REQUIRE(valueChangedCount == 1);
                 }
 

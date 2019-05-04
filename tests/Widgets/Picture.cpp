@@ -138,7 +138,7 @@ TEST_CASE("[Picture]")
 
             parent->leftMousePressed({175, 135});
             parent->leftMouseReleased({175, 135});
-            parent->mouseNoLongerDown();
+            parent->leftMouseButtonNoLongerDown();
 
             REQUIRE(mousePressedCountBack == 0);
             REQUIRE(mousePressedCountFront == 1);
@@ -147,7 +147,7 @@ TEST_CASE("[Picture]")
 
             parent->leftMousePressed({175, 135});
             parent->leftMouseReleased({175, 135});
-            parent->mouseNoLongerDown();
+            parent->leftMouseButtonNoLongerDown();
 
             REQUIRE(mousePressedCountBack == 1);
             REQUIRE(mousePressedCountFront == 1);

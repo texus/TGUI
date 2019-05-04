@@ -634,7 +634,7 @@ namespace tgui
         event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
         event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
-        // Let the event manager handle the event, but don't let it call mouseNoLongerDown on all widgets (it will be done later)
+        // Let the event manager handle the event, but don't let it call leftMouseButtonNoLongerDown on all widgets (it will be done later)
         m_handingMouseReleased = true;
         handleEvent(event);
         m_handingMouseReleased = false;
@@ -710,12 +710,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseNoLongerDown()
+    void Container::leftMouseButtonNoLongerDown()
     {
-        Widget::mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
 
         for (auto& widget : m_widgets)
-            widget->mouseNoLongerDown();
+            widget->leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -861,7 +861,7 @@ namespace tgui
         }
 
         // Check if a mouse button was pressed or a touch event occurred
-        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::TouchBegan))
+        else if ((event.type == sf::Event::MouseButtonPressed) || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
         {
             Vector2f mousePos;
             if (event.type == sf::Event::MouseButtonPressed)
@@ -882,17 +882,10 @@ namespace tgui
                 if (!widget->isContainer())
                     widget->setFocused(true);
 
-                if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
-                 || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
-                {
-                    widget->leftMousePressed(mousePos);
-                    return true;
-                }
-                else if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right))
-                {
-                    widget->rightMousePressed(mousePos);
-                    return true;
-                }
+                if (event.type == sf::Event::MouseButtonPressed)
+                    widget->mousePressed(event.mouseButton.button, mousePos);
+                else // Touch began of finger 0
+                    widget->mousePressed(sf::Mouse::Button::Left, mousePos);
             }
             else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
             {
@@ -907,8 +900,7 @@ namespace tgui
         }
 
         // Check if a mouse button was released
-        else if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
-              || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
+        else if ((event.type == sf::Event::MouseButtonReleased) || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
         {
             Vector2f mousePos;
             if (event.type == sf::Event::MouseButtonReleased)
@@ -919,15 +911,25 @@ namespace tgui
             // Check if the mouse is on top of a widget
             Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
             if (widgetBelowMouse != nullptr)
-                widgetBelowMouse->leftMouseReleased(mousePos);
-
-            // Tell all widgets that the mouse has gone up
-            // But don't do this when leftMouseReleased was called on this container because
-            // it will happen afterwards when mouseNoLongerDown is called on it
-            if (!m_handingMouseReleased)
             {
-                for (auto& widget : m_widgets)
-                    widget->mouseNoLongerDown();
+                if (event.type == sf::Event::MouseButtonReleased)
+                    widgetBelowMouse->mouseReleased(event.mouseButton.button, mousePos);
+                else
+                    widgetBelowMouse->mouseReleased(sf::Mouse::Button::Right, mousePos);
+            }
+
+            if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
+              || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
+            {
+                // Tell all widgets that the mouse has gone up
+                // But don't do this when leftMouseReleased was called on this container because
+                // it will happen afterwards when leftMouseButtonNoLongerDown is called on it
+                if (!m_handingMouseReleased)
+                {
+                    // TODO: Only call leftMouseButtonNoLongerDown on the widget that last got the left mouse down event
+                    for (auto& widget : m_widgets)
+                        widget->leftMouseButtonNoLongerDown();
+                }
             }
 
             if (widgetBelowMouse != nullptr)

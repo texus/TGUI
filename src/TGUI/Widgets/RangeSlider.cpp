@@ -472,13 +472,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::mouseNoLongerDown()
+    void RangeSlider::leftMouseButtonNoLongerDown()
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
             updateThumbPositions();
 
-        Widget::mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

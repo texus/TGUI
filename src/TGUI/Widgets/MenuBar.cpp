@@ -744,13 +744,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::mouseNoLongerDown()
+    void MenuBar::leftMouseButtonNoLongerDown()
     {
         // Close the open menu, but not when it just opened because of this mouse click
         if (!m_mouseDown)
             closeMenu();
 
-        Widget::mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -339,7 +339,7 @@ namespace tgui
         void mouseNoLongerOnWidget() override;
 
         /// @internal
-        void mouseNoLongerDown() override;
+        void leftMouseButtonNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

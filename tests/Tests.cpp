@@ -122,7 +122,7 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
         }
 
         parent->leftMouseReleased({175, 135});
-        parent->mouseNoLongerDown();
+        parent->leftMouseButtonNoLongerDown();
 
         REQUIRE(mousePressedCount == 1);
         REQUIRE(mouseReleasedCount == 2);

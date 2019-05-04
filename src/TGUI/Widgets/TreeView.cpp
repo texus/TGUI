@@ -807,11 +807,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::mouseNoLongerDown()
+    void TreeView::leftMouseButtonNoLongerDown()
     {
-        Widget::mouseNoLongerDown();
-        m_verticalScrollbar->mouseNoLongerDown();
-        m_horizontalScrollbar->mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
+        m_verticalScrollbar->leftMouseButtonNoLongerDown();
+        m_horizontalScrollbar->leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

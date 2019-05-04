@@ -487,11 +487,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::mouseNoLongerDown()
+    void ScrollablePanel::leftMouseButtonNoLongerDown()
     {
-        Panel::mouseNoLongerDown();
-        m_verticalScrollbar->mouseNoLongerDown();
-        m_horizontalScrollbar->mouseNoLongerDown();
+        Panel::leftMouseButtonNoLongerDown();
+        m_verticalScrollbar->leftMouseButtonNoLongerDown();
+        m_horizontalScrollbar->leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

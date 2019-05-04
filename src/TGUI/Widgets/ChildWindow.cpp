@@ -540,7 +540,7 @@ namespace tgui
         {
             // Tell the widgets that the mouse was released
             for (auto& widget : m_widgets)
-                widget->mouseNoLongerDown();
+                widget->leftMouseButtonNoLongerDown();
 
             // Check if the mouse is on top of the title bar
             if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
@@ -687,14 +687,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::mouseNoLongerDown()
+    void ChildWindow::leftMouseButtonNoLongerDown()
     {
-        Container::mouseNoLongerDown();
+        Container::leftMouseButtonNoLongerDown();
 
         for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
             if (button->isVisible())
-                button->mouseNoLongerDown();
+                button->leftMouseButtonNoLongerDown();
         }
     }
 

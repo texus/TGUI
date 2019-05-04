@@ -587,13 +587,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseNoLongerDown()
+    void Scrollbar::leftMouseButtonNoLongerDown()
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
             updateThumbPosition();
 
-        Widget::mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

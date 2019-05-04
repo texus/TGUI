@@ -606,15 +606,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseNoLongerDown()
+    void TextBox::leftMouseButtonNoLongerDown()
     {
-        Widget::mouseNoLongerDown();
+        Widget::leftMouseButtonNoLongerDown();
 
         if (m_verticalScrollbar->isShown())
-            m_verticalScrollbar->mouseNoLongerDown();
+            m_verticalScrollbar->leftMouseButtonNoLongerDown();
 
         if (m_horizontalScrollbar->isShown())
-            m_horizontalScrollbar->mouseNoLongerDown();
+            m_horizontalScrollbar->leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
