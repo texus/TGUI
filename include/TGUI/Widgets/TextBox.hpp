@@ -568,7 +568,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onTextChange = {"TextChanged"};    ///< The text was changed. Optional parameter: new text
+        SignalString onTextChange = {"TextChanged"};     ///< The text was changed. Optional parameter: new text
+        Signal onSelectionChange = {"SelectionChanged"}; ///< Selected text changed
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -593,6 +594,7 @@ namespace tgui
         // Information about the selection
         sf::Vector2<std::size_t> m_selStart;
         sf::Vector2<std::size_t> m_selEnd;
+        std::pair<sf::Vector2<std::size_t>, sf::Vector2<std::size_t>> m_lastSelection;
 
         // Information about the caret
         Vector2f m_caretPosition;

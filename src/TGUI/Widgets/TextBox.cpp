@@ -1546,6 +1546,17 @@ namespace tgui
         }
 
         recalculatePositions();
+
+        // Send an event when the selection changed
+        if ((m_selStart != m_lastSelection.first) || (m_selEnd != m_lastSelection.second))
+        {
+            // Only send the event when there is an actual change, not when the caret position moved
+            if ((m_selStart != m_selEnd) || (m_lastSelection.first != m_lastSelection.second))
+                onSelectionChange.emit(this);
+
+            m_lastSelection.first = m_selStart;
+            m_lastSelection.second = m_selEnd;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1710,6 +1721,8 @@ namespace tgui
     {
         if (signalName == toLower(onTextChange.getName()))
             return onTextChange;
+        else if (signalName == toLower(onSelectionChange.getName()))
+            return onSelectionChange;
         else
             return Widget::getSignal(std::move(signalName));
     }

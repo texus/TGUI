@@ -441,6 +441,8 @@ TEST_CASE("[TextBox]")
             textBox->textEntered('C');
             REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZABC");
         }
+
+        // TODO: TextChanged and SelectionChanged events
     }
 
     testWidgetRenderer(textBox->getRenderer());
