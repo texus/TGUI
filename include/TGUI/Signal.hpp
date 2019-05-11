@@ -229,44 +229,6 @@ namespace tgui
         std::map<unsigned int, std::function<void()>> m_handlers;
     };
 
-#ifdef TGUI_REMOVE_DEPRECATED_CODE
-    #define TGUI_SIGNAL_VALUE_DECLARATION(TypeName, Type) \
-    /**************************************************************************************************************************** \
-     * @brief Signal to which the user can subscribe to get callbacks from
-     ****************************************************************************************************************************/ \
-    class TGUI_API Signal##TypeName : public Signal \
-    { \
-    public: \
-        /************************************************************************************************************************ \
-         * @brief Constructor
-         ************************************************************************************************************************/ \
-        Signal##TypeName(std::string&& name) : \
-            Signal{std::move(name), 1} \
-        { \
-        } \
-        \
-        /************************************************************************************************************************ \
-         * @internal
-         * @brief Call all connected signal handlers
-         ************************************************************************************************************************/ \
-        bool emit(const Widget* widget, Type param) \
-        { \
-            if (m_handlers.empty()) \
-                return false; \
-         \
-            internal_signal::parameters[1] = static_cast<const void*>(&param); \
-            return Signal::emit(widget); \
-        } \
-        \
-    private: \
-        /************************************************************************************************************************ \
-         * @internal
-         * @brief Checks whether the unbound parameters match with this signal
-         * @return The index in the parameters list where the parameters will be stored
-         ************************************************************************************************************************/ \
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override; \
-    };
-#else
     #define TGUI_SIGNAL_VALUE_DECLARATION(TypeName, Type) \
     /**************************************************************************************************************************** \
      * @brief Signal to which the user can subscribe to get callbacks from
@@ -293,7 +255,7 @@ namespace tgui
          *
          * @return Unique id of the connection
          ************************************************************************************************************************/ \
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const Delegate##TypeName& handler); \
+        unsigned int connect(const Delegate##TypeName& handler); \
         \
         /************************************************************************************************************************ \
          * @brief Connects a signal handler that will be called when this signal is emitted
@@ -302,7 +264,7 @@ namespace tgui
          *
          * @return Unique id of the connection
          ************************************************************************************************************************/ \
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const Delegate##TypeName##Ex& handler); \
+        unsigned int connect(const Delegate##TypeName##Ex& handler); \
         \
         /************************************************************************************************************************ \
          * @internal
@@ -325,7 +287,6 @@ namespace tgui
          ************************************************************************************************************************/ \
         unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override; \
     };
-#endif
 
     TGUI_SIGNAL_VALUE_DECLARATION(Int, int)
     TGUI_SIGNAL_VALUE_DECLARATION(UInt, unsigned int)
@@ -342,11 +303,9 @@ namespace tgui
     {
     public:
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         using DelegateRange = std::function<void(float, float)>;
         using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const std::string&, float, float)>;
         using Signal::connect;
-    #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
@@ -356,7 +315,7 @@ namespace tgui
         {
         }
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -364,7 +323,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateRange& handler);
+        unsigned int connect(const DelegateRange& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,8 +333,8 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateRangeEx& handler);
-    #endif
+        unsigned int connect(const DelegateRangeEx& handler);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -405,11 +364,10 @@ namespace tgui
     {
     public:
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         using DelegateChildWindow = std::function<void(std::shared_ptr<ChildWindow>)>;
         using DelegateChildWindowEx = std::function<void(std::shared_ptr<Widget>, const std::string&, std::shared_ptr<ChildWindow>)>;
         using Signal::connect;
-    #endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
@@ -419,7 +377,7 @@ namespace tgui
         {
         }
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -427,7 +385,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateChildWindow& handler);
+        unsigned int connect(const DelegateChildWindow& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -437,8 +395,8 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateChildWindowEx& handler);
-    #endif
+        unsigned int connect(const DelegateChildWindowEx& handler);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -468,13 +426,12 @@ namespace tgui
     {
     public:
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         using DelegateItem = std::function<void(const sf::String&)>;
         using DelegateItemAndId = std::function<void(const sf::String&, const sf::String&)>;
         using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
         using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&, const sf::String&)>;
         using Signal::connect;
-    #endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
@@ -484,7 +441,7 @@ namespace tgui
         {
         }
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -492,7 +449,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateItem& handler);
+        unsigned int connect(const DelegateItem& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -502,7 +459,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateItemEx& handler);
+        unsigned int connect(const DelegateItemEx& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,7 +469,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateItemAndId& handler);
+        unsigned int connect(const DelegateItemAndId& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -522,8 +479,8 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateItemAndIdEx& handler);
-    #endif
+        unsigned int connect(const DelegateItemAndIdEx& handler);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -610,13 +567,12 @@ namespace tgui
     {
     public:
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         using DelegateMenuItem = std::function<void(const sf::String&)>;
         using DelegateMenuItemFull = std::function<void(const std::vector<sf::String>&)>;
         using DelegateMenuItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
         using DelegateMenuItemFullEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const std::vector<sf::String>&)>;
         using Signal::connect;
-    #endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
@@ -626,7 +582,7 @@ namespace tgui
         {
         }
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -634,7 +590,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateMenuItem& handler);
+        unsigned int connect(const DelegateMenuItem& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,7 +600,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateMenuItemEx& handler);
+        unsigned int connect(const DelegateMenuItemEx& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,7 +610,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateMenuItemFull& handler);
+        unsigned int connect(const DelegateMenuItemFull& handler);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -664,8 +620,8 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use connect function from widget instead") unsigned int connect(const DelegateMenuItemFullEx& handler);
-    #endif
+        unsigned int connect(const DelegateMenuItemFullEx& handler);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

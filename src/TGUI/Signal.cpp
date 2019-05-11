@@ -135,7 +135,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
     #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
     unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
     { \
@@ -157,7 +156,6 @@ namespace tgui
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, const sf::String&)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, Vector2f)
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -220,7 +218,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
+
     unsigned int SignalRange::connect(const DelegateRange& handler)
     {
         const auto id = generateUniqueId();
@@ -236,7 +234,7 @@ namespace tgui
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
         return id;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SignalRange::emit(const Widget* widget, float start, float end)
@@ -260,7 +258,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
+
     unsigned int SignalChildWindow::connect(const DelegateChildWindow& handler)
     {
         const auto id = generateUniqueId();
@@ -276,7 +274,7 @@ namespace tgui
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<ChildWindow::Ptr>(internal_signal::parameters[1])); };
         return id;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SignalChildWindow::emit(ChildWindow* childWindow)
@@ -300,7 +298,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
+
     unsigned int SignalItem::connect(const DelegateItem& handler)
     {
         const auto id = generateUniqueId();
@@ -334,7 +332,7 @@ namespace tgui
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1]), internal_signal::dereference<sf::String>(internal_signal::parameters[2])); };
         return id;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
@@ -352,7 +350,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
+
     unsigned int SignalItemHierarchy::connect(const DelegateMenuItem& handler)
     {
         const auto id = generateUniqueId();
@@ -386,7 +384,7 @@ namespace tgui
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
         return id;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SignalItemHierarchy::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
