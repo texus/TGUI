@@ -166,11 +166,26 @@ namespace tgui
 
     sf::String TextBox::getSelectedText() const
     {
-        auto pos = findTextSelectionPositions();
-        if (pos.first > pos.second)
-            std::swap(pos.first, pos.second);
+        const std::size_t selStart = getSelectionStart();
+        const std::size_t selEnd = getSelectionEnd();
+        if (selStart <= selEnd)
+            return m_text.substring(selStart, selEnd - selStart);
+        else
+            return m_text.substring(selEnd, selStart - selEnd);
+    }
 
-        return m_text.substring(pos.first, pos.second - pos.first);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t TextBox::getSelectionStart() const
+    {
+        return getIndexOfSelectionPos(m_selStart);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t TextBox::getSelectionEnd() const
+    {
+        return getIndexOfSelectionPos(m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +368,7 @@ namespace tgui
 
     std::size_t TextBox::getCaretPosition() const
     {
-        return findTextSelectionPositions().second;
+        return getSelectionEnd();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -894,7 +909,7 @@ namespace tgui
                 // Check that we did not select any characters
                 if (m_selStart == m_selEnd)
                 {
-                    const std::size_t pos = findTextSelectionPositions().second;
+                    const std::size_t pos = getSelectionEnd();
                     if (pos > 0)
                     {
                         if (m_selEnd.x > 0)
@@ -947,7 +962,7 @@ namespace tgui
                 // Check that we did not select any characters
                 if (m_selStart == m_selEnd)
                 {
-                    m_text.erase(findTextSelectionPositions().second, 1);
+                    m_text.erase(getSelectionEnd(), 1);
                     rearrangeText(true);
                 }
                 else // You did select some characters, so remove them
@@ -971,13 +986,15 @@ namespace tgui
 
             case sf::Keyboard::C:
             {
-                auto selectionPositions = findTextSelectionPositions();
-                if (selectionPositions.first > selectionPositions.second)
-                    std::swap(selectionPositions.first, selectionPositions.second);
-
                 if (event.control && !event.alt && !event.shift && !event.system)
-                    Clipboard::set(m_text.substring(selectionPositions.first, selectionPositions.second - selectionPositions.first));
-
+                {
+                    const std::size_t selStart = getSelectionStart();
+                    const std::size_t selEnd = getSelectionEnd();
+                    if (selStart <= selEnd)
+                        Clipboard::set(m_text.substring(selStart, selEnd - selStart));
+                    else
+                        Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
+                }
                 break;
             }
 
@@ -985,14 +1002,15 @@ namespace tgui
             {
                 if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
                 {
-                    auto selectionPositions = findTextSelectionPositions();
-                    if (selectionPositions.first > selectionPositions.second)
-                        std::swap(selectionPositions.first, selectionPositions.second);
+                    const std::size_t selStart = getSelectionStart();
+                    const std::size_t selEnd = getSelectionEnd();
+                    if (selStart <= selEnd)
+                        Clipboard::set(m_text.substring(selStart, selEnd - selStart));
+                    else
+                        Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
 
-                    Clipboard::set(m_text.substring(selectionPositions.first, selectionPositions.second - selectionPositions.first));
                     deleteSelectedCharacters();
                 }
-
                 break;
             }
 
@@ -1007,11 +1025,11 @@ namespace tgui
                     {
                         deleteSelectedCharacters();
 
-                        m_text.insert(findTextSelectionPositions().first, clipboardContents);
-                        m_lines[m_selStart.y].insert(m_selStart.x, clipboardContents);
+                        m_text.insert(getSelectionEnd(), clipboardContents);
+                        m_lines[m_selEnd.y].insert(m_selEnd.x, clipboardContents);
 
-                        m_selStart.x += clipboardContents.getSize();
-                        m_selEnd = m_selStart;
+                        m_selEnd.x += clipboardContents.getSize();
+                        m_selStart = m_selEnd;
                         rearrangeText(true);
 
                         onTextChange.emit(this, m_text);
@@ -1045,7 +1063,7 @@ namespace tgui
         {
             deleteSelectedCharacters();
 
-            const std::size_t caretPosition = findTextSelectionPositions().first;
+            const std::size_t caretPosition = getSelectionEnd();
 
             m_text.insert(caretPosition, key);
             m_lines[m_selEnd.y].insert(m_selEnd.x, key);
@@ -1182,9 +1200,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::pair<std::size_t, std::size_t> TextBox::findTextSelectionPositions() const
+    std::size_t TextBox::getIndexOfSelectionPos(sf::Vector2<std::size_t> selectionPos) const
     {
-        // This function is used to count the amount of characters spread over several lines
         auto findIndex = [this](std::size_t line)
         {
             std::size_t counter = 0;
@@ -1198,26 +1215,33 @@ namespace tgui
             return counter;
         };
 
-        return {findIndex(m_selStart.y) + m_selStart.x, findIndex(m_selEnd.y) + m_selEnd.x};
+        return findIndex(selectionPos.y) + selectionPos.x;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+    std::pair<std::size_t, std::size_t> TextBox::findTextSelectionPositions() const
+    {
+        return {getIndexOfSelectionPos(m_selStart), getIndexOfSelectionPos(m_selEnd)};
+    }
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextBox::deleteSelectedCharacters()
     {
         if (m_selStart != m_selEnd)
         {
-            auto textSelectionPositions = findTextSelectionPositions();
-
-            if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
+            const std::size_t selStart = getSelectionStart();
+            const std::size_t selEnd = getSelectionEnd();
+            if (selStart <= selEnd)
             {
-                m_text.erase(textSelectionPositions.second, textSelectionPositions.first - textSelectionPositions.second);
-                m_selStart = m_selEnd;
+                m_text.erase(selStart, selEnd - selStart);
+                m_selEnd = m_selStart;
             }
             else
             {
-                m_text.erase(textSelectionPositions.first, textSelectionPositions.second - textSelectionPositions.first);
-                m_selEnd = m_selStart;
+                m_text.erase(selEnd, selStart - selEnd);
+                m_selStart = m_selEnd;
             }
 
             rearrangeText(true);
@@ -1251,9 +1275,8 @@ namespace tgui
         }
 
         // Store the current selection position when we are keeping the selection
-        std::pair<std::size_t, std::size_t> textSelectionPositions;
-        if (keepSelection)
-            textSelectionPositions = findTextSelectionPositions();
+        const std::size_t selStart = keepSelection ? getSelectionStart() : 0;
+        const std::size_t selEnd = keepSelection ? getSelectionEnd() : 0;
 
         // Split the string in multiple lines
         m_maxLineWidth = 0;
@@ -1309,18 +1332,18 @@ namespace tgui
             {
                 index += m_lines[i].getSize();
 
-                if (!newSelStartFound && (index >= textSelectionPositions.first))
+                if (!newSelStartFound && (index >= selStart))
                 {
-                    newSelStart = sf::Vector2<std::size_t>(m_lines[i].getSize() - (index - textSelectionPositions.first), i);
+                    newSelStart = sf::Vector2<std::size_t>(m_lines[i].getSize() - (index - selStart), i);
 
                     newSelStartFound = true;
                     if (newSelEndFound)
                         break;
                 }
 
-                if (!newSelEndFound && (index >= textSelectionPositions.second))
+                if (!newSelEndFound && (index >= selEnd))
                 {
-                    newSelEnd = sf::Vector2<std::size_t>(m_lines[i].getSize() - (index - textSelectionPositions.second), i);
+                    newSelEnd = sf::Vector2<std::size_t>(m_lines[i].getSize() - (index - selEnd), i);
 
                     newSelEndFound = true;
                     if (newSelStartFound)

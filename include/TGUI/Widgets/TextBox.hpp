@@ -151,6 +151,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index where the selection starts
+        ///
+        /// When no text is selected, this function returns the same getSelectionEnd.
+        ///
+        /// Note that the start of the selection may be behind the end of the selection when the user selected the text from
+        /// right to left or from bottom to top.
+        ///
+        /// @return Amount of characters before the start of the selection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t getSelectionStart() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index where the selection ends
+        ///
+        /// The selection end always equals the caret position.
+        ///
+        /// Note that the start of the selection may be behind the end of the selection when the user selected the text from
+        /// right to left or from bottom to top.
+        ///
+        /// @return Amount of characters before the end of the selection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t getSelectionEnd() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of the text
         ///
         /// @param size  The new text size.
@@ -198,8 +224,7 @@ namespace tgui
         ///
         /// @param charactersBeforeCaret  The new position
         ///
-        /// Note that the position is from before word-wrap is aplied.
-        ///
+        /// This function will set both the selection start and selection end to the requested value.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCaretPosition(std::size_t charactersBeforeCaret);
 
@@ -209,8 +234,7 @@ namespace tgui
         ///
         /// @return Characters before the caret
         ///
-        /// Note that the position is from before word-wrap is aplied.
-        ///
+        /// This function is an alias for getSelectionEnd.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t getCaretPosition() const;
 
@@ -419,11 +443,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Gets the index of either m_selStart or m_selEnd
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t getIndexOfSelectionPos(sf::Vector2<std::size_t> selectionPos) const;
+
+
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Converts the two dimensional selection positions into one dimensional positions in the text.
         // The first element of the pair is the selection start and the second one is the selection end.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::pair<std::size_t, std::size_t> findTextSelectionPositions() const;
-
+        TGUI_DEPRECATED("Use getSelectionStart and getSelectionEnd instead") std::pair<std::size_t, std::size_t> findTextSelectionPositions() const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when you are selecting text.

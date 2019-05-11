@@ -1,3 +1,10 @@
+TGUI 0.8.6  (TBD)
+-----------------
+
+- Added getSelectionStart and getSelectionEnd functions to TextBox
+- Added mousePressed and mouseReleased to respond to different mouse buttons in custom widgets
+
+
 TGUI 0.8.5  (6 April 2019)
 --------------------------
 

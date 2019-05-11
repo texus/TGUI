@@ -76,15 +76,22 @@ TEST_CASE("[TextBox]")
     {
         textBox->setText("SomeText");
         REQUIRE(textBox->getSelectedText() == "");
+        REQUIRE(textBox->getSelectionStart() == textBox->getSelectionEnd());
 
         textBox->setSelectedText(3, 6);
         REQUIRE(textBox->getSelectedText() == "eTe");
+        REQUIRE(textBox->getSelectionStart() == 3);
+        REQUIRE(textBox->getSelectionEnd() == 6);
 
         textBox->setSelectedText(7, 1);
         REQUIRE(textBox->getSelectedText() == "omeTex");
+        REQUIRE(textBox->getSelectionStart() == 7);
+        REQUIRE(textBox->getSelectionEnd() == 1);
 
         textBox->setSelectedText(2, 2);
         REQUIRE(textBox->getSelectedText() == "");
+        REQUIRE(textBox->getSelectionStart() == 2);
+        REQUIRE(textBox->getSelectionEnd() == 2);
     }
 
     SECTION("TextSize")
@@ -186,6 +193,8 @@ TEST_CASE("[TextBox]")
 
         textBox->setCaretPosition(7);
         REQUIRE(textBox->getCaretPosition() == 7);
+        REQUIRE(textBox->getSelectionStart() == 7);
+        REQUIRE(textBox->getSelectionEnd() == 7);
 
         textBox->setCaretPosition(25);
         REQUIRE(textBox->getCaretPosition() == 9);
