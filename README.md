@@ -35,4 +35,6 @@ Name: Bruno Van de Velde
 
 E-mail: vdv_b@tgui.eu
 
+[![Discord](https://img.shields.io/badge/chat-on_discord-7389D8.svg?logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/Msf4vyx)
+
 [![Chat on Gitter](https://badges.gitter.im/texus/TGUI.png)](https://gitter.im/texus/TGUI)
