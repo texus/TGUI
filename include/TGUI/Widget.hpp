@@ -497,8 +497,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the widget can gain focus
-        /// @return Can the widget be focused?
+        /// @brief Changes whether a widget could be focused
+        ///
+        /// @param focusable  Should it be possible for the widget to gain focus?
+        ///
+        /// By default all widgets are focusable.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFocusable(bool focusable);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether a widget could be focused
+        ///
+        /// @return Should it be possible for the widget to gain focus?
+        ///
+        /// By default all widgets are focusable.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isFocusable() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the widget can currently gain focus
+        /// @return Can the widget be focused right now?
+        ///
+        /// A widget has to be visible, enabled and focusable for this function to return true.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool canGainFocus() const;
 
@@ -821,6 +843,9 @@ namespace tgui
 
         // Is the widget focused?
         bool m_focused = false;
+
+        // Can the widget be focused?
+        bool m_focusable = true;
 
         // Keep track of the elapsed time.
         sf::Time m_animationTimeElapsed;

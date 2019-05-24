@@ -49,6 +49,15 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->isEnabled());
     }
 
+    SECTION("Focusable")
+    {
+        REQUIRE(widget->isFocusable());
+        widget->setFocusable(false);
+        REQUIRE(!widget->isFocusable());
+        widget->setFocusable(true);
+        REQUIRE(widget->isFocusable());
+    }
+
     SECTION("Parent")
     {
         tgui::Panel::Ptr panel1 = tgui::Panel::create();
