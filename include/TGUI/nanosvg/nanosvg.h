@@ -804,7 +804,6 @@ static double nsvg__convertToPixels(NSVGparser* p, NSVGcoordinate c, double orig
 		case NSVG_UNITS_PERCENT:	return orig + c.value / 100.0 * length;
 		default:					return c.value;
 	}
-	return c.value;
 }
 
 static NSVGgradientData* nsvg__findGradientData(NSVGparser* p, const char* id)

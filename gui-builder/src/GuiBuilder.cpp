@@ -1476,10 +1476,10 @@ void GuiBuilder::addPropertyValueTextStyle(const std::string& property, const sf
         auto checkBoxStrikeThrough = textStyleWindow->get<tgui::CheckBox>("CheckBoxStrikeThrough");
 
         unsigned int style = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle();
-        checkBoxBold->setChecked(style & sf::Text::Style::Bold);
-        checkBoxItalic->setChecked(style & sf::Text::Style::Italic);
-        checkBoxUnderlined->setChecked(style & sf::Text::Style::Underlined);
-        checkBoxStrikeThrough->setChecked(style & sf::Text::Style::StrikeThrough);
+        checkBoxBold->setChecked((style & sf::Text::Style::Bold) != 0);
+        checkBoxItalic->setChecked((style & sf::Text::Style::Italic) != 0);
+        checkBoxUnderlined->setChecked((style & sf::Text::Style::Underlined) != 0);
+        checkBoxStrikeThrough->setChecked((style & sf::Text::Style::StrikeThrough) != 0);
 
         auto updateTextStyleProperty = [=]{
             unsigned int newStyle = 0;
