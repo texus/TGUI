@@ -196,7 +196,7 @@ namespace tgui
         Borders m_bordersCached;
         Color   m_borderColorCached;
         Color   m_backgroundColorCached;
-
+        Sprite  m_spriteBackground;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

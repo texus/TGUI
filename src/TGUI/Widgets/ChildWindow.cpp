@@ -188,6 +188,7 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
 
         m_spriteTitleBar.setSize({getSize().x, m_titleBarHeightCached});
+        m_spriteBackground.setSize(getSize());
 
         // Reposition the images and text
         setPosition(m_position);
@@ -769,6 +770,10 @@ namespace tgui
             if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
                 updateTitleBarHeight();
         }
+        else if (property == "texturebackground")
+        {
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
+        }
         else if (property == "titlebarheight")
         {
             m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
@@ -855,6 +860,7 @@ namespace tgui
 
             m_titleText.setOpacity(m_opacityCached);
             m_spriteTitleBar.setOpacity(m_opacityCached);
+            m_spriteBackground.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
@@ -1042,7 +1048,9 @@ namespace tgui
         }
 
         // Draw the background
-        if (m_backgroundColorCached != Color::Transparent)
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
+        else if (m_backgroundColorCached != Color::Transparent)
             drawRectangleShape(target, states, getSize(), m_backgroundColorCached);
 
         // Draw the widgets in the child window

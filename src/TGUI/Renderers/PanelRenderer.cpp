@@ -34,6 +34,8 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, Color::White)
+
+    TGUI_RENDERER_PROPERTY_TEXTURE(PanelRenderer, TextureBackground)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

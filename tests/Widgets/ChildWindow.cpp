@@ -340,25 +340,31 @@ TEST_CASE("[ChildWindow]")
         SECTION("textured")
         {
             tgui::Texture textureTitleBar("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
+            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTitleBar", tgui::Serializer::serialize(textureTitleBar)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             }
 
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTitleBar", textureTitleBar));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             }
 
             SECTION("functions")
             {
                 renderer->setTextureTitleBar(textureTitleBar);
+                renderer->setTextureBackground(textureBackground);
             }
 
             REQUIRE(renderer->getProperty("TextureTitleBar").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTitleBar().getData() == textureTitleBar.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
         }
 
         SECTION("TitleBarHeight value")

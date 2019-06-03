@@ -87,6 +87,7 @@ struct ChildWindowProperties : WidgetProperties
         pair.second["MinimumResizableBorderWidth"] = {"Float", tgui::to_string(renderer->getMinimumResizableBorderWidth())};
         pair.second["ShowTextOnTitleButtons"] = {"Bool", tgui::Serializer::serialize(renderer->getTransparentTexture())};
         pair.second["TextureTitleBar"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTitleBar())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         return pair;
     }
 

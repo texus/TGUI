@@ -185,39 +185,66 @@ TEST_CASE("[Panel]")
     {
         auto renderer = panel->getRenderer();
 
-        SECTION("set serialized property")
+        SECTION("colored")
         {
-            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
-            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
-            REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-            REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
+                REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+                REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+            }
+
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+                REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
+            }
+
+            SECTION("functions")
+            {
+                renderer->setBackgroundColor({10, 20, 30});
+                renderer->setBorderColor({40, 50, 60});
+                renderer->setBorders({1, 2, 3, 4});
+                renderer->setPadding({5, 6, 7, 8});
+            }
+
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
+
+            REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
+            REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         }
 
-        SECTION("set object property")
+        SECTION("textured")
         {
-            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
-            REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
-            REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
+            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+            }
+
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+            }
+
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
+            }
+
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
         }
-
-        SECTION("functions")
-        {
-            renderer->setBackgroundColor({10, 20, 30});
-            renderer->setBorderColor({40, 50, 60});
-            renderer->setBorders({1, 2, 3, 4});
-            renderer->setPadding({5, 6, 7, 8});
-        }
-
-        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-        REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
-        REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
-
-        REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
-        REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
-        REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
     }
 
     SECTION("Saving and loading from file")

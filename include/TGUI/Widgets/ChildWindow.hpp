@@ -505,6 +505,7 @@ namespace tgui
         int m_resizeDirection = ResizeNone;
 
         Sprite m_spriteTitleBar;
+        Sprite m_spriteBackground;
 
         // Cached renderer properties
         Borders m_bordersCached;

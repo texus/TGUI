@@ -39,6 +39,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, BorderColorFocused, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ChildWindowRenderer, TextureTitleBar)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ChildWindowRenderer, TextureBackground)
 
     TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, CloseButton, "childwindowbutton")
     TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, MaximizeButton, "childwindowbutton")

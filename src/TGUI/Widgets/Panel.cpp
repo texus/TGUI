@@ -95,6 +95,9 @@ namespace tgui
         m_bordersCached.updateParentSize(size.getValue());
 
         Group::setSize(size);
+
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,6 +179,15 @@ namespace tgui
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
+        else if (property == "texturebackground")
+        {
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
+        }
+        else if ((property == "opacity") || (property == "opacitydisabled"))
+        {
+            Container::rendererChanged(property);
+            m_spriteBackground.setOpacity(m_opacityCached);
+        }
         else
             Group::rendererChanged(property);
     }
@@ -196,7 +208,10 @@ namespace tgui
         // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
-        drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
+        else
+            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
         const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
