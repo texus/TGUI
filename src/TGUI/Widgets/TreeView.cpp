@@ -681,10 +681,11 @@ namespace tgui
                 if ((selectedIndex >= 0) && (selectedIndex == m_selectedItem))
                 {
                     // Expand or colapse the node when clicking the icon
-                    const float iconPadding = (m_iconBounds.x / 4.f);
-                    const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[selectedIndex]->depth);
-                    if (FloatRect{iconOffset + m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(),
-                                  (selectedIndex * m_itemHeight) + m_bordersCached.getTop() + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
+                    const float iconPaddingX = (m_iconBounds.x / 4.f);
+                    const float iconOffsetX = iconPaddingX + ((m_iconBounds.x + iconPaddingX) * m_visibleNodes[selectedIndex]->depth);
+                    const float iconOffsetY = (m_itemHeight - m_iconBounds.y) / 2.f;
+                    if (FloatRect{iconOffsetX + m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(),
+                                  iconOffsetY + (selectedIndex * m_itemHeight) + m_bordersCached.getTop() + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
                                   m_iconBounds.x,
                                   m_iconBounds.y}.contains(pos))
                     {
