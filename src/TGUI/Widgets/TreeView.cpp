@@ -392,22 +392,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (m_spriteBranchCollapsed.isSet() || m_spriteBranchExpanded.isSet() || m_spriteLeaf.isSet())
-        {
-            m_iconBounds =
-                {
-                    std::max(std::max(m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x), m_spriteLeaf.getSize().x),
-                    std::max(std::max(m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y), m_spriteLeaf.getSize().y)
-                };
-        }
-        else
-        {
-            const float wantedIconSize = std::round(m_itemHeight / 2.f);
-            const float lineThickness = std::round(m_itemHeight / 10.f);
-            const float iconSize = (std::floor((wantedIconSize - lineThickness) / 2.f) * 2.f) + lineThickness; // "+" sign should be symmetric
-            m_iconBounds = {iconSize, iconSize};
-        }
-
+        updateIconBounds();
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
@@ -572,6 +557,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TreeView::updateIconBounds()
+    {
+        if (m_spriteBranchCollapsed.isSet() || m_spriteBranchExpanded.isSet() || m_spriteLeaf.isSet())
+        {
+            m_iconBounds =
+                {
+                    std::max(std::max(m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x), m_spriteLeaf.getSize().x),
+                    std::max(std::max(m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y), m_spriteLeaf.getSize().y)
+                };
+        }
+        else
+        {
+            const float wantedIconSize = std::round(m_itemHeight / 2.f);
+            const float lineThickness = std::round(m_itemHeight / 10.f);
+            const float iconSize = (std::floor((wantedIconSize - lineThickness) / 2.f) * 2.f) + lineThickness; // "+" sign should be symmetric
+            m_iconBounds = {iconSize, iconSize};
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::vector<TreeView::ConstNode> TreeView::getNodes() const
     {
         return convertNodesToConstNodes(m_nodes);
@@ -588,14 +594,7 @@ namespace tgui
         m_verticalScrollbar->setScrollAmount(m_itemHeight);
         m_horizontalScrollbar->setScrollAmount(m_itemHeight);
         markNodesDirty();
-
-        if (!(m_spriteBranchCollapsed.isSet() || m_spriteBranchExpanded.isSet() || m_spriteLeaf.isSet()))
-        {
-            const float wantedIconSize = std::round(m_itemHeight / 2.f);
-            const float lineThickness = std::round(m_itemHeight / 10.f);
-            const float iconSize = (std::floor((wantedIconSize - lineThickness) / 2.f) * 2.f) + lineThickness; // "+" sign should be symmetric
-            m_iconBounds = {iconSize, iconSize};
-        }
+        updateIconBounds();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -876,16 +875,19 @@ namespace tgui
         else if (property == "texturebranchexpanded")
         {
             m_spriteBranchExpanded.setTexture(getSharedRenderer()->getTextureBranchExpanded());
+            updateIconBounds();
             markNodesDirty();
         }
         else if (property == "texturebranchcollapsed")
         {
             m_spriteBranchCollapsed.setTexture(getSharedRenderer()->getTextureBranchCollapsed());
+            updateIconBounds();
             markNodesDirty();
         }
         else if (property == "textureleaf")
         {
             m_spriteLeaf.setTexture(getSharedRenderer()->getTextureLeaf());
+            updateIconBounds();
             markNodesDirty();
         }
         else if (property == "textcolor")
