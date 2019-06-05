@@ -588,6 +588,13 @@ namespace tgui
         m_verticalScrollbar->setScrollAmount(m_itemHeight);
         m_horizontalScrollbar->setScrollAmount(m_itemHeight);
         markNodesDirty();
+
+		if (!(m_spriteBranchCollapsed.isSet() || m_spriteBranchExpanded.isSet() || m_spriteLeaf.isSet())) {
+			const float wantedIconSize = std::round(m_itemHeight / 2.f);
+			const float lineThickness = std::round(m_itemHeight / 10.f);
+			const float iconSize = (std::floor((wantedIconSize - lineThickness) / 2.f) * 2.f) + lineThickness; // "+" sign should be symmetric
+			m_iconBounds = { iconSize, iconSize };
+		}
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
