@@ -378,31 +378,36 @@ TEST_CASE("[ListView]")
 
     SECTION("Events / Signals")
     {
-        auto container = tgui::Group::create({400.f, 300.f});
-        container->add(listView);
+        auto root = std::make_shared<tgui::GuiContainer>();
+        root->setSize(800, 600);
 
-        auto mouseMoved = [container](sf::Vector2i pos){
+        auto container = tgui::Group::create({400.f, 300.f});
+        container->setPosition(100, 50);
+        container->add(listView);
+        root->add(container);
+
+        auto mouseMoved = [root,container](sf::Vector2i pos){
             sf::Event event;
             event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = pos.x;
-            event.mouseMove.y = pos.y;
-            container->handleEvent(event);
+            event.mouseMove.x = pos.x + container->getPosition().x;
+            event.mouseMove.y = pos.y + container->getPosition().y;
+            root->handleEvent(event);
         };
-        auto mousePressed = [container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
+        auto mousePressed = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonPressed;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x;
-            event.mouseButton.y = pos.y;
-            container->handleEvent(event);
+            event.mouseButton.x = pos.x + container->getPosition().x;
+            event.mouseButton.y = pos.y + container->getPosition().y;
+            root->handleEvent(event);
         };
-        auto mouseReleased = [container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
+        auto mouseReleased = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonReleased;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x;
-            event.mouseButton.y = pos.y;
-            container->handleEvent(event);
+            event.mouseButton.x = pos.x + container->getPosition().x;
+            event.mouseButton.y = pos.y + container->getPosition().y;
+            root->handleEvent(event);
         };
 
         listView->setPosition(10, 20);
@@ -553,8 +558,8 @@ TEST_CASE("[ListView]")
             listView->addItem("Item 9");
 
             // Scrolling down with mouse wheel
-            container->mouseWheelScrolled(-1, {40, 70});
-            container->mouseWheelScrolled(-1, {40, 70});
+            root->mouseWheelScrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y});
+            root->mouseWheelScrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y});
 
             mousePressed({40, 52});
             REQUIRE(listView->getSelectedItemIndex() == 4);

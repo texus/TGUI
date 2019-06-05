@@ -642,6 +642,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::rightMousePressed(Vector2f pos)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseButtonPressed;
+        event.mouseButton.button = sf::Mouse::Right;
+        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
+
+        // Let the event manager handle the event
+        handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::rightMouseReleased(Vector2f pos)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseButtonReleased;
+        event.mouseButton.button = sf::Mouse::Right;
+        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
+
+        // Let the event manager handle the event, but don't let it call leftMouseButtonNoLongerDown on all widgets (it will be done later)
+        handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::mouseMoved(Vector2f pos)
     {
         Widget::mouseMoved(pos);
