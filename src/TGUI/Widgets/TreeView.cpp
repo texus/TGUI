@@ -708,7 +708,7 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
-                if ((selectedIndex >= 0) && (selectedIndex == m_doubleClickNodeIndex))
+                if ((selectedIndex >= 0) && (selectedIndex == m_doubleClickNodeIndex) && (selectedIndex < static_cast<int>(m_visibleNodes.size())))
                 {
                     toggleNodeInternal(selectedIndex);
 
