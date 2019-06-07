@@ -39,24 +39,25 @@ namespace tgui
 
     namespace
     {
-        void addAnimation(std::vector<std::shared_ptr<priv::Animation>>& existingAnimations, std::shared_ptr<priv::Animation> newAnimation)
+        void finishExistingConflictingAnimations(std::vector<std::shared_ptr<priv::Animation>>& animations, ShowAnimationType type)
         {
-            const auto type = newAnimation->getType();
-
-            // If another animation is already running with the same type then instantly finish it
-            unsigned int i = 0;
-            while (i < existingAnimations.size())
+            // Only one animation of each type can be played at the same type. If e.g. a fade animation was already in progress
+            // when starting a new one, the old animation is finished immediately.
+            // Different types of animations (e.g. fading and moving) can occur at the same time.
+            auto animIt = animations.begin();
+            while (animIt != animations.end())
             {
-                if (existingAnimations[i]->getType() == type)
+                auto& animation = *animIt;
+                if (((type == ShowAnimationType::Fade) && (animation->getType() == priv::Animation::Type::Fade))
+                 || ((type == ShowAnimationType::Scale) && (animation->getType() == priv::Animation::Type::Resize))
+                 || ((type != ShowAnimationType::Fade) && (animation->getType() == priv::Animation::Type::Move)))
                 {
-                    existingAnimations[i]->finish();
-                    existingAnimations.erase(existingAnimations.begin() + i);
+                    animation->finish();
+                    animIt = animations.erase(animIt);
                 }
                 else
-                    ++i;
+                    ++animIt;
             }
-
-            existingAnimations.push_back(newAnimation);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,25 +468,44 @@ namespace tgui
     {
         setVisible(true);
 
+        // We store the state the widget is currently in. In the event another animation was already playing, we should try to
+        // use the current state to start our animation at, but this is not the state that the widget should end at. We must
+        // get this state BEFORE finishing the previous animation which is done by finishExistingConflictingAnimations.
+        const float startOpacity = getInheritedOpacity();
+        //const Vector2f startPosition = getPosition();
+        //const Vector2f startSize = getSize();
+
+        finishExistingConflictingAnimations(m_showAnimations, type);
+
         switch (type)
         {
             case ShowAnimationType::Fade:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getInheritedOpacity(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
-                setInheritedOpacity(0);
+                // Start from fully transparent, unless a fade animation was already playing
+                float animStartOpacity = startOpacity;
+                const float endOpacity = getInheritedOpacity();
+                if (startOpacity == endOpacity)
+                {
+                    setInheritedOpacity(0);
+                    animStartOpacity = 0;
+                }
+                else // If fading was already in progress then adapt the duration to finish the animation sooner
+                    duration *= (startOpacity / endOpacity);
+
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), animStartOpacity, endOpacity, duration, [=]{onAnimationFinished.emit(this, type, true); }));
                 break;
             }
             case ShowAnimationType::Scale:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
-                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, getSize(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
+                m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, getSize(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
                 setPosition(getPosition() + (getSize() / 2.f));
                 setSize(0, 0);
                 break;
             }
             case ShowAnimationType::SlideFromLeft:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
                 setPosition({-getFullSize().x, getPosition().y});
                 break;
             }
@@ -493,7 +513,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
                     setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
                 }
                 else
@@ -505,7 +525,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideFromTop:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
                 setPosition({getPosition().x, -getFullSize().y});
                 break;
             }
@@ -513,7 +533,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration, [=]{onAnimationFinished.emit(this, type, true); }));
                     setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
                 }
                 else
@@ -530,22 +550,36 @@ namespace tgui
 
     void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
     {
+        // We store the state the widget is currently in. In the event another animation was already playing, we should try to
+        // use the current state to start our animation at, but this is not the state that the widget should end at. We must
+        // get this state BEFORE finishing the previous animation which is done by finishExistingConflictingAnimations.
+        const float startOpacity = getInheritedOpacity();
+        //const Vector2f startPosition = getPosition();
+        //const Vector2f startSize = getSize();
+
+        finishExistingConflictingAnimations(m_showAnimations, type);
+
         const auto position = getPosition();
-        const auto size = getSize();
 
         switch (type)
         {
             case ShowAnimationType::Fade:
             {
-                float opacity = getInheritedOpacity();
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getInheritedOpacity(), 0.f, duration,
-                    [=](){ setVisible(false); setInheritedOpacity(opacity); onAnimationFinished.emit(this, type, false); }));
+                const float endOpacity = getInheritedOpacity(); // Value to reset to after widget is hidden
+
+                // If fading was already in progress then adapt the duration to finish the animation sooner
+                if (startOpacity != endOpacity)
+                    duration *= (startOpacity / endOpacity);
+
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), startOpacity, 0.f, duration,
+                    [=](){ setVisible(false); setInheritedOpacity(endOpacity); onAnimationFinished.emit(this, type, false); }));
                 break;
             }
             case ShowAnimationType::Scale:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration, [=](){ setVisible(false); setPosition(position); setSize(size); }));
-                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
+                const auto size = getSize();
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration));
+                m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
                     [=](){ setVisible(false); setPosition(position); setSize(size); onAnimationFinished.emit(this, type, false); }));
                 break;
             }
@@ -553,7 +587,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration,
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration,
                         [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 }
                 else
@@ -565,7 +599,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToLeft:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration,
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration,
                     [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 break;
             }
@@ -573,7 +607,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration,
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration,
                         [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 }
                 else
@@ -585,7 +619,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToTop:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration,
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration,
                     [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 break;
             }
