@@ -222,6 +222,8 @@ TEST_CASE("[Label]")
     {
         auto renderer = label->getRenderer();
 
+        tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+
         tgui::ScrollbarRenderer scrollbarRenderer;
         scrollbarRenderer.setTrackColor(sf::Color::Red);
         scrollbarRenderer.setThumbColor(sf::Color::Blue);
@@ -234,6 +236,7 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold | Italic"));
+            REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
             REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", "15"));
         }
@@ -246,6 +249,7 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
             REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", 15));
         }
@@ -258,6 +262,7 @@ TEST_CASE("[Label]")
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
+            renderer->setTextureBackground(textureBackground);
             renderer->setScrollbar(scrollbarRenderer.getData());
             renderer->setScrollbarWidth(15);
         }
@@ -268,6 +273,7 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
         REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
         REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
@@ -276,6 +282,7 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
 
         REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
         REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
@@ -328,6 +335,17 @@ TEST_CASE("[Label]")
                 label->setText(label->getText() + "\n" + label->getText());
                 TEST_DRAW("Label_Complex_WithScrollbar.png")
             }
+        }
+
+        SECTION("Background texture")
+        {
+            TEST_DRAW_INIT(110, 40, label)
+            label->setSize(90, 30);
+            label->setText(L"Test");
+            label->setTextSize(18);
+            label->getRenderer()->setBorders({1, 2, 3, 4});
+            label->getRenderer()->setTextureBackground("resources/Texture1.png");
+            TEST_DRAW("Label_BackgroundTexture.png")
         }
     }
 }

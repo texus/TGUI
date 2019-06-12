@@ -105,6 +105,9 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+
         // You are no longer auto-sizing
         m_autoSize = false;
         rearrangeText();
@@ -379,6 +382,8 @@ namespace tgui
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
+            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
             rearrangeText();
         }
         else if (property == "padding")
@@ -406,6 +411,10 @@ namespace tgui
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
+        else if (property == "texturebackground")
+        {
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
+        }
         else if (property == "scrollbar")
         {
             m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -431,6 +440,8 @@ namespace tgui
         else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
+
+            m_spriteBackground.setOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
                 line.setOpacity(m_opacityCached);
@@ -661,6 +672,9 @@ namespace tgui
             Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + 2*textOffset, requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
+
+            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
         }
 
         // Update the line positions
@@ -731,7 +745,9 @@ namespace tgui
         }
 
         // Draw the background
-        if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != Color::Transparent))
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
+        else if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != Color::Transparent))
             drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Draw the scrollbar

@@ -39,6 +39,8 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(LabelRenderer, TextStyle, sf::Text::Regular)
 
+    TGUI_RENDERER_PROPERTY_TEXTURE(LabelRenderer, TextureBackground)
+
     TGUI_RENDERER_PROPERTY_RENDERER(LabelRenderer, Scrollbar, "scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(LabelRenderer, ScrollbarWidth, 0)
 }

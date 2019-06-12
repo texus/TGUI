@@ -441,6 +441,8 @@ namespace tgui
         Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Never;
 #endif
 
+        Sprite    m_spriteBackground;
+
         // Cached renderer properties
         Borders   m_bordersCached;
         Padding   m_paddingCached;
