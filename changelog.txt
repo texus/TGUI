@@ -6,6 +6,7 @@ TGUI 0.8.6  (TBD)
 - Added mousePressed and mouseReleased to respond to different mouse buttons in custom widgets
 - Added focusable property to widgets
 - Added TextureBackground property to Label, Panel and ChildWindow renderers
+- Added VerticalScrollAmount and HorizontalScrollAmount to ScrollablePanel
 - Container widgets didn't pass right click event to child widgets
 - Widget state was incorrect when starting a show/hide animation while another was still busy
 

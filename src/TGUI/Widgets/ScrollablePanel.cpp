@@ -383,6 +383,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ScrollablePanel::setVerticalScrollAmount(unsigned int scrollAmount)
+    {
+        m_verticalScrollAmount = scrollAmount;
+
+        if (scrollAmount == 0)
+        {
+            const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize()) / m_verticalScrollbar->getViewportSize());
+            m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
+        }
+        else
+            m_verticalScrollbar->setScrollAmount(scrollAmount);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ScrollablePanel::getVerticalScrollAmount() const
+    {
+        return m_verticalScrollAmount;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::setHorizontalScrollAmount(unsigned int scrollAmount)
+    {
+        m_horizontalScrollAmount = scrollAmount;
+
+        if (scrollAmount == 0)
+        {
+            const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getViewportSize()) / m_horizontalScrollbar->getViewportSize());
+            m_horizontalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
+        }
+        else
+            m_horizontalScrollbar->setScrollAmount(scrollAmount);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ScrollablePanel::getHorizontalScrollAmount() const
+    {
+        return m_horizontalScrollAmount;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
@@ -711,11 +755,11 @@ namespace tgui
         m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
         m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
 
-        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize()) / m_verticalScrollbar->getViewportSize());
-        m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
+        if (m_verticalScrollAmount == 0)
+            setVerticalScrollAmount(0);
 
-        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getViewportSize()) / m_horizontalScrollbar->getViewportSize());
-        m_horizontalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
+        if (m_horizontalScrollAmount == 0)
+            setHorizontalScrollAmount(0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

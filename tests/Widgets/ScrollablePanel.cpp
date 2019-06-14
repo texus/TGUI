@@ -100,6 +100,20 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
+    SECTION("VerticalScrollAmount")
+    {
+        REQUIRE(panel->getVerticalScrollAmount() == 0);
+        panel->setVerticalScrollAmount(10);
+        REQUIRE(panel->getVerticalScrollAmount() == 10);
+    }
+
+    SECTION("HorizontalScrollAmount")
+    {
+        REQUIRE(panel->getHorizontalScrollAmount() == 0);
+        panel->setHorizontalScrollAmount(10);
+        REQUIRE(panel->getHorizontalScrollAmount() == 10);
+    }
+
     SECTION("Scrollbar width")
     {
         auto scrollbar = tgui::Scrollbar::create();

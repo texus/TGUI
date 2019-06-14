@@ -40,6 +40,10 @@ struct ScrollablePanelProperties : PanelProperties
             panel->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "HorizontalScrollbarPolicy")
             panel->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
+        else if (property == "VerticalScrollAmount")
+            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
+        else if (property == "HorizontalScrollAmount")
+            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "ContentWidth")
             panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")
@@ -54,6 +58,8 @@ struct ScrollablePanelProperties : PanelProperties
         auto panel = std::dynamic_pointer_cast<tgui::ScrollablePanel>(widget);
         pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbarPolicy())};
         pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getHorizontalScrollbarPolicy())};
+        pair.first["VerticalScrollAmount"] = {"UInt", tgui::to_string(panel->getVerticalScrollAmount())};
+        pair.first["HorizontalScrollAmount"] = {"UInt", tgui::to_string(panel->getHorizontalScrollAmount())};
         pair.first["ContentWidth"] = {"Float", tgui::to_string(panel->getContentSize().x)};
         pair.first["ContentHeight"] = {"Float", tgui::to_string(panel->getContentSize().y)};
 
