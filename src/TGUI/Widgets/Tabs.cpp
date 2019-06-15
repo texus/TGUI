@@ -109,10 +109,6 @@ namespace tgui
     void Tabs::setEnabled(bool enabled)
     {
         Widget::setEnabled(enabled);
-
-        if (!enabled)
-            deselect();
-
         updateTextColors();
     }
 
@@ -785,18 +781,21 @@ namespace tgui
                 tab.text.setColor(m_textColorCached);
         }
 
-        if (m_selectedTab >= 0)
+        if (m_enabled)
         {
-            if ((m_selectedTab == m_hoveringTab) && m_selectedTextColorHoverCached.isSet())
-                m_tabs[m_selectedTab].text.setColor(m_selectedTextColorHoverCached);
-            else if (m_selectedTextColorCached.isSet())
-                m_tabs[m_selectedTab].text.setColor(m_selectedTextColorCached);
-        }
+            if (m_selectedTab >= 0)
+            {
+                if ((m_selectedTab == m_hoveringTab) && m_selectedTextColorHoverCached.isSet())
+                    m_tabs[m_selectedTab].text.setColor(m_selectedTextColorHoverCached);
+                else if (m_selectedTextColorCached.isSet())
+                    m_tabs[m_selectedTab].text.setColor(m_selectedTextColorCached);
+            }
 
-        if ((m_hoveringTab >= 0) && (m_selectedTab != m_hoveringTab))
-        {
-            if (m_textColorHoverCached.isSet())
-                m_tabs[m_hoveringTab].text.setColor(m_textColorHoverCached);
+            if ((m_hoveringTab >= 0) && (m_selectedTab != m_hoveringTab))
+            {
+                if (m_textColorHoverCached.isSet())
+                    m_tabs[m_hoveringTab].text.setColor(m_textColorHoverCached);
+            }
         }
     }
 

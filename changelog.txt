@@ -9,6 +9,7 @@ TGUI 0.8.6  (TBD)
 - Added VerticalScrollAmount and HorizontalScrollAmount to ScrollablePanel
 - Container widgets didn't pass right click event to child widgets
 - Widget state was incorrect when starting a show/hide animation while another was still busy
+- Disabling tabs widget caused selected tab to be deselected
 
 
 TGUI 0.8.5  (6 April 2019)
