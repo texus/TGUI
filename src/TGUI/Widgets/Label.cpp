@@ -689,10 +689,13 @@ namespace tgui
                 const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
                 const float totalTextHeight = m_lines.size() * m_fontCached.getLineSpacing(m_textSize);
 
-                if (m_verticalAlignment == VerticalAlignment::Center)
-                    pos.y += (totalHeight - totalTextHeight) / 2.f;
-                else if (m_verticalAlignment == VerticalAlignment::Bottom)
-                    pos.y += totalHeight - totalTextHeight;
+                if (!m_scrollbar->isShown() || (totalTextHeight < totalHeight))
+                {
+                    if (m_verticalAlignment == VerticalAlignment::Center)
+                        pos.y += (totalHeight - totalTextHeight) / 2.f;
+                    else if (m_verticalAlignment == VerticalAlignment::Bottom)
+                        pos.y += totalHeight - totalTextHeight;
+                }
             }
 
             if (m_horizontalAlignment == HorizontalAlignment::Left)

@@ -10,6 +10,7 @@ TGUI 0.8.6  (TBD)
 - Container widgets didn't pass right click event to child widgets
 - Widget state was incorrect when starting a show/hide animation while another was still busy
 - Disabling tabs widget caused selected tab to be deselected
+- Vertical alignment in Label didn't work correctly when there was a scrollbar
 
 
 TGUI 0.8.5  (6 April 2019)
