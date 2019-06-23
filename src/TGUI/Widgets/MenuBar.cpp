@@ -255,13 +255,15 @@ namespace tgui
 
     void MenuBar::setEnabled(bool enabled)
     {
+        if (m_enabled == enabled)
+            return;
+
         Widget::setEnabled(enabled);
 
         if (!enabled)
-        {
             closeMenu();
-            updateTextColors(m_menus, m_visibleMenu);
-        }
+
+        updateTextColors(m_menus, m_visibleMenu);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
