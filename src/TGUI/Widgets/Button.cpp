@@ -334,6 +334,14 @@ namespace tgui
         {
             m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
         }
+        else if (property == "textoutlinethickness")
+        {
+            m_text.setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
+        }
+        else if (property == "textoutlinecolor")
+        {
+            m_text.setOutlineColor(getSharedRenderer()->getTextOutlineColor());
+        }
         else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);

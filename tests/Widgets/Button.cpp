@@ -140,6 +140,8 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDown", "rgb(120, 130, 140)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", "rgb(130, 140, 150)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", "rgb(10, 20, 30)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Italic"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", "Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", "Bold | Underlined"));
@@ -161,6 +163,8 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDown", sf::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", sf::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", sf::Text::Underlined));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(sf::Text::Bold | sf::Text::Underlined)));
@@ -182,6 +186,8 @@ TEST_CASE("[Button]")
                 renderer->setBorderColorHover({110, 120, 130});
                 renderer->setBorderColorDown({120, 130, 140});
                 renderer->setBorderColorDisabled({130, 140, 150});
+                renderer->setTextOutlineColor({10, 20, 30});
+                renderer->setTextOutlineThickness(2);
                 renderer->setTextStyle(sf::Text::Italic);
                 renderer->setTextStyleHover(sf::Text::Underlined);
                 renderer->setTextStyleDown(sf::Text::Bold | sf::Text::Underlined);
@@ -201,6 +207,8 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("BorderColorDown").getColor() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("TextOutlineColor").getColor() == sf::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("TextOutlineThickness").getNumber() == 2);
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == sf::Text::Underlined);
             REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
@@ -219,6 +227,8 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getBorderColorHover() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getBorderColorDown() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getBorderColorDisabled() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getTextOutlineColor() == sf::Color(10, 20, 30));
+            REQUIRE(renderer->getTextOutlineThickness() == 2);
             REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getTextStyleHover() == sf::Text::Underlined);
             REQUIRE(renderer->getTextStyleDown() == (sf::Text::Bold | sf::Text::Underlined));
@@ -334,6 +344,13 @@ TEST_CASE("[Button]")
                                     };
 
         const auto mousePos = button->getPosition() + (button->getSize() / 2.f);
+
+        SECTION("Outline")
+        {
+            renderer.setTextOutlineThickness(1);
+            renderer.setTextOutlineColor(sf::Color::White);
+            TEST_DRAW("Button_Normal_Outline.png")
+        }
 
         SECTION("Colored")
         {

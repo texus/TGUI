@@ -450,6 +450,8 @@ namespace tgui
         Color     m_textColorCached;
         Color     m_borderColorCached;
         Color     m_backgroundColorCached;
+        Color     m_textOutlineColorCached;
+        float     m_textOutlineThicknessCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

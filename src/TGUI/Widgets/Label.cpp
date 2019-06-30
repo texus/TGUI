@@ -415,6 +415,18 @@ namespace tgui
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
+        else if (property == "textoutlinethickness")
+        {
+            m_textOutlineThicknessCached = getSharedRenderer()->getTextOutlineThickness();
+            for (auto& line : m_lines)
+                line.setOutlineThickness(m_textOutlineThicknessCached);
+        }
+        else if (property == "textoutlinecolor")
+        {
+            m_textOutlineColorCached = getSharedRenderer()->getTextOutlineColor();
+            for (auto& line : m_lines)
+                line.setOutlineColor(m_textOutlineColorCached);
+        }
         else if (property == "scrollbar")
         {
             m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -654,6 +666,8 @@ namespace tgui
             m_lines.back().setStyle(m_textStyleCached);
             m_lines.back().setColor(m_textColorCached);
             m_lines.back().setOpacity(m_opacityCached);
+            m_lines.back().setOutlineColor(m_textOutlineColorCached);
+            m_lines.back().setOutlineThickness(m_textOutlineThicknessCached);
 
             if (newLinePos != sf::String::InvalidPos)
                 m_lines.back().setString(string.substring(searchPosStart, newLinePos - searchPosStart));

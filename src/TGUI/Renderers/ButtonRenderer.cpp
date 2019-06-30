@@ -59,6 +59,9 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDown, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDisabled, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleFocused, {})
+
+    TGUI_RENDERER_PROPERTY_NUMBER(ButtonRenderer, TextOutlineThickness, 0)
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextOutlineColor, {})
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -233,6 +233,8 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(100, 50, 150)"));
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(150, 100, 50)"));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(50, 150, 100)"));
+            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", "rgb(10, 20, 30)"));
+            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", "2"));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold | Italic"));
@@ -246,6 +248,8 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{100, 50, 150}));
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{150, 100, 50}));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{50, 150, 100}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
@@ -259,6 +263,8 @@ TEST_CASE("[Label]")
             renderer->setTextColor({100, 50, 150});
             renderer->setBackgroundColor({150, 100, 50});
             renderer->setBorderColor({50, 150, 100});
+            renderer->setTextOutlineColor({10, 20, 30});
+            renderer->setTextOutlineThickness(2);
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
@@ -270,6 +276,8 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(100, 50, 150));
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(150, 100, 50));
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(50, 150, 100));
+        REQUIRE(renderer->getProperty("TextOutlineColor").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("TextOutlineThickness").getNumber() == 2);
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
@@ -279,6 +287,8 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
         REQUIRE(renderer->getBackgroundColor() == sf::Color(150, 100, 50));
         REQUIRE(renderer->getBorderColor() == sf::Color(50, 150, 100));
+        REQUIRE(renderer->getTextOutlineColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getTextOutlineThickness() == 2);
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
@@ -314,6 +324,10 @@ TEST_CASE("[Label]")
             label->setTextSize(24);
             label->getRenderer()->setTextStyle(sf::Text::Style::Italic);
             TEST_DRAW("Label_Simple.png")
+
+            label->getRenderer()->setTextOutlineThickness(1);
+            label->getRenderer()->setTextOutlineColor(sf::Color::Cyan);
+            TEST_DRAW("Label_Simple_Outline.png")
         }
 
         SECTION("Complex")
