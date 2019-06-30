@@ -325,6 +325,7 @@ TEST_CASE("[Label]")
             label->getRenderer()->setTextStyle(sf::Text::Style::Italic);
             TEST_DRAW("Label_Simple.png")
 
+            label->getRenderer()->setTextStyle(sf::Text::Style::Regular);
             label->getRenderer()->setTextOutlineThickness(1);
             label->getRenderer()->setTextOutlineColor(sf::Color::Cyan);
             TEST_DRAW("Label_Simple_Outline.png")
