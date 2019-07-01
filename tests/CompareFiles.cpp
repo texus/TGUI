@@ -58,7 +58,7 @@ void compareImageFiles(const std::string& filename1, const std::string& filename
     }
 
     double diffPercentage = (totalDiff * 100)  / (image1.getSize().x * image1.getSize().y * 3);
-    REQUIRE(diffPercentage < 1.5);
+    REQUIRE(diffPercentage < 0.33);
 }
 
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName)

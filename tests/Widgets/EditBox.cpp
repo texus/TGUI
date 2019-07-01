@@ -171,15 +171,15 @@ TEST_CASE("[EditBox]")
 
     SECTION("Input Validator")
     {
-        editBox->setText(L"++Some123 Ê Text456--");
+        editBox->setText(L"++Some123 \u00CA Text456--");
 
         SECTION("Default")
         {
             REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::All);
-            REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
+            REQUIRE(editBox->getText() == L"++Some123 \u00CA Text456--");
 
             REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::All));
-            REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
+            REQUIRE(editBox->getText() == L"++Some123 \u00CA Text456--");
 
             SECTION("Adding characters")
             {

@@ -320,12 +320,11 @@ TEST_CASE("[Label]")
         SECTION("Simple")
         {
             TEST_DRAW_INIT(110, 40, label)
-            label->setText(L"Test gÊ");
+            label->setText(L"Test g\u00CA");
             label->setTextSize(24);
             label->getRenderer()->setTextStyle(sf::Text::Style::Italic);
             TEST_DRAW("Label_Simple.png")
 
-            label->getRenderer()->setTextStyle(sf::Text::Style::Regular);
             label->getRenderer()->setTextOutlineThickness(1);
             label->getRenderer()->setTextOutlineColor(sf::Color::Cyan);
             TEST_DRAW("Label_Simple_Outline.png")

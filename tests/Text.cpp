@@ -123,7 +123,7 @@ TEST_CASE("[Text]")
 
         SECTION("Independent of individual character height")
         {
-            text.setString(L"Êg");
+            text.setString(L"\u00CAg");
 
             tgui::Text text2;
             text2.setFont("resources/DejaVuSans.ttf");
