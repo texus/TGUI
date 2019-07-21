@@ -607,6 +607,11 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vec
         tgui::Widget::Ptr widget = *it;
         if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getFullSize().x, widget->getFullSize().y}.contains(pos))
         {
+            // Skip invisible widgets, those have to be selected using the combo box in the properties window.
+            // This prevents clicking on stuff you don't see instead of the thing you are trying to click on.
+            if (!widget->isVisible())
+                continue;
+
             if (widget->isContainer())
             {
                 tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
