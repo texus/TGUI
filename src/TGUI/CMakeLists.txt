@@ -146,6 +146,19 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
+# required compiler features
+target_compile_features(tgui PUBLIC
+                                cxx_nullptr
+                                cxx_auto_type
+                                cxx_override
+                                cxx_right_angle_brackets
+                                cxx_strong_enums
+                             PRIVATE
+                                cxx_decltype
+                                cxx_range_for
+                                cxx_lambdas
+)
+
 tgui_set_global_compile_flags(tgui)
 tgui_set_stdlib(tgui)
 
