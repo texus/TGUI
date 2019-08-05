@@ -25,6 +25,7 @@
 
 #include "WidgetProperties/BitmapButtonProperties.hpp"
 #include "WidgetProperties/ButtonProperties.hpp"
+#include "WidgetProperties/ChatBoxProperties.hpp"
 #include "WidgetProperties/ChildWindowProperties.hpp"
 #include "WidgetProperties/ComboBoxProperties.hpp"
 #include "WidgetProperties/EditBoxProperties.hpp"
@@ -43,6 +44,7 @@
 #include "WidgetProperties/SpinButtonProperties.hpp"
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextBoxProperties.hpp"
+#include "WidgetProperties/TreeViewProperties.hpp"
 #include "GuiBuilder.hpp"
 
 #include <fstream>
@@ -220,6 +222,7 @@ GuiBuilder::GuiBuilder() :
 
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
+    m_widgetProperties["ChatBox"] = std::make_unique<ChatBoxProperties>();
     m_widgetProperties["CheckBox"] = std::make_unique<RadioButtonProperties>();
     m_widgetProperties["ChildWindow"] = std::make_unique<ChildWindowProperties>();
     m_widgetProperties["ComboBox"] = std::make_unique<ComboBoxProperties>();
@@ -239,6 +242,7 @@ GuiBuilder::GuiBuilder() :
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
+    m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     sf::Image icon;
     if (icon.loadFromFile("resources/Icon.png"))
@@ -815,6 +819,7 @@ void GuiBuilder::loadToolbox()
     const auto widgets = std::vector<std::pair<std::string, std::function<tgui::Widget::Ptr()>>>{
         {"BitmapButton", []{ return tgui::BitmapButton::create("BitBtn"); }},
         {"Button", []{ return tgui::Button::create("Button"); }},
+        {"ChatBox", []{ return tgui::ChatBox::create(); }},
         {"CheckBox", []{ return tgui::CheckBox::create(); }},
         {"ChildWindow", []{ return tgui::ChildWindow::create(); }},
         {"ComboBox", []{ return tgui::ComboBox::create(); }},
@@ -834,6 +839,7 @@ void GuiBuilder::loadToolbox()
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
         {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
         {"TextBox", []{ return tgui::TextBox::create(); }},
+        {"TreeView", []{ return tgui::TreeView::create(); }},
     };
 
     float topPosition = 0;
