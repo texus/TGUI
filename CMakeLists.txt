@@ -145,6 +145,18 @@ if(TGUI_OS_ANDROID)
     set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
+# Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++
+# This can't be done in the tgui_set_stdlib macro because it is too late to change these variables by then
+if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
+    foreach(flag
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+        if(${flag} MATCHES "/MD")
+            string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
+        endif()
+    endforeach()
+endif()
+
 # Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
 if(NOT DEFINED SFML_STATIC_LIBRARIES)
   if(TGUI_SHARED_LIBS)
