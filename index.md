@@ -38,14 +38,6 @@ The gui is easy to use, with only a few lines you can e.g. have a fully function
   </div>
 </div>
 
-<div class="HomePageLargerColumn">
-  <h3>Unique Callback System</h3>
-  <p>The callback system was written specifically for TGUI and aims to be as easy as possible. You will not have to call std::bind yourself when passing parameters and you can leave parameters unbound which the widgets can use to pass information.</p>
-</div>
-<div class="HomePageSmallerColumn">
-  <img src="/resources/UniqueCallbackSystem.png" alt="Unique Callback System" width="364" height="195" />
-</div>
-
 
 <!-- Make some of the images use a lightbox when javascript is enabled -->
 <script type="text/javascript">
