@@ -35,7 +35,7 @@ class GuiBuilder;
 class Form
 {
 public:
-    Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
+    Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow, sf::Vector2f formSize);
     std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget = true);
     void removeWidget(const std::string& id);
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
@@ -55,8 +55,8 @@ public:
     void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);
     void setFilename(const sf::String& filename);
     sf::String getFilename() const;
-    void setSize(sf::Vector2i filename);
-    sf::Vector2i getSize() const;
+    void setSize(sf::Vector2f size);
+    sf::Vector2f getSize() const;
     void setChanged(bool changed);
     bool isChanged() const;
     void focus();
@@ -88,7 +88,7 @@ private:
     tgui::Button::Ptr m_draggingSelectionSquare;
     sf::Vector2f m_draggingPos;
     sf::String m_filename;
-    sf::Vector2i m_size;
+    sf::Vector2f m_size;
 };
 
 #endif // TGUI_GUI_BUILDER_FORM_HPP
