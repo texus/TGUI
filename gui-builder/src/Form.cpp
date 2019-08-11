@@ -45,13 +45,13 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
 
     m_formWindow->setTitle(filename);
     m_formWindow->connect("Closed", [this]{ m_guiBuilder->closeForm(this); });
-	m_formWindow->connect("SizeChanged", [this] (sf::Vector2f formSize) { m_scrollablePanel->setSize(formSize); });
+    m_formWindow->connect("SizeChanged", [this] { m_scrollablePanel->setSize(m_formWindow->getSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->connect("MousePressed", [=](sf::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
-    m_scrollablePanel->setSize(formSize);
+    m_scrollablePanel->setSize(m_formWindow->getSize());
     setSize(formSize);
 
     tgui::Theme selectionSquareTheme{"resources/SelectionSquare.txt"};
@@ -632,7 +632,7 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vec
 void Form::onFormMousePress(sf::Vector2f pos)
 {
     auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
-    if (widget && widget->isVisible())
+    if (widget)
     {
         selectWidget(m_widgets[tgui::to_string(widget.get())]);
         m_draggingWidget = true;

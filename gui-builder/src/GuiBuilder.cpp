@@ -213,7 +213,7 @@ namespace
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GuiBuilder::GuiBuilder() :
-	m_window{ { 1300, 680 }, "TGUI - GUI Builder" },
+    m_window{{1300, 680}, "TGUI - GUI Builder"},
     m_gui         {m_window},
     m_themes      {{"White", *tgui::Theme::getDefault()}},
     m_defaultTheme{"White"}
@@ -417,14 +417,14 @@ bool GuiBuilder::loadGuiBuilderState()
 
     if (node->propertyValuePairs["recentfiles"])
     {
-		if (node->propertyValuePairs["formsize"])
-		{
-			const auto& size = node->propertyValuePairs["formsize"]->value;
-			const auto formSize = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString();
-			const tgui::Layout2d formSizeLayout = tgui::parseLayout(formSize);
-		
-			m_formSize = formSizeLayout.getValue();
-		}
+        if (node->propertyValuePairs["formsize"])
+        {
+            const auto& size = node->propertyValuePairs["formsize"]->value;
+            const auto formSize = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString();
+            const tgui::Layout2d formSizeLayout = tgui::parseLayout(formSize);
+        
+            m_formSize = formSizeLayout.getValue();
+        }
 
         for (const auto& value : node->propertyValuePairs["recentfiles"]->valueList)
         {
@@ -492,8 +492,7 @@ void GuiBuilder::saveGuiBuilderState()
         node->propertyValuePairs["Themes"] = std::make_unique<tgui::DataIO::ValueNode>(themeList);
     }
 
-	
-	node->propertyValuePairs["FormSize"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Layout2d(m_formSize).toString());
+    node->propertyValuePairs["FormSize"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Layout2d(m_formSize).toString());
 
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
@@ -584,8 +583,8 @@ void GuiBuilder::reloadProperties()
                 if (tgui::to_string(m_selectedForm->getSize().x) != value)
                 {
                     // Form is not marked as changed since the width is saved as editor property
-					const float newWidth = tgui::stof(value);
-					m_formSize = { newWidth, m_selectedForm->getSize().y };
+                    const float newWidth = tgui::stof(value);
+                    m_formSize = { newWidth, m_selectedForm->getSize().y };
                     m_selectedForm->setSize(m_formSize);
                 }
             });
@@ -595,8 +594,8 @@ void GuiBuilder::reloadProperties()
                 if (tgui::to_string(m_selectedForm->getSize().y) != value)
                 {
                     // Form is not marked as changed since the height is saved as editor property
-					const float newHeight = tgui::stof(value);
-					m_formSize = { m_selectedForm->getSize().x, newHeight};
+                    const float newHeight = tgui::stof(value);
+                    m_formSize = { m_selectedForm->getSize().x, newHeight};
                     m_selectedForm->setSize(m_formSize);
                 }
             });
@@ -2019,12 +2018,16 @@ void GuiBuilder::menuBarCallbackLoadRecent(const sf::String& filename)
 void GuiBuilder::menuBarCallbackSaveFile()
 {
     m_selectedForm->save();
+
+	saveGuiBuilderState();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::menuBarCallbackQuit()
 {
+	saveGuiBuilderState();
+
     while (!m_forms.empty())
         closeForm(m_forms[0].get());
 
