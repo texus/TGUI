@@ -136,6 +136,9 @@ private:
 
     std::map<std::string, tgui::Theme> m_themes;
     std::string m_defaultTheme;
+
+	sf::Vector2u m_editorSize{ 1300, 680 };
+	sf::Vector2f m_formSize{ 800.f, 600.f };
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP

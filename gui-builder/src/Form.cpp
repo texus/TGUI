@@ -34,7 +34,7 @@ const static float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow) :
+Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow, sf::Vector2f formSize) :
     m_guiBuilder      {guiBuilder},
     m_formWindow      {formWindow},
     m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
@@ -45,14 +45,14 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
 
     m_formWindow->setTitle(filename);
     m_formWindow->connect("Closed", [this]{ m_guiBuilder->closeForm(this); });
-    m_formWindow->connect("SizeChanged", [this]{ m_scrollablePanel->setSize(m_formWindow->getSize()); });
+	m_formWindow->connect("SizeChanged", [this] (sf::Vector2f formSize) { m_scrollablePanel->setSize(formSize); });
 
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->connect("MousePressed", [=](sf::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
-    m_scrollablePanel->setSize(m_formWindow->getSize());
-    setSize(sf::Vector2i{sf::Vector2f{m_formWindow->getSize()}});
+    m_scrollablePanel->setSize(formSize);
+    setSize(formSize);
 
     tgui::Theme selectionSquareTheme{"resources/SelectionSquare.txt"};
     for (auto& square : m_selectionSquares)
@@ -451,18 +451,18 @@ sf::String Form::getFilename() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::setSize(sf::Vector2i size)
+void Form::setSize(sf::Vector2f size)
 {
     m_size = size;
 
-    m_scrollablePanel->setContentSize(sf::Vector2f{m_size});
-    m_widgetsContainer->setSize(sf::Vector2f{m_size});
-    m_scrollablePanel->get("EventHandler")->setSize(sf::Vector2f{m_size});
+    m_widgetsContainer->setSize(m_size);
+    m_scrollablePanel->setContentSize(m_size);
+    m_scrollablePanel->get("EventHandler")->setSize(m_size);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-sf::Vector2i Form::getSize() const
+sf::Vector2f Form::getSize() const
 {
     return m_size;
 }
@@ -627,7 +627,7 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vec
 void Form::onFormMousePress(sf::Vector2f pos)
 {
     auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
-    if (widget)
+    if (widget && widget->isVisible())
     {
         selectWidget(m_widgets[tgui::to_string(widget.get())]);
         m_draggingWidget = true;
