@@ -34,7 +34,7 @@ struct ListBoxProperties : WidgetProperties
     // TODO: Item Ids
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
         if (property == "Items")
@@ -45,13 +45,13 @@ struct ListBoxProperties : WidgetProperties
                 listBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value)));
+            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
         else if (property == "ItemHeight")
-            listBox->setItemHeight(static_cast<unsigned int>(tgui::stoi(value)));
+            listBox->setItemHeight(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "TextSize")
-            listBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            listBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "MaximumItems")
-            listBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value)));
+            listBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "AutoScroll")
             listBox->setAutoScroll(parseBoolean(value, true));
         else

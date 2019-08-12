@@ -63,7 +63,7 @@ private:
     void loadToolbox();
     void showLoadFileWindow(const sf::String& title, const sf::String& loadButtonCaption, const sf::String& defaultFilename, const std::function<void(const sf::String&)>& onLoad);
     void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
-    bool updateWidgetProperty(const std::string& property, const std::string& value);
+    bool updateWidgetProperty(const std::string& property, const sf::String& value);
     void initProperties();
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
     void changeWidgetName(const std::string& name);

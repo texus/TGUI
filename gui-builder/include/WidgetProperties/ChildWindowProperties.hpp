@@ -31,7 +31,7 @@
 
 struct ChildWindowProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto childWindow = std::dynamic_pointer_cast<tgui::ChildWindow>(widget);
         if (property == "TitleAlignment")

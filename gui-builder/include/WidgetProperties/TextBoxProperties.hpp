@@ -33,15 +33,15 @@ struct TextBoxProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
         if (property == "Text")
             textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            textBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            textBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "MaximumCharacters")
-            textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value)));
+            textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "ReadOnly")
             textBox->setReadOnly(parseBoolean(value, false));
         else if (property == "VerticalScrollbarPolicy")

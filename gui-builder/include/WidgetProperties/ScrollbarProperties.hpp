@@ -31,17 +31,17 @@
 
 struct ScrollbarProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
         if (property == "Maximum")
-            scrollbar->setMaximum(static_cast<unsigned int>(tgui::stoi(value)));
+            scrollbar->setMaximum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "Value")
-            scrollbar->setValue(static_cast<unsigned int>(tgui::stoi(value)));
+            scrollbar->setValue(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "ViewportSize")
-            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::stoi(value)));
+            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "ScrollAmount")
-            scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
+            scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "AutoHide")
             scrollbar->setAutoHide(parseBoolean(value, true));
         else

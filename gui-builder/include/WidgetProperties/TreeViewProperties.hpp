@@ -33,13 +33,13 @@ struct TreeViewProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto treeView = std::dynamic_pointer_cast<tgui::TreeView>(widget);
         if (property == "TextSize")
-            treeView->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            treeView->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "ItemHeight")
-            treeView->setItemHeight(static_cast<unsigned int>(tgui::stoi(value)));
+            treeView->setItemHeight(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

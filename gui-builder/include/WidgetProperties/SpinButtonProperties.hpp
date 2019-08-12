@@ -31,7 +31,7 @@
 
 struct SpinButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
         if (property == "Minimum")

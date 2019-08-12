@@ -31,19 +31,19 @@
 
 struct ProgressBarProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto progressBar = std::dynamic_pointer_cast<tgui::ProgressBar>(widget);
         if (property == "Minimum")
-            progressBar->setMinimum(static_cast<unsigned int>(tgui::stoi(value)));
+            progressBar->setMinimum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "Maximum")
-            progressBar->setMaximum(static_cast<unsigned int>(tgui::stoi(value)));
+            progressBar->setMaximum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "Value")
-            progressBar->setValue(static_cast<unsigned int>(tgui::stoi(value)));
+            progressBar->setValue(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "Text")
             progressBar->setText(value);
         else if (property == "TextSize")
-            progressBar->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            progressBar->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "FillDirection")
             progressBar->setFillDirection(deserializeFillDirection(value));
         else

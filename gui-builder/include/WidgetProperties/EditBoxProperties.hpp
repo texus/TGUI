@@ -31,7 +31,7 @@
 
 struct EditBoxProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto editBox = std::dynamic_pointer_cast<tgui::EditBox>(widget);
         if (property == "Text")
@@ -39,11 +39,11 @@ struct EditBoxProperties : WidgetProperties
         else if (property == "DefaultText")
             editBox->setDefaultText(value);
         else if (property == "TextSize")
-            editBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            editBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "PasswordCharacter")
-            editBox->setPasswordCharacter(value.empty() ? '\0' : value[0]);
+            editBox->setPasswordCharacter(value.isEmpty() ? '\0' : value[0]);
         else if (property == "MaximumCharacters")
-            editBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value)));
+            editBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "Alignment")
             editBox->setAlignment(deserializeAlignment(value));
         else if (property == "LimitTextWidth")

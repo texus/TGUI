@@ -33,17 +33,17 @@ struct ChatBoxProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto chatBox = std::dynamic_pointer_cast<tgui::ChatBox>(widget);
         if (property == "TextSize")
-            chatBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            chatBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "TextColor")
             chatBox->setTextColor(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor());
         else if (property == "TextStyle")
             chatBox->setTextStyle(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle());
         else if (property == "LineLimit")
-            chatBox->setLineLimit(static_cast<unsigned int>(tgui::stoi(value)));
+            chatBox->setLineLimit(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "LinesStartFromTop")
             chatBox->setLinesStartFromTop(parseBoolean(value, true));
         else if (property == "NewLinesBelowOthers")

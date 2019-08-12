@@ -35,7 +35,7 @@ struct TabsProperties : WidgetProperties
     // TODO: TabsEnabled
     // TODO: AutoSize (and TabHeight)?
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto tabs = std::dynamic_pointer_cast<tgui::Tabs>(widget);
         if (property == "Tabs")
@@ -50,12 +50,12 @@ struct TabsProperties : WidgetProperties
             if (tgui::stoi(value) < 0)
                 tabs->deselect();
             else
-                tabs->select(static_cast<std::size_t>(tgui::stoi(value)));
+                tabs->select(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
         }
         else if (property == "MaximumTabWidth")
             tabs->setMaximumTabWidth(tgui::stof(value));
         else if (property == "TextSize")
-            tabs->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            tabs->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

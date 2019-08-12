@@ -917,7 +917,7 @@ void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget, tgui::Container* pare
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool GuiBuilder::updateWidgetProperty(const std::string& property, const std::string& value)
+bool GuiBuilder::updateWidgetProperty(const std::string& property, const sf::String& value)
 {
     sf::String oldValue;
     if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())

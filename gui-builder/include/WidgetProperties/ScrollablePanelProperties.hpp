@@ -33,7 +33,7 @@ struct ScrollablePanelProperties : PanelProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto panel = std::dynamic_pointer_cast<tgui::ScrollablePanel>(widget);
         if (property == "VerticalScrollbarPolicy")
@@ -41,9 +41,9 @@ struct ScrollablePanelProperties : PanelProperties
         else if (property == "HorizontalScrollbarPolicy")
             panel->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "VerticalScrollAmount")
-            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
+            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "HorizontalScrollAmount")
-            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
+            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "ContentWidth")
             panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")

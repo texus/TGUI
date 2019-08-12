@@ -31,7 +31,7 @@
 
 struct BitmapButtonProperties : ButtonProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
         if (property == "Image")

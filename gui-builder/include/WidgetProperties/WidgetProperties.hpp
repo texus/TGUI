@@ -40,16 +40,16 @@ struct WidgetProperties
 {
     virtual ~WidgetProperties() = default;
 
-    virtual void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const
+    virtual void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const
     {
         if (property == "Left")
-            widget->setPosition(value, widget->getPositionLayout().y);
+            widget->setPosition(value.toAnsiString(), widget->getPositionLayout().y);
         else if (property == "Top")
-            widget->setPosition(widget->getPositionLayout().x, value);
+            widget->setPosition(widget->getPositionLayout().x, value.toAnsiString());
         else if (property == "Width")
-            widget->setSize(value, widget->getSizeLayout().y);
+            widget->setSize(value.toAnsiString(), widget->getSizeLayout().y);
         else if (property == "Height")
-            widget->setSize(widget->getSizeLayout().x, value);
+            widget->setSize(widget->getSizeLayout().x, value.toAnsiString());
         else if (property == "Visible")
             widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")

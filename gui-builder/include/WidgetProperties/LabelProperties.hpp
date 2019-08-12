@@ -33,13 +33,13 @@ struct LabelProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
         if (property == "Text")
             label->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            label->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            label->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "HorizontalAlignment")
             label->setHorizontalAlignment(deserializeHorizontalAlignment(value));
         else if (property == "VerticalAlignment")

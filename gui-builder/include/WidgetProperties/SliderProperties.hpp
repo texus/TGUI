@@ -31,7 +31,7 @@
 
 struct SliderProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
         if (property == "Minimum")

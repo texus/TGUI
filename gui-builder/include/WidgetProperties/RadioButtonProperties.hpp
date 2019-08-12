@@ -31,7 +31,7 @@
 
 struct RadioButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto radioButton = std::dynamic_pointer_cast<tgui::RadioButton>(widget);
         if (property == "Checked")
@@ -39,7 +39,7 @@ struct RadioButtonProperties : WidgetProperties
         else if (property == "Text")
             radioButton->setText(value);
         else if (property == "TextSize")
-            radioButton->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            radioButton->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "TextClickable")
             radioButton->setTextClickable(parseBoolean(value, true));
         else

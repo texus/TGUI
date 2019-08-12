@@ -31,13 +31,13 @@
 
 struct ButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
     {
         auto button = std::dynamic_pointer_cast<tgui::Button>(widget);
         if (property == "Text")
             button->setText(value);
         else if (property == "TextSize")
-            button->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+            button->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
