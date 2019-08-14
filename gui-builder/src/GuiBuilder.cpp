@@ -209,31 +209,23 @@ namespace
         return true;
     }
 
-    tgui::Layout2d parseLayout(std::string str)
+    sf::Vector2f parseSize(std::string str)
     {
         if (str.empty())
-            throw tgui::Exception{ "Failed to parse layout '" + str + "'. String was empty." };
-    
+            return {800, 600};
+
         // Remove the brackets around the value
         if ((str.front() == '(') && (str.back() == ')'))
             str = str.substr(1, str.length() - 2);
-    
+
         if (str.empty())
-            return { 0, 0 };
-    
-        // Find the comma that splits the x and y sizes,
-        auto commaPos = str.find_first_of(",");
-        
-        // Remove quotes around the values
-        std::string x = tgui::trim(str.substr(0, commaPos));
-        if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length() - 1] == '"')))
-            x = x.substr(1, x.length() - 2);
-    
-        std::string y = tgui::trim(str.substr(commaPos + 1));
-        if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length() - 1] == '"')))
-            y = y.substr(1, y.length() - 2);
-    
-        return { x, y };
+            return {800, 600};
+
+        // Extract the x and y values
+        const auto commaPos = str.find(',');
+        const std::string x = tgui::trim(str.substr(0, commaPos));
+        const std::string y = tgui::trim(str.substr(commaPos + 1));
+        return {tgui::stof(x), tgui::stof(y)};
     }
 }
 
@@ -296,6 +288,8 @@ void GuiBuilder::mainLoop()
         {
             if (event.type == sf::Event::Closed)
             {
+                saveGuiBuilderState();
+
                 while (!m_forms.empty())
                     closeForm(m_forms[0].get());
 
@@ -447,10 +441,7 @@ bool GuiBuilder::loadGuiBuilderState()
         if (node->propertyValuePairs["formsize"])
         {
             const auto& size = node->propertyValuePairs["formsize"]->value;
-            const auto formSize = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString();
-            const tgui::Layout2d formSizeLayout = parseLayout(formSize);
-        
-            m_formSize = formSizeLayout.getValue();
+            m_formSize = parseSize(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString());
         }
 
         for (const auto& value : node->propertyValuePairs["recentfiles"]->valueList)
@@ -519,7 +510,8 @@ void GuiBuilder::saveGuiBuilderState()
         node->propertyValuePairs["Themes"] = std::make_unique<tgui::DataIO::ValueNode>(themeList);
     }
 
-    node->propertyValuePairs["FormSize"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Layout2d(m_formSize).toString());
+    node->propertyValuePairs["FormSize"] = std::make_unique<tgui::DataIO::ValueNode>(
+        "(" + tgui::to_string(m_formSize.x) + ", " + tgui::to_string(m_formSize.y) + ")");
 
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
