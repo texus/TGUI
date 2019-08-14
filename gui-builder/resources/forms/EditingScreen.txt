@@ -212,7 +212,7 @@ ChildWindow.HierarchyWindow {
 ChildWindow.Form {
     Position = (((((&.w - toolboxwindow.w) - propertieswindow.w) - w) / 2) + toolboxwindow.w, (&.h - h) / 2);
     Resizable = true;
-    Size = (800, 600);
+    Size = (&.w - (toolboxwindow.w + propertieswindow.w + 20), &.h - menubar.h - 20);
     TitleAlignment = Center;
     TitleButtons = Close;
 
