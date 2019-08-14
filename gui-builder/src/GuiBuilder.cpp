@@ -208,6 +208,33 @@ namespace
 
         return true;
     }
+
+    tgui::Layout2d parseLayout(std::string str)
+    {
+        if (str.empty())
+            throw tgui::Exception{ "Failed to parse layout '" + str + "'. String was empty." };
+    
+        // Remove the brackets around the value
+        if ((str.front() == '(') && (str.back() == ')'))
+            str = str.substr(1, str.length() - 2);
+    
+        if (str.empty())
+            return { 0, 0 };
+    
+        // Find the comma that splits the x and y sizes,
+        auto commaPos = str.find_first_of(",");
+        
+        // Remove quotes around the values
+        std::string x = tgui::trim(str.substr(0, commaPos));
+        if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length() - 1] == '"')))
+            x = x.substr(1, x.length() - 2);
+    
+        std::string y = tgui::trim(str.substr(commaPos + 1));
+        if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length() - 1] == '"')))
+            y = y.substr(1, y.length() - 2);
+    
+        return { x, y };
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,7 +448,7 @@ bool GuiBuilder::loadGuiBuilderState()
         {
             const auto& size = node->propertyValuePairs["formsize"]->value;
             const auto formSize = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString();
-            const tgui::Layout2d formSizeLayout = tgui::parseLayout(formSize);
+            const tgui::Layout2d formSizeLayout = parseLayout(formSize);
         
             m_formSize = formSizeLayout.getValue();
         }
@@ -2019,14 +2046,14 @@ void GuiBuilder::menuBarCallbackSaveFile()
 {
     m_selectedForm->save();
 
-	saveGuiBuilderState();
+    saveGuiBuilderState();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::menuBarCallbackQuit()
 {
-	saveGuiBuilderState();
+    saveGuiBuilderState();
 
     while (!m_forms.empty())
         closeForm(m_forms[0].get());

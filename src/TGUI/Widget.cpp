@@ -59,9 +59,59 @@ namespace tgui
                     ++animIt;
             }
         }
-	}
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        static Layout2d parseLayout(std::string str)
+        {
+            if (str.empty())
+                throw Exception{"Failed to parse layout '" + str + "'. String was empty."};
+
+            // Remove the brackets around the value
+            if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
+                str = str.substr(1, str.length() - 2);
+
+            if (str.empty())
+                return {0, 0};
+
+            // Find the comma that splits the x and y layouts, taking into account that these layouts may contain commas too
+            unsigned int bracketCount = 0;
+            auto commaOrBracketPos = str.find_first_of(",()");
+            decltype(commaOrBracketPos) commaPos = 0;
+            while (commaOrBracketPos != std::string::npos)
+            {
+                if (str[commaOrBracketPos] == '(')
+                    bracketCount++;
+                else if (str[commaOrBracketPos] == ')')
+                {
+                    if (bracketCount == 0)
+                        throw Exception{"Failed to parse layout '" + str + "'. Brackets didn't match."};
+
+                    bracketCount--;
+                }
+                else // if (str[commaOrBracketPos] == ',')
+                {
+                    if (bracketCount == 0)
+                        commaPos = commaOrBracketPos;
+                }
+
+                commaOrBracketPos = str.find_first_of(",()", commaOrBracketPos + 1);
+            }
+
+            // Remove quotes around the values
+            std::string x = trim(str.substr(0, commaPos));
+            if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length()-1] == '"')))
+                x = x.substr(1, x.length()-2);
+
+            std::string y = trim(str.substr(commaPos + 1));
+            if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length()-1] == '"')))
+                y = y.substr(1, y.length()-2);
+
+            return {x, y};
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget()
     {
