@@ -325,7 +325,8 @@ namespace tgui
         return id;
     }
 
-    template <typename Func, typename... BoundArgs, typename std::enable_if<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
+    template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                                                                         && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, BoundArgs&&... args)
     {
         const unsigned int id = getSignal(toLower(signalName)).connect(

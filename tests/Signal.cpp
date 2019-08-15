@@ -70,6 +70,7 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->connect("Pressed", [](auto){}, 10.f) == ++id);
         REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, std::string){}) == ++id);
         REQUIRE(widget2->connect("Pressed", [](auto, auto, auto, tgui::Widget::Ptr, std::string){}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(widget2->connect("Pressed", std::bind([](int){}, 5)) == ++id);
 
         REQUIRE(widget2->connect({"MouseEntered", "MouseLeft"}, [](){}) == id+2);
         REQUIRE(widget2->connect({"PositionChanged", "SizeChanged", "MouseEntered", "MouseLeft", "Pressed"}, [](const tgui::Widget::Ptr&, const std::string&){}) == id+7);
