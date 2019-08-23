@@ -21,7 +21,7 @@ The gui is easy to use, with only a few lines you can e.g. have a fully function
 <div>
   <div class="HomePageLargerColumn">
     <h3>Gui Builder</h3>
-    <p>TGUI comes with its own Gui Builder, which allows designing your gui more easily.</p>
+    <p>TGUI comes with its own Gui Builder, which allows designing your gui more easily. The widgets are loaded in your program by simple calling gui.loadWidgetsFromFile("form.txt").</p>
   </div>
   <div class="HomePageSmallerColumn">
     <a href="/resources/GuiBuilder-0.8.5.png" onclick="return showLightBox(event, href);"><img src="/resources/GuiBuilder-0.8.5-small.jpg" alt="Gui Builder" width="360" height="195" /></a>
