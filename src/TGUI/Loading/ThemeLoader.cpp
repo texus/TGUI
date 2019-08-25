@@ -72,7 +72,7 @@ namespace tgui
                     if (pair.second->value[0] != '"')
                     {
                     #ifdef SFML_SYSTEM_WINDOWS
-                        if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.getSize() <= 1) || (pair.second->value[1] != ':')))
+                        if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
                     #else
                         if (pair.second->value[0] != '/')
                     #endif
@@ -84,7 +84,7 @@ namespace tgui
                             continue;
 
                     #ifdef SFML_SYSTEM_WINDOWS
-                        if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.getSize() <= 2) || (pair.second->value[2] != ':')))
+                        if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
                     #else
                         if (pair.second->value[1] != '/')
                     #endif

@@ -121,7 +121,7 @@ namespace tgui
             bool encodingRequired = false;
             if (result.isEmpty())
                 encodingRequired = true;
-            for (const char c : result)
+            for (const sf::Uint32 c : result)
             {
                 if ((c != '%') && (c != '/') && (c != '_') && (c != '@') && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && ((c < 'a') || (c > 'z')))
                     encodingRequired = true;
