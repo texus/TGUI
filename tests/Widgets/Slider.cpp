@@ -161,6 +161,15 @@ TEST_CASE("[Slider]")
         REQUIRE(!slider->getInvertedDirection());
     }
 
+    SECTION("ChangeValueOnScroll")
+    {
+        REQUIRE(slider->getChangeValueOnScroll());
+        slider->setChangeValueOnScroll(false);
+        REQUIRE(!slider->getChangeValueOnScroll());
+        slider->setChangeValueOnScroll(true);
+        REQUIRE(slider->getChangeValueOnScroll());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")

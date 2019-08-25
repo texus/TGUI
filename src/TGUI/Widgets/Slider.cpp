@@ -305,13 +305,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setChangeValueOnScroll(bool changeValueOnScroll) {
+    void Slider::setChangeValueOnScroll(bool changeValueOnScroll)
+    {
         m_changeValueOnScroll = changeValueOnScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::getChangeValueOnScroll() const {
+    bool Slider::getChangeValueOnScroll() const
+    {
         return m_changeValueOnScroll;
     }
 
@@ -436,7 +438,7 @@ namespace tgui
         // Don't do anything when changing value on scroll is disabled
         if (!m_changeValueOnScroll)
             return false;
-        
+
         if (m_invertedDirection)
             delta = -delta;
 
@@ -568,7 +570,7 @@ namespace tgui
     void Slider::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         Widget::load(node, renderers);
-        
+
         if (node->propertyValuePairs["minimum"])
             setMinimum(tgui::stof(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
