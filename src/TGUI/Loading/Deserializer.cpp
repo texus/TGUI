@@ -211,10 +211,10 @@ namespace tgui
                     backslashPos++;
                 }
 
-                return {sf::String{result}};
+                return {sf::String::fromUtf8(result.begin(), result.end())};
             }
             else
-                return {sf::String{value}};
+                return {sf::String::fromUtf8(value.begin(), value.end())};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

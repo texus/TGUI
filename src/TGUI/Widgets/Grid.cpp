@@ -537,7 +537,7 @@ namespace tgui
 
             for (unsigned int i = 0; i < elements.size(); ++i)
             {
-                std::string str = elements[i].toAnsiString();
+                std::string str = elements[i];
 
                 // Remove quotes
                 if ((str.size() >= 2) && (str[0] == '"') && (str[str.size()-1] == '"'))

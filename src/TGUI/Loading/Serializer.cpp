@@ -116,10 +116,10 @@ namespace tgui
 
         std::string serializeString(ObjectConverter&& value)
         {
-            std::string result = value.getString();
+            sf::String result = value.getString();
 
             bool encodingRequired = false;
-            if (result.empty())
+            if (result.isEmpty())
                 encodingRequired = true;
             for (const char c : result)
             {
@@ -136,7 +136,7 @@ namespace tgui
                     while ((pos = result.find(from, pos)) != std::string::npos)
                     {
                         result[pos] = to;
-                        result.insert(pos, 1, '\\');
+                        result.insert(pos, '\\');
                         pos += 2;
                     }
                 };
@@ -148,7 +148,8 @@ namespace tgui
             replace('\n', 'n');
             replace('\0', '0');
 
-            return "\"" + result + "\"";
+            const std::basic_string<sf::Uint8>& resultUtf8 = result.toUtf8();
+            return "\"" + std::string(resultUtf8.begin(), resultUtf8.end()) + "\"";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

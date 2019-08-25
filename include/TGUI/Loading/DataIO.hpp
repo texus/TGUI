@@ -67,11 +67,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct ValueNode
         {
-            ValueNode(const sf::String& v = "") : value(v) {}
+            ValueNode(const std::string& v = "") : value(v) {}
 
-            sf::String value;
+            std::string value;
             bool listNode = false;
-            std::vector<sf::String> valueList;
+            std::vector<std::string> valueList;
         };
 
 
