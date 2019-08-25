@@ -232,6 +232,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the mouse wheel can be used to change the value of the slider
+        /// @param changeValueOnScroll  Should the slider value be changed with the mouse wheel?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setChangeValueOnScroll(bool changeValueOnScroll);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the mouse wheel can be used to change the value of the slider
+        /// @return Can the slider value be changed with the mouse wheel?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getChangeValueOnScroll() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
@@ -355,7 +368,8 @@ namespace tgui
         bool m_invertedDirection = false; // Are min and max swapped?
         bool m_verticalScroll = false; // Is the slider drawn vertically?
         bool m_verticalImage = false; // Does the image lie vertically?
-
+        bool m_changeValueOnScroll = true; // Does mouseScroll event change slider value?
+        
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;
         Sprite m_spriteThumb;

@@ -305,6 +305,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::setChangeValueOnScroll(bool changeValueOnScroll) {
+        m_changeValueOnScroll = changeValueOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getChangeValueOnScroll() const {
+        return m_changeValueOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Slider::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
@@ -421,6 +433,10 @@ namespace tgui
 
     bool Slider::mouseWheelScrolled(float delta, Vector2f)
     {
+        // Don't do anything when changing value on scroll is disabled
+        if (!m_changeValueOnScroll)
+            return false;
+        
         if (m_invertedDirection)
             delta = -delta;
 
@@ -543,6 +559,7 @@ namespace tgui
         node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
         node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
         node->propertyValuePairs["InvertedDirection"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
+        node->propertyValuePairs["ChangeValueOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeValueOnScroll));
         return node;
     }
 
@@ -551,7 +568,7 @@ namespace tgui
     void Slider::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         Widget::load(node, renderers);
-
+        
         if (node->propertyValuePairs["minimum"])
             setMinimum(tgui::stof(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
@@ -562,6 +579,8 @@ namespace tgui
             setStep(tgui::stof(node->propertyValuePairs["step"]->value));
         if (node->propertyValuePairs["inverteddirection"])
             setInvertedDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["inverteddirection"]->value).getBool());
+        if (node->propertyValuePairs["changevalueonscroll"])
+            setChangeValueOnScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["changevalueonscroll"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
