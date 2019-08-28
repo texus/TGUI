@@ -100,8 +100,8 @@ namespace tgui
 
     Vector2f Group::getInnerSize() const
     {
-        return {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+        return {std::max(0.f, getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
+                std::max(0.f, getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

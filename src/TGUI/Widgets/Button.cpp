@@ -124,9 +124,6 @@ namespace tgui
             updateSize();
         }
 
-        if ((getInnerSize().x < 0) || (getInnerSize().y < 0))
-            return;
-
         // Draw the text normally unless the height is more than double of the width
         if (getInnerSize().y <= getInnerSize().x * 2)
         {
@@ -399,8 +396,8 @@ namespace tgui
 
     Vector2f Button::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

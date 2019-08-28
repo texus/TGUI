@@ -556,7 +556,8 @@ namespace tgui
 
     Vector2f Knob::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

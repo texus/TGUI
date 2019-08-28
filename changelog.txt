@@ -8,12 +8,16 @@ TGUI 0.8.6  (TBD)
 - Added focusable property to widgets
 - Added TextureBackground property to Label, Panel and ChildWindow renderers
 - Added VerticalScrollAmount and HorizontalScrollAmount to ScrollablePanel
+- Added functions to set and get scrollbar values in widgets that have a scrollbar
+- Added function to Slider to disallow changing the value by scrolling the mouse wheel (#104)
 - Container widgets didn't pass right click event to child widgets
 - Widget state was incorrect when starting a show/hide animation while another was still busy
 - Disabling tabs widget caused selected tab to be deselected
 - Vertical alignment in Label didn't work correctly when there was a scrollbar
 - Knob never responded to mouse events on places where the background texture was transparent
 - Text color wasn't updated in MenuBar when disabling and re-enabling widget
+- Unicode text wasn't properly handled when loading/saving widgets from/to a widget file
+- Fixed potential crash when creating a ProgressBar
 
 
 TGUI 0.8.5  (6 April 2019)
