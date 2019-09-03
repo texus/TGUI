@@ -664,8 +664,10 @@ namespace tgui
         event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
         event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
-        // Let the event manager handle the event, but don't let it call leftMouseButtonNoLongerDown on all widgets (it will be done later)
+        // Let the event manager handle the event, but don't let it call rightMouseButtonNoLongerDown on all widgets (it will be done later)
+        m_handingMouseReleased = true;
         handleEvent(event);
+        m_handingMouseReleased = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -744,6 +746,16 @@ namespace tgui
 
         for (auto& widget : m_widgets)
             widget->leftMouseButtonNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::rightMouseButtonNoLongerDown()
+    {
+        Widget::rightMouseButtonNoLongerDown();
+
+        for (auto& widget : m_widgets)
+            widget->rightMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -943,7 +955,7 @@ namespace tgui
                 if (event.type == sf::Event::MouseButtonReleased)
                     widgetBelowMouse->mouseReleased(event.mouseButton.button, mousePos);
                 else
-                    widgetBelowMouse->mouseReleased(sf::Mouse::Button::Right, mousePos);
+                    widgetBelowMouse->mouseReleased(sf::Mouse::Button::Left, mousePos);
             }
 
             if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
@@ -957,6 +969,15 @@ namespace tgui
                     // TODO: Only call leftMouseButtonNoLongerDown on the widget that last got the left mouse down event
                     for (auto& widget : m_widgets)
                         widget->leftMouseButtonNoLongerDown();
+                }
+            }
+            else if ((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Right))
+            {
+                // TODO: Same remark as above for leftMouseButtonNoLongerDown
+                if (!m_handingMouseReleased)
+                {
+                    for (auto& widget : m_widgets)
+                        widget->rightMouseButtonNoLongerDown();
                 }
             }
 

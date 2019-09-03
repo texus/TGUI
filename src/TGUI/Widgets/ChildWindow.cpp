@@ -561,6 +561,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::rightMousePressed(Vector2f pos)
+    {
+        if (FloatRect{getChildWidgetsOffset(), getSize()}.contains(pos - getPosition()))
+            Container::rightMousePressed(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::rightMouseReleased(Vector2f pos)
+    {
+        pos -= getPosition();
+
+        if (FloatRect{getChildWidgetsOffset(), getSize()}.contains(pos))
+        {
+            // Propagate the event to the child widgets
+            Container::rightMouseReleased(pos + getPosition());
+        }
+        else
+        {
+            // Tell the widgets that the mouse was released
+            for (auto& widget : m_widgets)
+                widget->rightMouseButtonNoLongerDown();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();

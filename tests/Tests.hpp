@@ -40,6 +40,7 @@
 #include <TGUI/Gui.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/SignalImpl.hpp>
@@ -75,6 +76,7 @@ void genericCallback(unsigned int& count);
 
 void testWidgetSignals(tgui::Widget::Ptr widget);
 void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
+void testClickableWidgetSignals(tgui::Panel::Ptr widget);
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 

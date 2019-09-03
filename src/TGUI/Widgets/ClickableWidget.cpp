@@ -84,6 +84,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ClickableWidget::rightMousePressed(Vector2f pos)
+    {
+        m_rightMouseDown = true;
+        onRightMousePress.emit(this, pos - getPosition());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ClickableWidget::rightMouseReleased(Vector2f pos)
+    {
+        onRightMouseRelease.emit(this, pos - getPosition());
+
+        if (m_rightMouseDown)
+            onRightClick.emit(this, pos - getPosition());
+
+        m_rightMouseDown = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ClickableWidget::rightMouseButtonNoLongerDown()
+    {
+        m_rightMouseDown = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ClickableWidget::draw(sf::RenderTarget&, sf::RenderStates) const
     {
     }
@@ -98,6 +125,12 @@ namespace tgui
             return onMouseRelease;
         else if (signalName == toLower(onClick.getName()))
             return onClick;
+        else if (signalName == toLower(onRightMousePress.getName()))
+            return onRightMousePress;
+        else if (signalName == toLower(onRightMouseRelease.getName()))
+            return onRightMouseRelease;
+        else if (signalName == toLower(onRightClick.getName()))
+            return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));
     }

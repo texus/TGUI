@@ -73,13 +73,17 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
     }
 }
 
-void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
+template <typename T>
+void testClickableWidgetSignalsImpl(T widget)
 {
     testWidgetSignals(widget);
 
     unsigned int mousePressedCount = 0;
     unsigned int mouseReleasedCount = 0;
     unsigned int clickedCount = 0;
+    unsigned int rightMousePressedCount = 0;
+    unsigned int rightMouseReleasedCount = 0;
+    unsigned int rightClickedCount = 0;
 
     widget->setPosition({40, 30});
     widget->setSize({150, 100});
@@ -87,6 +91,9 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
     widget->connect("MousePressed", [&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
     widget->connect("MouseReleased", [&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
     widget->connect("Clicked", [&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
+    widget->connect("RightMousePressed", [&](sf::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
+    widget->connect("RightMouseReleased", [&](sf::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
+    widget->connect("RightClicked", [&](sf::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
 
     SECTION("mouseOnWidget")
     {
@@ -99,16 +106,20 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
         REQUIRE(mousePressedCount == 0);
         REQUIRE(mouseReleasedCount == 0);
         REQUIRE(clickedCount == 0);
+        REQUIRE(rightMousePressedCount == 0);
+        REQUIRE(rightMouseReleasedCount == 0);
+        REQUIRE(rightClickedCount == 0);
     }
 
-    SECTION("mouse click")
-    {
-        auto parent = tgui::Panel::create({300, 200});
-        parent->setPosition({60, 55});
-        parent->add(widget);
+    auto parent = tgui::Panel::create({300, 200});
+    parent->setPosition({60, 55});
+    parent->add(widget);
 
+    SECTION("left mouse click")
+    {
         parent->leftMouseReleased({175, 135});
 
+        REQUIRE(mousePressedCount == 0);
         REQUIRE(mouseReleasedCount == 1);
         REQUIRE(clickedCount == 0);
 
@@ -127,7 +138,48 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
         REQUIRE(mousePressedCount == 1);
         REQUIRE(mouseReleasedCount == 2);
         REQUIRE(clickedCount == 1);
+        REQUIRE(rightMousePressedCount == 0);
+        REQUIRE(rightMouseReleasedCount == 0);
+        REQUIRE(rightClickedCount == 0);
     }
+
+    SECTION("right mouse click")
+    {
+        parent->rightMouseReleased({175, 135});
+
+        REQUIRE(rightMousePressedCount == 0);
+        REQUIRE(rightMouseReleasedCount == 1);
+        REQUIRE(rightClickedCount == 0);
+
+        SECTION("mouse press")
+        {
+            parent->rightMousePressed({175, 135});
+
+            REQUIRE(rightMousePressedCount == 1);
+            REQUIRE(rightMouseReleasedCount == 1);
+            REQUIRE(rightClickedCount == 0);
+        }
+
+        parent->rightMouseReleased({175, 135});
+        parent->rightMouseButtonNoLongerDown();
+
+        REQUIRE(rightMousePressedCount == 1);
+        REQUIRE(rightMouseReleasedCount == 2);
+        REQUIRE(rightClickedCount == 1);
+        REQUIRE(mousePressedCount == 0);
+        REQUIRE(mouseReleasedCount == 0);
+        REQUIRE(clickedCount == 0);
+    }
+}
+
+void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
+{
+    testClickableWidgetSignalsImpl(widget);
+}
+
+void testClickableWidgetSignals(tgui::Panel::Ptr widget)
+{
+    testClickableWidgetSignalsImpl(widget);
 }
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer)

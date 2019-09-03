@@ -150,6 +150,38 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Panel::rightMousePressed(Vector2f pos)
+    {
+        m_rightMouseDown = true;
+        onRightMousePress.emit(this, pos - getPosition());
+
+        Container::rightMousePressed(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::rightMouseReleased(Vector2f pos)
+    {
+        onRightMouseRelease.emit(this, pos - getPosition());
+
+        if (m_rightMouseDown)
+            onRightClick.emit(this, pos - getPosition());
+
+        m_rightMouseDown = false;
+
+        Container::rightMouseReleased(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::rightMouseButtonNoLongerDown()
+    {
+        m_rightMouseDown = false;
+        Container::rightMouseButtonNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& Panel::getSignal(std::string signalName)
     {
         if (signalName == toLower(onMousePress.getName()))
@@ -158,6 +190,12 @@ namespace tgui
             return onMouseRelease;
         else if (signalName == toLower(onClick.getName()))
             return onClick;
+        else if (signalName == toLower(onRightMousePress.getName()))
+            return onRightMousePress;
+        else if (signalName == toLower(onRightMouseRelease.getName()))
+            return onRightMouseRelease;
+        else if (signalName == toLower(onRightClick.getName()))
+            return onRightClick;
         else
             return Group::getSignal(std::move(signalName));
     }
