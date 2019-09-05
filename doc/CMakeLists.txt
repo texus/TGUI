@@ -48,10 +48,10 @@ add_custom_target(doc ALL
 
 # setup install rules
 install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html
-        DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/doc
+        DESTINATION ${CMAKE_INSTALL_DOCDIR}
         COMPONENT doc)
 if(DOXYGEN_HHC_PROGRAM)
     install(FILES ${DOXYGEN_OUTPUT_DIR}/tgui.chm
-            DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/doc
+            DESTINATION ${CMAKE_INSTALL_DOCDIR}
             COMPONENT doc)
 endif()

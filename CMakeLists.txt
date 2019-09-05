@@ -27,6 +27,9 @@ endif()
 # Project name and version
 project(TGUI VERSION 0.8.5)
 
+# TGUI uses the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
+include(GNUInstallDirs)
+
 # Include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 
@@ -58,7 +61,7 @@ if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
 elseif(TGUI_OS_ANDROID)
     set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
 else()
-    set(DEFAULT_INSTALL_MISC_DIR share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
 endif()
 tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
 mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
@@ -142,7 +145,7 @@ if(TGUI_OS_ANDROID)
     endif()
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
-    set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
+    set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
 # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++
@@ -256,6 +259,6 @@ if(NOT TGUI_BUILD_FRAMEWORK)
 endif()
 
 # Install miscellaneous files
-install(FILES license.txt DESTINATION ${TGUI_MISC_INSTALL_PREFIX})
-install(FILES README.md DESTINATION ${TGUI_MISC_INSTALL_PREFIX})
+install(FILES license.txt DESTINATION ${CMAKE_INSTALL_DOCDIR})
+install(FILES README.md DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(DIRECTORY themes DESTINATION "${TGUI_MISC_INSTALL_PREFIX}")

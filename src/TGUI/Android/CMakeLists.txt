@@ -23,10 +23,10 @@ target_compile_options(tgui-activity PRIVATE -fpermissive)
 target_link_libraries(tgui-activity PRIVATE android log)
 
 install(TARGETS tgui-activity
-        RUNTIME DESTINATION bin COMPONENT bin
-        LIBRARY DESTINATION lib${LIB_SUFFIX} COMPONENT bin
-        ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT devel
-        FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX} COMPONENT bin)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+        FRAMEWORK DESTINATION "." COMPONENT bin)
 
 # Install Android.mk so the NDK knows how to set up TGUI
 if(TGUI_OS_ANDROID)

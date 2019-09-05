@@ -89,7 +89,7 @@ function(tgui_export_target export_name)
     if (TGUI_BUILD_FRAMEWORK)
         set(config_package_location "TGUI.framework/Resources/CMake")
     else()
-        set(config_package_location lib${LIB_SUFFIX}/cmake/TGUI)
+        set(config_package_location ${CMAKE_INSTALL_LIBDIR}/cmake/TGUI)
     endif()
     configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
         INSTALL_DESTINATION "${config_package_location}")
