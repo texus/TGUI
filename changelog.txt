@@ -19,6 +19,7 @@ TGUI 0.8.6  (TBD)
 - Text color wasn't updated in MenuBar when disabling and re-enabling widget
 - Unicode text wasn't properly handled when loading/saving widgets from/to a widget file
 - Fixed potential crash when creating a ProgressBar
+- ListView clipped content in expanded column
 
 
 TGUI 0.8.5  (6 April 2019)

@@ -1894,25 +1894,32 @@ namespace tgui
             const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
 
             sf::RenderStates headerStates = states;
+            float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
-                drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
-                headerStates.transform.translate({m_columns[col].width, 0});
-
-                if (m_separatorWidth && (!m_expandLastColumn || (col + 1 < m_columns.size())))
+                if (m_expandLastColumn && (col + 1 == m_columns.size()))
+                    drawHeaderText(target, headerStates, availableWidth - columnLeftPos, headerHeight, col);
+                else
                 {
-                    if (m_separatorWidth == separatorWidth)
-                        drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
-                    else
-                    {
-                        const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
-                        headerStates.transform.translate({separatorOffset, 0});
-                        drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
-                        headerStates.transform.translate({-separatorOffset, 0});
-                    }
-                }
+                    drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
+                    headerStates.transform.translate({m_columns[col].width, 0});
 
-                headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
+                    if (m_separatorWidth)
+                    {
+                        if (m_separatorWidth == separatorWidth)
+                            drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                        else
+                        {
+                            const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
+                            headerStates.transform.translate({separatorOffset, 0});
+                            drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                            headerStates.transform.translate({-separatorOffset, 0});
+                        }
+                    }
+
+                    headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
+                    columnLeftPos += m_columns[col].width + separatorWidth;
+                }
             }
 
             states.transform.translate({0, totalHeaderHeight});
@@ -1923,28 +1930,36 @@ namespace tgui
             drawColumn(target, states, firstItem, lastItem, 0, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight());
         else
         {
+            float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
-                drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
-                states.transform.translate({m_columns[col].width, 0});
-
-                if (separatorWidth && (!m_expandLastColumn || (col + 1 < m_columns.size())))
+                if (m_expandLastColumn && (col + 1 == m_columns.size()))
+                    drawColumn(target, states, firstItem, lastItem, col, availableWidth - columnLeftPos);
+                else
                 {
-                    if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
+                    drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
+                    states.transform.translate({m_columns[col].width, 0});
+
+                    if (separatorWidth)
                     {
-                        const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
-                        if (m_gridLinesWidth == separatorWidth)
-                            drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
-                        else
+                        if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
                         {
-                            const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
-                            states.transform.translate({gridLineOffset, 0});
-                            drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
-                            states.transform.translate({-gridLineOffset, 0});
+                            const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                            if (m_gridLinesWidth == separatorWidth)
+                                drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                            else
+                            {
+                                const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
+                                states.transform.translate({gridLineOffset, 0});
+                                drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                                states.transform.translate({-gridLineOffset, 0});
+                            }
                         }
+
+                        states.transform.translate({static_cast<float>(separatorWidth), 0});
                     }
 
-                    states.transform.translate({static_cast<float>(separatorWidth), 0});
+                    columnLeftPos += m_columns[col].width + separatorWidth;
                 }
             }
         }
