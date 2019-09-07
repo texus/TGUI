@@ -439,7 +439,7 @@ namespace tgui
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         SignalItem(std::string&& name) :
-            Signal{std::move(name), 2}
+            Signal{std::move(name), 3}
         {
         }
 
