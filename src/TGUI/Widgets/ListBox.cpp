@@ -543,7 +543,7 @@ namespace tgui
                     updateHoveringItem(-1);
 
                 if (m_hoveringItem >= 0)
-                    onMousePress.emit(this, m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem]);
+                    onMousePress.emit(this, m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem], m_hoveringItem);
 
                 if (m_selectedItem != m_hoveringItem)
                 {
@@ -562,7 +562,7 @@ namespace tgui
         if (m_mouseDown && !m_scroll->isMouseDown())
         {
             if (m_selectedItem >= 0)
-                onMouseRelease.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
+                onMouseRelease.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem], m_selectedItem);
 
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -570,7 +570,7 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                    onDoubleClick.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
+                    onDoubleClick.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem], m_selectedItem);
             }
             else // This is the first click
             {
@@ -980,9 +980,9 @@ namespace tgui
 
             m_selectedItem = item;
             if (m_selectedItem >= 0)
-                onItemSelect.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
+                onItemSelect.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem], m_selectedItem);
             else
-                onItemSelect.emit(this, "", "");
+                onItemSelect.emit(this, "", "", m_selectedItem);
 
             updateSelectedAndHoveringItemColorsAndStyle();
         }

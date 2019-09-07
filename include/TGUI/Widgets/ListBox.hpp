@@ -615,10 +615,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalItem onItemSelect   = {"ItemSelected"};   ///< An item was selected in the list box. Optional parameter: selected item
-        SignalItem onMousePress   = {"MousePressed"};   ///< The mouse went down on an item. Optional parameter: selected item
-        SignalItem onMouseRelease = {"MouseReleased"};  ///< The mouse was released on one of the items. Optional parameter: selected item
-        SignalItem onDoubleClick  = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item
+        SignalItem onItemSelect   = {"ItemSelected"};   ///< An item was selected in the list box. Optional parameter: selected item or its index
+        SignalItem onMousePress   = {"MousePressed"};   ///< The mouse went down on an item. Optional parameter: selected item or its index
+        SignalItem onMouseRelease = {"MouseReleased"};  ///< The mouse was released on one of the items. Optional parameter: selected item or its index
+        SignalItem onDoubleClick  = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item or its index
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

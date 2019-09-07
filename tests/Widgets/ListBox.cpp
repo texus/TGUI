@@ -34,44 +34,52 @@ TEST_CASE("[ListBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](int){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](std::string){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, int){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
 
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](int){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, int){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
 
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](int){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, int){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
 
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](int){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](std::string){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](sf::String, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, int){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::String){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, std::string){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));

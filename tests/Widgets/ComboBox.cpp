@@ -35,11 +35,13 @@ TEST_CASE("[ComboBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](int){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](std::string){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String, sf::String){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](std::string, std::string){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, int){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));

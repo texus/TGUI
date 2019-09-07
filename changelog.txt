@@ -12,6 +12,7 @@ TGUI 0.8.6  (TBD)
 - Added function to Slider to disallow changing the value by scrolling the mouse wheel (#104)
 - Added right mouse clicked signals to ClickableWidget (base class for several widgets) and Panel
 - Added HeaderClicked signal to ListView
+- SignalItem (used by ListBox and ComboBox) can now have the item index as optional parameter
 - Container widgets didn't pass right click event to child widgets
 - Widget state was incorrect when starting a show/hide animation while another was still busy
 - Disabling tabs widget caused selected tab to be deselected

@@ -335,9 +335,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int SignalItem::connect(const DelegateItemIndex& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [handler](){ handler(internal_signal::dereference<int>(internal_signal::parameters[3])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalItem::connect(const DelegateItemIndexEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[3])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-        if ((unboundParameters.size() == 1) && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
+        if ((unboundParameters.size() == 1)
+         && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin()) || checkParamType<int>(unboundParameters.begin())))
             return 1;
         else if ((unboundParameters.size() == 2)
               && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin()))

@@ -428,8 +428,10 @@ namespace tgui
 
         using DelegateItem = std::function<void(const sf::String&)>;
         using DelegateItemAndId = std::function<void(const sf::String&, const sf::String&)>;
+        using DelegateItemIndex = std::function<void(int)>;
         using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
         using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&, const sf::String&)>;
+        using DelegateItemIndexEx = std::function<void(std::shared_ptr<Widget>, const std::string&, int)>;
         using Signal::connect;
 
 
@@ -483,16 +485,37 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given the index of the item as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItemIndex& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and the index of the item as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItemIndexEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Call all connected signal handlers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, const sf::String& item, const sf::String& id)
+        bool emit(const Widget* widget, const sf::String& item, const sf::String& id, int index)
         {
             if (m_handlers.empty())
                 return false;
 
             internal_signal::parameters[1] = static_cast<const void*>(&item);
             internal_signal::parameters[2] = static_cast<const void*>(&id);
+            internal_signal::parameters[3] = static_cast<const void*>(&index);
             return Signal::emit(widget);
         }
 
