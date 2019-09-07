@@ -574,6 +574,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::sort(const std::function<bool(const sf::String&, const sf::String&)>& cmp, std::size_t index)
+    {
+        std::sort(m_items.begin(), m_items.end(), 
+            [index, &cmp](const ListView::Item &a, const ListView::Item& b)
+            {
+                sf::String s1, s2;
+
+                if (index >= a.texts.size())
+                    s1 = "";
+                else
+                    s1 = a.texts[index].getString();
+
+                if (index >= b.texts.size())
+                    s2 = "";
+                else
+                    s2 = b.texts[index].getString();
+
+                return cmp(s1, s2);
+            });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::vector<sf::String> ListView::getItems() const
     {
         std::vector<sf::String> items;
