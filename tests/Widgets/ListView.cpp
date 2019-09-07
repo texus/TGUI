@@ -179,6 +179,35 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->changeSubItem(3, 1, {"d,2"}));
         REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
     }
+    
+    SECTION("Sort")
+    {
+        listView->addColumn("Col 1");
+        listView->addColumn("Col 2");
+        listView->addColumn("Col 3");
+
+        std::vector<std::vector<sf::String>> items = {{"300"}, {"200", "-5", "20"}, {"1000", "7"}};
+        listView->addMultipleItems(items);
+
+        auto cmp1 = [](const sf::String& a, const sf::String& b) { return a < b; };
+        auto convert = [](const std::string& s)
+        {
+            return s.empty() ? 0 : std::stoi(s);
+        };
+        auto cmp2 = [&convert](const sf::String& a, const sf::String& b) { return convert(a) > convert(b); };
+
+        listView->sort(0, cmp1);
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+
+        listView->sort(5, cmp1);
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+        
+        listView->sort(1, cmp2);
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
+
+        listView->sort(2, cmp2);
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"200", "-5", "20"}, {"1000", "7", ""}, {"300", "", ""}});
+    }
 
     SECTION("Returned item rows depend on columns")
     {
