@@ -784,6 +784,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns either the configured separator width or the width of vertical grid lines, whichever is larger.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getTotalSeparatorWidth() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Found out which column is located below the mouse. The mouseLeft is relative to the widget position.
+        // This function should only be called after checking that the mouse is positioned on top of the header.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int getColumnIndexBelowMouse(float mouseLeft);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Recalculate the size and viewport size of the scrollbars
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateScrollbars();
@@ -832,6 +845,7 @@ namespace tgui
         SignalInt onItemSelect  = {"ItemSelected"};   ///< An item was selected in the list view. Optional parameter: selected item index (-1 when deselecting)
         SignalInt onDoubleClick = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item index
         SignalInt onRightClick  = {"RightClicked"};   ///< Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item)
+        SignalInt onHeaderClick = {"HeaderClicked"}; ///< The header was clicked. Optional parameter: column index
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -863,6 +877,7 @@ namespace tgui
         Scrollbar::Policy m_verticalScrollbarPolicy = Scrollbar::Policy::Automatic;
         Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Automatic;
 
+        int m_mouseOnHeaderIndex = -1; // If the left mouse is down, this contains the index of the column if the mouse went down on the header
         bool m_possibleDoubleClick = false; // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_autoScroll = true; // Should the list view scroll to the bottom when a new item is added?
 

@@ -42,6 +42,11 @@ TEST_CASE("[ListView]")
         REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](int){}));
         REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
         REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, int){}));
+
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](){}));
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](int){}));
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, std::string, int){}));
     }
 
     SECTION("WidgetType")
@@ -476,18 +481,31 @@ TEST_CASE("[ListView]")
 
         SECTION("Click on header")
         {
+            int lastHeaderIndex = -1;
+            unsigned int headerClickCount = 0;
+            listView->connect("HeaderClicked", [&](int index){ lastHeaderIndex = index; ++headerClickCount; });
+
             listView->setHeaderHeight(30);
             listView->addColumn("Col 1", 50);
             listView->addColumn("Col 2", 50);
 
+            mousePressed({70, 35});
+            mouseReleased({70, 35});
+            REQUIRE(listView->getSelectedItemIndex() == -1);
+            REQUIRE(headerClickCount == 1);
+            REQUIRE(lastHeaderIndex == 1);
+
             mousePressed({40, 35});
             mouseReleased({40, 35});
             REQUIRE(listView->getSelectedItemIndex() == -1);
+            REQUIRE(headerClickCount == 2);
+            REQUIRE(lastHeaderIndex == 0);
 
             listView->setHeaderVisible(false);
             mousePressed({40, 35});
             mouseReleased({40, 35});
             REQUIRE(listView->getSelectedItemIndex() == 0);
+            REQUIRE(headerClickCount == 2);
         }
 
         SECTION("Right click")

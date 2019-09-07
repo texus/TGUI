@@ -910,6 +910,8 @@ namespace tgui
         {
             m_horizontalScrollbar->leftMousePressed(pos);
         }
+
+        // Check if an item was clicked
         else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
                            getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
         {
@@ -934,17 +936,40 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+
+        // Check if the header was clicked
+        else if ((getCurrentHeaderHeight() > 0)
+              && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getCurrentHeaderHeight()}.contains(pos))
+        {
+            m_mouseOnHeaderIndex = getColumnIndexBelowMouse(pos.x);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListView::leftMouseReleased(Vector2f pos)
     {
+        pos -= getPosition();
+
         if (m_verticalScrollbar->isShown() && m_verticalScrollbar->isMouseDown())
-            m_verticalScrollbar->leftMouseReleased(pos - getPosition());
+            m_verticalScrollbar->leftMouseReleased(pos);
 
         if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->isMouseDown())
-            m_horizontalScrollbar->leftMouseReleased(pos - getPosition());
+            m_horizontalScrollbar->leftMouseReleased(pos);
+
+        if (m_mouseOnHeaderIndex >= 0)
+        {
+            if ((getCurrentHeaderHeight() > 0)
+              && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getCurrentHeaderHeight()}.contains(pos))
+            {
+                if (m_mouseOnHeaderIndex == getColumnIndexBelowMouse(pos.x))
+                    onHeaderClick.emit(this, m_mouseOnHeaderIndex);
+            }
+
+            m_mouseOnHeaderIndex = -1;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,6 +1082,7 @@ namespace tgui
         Widget::leftMouseButtonNoLongerDown();
         m_verticalScrollbar->leftMouseButtonNoLongerDown();
         m_horizontalScrollbar->leftMouseButtonNoLongerDown();
+        m_mouseOnHeaderIndex = -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1069,6 +1095,8 @@ namespace tgui
             return onDoubleClick;
         else if (signalName == toLower(onRightClick.getName()))
             return onRightClick;
+        else if (signalName == toLower(onHeaderClick.getName()))
+            return onHeaderClick;
         else
             return Widget::getSignal(std::move(signalName));
     }
@@ -1576,6 +1604,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int ListView::getTotalSeparatorWidth() const
+    {
+        if (m_showVerticalGridLines && (m_gridLinesWidth > m_separatorWidth))
+            return m_gridLinesWidth;
+        else
+            return m_separatorWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int ListView::getColumnIndexBelowMouse(float mouseLeft)
+    {
+        float leftPos = mouseLeft - m_bordersCached.getLeft() - m_paddingCached.getLeft();
+        if (m_horizontalScrollbar->isShown())
+            leftPos += static_cast<float>(m_horizontalScrollbar->getValue());
+
+        const unsigned int separatorWidth = getTotalSeparatorWidth();
+
+        float columnRight = 0;
+        for (unsigned int i = 0; i < m_columns.size(); ++i)
+        {
+            columnRight += m_columns[i].width + separatorWidth;
+            if (leftPos < columnRight)
+            {
+                if (leftPos < columnRight - separatorWidth)
+                    return static_cast<int>(i);
+                else // Clicked on separator
+                    return -1;
+            }
+        }
+
+        // If the last column is exanded and no matching column was found then we must have clicked on the last one
+        if (m_expandLastColumn)
+            return static_cast<int>(m_columns.size()) - 1;
+
+        return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::updateScrollbars()
     {
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
@@ -1642,18 +1710,14 @@ namespace tgui
             m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_columns[0].width));
         else
         {
-            unsigned int separatorWidth = m_separatorWidth;
-            if (m_showVerticalGridLines && (m_gridLinesWidth > separatorWidth))
-                separatorWidth = m_gridLinesWidth;
-
             float width = 0;
             for (const auto& column : m_columns)
                 width += column.width;
 
             if (m_expandLastColumn)
-                width += (m_columns.size() - 1) * static_cast<float>(separatorWidth);
+                width += (m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth());
             else
-                width += m_columns.size() * static_cast<float>(separatorWidth);
+                width += m_columns.size() * static_cast<float>(getTotalSeparatorWidth());
 
             m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width));
         }
@@ -1884,9 +1948,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown())
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), 0});
 
-        unsigned int separatorWidth = m_separatorWidth;
-        if (m_showVerticalGridLines && (m_gridLinesWidth > separatorWidth))
-            separatorWidth = m_gridLinesWidth;
+        const unsigned int separatorWidth = getTotalSeparatorWidth();
 
         // Draw the header texts
         if (totalHeaderHeight > 0)
