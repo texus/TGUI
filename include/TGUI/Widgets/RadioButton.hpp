@@ -321,7 +321,7 @@ namespace tgui
 
         SignalBool onCheck   = {"Checked"};   ///< Radio button was checked. Optional parameter: bool which is always true
         SignalBool onUncheck = {"Unchecked"}; ///< Radio button was unchecked. Optional parameter: bool which is always false
-        SignalBool onChange  = {"Changed"};   ///< Radio button was checked or unchecked. Optional parameter: bool which is always false
+        SignalBool onChange  = {"Changed"};   ///< Radio button was checked or unchecked. Optional parameter: bool indicating whether it is checked
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

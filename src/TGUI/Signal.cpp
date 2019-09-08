@@ -61,6 +61,67 @@ namespace tgui
         std::deque<const void*> parameters;
     }
 
+    namespace Signals
+    {
+        constexpr const char* const Widget::PositionChanged;
+        constexpr const char* const Widget::SizeChanged;
+        constexpr const char* const Widget::Focused;
+        constexpr const char* const Widget::Unfocused;
+        constexpr const char* const Widget::MouseEntered;
+        constexpr const char* const Widget::MouseLeft;
+        constexpr const char* const Widget::AnimationFinished;
+        constexpr const char* const ClickableWidget::MousePressed;
+        constexpr const char* const ClickableWidget::MouseReleased;
+        constexpr const char* const ClickableWidget::Clicked;
+        constexpr const char* const ClickableWidget::RightMousePressed;
+        constexpr const char* const ClickableWidget::RightMouseReleased;
+        constexpr const char* const ClickableWidget::RightClicked;
+        constexpr const char* const Button::Pressed;
+        constexpr const char* const ChildWindow::MousePressed;
+        constexpr const char* const ChildWindow::Closed;
+        constexpr const char* const ChildWindow::Minimized;
+        constexpr const char* const ChildWindow::Maximized;
+        constexpr const char* const ChildWindow::EscapeKeyPressed;
+        constexpr const char* const ComboBox::ItemSelected;
+        constexpr const char* const EditBox::TextChanged;
+        constexpr const char* const EditBox::ReturnKeyPressed;
+        constexpr const char* const Knob::ValueChanged;
+        constexpr const char* const Label::DoubleClicked;
+        constexpr const char* const ListBox::ItemSelected;
+        constexpr const char* const ListBox::MousePressed;
+        constexpr const char* const ListBox::MouseReleased;
+        constexpr const char* const ListBox::DoubleClicked;
+        constexpr const char* const ListView::ItemSelected;
+        constexpr const char* const ListView::DoubleClicked;
+        constexpr const char* const ListView::RightClicked;
+        constexpr const char* const ListView::HeaderClicked;
+        constexpr const char* const MenuBar::MenuItemClicked;
+        constexpr const char* const MessageBox::ButtonPressed;
+        constexpr const char* const Panel::MousePressed;
+        constexpr const char* const Panel::MouseReleased;
+        constexpr const char* const Panel::Clicked;
+        constexpr const char* const Panel::RightMousePressed;
+        constexpr const char* const Panel::RightMouseReleased;
+        constexpr const char* const Panel::RightClicked;
+        constexpr const char* const Picture::DoubleClicked;
+        constexpr const char* const ProgressBar::ValueChanged;
+        constexpr const char* const ProgressBar::Full;
+        constexpr const char* const RadioButton::Checked;
+        constexpr const char* const RadioButton::Unchecked;
+        constexpr const char* const RadioButton::Changed;
+        constexpr const char* const RangeSlider::RangeChanged;
+        constexpr const char* const Scrollbar::ValueChanged;
+        constexpr const char* const Slider::ValueChanged;
+        constexpr const char* const SpinButton::ValueChanged;
+        constexpr const char* const Tabs::TabSelected;
+        constexpr const char* const TextBox::TextChanged;
+        constexpr const char* const TextBox::SelectionChanged;
+        constexpr const char* const TreeView::ItemSelected;
+        constexpr const char* const TreeView::DoubleClicked;
+        constexpr const char* const TreeView::Expanded;
+        constexpr const char* const TreeView::Collapsed;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Signal::Signal(const Signal& other) :
