@@ -131,6 +131,23 @@ TEST_CASE("[SpinButton]")
         REQUIRE(((spinButton->getValue() > 23.4f) && (spinButton->getValue() < 23.6f)));
     }
 
+    SECTION("VerticalScroll")
+    {
+        spinButton->setSize(100, 20);
+        REQUIRE(!spinButton->getVerticalScroll());
+
+        spinButton->setSize(20, 100);
+        REQUIRE(spinButton->getVerticalScroll());
+
+        spinButton->setSize(10, 40);
+        spinButton->setVerticalScroll(false);
+        REQUIRE(!spinButton->getVerticalScroll());
+        REQUIRE(spinButton->getSize() == sf::Vector2f(40, 10));
+        spinButton->setVerticalScroll(true);
+        REQUIRE(spinButton->getVerticalScroll());
+        REQUIRE(spinButton->getSize() == sf::Vector2f(10, 40));
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")

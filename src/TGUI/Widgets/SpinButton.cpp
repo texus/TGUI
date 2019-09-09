@@ -101,7 +101,11 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        m_verticalScroll = (getSize().y >= getSize().x);
+        if (getSize().x < getSize().y)
+            m_verticalScroll = true;
+        else if (getSize().x > getSize().y)
+            m_verticalScroll = false;
+
         if (m_verticalScroll)
         {
             m_spriteArrowUp.setRotation(0);
@@ -209,6 +213,24 @@ namespace tgui
     float SpinButton::getStep() const
     {
         return m_step;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::setVerticalScroll(bool vertical)
+    {
+        if (m_verticalScroll == vertical)
+            return;
+
+        m_verticalScroll = vertical;
+        setSize(getSize().y, getSize().x);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SpinButton::getVerticalScroll() const
+    {
+        return m_verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

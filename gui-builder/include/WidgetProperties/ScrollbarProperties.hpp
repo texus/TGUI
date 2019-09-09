@@ -44,6 +44,8 @@ struct ScrollbarProperties : WidgetProperties
             scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
         else if (property == "AutoHide")
             scrollbar->setAutoHide(parseBoolean(value, true));
+        else if (property == "VerticalScroll")
+            scrollbar->setVerticalScroll(parseBoolean(value, true));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -57,6 +59,7 @@ struct ScrollbarProperties : WidgetProperties
         pair.first["ViewportSize"] = {"UInt", tgui::to_string(scrollbar->getViewportSize())};
         pair.first["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
         pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::to_string(scrollbar->getVerticalScroll())};
 
         const auto renderer = scrollbar->getSharedRenderer();
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};

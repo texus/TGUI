@@ -243,7 +243,7 @@ namespace tgui
         std::unique_ptr<Layout> m_leftOperand = nullptr; // The left operand of the operation in case the operation is a math operation
         std::unique_ptr<Layout> m_rightOperand = nullptr; // The left operand of the operation in case the operation is a math operation
         Widget* m_boundWidget = nullptr; // The widget on which this layout depends in case the operation is a binding
-        std::string m_boundString; // String referring  to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
+        std::string m_boundString; // String referring to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
         std::function<void()> m_connectedWidgetCallback = nullptr; // Function to call when the value of the layout changes in case the layout and sublayouts are not all constants
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

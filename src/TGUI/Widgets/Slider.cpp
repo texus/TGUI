@@ -104,7 +104,7 @@ namespace tgui
 
         if (getSize().x < getSize().y)
             m_verticalScroll = true;
-        else
+        else if (getSize().x > getSize().y)
             m_verticalScroll = false;
 
         if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
@@ -286,6 +286,24 @@ namespace tgui
     float Slider::getStep() const
     {
         return m_step;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::setVerticalScroll(bool vertical)
+    {
+        if (m_verticalScroll == vertical)
+            return;
+
+        m_verticalScroll = vertical;
+        setSize(getSize().y, getSize().x);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getVerticalScroll() const
+    {
+        return m_verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

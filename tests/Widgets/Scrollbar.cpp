@@ -124,6 +124,23 @@ TEST_CASE("[Scrollbar]")
         REQUIRE(scrollbar->getAutoHide());
     }
 
+    SECTION("VerticalScroll")
+    {
+        scrollbar->setSize(100, 20);
+        REQUIRE(!scrollbar->getVerticalScroll());
+
+        scrollbar->setSize(20, 100);
+        REQUIRE(scrollbar->getVerticalScroll());
+
+        scrollbar->setSize(10, 40);
+        scrollbar->setVerticalScroll(false);
+        REQUIRE(!scrollbar->getVerticalScroll());
+        REQUIRE(scrollbar->getSize() == sf::Vector2f(40, 10));
+        scrollbar->setVerticalScroll(true);
+        REQUIRE(scrollbar->getVerticalScroll());
+        REQUIRE(scrollbar->getSize() == sf::Vector2f(10, 40));
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")

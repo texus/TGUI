@@ -44,6 +44,8 @@ struct SliderProperties : WidgetProperties
             slider->setStep(tgui::stof(value));
         else if (property == "InvertedDirection")
             slider->setInvertedDirection(parseBoolean(value, false));
+        else if (property == "VerticalScroll")
+            slider->setVerticalScroll(parseBoolean(value, true));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -57,6 +59,7 @@ struct SliderProperties : WidgetProperties
         pair.first["Value"] = {"Float", tgui::to_string(slider->getValue())};
         pair.first["Step"] = {"Float", tgui::to_string(slider->getStep())};
         pair.first["InvertedDirection"] = {"Bool", tgui::to_string(slider->getInvertedDirection())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::to_string(slider->getVerticalScroll())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
