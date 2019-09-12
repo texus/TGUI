@@ -34,20 +34,20 @@ namespace tgui
 {
     namespace internal_signal
     {
-    #ifdef TGUI_USE_CPP17
+#if defined(__cpp_lib_void_t) && (__cpp_lib_void_t >= 201411L)
         using std::void_t;
-    #else
+#else
         // void_t only exists in c++17 so we use our own implementation to support c++14 compilers
         template<typename...>
         using void_t = void;
-    #endif
+#endif
 
         // Type to pass a list of template types
         template <typename...>
         struct TypeSet;
 
         // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
-    #ifdef TGUI_USE_CPP17
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         template <typename Type>
         decltype(auto) dereference(const void* obj)
         {
@@ -58,7 +58,7 @@ namespace tgui
             else
                 return *static_cast<const std::decay_t<Type>*>(obj);
         }
-    #else
+#else
         template <typename Type, typename std::enable_if<std::is_same<Type, std::string>::value>::type* = nullptr>
         decltype(auto) dereference(const void* obj)
         {
@@ -78,9 +78,9 @@ namespace tgui
         {
             return *static_cast<const typename std::decay<Type>::type*>(obj);
         }
-    #endif
+#endif
 
-    #ifndef TGUI_USE_CPP17
+#if !defined(__cpp_lib_invoke) || (__cpp_lib_invoke < 201411L)
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
         // Visual Studio compiler did not like it when the function was called "invoke"
         template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
@@ -94,7 +94,7 @@ namespace tgui
         {
             std::forward<Func>(func)(std::forward<Args>(args)...);
         }
-    #endif
+#endif
 
         // The binder will figure out the unbound parameters and bind them if they correspond to what the signal sends
         template <typename... Args>
@@ -121,21 +121,21 @@ namespace tgui
             static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
-            #if defined TGUI_USE_CPP17
+#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
                 return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
                     std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                 args...,
                                 widget,
                                 signalName,
                                 internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
-            #else
+#else
                 return [=,o=offset](const std::shared_ptr<Widget>& widget, const std::string& signalName) { // MinGW TDM GCC 5.1 won't compile code without "o=offset" hack
                     invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                args...,
                                widget,
                                signalName,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[o + Indices])...);
-            #endif
+#endif
                 };
             }
         };
@@ -155,23 +155,23 @@ namespace tgui
             static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
-            #if defined TGUI_USE_CPP17
+#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
                 return [=]{
                     std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
-            #else
+#else
                 return [=,o=offset]{ // MinGW TDM GCC 5.1 won't compile code without "o=offset" hack
                     invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[o + Indices])...);
-            #endif
+#endif
                 };
             }
         };
 
 
-    #ifdef TGUI_USE_CPP17
+#if defined(__cpp_noexcept_function_type) && (__cpp_noexcept_function_type >= 201510L)
         // Error case (function signature did not match anything)
         template <typename Enable, typename Func, typename... BoundArgs>
         struct func_traits;
@@ -237,7 +237,7 @@ namespace tgui
         // std::function or lambda
         template <typename Func, typename... BoundArgs>
         struct func_traits<void_t<decltype(&Func::operator())>, Func, BoundArgs...> : public func_traits<void, decltype(&Func::operator()), Func*, BoundArgs...> {};
-    #else
+#else
         // Error case (function signature did not match anything)
         template <typename Enable, typename Func, typename... BoundArgs>
         struct func_traits;
@@ -269,12 +269,12 @@ namespace tgui
             : binder<TypeSet<typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
         {
         };
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef TGUI_USE_CPP17
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
     template <typename Func, typename... BoundArgs>
     unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, const BoundArgs&... args)
     {

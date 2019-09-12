@@ -32,6 +32,7 @@
 #include <TGUI/Vector2f.hpp>
 #include <TGUI/Animation.hpp>
 #include <SFML/System/String.hpp>
+#include <type_traits>
 #include <functional>
 #include <typeindex>
 #include <memory>
@@ -848,7 +849,7 @@ namespace tgui
 
         virtual ~SignalWidgetBase() = default;
 
-#ifdef TGUI_USE_CPP17
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///

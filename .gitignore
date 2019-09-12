@@ -1,3 +1,4 @@
+/include/TGUI/Config.hpp
 /build*
 /gui-builder/themes
 /gui-builder/gui-builder

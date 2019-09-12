@@ -279,12 +279,7 @@ namespace tgui
 
     std::size_t ListView::addItem(const sf::String& text)
     {
-#ifdef TGUI_USE_CPP17
-        Item& item = m_items.emplace_back();
-#else
-        m_items.emplace_back();
-        Item& item = m_items.back();
-#endif
+        TGUI_EMPLACE_BACK(item, m_items)
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
@@ -301,12 +296,7 @@ namespace tgui
 
     std::size_t ListView::addItem(const std::vector<sf::String>& itemTexts)
     {
-#ifdef TGUI_USE_CPP17
-        Item& item = m_items.emplace_back();
-#else
-        m_items.emplace_back();
-        Item& item = m_items.back();
-#endif
+        TGUI_EMPLACE_BACK(item, m_items)
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
@@ -328,12 +318,7 @@ namespace tgui
     {
         for (unsigned int i = 0; i < items.size(); ++i)
         {
-#ifdef TGUI_USE_CPP17
-            Item& item = m_items.emplace_back();
-#else
-            m_items.emplace_back();
-            Item& item = m_items.back();
-#endif
+            TGUI_EMPLACE_BACK(item, m_items)
             item.texts.reserve(items[i].size());
             for (const auto& text : items[i])
                 item.texts.push_back(createText(text));
@@ -578,8 +563,8 @@ namespace tgui
     {
         if (index >= m_items.size())
             return;
-        
-        std::sort(m_items.begin(), m_items.end(), 
+
+        std::sort(m_items.begin(), m_items.end(),
             [index, &cmp](const ListView::Item &a, const ListView::Item& b)
             {
                 sf::String s1;

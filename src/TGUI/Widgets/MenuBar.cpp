@@ -128,11 +128,11 @@ namespace tgui
 
             for (const auto& menu : menus)
             {
-                menuElements.emplace_back();
-                menuElements.back().text = menu.text.getString();
-                menuElements.back().enabled = menu.enabled;
+                TGUI_EMPLACE_BACK(element, menuElements)
+                element.text = menu.text.getString();
+                element.enabled = menu.enabled;
                 if (!menu.menuItems.empty())
-                    menuElements.back().menuItems = getMenuListImpl(menu.menuItems);
+                    element.menuItems = getMenuListImpl(menu.menuItems);
             }
 
             return menuElements;

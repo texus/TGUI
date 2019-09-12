@@ -36,7 +36,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER < 17
     const std::string EditBox::Validator::All   = ".*";
     const std::string EditBox::Validator::Int   = "[+-]?[0-9]*";
     const std::string EditBox::Validator::UInt  = "[0-9]*";

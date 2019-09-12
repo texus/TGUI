@@ -148,7 +148,7 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connectMenuItem(const std::vector<sf::String>& hierarchy, Func&& handler, const Args&... args)
         {
-        #ifdef TGUI_USE_CPP17
+#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
             return connect("MenuItemClicked",
                 [=](const std::vector<sf::String>& clickedMenuItem)
                 {
@@ -156,7 +156,7 @@ namespace tgui
                         std::invoke(handler, args...);
                 }
             );
-        #else
+#else
             return connect("MenuItemClicked",
                 [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<sf::String>& clickedMenuItem)
                 {
@@ -164,7 +164,7 @@ namespace tgui
                         f(args...);
                 }
             );
-        #endif
+#endif
         }
 
 

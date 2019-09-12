@@ -99,7 +99,7 @@ from Tavmjong Bah. For further information, contact: tavmjong @ free
 */
 
 // DejaVuSans font
-#ifdef TGUI_USE_CPP17
+#ifdef __cpp_inline_variables
 static inline const unsigned char defaultFontBytes[] = {
 #else
 static const unsigned char defaultFontBytes[] = {

@@ -54,6 +54,14 @@ endif()
 tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
 tgui_set_option(TGUI_BUILD_GUI_BUILDER TRUE BOOL "TRUE to compile the GUI Builder")
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
+tgui_set_option(TGUI_CXX_STANDARD "14" STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
+
+# At least c++14 has to be used
+if (TGUI_CXX_STANDARD LESS "14")
+    message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
+else()
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
+endif()
 
 # Define the install directory for miscellaneous files
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
@@ -80,10 +88,6 @@ if (TGUI_INSTALL_PKGCONFIG_FILES)
 
     configure_file("pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
-endif()
-
-if(TGUI_USE_CPP17)
-    message(WARNING "The library is being build with c++17 features. Keep in mind that you MUST define TGUI_USE_CPP17 in the project using the library as well.")
 endif()
 
 # Define an option for choosing between static and dynamic C runtime

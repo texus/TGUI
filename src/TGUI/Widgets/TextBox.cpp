@@ -1087,7 +1087,7 @@ namespace tgui
         if ((m_maxChars > 0) && (m_text.getSize() + 1 > m_maxChars))
             return;
 
-        auto insert = [=]()
+        auto insert = TGUI_LAMBDA_CAPTURE_EQ_THIS()
         {
             deleteSelectedCharacters();
 

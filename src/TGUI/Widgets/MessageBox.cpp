@@ -74,7 +74,7 @@ namespace tgui
         for (auto& button : m_buttons)
         {
             button->disconnectAll("Pressed");
-            button->connect("Pressed", [=]() { onButtonPress.emit(this, button->getText()); });
+            button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
         }
     }
 
@@ -116,7 +116,7 @@ namespace tgui
             for (auto& button : m_buttons)
             {
                 button->disconnectAll("Pressed");
-                button->connect("Pressed", [=]() { onButtonPress.emit(this, button->getText()); });
+                button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
             }
         }
 
@@ -218,7 +218,7 @@ namespace tgui
         auto button = Button::create(caption);
         button->setRenderer(getSharedRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->connect("Pressed", [=]() { onButtonPress.emit(this, caption); });
+        button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -368,7 +368,7 @@ namespace tgui
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
 
                 button->disconnectAll("Pressed");
-                button->connect("Pressed", [=]() { onButtonPress.emit(this, button->getText()); });
+                button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
                 m_buttons.push_back(button);
             }
         }

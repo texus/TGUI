@@ -33,7 +33,7 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
 
-#ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <variant>
 #else
     #include <TGUI/Any.hpp>
@@ -369,11 +369,11 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-    #ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         std::variant<sf::String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
-    #else
+#else
         Any  m_value;
-    #endif
+#endif
 
         bool m_serialized = false;
         sf::String m_string;

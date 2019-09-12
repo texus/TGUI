@@ -30,7 +30,7 @@
 #include <cassert>
 #include <cmath>
 
-#ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <optional>
 #endif
 
@@ -442,7 +442,7 @@ namespace tgui
         states.transform *= getTransform();
 
         // Apply clipping when needed
-#ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         std::optional<Clipping> clipping;
         if (m_visibleRect != FloatRect{})
             clipping.emplace(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});

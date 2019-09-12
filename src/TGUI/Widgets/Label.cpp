@@ -660,22 +660,22 @@ namespace tgui
         {
             newLinePos = string.find('\n', searchPosStart);
 
-            m_lines.emplace_back();
-            m_lines.back().setCharacterSize(getTextSize());
-            m_lines.back().setFont(m_fontCached);
-            m_lines.back().setStyle(m_textStyleCached);
-            m_lines.back().setColor(m_textColorCached);
-            m_lines.back().setOpacity(m_opacityCached);
-            m_lines.back().setOutlineColor(m_textOutlineColorCached);
-            m_lines.back().setOutlineThickness(m_textOutlineThicknessCached);
+            TGUI_EMPLACE_BACK(line, m_lines)
+            line.setCharacterSize(getTextSize());
+            line.setFont(m_fontCached);
+            line.setStyle(m_textStyleCached);
+            line.setColor(m_textColorCached);
+            line.setOpacity(m_opacityCached);
+            line.setOutlineColor(m_textOutlineColorCached);
+            line.setOutlineThickness(m_textOutlineThicknessCached);
 
             if (newLinePos != sf::String::InvalidPos)
-                m_lines.back().setString(string.substring(searchPosStart, newLinePos - searchPosStart));
+                line.setString(string.substring(searchPosStart, newLinePos - searchPosStart));
             else
-                m_lines.back().setString(string.substring(searchPosStart));
+                line.setString(string.substring(searchPosStart));
 
-            if (m_lines.back().getSize().x > width)
-                width = m_lines.back().getSize().x;
+            if (line.getSize().x > width)
+                width = line.getSize().x;
 
             searchPosStart = newLinePos + 1;
         }

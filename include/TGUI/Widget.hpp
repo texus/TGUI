@@ -47,7 +47,7 @@
 
 #include <unordered_set>
 
-#ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <any>
 #else
     #include <TGUI/Any.hpp>
@@ -423,11 +423,11 @@ namespace tgui
         /// widget->setUserData(5);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         void setUserData(std::any userData)
-    #else
+#else
         void setUserData(tgui::Any userData)
-    #endif
+#endif
         {
             m_userData = std::move(userData);
         }
@@ -440,11 +440,11 @@ namespace tgui
         template <typename T>
         T getUserData() const
         {
-        #ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::any_cast<T>(m_userData);
-        #else
+#else
             return m_userData.as<T>();
-        #endif
+#endif
         }
 
 
@@ -879,11 +879,11 @@ namespace tgui
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
 
-    #ifdef TGUI_USE_CPP17
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         std::any m_userData;
-    #else
+#else
         tgui::Any m_userData;
-    #endif
+#endif
 
         std::function<void(const std::string& property)> m_rendererChangedCallback = [this](const std::string& property){ rendererChangedCallback(property); };
 

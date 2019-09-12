@@ -53,9 +53,14 @@
 
 
 // Version of the library
-#define TGUI_VERSION_MAJOR 0
-#define TGUI_VERSION_MINOR 8
-#define TGUI_VERSION_PATCH 5
+#define TGUI_VERSION_MAJOR @TGUI_VERSION_MAJOR@
+#define TGUI_VERSION_MINOR @TGUI_VERSION_MINOR@
+#define TGUI_VERSION_PATCH @TGUI_VERSION_PATCH@
+
+// Define that specifies the mininmum c++ support in both the TGUI code and user code.
+// This constant can be lower than the actual c++ standard version used to compile with,
+// as long as this constant is the same when compiling TGUI and when using the TGUI libs.
+#define TGUI_COMPILED_WITH_CPP_VER @TGUI_CXX_STANDARD@
 
 // The signal system detects whether it can provide unbound parameters by checking the arguments of the function at runtime.
 // This comparion is made by checking the typeid of the parameters with the typeid of the value which the widget can transmit.
@@ -69,21 +74,16 @@
     #define TGUI_UNSAFE_TYPE_INFO_COMPARISON
 #endif
 
-// Enable constexpr when using Clang or at least GCC 5 or MSVC++ 14.1 (VS2017)
-#if defined(_MSC_VER)
-    #if _MSC_VER >= 1910
-        #define TGUI_CONSTEXPR constexpr
-    #else
-        #define TGUI_CONSTEXPR
-    #endif
-#elif defined(__GNUC__)
-    #if __cpp_constexpr >= 201304
-        #define TGUI_CONSTEXPR constexpr
-    #else
-        #define TGUI_CONSTEXPR
-    #endif
-#else
+#if defined(__cpp_constexpr) && (__cpp_constexpr >= 201304L)
     #define TGUI_CONSTEXPR constexpr
+#else
+    #define TGUI_CONSTEXPR
+#endif
+
+#if __cplusplus >= 201703L
+    #define TGUI_EMPLACE_BACK(object, vector) auto& object = vector.emplace_back();
+#else
+    #define TGUI_EMPLACE_BACK(object, vector) vector.emplace_back(); auto& object = vector.back();
 #endif
 
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
@@ -100,6 +100,13 @@
 
 #ifdef TGUI_NEXT
     #define TGUI_REMOVE_DEPRECATED_CODE
+#endif
+
+// Using [=] gives a warning in c++2a, but using [=,this] may not compile with older c++ versions
+#if __cplusplus > 201703L
+    #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=,this]
+#else
+    #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=]
 #endif
 
 #endif // TGUI_CONFIG_HPP
