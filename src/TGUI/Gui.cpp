@@ -465,7 +465,7 @@ namespace tgui
         if (m_tooltipPossible)
         {
             m_tooltipTime += elapsedTime;
-            if (m_tooltipTime >= ToolTip::getTimeToDisplay())
+            if (m_tooltipTime >= ToolTip::getInitialDelay())
             {
                 Widget::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
                 if (tooltip)

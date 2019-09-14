@@ -1030,7 +1030,7 @@ namespace tgui
             toolTipNode->name = "ToolTip";
             toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-            toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
+            toolTipNode->propertyValuePairs["InitialDelay"] = std::make_unique<DataIO::ValueNode>(to_string(ToolTip::getInitialDelay().asSeconds()));
             toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
 
             node->children.emplace_back(std::move(toolTipNode));
@@ -1076,8 +1076,12 @@ namespace tgui
             {
                 for (const auto& pair : childNode->propertyValuePairs)
                 {
-                    if (pair.first == "timetodisplay")
-                        ToolTip::setTimeToDisplay(sf::seconds(tgui::stof(pair.second->value)));
+                    if (pair.first == "initialdelay")
+                        ToolTip::setInitialDelay(sf::seconds(tgui::stof(pair.second->value)));
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+                    else if (pair.first == "timetodisplay")
+                        ToolTip::setInitialDelay(sf::seconds(tgui::stof(pair.second->value)));
+#endif
                     else if (pair.first == "distancetomouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
                 }
