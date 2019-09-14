@@ -474,6 +474,8 @@ namespace tgui
         bool m_isolatedFocus = false;
 
 
+        friend class SubwidgetContainer; // Needs access to save and load functions
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
