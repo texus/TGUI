@@ -35,7 +35,7 @@ namespace tgui
     Vector2f ToolTip::m_distanceToMouse = {5, 20};
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void ToolTip::setTimeToDisplay(const sf::Time& timeToDisplay)
     {
         m_initialDelay = timeToDisplay;
@@ -47,7 +47,7 @@ namespace tgui
     {
         return m_initialDelay;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ToolTip::setInitialDelay(const sf::Time& delay)
