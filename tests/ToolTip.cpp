@@ -30,13 +30,13 @@
 
 TEST_CASE("[ToolTip]")
 {
-    sf::Time oldTimeToDisplay = tgui::ToolTip::getTimeToDisplay();
+    sf::Time oldInitialDelay = tgui::ToolTip::getInitialDelay();
     sf::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
 
-    SECTION("TimeToDisplay")
+    SECTION("InitialDelay")
     {
-        tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
-        REQUIRE(tgui::ToolTip::getTimeToDisplay() == sf::milliseconds(280));
+        tgui::ToolTip::setInitialDelay(sf::milliseconds(280));
+        REQUIRE(tgui::ToolTip::getInitialDelay() == sf::milliseconds(280));
     }
 
     SECTION("DistanceToMouse")
@@ -57,7 +57,7 @@ TEST_CASE("[ToolTip]")
 
         SECTION("Saving and loading from file")
         {
-            tgui::ToolTip::setTimeToDisplay(sf::milliseconds(320));
+            tgui::ToolTip::setInitialDelay(sf::milliseconds(320));
             tgui::ToolTip::setDistanceToMouse({2, 1});
 
             testSavingWidget("ToolTip", widget, false);
@@ -73,6 +73,6 @@ TEST_CASE("[ToolTip]")
         REQUIRE(widget->getToolTip() == nullptr);
     }
 
-    tgui::ToolTip::setTimeToDisplay(oldTimeToDisplay);
+    tgui::ToolTip::setInitialDelay(oldInitialDelay);
     tgui::ToolTip::setDistanceToMouse(oldDistanceToMouse);
 }
