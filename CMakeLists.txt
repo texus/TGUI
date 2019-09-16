@@ -206,6 +206,10 @@ if(NOT TGUI_SHARED_LIBS)
     endif()
 endif()
 
+
+if(TARGET sfml-window)
+    message("Using in place build")
+else()
 # Find sfml
 if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio
     find_package(SFML 2 COMPONENTS main graphics window system)
@@ -226,6 +230,7 @@ endif()
 
 # Set the path for the libraries
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
+endif()
 
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
