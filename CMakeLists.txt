@@ -206,22 +206,24 @@ if(NOT TGUI_SHARED_LIBS)
     endif()
 endif()
 
-# Find sfml
-if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio
-    find_package(SFML 2 COMPONENTS main graphics window system)
-elseif(TGUI_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
-    find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-    find_host_package(SFML 2 COMPONENTS main graphics window system)
-else()
-    find_package(SFML 2 COMPONENTS graphics window system)
-endif()
+# Find sfml if not build in same project
+if(NOT TARGET sfml-graphics)
+    if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio
+        find_package(SFML 2 COMPONENTS main graphics window system)
+    elseif(TGUI_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
+        find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
+    elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
+        find_host_package(SFML 2 COMPONENTS main graphics window system)
+    else()
+        find_package(SFML 2 COMPONENTS graphics window system)
+    endif()
 
-# find_package couldn't find SFML
-if(NOT SFML_FOUND)
-    set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
-    set(SFML_ROOT "" CACHE PATH "SFML root directory")
-    message(FATAL_ERROR "CMake couldn't find SFML.\nEither set SFML_DIR to the directory containing SFMLConfig.cmake or set the SFML_ROOT entry to SFML's root directory (containing \"include\" and \"lib\" directories).")
+    # find_package couldn't find SFML
+    if(NOT SFML_FOUND)
+        set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
+        set(SFML_ROOT "" CACHE PATH "SFML root directory")
+        message(FATAL_ERROR "CMake couldn't find SFML.\nEither set SFML_DIR to the directory containing SFMLConfig.cmake or set the SFML_ROOT entry to SFML's root directory (containing \"include\" and \"lib\" directories).")
+    endif()
 endif()
 
 # Set the path for the libraries
