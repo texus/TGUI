@@ -35,15 +35,15 @@ struct ProgressBarProperties : WidgetProperties
     {
         auto progressBar = std::dynamic_pointer_cast<tgui::ProgressBar>(widget);
         if (property == "Minimum")
-            progressBar->setMinimum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            progressBar->setMinimum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "Maximum")
-            progressBar->setMaximum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            progressBar->setMaximum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "Value")
-            progressBar->setValue(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            progressBar->setValue(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "Text")
             progressBar->setText(value);
         else if (property == "TextSize")
-            progressBar->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            progressBar->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "FillDirection")
             progressBar->setFillDirection(deserializeFillDirection(value));
         else

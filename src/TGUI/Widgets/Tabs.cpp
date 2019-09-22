@@ -760,13 +760,13 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["maximumtabwidth"])
-            setMaximumTabWidth(tgui::stof(node->propertyValuePairs["maximumtabwidth"]->value));
+            setMaximumTabWidth(strToFloat(node->propertyValuePairs["maximumtabwidth"]->value));
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["tabheight"])
-            setTabHeight(tgui::stof(node->propertyValuePairs["tabheight"]->value));
+            setTabHeight(strToFloat(node->propertyValuePairs["tabheight"]->value));
         if (node->propertyValuePairs["selected"])
-            select(tgui::stoi(node->propertyValuePairs["selected"]->value));
+            select(strToInt(node->propertyValuePairs["selected"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

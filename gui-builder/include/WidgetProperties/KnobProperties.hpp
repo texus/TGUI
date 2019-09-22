@@ -35,15 +35,15 @@ struct KnobProperties : WidgetProperties
     {
         auto knob = std::dynamic_pointer_cast<tgui::Knob>(widget);
         if (property == "Minimum")
-            knob->setMinimum(tgui::stoi(value));
+            knob->setMinimum(tgui::strToInt(value));
         else if (property == "Maximum")
-            knob->setMaximum(tgui::stoi(value));
+            knob->setMaximum(tgui::strToInt(value));
         else if (property == "Value")
-            knob->setValue(tgui::stoi(value));
+            knob->setValue(tgui::strToInt(value));
         else if (property == "StartRotation")
-            knob->setStartRotation(tgui::stof(value));
+            knob->setStartRotation(tgui::strToFloat(value));
         else if (property == "EndRotation")
-            knob->setEndRotation(tgui::stof(value));
+            knob->setEndRotation(tgui::strToFloat(value));
         else if (property == "ClockwiseTurning")
             knob->setClockwiseTurning(parseBoolean(value, true));
         else

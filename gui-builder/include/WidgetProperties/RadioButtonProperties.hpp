@@ -39,7 +39,7 @@ struct RadioButtonProperties : WidgetProperties
         else if (property == "Text")
             radioButton->setText(value);
         else if (property == "TextSize")
-            radioButton->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            radioButton->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "TextClickable")
             radioButton->setTextClickable(parseBoolean(value, true));
         else

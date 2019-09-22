@@ -25,6 +25,7 @@
 
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
+#include <TGUI/String.hpp>
 #include <TGUI/to_string.hpp>
 
 #include <cctype>

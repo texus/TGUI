@@ -128,16 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool isWhitespace(std::uint32_t character)
-    {
-        if (character == ' ' || character == '\t' || character == '\r' || character == '\n')
-            return true;
-        else
-            return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     int stoi(const std::string& value)
     {
         int result = 0;
@@ -179,9 +170,10 @@ namespace tgui
         else
             throw Exception{"Failed to parse boolean value of property '" + property + "'."};
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_NEXT
     bool removeWhitespace(const std::string& line, std::string::const_iterator& c)
     {
         while (c != line.end())
@@ -194,25 +186,7 @@ namespace tgui
 
         return false;
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string toLower(std::string str)
-    {
-        for (auto& c : str)
-            c = static_cast<char>(std::tolower(c));
-
-        return str;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string trim(std::string str)
-    {
-        str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int c) { return !std::isspace(c); }));
-        str.erase(std::find_if(str.rbegin(), str.rend(), [](int c) { return !std::isspace(c); }).base(), str.end());
-        return str;
-    }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

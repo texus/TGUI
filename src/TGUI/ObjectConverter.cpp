@@ -59,11 +59,7 @@ namespace tgui
             m_type = Type::Font;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<Font>(m_value);
-#else
-        return m_value.as<Font>();
-#endif
+        return m_value.get<Font>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +75,7 @@ namespace tgui
             m_type = Type::Color;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<Color>(m_value);
-#else
-        return m_value.as<Color>();
-#endif
+        return m_value.get<Color>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,11 +91,7 @@ namespace tgui
             m_type = Type::Bool;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<bool>(m_value);
-#else
-        return m_value.as<bool>();
-#endif
+        return m_value.get<bool>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,11 +107,7 @@ namespace tgui
             m_type = Type::Number;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<float>(m_value);
-#else
-        return m_value.as<float>();
-#endif
+        return m_value.get<float>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,11 +123,7 @@ namespace tgui
             m_type = Type::Outline;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<Outline>(m_value);
-#else
-        return m_value.as<Outline>();
-#endif
+        return m_value.get<Outline>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,11 +139,7 @@ namespace tgui
             m_type = Type::Texture;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<Texture>(m_value);
-#else
-        return m_value.as<Texture>();
-#endif
+        return m_value.get<Texture>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,11 +155,7 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<TextStyle>(m_value);
-#else
-        return m_value.as<TextStyle>();
-#endif
+        return m_value.get<TextStyle>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,11 +171,7 @@ namespace tgui
             m_type = Type::RendererData;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return std::get<std::shared_ptr<RendererData>>(m_value);
-#else
-        return m_value.as<std::shared_ptr<RendererData>>();
-#endif
+        return m_value.get<std::shared_ptr<RendererData>>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,41 +197,22 @@ namespace tgui
             return true;
         case Type::String:
             return m_string == right.m_string;
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         case Type::Bool:
-            return std::get<bool>(m_value) == std::get<bool>(right.m_value);
+            return m_value.get<bool>() == right.m_value.get<bool>();
         case Type::Font:
-            return std::get<Font>(m_value) == std::get<Font>(right.m_value);
+            return m_value.get<Font>() == right.m_value.get<Font>();
         case Type::Color:
-            return std::get<Color>(m_value) == std::get<Color>(right.m_value);
+            return m_value.get<Color>() == right.m_value.get<Color>();
         case Type::Number:
-            return std::get<float>(m_value) == std::get<float>(right.m_value);
+            return m_value.get<float>() == right.m_value.get<float>();
         case Type::Outline:
-            return std::get<Outline>(m_value) == std::get<Outline>(right.m_value);
+            return m_value.get<Outline>() == right.m_value.get<Outline>();
         case Type::Texture:
-            return std::get<Texture>(m_value) == std::get<Texture>(right.m_value);
+            return m_value.get<Texture>() == right.m_value.get<Texture>();
         case Type::TextStyle:
-            return std::get<TextStyle>(m_value) == std::get<TextStyle>(right.m_value);
+            return m_value.get<TextStyle>() == right.m_value.get<TextStyle>();
         case Type::RendererData:
-            return std::get<std::shared_ptr<RendererData>>(m_value) == std::get<std::shared_ptr<RendererData>>(right.m_value);
-#else
-        case Type::Bool:
-            return m_value.as<bool>() == right.m_value.as<bool>();
-        case Type::Font:
-            return m_value.as<Font>() == right.m_value.as<Font>();
-        case Type::Color:
-            return m_value.as<Color>() == right.m_value.as<Color>();
-        case Type::Number:
-            return m_value.as<float>() == right.m_value.as<float>();
-        case Type::Outline:
-            return m_value.as<Outline>() == right.m_value.as<Outline>();
-        case Type::Texture:
-            return m_value.as<Texture>() == right.m_value.as<Texture>();
-        case Type::TextStyle:
-            return m_value.as<TextStyle>() == right.m_value.as<TextStyle>();
-        case Type::RendererData:
-            return m_value.as<std::shared_ptr<RendererData>>() == right.m_value.as<std::shared_ptr<RendererData>>();
-#endif
+            return m_value.get<std::shared_ptr<RendererData>>() == right.m_value.get<std::shared_ptr<RendererData>>();
         default: // This case should never occur, but prevents a warning that control reaches end of non-void function
             return false;
         }

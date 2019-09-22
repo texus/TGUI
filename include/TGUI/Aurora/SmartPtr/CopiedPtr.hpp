@@ -118,7 +118,7 @@ class CopiedPtr
 		///  Otherwise, this instance will hold the pointer returned by the cloner.
 		CopiedPtr(const CopiedPtr& origin)
 		: mOwner(origin ? origin.mOwner->clone() : nullptr)
-		, mPointer(origin ? mOwner->getPointer() : nullptr)
+		, mPointer(mOwner ? mOwner->getPointer() : nullptr)
 		{
 		}
 

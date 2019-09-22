@@ -350,7 +350,7 @@ namespace tgui
         ChildWindow::load(node, renderers);
 
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
 
         identifyLabelAndButtons();
     }

@@ -37,7 +37,7 @@ struct ButtonProperties : WidgetProperties
         if (property == "Text")
             button->setText(value);
         else if (property == "TextSize")
-            button->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            button->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

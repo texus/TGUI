@@ -39,7 +39,7 @@ struct LabelProperties : WidgetProperties
         if (property == "Text")
             label->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            label->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            label->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "HorizontalAlignment")
             label->setHorizontalAlignment(deserializeHorizontalAlignment(value));
         else if (property == "VerticalAlignment")
@@ -49,7 +49,7 @@ struct LabelProperties : WidgetProperties
         else if (property == "AutoSize")
             label->setAutoSize(parseBoolean(value, true));
         else if (property == "MaximumTextWidth")
-            label->setMaximumTextWidth(tgui::stof(value));
+            label->setMaximumTextWidth(tgui::strToFloat(value));
         else if (property == "IgnoreMouseEvents")
             label->ignoreMouseEvents(parseBoolean(value, false));
         else

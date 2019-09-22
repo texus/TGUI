@@ -539,15 +539,15 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["startrotation"])
-            setStartRotation(tgui::stof(node->propertyValuePairs["startrotation"]->value));
+            setStartRotation(strToFloat(node->propertyValuePairs["startrotation"]->value));
         if (node->propertyValuePairs["endrotation"])
-            setEndRotation(tgui::stof(node->propertyValuePairs["endrotation"]->value));
+            setEndRotation(strToFloat(node->propertyValuePairs["endrotation"]->value));
         if (node->propertyValuePairs["minimum"])
-            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+            setMinimum(strToInt(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
-            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+            setMaximum(strToInt(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
-            setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+            setValue(strToInt(node->propertyValuePairs["value"]->value));
         if (node->propertyValuePairs["clockwiseturning"])
             setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["clockwiseturning"]->value).getBool());
     }

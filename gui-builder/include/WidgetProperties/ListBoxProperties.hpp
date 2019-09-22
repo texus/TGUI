@@ -45,13 +45,13 @@ struct ListBoxProperties : WidgetProperties
                 listBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
+            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ItemHeight")
-            listBox->setItemHeight(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            listBox->setItemHeight(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "TextSize")
-            listBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            listBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "MaximumItems")
-            listBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            listBox->setMaximumItems(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "AutoScroll")
             listBox->setAutoScroll(parseBoolean(value, true));
         else

@@ -890,13 +890,13 @@ namespace tgui
         if (node->propertyValuePairs["autoscroll"])
             setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autoscroll"]->value).getBool());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["itemheight"])
-            setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
+            setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["maximumitems"])
-            setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+            setMaximumItems(strToInt(node->propertyValuePairs["maximumitems"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+            setSelectedItemByIndex(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

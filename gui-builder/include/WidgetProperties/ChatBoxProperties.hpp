@@ -37,13 +37,13 @@ struct ChatBoxProperties : WidgetProperties
     {
         auto chatBox = std::dynamic_pointer_cast<tgui::ChatBox>(widget);
         if (property == "TextSize")
-            chatBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            chatBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "TextColor")
             chatBox->setTextColor(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor());
         else if (property == "TextStyle")
             chatBox->setTextStyle(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle());
         else if (property == "LineLimit")
-            chatBox->setLineLimit(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            chatBox->setLineLimit(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "LinesStartFromTop")
             chatBox->setLinesStartFromTop(parseBoolean(value, true));
         else if (property == "NewLinesBelowOthers")

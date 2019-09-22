@@ -1180,9 +1180,9 @@ namespace tgui
         if (node->propertyValuePairs["defaulttext"])
             setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["defaulttext"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["maximumcharacters"])
-            setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+            setMaximumCharacters(strToInt(node->propertyValuePairs["maximumcharacters"]->value));
         if (node->propertyValuePairs["textwidthlimited"])
             limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textwidthlimited"]->value).getBool());
         if (node->propertyValuePairs["readonly"])

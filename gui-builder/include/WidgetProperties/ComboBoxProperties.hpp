@@ -45,15 +45,15 @@ struct ComboBoxProperties : WidgetProperties
                 comboBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            comboBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
+            comboBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ItemsToDisplay")
-            comboBox->setItemsToDisplay(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
+            comboBox->setItemsToDisplay(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
         else if (property == "TextSize")
-            comboBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            comboBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "DefaultText")
             comboBox->setDefaultText(value);
         else if (property == "MaximumItems")
-            comboBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            comboBox->setMaximumItems(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ExpandDirection")
             comboBox->setExpandDirection(deserializeExpandDirection(value));
         else if (property == "ChangeItemOnScroll")

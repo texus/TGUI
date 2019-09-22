@@ -1077,10 +1077,10 @@ namespace tgui
                 for (const auto& pair : childNode->propertyValuePairs)
                 {
                     if (pair.first == "initialdelay")
-                        ToolTip::setInitialDelay(sf::seconds(tgui::stof(pair.second->value)));
+                        ToolTip::setInitialDelay(sf::seconds(strToFloat(pair.second->value)));
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
                     else if (pair.first == "timetodisplay")
-                        ToolTip::setInitialDelay(sf::seconds(tgui::stof(pair.second->value)));
+                        ToolTip::setInitialDelay(sf::seconds(strToFloat(pair.second->value)));
 #endif
                     else if (pair.first == "distancetomouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});

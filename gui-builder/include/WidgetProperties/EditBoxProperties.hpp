@@ -39,11 +39,11 @@ struct EditBoxProperties : WidgetProperties
         else if (property == "DefaultText")
             editBox->setDefaultText(value);
         else if (property == "TextSize")
-            editBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            editBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "PasswordCharacter")
-            editBox->setPasswordCharacter(value.isEmpty() ? '\0' : value[0]);
+            editBox->setPasswordCharacter(value.isEmpty() ? '\0' : static_cast<char>(value[0]));
         else if (property == "MaximumCharacters")
-            editBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            editBox->setMaximumCharacters(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "Alignment")
             editBox->setAlignment(deserializeAlignment(value));
         else if (property == "LimitTextWidth")

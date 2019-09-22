@@ -580,13 +580,13 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["textcolor"])
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
         if (node->propertyValuePairs["textstyle"])
             setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["textstyle"]->value).getTextStyle());
         if (node->propertyValuePairs["linelimit"])
-            setLineLimit(tgui::stoi(node->propertyValuePairs["linelimit"]->value));
+            setLineLimit(strToInt(node->propertyValuePairs["linelimit"]->value));
 
         for (const auto& childNode : node->children)
         {

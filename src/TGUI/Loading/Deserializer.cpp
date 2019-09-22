@@ -56,6 +56,23 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef TGUI_NEXT
+        bool removeWhitespace(const std::string& line, std::string::const_iterator& c)
+        {
+            while (c != line.end())
+            {
+                if ((*c == ' ') || (*c == '\t') || (*c == '\r'))
+                    ++c;
+                else
+                    return true;
+            }
+
+            return false;
+        }
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         bool readIntRect(std::string value, sf::IntRect& rect)
         {
             if (!value.empty() && (value[0] == '(') && (value[value.length()-1] == ')'))
@@ -63,7 +80,7 @@ namespace tgui
                 std::vector<std::string> tokens = Deserializer::split(value.substr(1, value.size()-2), ',');
                 if (tokens.size() == 4)
                 {
-                    rect = {tgui::stoi(tokens[0]), tgui::stoi(tokens[1]), tgui::stoi(tokens[2]), tgui::stoi(tokens[3])};
+                    rect = {strToInt(tokens[0]), strToInt(tokens[1]), strToInt(tokens[2]), strToInt(tokens[3])};
                     return true;
                 }
             }
@@ -178,10 +195,10 @@ namespace tgui
             const std::vector<std::string> tokens = Deserializer::split(str, ',');
             if (tokens.size() == 3 || tokens.size() == 4)
             {
-                return Color{static_cast<std::uint8_t>(tgui::stoi(tokens[0])),
-                             static_cast<std::uint8_t>(tgui::stoi(tokens[1])),
-                             static_cast<std::uint8_t>(tgui::stoi(tokens[2])),
-                             static_cast<std::uint8_t>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
+                return Color{static_cast<std::uint8_t>(strToInt(tokens[0])),
+                             static_cast<std::uint8_t>(strToInt(tokens[1])),
+                             static_cast<std::uint8_t>(strToInt(tokens[2])),
+                             static_cast<std::uint8_t>((tokens.size() == 4) ? strToInt(tokens[3]) : 255)};
             }
 
             throw Exception{"Failed to deserialize color '" + value + "'."};
@@ -221,7 +238,7 @@ namespace tgui
 
         ObjectConverter deserializeNumber(const std::string& value)
         {
-            return {tgui::stof(value)};
+            return {strToFloat(value)};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

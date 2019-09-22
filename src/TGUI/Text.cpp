@@ -194,6 +194,8 @@ namespace tgui
     {
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setOutlineThickness(thickness);
+#else
+        (void)thickness;
 #endif
     }
 

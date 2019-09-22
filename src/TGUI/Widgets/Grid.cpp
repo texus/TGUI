@@ -561,14 +561,14 @@ namespace tgui
                 if (pos == std::string::npos)
                     throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after row."};
 
-                row = tgui::stoi(str.substr(index, pos - index));
+                row = strToInt(str.substr(index, pos - index));
                 index = pos + 1;
 
                 pos = str.find(',', index);
                 if (pos == std::string::npos)
                     throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after column."};
 
-                col = tgui::stoi(str.substr(index, pos - index));
+                col = strToInt(str.substr(index, pos - index));
                 index = pos + 1;
 
                 if (row < 0 || col < 0)

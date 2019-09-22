@@ -820,13 +820,13 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["itemstodisplay"])
-            setItemsToDisplay(tgui::stoi(node->propertyValuePairs["itemstodisplay"]->value));
+            setItemsToDisplay(strToInt(node->propertyValuePairs["itemstodisplay"]->value));
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["maximumitems"])
-            setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+            setMaximumItems(strToInt(node->propertyValuePairs["maximumitems"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+            setSelectedItemByIndex(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
         if (node->propertyValuePairs["changeitemonscroll"])
             m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["changeitemonscroll"]->value).getBool();
 

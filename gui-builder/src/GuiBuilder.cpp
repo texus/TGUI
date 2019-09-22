@@ -225,7 +225,7 @@ namespace
         const auto commaPos = str.find(',');
         const std::string x = tgui::trim(str.substr(0, commaPos));
         const std::string y = tgui::trim(str.substr(commaPos + 1));
-        return {tgui::stof(x), tgui::stof(y)};
+        return {tgui::strToFloat(x), tgui::strToFloat(y)};
     }
 }
 
@@ -602,7 +602,7 @@ void GuiBuilder::reloadProperties()
                 if (tgui::to_string(m_selectedForm->getSize().x) != value)
                 {
                     // Form is not marked as changed since the width is saved as editor property
-                    const float newWidth = tgui::stof(value);
+                    const float newWidth = tgui::strToFloat(value);
                     m_formSize = { newWidth, m_selectedForm->getSize().y };
                     m_selectedForm->setSize(m_formSize);
                 }
@@ -613,7 +613,7 @@ void GuiBuilder::reloadProperties()
                 if (tgui::to_string(m_selectedForm->getSize().y) != value)
                 {
                     // Form is not marked as changed since the height is saved as editor property
-                    const float newHeight = tgui::stof(value);
+                    const float newHeight = tgui::strToFloat(value);
                     m_formSize = { m_selectedForm->getSize().x, newHeight};
                     m_selectedForm->setSize(m_formSize);
                 }
@@ -1741,7 +1741,7 @@ void GuiBuilder::addPropertyValueTexture(const std::string& property, const sf::
 
             const std::vector<std::string> tokens = tgui::Deserializer::split(str, ',');
             if (tokens.size() == 4)
-                return {tgui::stoi(tokens[0]), tgui::stoi(tokens[1]), tgui::stoi(tokens[2]), tgui::stoi(tokens[3])};
+                return {tgui::strToInt(tokens[0]), tgui::strToInt(tokens[1]), tgui::strToInt(tokens[2]), tgui::strToInt(tokens[3])};
             else
                 return {};
         };

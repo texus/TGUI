@@ -88,7 +88,7 @@ namespace tgui
         {
         }
 
-        Any(Any&& that)
+        Any(Any&& that) noexcept
             : ptr(that.ptr)
         {
             that.ptr = nullptr;
@@ -109,7 +109,7 @@ namespace tgui
             return *this;
         }
 
-        Any& operator=(Any&& a)
+        Any& operator=(Any&& a) noexcept
         {
             if (ptr == a.ptr)
                 return *this;

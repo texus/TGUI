@@ -1004,9 +1004,9 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["itemheight"])
-            setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
+            setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
 
         loadItems(node, m_nodes, nullptr);
 

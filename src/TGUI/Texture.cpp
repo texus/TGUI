@@ -82,7 +82,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture(Texture&& other) :
+    Texture::Texture(Texture&& other) noexcept :
         m_data            {std::move(other.m_data)},
         m_color           {std::move(other.m_color)},
         m_shader          {std::move(other.m_shader)},
@@ -126,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture& Texture::operator=(Texture&& other)
+    Texture& Texture::operator=(Texture&& other) noexcept
     {
         if (this != &other)
         {

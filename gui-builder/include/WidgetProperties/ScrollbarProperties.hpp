@@ -35,13 +35,13 @@ struct ScrollbarProperties : WidgetProperties
     {
         auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
         if (property == "Maximum")
-            scrollbar->setMaximum(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            scrollbar->setMaximum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "Value")
-            scrollbar->setValue(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            scrollbar->setValue(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ViewportSize")
-            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ScrollAmount")
-            scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "AutoHide")
             scrollbar->setAutoHide(parseBoolean(value, true));
         else if (property == "VerticalScroll")

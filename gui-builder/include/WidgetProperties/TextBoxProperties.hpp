@@ -39,9 +39,9 @@ struct TextBoxProperties : WidgetProperties
         if (property == "Text")
             textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            textBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            textBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "MaximumCharacters")
-            textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ReadOnly")
             textBox->setReadOnly(parseBoolean(value, false));
         else if (property == "VerticalScrollbarPolicy")

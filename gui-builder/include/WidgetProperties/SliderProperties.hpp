@@ -35,13 +35,13 @@ struct SliderProperties : WidgetProperties
     {
         auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
         if (property == "Minimum")
-            slider->setMinimum(tgui::stof(value));
+            slider->setMinimum(tgui::strToFloat(value));
         else if (property == "Maximum")
-            slider->setMaximum(tgui::stof(value));
+            slider->setMaximum(tgui::strToFloat(value));
         else if (property == "Value")
-            slider->setValue(tgui::stof(value));
+            slider->setValue(tgui::strToFloat(value));
         else if (property == "Step")
-            slider->setStep(tgui::stof(value));
+            slider->setStep(tgui::strToFloat(value));
         else if (property == "InvertedDirection")
             slider->setInvertedDirection(parseBoolean(value, false));
         else if (property == "VerticalScroll")

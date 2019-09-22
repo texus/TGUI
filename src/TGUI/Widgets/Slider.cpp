@@ -590,13 +590,13 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(tgui::stof(node->propertyValuePairs["minimum"]->value));
+            setMinimum(strToFloat(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
-            setMaximum(tgui::stof(node->propertyValuePairs["maximum"]->value));
+            setMaximum(strToFloat(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
-            setValue(tgui::stof(node->propertyValuePairs["value"]->value));
+            setValue(strToFloat(node->propertyValuePairs["value"]->value));
         if (node->propertyValuePairs["step"])
-            setStep(tgui::stof(node->propertyValuePairs["step"]->value));
+            setStep(strToFloat(node->propertyValuePairs["step"]->value));
         if (node->propertyValuePairs["inverteddirection"])
             setInvertedDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["inverteddirection"]->value).getBool());
         if (node->propertyValuePairs["changevalueonscroll"])

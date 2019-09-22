@@ -35,13 +35,13 @@ struct SpinButtonProperties : WidgetProperties
     {
         auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
         if (property == "Minimum")
-            spinButton->setMinimum(tgui::stof(value));
+            spinButton->setMinimum(tgui::strToFloat(value));
         else if (property == "Maximum")
-            spinButton->setMaximum(tgui::stof(value));
+            spinButton->setMaximum(tgui::strToFloat(value));
         else if (property == "Value")
-            spinButton->setValue(tgui::stof(value));
+            spinButton->setValue(tgui::strToFloat(value));
         else if (property == "Step")
-            spinButton->setStep(tgui::stof(value));
+            spinButton->setStep(tgui::strToFloat(value));
         else if (property == "VerticalScroll")
             spinButton->setVerticalScroll(parseBoolean(value, true));
         else

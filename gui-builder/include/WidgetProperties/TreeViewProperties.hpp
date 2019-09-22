@@ -37,9 +37,9 @@ struct TreeViewProperties : WidgetProperties
     {
         auto treeView = std::dynamic_pointer_cast<tgui::TreeView>(widget);
         if (property == "TextSize")
-            treeView->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            treeView->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ItemHeight")
-            treeView->setItemHeight(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            treeView->setItemHeight(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

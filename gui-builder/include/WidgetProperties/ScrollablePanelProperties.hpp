@@ -41,9 +41,9 @@ struct ScrollablePanelProperties : PanelProperties
         else if (property == "HorizontalScrollbarPolicy")
             panel->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "VerticalScrollAmount")
-            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "HorizontalScrollAmount")
-            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "ContentWidth")
             panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")

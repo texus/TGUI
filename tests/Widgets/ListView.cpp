@@ -423,24 +423,24 @@ TEST_CASE("[ListView]")
         auto mouseMoved = [root,container](sf::Vector2i pos){
             sf::Event event;
             event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = pos.x + container->getPosition().x;
-            event.mouseMove.y = pos.y + container->getPosition().y;
+            event.mouseMove.x = pos.x + static_cast<int>(container->getPosition().x);
+            event.mouseMove.y = pos.y + static_cast<int>(container->getPosition().y);
             root->handleEvent(event);
         };
         auto mousePressed = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonPressed;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x + container->getPosition().x;
-            event.mouseButton.y = pos.y + container->getPosition().y;
+            event.mouseButton.x = pos.x + static_cast<int>(container->getPosition().x);
+            event.mouseButton.y = pos.y + static_cast<int>(container->getPosition().y);
             root->handleEvent(event);
         };
         auto mouseReleased = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonReleased;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x + container->getPosition().x;
-            event.mouseButton.y = pos.y + container->getPosition().y;
+            event.mouseButton.x = pos.x + static_cast<int>(container->getPosition().x);
+            event.mouseButton.y = pos.y + static_cast<int>(container->getPosition().y);
             root->handleEvent(event);
         };
 

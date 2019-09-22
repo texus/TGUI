@@ -32,6 +32,7 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Layout.hpp>
+#include <TGUI/String.hpp>
 #include <TGUI/Vector2f.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/DataIO.hpp>

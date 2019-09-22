@@ -12,6 +12,7 @@ set(TGUI_SRC
     ObjectConverter.cpp
     Sprite.cpp
     Signal.cpp
+    String.cpp
     SvgImage.cpp
     TextStyle.cpp
     Text.cpp

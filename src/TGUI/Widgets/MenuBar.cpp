@@ -857,9 +857,9 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["minimumsubmenuwidth"])
-            setMinimumSubMenuWidth(tgui::stof(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+            setMinimumSubMenuWidth(strToFloat(node->propertyValuePairs["minimumsubmenuwidth"]->value));
         if (node->propertyValuePairs["invertedmenudirection"])
             setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["invertedmenudirection"]->value).getBool());
 

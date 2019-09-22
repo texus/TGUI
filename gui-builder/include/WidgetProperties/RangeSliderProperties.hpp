@@ -35,15 +35,15 @@ struct RangeSliderProperties : WidgetProperties
     {
         auto slider = std::dynamic_pointer_cast<tgui::RangeSlider>(widget);
         if (property == "Minimum")
-            slider->setMinimum(tgui::stof(value));
+            slider->setMinimum(tgui::strToFloat(value));
         else if (property == "Maximum")
-            slider->setMaximum(tgui::stof(value));
+            slider->setMaximum(tgui::strToFloat(value));
         else if (property == "SelectionStart")
-            slider->setSelectionStart(tgui::stof(value));
+            slider->setSelectionStart(tgui::strToFloat(value));
         else if (property == "SelectionEnd")
-            slider->setSelectionEnd(tgui::stof(value));
+            slider->setSelectionEnd(tgui::strToFloat(value));
         else if (property == "Step")
-            slider->setStep(tgui::stof(value));
+            slider->setStep(tgui::strToFloat(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

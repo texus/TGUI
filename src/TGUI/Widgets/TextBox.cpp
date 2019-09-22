@@ -1892,9 +1892,9 @@ namespace tgui
         if (node->propertyValuePairs["text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["maximumcharacters"])
-            setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+            setMaximumCharacters(strToInt(node->propertyValuePairs["maximumcharacters"]->value));
         if (node->propertyValuePairs["readonly"])
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
 

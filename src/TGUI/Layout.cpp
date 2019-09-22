@@ -88,7 +88,7 @@ namespace tgui
                 else // value is a fraction of parent size
                 {
                     *this = Layout{Layout::Operation::Multiplies,
-                                   std::make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
+                                   std::make_unique<Layout>(strToFloat(expression.substr(0, expression.length()-1)) / 100.f),
                                    std::make_unique<Layout>("&.innersize")};
                 }
             }
@@ -130,7 +130,7 @@ namespace tgui
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
                 }
                 else // Constant value
-                    m_value = tgui::stof(expression);
+                    m_value = strToFloat(expression);
             }
 
             return;

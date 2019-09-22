@@ -84,12 +84,12 @@ namespace tgui
             if (!expression.empty() && (expression.back() == '%'))
             {
                 m_constant = false;
-                m_ratio    = tgui::stof(expression.substr(0, expression.length()-1)) / 100.f;
+                m_ratio    = strToFloat(expression.substr(0, expression.length()-1)) / 100.f;
             }
             else
             {
                 m_constant = true;
-                m_value    = tgui::stof(expression.substr(0, expression.length()));
+                m_value    = strToFloat(expression.substr(0, expression.length()));
             }
         }
 

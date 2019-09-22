@@ -31,6 +31,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined(SFML_SYSTEM_WINDOWS) && defined(_MSC_VER)
+    #pragma warning(disable:26444)  // Ignore "Avoid unnamed objects with custom construction and destruction" warning on imbue call
+#endif
+
 namespace tgui
 {
     template <typename T>

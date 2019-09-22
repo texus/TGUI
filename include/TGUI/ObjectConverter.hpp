@@ -28,16 +28,11 @@
 
 
 #include <TGUI/TextStyle.hpp>
+#include <TGUI/Variant.hpp>
 #include <TGUI/Outline.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <variant>
-#else
-    #include <TGUI/Any.hpp>
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -369,11 +364,7 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::variant<sf::String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
-#else
-        Any  m_value;
-#endif
+        Variant<sf::String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
 
         bool m_serialized = false;
         sf::String m_string;

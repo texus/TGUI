@@ -47,15 +47,15 @@ struct TabsProperties : WidgetProperties
         }
         else if (property == "Selected")
         {
-            if (tgui::stoi(value) < 0)
+            if (tgui::strToInt(value) < 0)
                 tabs->deselect();
             else
-                tabs->select(static_cast<std::size_t>(tgui::stoi(value.toAnsiString())));
+                tabs->select(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
         }
         else if (property == "MaximumTabWidth")
-            tabs->setMaximumTabWidth(tgui::stof(value));
+            tabs->setMaximumTabWidth(tgui::strToFloat(value));
         else if (property == "TextSize")
-            tabs->setTextSize(static_cast<unsigned int>(tgui::stoi(value.toAnsiString())));
+            tabs->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
