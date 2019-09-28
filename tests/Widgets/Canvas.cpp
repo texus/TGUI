@@ -25,6 +25,17 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Canvas.hpp>
 
+namespace
+{
+    bool operator==(const sf::View& left, const sf::View& right)
+    {
+        return left.getCenter() == right.getCenter()
+            && left.getSize() == right.getSize()
+            && left.getRotation() == right.getRotation()
+            && left.getViewport() == right.getViewport();
+    }
+}
+
 TEST_CASE("[Canvas]")
 {
     tgui::Canvas::Ptr canvas = tgui::Canvas::create();
@@ -39,6 +50,25 @@ TEST_CASE("[Canvas]")
     {
         canvas = tgui::Canvas::create({200, 100});
         REQUIRE(canvas->getSize() == sf::Vector2f(200, 100));
+    }
+
+    SECTION("view")
+    {
+        canvas = tgui::Canvas::create({200, 100});
+
+        REQUIRE(canvas->getView() == sf::View({0, 0, 200, 100}));
+        REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+
+        canvas->setView(sf::View({20, 10, 100, 50}));
+        REQUIRE(canvas->getView() == sf::View({20, 10, 100, 50}));
+        REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+
+        REQUIRE(canvas->getViewport() == sf::IntRect(0, 0, 200, 100));
+
+        sf::View view({20, 10, 100, 50});
+        view.setViewport({0.1f, 0.2f, 0.5f, 0.6f});
+        canvas->setView(view);
+        REQUIRE(canvas->getViewport() == sf::IntRect(20, 20, 100, 60));
     }
 
     testWidgetRenderer(canvas->getRenderer());

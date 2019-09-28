@@ -111,6 +111,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the current active view
+        ///
+        /// The view is like a 2D camera, it controls which part of the 2D scene is visible, and how it is viewed in the canvas.
+        /// The new view will affect everything that is drawn, until another view is set.
+        /// The canvas keeps its own copy of the view, so it is not necessary to keep the original one alive after calling
+        /// this function.
+        /// To restore the original view of the target, you can pass the result of getDefaultView() to this function.
+        ///
+        /// @warning This view is reset when the size of the canvas is changed.
+        ///
+        /// @param view  New view to use
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setView(const sf::View& view);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the view currently in use in the canvas
+        ///
+        /// @return The view object that is currently used
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::View& getView() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the default view of the canvas
+        ///
+        /// The default view has the same size as the canvas.
+        ///
+        /// @return The default view of the canvas
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::View& getDefaultView() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the viewport of the currently applied view, applied to this canvas
+        ///
+        /// The viewport is defined in the view as a ratio, this function simply applies this ratio to the current dimensions
+        /// of the canvas to calculate the pixels rectangle that the viewport actually covers in the canvas.
+        ///
+        /// @return Viewport rectangle, expressed in pixels
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::IntRect getViewport() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Clears the entire canvas with a single color
         ///
         /// This function is usually called once every frame, to clear the previous contents of the canvas.
