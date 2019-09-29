@@ -234,6 +234,27 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "1,2", "1,3", ""}, {"2,1", "2,2", "", ""}});
     }
 
+    SECTION("Returned item cells")
+    {
+        listView->addItem({ "1,1", "1,2", "1,3" });
+        listView->addItem({ "2,1", "2,2" });
+
+        REQUIRE(listView->getItemCell(0, 0) == "1,1");
+        REQUIRE(listView->getItemCell(0, 1) == "");
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1"}, { "2,1" }});
+
+        listView->addColumn("Col 1");
+        REQUIRE(listView->getItemCell(1, 0) == "2,1");
+        REQUIRE(listView->getItemCell(0, 1) == "");
+        REQUIRE(listView->getItemCell(2, 1) == "");
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1"}, { "2,1" }});
+
+        listView->addColumn("Col 2");
+        REQUIRE(listView->getItemCell(1, 1) == "2,2");
+        REQUIRE(listView->getItemCell(0, 2) == "");
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1", "1,2"}, { "2,1", "2,2" }});
+    }
+
     SECTION("Selecting items")
     {
         listView->addItem("1,1");
