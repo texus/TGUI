@@ -71,6 +71,19 @@ TEST_CASE("[Canvas]")
         REQUIRE(canvas->getViewport() == sf::IntRect(20, 20, 100, 60));
     }
 
+    SECTION("internal render texture")
+    {
+        canvas = tgui::Canvas::create({50, 50});
+        sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
+
+        canvas->setSize({70, 80});
+        canvas->setView(sf::View({20, 10, 100, 50}));
+        canvas->setPosition({10, 5});
+
+        // The address of the internal render texture never changes
+        REQUIRE(internalRenderTexture == &canvas->getRenderTexture());
+    }
+
     testWidgetRenderer(canvas->getRenderer());
 
     SECTION("Saving and loading from file")
