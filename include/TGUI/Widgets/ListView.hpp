@@ -386,10 +386,11 @@ namespace tgui
         /// @param rowIndex The index of the row
         /// @param columnIndex The index of the column
         ///
-        /// @return Texts of the cell or an empty vector when the index is out of range
+        /// @return Text of the cell or an empty string when the index is out of range
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getItemCell(std::size_t rowIndex, std::size_t columnIndex) const;
-        
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a list of the texts in the first column for all items in the list view
         ///
