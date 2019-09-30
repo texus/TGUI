@@ -531,6 +531,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::String ListView::getItemCell(std::size_t rowIndex, std::size_t columnIndex) const
+    {
+        if (rowIndex >= m_items.size())
+            return "";
+
+        if (columnIndex != 0 && columnIndex >= m_columns.size())
+            return "";
+
+        if (columnIndex < m_items[rowIndex].texts.size())
+            return m_items[rowIndex].texts[columnIndex].getString();
+        
+        return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+
     sf::String ListView::getItem(std::size_t index) const
     {
         if (index >= m_items.size())
@@ -583,16 +599,11 @@ namespace tgui
 
     std::vector<sf::String> ListView::getItems() const
     {
-        std::vector<sf::String> items;
+        std::vector<sf::String> items(m_items.size());
 
-        for (const auto& item : m_items)
-        {
-            if (item.texts.empty())
-                items.push_back("");
-            else
-                items.push_back(item.texts[0].getString());
-        }
-
+        for (std::size_t i = 0; i < m_items.size(); i++)
+            items[i] = getItemCell(i, 0);
+        
         return items;
     }
 
