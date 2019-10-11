@@ -378,14 +378,19 @@ namespace tgui
         }
 
         // Update the selected item
-        if (m_selectedItem >= 0)
+        if (!m_selectedItems.empty())
         {
-            if (m_selectedItem == static_cast<int>(index))
-                updateSelectedItem(-1);
-            else if (m_selectedItem > static_cast<int>(index))
+            if (m_selectedItems.count(index))
+                m_selectedItems.erase(index);
+            else 
             {
                 // Don't call updateSelectedItem here, there should not be no callback and the item hasn't been erased yet so it would point to the wrong place
-                m_selectedItem = m_selectedItem - 1;
+                for (auto it = m_selectedItems.upper_bound(index); it != m_selectedItems.end(); )
+                {
+                    auto temp = *it;
+                    it = m_selectedItems.erase(it);
+                    m_selectedItems.insert(temp-1);
+                }
             }
         }
 
@@ -448,10 +453,54 @@ namespace tgui
         updateSelectedItem(static_cast<int>(index));
 
         // Move the scrollbar
+        int m_selectedItem = m_selectedItems.empty() ? -1 : *m_selectedItems.begin();
         if (m_selectedItem * getItemHeight() < m_verticalScrollbar->getValue())
             m_verticalScrollbar->setValue(m_selectedItem * getItemHeight());
         else if ((m_selectedItem + 1) * getItemHeight() > m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize())
             m_verticalScrollbar->setValue((m_selectedItem + 1) * getItemHeight() - m_verticalScrollbar->getViewportSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setSelectedItems(const std::set<std::size_t>& indexes)
+    {
+        if (!m_multiSelect)
+        {
+            updateSelectedItem(indexes.empty() ? -1 : *indexes.begin());
+            return;
+        }
+        
+        if (m_selectedItems == indexes)
+            return;
+        
+        bool isUpdated = false;
+        for (auto index : indexes)
+        {
+            if (m_selectedItems.find(index) != m_selectedItems.end())
+                continue;
+
+            isUpdated = true;
+            if (index < m_items.size())
+            {
+                if ((index == m_hoveredItem) && m_textColorHoverCached.isSet())
+                    setItemColor(index, m_textColorHoverCached);
+                else
+                    setItemColor(index, m_textColorCached);
+            }
+
+            onItemSelect.emit(this, index);
+        }
+        if (isUpdated)
+        {
+            m_selectedItems = indexes;
+            updateSelectedAndhoveredItemColors();
+            // Move the scrollbar
+            int m_selectedItem = m_selectedItems.empty() ? -1 : *m_selectedItems.begin();
+            if (m_selectedItem * getItemHeight() < m_verticalScrollbar->getValue())
+                m_verticalScrollbar->setValue(m_selectedItem * getItemHeight());
+            else if ((m_selectedItem + 1) * getItemHeight() > m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize())
+                m_verticalScrollbar->setValue((m_selectedItem + 1) * getItemHeight() - m_verticalScrollbar->getViewportSize());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,7 +514,32 @@ namespace tgui
 
     int ListView::getSelectedItemIndex() const
     {
-        return m_selectedItem;
+        return m_selectedItems.empty() ? -1 : *m_selectedItems.begin();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setMultiSelect(bool multiSelect)
+    {
+        m_multiSelect = multiSelect;
+        if (!m_multiSelect && m_selectedItems.size() > 1)
+        {
+            updateSelectedItem(*m_selectedItems.begin());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getMultiSelect() const
+    {
+        return m_multiSelect;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::set<std::size_t> ListView::getSelectedItemIndexes() const
+    {
+        return m_selectedItems;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -917,7 +991,6 @@ namespace tgui
     void ListView::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
-
         m_mouseDown = true;
 
         if (m_verticalScrollbar->mouseOnWidget(pos))
@@ -935,23 +1008,31 @@ namespace tgui
         {
             updateHoveredItemByMousePos(pos);
 
-            if (m_selectedItem != m_hoveredItem)
+            if (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end())
             {
-                m_possibleDoubleClick = false;
-                updateSelectedItem(m_hoveredItem);
+                m_possibleDoubleClick = -1;
+                if (m_multiSelect && 
+                    (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)))
+                {
+                    addSelectedItem(m_hoveredItem);
+                }
+                else
+                {
+                    updateSelectedItem(m_hoveredItem);
+                }
             }
 
             // Check if you double-clicked
-            if (m_possibleDoubleClick)
+            if (m_possibleDoubleClick >= 0)
             {
-                m_possibleDoubleClick = false;
-                if (m_selectedItem >= 0)
-                    onDoubleClick.emit(this, m_selectedItem);
+                if (!m_selectedItems.empty())
+                    onDoubleClick.emit(this, m_possibleDoubleClick);
+                m_possibleDoubleClick = -1;
             }
             else // This is the first click
             {
                 m_animationTimeElapsed = {};
-                m_possibleDoubleClick = true;
+                m_possibleDoubleClick = m_hoveredItem;
             }
         }
 
@@ -1045,11 +1126,19 @@ namespace tgui
                 // If the mouse is held down then select the item below the mouse
                 if (m_mouseDown && !m_verticalScrollbar->isMouseDown())
                 {
-                    if (m_selectedItem != m_hoveredItem)
+                    if (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end())
                     {
-                        m_possibleDoubleClick = false;
+                        m_possibleDoubleClick = -1;
 
-                        updateSelectedItem(m_hoveredItem);
+                        if (m_multiSelect &&
+                            (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)))
+                        {
+                            addSelectedItem(m_hoveredItem);
+                        }
+                        else
+                        {
+                            updateSelectedItem(m_hoveredItem);
+                        }
                     }
                 }
             }
@@ -1090,7 +1179,7 @@ namespace tgui
 
         updateHoveredItem(-1);
 
-        m_possibleDoubleClick = false;
+        m_possibleDoubleClick = -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1323,8 +1412,20 @@ namespace tgui
         if (m_headerTextSize)
             node->propertyValuePairs["HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_headerTextSize));
 
-        if (m_selectedItem >= 0)
-            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectedItem));
+        if (m_multiSelect)
+            node->propertyValuePairs["Multiselected"] = std::make_unique<DataIO::ValueNode>("true");
+
+        if (!m_selectedItems.empty())
+        {
+            auto it = m_selectedItems.cbegin();
+            std::string iList = "[" + Serializer::serialize(*it);
+            for (++it; it != m_selectedItems.cend(); ++it)
+                iList += ", " + Serializer::serialize(*it);
+            
+            iList += "]";
+
+            node->propertyValuePairs["SelectedItemIndexes"] = std::make_unique<DataIO::ValueNode>(iList);
+        }
 
         if (m_gridLinesWidth != 1)
             node->propertyValuePairs["GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_gridLinesWidth));
@@ -1427,8 +1528,18 @@ namespace tgui
             setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["itemheight"])
             setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
+        if (node->propertyValuePairs["multiselected"])
+            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["multiselected"]->value).getBool());
         if (node->propertyValuePairs["selecteditemindex"])
             setSelectedItem(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
+        if (node->propertyValuePairs["selecteditemindexes"])
+        {
+            if (!node->propertyValuePairs["selecteditemindexes"]->listNode)
+                throw Exception{ "Failed to parse 'Items' property, expected a list as value" };
+
+            for (const auto& item : node->propertyValuePairs["selecteditemindexes"]->valueList)
+                addSelectedItem(Deserializer::deserialize(ObjectConverter::Type::Number, item).getNumber());
+        }
         if (node->propertyValuePairs["gridlineswidth"])
             setGridLinesWidth(strToInt(node->propertyValuePairs["gridlineswidth"]->value));
         if (node->propertyValuePairs["showhorizontalgridlines"])
@@ -1523,15 +1634,18 @@ namespace tgui
 
     void ListView::updateSelectedAndhoveredItemColors()
     {
-        if (m_selectedItem >= 0)
+        if (!m_selectedItems.empty())
         {
-            if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
-                setItemColor(m_selectedItem, m_selectedTextColorHoverCached);
-            else if (m_selectedTextColorCached.isSet())
-                setItemColor(m_selectedItem, m_selectedTextColorCached);
+            for (int m_selectedItem : m_selectedItems)
+            {
+                if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                    setItemColor(m_selectedItem, m_selectedTextColorHoverCached);
+                else if (m_selectedTextColorCached.isSet())
+                    setItemColor(m_selectedItem, m_selectedTextColorCached);
+            }
         }
 
-        if ((m_hoveredItem >= 0) && (m_selectedItem != m_hoveredItem))
+        if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()))
         {
             if (m_textColorHoverCached.isSet())
                 setItemColor(m_hoveredItem, m_textColorHoverCached);
@@ -1570,7 +1684,7 @@ namespace tgui
 
         if (m_hoveredItem >= 0)
         {
-            if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorCached.isSet())
+            if ((m_selectedItems.find(m_hoveredItem) != m_selectedItems.end()) && m_selectedTextColorCached.isSet())
                 setItemColor(m_hoveredItem, m_selectedTextColorCached);
             else
                 setItemColor(m_hoveredItem, m_textColorCached);
@@ -1585,7 +1699,8 @@ namespace tgui
 
     void ListView::updateSelectedItem(int item)
     {
-        if (m_selectedItem == item)
+        int m_selectedItem = m_selectedItems.empty() ? -1 : *m_selectedItems.begin();
+        if (m_selectedItems.size() == 1 && m_selectedItem == item)
             return;
 
         if (m_selectedItem >= 0)
@@ -1596,8 +1711,41 @@ namespace tgui
                 setItemColor(m_selectedItem, m_textColorCached);
         }
 
-        m_selectedItem = item;
-        onItemSelect.emit(this, m_selectedItem);
+        if (item >= 0)
+        {
+            m_selectedItems = { std::size_t(item) };
+            onItemSelect.emit(this, item);
+        }
+        else
+        {
+            m_selectedItems.clear();
+        }
+        updateSelectedAndhoveredItemColors();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::addSelectedItem(int item)
+    {
+        if (!m_multiSelect)
+        {
+            updateSelectedItem(item);
+            return;
+        }
+
+        if (m_selectedItems.find(item) != m_selectedItems.end())
+            return;
+
+        if (item >= 0)
+        {
+            if ((item == m_hoveredItem) && m_textColorHoverCached.isSet())
+                setItemColor(item, m_textColorHoverCached);
+            else
+                setItemColor(item, m_textColorCached);
+
+            m_selectedItems.insert(item);
+            onItemSelect.emit(this, item);
+        }
 
         updateSelectedAndhoveredItemColors();
     }
@@ -1845,7 +1993,7 @@ namespace tgui
         if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
-            m_possibleDoubleClick = false;
+            m_possibleDoubleClick = -1;
         }
     }
 
@@ -1915,7 +2063,7 @@ namespace tgui
             }
         }
 
-        if (m_showHorizontalGridLines || (m_selectedItem >= 0) || (m_hoveredItem >= 0))
+        if (m_showHorizontalGridLines || !m_selectedItems.empty() || (m_hoveredItem >= 0))
         {
             states.transform.translate({0, totalHeaderHeight});
             const Clipping clipping{target, states, {}, {availableWidth, innerHeight - totalHeaderHeight}};
@@ -1938,20 +2086,23 @@ namespace tgui
             }
 
             // Draw the background of the selected item
-            if (m_selectedItem >= 0)
+            if (!m_selectedItems.empty())
             {
-                states.transform.translate({0, m_selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
+                for(int m_selectedItem : m_selectedItems)
+                { 
+                    states.transform.translate({0, m_selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
 
-                if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
-                    drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorHoverCached);
-                else
-                    drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorCached);
+                    if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
+                        drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorHoverCached);
+                    else
+                        drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorCached);
 
-                states.transform.translate({0, -m_selectedItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
+                    states.transform.translate({0, -m_selectedItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
+                }
             }
 
             // Draw the background of the item on which the mouse is standing
-            if ((m_hoveredItem >= 0) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
+            if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveredItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
                 drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
