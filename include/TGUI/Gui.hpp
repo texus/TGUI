@@ -443,7 +443,7 @@ namespace tgui
         bool m_tooltipPossible = false;
         Vector2f m_lastMousePos;
 
-        sf::View m_view;
+        sf::View m_view{{0, 0, 1, 1}};
 
         bool m_TabKeyUsageEnabled = true;
 
