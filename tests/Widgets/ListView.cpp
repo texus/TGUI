@@ -260,30 +260,26 @@ TEST_CASE("[ListView]")
         listView->addItem("1,1");
         listView->addItem({"2,1", "2,2", "2,3"});
         listView->addItem({"3,1", "3,2"});
-        REQUIRE(!listView->getMultiSelect());
 
         REQUIRE(listView->getSelectedItemIndex() == -1);
 
         listView->setSelectedItem(2);
         REQUIRE(listView->getSelectedItemIndex() == 2);
 
-        listView->deselectItem();
+        listView->deselectItems();
         REQUIRE(listView->getSelectedItemIndex() == -1);
 
         listView->setMultiSelect(true);
-        REQUIRE(listView->getMultiSelect());
-
-        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ });
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ });
         listView->setSelectedItems({ 0, 2 });
-        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 0, 2 });
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 0, 2 });
 
         listView->setMultiSelect(false);
-        REQUIRE(!listView->getMultiSelect());
-        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 0 });
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 0 });
         listView->setSelectedItems({ 1, 2 });
-        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 1 });
-        listView->deselectItem();
-        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ });
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 1 });
+        listView->deselectItems();
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ });
     }
 
     SECTION("Header height")
@@ -445,6 +441,15 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
         listView->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         REQUIRE(listView->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+    }
+
+    SECTION("MultiSelect")
+    {
+        REQUIRE(!listView->getMultiSelect());
+        listView->setMultiSelect(true);
+        REQUIRE(listView->getMultiSelect());
+        listView->setMultiSelect(false);
+        REQUIRE(!listView->getMultiSelect());
     }
 
     SECTION("Events / Signals")
@@ -661,7 +666,7 @@ TEST_CASE("[ListView]")
             mouseReleased({40, 110});
             REQUIRE(listView->getSelectedItemIndex() == 2);
 
-            listView->deselectItem();
+            listView->deselectItems();
             listView->addColumn("Col 3", 50);
 
             mousePressed({40, 110});

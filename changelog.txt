@@ -17,6 +17,7 @@ TGUI 0.8.6  (TBD)
 - Added VerticalScroll property to Slider, Scrollbar and SpinButton, for more intuitive usage
 - Added SubwidgetContainer class that should simplify combining widgets for a custom widget
 - Added view to Canvas
+- Added MultiSelect option to ListView
 - Renamed TimeToDisplay to InitialDelay in ToolTip
 - SignalItem (used by ListBox and ComboBox) can now have the item index as optional parameter
 - Container widgets didn't pass right click event to child widgets
