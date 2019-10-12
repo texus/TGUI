@@ -260,6 +260,7 @@ TEST_CASE("[ListView]")
         listView->addItem("1,1");
         listView->addItem({"2,1", "2,2", "2,3"});
         listView->addItem({"3,1", "3,2"});
+        REQUIRE(!listView->getMultiSelect());
 
         REQUIRE(listView->getSelectedItemIndex() == -1);
 
@@ -268,6 +269,21 @@ TEST_CASE("[ListView]")
 
         listView->deselectItem();
         REQUIRE(listView->getSelectedItemIndex() == -1);
+
+        listView->setMultiSelect(true);
+        REQUIRE(listView->getMultiSelect());
+
+        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ });
+        listView->setSelectedItems({ 0, 2 });
+        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 0, 2 });
+
+        listView->setMultiSelect(false);
+        REQUIRE(!listView->getMultiSelect());
+        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 0 });
+        listView->setSelectedItems({ 1, 2 });
+        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ 1 });
+        listView->deselectItem();
+        REQUIRE(listView->getSelectedItemIndexes() == std::set<std::size_t>{ });
     }
 
     SECTION("Header height")
