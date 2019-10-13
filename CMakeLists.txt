@@ -152,6 +152,11 @@ if(TGUI_OS_ANDROID)
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
+# Add an option to choose whether PDB debug symbols should be generated for Visual Studio
+if(TGUI_COMPILER_MSVC)
+    tgui_set_option(TGUI_GENERATE_PDB TRUE BOOL "True to generate PDB debug symbols, FALSE otherwise.")
+endif()
+
 # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++
 # This can't be done in the tgui_set_stdlib macro because it is too late to change these variables by then
 if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
@@ -262,6 +267,13 @@ if(NOT TGUI_BUILD_FRAMEWORK)
             DESTINATION .
             COMPONENT devel
             FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
+
+    if(TGUI_GENERATE_PDB)
+        install(DIRECTORY "${PROJECT_BINARY_DIR}/lib"
+                DESTINATION .
+                COMPONENT devel
+                FILES_MATCHING PATTERN "*.pdb")
+    endif()
 endif()
 
 # Install miscellaneous files
