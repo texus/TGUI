@@ -36,11 +36,11 @@
 
 namespace
 {
-    unsigned int lastId = 0;
+    unsigned int lastUniqueSignalId = 0;
 
     unsigned int generateUniqueId()
     {
-        return ++lastId;
+        return ++lastUniqueSignalId;
     }
 
     template <typename T>
