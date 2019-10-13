@@ -1,5 +1,5 @@
-TGUI 0.8.6  (TBD)
------------------
+TGUI 0.8.6  (13 October 2019)
+-----------------------------
 
 - Added sort function to ListView to sort data based on values in a chosen column ([PR #107](https://github.com/texus/TGUI/pull/107))
 - Added function to Slider to disallow changing the value by scrolling the mouse wheel ([PR #104](https://github.com/texus/TGUI/pull/104))
@@ -18,6 +18,7 @@ TGUI 0.8.6  (TBD)
 - Added SubwidgetContainer class that should simplify combining widgets for a custom widget
 - Added view to Canvas
 - Added MultiSelect option to ListView
+- PDB files are now included for Visual Studio builds
 - Renamed TimeToDisplay to InitialDelay in ToolTip
 - SignalItem (used by ListBox and ComboBox) can now have the item index as optional parameter
 - Container widgets didn't pass right click event to child widgets
