@@ -67,10 +67,10 @@ namespace tgui
 
         struct Column
         {
-            float width;
-            float designWidth;
+            float width = 0;
+            float designWidth = 0;
             Text text;
-            ColumnAlignment alignment;
+            ColumnAlignment alignment = ColumnAlignment::Left;
         };
 
 

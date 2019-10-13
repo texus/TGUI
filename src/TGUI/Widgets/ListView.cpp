@@ -465,9 +465,9 @@ namespace tgui
 
         // Move the scrollbar
         if (index * getItemHeight() < m_verticalScrollbar->getValue())
-            m_verticalScrollbar->setValue(index * getItemHeight());
-        else if ((index + 1) * getItemHeight() > m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize())
-            m_verticalScrollbar->setValue((index + 1) * getItemHeight() - m_verticalScrollbar->getViewportSize());
+            m_verticalScrollbar->setValue(static_cast<unsigned int>(index * getItemHeight()));
+        else if (static_cast<unsigned int>(index + 1) * getItemHeight() > m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize())
+            m_verticalScrollbar->setValue(static_cast<unsigned int>(index + 1) * getItemHeight() - m_verticalScrollbar->getViewportSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -476,7 +476,7 @@ namespace tgui
     {
         if (!m_multiSelect)
         {
-            updateSelectedItem(indices.empty() ? -1 : *indices.begin());
+            updateSelectedItem(indices.empty() ? -1 : static_cast<int>(*indices.begin()));
             return;
         }
 
@@ -511,7 +511,10 @@ namespace tgui
 
     int ListView::getSelectedItemIndex() const
     {
-        return m_selectedItems.empty() ? -1 : *m_selectedItems.begin();
+        if (!m_selectedItems.empty())
+            return static_cast<int>(*m_selectedItems.begin());
+        else
+            return -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +523,7 @@ namespace tgui
     {
         m_multiSelect = multiSelect;
         if (!m_multiSelect && m_selectedItems.size() > 1)
-            updateSelectedItem(*m_selectedItems.begin());
+            updateSelectedItem(static_cast<int>(*m_selectedItems.begin()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1669,12 +1672,12 @@ namespace tgui
 
     void ListView::updateSelectedAndhoveredItemColors()
     {
-        for (const int m_selectedItem : m_selectedItems)
+        for (const std::size_t selectedItem : m_selectedItems)
         {
-            if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
-                setItemColor(m_selectedItem, m_selectedTextColorHoverCached);
+            if ((static_cast<int>(selectedItem) == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                setItemColor(selectedItem, m_selectedTextColorHoverCached);
             else if (m_selectedTextColorCached.isSet())
-                setItemColor(m_selectedItem, m_selectedTextColorCached);
+                setItemColor(selectedItem, m_selectedTextColorCached);
         }
 
         if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()))
@@ -2067,7 +2070,7 @@ namespace tgui
         if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
             firstItem = m_verticalScrollbar->getValue() / totalItemHeight;
-            lastItem = ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / totalItemHeight) + 1;
+            lastItem = ((static_cast<std::size_t>(m_verticalScrollbar->getValue()) + m_verticalScrollbar->getViewportSize()) / totalItemHeight) + 1;
             if (lastItem > m_items.size())
                 lastItem = m_items.size();
         }
@@ -2133,16 +2136,16 @@ namespace tgui
             // Draw the background of the selected item
             if (!m_selectedItems.empty())
             {
-                for(const int selectedItem : m_selectedItems)
+                for(const std::size_t selectedItem : m_selectedItems)
                 {
                     states.transform.translate({0, selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
 
-                    if ((selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
+                    if ((static_cast<int>(selectedItem) == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
                         drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorHoverCached);
                     else
                         drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorCached);
 
-                    states.transform.translate({0, -selectedItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
+                    states.transform.translate({0, -static_cast<int>(selectedItem) * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
                 }
             }
 
