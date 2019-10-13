@@ -7,6 +7,38 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 6
+      date: 13 October 2019
+      changes: |
+        Added sort function to ListView to sort data based on values in a chosen column ([PR #107](https://github.com/texus/TGUI/pull/107))
+        Added function to Slider to disallow changing the value by scrolling the mouse wheel ([PR #104](https://github.com/texus/TGUI/pull/104))
+        Added support for text outline in Label and Button widgets
+        Added SelectionChanged signal to TextBox
+        Added getSelectionStart and getSelectionEnd functions to TextBox
+        Added mousePressed and mouseReleased to respond to different mouse buttons in custom widgets
+        Added focusable property to widgets
+        Added TextureBackground property to Label, Panel and ChildWindow renderers
+        Added VerticalScrollAmount and HorizontalScrollAmount to ScrollablePanel
+        Added functions to set and get scrollbar values in widgets that have a scrollbar
+        Added right mouse clicked signals to ClickableWidget (base class for several widgets) and Panel
+        Added HeaderClicked signal to ListView
+        Addded Signals namespace with strings for signals of all widgets
+        Added VerticalScroll property to Slider, Scrollbar and SpinButton, for more intuitive usage
+        Added SubwidgetContainer class that should simplify combining widgets for a custom widget
+        Added view to Canvas
+        Added MultiSelect option to ListView
+        PDB files are now included for Visual Studio builds
+        Renamed TimeToDisplay to InitialDelay in ToolTip
+        SignalItem (used by ListBox and ComboBox) can now have the item index as optional parameter
+        Container widgets didn't pass right click event to child widgets
+        Widget state was incorrect when starting a show/hide animation while another was still busy
+        Disabling tabs widget caused selected tab to be deselected
+        Vertical alignment in Label didn't work correctly when there was a scrollbar
+        Knob never responded to mouse events on places where the background texture was transparent
+        Text color wasn't updated in MenuBar when disabling and re-enabling widget
+        Unicode text wasn't properly handled when loading/saving widgets from/to a widget file
+        Fixed potential crash when creating a ProgressBar
+        ListView clipped content in expanded column
     - version: 5
       date: 6 April 2019
       changes: |

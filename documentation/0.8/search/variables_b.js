@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['white',['White',['../classtgui_1_1Color.html#a1f8bef341f706e54a5e698e19c012078',1,'tgui::Color']]]
+  ['positionchanged_1950',['PositionChanged',['../structtgui_1_1Signals_1_1Widget.html#af90bf08d2bd6e84b2f850cb56844529e',1,'tgui::Signals::Widget']]],
+  ['pressed_1951',['Pressed',['../structtgui_1_1Signals_1_1Button.html#adbf8adfd46734762fda71dcb5651bb66',1,'tgui::Signals::Button']]]
 ];
