@@ -158,7 +158,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setMinimum(int minimum)
+    void Knob::setMinimum(float minimum)
     {
         if (m_minimum != minimum)
         {
@@ -180,22 +180,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Knob::getMinimum() const
+    float Knob::getMinimum() const
     {
         return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setMaximum(int maximum)
+    void Knob::setMaximum(float maximum)
     {
         if (m_maximum != maximum)
         {
             // Set the new maximum
-            if (maximum > 0)
-                m_maximum = maximum;
-            else
-                m_maximum = 1;
+            m_maximum = maximum;
 
             // The minimum can't be below the maximum
             if (m_minimum > m_maximum)
@@ -212,14 +209,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Knob::getMaximum() const
+    float Knob::getMaximum() const
     {
         return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setValue(int value)
+    void Knob::setValue(float value)
     {
         if (m_value != value)
         {
@@ -241,7 +238,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Knob::getValue() const
+    float Knob::getValue() const
     {
         return m_value;
     }
@@ -403,22 +400,22 @@ namespace tgui
             if (m_clockwiseTurning)
             {
                 if (m_angle < m_startRotation)
-                    setValue(static_cast<int>(((m_startRotation - m_angle) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                    setValue(((m_startRotation - m_angle) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
                 else
                 {
                     if (compareFloats(m_angle, m_startRotation))
                         setValue(m_minimum);
                     else
-                        setValue(static_cast<int>((((360.0f - m_angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                        setValue((((360.0f - m_angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
                 }
             }
             else // counter-clockwise
             {
                 if (m_angle >= m_startRotation)
-                    setValue(static_cast<int>(((m_angle - m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                    setValue(((m_angle - m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
                 else
                 {
-                    setValue(static_cast<int>(((m_angle + (360.0f - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                    setValue(((m_angle + (360.0f - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
                 }
             }
         }
@@ -447,17 +444,12 @@ namespace tgui
         }
 
         // Calculate the angle for the direction of the knob
-        if (m_clockwiseTurning)
-        {
-            if (m_value == m_minimum)
-                m_angle = m_startRotation;
-            else
-                m_angle = m_startRotation - (((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)) * allowedAngle);
-        }
+        if (m_maximum == m_minimum)
+            m_angle = m_startRotation;
+        else if (m_clockwiseTurning)
+            m_angle = m_startRotation - (m_value - m_minimum) / (m_maximum - m_minimum) * allowedAngle;
         else // counter-clockwise
-        {
-            m_angle = (((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)) * allowedAngle) + m_startRotation;
-        }
+            m_angle = (((m_value - m_minimum) / (m_maximum - m_minimum)) * allowedAngle) + m_startRotation;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
