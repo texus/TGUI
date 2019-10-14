@@ -52,7 +52,7 @@ TEST_CASE("[Grid]")
 
         auto widget2 = tgui::ClickableWidget::create({20, 10});
         grid->add(widget2); // Widget is added before calling addWidget here
-        grid->addWidget(widget2, 0, 0, {1, 2, 3, 4}, tgui::Grid::Alignment::UpperLeft);
+        grid->addWidget(widget2, 0, 0, tgui::Grid::Alignment::UpperLeft, {1, 2, 3, 4});
 
         REQUIRE(grid->getWidgets().size() == 2); // addWidget did not add a duplicate or widget2
         REQUIRE(grid->getWidget(0, 0) == widget2);
@@ -79,7 +79,7 @@ TEST_CASE("[Grid]")
     SECTION("Borders")
     {
         auto widget = tgui::ClickableWidget::create({40, 30});
-        grid->addWidget(widget, 3, 2, {1, 2, 3, 4});
+        grid->addWidget(widget, 3, 2, tgui::Grid::Alignment::Center, {1, 2, 3, 4});
 
         REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(1, 2, 3, 4));
         grid->setWidgetPadding(widget, {});
@@ -95,7 +95,7 @@ TEST_CASE("[Grid]")
     SECTION("Alignment")
     {
         auto widget = tgui::ClickableWidget::create();
-        grid->addWidget(widget, 3, 2, {}, tgui::Grid::Alignment::BottomRight);
+        grid->addWidget(widget, 3, 2, tgui::Grid::Alignment::BottomRight);
 
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::BottomRight);
         grid->setWidgetAlignment(widget, tgui::Grid::Alignment::Center);
@@ -112,16 +112,16 @@ TEST_CASE("[Grid]")
     {
         grid->setSize({800, 600});
         grid->addWidget(tgui::ClickableWidget::create({40, 30}), 5, 4);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 7, {1, 2, 3, 4});
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 0, {}, tgui::Grid::Alignment::Center);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 1, {}, tgui::Grid::Alignment::Left);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 2, {}, tgui::Grid::Alignment::UpperLeft);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 0, {}, tgui::Grid::Alignment::Up);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 1, {}, tgui::Grid::Alignment::UpperRight);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 2, {}, tgui::Grid::Alignment::Right);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 0, {}, tgui::Grid::Alignment::BottomRight);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 1, {}, tgui::Grid::Alignment::Bottom);
-        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 2, {}, tgui::Grid::Alignment::BottomLeft);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 7, tgui::Grid::Alignment::Center, {1, 2, 3, 4});
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 0, tgui::Grid::Alignment::Center);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 1, tgui::Grid::Alignment::Left);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 2, tgui::Grid::Alignment::UpperLeft);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 0, tgui::Grid::Alignment::Up);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 1, tgui::Grid::Alignment::UpperRight);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 2, tgui::Grid::Alignment::Right);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 0, tgui::Grid::Alignment::BottomRight);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 1, tgui::Grid::Alignment::Bottom);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 2, tgui::Grid::Alignment::BottomLeft);
         grid->add(tgui::ClickableWidget::create({40, 30}));
 
         testSavingWidget("Grid", grid, false);

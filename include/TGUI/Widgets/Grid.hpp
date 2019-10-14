@@ -182,8 +182,8 @@ namespace tgui
         void addWidget(const Widget::Ptr& widget,
                        std::size_t        row,
                        std::size_t        column,
-                       const Padding&     padding   = Padding{0},
-                       Alignment          alignment = Alignment::Center);
+                       Alignment          alignment = Alignment::Center,
+                       const Padding&     padding   = Padding{0});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

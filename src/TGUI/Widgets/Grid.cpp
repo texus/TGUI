@@ -52,7 +52,7 @@ namespace tgui
                 {
                     // If a widget matches then add it to the grid
                     if (gridToCopy.m_widgets[i] == gridToCopy.m_gridWidgets[row][col])
-                        addWidget(m_widgets[i], row, col, gridToCopy.m_objPadding[row][col], gridToCopy.m_objAlignment[row][col]);
+                        addWidget(m_widgets[i], row, col, gridToCopy.m_objAlignment[row][col], gridToCopy.m_objPadding[row][col]);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace tgui
                     {
                         // If a widget matches then add it to the grid
                         if (right.m_widgets[i] == right.m_gridWidgets[row][col])
-                            addWidget(m_widgets[i], row, col, right.m_objPadding[row][col], right.m_objAlignment[row][col]);
+                            addWidget(m_widgets[i], row, col, right.m_objAlignment[row][col], right.m_objPadding[row][col]);
                     }
                 }
             }
@@ -257,7 +257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addWidget(const Widget::Ptr& widget, std::size_t row, std::size_t col, const Padding& padding, Alignment alignment)
+    void Grid::addWidget(const Widget::Ptr& widget, std::size_t row, std::size_t col, Alignment alignment, const Padding& padding)
     {
         // If the widget hasn't already been added then add it now
         if (std::find(getWidgets().begin(), getWidgets().end(), widget) == getWidgets().end())
@@ -612,7 +612,7 @@ namespace tgui
                 else
                     throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
 
-                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), padding, alignment);
+                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), alignment, padding);
             }
         }
     }
