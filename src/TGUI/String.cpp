@@ -49,11 +49,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef TGUI_NEXT
-    bool isWhitespace(uint32_t character)
-#else
     bool isWhitespace(sf::Uint32 character)
-#endif
     {
         if (character == U' ' || character == U'\t' || character == U'\r' || character == U'\n')
             return true;
@@ -234,7 +230,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT // Code not working on GCC 4.9
+
     String& String::replace(const String& searchFor, const String& replaceWith)
     {
         std::size_t step = replaceWith.length();
@@ -250,7 +246,7 @@ namespace tgui
 
         return *this;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String::String(const std::string& str) :
@@ -836,7 +832,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT // Code not working on GCC 4.9
+
     String& String::insert(std::size_t index, std::size_t count, char ch)
     {
         m_string.insert(index, count, static_cast<char32_t>(ch));
@@ -1075,7 +1071,7 @@ namespace tgui
     {
         return m_string.erase(first, last);
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void String::push_back(char ch)
@@ -1415,7 +1411,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT // Code not working on GCC 4.9
+
     String& String::replace(std::size_t pos, std::size_t count, const std::string& str)
     {
         m_string.replace(pos, count, String{str}.m_string);
@@ -1697,7 +1693,7 @@ namespace tgui
         m_string.replace(first, last, chars);
         return *this;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String String::substr(std::size_t pos, std::size_t count) const

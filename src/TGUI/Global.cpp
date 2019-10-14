@@ -127,68 +127,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    int stoi(const std::string& value)
-    {
-        int result = 0;
-
-        std::istringstream iss(value);
-        iss.imbue(std::locale::classic());
-        iss >> result;
-
-        if (iss.fail())
-            result = 0;
-
-        return result;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float stof(const std::string& value)
-    {
-        float result = 0;
-
-        std::istringstream iss(value);
-        iss.imbue(std::locale::classic());
-        iss >> result;
-
-        if (iss.fail())
-            result = 0;
-
-        return result;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool extractBoolFromString(const std::string& property, const std::string& value)
-    {
-        if ((value == "true") || (value == "True") || (value == "TRUE") || (value == "1"))
-            return true;
-        else if ((value == "false") || (value == "False") || (value == "FALSE") || (value == "0"))
-            return false;
-        else
-            throw Exception{"Failed to parse boolean value of property '" + property + "'."};
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_NEXT
-    bool removeWhitespace(const std::string& line, std::string::const_iterator& c)
-    {
-        while (c != line.end())
-        {
-            if ((*c == ' ') || (*c == '\t') || (*c == '\r'))
-                ++c;
-            else
-                return true;
-        }
-
-        return false;
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

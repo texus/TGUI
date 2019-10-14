@@ -500,12 +500,4 @@ TEST_CASE("[Sprite]")
             REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::NineSlice);
         }
     }
-
-    SECTION("getTexture has a version to change the texture and a const version")
-    {
-        sprite.getTexture().setSmooth(false);
-
-        const tgui::Sprite sprite2{};
-        sprite2.getTexture().isSmooth();
-    }
 }

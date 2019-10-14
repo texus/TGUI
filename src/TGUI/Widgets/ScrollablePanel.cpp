@@ -304,15 +304,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void ScrollablePanel::setScrollbarWidth(float width)
-    {
-        m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-        m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
-        updateScrollbars();
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float ScrollablePanel::getScrollbarWidth() const
     {

@@ -6,10 +6,10 @@ git:
 jobs:
   include:
   - stage: Unit tests
-    name: Linux (gcc 6)
+    name: Linux (c++17)
     os: linux
     dist: xenial
-    env: COMPILER=g++-6
+    env: COMPILER=g++-7
     services:
     - xvfb
     addons:
@@ -17,7 +17,7 @@ jobs:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - g++-6
+        - g++-7
         - libudev-dev
         - libxrandr-dev
         - libgl1-mesa-dev
@@ -30,16 +30,16 @@ jobs:
     after_success: bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
 
   - stage: Cross-platform tests
-    name: Linux (gcc 4.9)
+    name: Linux (c++14)
     os: linux
     dist: xenial
-    env: COMPILER=g++-4.9
+    env: COMPILER=g++-5
     addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - g++-4.9
+        - g++-5
         - libudev-dev
         - libxrandr-dev
         - libgl1-mesa-dev

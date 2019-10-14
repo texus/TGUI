@@ -269,54 +269,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isReadOnly() const;
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets whether the horizontal scrollbar is present
-        ///
-        /// When present, the scrollbar will appear once the text takes more space than the text box.
-        /// When not present, the text will attempt to word wrap once the text line is full.
-        /// The horizontal scroll is not present by default.
-        ///
-        /// @param present  Should the horizontal scrollbar be present?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use setHorizontalScrollbarPolicy instead") void setHorizontalScrollbarPresent(bool present);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the horizontal scrollbar is present
-        ///
-        /// @return Is the horizontal scrollbar present?
-        ///
-        /// @see setHorizontalScrollbarPresent
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbarPolicy instead") bool isHorizontalScrollbarPresent() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets whether the vertical scrollbar is present
-        ///
-        /// When present, the scrollbar will appear once the text takes more space than the text box.
-        /// When not present, you will not be able to add text once the text box is full.
-        /// The vertical scroll is present by default.
-        ///
-        /// @param present  Should the vertical scrollbar be present?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use setVerticalScrollbarPolicy instead") void setVerticalScrollbarPresent(bool present);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the vertical scrollbar is present
-        ///
-        /// @return Is the vertical scrollbar present?
-        ///
-        /// @see setVerticalScrollbarPresent
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbarPolicy instead") bool isVerticalScrollbarPresent() const;
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
@@ -486,14 +438,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t getIndexOfSelectionPos(sf::Vector2<std::size_t> selectionPos) const;
 
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Converts the two dimensional selection positions into one dimensional positions in the text.
-        // The first element of the pair is the selection start and the second one is the selection end.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getSelectionStart and getSelectionEnd instead") std::pair<std::size_t, std::size_t> findTextSelectionPositions() const;
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when you are selecting text.

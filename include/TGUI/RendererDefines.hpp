@@ -117,9 +117,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TGUI_NEXT: const reference
 #define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
-    Texture& CLASS::get##NAME() const \
+    const Texture& CLASS::get##NAME() const \
     { \
         const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \

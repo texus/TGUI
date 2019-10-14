@@ -45,23 +45,12 @@ namespace tgui
         typedef std::shared_ptr<MenuBar> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const MenuBar> ConstPtr; ///< Shared constant widget pointer
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /// @brief Used for return value of getAllMenus
-        /// @deprecated The getMenuList should be used instead of getAllMenus
-        struct GetAllMenusElement
+        /// @brief Used for return value of getMenus
+        struct GetMenusElement
         {
             sf::String text;
             bool enabled;
-            std::vector<std::unique_ptr<GetAllMenusElement>> menuItems;
-        };
-    #endif
-
-        /// @brief Used for return value of getMenuList
-        struct GetMenuListElement
-        {
-            sf::String text;
-            bool enabled;
-            std::vector<GetMenuListElement> menuItems;
+            std::vector<GetMenusElement> menuItems;
         };
 
         /// @internal
@@ -430,31 +419,12 @@ namespace tgui
         bool getInvertedMenuDirection() const;
 
 
-    #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Returns a copy of all the menus and their menu items
-        /// @return Map of menus and their items
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("This function doesn't work with submenus, use getMenuList instead")
-        std::vector<std::pair<sf::String, std::vector<sf::String>>> getMenus() const;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Returns the menus and their menu items, including submenus
         /// @return List of menus
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("This function is deprecated, use getMenuList instead")
-        std::vector<std::unique_ptr<GetAllMenusElement>> getAllMenus() const;
-    #endif
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Returns the menus and their menu items, including submenus
-        /// @return List of menus
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<GetMenuListElement> getMenuList() const;
+        std::vector<GetMenusElement> getMenus() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

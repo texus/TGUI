@@ -267,26 +267,14 @@ namespace tgui
 
     void Texture::setShader(sf::Shader* shader)
     {
-#ifdef TGUI_NEXT
         m_shader = shader;
-#else
-        if (m_data)
-            m_data->shader = shader;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Shader* Texture::getShader() const
     {
-#ifdef TGUI_NEXT
         return m_shader;
-#else
-        if (m_data)
-            return m_data->shader;
-        else
-            return nullptr;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -253,35 +253,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void TextBox::setHorizontalScrollbarPresent(bool present)
-    {
-        setHorizontalScrollbarPolicy(present ? Scrollbar::Policy::Automatic : Scrollbar::Policy::Never);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool TextBox::isHorizontalScrollbarPresent() const
-    {
-        return m_horizontalScrollbar->isVisible();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setVerticalScrollbarPresent(bool present)
-    {
-        setVerticalScrollbarPolicy(present ? Scrollbar::Policy::Automatic : Scrollbar::Policy::Never);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool TextBox::isVerticalScrollbarPresent() const
-    {
-        return m_verticalScrollbar->isVisible();
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextBox::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
@@ -1256,13 +1227,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    std::pair<std::size_t, std::size_t> TextBox::findTextSelectionPositions() const
-    {
-        return {getIndexOfSelectionPos(m_selStart), getIndexOfSelectionPos(m_selEnd)};
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextBox::deleteSelectedCharacters()
     {
@@ -1944,19 +1908,6 @@ namespace tgui
             else
                 throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
         }
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        if (node->propertyValuePairs["verticalscrollbarpresent"])
-        {
-            const bool present = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscrollbarpresent"]->value).getBool();
-            setVerticalScrollbarPolicy(present ? Scrollbar::Policy::Automatic : Scrollbar::Policy::Never);
-        }
-        if (node->propertyValuePairs["horizontalscrollbarpresent"])
-        {
-            const bool present = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["horizontalscrollbarpresent"]->value).getBool();
-            setHorizontalScrollbarPolicy(present ? Scrollbar::Policy::Automatic : Scrollbar::Policy::Never);
-        }
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

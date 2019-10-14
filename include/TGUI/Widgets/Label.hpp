@@ -47,11 +47,6 @@ namespace tgui
         typedef std::shared_ptr<Label> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const Label> ConstPtr; ///< Shared constant widget pointer
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /// @brief Defines when the scrollbar shows up
-        using ScrollbarPolicy TGUI_DEPRECATED("Use tgui::Scrollbar::Policy instead") = Scrollbar::Policy;
-#endif
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The horizontal text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,11 +420,7 @@ namespace tgui
         bool m_possibleDoubleClick = false;
 
         CopiedSharedPtr<ScrollbarChildWidget> m_scrollbar;
-#ifdef TGUI_NEXT
         Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Automatic;
-#else
-        Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Never;
-#endif
 
         Sprite    m_spriteBackground;
 

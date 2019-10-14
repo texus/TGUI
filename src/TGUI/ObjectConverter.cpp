@@ -128,7 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture& ObjectConverter::getTexture()
+    const Texture& ObjectConverter::getTexture()
     {
         assert(m_type != Type::None);
         assert(m_type == Type::Texture || m_type == Type::String);

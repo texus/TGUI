@@ -273,15 +273,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    float Text::getExtraHorizontalPadding(const Text& text)
-    {
-        return getExtraHorizontalPadding(text.getFont(), text.getCharacterSize(), text.getStyle());
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     float Text::getExtraHorizontalPadding() const
     {
         return getExtraHorizontalPadding(getFont(), getCharacterSize(), getStyle());
@@ -317,15 +308,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    float Text::getLineHeight(const Text& text)
-    {
-        return getLineHeight(text.getFont(), text.getCharacterSize(), text.getStyle());
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     float Text::getLineHeight() const
     {
         return getLineHeight(getFont(), getCharacterSize(), getStyle());
@@ -338,15 +320,6 @@ namespace tgui
         const float extraVerticalSpace = Text::calculateExtraVerticalSpace(font, characterSize, textStyle);
         return font.getLineSpacing(characterSize) + extraVerticalSpace;
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    float Text::getLineWidth(const Text& text)
-    {
-        return getLineWidth(text.getString(), text.getFont(), text.getCharacterSize(), text.getStyle());
-    }
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

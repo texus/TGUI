@@ -772,10 +772,7 @@ namespace tgui
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
         else if (getExpandDirection() == ComboBox::ExpandDirection::Up)
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
-#ifndef TGUI_NEXT
-        else if (getExpandDirection() == ComboBox::ExpandDirection::Automatic)
-            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Automatic");
-#endif
+
         if (m_listBox->getSelectedItemIndex() >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_listBox->getSelectedItemIndex()));
 

@@ -967,15 +967,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void Widget::mouseNoLongerDown()
-    {
-        leftMouseButtonNoLongerDown();
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::leftMouseButtonNoLongerDown()
     {
         m_mouseDown = false;
@@ -1206,10 +1197,6 @@ namespace tgui
                 {
                     if (pair.first == "initialdelay")
                         ToolTip::setInitialDelay(sf::seconds(strToFloat(pair.second->value)));
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-                    else if (pair.first == "timetodisplay")
-                        ToolTip::setInitialDelay(sf::seconds(strToFloat(pair.second->value)));
-#endif
                     else if (pair.first == "distancetomouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
                 }

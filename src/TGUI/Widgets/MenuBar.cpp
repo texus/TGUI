@@ -103,28 +103,10 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> getAllMenusImpl(const std::vector<MenuBar::Menu>& menus)
+
+        std::vector<MenuBar::GetMenusElement> getMenusImpl(const std::vector<MenuBar::Menu>& menus)
         {
-            std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> menuElements;
-
-            for (const auto& menu : menus)
-            {
-                menuElements.emplace_back(std::make_unique<MenuBar::GetAllMenusElement>());
-                menuElements.back()->text = menu.text.getString();
-                menuElements.back()->enabled = menu.enabled;
-                if (!menu.menuItems.empty())
-                    menuElements.back()->menuItems = getAllMenusImpl(menu.menuItems);
-            }
-
-            return menuElements;
-        }
-#endif
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        std::vector<MenuBar::GetMenuListElement> getMenuListImpl(const std::vector<MenuBar::Menu>& menus)
-        {
-            std::vector<MenuBar::GetMenuListElement> menuElements;
+            std::vector<MenuBar::GetMenusElement> menuElements;
 
             for (const auto& menu : menus)
             {
@@ -132,7 +114,7 @@ namespace tgui
                 element.text = menu.text.getString();
                 element.enabled = menu.enabled;
                 if (!menu.menuItems.empty())
-                    element.menuItems = getMenuListImpl(menu.menuItems);
+                    element.menuItems = getMenusImpl(menu.menuItems);
             }
 
             return menuElements;
@@ -495,36 +477,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    std::vector<std::pair<sf::String, std::vector<sf::String>>> MenuBar::getMenus() const
+    std::vector<MenuBar::GetMenusElement> MenuBar::getMenus() const
     {
-        std::vector<std::pair<sf::String, std::vector<sf::String>>> menus;
-
-        for (const auto& menu : m_menus)
-        {
-            std::vector<sf::String> items;
-            for (const auto& item : menu.menuItems)
-                items.push_back(item.text.getString());
-
-            menus.emplace_back(menu.text.getString(), std::move(items));
-        }
-
-        return menus;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> MenuBar::getAllMenus() const
-    {
-        return getAllMenusImpl(m_menus);
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<MenuBar::GetMenuListElement> MenuBar::getMenuList() const
-    {
-        return getMenuListImpl(m_menus);
+        return getMenusImpl(m_menus);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,21 +975,11 @@ namespace tgui
             if (toLower(childNode->name) != "menu")
                 continue;
 
-            // Every menu node should either have a Name (TGUI 0.8.0) or a Text (TGUI >= 0.8.1) property
-        #ifdef TGUI_REMOVE_DEPRECATED_CODE
             if (!childNode->propertyValuePairs["text"])
                 throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
 
             const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
             createMenu(menus, menuText);
-        #else
-            if (!childNode->propertyValuePairs["name"] && !childNode->propertyValuePairs["text"])
-                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
-
-            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String,
-                childNode->propertyValuePairs[childNode->propertyValuePairs["text"] ? "text" : "name"]->value).getString();
-            createMenu(menus, menuText);
-        #endif
 
             if (childNode->propertyValuePairs["enabled"])
                 menus.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["enabled"]->value).getBool();
@@ -1049,26 +994,10 @@ namespace tgui
                 if (!childNode->propertyValuePairs["items"]->listNode)
                     throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
 
-            #ifndef TGUI_REMOVE_DEPRECATED_CODE
-                // The ItemsEnabled property existed in TGUI 0.8.0 but was replaced with nested Menu sections in TGUI 0.8.1
-                if (childNode->propertyValuePairs["itemsenabled"])
-                {
-                    if (!childNode->propertyValuePairs["itemsenabled"]->listNode)
-                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, expected a list as value"};
-                    if (childNode->propertyValuePairs["items"]->valueList.size() != childNode->propertyValuePairs["itemsenabled"]->valueList.size())
-                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, length differs from 'Items' propery"};
-                }
-            #endif
-
                 for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
                 {
                     const sf::String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
                     createMenu(menus.back().menuItems, menuItemText);
-
-                #ifndef TGUI_REMOVE_DEPRECATED_CODE
-                    if (childNode->propertyValuePairs["itemsenabled"])
-                        menus.back().menuItems.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["itemsenabled"]->valueList[i]).getBool();
-                #endif
                 }
             }
         }

@@ -647,17 +647,9 @@ namespace tgui
         Text m_defaultText;
 
         int m_previousSelectedItemIndex = -1;
-#ifdef TGUI_NEXT
         bool m_changeItemOnScroll = false;
-#else
-        bool m_changeItemOnScroll = true;
-#endif
 
-#ifdef TGUI_NEXT
         ExpandDirection m_expandDirection = ExpandDirection::Automatic;
-#else
-        ExpandDirection m_expandDirection = ExpandDirection::Down;
-#endif
 
         Sprite m_spriteBackground;
         Sprite m_spriteArrow;

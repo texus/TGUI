@@ -494,13 +494,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void ListView::deselectItem()
-    {
-        updateSelectedItem(-1);
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListView::deselectItems()
     {
@@ -1559,10 +1552,7 @@ namespace tgui
             setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["multiselect"])
             setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["multiselect"]->value).getBool());
-#ifndef TGUI_NEXT
-        if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItem(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
-#endif
+
         if (node->propertyValuePairs["selecteditemindices"])
         {
             if (!node->propertyValuePairs["selecteditemindices"]->listNode)
