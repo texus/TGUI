@@ -269,8 +269,8 @@ TEST_CASE("[CheckBox]")
         renderer.setBackgroundColorChecked({0, 128, 0});
         renderer.setBorderColor(sf::Color::Blue);
         renderer.setBorderColorChecked({0, 0, 128});
-        renderer.setTextStyle(sf::Text::Style::Italic);
-        renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::StrikeThrough});
+        renderer.setTextStyle(tgui::TextStyle::Italic);
+        renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
         renderer.setBorders({2});
         renderer.setOpacity(0.7f);
         checkBox->setRenderer(renderer.getData());
@@ -279,7 +279,7 @@ TEST_CASE("[CheckBox]")
                                         renderer.setTextColorHover(sf::Color::Magenta);
                                         renderer.setBackgroundColorHover(sf::Color::Cyan);
                                         renderer.setBorderColorHover(sf::Color::Yellow);
-                                        renderer.setTextStyle(sf::Text::Style::Bold);
+                                        renderer.setTextStyle(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureUncheckedHover("resources/Texture3.png");
                                      };
@@ -288,7 +288,7 @@ TEST_CASE("[CheckBox]")
                                         renderer.setTextColorDisabled({128, 128, 0});
                                         renderer.setBackgroundColorDisabled({0, 128, 128});
                                         renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyle(sf::Text::Style::Italic);
+                                        renderer.setTextStyle(tgui::TextStyle::Italic);
                                         if (textured)
                                             renderer.setTextureUncheckedDisabled("resources/Texture5.png");
                                     };
@@ -297,7 +297,7 @@ TEST_CASE("[CheckBox]")
                                             renderer.setTextColorCheckedHover({192, 64, 0});
                                             renderer.setBackgroundColorCheckedHover({0, 192, 64});
                                             renderer.setBorderColorCheckedHover({64, 0, 192});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::Italic});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
                                             if (textured)
                                                 renderer.setTextureCheckedHover("resources/Texture4.png");
                                          };
@@ -306,7 +306,7 @@ TEST_CASE("[CheckBox]")
                                             renderer.setTextColorCheckedDisabled({64, 192, 0});
                                             renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
                                             renderer.setBorderColorCheckedDisabled({192, 0, 64});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Italic | sf::Text::Style::StrikeThrough});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
                                             if (textured)
                                                 renderer.setTextureCheckedDisabled("resources/Texture6.png");
                                         };

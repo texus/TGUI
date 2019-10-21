@@ -202,17 +202,17 @@ namespace tgui
         {
             const unsigned int style = value.getTextStyle();
 
-            if (style == sf::Text::Regular)
+            if (style == TextStyle::Regular)
                 return "Regular";
 
             std::string encodedStyle;
-            if (style & sf::Text::Bold)
+            if (style & TextStyle::Bold)
                 encodedStyle += " | Bold";
-            if (style & sf::Text::Italic)
+            if (style & TextStyle::Italic)
                 encodedStyle += " | Italic";
-            if (style & sf::Text::Underlined)
+            if (style & TextStyle::Underlined)
                 encodedStyle += " | Underlined";
-            if (style & sf::Text::StrikeThrough)
+            if (style & TextStyle::StrikeThrough)
                 encodedStyle += " | StrikeThrough";
 
             if (!encodedStyle.empty())

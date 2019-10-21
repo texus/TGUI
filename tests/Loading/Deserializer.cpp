@@ -182,14 +182,14 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize text style")
     {
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Regular").getTextStyle() == sf::Text::Regular);
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold | Italic").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Regular").getTextStyle() == tgui::TextStyle::Regular);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold | Italic").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Italic));
 
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "| Underlined").getTextStyle() == sf::Text::Underlined);
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "StrikeThrough |").getTextStyle() == sf::Text::StrikeThrough);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "| Underlined").getTextStyle() == tgui::TextStyle::Underlined);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "StrikeThrough |").getTextStyle() == tgui::TextStyle::StrikeThrough);
 
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Invalid").getTextStyle() == sf::Text::Regular);
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold + Italic").getTextStyle() == sf::Text::Regular);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Invalid").getTextStyle() == tgui::TextStyle::Regular);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold + Italic").getTextStyle() == tgui::TextStyle::Regular);
     }
 
     SECTION("deserialize renderer")

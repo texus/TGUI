@@ -203,20 +203,6 @@ namespace tgui
         ///
         /// @param style  Text style to store
         ///
-        /// To combine multiple text styles, wrap the value inside the TextStyle object before passing it.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(sf::Text::Style style) :
-            ObjectConverter(TextStyle(style))
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a text style for later retrieval
-        ///
-        /// @param style  Text style to store
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(TextStyle style) :
             m_type {Type::TextStyle},

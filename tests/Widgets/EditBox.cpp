@@ -465,8 +465,8 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{150, 160, 170}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyle(sf::Text::Bold | sf::Text::Underlined)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             }
@@ -487,8 +487,8 @@ TEST_CASE("[EditBox]")
                 renderer->setBorderColorHover({100, 110, 120});
                 renderer->setBorderColorDisabled({150, 160, 170});
                 renderer->setCaretWidth(2);
-                renderer->setTextStyle(sf::Text::Italic);
-                renderer->setDefaultTextStyle(sf::Text::Bold | sf::Text::Underlined);
+                renderer->setTextStyle(tgui::TextStyle::Italic);
+                renderer->setDefaultTextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined);
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
             }
@@ -507,8 +507,8 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(150, 160, 170));
             REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
-            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
 
@@ -526,8 +526,8 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getBorderColorHover() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getBorderColorDisabled() == sf::Color(150, 160, 170));
             REQUIRE(renderer->getCaretWidth() == 2);
-            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getDefaultTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
+            REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getDefaultTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getPadding() == tgui::Borders(5, 6, 7, 8));
         }
@@ -607,7 +607,7 @@ TEST_CASE("[EditBox]")
         renderer.setBackgroundColor(sf::Color::Yellow);
         renderer.setCaretColor(sf::Color::Cyan);
         renderer.setBorderColor(sf::Color::Red);
-        renderer.setTextStyle(sf::Text::Style::Underlined);
+        renderer.setTextStyle(tgui::TextStyle::Underlined);
         renderer.setCaretWidth(1);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
@@ -723,7 +723,7 @@ TEST_CASE("[EditBox]")
             editBox->setDefaultText("Hello");
 
             renderer.setDefaultTextColor(sf::Color::Magenta);
-            renderer.setDefaultTextStyle(sf::Text::Style::Italic);
+            renderer.setDefaultTextStyle(tgui::TextStyle::Italic);
 
             TEST_DRAW("EditBox_DefaultText.png")
         }

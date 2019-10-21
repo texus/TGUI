@@ -100,7 +100,7 @@ namespace tgui
         /// @param style  The new default text style
         ///
         /// @code
-        /// comboBox->getSharedRenderer()->setDefaultTextStyle(sf::Text::Italic | sf::Text::Bold);
+        /// comboBox->getSharedRenderer()->setDefaultTextStyle(tgui::TextStyle::Italic | tgui::TextStyle::Bold);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDefaultTextStyle(TextStyle style);

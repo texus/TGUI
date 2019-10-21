@@ -252,7 +252,7 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
-            REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::Italic}));
             REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
             REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", 15));
@@ -267,7 +267,7 @@ TEST_CASE("[Label]")
             renderer->setTextOutlineThickness(2);
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
-            renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
+            renderer->setTextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Italic);
             renderer->setTextureBackground(textureBackground);
             renderer->setScrollbar(scrollbarRenderer.getData());
             renderer->setScrollbarWidth(15);
@@ -280,7 +280,7 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("TextOutlineThickness").getNumber() == 2);
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
-        REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Italic));
         REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
         REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
@@ -291,7 +291,7 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getTextOutlineThickness() == 2);
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
-        REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(renderer->getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Italic));
         REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
 
         REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
@@ -322,7 +322,7 @@ TEST_CASE("[Label]")
             TEST_DRAW_INIT(110, 40, label)
             label->setText(L"Test g\u00CA");
             label->setTextSize(24);
-            label->getRenderer()->setTextStyle(sf::Text::Style::Italic);
+            label->getRenderer()->setTextStyle(tgui::TextStyle::Italic);
             TEST_DRAW("Label_Simple.png")
 
             label->getRenderer()->setTextOutlineThickness(1);

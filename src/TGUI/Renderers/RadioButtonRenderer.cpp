@@ -67,7 +67,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureCheckedDisabled)
     TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureCheckedFocused)
 
-    TGUI_RENDERER_PROPERTY_TEXT_STYLE(RadioButtonRenderer, TextStyle, sf::Text::Regular)
+    TGUI_RENDERER_PROPERTY_TEXT_STYLE(RadioButtonRenderer, TextStyle, TextStyle::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(RadioButtonRenderer, TextStyleChecked, {})
 }
 

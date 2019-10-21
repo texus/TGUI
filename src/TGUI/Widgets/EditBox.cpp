@@ -1275,7 +1275,7 @@ namespace tgui
         float width = 0;
         std::uint32_t prevChar = 0;
         const unsigned int textSize = getTextSize();
-        const bool bold = (m_textFull.getStyle() & sf::Text::Bold) != 0;
+        const bool bold = (m_textFull.getStyle() & TextStyle::Bold) != 0;
 
         std::size_t index;
         for (index = 0; index < m_text.getSize(); ++index)

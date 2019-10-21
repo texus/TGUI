@@ -608,7 +608,7 @@ namespace tgui
         }
 
         // Fit the text in the available space
-        sf::String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & sf::Text::Bold);
+        sf::String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
@@ -630,7 +630,7 @@ namespace tgui
                 if (maxWidth <= 0)
                     return;
 
-                string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & sf::Text::Bold);
+                string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
 
                 const auto newLineCount = std::count(string.begin(), string.end(), static_cast<sf::Uint32>('\n')) + 1;
                 requiredTextHeight = newLineCount * m_fontCached.getLineSpacing(m_textSize)

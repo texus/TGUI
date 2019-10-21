@@ -68,9 +68,9 @@ TEST_CASE("[Text]")
 
     SECTION("Style")
     {
-        REQUIRE(text.getStyle() == sf::Text::Regular);
-        text.setStyle(sf::Text::Italic);
-        REQUIRE(text.getStyle() == sf::Text::Italic);
+        REQUIRE(text.getStyle() == tgui::TextStyle::Regular);
+        text.setStyle(tgui::TextStyle::Italic);
+        REQUIRE(text.getStyle() == tgui::TextStyle::Italic);
     }
 
     SECTION("Size")

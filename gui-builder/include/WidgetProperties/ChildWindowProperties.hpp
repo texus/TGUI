@@ -113,11 +113,11 @@ private:
         {
             std::string requestedTitleButton = tgui::toLower(tgui::trim(elem));
             if (requestedTitleButton == "close")
-                decodedTitleButtons |= sf::Text::Bold;
+                decodedTitleButtons |= tgui::TextStyle::Bold;
             else if (requestedTitleButton == "maximize")
-                decodedTitleButtons |= sf::Text::Italic;
+                decodedTitleButtons |= tgui::TextStyle::Italic;
             else if (requestedTitleButton == "minimize")
-                decodedTitleButtons |= sf::Text::Underlined;
+                decodedTitleButtons |= tgui::TextStyle::Underlined;
         }
 
         return decodedTitleButtons;

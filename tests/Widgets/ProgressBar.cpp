@@ -234,7 +234,7 @@ TEST_CASE("[ProgressBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -245,7 +245,7 @@ TEST_CASE("[ProgressBar]")
                 renderer->setTextColor({40, 50, 60});
                 renderer->setTextColorFilled({50, 60, 70});
                 renderer->setBorderColor({60, 70, 80});
-                renderer->setTextStyle(sf::Text::Italic);
+                renderer->setTextStyle(tgui::TextStyle::Italic);
                 renderer->setBorders({1, 2, 3, 4});
             }
 
@@ -254,7 +254,7 @@ TEST_CASE("[ProgressBar]")
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TextColorFilled").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
             REQUIRE(renderer->getBackgroundColor() == sf::Color(20, 30, 40));
@@ -262,7 +262,7 @@ TEST_CASE("[ProgressBar]")
             REQUIRE(renderer->getTextColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getTextColorFilled() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getBorderColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
@@ -320,7 +320,7 @@ TEST_CASE("[ProgressBar]")
         renderer.setFillColor(sf::Color::Yellow);
         renderer.setTextColor(sf::Color::Red);
         renderer.setBorderColor(sf::Color::Blue);
-        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         progressBar->setRenderer(renderer.getData());

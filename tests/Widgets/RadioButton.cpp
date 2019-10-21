@@ -276,8 +276,8 @@ TEST_CASE("[RadioButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColor", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorHover", sf::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorDisabled", sf::Color{240, 230, 220}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleChecked", sf::Text::Bold));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleChecked", tgui::TextStyle::Bold));
                 REQUIRE_NOTHROW(renderer->setProperty("TextDistanceRatio", 0.5));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
@@ -305,8 +305,8 @@ TEST_CASE("[RadioButton]")
                 renderer->setCheckColor({110, 120, 130});
                 renderer->setCheckColorHover({120, 130, 140});
                 renderer->setCheckColorDisabled({240, 230, 220});
-                renderer->setTextStyle(sf::Text::Italic);
-                renderer->setTextStyleChecked(sf::Text::Bold);
+                renderer->setTextStyle(tgui::TextStyle::Italic);
+                renderer->setTextStyleChecked(tgui::TextStyle::Bold);
                 renderer->setTextDistanceRatio(0.5);
                 renderer->setBorders({1, 2, 3, 4});
             }
@@ -332,8 +332,8 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getProperty("CheckColor").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("CheckColorHover").getColor() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("CheckColorDisabled").getColor() == sf::Color(240, 230, 220));
-            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getProperty("TextStyleChecked").getTextStyle() == sf::Text::Bold);
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getProperty("TextStyleChecked").getTextStyle() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getProperty("TextDistanceRatio").getNumber() == 0.5f);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
@@ -358,8 +358,8 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getCheckColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getCheckColorHover() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getCheckColorDisabled() == sf::Color(240, 230, 220));
-            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getTextStyleChecked() == sf::Text::Bold);
+            REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getTextStyleChecked() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getTextDistanceRatio() == 0.5f);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
@@ -446,8 +446,8 @@ TEST_CASE("[RadioButton]")
         renderer.setBackgroundColorChecked({0, 128, 0});
         renderer.setBorderColor(sf::Color::Blue);
         renderer.setBorderColorChecked({0, 0, 128});
-        renderer.setTextStyle(sf::Text::Style::Italic);
-        renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::StrikeThrough});
+        renderer.setTextStyle(tgui::TextStyle::Italic);
+        renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
         renderer.setOpacity(0.7f);
         radioButton->setRenderer(renderer.getData());
 
@@ -455,7 +455,7 @@ TEST_CASE("[RadioButton]")
                                         renderer.setTextColorHover(sf::Color::Magenta);
                                         renderer.setBackgroundColorHover(sf::Color::Cyan);
                                         renderer.setBorderColorHover(sf::Color::Yellow);
-                                        renderer.setTextStyle(sf::Text::Style::Bold);
+                                        renderer.setTextStyle(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureUncheckedHover("resources/Texture3.png");
                                      };
@@ -464,7 +464,7 @@ TEST_CASE("[RadioButton]")
                                         renderer.setTextColorDisabled({128, 128, 0});
                                         renderer.setBackgroundColorDisabled({0, 128, 128});
                                         renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyle(sf::Text::Style::Italic);
+                                        renderer.setTextStyle(tgui::TextStyle::Italic);
                                         if (textured)
                                             renderer.setTextureUncheckedDisabled("resources/Texture5.png");
                                     };
@@ -473,7 +473,7 @@ TEST_CASE("[RadioButton]")
                                             renderer.setTextColorCheckedHover({192, 64, 0});
                                             renderer.setBackgroundColorCheckedHover({0, 192, 64});
                                             renderer.setBorderColorCheckedHover({64, 0, 192});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::Italic});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
                                             if (textured)
                                                 renderer.setTextureCheckedHover("resources/Texture4.png");
                                          };
@@ -482,7 +482,7 @@ TEST_CASE("[RadioButton]")
                                             renderer.setTextColorCheckedDisabled({64, 192, 0});
                                             renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
                                             renderer.setBorderColorCheckedDisabled({192, 0, 64});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Italic | sf::Text::Style::StrikeThrough});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
                                             if (textured)
                                                 renderer.setTextureCheckedDisabled("resources/Texture6.png");
                                         };

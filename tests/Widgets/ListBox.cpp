@@ -472,8 +472,8 @@ TEST_CASE("[ListBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", sf::Text::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Bold));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
                 REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", 15));
             }
@@ -491,8 +491,8 @@ TEST_CASE("[ListBox]")
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
-                renderer->setTextStyle(sf::Text::Bold);
-                renderer->setSelectedTextStyle(sf::Text::Italic);
+                renderer->setTextStyle(tgui::TextStyle::Bold);
+                renderer->setSelectedTextStyle(tgui::TextStyle::Italic);
                 renderer->setScrollbar(scrollbarRenderer.getData());
                 renderer->setScrollbarWidth(15);
             }
@@ -508,8 +508,8 @@ TEST_CASE("[ListBox]")
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
-            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
-            REQUIRE(renderer->getProperty("SelectedTextStyle").getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Bold);
+            REQUIRE(renderer->getProperty("SelectedTextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
@@ -575,8 +575,8 @@ TEST_CASE("[ListBox]")
         renderer.setBorderColor(sf::Color::Blue);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
-        renderer.setTextStyle(sf::Text::Italic);
-        renderer.setSelectedTextStyle(sf::Text::Bold);
+        renderer.setTextStyle(tgui::TextStyle::Italic);
+        renderer.setSelectedTextStyle(tgui::TextStyle::Bold);
         renderer.setScrollbarWidth(14);
         renderer.setOpacity(0.7f);
         listBox->setRenderer(renderer.getData());

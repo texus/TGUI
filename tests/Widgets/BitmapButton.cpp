@@ -175,10 +175,10 @@ TEST_CASE("[BitmapButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDown", sf::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{130, 140, 150}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", sf::Text::Underlined));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(sf::Text::Bold | sf::Text::Underlined)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", sf::Text::StrikeThrough));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", tgui::TextStyle::Underlined));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -196,10 +196,10 @@ TEST_CASE("[BitmapButton]")
                 renderer->setBorderColorHover({110, 120, 130});
                 renderer->setBorderColorDown({120, 130, 140});
                 renderer->setBorderColorDisabled({130, 140, 150});
-                renderer->setTextStyle(sf::Text::Italic);
-                renderer->setTextStyleHover(sf::Text::Underlined);
-                renderer->setTextStyleDown(sf::Text::Bold | sf::Text::Underlined);
-                renderer->setTextStyleDisabled(sf::Text::StrikeThrough);
+                renderer->setTextStyle(tgui::TextStyle::Italic);
+                renderer->setTextStyleHover(tgui::TextStyle::Underlined);
+                renderer->setTextStyleDown(tgui::TextStyle::Bold | tgui::TextStyle::Underlined);
+                renderer->setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
                 renderer->setBorders({1, 2, 3, 4});
             }
 
@@ -215,10 +215,10 @@ TEST_CASE("[BitmapButton]")
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("BorderColorDown").getColor() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == sf::Text::Underlined);
-            REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
-            REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == sf::Text::StrikeThrough);
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == tgui::TextStyle::Underlined);
+            REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
+            REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
             REQUIRE(renderer->getTextColor() == sf::Color(20, 30, 40));
@@ -233,10 +233,10 @@ TEST_CASE("[BitmapButton]")
             REQUIRE(renderer->getBorderColorHover() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getBorderColorDown() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getBorderColorDisabled() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
-            REQUIRE(renderer->getTextStyleHover() == sf::Text::Underlined);
-            REQUIRE(renderer->getTextStyleDown() == (sf::Text::Bold | sf::Text::Underlined));
-            REQUIRE(renderer->getTextStyleDisabled() == sf::Text::StrikeThrough);
+            REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getTextStyleHover() == tgui::TextStyle::Underlined);
+            REQUIRE(renderer->getTextStyleDown() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
+            REQUIRE(renderer->getTextStyleDisabled() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
@@ -312,7 +312,7 @@ TEST_CASE("[BitmapButton]")
         renderer.setTextColor(sf::Color::Red);
         renderer.setBackgroundColor(sf::Color::Green);
         renderer.setBorderColor(sf::Color::Blue);
-        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         button->setRenderer(renderer.getData());
@@ -321,7 +321,7 @@ TEST_CASE("[BitmapButton]")
                                         renderer.setTextColorHover(sf::Color::Magenta);
                                         renderer.setBackgroundColorHover(sf::Color::Cyan);
                                         renderer.setBorderColorHover(sf::Color::Yellow);
-                                        renderer.setTextStyleHover(sf::Text::Style::Bold);
+                                        renderer.setTextStyleHover(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureHover("resources/Texture2.png");
                                      };
@@ -330,11 +330,11 @@ TEST_CASE("[BitmapButton]")
                                         renderer.setTextColorDown(sf::Color::Black);
                                         renderer.setBackgroundColorDown(sf::Color::White);
                                         renderer.setBorderColorDown({128, 128, 128});
-                                        renderer.setTextStyleDown(sf::Text::Style::Underlined);
+                                        renderer.setTextStyleDown(tgui::TextStyle::Underlined);
                                         renderer.setTextColorDisabled({128, 128, 0});
                                         renderer.setBackgroundColorDisabled({0, 128, 128});
                                         renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
                                         if (textured)
                                             renderer.setTextureDown("resources/Texture3.png");
                                     };
@@ -343,7 +343,7 @@ TEST_CASE("[BitmapButton]")
                                         renderer.setTextColorDisabled({128, 128, 0});
                                         renderer.setBackgroundColorDisabled({0, 128, 128});
                                         renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
                                         if (textured)
                                             renderer.setTextureDisabled("resources/Texture4.png");
                                     };

@@ -529,7 +529,7 @@ namespace tgui
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         node->propertyValuePairs["TextColor"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textColor));
 
-        if (m_textStyle != sf::Text::Style::Regular)
+        if (m_textStyle != TextStyle::Regular)
             node->propertyValuePairs["TextStyle"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textStyle));
 
         if (m_maxLines > 0)

@@ -1608,17 +1608,17 @@ void GuiBuilder::addPropertyValueTextStyle(const std::string& property, const sf
         auto checkBoxStrikeThrough = textStyleWindow->get<tgui::CheckBox>("CheckBoxStrikeThrough");
 
         unsigned int style = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle();
-        checkBoxBold->setChecked((style & sf::Text::Style::Bold) != 0);
-        checkBoxItalic->setChecked((style & sf::Text::Style::Italic) != 0);
-        checkBoxUnderlined->setChecked((style & sf::Text::Style::Underlined) != 0);
-        checkBoxStrikeThrough->setChecked((style & sf::Text::Style::StrikeThrough) != 0);
+        checkBoxBold->setChecked((style & tgui::TextStyle::Bold) != 0);
+        checkBoxItalic->setChecked((style & tgui::TextStyle::Italic) != 0);
+        checkBoxUnderlined->setChecked((style & tgui::TextStyle::Underlined) != 0);
+        checkBoxStrikeThrough->setChecked((style & tgui::TextStyle::StrikeThrough) != 0);
 
         auto updateTextStyleProperty = [=]{
             unsigned int newStyle = 0;
-            newStyle |= (checkBoxBold->isChecked() ? sf::Text::Style::Bold : 0);
-            newStyle |= (checkBoxItalic->isChecked() ? sf::Text::Style::Italic : 0);
-            newStyle |= (checkBoxUnderlined->isChecked() ? sf::Text::Style::Underlined : 0);
-            newStyle |= (checkBoxStrikeThrough->isChecked() ? sf::Text::Style::StrikeThrough : 0);
+            newStyle |= (checkBoxBold->isChecked() ? tgui::TextStyle::Bold : 0);
+            newStyle |= (checkBoxItalic->isChecked() ? tgui::TextStyle::Italic : 0);
+            newStyle |= (checkBoxUnderlined->isChecked() ? tgui::TextStyle::Underlined : 0);
+            newStyle |= (checkBoxStrikeThrough->isChecked() ? tgui::TextStyle::StrikeThrough : 0);
             onChange(tgui::Serializer::serialize(tgui::TextStyle{newStyle}));
         };
         checkBoxBold->connect("changed", updateTextStyleProperty);

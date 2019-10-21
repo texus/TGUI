@@ -54,7 +54,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureDisabled)
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureFocused)
 
-    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyle, sf::Text::Regular)
+    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyle, TextStyle::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleHover, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDown, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDisabled, {})

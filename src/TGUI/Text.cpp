@@ -247,7 +247,7 @@ namespace tgui
         unsigned int lines = 1;
         std::uint32_t prevChar = 0;
         const sf::String& string = m_text.getString();
-        const bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
+        const bool bold = (m_text.getStyle() & TextStyle::Bold) != 0;
         const unsigned int textSize = m_text.getCharacterSize();
         for (std::size_t i = 0; i < string.getSize(); ++i)
         {
@@ -335,7 +335,7 @@ namespace tgui
         if (font == nullptr)
             return 0.0f;
 
-        bool bold = (textStyle & sf::Text::Bold) != 0;
+        bool bold = (textStyle & TextStyle::Bold) != 0;
 
         float width = 0.0f;
         std::uint32_t prevChar = 0;
@@ -405,7 +405,7 @@ namespace tgui
         if (font == nullptr)
             return 0;
 
-        const bool bold = (style & sf::Text::Bold) != 0;
+        const bool bold = (style & TextStyle::Bold) != 0;
 
         // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
         const float lineHeight = characterSize

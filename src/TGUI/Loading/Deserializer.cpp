@@ -374,19 +374,19 @@ namespace tgui
 
         ObjectConverter deserializeTextStyle(const std::string& style)
         {
-            unsigned int decodedStyle = sf::Text::Regular;
+            unsigned int decodedStyle = TextStyle::Regular;
             std::vector<std::string> styles = Deserializer::split(style, '|');
             for (const auto& elem : styles)
             {
                 std::string requestedStyle = toLower(elem);
                 if (requestedStyle == "bold")
-                    decodedStyle |= sf::Text::Bold;
+                    decodedStyle |= TextStyle::Bold;
                 else if (requestedStyle == "italic")
-                    decodedStyle |= sf::Text::Italic;
+                    decodedStyle |= TextStyle::Italic;
                 else if (requestedStyle == "underlined")
-                    decodedStyle |= sf::Text::Underlined;
+                    decodedStyle |= TextStyle::Underlined;
                 else if (requestedStyle == "strikethrough")
-                    decodedStyle |= sf::Text::StrikeThrough;
+                    decodedStyle |= TextStyle::StrikeThrough;
             }
 
             return TextStyle(decodedStyle);

@@ -111,9 +111,9 @@ TEST_CASE("[Serializer]")
 
     SECTION("serialize text style")
     {
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Regular}) == "Regular");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Bold}) == "Bold");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Italic | sf::Text::Underlined}) == "Italic | Underlined");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Regular}) == "Regular");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Bold}) == "Bold");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Italic | tgui::TextStyle::Underlined}) == "Italic | Underlined");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"bold"}) == "Bold");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"italic | underlined"}) == "Italic | Underlined");
 
@@ -127,7 +127,7 @@ TEST_CASE("[Serializer]")
 
         auto rendererData = std::make_shared<tgui::RendererData>();
         rendererData->propertyValuePairs["SomeColor"] = {sf::Color::Red};
-        rendererData->propertyValuePairs["TextStyleProperty"] = {sf::Text::StrikeThrough};
+        rendererData->propertyValuePairs["TextStyleProperty"] = {tgui::TextStyle::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
         std::string result = "SomeColor = red;\n"
