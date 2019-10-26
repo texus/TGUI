@@ -486,7 +486,7 @@ namespace tgui
                 setCaretPosition(m_selEnd);
         }
 
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+    #if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
         sf::Keyboard::setVirtualKeyboardVisible(focused);
     #endif
 

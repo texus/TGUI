@@ -104,7 +104,7 @@ namespace tgui
             /// An std::wstring is returned on Windows with backslashes as separator.
             /// On other platforms, a UTF-8 encoded std::string is returned with slashes as separator.
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
             std::wstring asNativeString() const;
 #else
             std::string asNativeString() const;

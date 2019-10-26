@@ -56,7 +56,7 @@
 #include <stack>
 #include <map>
 
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
     #include <direct.h> // _getcwd
     #define getcwd _getcwd
 #else

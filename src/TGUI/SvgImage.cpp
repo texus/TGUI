@@ -39,7 +39,7 @@ namespace tgui
 
     SvgImage::SvgImage(const sf::String& filename)
     {
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
         const std::string filenameAnsiString(filename.toAnsiString());
 #else
         const std::basic_string<sf::Uint8>& filenameUtf8 = filename.toUtf8();

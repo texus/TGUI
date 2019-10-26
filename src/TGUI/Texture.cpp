@@ -37,7 +37,7 @@ namespace tgui
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::ImageLoaderFunc Texture::m_imageLoader = [](const sf::String& filename) -> std::unique_ptr<sf::Image>
         {
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
             const std::string filenameAnsiString(filename.toAnsiString());
 #else
             const std::basic_string<sf::Uint8>& filenameUtf8 = filename.toUtf8();
@@ -162,7 +162,7 @@ namespace tgui
         m_data = nullptr;
 
         std::shared_ptr<TextureData> data;
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
         if ((id[0] != '/') && (id[0] != '\\') && ((id.getSize() <= 1) || (id[1] != ':')))
 #else
         if (id[0] != '/')

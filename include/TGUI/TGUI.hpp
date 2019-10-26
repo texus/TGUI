@@ -77,7 +77,7 @@
 #include <TGUI/SignalManagerImpl.hpp>
 
 #include <SFML/Graphics.hpp>
-#ifdef SFML_SYSTEM_IOS
+#ifdef TGUI_SYSTEM_IOS
   #include <SFML/Main.hpp>
 #endif
 

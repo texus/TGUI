@@ -37,7 +37,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+#if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
     #pragma warning(push)
     #pragma warning(disable:4275)
 #endif
@@ -50,7 +50,7 @@ namespace tgui
         }
     };
 
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+#if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
     #pragma warning(pop)
 #endif
 

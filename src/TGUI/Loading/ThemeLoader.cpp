@@ -33,7 +33,7 @@
 #include <fstream>
 #include <set>
 
-#ifdef SFML_SYSTEM_ANDROID
+#ifdef TGUI_SYSTEM_ANDROID
     #include <SFML/System/NativeActivity.hpp>
     #include <android/asset_manager_jni.h>
     #include <android/asset_manager.h>
@@ -71,7 +71,7 @@ namespace tgui
                     // Insert the path into the filename unless the filename is already an absolute path
                     if (pair.second->value[0] != '"')
                     {
-                    #ifdef SFML_SYSTEM_WINDOWS
+                    #ifdef TGUI_SYSTEM_WINDOWS
                         if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
                     #else
                         if (pair.second->value[0] != '/')
@@ -83,7 +83,7 @@ namespace tgui
                         if (pair.second->value.size() <= 1)
                             continue;
 
-                    #ifdef SFML_SYSTEM_WINDOWS
+                    #ifdef TGUI_SYSTEM_WINDOWS
                         if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
                     #else
                         if (pair.second->value[1] != '/')
@@ -252,7 +252,7 @@ namespace tgui
             return;
 
         std::string fullFilename;
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
     #else
         if (filename[0] != '/')
@@ -261,7 +261,7 @@ namespace tgui
         else
             fullFilename = filename;
 
-    #ifdef SFML_SYSTEM_ANDROID
+    #ifdef TGUI_SYSTEM_ANDROID
         // If the file does not start with a slash then load it from the assets
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {

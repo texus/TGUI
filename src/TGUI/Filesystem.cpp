@@ -25,13 +25,13 @@
 
 #include <TGUI/Filesystem.hpp>
 #include <cstdlib> // getenv
-#if !defined(SFML_SYSTEM_WINDOWS)
+#if !defined(TGUI_SYSTEM_WINDOWS)
     #include <unistd.h> // getuid
     #include <pwd.h> // getpwuid
 #endif
 
 #if !defined(TGUI_USE_STD_FILESYSTEM)
-    #if defined(SFML_SYSTEM_WINDOWS)
+    #if defined(TGUI_SYSTEM_WINDOWS)
         #ifndef NOMINMAX // MinGW already defines this which causes a warning without this check
             #define NOMINMAX
         #endif
@@ -60,7 +60,7 @@ namespace tgui
         String part;
         for (const char32_t c : path)
         {
-    #if defined(SFML_SYSTEM_WINDOWS)
+    #if defined(TGUI_SYSTEM_WINDOWS)
             if ((c == '/') || (c == '\\'))
     #else
             if (c == '/')
@@ -69,7 +69,7 @@ namespace tgui
                 // If this is the first part then check if we are parsing an absolute path
                 if (m_parts.empty() && !m_absolute && m_root.empty())
                 {
-    #if defined(SFML_SYSTEM_WINDOWS)
+    #if defined(TGUI_SYSTEM_WINDOWS)
                     if ((part.empty()) || ((part.length() == 2) && (part[1] == U':')))
                     {
                         m_root = part;
@@ -148,7 +148,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
     std::wstring Filesystem::Path::asNativeString() const
     {
     #ifdef TGUI_USE_STD_FILESYSTEM
@@ -207,7 +207,7 @@ namespace tgui
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
         return std::filesystem::is_directory(path);
-#elif defined(SFML_SYSTEM_WINDOWS)
+#elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD attrib = GetFileAttributesW(path.asNativeString().c_str());
         return ((attrib != INVALID_FILE_ATTRIBUTES) && (attrib & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -222,7 +222,7 @@ namespace tgui
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
         return std::filesystem::exists(path);
-#elif defined(SFML_SYSTEM_WINDOWS)
+#elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD attrib = GetFileAttributesW(path.asNativeString().c_str());
         return attrib != INVALID_FILE_ATTRIBUTES;
 #else
@@ -237,7 +237,7 @@ namespace tgui
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
         return std::filesystem::create_directory(path);
-#elif defined(SFML_SYSTEM_WINDOWS)
+#elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), NULL);
         return (status == 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
 #else
@@ -251,7 +251,7 @@ namespace tgui
     Filesystem::Path Filesystem::getLocalDataDirectory()
     {
         tgui::Filesystem::Path localDataDir;
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
     #if defined (_MSC_VER)
         wchar_t* appDataDir;
         size_t len;
@@ -271,7 +271,7 @@ namespace tgui
             homeDir = getpwuid(getuid())->pw_dir;
         if (homeDir)
         {
-    #ifdef SFML_SYSTEM_MACOS
+    #ifdef TGUI_SYSTEM_MACOS
             localDataDir = tgui::Filesystem::Path(homeDir) / U"Library" / U"Application Support";
     #else
             localDataDir = tgui::Filesystem::Path(homeDir) / U".local" / U"share";

@@ -420,7 +420,7 @@ namespace tgui
             }
         }
 
-#if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+#if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
         sf::Keyboard::setVirtualKeyboardVisible(focused);
 #endif
 

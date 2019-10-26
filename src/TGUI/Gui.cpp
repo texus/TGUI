@@ -31,7 +31,7 @@
 
 #include <cassert>
 
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
     #ifndef NOMINMAX // MinGW already defines this which causes a warning without this check
         #define NOMINMAX
     #endif
@@ -547,7 +547,7 @@ namespace tgui
 
     void Gui::init()
     {
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         unsigned int doubleClickTime = GetDoubleClickTime();
         if (doubleClickTime > 0)
             setDoubleClickTime(doubleClickTime);

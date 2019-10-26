@@ -25,7 +25,26 @@
 #ifndef TGUI_CONFIG_HPP
 #define TGUI_CONFIG_HPP
 
+// Include the SFML config header to check the SFML version
 #include <SFML/Config.hpp>
+
+// Detect the platform, to enable platform-specific code
+#if defined(_WIN32)
+    #define TGUI_SYSTEM_WINDOWS // Windows
+#elif defined(__APPLE__) && defined(__MACH__)
+    #include "TargetConditionals.h"
+    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+        #define TGUI_SYSTEM_IOS // iOS
+    #elif TARGET_OS_MAC
+        #define TGUI_SYSTEM_MACOS // macOS
+    #endif
+#elif defined(__unix__)
+    #if defined(__ANDROID__)
+        #define TGUI_SYSTEM_ANDROID // Android
+    #else //if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__OpenBSD__)
+        #define TGUI_SYSTEM_LINUX // Linux or BSD
+    #endif
+#endif
 
 // TGUI will link in the same way as SFML, unless TGUI_DYNAMIC or TGUI_STATIC is defined
 #if !defined(TGUI_DYNAMIC) && !defined(TGUI_STATIC)
@@ -35,7 +54,7 @@
 #endif
 
 #ifndef TGUI_STATIC
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         // Windows compilers need specific (and different) keywords for export and import
         #ifdef TGUI_EXPORTS
             #define TGUI_API __declspec(dllexport)
@@ -70,7 +89,7 @@
 // The alternative that is used is to compare the strings returned by type_info.name(). This is however considered undefined behavior since the compiler
 // is not guarenteed to have unique names for different types. The names will however be the same inside and outside the library so this method solves the issue.
 // I am also not aware of any supported compiler that does not create unique names.
-#if (defined(SFML_SYSTEM_ANDROID) || defined(SFML_SYSTEM_MACOS)) && !defined(TGUI_STATIC)
+#if (defined(TGUI_SYSTEM_ANDROID) || defined(TGUI_SYSTEM_MACOS)) && !defined(TGUI_STATIC)
     #define TGUI_UNSAFE_TYPE_INFO_COMPARISON
 #endif
 

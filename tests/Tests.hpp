@@ -26,9 +26,9 @@
 #ifndef TGUI_TESTS_HPP
 #define TGUI_TESTS_HPP
 
-#include <SFML/Config.hpp>
+#include <TGUI/Config.hpp>
 
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
     #define NOMB
     #define NOMINMAX
     #define VC_EXTRALEAN

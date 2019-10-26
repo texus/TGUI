@@ -29,7 +29,7 @@
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
     #include <SFML/Window/Clipboard.hpp>
 #else
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         #define NOMB
         #define NOMINMAX
         #define VC_EXTRALEAN
@@ -57,7 +57,7 @@ namespace tgui
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
         return sf::Clipboard::getString();
 #else
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         if (m_isWindowHandleSet)
         {
             if (IsClipboardFormatAvailable(CF_TEXT) && OpenClipboard(m_windowHandle))
@@ -92,7 +92,7 @@ namespace tgui
 #else
         m_contents = contents;
 
-    #ifdef SFML_SYSTEM_WINDOWS
+    #ifdef TGUI_SYSTEM_WINDOWS
         if (m_isWindowHandleSet)
         {
             if (OpenClipboard(m_windowHandle))

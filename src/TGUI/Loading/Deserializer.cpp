@@ -114,7 +114,7 @@ namespace tgui
 
             // Load the font but insert the resource path into the filename unless the filename is an absolute path
             auto font = std::make_shared<sf::Font>();
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
             if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.getSize() <= 1) || (filename[1] != ':')))
 #else
             if (filename[0] != '/')
@@ -279,7 +279,7 @@ namespace tgui
             if (value[0] != '"')
             {
                 // Load the texture but insert the resource path into the filename unless the filename is an absolute path
-#ifdef SFML_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
                 if ((value[0] != '/') && (value[0] != '\\') && ((value.size() <= 1) || (value[1] != ':')))
 #else
                 if (value[0] != '/')
