@@ -189,8 +189,6 @@ namespace tgui
 
     void CheckBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
             drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());

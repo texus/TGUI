@@ -741,7 +741,6 @@ namespace tgui
 
     void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
         const sf::RenderStates statesForScrollbar = states;
 
         Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

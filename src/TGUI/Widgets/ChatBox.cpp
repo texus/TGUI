@@ -620,8 +620,6 @@ namespace tgui
 
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         const sf::RenderStates scrollbarStates = states;
 
         // Draw the borders

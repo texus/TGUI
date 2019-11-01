@@ -1917,7 +1917,6 @@ namespace tgui
 
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
         const sf::RenderStates statesForScrollbar = states;
 
         // Draw the borders

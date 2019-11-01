@@ -638,8 +638,6 @@ namespace tgui
 
     void RangeSlider::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})
         {

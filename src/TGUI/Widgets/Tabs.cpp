@@ -793,9 +793,6 @@ namespace tgui
 
     void Tabs::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-        states.transform.translate({});
-
         // Draw the borders around the tabs
         if (m_bordersCached != Borders{0})
         {

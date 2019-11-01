@@ -556,8 +556,6 @@ namespace tgui
 
     void Knob::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         const float size = std::min(getInnerSize().x, getInnerSize().y);
 
         // Draw the borders

@@ -846,8 +846,6 @@ namespace tgui
 
     void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the background
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);

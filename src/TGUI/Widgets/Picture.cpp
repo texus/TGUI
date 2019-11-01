@@ -234,7 +234,6 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
         m_sprite.draw(target, states);
     }
 

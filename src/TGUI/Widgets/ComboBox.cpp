@@ -943,8 +943,6 @@ namespace tgui
 
     void ComboBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {

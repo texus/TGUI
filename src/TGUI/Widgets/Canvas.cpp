@@ -201,7 +201,6 @@ namespace tgui
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;
 
-        states.transform.translate(getPosition());
         target.draw(m_sprite, states);
     }
 

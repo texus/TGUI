@@ -488,8 +488,6 @@ namespace tgui
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {

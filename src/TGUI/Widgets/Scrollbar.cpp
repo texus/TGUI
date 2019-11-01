@@ -942,8 +942,6 @@ namespace tgui
         if (m_autoHide && (m_maximum <= m_viewportSize))
             return;
 
-        states.transform.translate(getPosition());
-
         bool textured = false;
         if (m_spriteTrack.isSet() && m_spriteThumb.isSet() && m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
             textured = true;
@@ -1080,6 +1078,14 @@ namespace tgui
     bool ScrollbarChildWidget::isShown() const
     {
         return m_visible && (!m_autoHide || (m_maximum > m_viewportSize));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildWidget::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        states.transform.translate(getPosition());
+        Scrollbar::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

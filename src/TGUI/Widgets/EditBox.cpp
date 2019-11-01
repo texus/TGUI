@@ -1497,8 +1497,6 @@ namespace tgui
 
     void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {

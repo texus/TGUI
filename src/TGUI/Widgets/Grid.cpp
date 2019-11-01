@@ -786,8 +786,6 @@ namespace tgui
 
     void Grid::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw all widgets
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
         {

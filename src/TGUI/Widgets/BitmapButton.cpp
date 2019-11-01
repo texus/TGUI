@@ -143,8 +143,6 @@ namespace tgui
             return;
         }
 
-        states.transform.translate(sf::Vector2f(getPosition()));
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {

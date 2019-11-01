@@ -653,8 +653,6 @@ namespace tgui
 
     void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         const float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
         if (m_bordersCached != Borders{0})

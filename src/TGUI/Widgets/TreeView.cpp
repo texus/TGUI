@@ -1180,7 +1180,6 @@ namespace tgui
 
     void TreeView::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
         sf::RenderStates statesForScrollbars = states;
 
         if (m_bordersCached != Borders{0})

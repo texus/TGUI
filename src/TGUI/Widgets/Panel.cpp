@@ -234,8 +234,6 @@ namespace tgui
 
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
@@ -257,7 +255,7 @@ namespace tgui
 
         // Draw the child widgets
         const Clipping clipping{target, states, {}, contentSize};
-        drawWidgetContainer(&target, states);
+        Container::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

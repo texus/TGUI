@@ -586,8 +586,6 @@ namespace tgui
 
     void ScrollablePanel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         const auto oldStates = states;
 
         // Draw the borders
@@ -624,7 +622,7 @@ namespace tgui
             states.transform.translate(-static_cast<float>(m_horizontalScrollbar->getValue()),
                                        -static_cast<float>(m_verticalScrollbar->getValue()));
 
-            drawWidgetContainer(&target, states);
+            Container::draw(target, states);
         }
 
         if (m_verticalScrollbar->isVisible())

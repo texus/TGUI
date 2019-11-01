@@ -10,6 +10,7 @@ TGUI 0.9-dev
 - Changed default value of ExpandDirection in ComboBox to Automatic
 - Changed default value of ScrollbarPolicy in Label to Automatic
 - Renamed getMenuList in MenuBar to getMenus
+- Container now translates the widget position before calling draw function
 - Removed all code that was marked as deprecated
 
 

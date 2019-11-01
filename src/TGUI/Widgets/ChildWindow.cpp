@@ -1014,8 +1014,6 @@ namespace tgui
 
     void ChildWindow::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
@@ -1057,10 +1055,13 @@ namespace tgui
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
         for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button->isVisible())
-                button->draw(target, states);
-        }
+            if (!button->isVisible())
+                continue;
 
+            sf::RenderStates buttonStates = states;
+            buttonStates.transform.translate(button->getPosition());
+            button->draw(target, buttonStates);
+        }
         states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached});
 
         // Draw the border below the title bar
@@ -1082,7 +1083,7 @@ namespace tgui
 
         // Draw the widgets in the child window
         const Clipping clipping{target, states, {}, {getSize()}};
-        drawWidgetContainer(&target, states);
+        Container::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -158,7 +158,7 @@ namespace tgui
 
     void Group::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition().x + m_paddingCached.getLeft(), getPosition().y + m_paddingCached.getTop());
+        states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         const Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
@@ -166,7 +166,7 @@ namespace tgui
         const Clipping clipping{target, states, {}, innerSize};
 
         // Draw the child widgets
-        drawWidgetContainer(&target, states);
+        Container::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

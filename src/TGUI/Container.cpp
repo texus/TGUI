@@ -1067,13 +1067,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states) const
+    void Container::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Draw all widgets when they are visible
         for (const auto& widget : m_widgets)
         {
-            if (widget->isVisible())
-                widget->draw(*target, states);
+            if (!widget->isVisible())
+                continue;
+
+            sf::RenderStates widgetStates = states;
+            widgetStates.transform.translate(sf::Vector2f(widget->getPosition()));
+            widget->draw(target, widgetStates);
         }
     }
 
@@ -1158,12 +1161,6 @@ namespace tgui
     bool GuiContainer::mouseOnWidget(Vector2f) const
     {
         return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void GuiContainer::draw(sf::RenderTarget&, sf::RenderStates) const
-    {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

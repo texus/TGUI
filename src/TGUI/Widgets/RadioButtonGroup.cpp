@@ -57,8 +57,8 @@ namespace tgui
 
     void RadioButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
-        drawWidgetContainer(&target, states);
+        // Note that it calls the function from Container, not Group!
+        Container::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

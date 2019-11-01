@@ -287,7 +287,7 @@ namespace tgui
         Clipping::setGuiView(m_view);
 
         // Draw the widgets
-        m_container->drawWidgetContainer(m_target, sf::RenderStates::Default);
+        m_container->draw(*m_target, sf::RenderStates::Default);
 
         // Restore the old view
         m_target->setView(oldView);
