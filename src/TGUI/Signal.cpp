@@ -419,7 +419,7 @@ namespace tgui
     unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
         if ((unboundParameters.size() == 1)
-         && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin()) || checkParamType<int>(unboundParameters.begin())))
+         && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
             return 1;
         else if ((unboundParameters.size() == 2)
               && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin()))
@@ -427,6 +427,8 @@ namespace tgui
         {
             return 1;
         }
+        else if ((unboundParameters.size() == 1) && checkParamType<int>(unboundParameters.begin()))
+            return 3;
         else
             return Signal::validateTypes(unboundParameters);
     }
