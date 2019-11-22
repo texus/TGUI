@@ -85,8 +85,13 @@ namespace tgui
         }
         else // Not an svg
         {
-            data->image = texture.getImageLoader()(filename);
-            if (data->image != nullptr)
+            // Share the image if it was loaded before
+            if (imageIt->second.size() >= 2)
+                data->image = imageIt->second.begin()->data->image;
+
+            if (!data->image)
+                data->image = texture.getImageLoader()(filename);
+            if (data->image)
             {
                 // Create a texture from the image
                 bool loadFromImageSuccess;

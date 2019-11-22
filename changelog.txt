@@ -1,3 +1,10 @@
+TGUI 0.8.7  (TBD)
+-----------------
+
+- Improved TextureManager to only load image once if different parts of image are requested
+- Index as optional parameter in SignalItem (which was added in 0.8.6) didn't actually work yet
+
+
 TGUI 0.8.6  (13 October 2019)
 -----------------------------
 
