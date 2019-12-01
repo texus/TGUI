@@ -612,13 +612,34 @@ namespace tgui
 
     void MenuBar::leftMouseReleased(Vector2f pos)
     {
-        if (!m_mouseDown || (m_visibleMenu == -1))
+        if (!m_mouseDown)
             return;
 
         pos -= getPosition();
 
         // Check if the mouse is on top of one of the menus
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        {
+            // Loop through the menus to check if the mouse is on top of them
+            float menuWidth = 0;
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
+            {
+                menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+                if (pos.x >= menuWidth)
+                    continue;
+
+                // If a menu is clicked that has no menu items then also emit a signal
+                if (m_menus[i].menuItems.empty())
+                {
+                    onMenuItemClick.emit(this, m_menus[i].text.getString(), std::vector<sf::String>(1, m_menus[i].text.getString()));
+                    closeMenu();
+                }
+
+                break;
+            }
+        }
+
+        if (m_visibleMenu == -1)
             return;
 
         auto* menu = &m_menus[m_visibleMenu];
