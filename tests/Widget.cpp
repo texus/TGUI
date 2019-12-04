@@ -329,6 +329,14 @@ TEST_CASE("[Widget]")
 
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
+
+        parent->removeAllWidgets();
+        parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt");
+        REQUIRE(parent->getWidgets().size() == 1);
+        parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt");
+        REQUIRE(parent->getWidgets().size() == 1);
+        parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt", false);
+        REQUIRE(parent->getWidgets().size() == 2);
     }
 
     SECTION("Bug Fixes")

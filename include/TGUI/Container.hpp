@@ -239,10 +239,13 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a text file
+        ///
         /// @param filename  Filename of the widget file
+        /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
         /// @throw Exception when file could not be opened or parsing failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromFile(const std::string& filename);
+        void loadWidgetsFromFile(const std::string& filename, bool replaceExisting = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,16 +260,18 @@ namespace tgui
         /// @brief Loads the child widgets from a string stream
         ///
         /// @param stream  stringstream that contains the widget file
+        /// @param replaceExisting  Remove existing widgets first if there are any
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream& stream);
+        void loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a string stream
         ///
         /// @param stream  stringstream that contains the widget file
+        /// @param replaceExisting  Remove existing widgets first if there are any
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream&& stream);
+        void loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

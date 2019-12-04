@@ -422,9 +422,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::loadWidgetsFromFile(const std::string& filename)
+    void Gui::loadWidgetsFromFile(const std::string& filename, bool replaceExisting)
     {
-        m_container->loadWidgetsFromFile(filename);
+        m_container->loadWidgetsFromFile(filename, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -436,16 +436,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::loadWidgetsFromStream(std::stringstream& stream)
+    void Gui::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
-        m_container->loadWidgetsFromStream(stream);
+        m_container->loadWidgetsFromStream(stream, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::loadWidgetsFromStream(std::stringstream&& stream)
+    void Gui::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting)
     {
-        loadWidgetsFromStream(stream);
+        loadWidgetsFromStream(stream, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

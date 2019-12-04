@@ -349,7 +349,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromFile(const std::string& filename)
+    void Container::loadWidgetsFromFile(const std::string& filename, bool replaceExisting)
     {
         std::ifstream in{filename};
         if (!in.is_open())
@@ -357,7 +357,7 @@ namespace tgui
 
         std::stringstream stream;
         stream << in.rdbuf();
-        loadWidgetsFromStream(stream);
+        loadWidgetsFromStream(stream, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,11 +376,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromStream(std::stringstream& stream)
+    void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
         auto rootNode = DataIO::parse(stream);
 
-        removeAllWidgets(); // The existing widgets will be replaced by the ones that will be loaded
+        // Replace the existing widgets by the ones that will be loaded if requested
+        if (replaceExisting)
+            removeAllWidgets();
 
         if (rootNode->propertyValuePairs.size() != 0)
             Widget::load(rootNode, {});
@@ -417,9 +419,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromStream(std::stringstream&& stream)
+    void Container::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting)
     {
-        loadWidgetsFromStream(stream);
+        loadWidgetsFromStream(stream, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
