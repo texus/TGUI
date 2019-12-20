@@ -33,10 +33,6 @@ environment:
       FAST_BUILD:     FALSE
       BUILD_FOLDER:   build-VS2015-Win64
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      SFML_PATH:      C:\SFML
-      SFML_VERSION:   2.5.0
-
 clone_depth: 3
 
 matrix:
