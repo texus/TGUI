@@ -197,6 +197,29 @@ TEST_CASE("[Animation]") {
             REQUIRE(!widget->isVisible());
         }
 
+        SECTION("isAnimationPlaying")
+        {
+            REQUIRE(!widget->isAnimationPlaying());
+
+            widget->hideWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
+            REQUIRE(widget->isAnimationPlaying());
+
+            widget->update(sf::milliseconds(200));
+            REQUIRE(widget->isAnimationPlaying());
+
+            widget->update(sf::milliseconds(200));
+            REQUIRE(!widget->isAnimationPlaying());
+
+            widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(300));
+            REQUIRE(widget->isAnimationPlaying());
+
+            widget->update(sf::milliseconds(200));
+            REQUIRE(widget->isAnimationPlaying());
+
+            widget->update(sf::milliseconds(200));
+            REQUIRE(!widget->isAnimationPlaying());
+        }
+
         // TODO: Add tests for simultaneous animations (tests for both same type and different types)
     }
 }
