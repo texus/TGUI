@@ -30,7 +30,7 @@
 
 #include <set>
 
-#undef MessageBox  // Windows.h defines MessageBox when NOMB isn't defined before including Windows.h
+#undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
