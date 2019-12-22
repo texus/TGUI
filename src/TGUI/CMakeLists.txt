@@ -147,6 +147,13 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
+# Define either TGUI_STATIC or TGUI_DYNAMIC
+if(TGUI_SHARED_LIBS)
+    target_compile_definitions(tgui PUBLIC TGUI_DYNAMIC)
+else()
+    target_compile_definitions(tgui PUBLIC TGUI_STATIC)
+endif()
+
 tgui_set_global_compile_flags(tgui)
 tgui_set_stdlib(tgui)
 

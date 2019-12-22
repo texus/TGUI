@@ -6,6 +6,7 @@ TGUI 0.8.7  (TBD)
 - MenuItemClicked signal is now also emitted when clicking on menu that has no menu items
 - Added option to not replace existing widgets when loading widgets from file
 - Added isAnimationPlaying function to Widget (for the show and hide animations)
+- Fixed linking issues when compiling TGUI as a static library while dynamically linking SFML
 
 
 TGUI 0.8.6  (13 October 2019)
