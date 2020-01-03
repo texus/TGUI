@@ -195,7 +195,7 @@ namespace tgui
     void CustomWidgetForBindings::leftMouseButtonNoLongerDown()
     {
         Widget::leftMouseButtonNoLongerDown();
-        implMouseNoLongerDown();
+        implLeftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

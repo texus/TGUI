@@ -693,6 +693,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Signal& getSignal(std::string signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
         ///
         /// This is a pure virtual function that has to be implemented by the derived class to define how the widget is drawn.
@@ -739,18 +751,6 @@ namespace tgui
 
         using SavingRenderersMap = std::map<const Widget*, std::pair<std::unique_ptr<DataIO::Node>, std::string>>;
         using LoadingRenderersMap = std::map<std::string, std::shared_ptr<RendererData>>;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves a signal based on its name
-        ///
-        /// @param signalName  Name of the signal
-        ///
-        /// @return Signal that corresponds to the name
-        ///
-        /// @throw Exception when the name does not match any signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Signal& getSignal(std::string signalName) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
