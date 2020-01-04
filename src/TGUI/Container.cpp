@@ -928,6 +928,8 @@ namespace tgui
                     widget->mousePressed(event.mouseButton.button, mousePos);
                 else // Touch began of finger 0
                     widget->mousePressed(sf::Mouse::Button::Left, mousePos);
+
+                return true;
             }
             else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
             {
