@@ -30,6 +30,7 @@
 #include <string>
 #include <cstring>
 #include <locale>
+#include <ostream>
 
 #include <SFML/System/String.hpp>
 
