@@ -75,6 +75,10 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getParent() == panel3.get());
         widget->setParent(nullptr);
         REQUIRE(widget->getParent() == nullptr);
+        panel1->add(widget);
+        panel2->add(widget);
+        REQUIRE(widget->getParent() == panel2.get());
+        REQUIRE(panel1->getWidgets().size() == 0);
     }
 
     SECTION("Move to front/back")
@@ -322,6 +326,10 @@ TEST_CASE("[Widget]")
         widget->setPosition(50, "15%");
         widget->setSize("min(20% - (10 * 5), 100)", "70");
 
+        std::string UserData = "Main Widget User Data .With:Special{Chars}";
+        widget->setUserData(UserData);
+        REQUIRE(widget->getUserData<std::string>() == UserData);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
@@ -329,6 +337,7 @@ TEST_CASE("[Widget]")
 
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
+        REQUIRE(parent->get("Widget Name.With:Special{Chars}")->getUserData<std::string>() == UserData);
 
         parent->removeAllWidgets();
         parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt");

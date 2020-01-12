@@ -54,6 +54,8 @@ struct WidgetProperties
             widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")
             widget->setEnabled(parseBoolean(value, true));
+        else if (property == "UserData")
+            widget->setUserData(value.toAnsiString());
         else // Renderer property
             widget->getRenderer()->setProperty(property, value);
     }
@@ -67,6 +69,15 @@ struct WidgetProperties
         pairs["Height"] = {"String", widget->getSizeLayout().y.toString()};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
+        try
+        {
+            pairs["UserData"] = {"String", widget->getUserData<std::string>()};
+        }
+        catch(const std::bad_cast&)
+        {
+            pairs["UserData"] = {"String", ""};
+        }
+
 
         PropertyValueMap rendererPairs;
         const auto renderer = widget->getSharedRenderer();

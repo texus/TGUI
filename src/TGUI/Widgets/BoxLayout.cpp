@@ -91,10 +91,8 @@ namespace tgui
             Group::add(widget, widgetName);
 
             m_widgets.pop_back();
-            m_widgetNames.pop_back();
 
             m_widgets.insert(m_widgets.begin() + index, widget);
-            m_widgetNames.insert(m_widgetNames.begin() + index, widgetName);
         }
         else // Just add the widget to the back
             Group::add(widget, widgetName);

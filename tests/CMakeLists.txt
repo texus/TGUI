@@ -14,6 +14,7 @@ set(TEST_SOURCES
     Outline.cpp
     Sprite.cpp
     Signal.cpp
+    SignalManager.cpp
     String.cpp
     SvgImage.cpp
     Text.cpp

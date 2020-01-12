@@ -130,7 +130,11 @@ TEST_CASE("[Label]")
 
     SECTION("ScrollbarPolicy")
     {
+#ifdef TGUI_NEXT
+        REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+#else
         REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+#endif
         label->setScrollbarPolicy(tgui::Scrollbar::Policy::Always);
         REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
         label->setScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);

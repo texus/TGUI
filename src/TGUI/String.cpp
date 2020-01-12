@@ -46,7 +46,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef TGUI_NEXT
-    bool isWhitespace(char32_t character)
+    bool isWhitespace(uint32_t character)
 #else
     bool isWhitespace(sf::Uint32 character)
 #endif

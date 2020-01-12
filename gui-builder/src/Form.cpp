@@ -220,7 +220,7 @@ bool Form::setSelectedWidgetName(const std::string& name)
         }
     }
 
-    m_selectedWidget->ptr->getParent()->setWidgetName(m_selectedWidget->ptr, name);
+    m_selectedWidget->ptr->Widget::setWidgetName(name);
     m_selectedWidget->name = name;
     return true;
 }
@@ -575,12 +575,11 @@ void Form::drawExtra(sf::RenderWindow& window) const
 void Form::importLoadedWidgets(tgui::Container::Ptr parent)
 {
     const auto& widgets = parent->getWidgets();
-    const auto& widgetNames = parent->getWidgetNames();
     for (std::size_t i = 0; i < widgets.size(); ++i)
     {
         const std::string id = tgui::to_string(widgets[i].get());
         m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
-        m_widgets[id]->name = widgetNames[i];
+        m_widgets[id]->name = widgets[i]->getWidgetName();
         m_widgets[id]->theme = "Custom";
 
         if (widgets[i]->isContainer())

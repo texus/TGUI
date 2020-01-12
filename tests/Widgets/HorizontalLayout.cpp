@@ -119,11 +119,11 @@ TEST_CASE("[HorizontalLayout]")
         layout->insert(0, tgui::Button::create(), "4");
         layout->insert(4, tgui::Button::create(), "5");
 
-        REQUIRE(layout->getWidgetName(layout->get(0)) == "4");
-        REQUIRE(layout->getWidgetName(layout->get(1)) == "1");
-        REQUIRE(layout->getWidgetName(layout->get(2)) == "3");
-        REQUIRE(layout->getWidgetName(layout->get(3)) == "2");
-        REQUIRE(layout->getWidgetName(layout->get(4)) == "5");
+        REQUIRE(layout->get(0)->getWidgetName() == "4");
+        REQUIRE(layout->get(1)->getWidgetName() == "1");
+        REQUIRE(layout->get(2)->getWidgetName() == "3");
+        REQUIRE(layout->get(3)->getWidgetName() == "2");
+        REQUIRE(layout->get(4)->getWidgetName() == "5");
         REQUIRE(layout->get(5) == nullptr);
 
         REQUIRE(layout->remove(layout->get("2")) == true);
@@ -131,9 +131,9 @@ TEST_CASE("[HorizontalLayout]")
         REQUIRE(layout->remove(5) == false);
         REQUIRE(layout->remove(tgui::Button::create()) == false);
 
-        REQUIRE(layout->getWidgetName(layout->get(0)) == "4");
-        REQUIRE(layout->getWidgetName(layout->get(1)) == "3");
-        REQUIRE(layout->getWidgetName(layout->get(2)) == "5");
+        REQUIRE(layout->get(0)->getWidgetName() == "4");
+        REQUIRE(layout->get(1)->getWidgetName() == "3");
+        REQUIRE(layout->get(2)->getWidgetName() == "5");
         REQUIRE(layout->get(5) == nullptr);
 
         layout->removeAllWidgets();

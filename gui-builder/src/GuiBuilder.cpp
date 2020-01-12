@@ -2218,7 +2218,7 @@ void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<sf::String>& hie
         const size_t widgetCount = asContainer->getWidgets().size();
         for (size_t i = 0; i < widgetCount; ++i)
         {
-            hierarchy.push_back(asContainer->getWidgetNames()[i]);
+            hierarchy.push_back(asContainer->getWidgets()[i]->getWidgetName());
             fillWidgetHierarchyTreeRecursively(hierarchy, asContainer->getWidgets()[i]);
             hierarchy.pop_back();
         }

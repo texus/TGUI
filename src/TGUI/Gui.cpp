@@ -330,12 +330,15 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const std::vector<sf::String>& Gui::getWidgetNames() const
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+    const std::vector<sf::String> Gui::getWidgetNames() const
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         return m_container->getWidgetNames();
+#pragma GCC diagnostic pop
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
@@ -365,19 +368,25 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     bool Gui::setWidgetName(const Widget::Ptr& widget, const std::string& name)
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         return m_container->setWidgetName(widget, name);
+#pragma GCC diagnostic pop
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string Gui::getWidgetName(const Widget::Ptr& widget) const
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         return m_container->getWidgetName(widget);
+#pragma GCC diagnostic pop
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::focusNextWidget()

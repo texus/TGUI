@@ -257,7 +257,11 @@ TEST_CASE("[ComboBox]")
 
     SECTION("ExpandDirection")
     {
+#ifdef TGUI_NEXT
+        REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Automatic);
+#else
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
+#endif
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Up);
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
@@ -268,7 +272,11 @@ TEST_CASE("[ComboBox]")
 
     SECTION("ChangeItemOnScroll")
     {
+#ifdef TGUI_NEXT
+        REQUIRE(!comboBox->getChangeItemOnScroll());
+#else
         REQUIRE(comboBox->getChangeItemOnScroll());
+#endif
         comboBox->setChangeItemOnScroll(false);
         REQUIRE(!comboBox->getChangeItemOnScroll());
         comboBox->setChangeItemOnScroll(true);

@@ -74,6 +74,7 @@
 #include <TGUI/Widgets/VerticalLayout.hpp>
 
 #include <TGUI/SignalImpl.hpp>
+#include <TGUI/SignalManagerImpl.hpp>
 
 #include <SFML/Graphics.hpp>
 #ifdef SFML_SYSTEM_IOS

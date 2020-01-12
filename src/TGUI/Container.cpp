@@ -112,7 +112,7 @@ namespace tgui
     {
         // Copy all the widgets
         for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
-            add(other.m_widgets[i]->clone(), other.m_widgetNames[i]);
+            add(other.m_widgets[i]->clone(), other.m_widgets[i]->getWidgetName());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,6 @@ namespace tgui
     Container::Container(Container&& other) :
         Widget                {std::move(other)},
         m_widgets             {std::move(other.m_widgets)},
-        m_widgetNames         {std::move(other.m_widgetNames)},
         m_widgetBelowMouse    {std::move(other.m_widgetBelowMouse)},
         m_focusedWidget       {std::move(other.m_focusedWidget)},
         m_handingMouseReleased{std::move(other.m_handingMouseReleased)}
@@ -161,7 +160,7 @@ namespace tgui
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
             {
                 // Don't allow the 'add' function of a derived class to be called, since its members are not copied yet
-                Container::add(right.m_widgets[i]->clone(), right.m_widgetNames[i]);
+                Container::add(right.m_widgets[i]->clone(), right.m_widgets[i]->getWidgetName());
             }
         }
 
@@ -177,7 +176,6 @@ namespace tgui
         {
             Widget::operator=(std::move(right));
             m_widgets              = std::move(right.m_widgets);
-            m_widgetNames          = std::move(right.m_widgetNames);
             m_widgetBelowMouse     = std::move(right.m_widgetBelowMouse);
             m_focusedWidget        = std::move(right.m_focusedWidget);
             m_handingMouseReleased = std::move(right.m_handingMouseReleased);
@@ -218,9 +216,13 @@ namespace tgui
     {
         assert(widgetPtr != nullptr);
 
+        if(widgetPtr->getParent())
+        {
+            widgetPtr->getParent()->remove(widgetPtr);
+        }
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
-        m_widgetNames.push_back(widgetName);
+        widgetPtr->setWidgetName(widgetName);
 
         if (m_fontCached != getGlobalFont())
             widgetPtr->setInheritedFont(m_fontCached);
@@ -233,13 +235,13 @@ namespace tgui
 
     Widget::Ptr Container::get(const sf::String& widgetName) const
     {
-        for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_widgetNames[i] == widgetName)
+            if (m_widgets[i]->getWidgetName() == widgetName)
                 return m_widgets[i];
         }
 
-        for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i]->isContainer())
             {
@@ -277,7 +279,6 @@ namespace tgui
                 // Remove the widget
                 widget->setParent(nullptr);
                 m_widgets.erase(m_widgets.begin() + i);
-                m_widgetNames.erase(m_widgetNames.begin() + i);
                 return true;
             }
         }
@@ -293,21 +294,20 @@ namespace tgui
             widget->setParent(nullptr);
 
         m_widgets.clear();
-        m_widgetNames.clear();
 
         m_widgetBelowMouse = nullptr;
         m_focusedWidget = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     bool Container::setWidgetName(const Widget::Ptr& widget, const std::string& name)
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i] == widget)
             {
-                m_widgetNames[i] = name;
+                m_widgets[i]->setWidgetName(name);
                 return true;
             }
         }
@@ -322,12 +322,12 @@ namespace tgui
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i] == widget)
-                return m_widgetNames[i];
+                return m_widgets[i]->getWidgetName();
         }
 
         return "";
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::uncheckRadioButtons()
@@ -470,11 +470,9 @@ namespace tgui
 
             // Copy the widget
             m_widgets.push_back(m_widgets[i]);
-            m_widgetNames.push_back(m_widgetNames[i]);
 
             // Remove the old widget
             m_widgets.erase(m_widgets.begin() + i);
-            m_widgetNames.erase(m_widgetNames.begin() + i);
             break;
         }
     }
@@ -491,13 +489,10 @@ namespace tgui
 
             // Copy the widget
             const Widget::Ptr obj = m_widgets[i];
-            const std::string name = m_widgetNames[i];
             m_widgets.insert(m_widgets.begin(), obj);
-            m_widgetNames.insert(m_widgetNames.begin(), name);
 
             // Remove the old widget
             m_widgets.erase(m_widgets.begin() + i + 1);
-            m_widgetNames.erase(m_widgetNames.begin() + i + 1);
             break;
         }
     }
