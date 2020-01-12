@@ -56,7 +56,6 @@ TEST_CASE("[Container]")
         auto w3 = tgui::ClickableWidget::create();
 
         REQUIRE(container->getWidgets().empty());
-        REQUIRE(container->getWidgetNames().empty());
 
         container->add(w1, "widget1");
         container->add(w2, "");
@@ -67,10 +66,10 @@ TEST_CASE("[Container]")
         REQUIRE(container->getWidgets()[1] == w2);
         REQUIRE(container->getWidgets()[2] == w3);
 
-        REQUIRE(container->getWidgetNames().size() == 3);
-        REQUIRE(container->getWidgetNames()[0] == "widget1");
-        REQUIRE(container->getWidgetNames()[1] == "");
-        REQUIRE(container->getWidgetNames()[2] == "widget3");
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0]->getWidgetName() == "widget1");
+        REQUIRE(container->getWidgets()[1]->getWidgetName() == "");
+        REQUIRE(container->getWidgets()[2]->getWidgetName() == "widget3");
     }
 
     SECTION("get")
@@ -137,29 +136,24 @@ TEST_CASE("[Container]")
         SECTION("remove with correct parameter")
         {
             REQUIRE(container->getWidgets().size() == 3);
-            REQUIRE(container->getWidgetNames().size() == 3);
             REQUIRE(widget2->getWidgets().size() == 2);
-            REQUIRE(widget2->getWidgetNames().size() == 2);
 
             REQUIRE(container->remove(widget2));
             REQUIRE(widget2->remove(widget5));
 
             REQUIRE(container->getWidgets().size() == 2);
-            REQUIRE(container->getWidgetNames().size() == 2);
             REQUIRE(container->getWidgets()[0] == widget1);
             REQUIRE(container->getWidgets()[1] == widget3);
-            REQUIRE(container->getWidgetNames()[0] == "w1");
-            REQUIRE(container->getWidgetNames()[1] == "w3");
+            REQUIRE(container->getWidgets()[0]->getWidgetName() == "w1");
+            REQUIRE(container->getWidgets()[1]->getWidgetName()  == "w3");
 
             REQUIRE(widget2->getWidgets().size() == 1);
-            REQUIRE(widget2->getWidgetNames().size() == 1);
             REQUIRE(widget2->getWidgets()[0] == widget4);
-            REQUIRE(widget2->getWidgetNames()[0] == "w4");
+            REQUIRE(widget2->getWidgets()[0]->getWidgetName()  == "w4");
 
             REQUIRE(widget2->remove(widget4));
 
             REQUIRE(widget2->getWidgets().empty());
-            REQUIRE(widget2->getWidgetNames().empty());
         }
 
         SECTION("remove with wrong parameter")
@@ -172,42 +166,26 @@ TEST_CASE("[Container]")
         SECTION("remove all widgets")
         {
             REQUIRE(container->getWidgets().size() == 3);
-            REQUIRE(container->getWidgetNames().size() == 3);
 
             container->removeAllWidgets();
 
             REQUIRE(container->getWidgets().empty());
-            REQUIRE(container->getWidgetNames().empty());
         }
     }
 
     SECTION("widget name")
     {
-        REQUIRE(container->getWidgetNames().size() == 3);
-        REQUIRE(container->getWidgetNames()[0] == container->getWidgetName(widget1));
-        REQUIRE(container->getWidgetNames()[1] == container->getWidgetName(widget2));
-        REQUIRE(container->getWidgetNames()[2] == container->getWidgetName(widget3));
-        REQUIRE(container->getWidgetName(widget1) == "w1");
-        REQUIRE(container->getWidgetName(widget2) == "w2");
-        REQUIRE(container->getWidgetName(widget3) == "w3");
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(widget1->getWidgetName() == "w1");
+        REQUIRE(widget2->Widget::getWidgetName() == "w2");
+        REQUIRE(widget3->getWidgetName() == "w3");
 
-        REQUIRE(container->getWidgetName(widget4) == "");
-        REQUIRE(container->getWidgetName(tgui::ClickableWidget::create()) == "");
-        REQUIRE(container->getWidgetName(nullptr) == "");
+        widget1->setWidgetName("w001");
+        widget3->setWidgetName("w003");
 
-        REQUIRE(container->setWidgetName(widget1, "w001"));
-        REQUIRE(container->setWidgetName(widget3, "w003"));
-
-        REQUIRE(!container->setWidgetName(widget4, "Hello"));
-        REQUIRE(!container->setWidgetName(tgui::ClickableWidget::create(), "Hello"));
-        REQUIRE(!container->setWidgetName(nullptr, "Hello"));
-
-        REQUIRE(container->getWidgetNames()[0] == container->getWidgetName(widget1));
-        REQUIRE(container->getWidgetNames()[1] == container->getWidgetName(widget2));
-        REQUIRE(container->getWidgetNames()[2] == container->getWidgetName(widget3));
-        REQUIRE(container->getWidgetName(widget1) == "w001");
-        REQUIRE(container->getWidgetName(widget2) == "w2");
-        REQUIRE(container->getWidgetName(widget3) == "w003");
+        REQUIRE(widget1->getWidgetName() == "w001");
+        REQUIRE(widget2->Widget::getWidgetName() == "w2");
+        REQUIRE(widget3->getWidgetName() == "w003");
     }
 
     SECTION("focus")

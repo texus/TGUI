@@ -48,7 +48,7 @@ namespace tgui
     /// @brief Checks if a character is a whitespace character (space, tab, carriage return or line feed)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_NEXT
-    TGUI_API bool isWhitespace(char32_t character);
+    TGUI_API bool isWhitespace(uint32_t character);
 #else
     TGUI_API bool isWhitespace(sf::Uint32 character);
 #endif

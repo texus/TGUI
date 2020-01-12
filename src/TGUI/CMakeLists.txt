@@ -13,6 +13,7 @@ set(TGUI_SRC
     Sprite.cpp
     Signal.cpp
     String.cpp
+    SignalManager.cpp
     SvgImage.cpp
     TextStyle.cpp
     Text.cpp

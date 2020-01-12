@@ -107,18 +107,26 @@ namespace tgui
             return m_widgets;
         }
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a list of the names of all the widgets in this container
         ///
         /// @return Vector of all widget names
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::vector<sf::String>& getWidgetNames() const
+        TGUI_DEPRECATED("Use getWidgets() and Widget::getWidgetName instead") const std::vector<sf::String> getWidgetNames() const
         {
+            std::vector<sf::String> m_widgetNames;
+            m_widgetNames.reserve(m_widgets.size());
+
+            for (std::size_t i = 0; i < m_widgets.size(); ++i)
+            {
+                m_widgetNames.emplace_back(m_widgets[i]->getWidgetName());
+            }
+
             return m_widgetNames;
         }
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget to the container
@@ -186,7 +194,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllWidgets();
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the name of a widget
         ///
@@ -196,7 +204,7 @@ namespace tgui
         /// @return True when the name was changed, false when the widget wasn't part of this container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setWidgetName(const Widget::Ptr& widget, const std::string& name);
+        TGUI_DEPRECATED("Use Widget::setWidgetName instead") bool setWidgetName(const Widget::Ptr& widget, const std::string& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,11 +212,11 @@ namespace tgui
         ///
         /// @param widget  Widget of which the name should be retrieved
         ///
-        /// @return Name of the widget or an empty string when the widget didn't exist or wasn't given a name
+        /// @return Name of the widget or an empty string when the widget wasn't part of this container or wasn't given a name
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getWidgetName(const Widget::ConstPtr& widget) const;
-
+        TGUI_DEPRECATED("Use Widget::getWidgetName instead") std::string getWidgetName(const Widget::ConstPtr& widget) const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Unchecks all the radio buttons
@@ -465,7 +473,6 @@ namespace tgui
     protected:
 
         std::vector<Widget::Ptr> m_widgets;
-        std::vector<sf::String>  m_widgetNames;
 
         Widget::Ptr m_widgetBelowMouse;
         Widget::Ptr m_focusedWidget;
