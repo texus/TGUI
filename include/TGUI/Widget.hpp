@@ -508,8 +508,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the name of a widget
         ///
-        /// @param name    New name for the widget
+        /// @param name  New name for the widget
         ///
+        /// @warning This name is overwritten when adding the widget to its parent. You should only set it afterwards.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setWidgetName(const std::string& name);
 
@@ -518,7 +519,6 @@ namespace tgui
         /// @brief Returns the name of a widget
         ///
         /// @return Name of the widget or an empty string when wasn't given a name
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::string getWidgetName() const;
 

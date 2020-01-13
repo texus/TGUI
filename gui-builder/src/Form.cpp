@@ -220,7 +220,7 @@ bool Form::setSelectedWidgetName(const std::string& name)
         }
     }
 
-    m_selectedWidget->ptr->Widget::setWidgetName(name);
+    m_selectedWidget->ptr->setWidgetName(name);
     m_selectedWidget->name = name;
     return true;
 }

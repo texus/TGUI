@@ -1,5 +1,7 @@
 /include/TGUI/Config.hpp
 /build*
+/cmake-build-debug
+/cmake-build-release
 /gui-builder/themes
 /gui-builder/gui-builder
 /gui-builder/gui-builder.exe
@@ -9,10 +11,8 @@
 /examples/Android/libs
 /examples/Android/obj
 /.vs
+/.idea
 CmakeSettings.json
 CombinedSources*.cpp
 .DS_Store
 *~
-/cmake-build-debug
-/cmake-build-release
-/.idea

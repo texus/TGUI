@@ -216,10 +216,9 @@ namespace tgui
     {
         assert(widgetPtr != nullptr);
 
-        if(widgetPtr->getParent())
-        {
+        if (widgetPtr->getParent())
             widgetPtr->getParent()->remove(widgetPtr);
-        }
+
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
         widgetPtr->setWidgetName(widgetName);

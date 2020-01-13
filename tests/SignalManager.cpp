@@ -88,7 +88,6 @@ TEST_CASE("[SignalManager]")
         manager->connect("NameOfWidget", "MousePressed", [&](){ mousePressedCount++; });
 
         auto widget = tgui::Button::create();
-        widget->setWidgetName("NameOfWidget");
 
         widget->setPosition({40, 30});
         widget->setSize({150, 100});

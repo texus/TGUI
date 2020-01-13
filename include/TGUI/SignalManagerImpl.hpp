@@ -23,16 +23,16 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_SIGNALMANAGERIMPL_HPP
-#define TGUI_SIGNALMANAGERIMPL_HPP
+#ifndef TGUI_SIGNAL_MANAGER_IMPL_HPP
+#define TGUI_SIGNAL_MANAGER_IMPL_HPP
 
 #include <TGUI/SignalImpl.hpp>
 #include <TGUI/SignalManager.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui{
-
+namespace tgui
+{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
@@ -45,31 +45,25 @@ namespace tgui{
                    && std::is_invocable_v<decltype(&handler), BoundArgs...>
                    && !std::is_function_v<Func>)
         {
-            // Reference to function, all parameters bound
+            // Reference to function
             m_signals[id] = {widgetName, signalName, makeSignal([=, f=std::function<void(const BoundArgs&...)>(handler)]{ std::invoke(f, args...); })};
         }
         else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>)
         {
-            // Function with all parameters bound
+            // Function pointer
             m_signals[id] = {widgetName, signalName, makeSignal([=]{ std::invoke(handler, args...); })};
         }
         else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>>
                         && std::is_invocable_v<decltype(&handler), BoundArgs..., const std::shared_ptr<Widget>&, const std::string&>
                         && !std::is_function_v<Func>)
         {
-            // Reference to function with caller arguments, all parameters bound
+            // Reference to function with caller arguments
             m_signals[id] = {widgetName, signalName, makeSignal([=, f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>& w, const std::string& s)>(handler)](const std::shared_ptr<Widget>& w, const std::string& s){ std::invoke(f, args..., w, s); })};
-        }
-        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>>)
-        {
-            // Function with caller arguments, all parameters bound
-            m_signals[id] = {widgetName, signalName, makeSignal([=](const std::shared_ptr<Widget>& w, const std::string& s){ std::invoke(handler, args..., w, s); })};
         }
         else
         {
-            // Function with unbound arguments
-            using binder = internal_signal::func_traits<void, std::decay_t<Func>, BoundArgs...>;
-            m_signals[id] = {widgetName, signalName, makeSignal(binder::bind(signal, std::forward<Func>(handler), args...))};
+            // Function pointer with caller arguments
+            m_signals[id] = {widgetName, signalName, makeSignal([=](const std::shared_ptr<Widget>& w, const std::string& s){ std::invoke(handler, args..., w, s); })};
         }
 
         connect(id);
@@ -118,4 +112,4 @@ namespace tgui{
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //TGUI_SIGNALMANAGERIMPL_HPP
+#endif // TGUI_SIGNAL_MANAGER_IMPL_HPP

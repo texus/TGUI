@@ -208,10 +208,8 @@ namespace tgui
 
         other.m_renderer = nullptr;
 
-        if(other.m_parent)
-        {
+        if (other.m_parent)
             m_parent->remove(other.shared_from_this());
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,7 +257,7 @@ namespace tgui
 
             m_renderer->subscribe(this, m_rendererChangedCallback);
 
-            if(m_parent)
+            if (m_parent)
             {
                 SignalManager::getSignalManager()->remove(this);
                 SignalManager::getSignalManager()->add(shared_from_this());
@@ -316,7 +314,7 @@ namespace tgui
 
             other.m_renderer = nullptr;
 
-            if(m_parent)
+            if (m_parent)
             {
                 SignalManager::getSignalManager()->remove(&other);
                 SignalManager::getSignalManager()->add(shared_from_this());
@@ -787,11 +785,10 @@ namespace tgui
 
     void Widget::setWidgetName(const std::string& name)
     {
-        if(m_name != name)
+        if (m_name != name)
         {
             m_name = name;
-
-            if(m_parent)
+            if (m_parent)
             {
                 SignalManager::getSignalManager()->remove(this);
                 SignalManager::getSignalManager()->add(shared_from_this());
@@ -838,11 +835,11 @@ namespace tgui
 
     void Widget::setParent(Container* parent)
     {
-        if(!parent)
+        if (!parent)
         {
             SignalManager::getSignalManager()->remove(this);
         }
-        else if(!m_parent)
+        else if (!m_parent)
         {
             SignalManager::getSignalManager()->add(shared_from_this());
         }
@@ -1082,49 +1079,45 @@ namespace tgui
         if (getSize() != Vector2f{})
             node->propertyValuePairs["Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        if(m_userData.has_value())
+        if (m_userData.has_value())
         {
             try
             {
-                sf::String string = std::any_cast<sf::String>(m_userData);
-
+                const sf::String string = std::any_cast<sf::String>(m_userData);
                 node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string.toAnsiString()));
             }
             catch (const std::bad_any_cast&)
             {
                 try
                 {
-                    std::string string = std::any_cast<std::string>(m_userData);
-
+                    const std::string string = std::any_cast<std::string>(m_userData);
                     node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
                 }
                 catch (const std::bad_any_cast&)
                 {
-                     try
+                    try
                     {
-                        std::string string = std::any_cast<const char*>(m_userData);
-
+                        const std::string string = std::any_cast<const char*>(m_userData);
                         node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
                     }
                     catch (const std::bad_any_cast&)
                     {
-
                     }
                 }
             }
         }
 #else
-        if(m_userData.not_null())
+        if (m_userData.not_null())
         {
-            if(m_userData.is<sf::String>())
+            if (m_userData.is<sf::String>())
             {
                 node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<sf::String>().toAnsiString()));
             }
-            else if(m_userData.is<std::string>())
+            else if (m_userData.is<std::string>())
             {
                 node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<std::string>()));
             }
-            else if(m_userData.is<const char*>())
+            else if (m_userData.is<const char*>())
             {
                 node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<const char*>()));
             }
@@ -1165,7 +1158,7 @@ namespace tgui
             setPosition(parseLayout(node->propertyValuePairs["position"]->value));
         if (node->propertyValuePairs["size"])
             setSize(parseLayout(node->propertyValuePairs["size"]->value));
-        if(node->propertyValuePairs["userdata"])
+        if (node->propertyValuePairs["userdata"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
             m_userData = std::make_any<std::string>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString().toAnsiString());

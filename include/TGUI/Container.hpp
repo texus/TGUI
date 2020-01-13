@@ -118,11 +118,8 @@ namespace tgui
         {
             std::vector<sf::String> m_widgetNames;
             m_widgetNames.reserve(m_widgets.size());
-
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
-            {
                 m_widgetNames.emplace_back(m_widgets[i]->getWidgetName());
-            }
 
             return m_widgetNames;
         }
@@ -205,6 +202,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use Widget::setWidgetName instead") bool setWidgetName(const Widget::Ptr& widget, const std::string& name);
+        using Widget::setWidgetName;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
