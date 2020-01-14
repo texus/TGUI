@@ -27,6 +27,10 @@
 
 #include <cctype> // tolower, toupper, isspace
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <charconv>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -61,7 +65,7 @@ namespace tgui
 
     int strToInt(const std::string& str, int defaultValue)
     {
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         int value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
@@ -84,7 +88,7 @@ namespace tgui
 
     unsigned int strToUInt(const std::string& str, unsigned int defaultValue)
     {
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         unsigned int value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
@@ -107,7 +111,7 @@ namespace tgui
 
     float strToFloat(const std::string& str, float defaultValue)
     {
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         float value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
