@@ -1,12 +1,14 @@
 TGUI 0.8.7  (TBD)
 -----------------
 
+- Added SignalManager class to connect signals by widget name (even if widget not loaded yet)
 - Improved TextureManager to only load image once if different parts of image are requested
 - Index as optional parameter in SignalItem (which was added in 0.8.6) didn't actually work yet
 - MenuItemClicked signal is now also emitted when clicking on menu that has no menu items
 - Added option to not replace existing widgets when loading widgets from file
 - Added isAnimationPlaying function to Widget (for the show and hide animations)
 - Fixed linking issues when compiling TGUI as a static library while dynamically linking SFML
+- MousePressed signal in ListBox is now send after the selected item changed instead of before
 
 
 TGUI 0.8.6  (13 October 2019)

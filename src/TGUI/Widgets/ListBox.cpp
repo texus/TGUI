@@ -542,15 +542,16 @@ namespace tgui
                 else
                     updateHoveringItem(-1);
 
-                if (m_hoveringItem >= 0)
-                    onMousePress.emit(this, m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem], m_hoveringItem);
-
                 if (m_selectedItem != m_hoveringItem)
                 {
                     m_possibleDoubleClick = false;
 
                     updateSelectedItem(m_hoveringItem);
                 }
+
+                // Call the MousePress event after the item has already been changed, so that selected item represents the clicked item
+                if (m_selectedItem >= 0)
+                    onMousePress.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem], m_selectedItem);
             }
         }
     }
