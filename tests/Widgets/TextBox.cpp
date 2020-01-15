@@ -72,6 +72,13 @@ TEST_CASE("[TextBox]")
         REQUIRE(textBox->getText() == "World\n\tText");
     }
 
+    SECTION("DefaultText")
+    {
+        REQUIRE(textBox->getDefaultText() == "");
+        textBox->setDefaultText("SomeDefaultText");
+        REQUIRE(textBox->getDefaultText() == "SomeDefaultText");
+    }
+
     SECTION("Selected text")
     {
         textBox->setText("SomeText");
