@@ -133,6 +133,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the default text of the textbox. This is the text drawn when the text box is empty
+        ///
+        /// @param text  The new default text
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDefaultText(const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the default text of the text box. This is the text drawn when the text box is empty
+        ///
+        /// @return The default text of the text box
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::String& getDefaultText() const;
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which part of the text is selected
         ///
         /// @param selectionStartIndex Amount of characters before the start of the selection
@@ -637,6 +653,7 @@ namespace tgui
         Text m_textSelection2;
         Text m_textAfterSelection1;
         Text m_textAfterSelection2;
+        Text m_defaultText;
 
         std::vector<FloatRect> m_selectionRects;
 

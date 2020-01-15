@@ -247,6 +247,7 @@ namespace tgui
                                                       {"caretcolor", Color::Black},
                                                       {"bordercolor", Color::Black},
                                                       {"textcolor", Color{60, 60, 60}},
+                                                      {"defaulttextcolor", Color{160, 160, 160}},
                                                       {"selectedtextcolor", Color::White},
                                                       {"selectedtextbackgroundcolor", Color{0, 110, 255}},
                                                       {"backgroundcolor", Color::White}})},
