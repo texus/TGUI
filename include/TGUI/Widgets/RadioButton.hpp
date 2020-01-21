@@ -166,7 +166,7 @@ namespace tgui
         ///              When the size is set to 0 then the text is auto-sized
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextSize(unsigned int size);
+        void setTextSize(unsigned int size) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ namespace tgui
         /// @return Character size of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const;
+        unsigned int getTextSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,9 +335,6 @@ namespace tgui
 
         // This will contain the text that is written next to radio button.
         Text m_text;
-
-        // This will store the size of the text ( 0 to auto size )
-        unsigned int m_textSize = 0;
 
         Sprite m_spriteUnchecked;
         Sprite m_spriteChecked;

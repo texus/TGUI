@@ -145,6 +145,7 @@ namespace tgui
         m_name                         {other.m_name},
         m_position                     {other.m_position},
         m_size                         {other.m_size},
+        m_textSize                     {other.m_textSize},
         m_boundPositionLayouts         {},
         m_boundSizeLayouts             {},
         m_enabled                      {other.m_enabled},
@@ -181,6 +182,7 @@ namespace tgui
         m_name                         {std::move(other.m_name)},
         m_position                     {std::move(other.m_position)},
         m_size                         {std::move(other.m_size)},
+        m_textSize                     {std::move(other.m_textSize)},
         m_boundPositionLayouts         {std::move(other.m_boundPositionLayouts)},
         m_boundSizeLayouts             {std::move(other.m_boundSizeLayouts)},
         m_enabled                      {std::move(other.m_enabled)},
@@ -234,6 +236,7 @@ namespace tgui
             m_name                 = other.m_name;
             m_position             = other.m_position;
             m_size                 = other.m_size;
+            m_textSize             = other.m_textSize;
             m_boundPositionLayouts = {};
             m_boundSizeLayouts     = {};
             m_enabled              = other.m_enabled;
@@ -289,6 +292,7 @@ namespace tgui
             m_name                 = std::move(other.m_name);
             m_position             = std::move(other.m_position);
             m_size                 = std::move(other.m_size);
+            m_textSize             = std::move(other.m_textSize);
             m_boundPositionLayouts = std::move(other.m_boundPositionLayouts);
             m_boundSizeLayouts     = std::move(other.m_boundSizeLayouts);
             m_enabled              = std::move(other.m_enabled);
@@ -765,6 +769,20 @@ namespace tgui
     float Widget::getInheritedOpacity() const
     {
         return m_inheritedOpacity;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setTextSize(unsigned int size)
+    {
+        m_textSize = size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Widget::getTextSize() const
+    {
+        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

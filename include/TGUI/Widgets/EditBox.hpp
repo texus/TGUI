@@ -222,7 +222,7 @@ namespace tgui
         ///                  If the size is 0 then the text will be scaled to fit in the edit box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextSize(unsigned int textSize);
+        void setTextSize(unsigned int textSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ namespace tgui
         /// @return The text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const;
+        unsigned int getTextSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,9 +583,6 @@ namespace tgui
 
         std::string   m_regexString = ".*";
         std::regex    m_regex = std::regex{m_regexString};
-
-        // This will store the size of the text ( 0 to auto size )
-        unsigned int  m_textSize = 0;
 
         // The text alignment
         Alignment     m_textAlignment = Alignment::Left;

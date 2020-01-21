@@ -54,8 +54,7 @@ namespace tgui
         ChildWindow      {other},
         onButtonPress    {other.onButtonPress},
         m_loadedThemeFile{other.m_loadedThemeFile},
-        m_buttonClassName{other.m_buttonClassName},
-        m_textSize       {other.m_textSize}
+        m_buttonClassName{other.m_buttonClassName}
     {
         identifyLabelAndButtons();
     }
@@ -68,8 +67,7 @@ namespace tgui
         m_loadedThemeFile{std::move(other.m_loadedThemeFile)},
         m_buttonClassName{std::move(other.m_buttonClassName)},
         m_buttons        {std::move(other.m_buttons)},
-        m_label          {std::move(other.m_label)},
-        m_textSize       {std::move(other.m_textSize)}
+        m_label          {std::move(other.m_label)}
     {
         for (auto& button : m_buttons)
         {
@@ -92,7 +90,6 @@ namespace tgui
             std::swap(m_buttonClassName, temp.m_buttonClassName);
             std::swap(m_buttons,         temp.m_buttons);
             std::swap(m_label,           temp.m_label);
-            std::swap(m_textSize,        temp.m_textSize);
         }
 
         return *this;
@@ -111,7 +108,6 @@ namespace tgui
             m_buttonClassName = std::move(other.m_buttonClassName);
             m_buttons         = std::move(other.m_buttons);
             m_label           = std::move(other.m_label);
-            m_textSize        = std::move(other.m_textSize);
 
             for (auto& button : m_buttons)
             {
@@ -202,13 +198,6 @@ namespace tgui
             button->setTextSize(m_textSize);
 
         rearrange();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int MessageBox::getTextSize() const
-    {
-        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

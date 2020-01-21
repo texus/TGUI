@@ -490,6 +490,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the character size of text in this widget if it uses text
+        ///
+        /// @param size  The new text size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setTextSize(unsigned int size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the character size of text in this widget
+        ///
+        /// @return The current text size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual unsigned int getTextSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the tool tip that should be displayed when hovering over the widget
         ///
         /// @param toolTip  Any widget that you want to use as a tool tip (usually a Label)
@@ -851,6 +867,7 @@ namespace tgui
 
         Layout2d m_position;
         Layout2d m_size;
+        unsigned int m_textSize = 0;
 
         // The previous position and size have to be stored because when setPosition/setSize is called, the layout may already be
         // changed and there would be no way for the widget to detect whether the values changed or not.

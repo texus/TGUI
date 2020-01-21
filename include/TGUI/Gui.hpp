@@ -359,6 +359,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the character size of all existing and future child widgets.
+        ///
+        /// @param size  The new text size
+        ///
+        /// The text size specified in this function overrides the global text size property. By default, the gui does not
+        /// pass any text size to the widgets and the widgets will use the global text size as default value.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextSize(unsigned int size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a text file
         ///
         /// @param filename  Filename of the widget file

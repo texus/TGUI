@@ -263,7 +263,6 @@ namespace tgui
         m_hoveredItem                       {other.m_hoveredItem},
         m_itemHeight                        {other.m_itemHeight},
         m_requestedTextSize                 {other.m_requestedTextSize},
-        m_textSize                          {other.m_textSize},
         m_maxRight                          {other.m_maxRight},
         m_iconBounds                        {other.m_iconBounds},
         m_verticalScrollbar                 {other.m_verticalScrollbar},
@@ -314,7 +313,6 @@ namespace tgui
             std::swap(m_hoveredItem,                        temp.m_hoveredItem);
             std::swap(m_itemHeight,                         temp.m_itemHeight);
             std::swap(m_requestedTextSize,                  temp.m_requestedTextSize);
-            std::swap(m_textSize,                           temp.m_textSize);
             std::swap(m_maxRight,                           temp.m_maxRight);
             std::swap(m_iconBounds,                         temp.m_iconBounds);
             std::swap(m_verticalScrollbar,                  temp.m_verticalScrollbar);
@@ -617,13 +615,6 @@ namespace tgui
             m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
         setTextSizeImpl(m_nodes, textSize);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int TreeView::getTextSize() const
-    {
-        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

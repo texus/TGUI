@@ -228,6 +228,9 @@ namespace tgui
 
         if (m_opacityCached < 1)
             widgetPtr->setInheritedOpacity(m_opacityCached);
+
+        if (m_textSize != 0)
+            widgetPtr->setTextSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,6 +347,19 @@ namespace tgui
     Vector2f Container::getInnerSize() const
     {
         return getSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::setTextSize(unsigned int size)
+    {
+        Widget::setTextSize(size);
+
+        if (size != 0)
+        {
+            for (const auto& widget : m_widgets)
+                widget->setTextSize(size);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

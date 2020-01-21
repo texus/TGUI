@@ -76,7 +76,7 @@ namespace tgui
         m_text.setString(text);
         m_text.setCharacterSize(m_textSize);
 
-        if (m_autoSize)
+        if (m_autoSize && (m_textSize != 0))
             updateSize();
     }
 
