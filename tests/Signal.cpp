@@ -118,7 +118,8 @@ TEST_CASE("[Signal]")
         widget->setPosition(10, 10);
         REQUIRE(i == 1);
 
-        widget->disconnect(id);
+        REQUIRE(widget->disconnect(id));
+        REQUIRE_FALSE(widget->disconnect(id));
         widget->setPosition(20, 20);
         REQUIRE(i == 1);
 
