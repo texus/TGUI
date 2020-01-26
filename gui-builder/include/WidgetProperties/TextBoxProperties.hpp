@@ -38,6 +38,8 @@ struct TextBoxProperties : WidgetProperties
         auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
         if (property == "Text")
             textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+        else if (property == "DefaultText")
+            textBox->setDefaultText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
             textBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
         else if (property == "MaximumCharacters")
@@ -57,6 +59,7 @@ struct TextBoxProperties : WidgetProperties
         auto pair = WidgetProperties::initProperties(widget);
         auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
         pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(textBox->getText())};
+        pair.first["DefaultText"] = {"MultilineString", tgui::Serializer::serialize(textBox->getDefaultText())};
         pair.first["TextSize"] = {"UInt", tgui::to_string(textBox->getTextSize())};
         pair.first["MaximumCharacters"] = {"UInt", tgui::to_string(textBox->getMaximumCharacters())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
