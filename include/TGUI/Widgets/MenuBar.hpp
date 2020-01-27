@@ -126,6 +126,8 @@ namespace tgui
         /// @param args     Optional extra arguments to pass to the signal handler when the signal is emitted
         ///
         /// @return Unique id of the connection
+        ///
+        /// The hierarchy does not need to exist yet and the signal will still exist when removing and readding the menu items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
         unsigned int connectMenuItem(const sf::String& menu, const sf::String& menuItem, Func&& handler, const Args&... args)
@@ -144,6 +146,8 @@ namespace tgui
         /// @param args      Optional extra arguments to pass to the signal handler when the signal is emitted
         ///
         /// @return Unique id of the connection
+        ///
+        /// The hierarchy does not need to exist yet and the signal will still exist when removing and readding the menu items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
         unsigned int connectMenuItem(const std::vector<sf::String>& hierarchy, Func&& handler, const Args&... args)
