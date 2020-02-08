@@ -1,5 +1,5 @@
-TGUI 0.8.7  (TBD)
------------------
+TGUI 0.8.7  (8 February 2020)
+-----------------------------
 
 - TextBox can now have a default text that is displayed when it is empty ([PR #117](https://github.com/texus/TGUI/pull/117))
 - Added SignalManager class to connect signals by widget name (even if widget not loaded yet) ([PR #112](https://github.com/texus/TGUI/pull/112))
