@@ -528,7 +528,7 @@ namespace tgui
         ///
         /// @warning This name is overwritten when adding the widget to its parent. You should only set it afterwards.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setWidgetName(const std::string& name);
+        void setWidgetName(const sf::String& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -536,7 +536,7 @@ namespace tgui
         ///
         /// @return Name of the widget or an empty string when wasn't given a name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getWidgetName() const;
+        sf::String getWidgetName() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -863,7 +863,7 @@ namespace tgui
     protected:
 
         std::string m_type;
-        std::string m_name;
+        sf::String m_name;
 
         Layout2d m_position;
         Layout2d m_size;

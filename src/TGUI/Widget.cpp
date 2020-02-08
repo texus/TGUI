@@ -801,7 +801,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setWidgetName(const std::string& name)
+    void Widget::setWidgetName(const sf::String& name)
     {
         if (m_name != name)
         {
@@ -816,7 +816,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Widget::getWidgetName() const
+    sf::String Widget::getWidgetName() const
     {
         return m_name;
     }
