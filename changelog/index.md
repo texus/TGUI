@@ -7,11 +7,25 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 7
+      date: 8 February 2020
+      changes: |
+        TextBox can now have a default text that is displayed when it is empty ([PR #117](https://github.com/texus/TGUI/pull/117))
+        Added SignalManager class to connect signals by widget name (even if widget not loaded yet) ([PR #112](https://github.com/texus/TGUI/pull/112))
+        Added setTextSize function to Widget and Gui to allow changing text sizes globally
+        Improved TextureManager to only load image once if different parts of image are requested
+        Index as optional parameter in SignalItem (which was added in 0.8.6) didn't actually work yet
+        MenuItemClicked signal is now also emitted when clicking on menu that has no menu items
+        Added option to not replace existing widgets when loading widgets from file
+        Added isAnimationPlaying function to Widget (for the show and hide animations)
+        Fixed linking issues when compiling TGUI as a static library while dynamically linking SFML
+        MousePressed signal in ListBox is now send after the selected item changed instead of before
     - version: 6
       date: 13 October 2019
       changes: |
         Added sort function to ListView to sort data based on values in a chosen column ([PR #107](https://github.com/texus/TGUI/pull/107))
         Added function to Slider to disallow changing the value by scrolling the mouse wheel ([PR #104](https://github.com/texus/TGUI/pull/104))
+        Added MultiSelect option to ListView ([PR #113](https://github.com/texus/TGUI/pull/113))
         Added support for text outline in Label and Button widgets
         Added SelectionChanged signal to TextBox
         Added getSelectionStart and getSelectionEnd functions to TextBox
@@ -26,7 +40,6 @@ changelog:
         Added VerticalScroll property to Slider, Scrollbar and SpinButton, for more intuitive usage
         Added SubwidgetContainer class that should simplify combining widgets for a custom widget
         Added view to Canvas
-        Added MultiSelect option to ListView
         PDB files are now included for Visual Studio builds
         Renamed TimeToDisplay to InitialDelay in ToolTip
         SignalItem (used by ListBox and ComboBox) can now have the item index as optional parameter

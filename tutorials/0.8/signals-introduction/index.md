@@ -83,3 +83,8 @@ It is also possible to disconnect all signal handlers at once.
 button1->disconnectAll("pressed");
 button2->disconnectAll();
 ```
+
+
+### List of supported signals
+
+All signal names have an equivalent in the `tgui::Signals` namespace so that you can use `tgui::Signals::Button::Pressed` instead of `"pressed"`. The [Signals documentation](https://tgui.eu/documentation/0.8/namespacetgui_1_1Signals.html) can thus be used to find which signals each widget supports.

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['variant_1871',['Variant',['../classtgui_1_1Variant.html#ab54b4c97e4dd73a668c202c3042dac3c',1,'tgui::Variant::Variant()'],['../classtgui_1_1Variant.html#abb8d89e4484b6dea6a8c9bb7c0dfbdb8',1,'tgui::Variant::Variant(const T &amp;value)']]],
-  ['vector2f_1872',['Vector2f',['../classtgui_1_1Vector2f.html#a07a564239ddeded5cd159c3103b951ca',1,'tgui::Vector2f::Vector2f()=default'],['../classtgui_1_1Vector2f.html#a25ba8f2cf9e63b19de5ab9dd2cbb65fd',1,'tgui::Vector2f::Vector2f(float xValue, float yValue)'],['../classtgui_1_1Vector2f.html#a22aace68410d5ca31e2fbb79e24f6382',1,'tgui::Vector2f::Vector2f(const sf::Vector2f &amp;vec)'],['../classtgui_1_1Vector2f.html#a163033a5cac44697b4cc822c99a52373',1,'tgui::Vector2f::Vector2f(const char *str)'],['../classtgui_1_1Vector2f.html#a754ae3df6f53b08135c3efe4c180e8fd',1,'tgui::Vector2f::Vector2f(std::string str)']]]
+  ['uncheckradiobuttons_1902',['uncheckRadioButtons',['../classtgui_1_1Container.html#adb1456b593beb954891a063567254295',1,'tgui::Container::uncheckRadioButtons()'],['../classtgui_1_1Gui.html#acbc84356ca88d3318bc9ef38055f6cc2',1,'tgui::Gui::uncheckRadioButtons()']]],
+  ['unfocusallwidgets_1903',['unfocusAllWidgets',['../classtgui_1_1Gui.html#a87c660f7e68a6adfe79ade404b1d9ed4',1,'tgui::Gui']]],
+  ['unsubscribe_1904',['unsubscribe',['../classtgui_1_1WidgetRenderer.html#af6d8245d07831b0324e104111db099c1',1,'tgui::WidgetRenderer']]]
 ];
