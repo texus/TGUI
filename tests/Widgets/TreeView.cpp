@@ -33,7 +33,7 @@ TEST_CASE("[TreeView]")
 
     SECTION("Signals")
     {
-        for (const auto& signal : {"ItemSelected", "ItemSelected", "ItemSelected", "ItemSelected"})
+        for (const auto& signal : {"ItemSelected", "ItemSelected", "ItemSelected", "ItemSelected", "RightClicked"})
         {
             REQUIRE_NOTHROW(treeView->connect(signal, [](){}));
             REQUIRE_NOTHROW(treeView->connect(signal, [](sf::String){}));

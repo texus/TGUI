@@ -779,6 +779,8 @@ namespace tgui
             int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
             if (selectedItem < static_cast<int>(m_visibleNodes.size()))
             {
+                updateSelectedItem(selectedItem);
+
                 std::vector<sf::String> hierarchy;
                 auto* node = m_visibleNodes[selectedItem].get();
                 while (node)
