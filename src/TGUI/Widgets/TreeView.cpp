@@ -259,6 +259,7 @@ namespace tgui
         onDoubleClick                       {other.onDoubleClick},
         onExpand                            {other.onExpand},
         onCollapse                          {other.onCollapse},
+        onRightClick                        {other.onRightClick},
         m_selectedItem                      {other.m_selectedItem},
         m_hoveredItem                       {other.m_hoveredItem},
         m_itemHeight                        {other.m_itemHeight},
@@ -307,6 +308,7 @@ namespace tgui
             std::swap(onDoubleClick,                        temp.onDoubleClick);
             std::swap(onExpand,                             temp.onExpand);
             std::swap(onCollapse,                           temp.onCollapse);
+            std::swap(onRightClick,                         temp.onRightClick);
             std::swap(m_nodes,                              temp.m_nodes);
             std::swap(m_visibleNodes,                       temp.m_visibleNodes);
             std::swap(m_selectedItem,                       temp.m_selectedItem);
@@ -759,6 +761,38 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    void TreeView::rightMousePressed(Vector2f pos)
+    {
+        pos -= getPosition();
+
+        m_mouseDown = true;
+
+        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        if (m_verticalScrollbar->isShown())
+            maxItemWidth -= m_verticalScrollbar->getSize().x;
+
+        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                      maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+        {
+            pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
+            int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+            if (selectedItem < static_cast<int>(m_visibleNodes.size()))
+            {
+                std::vector<sf::String> hierarchy;
+                auto* node = m_visibleNodes[selectedItem].get();
+                while (node)
+                {
+                    hierarchy.insert(hierarchy.begin(), node->text.getString());
+                    node = node->parent;
+                }
+                
+                onRightClick.emit(this, hierarchy.back(), hierarchy);
+            }
+        }
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TreeView::mouseMoved(Vector2f pos)
     {
@@ -854,6 +888,8 @@ namespace tgui
             return onExpand;
         else if (signalName == toLower(onCollapse.getName()))
             return onCollapse;
+        else if (signalName == toLower(onRightClick.getName()))
+            return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));
     }

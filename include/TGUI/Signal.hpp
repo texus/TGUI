@@ -207,6 +207,7 @@ namespace tgui
             static constexpr const char* const DoubleClicked = "DoubleClicked"; ///< A leaf node was double clicked. Optional parameter: selected node
             static constexpr const char* const Expanded = "Expanded";           ///< A branch node was expanded in the tree view. Optional parameter: expanded node
             static constexpr const char* const Collapsed = "Collapsed";         ///< A branch node was collapsed in the tree view. Optional parameter: collapsed node
+            static constexpr const char* const RightClicked = "RightClicked";   ///< A node was right clicked. Optional parameter: node below mouse
         };
 
         using BitmapButton = Button;

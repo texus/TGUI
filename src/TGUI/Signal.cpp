@@ -122,6 +122,7 @@ namespace tgui
         constexpr const char* const TreeView::DoubleClicked;
         constexpr const char* const TreeView::Expanded;
         constexpr const char* const TreeView::Collapsed;
+        constexpr const char* const TreeView::RightClicked;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
