@@ -65,9 +65,6 @@ jobs:
     cache:
       directories:
       - $HOME/sfml-cache
-    before_script:
-      - yes | sdkmanager --update
-      - yes | sdkmanager --licenses
     script:
       - chmod +x tests/travis_android.sh
       - tests/travis_android.sh
