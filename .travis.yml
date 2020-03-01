@@ -58,6 +58,7 @@ jobs:
     android:
       components:
       - android-27
+      - build-tools-26.0.2
     addons:
       apt:
         packages:
