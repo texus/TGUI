@@ -73,6 +73,7 @@ private:
     void createNewForm(const sf::String& filename);
     bool loadForm(const sf::String& filename);
     tgui::ChildWindow::Ptr openWindowWithFocus();
+    sf::String getDefaultFilename() const;
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
@@ -137,7 +138,8 @@ private:
     std::map<std::string, tgui::Theme> m_themes;
     std::string m_defaultTheme;
 
-    sf::Vector2f m_formSize{ 800.f, 600.f };
+    sf::Vector2f m_formSize{800.f, 600.f};
+    sf::String m_defaultPath;
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP

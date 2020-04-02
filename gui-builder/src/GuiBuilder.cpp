@@ -465,6 +465,13 @@ bool GuiBuilder::loadGuiBuilderState()
         }
     }
 
+    if (node->propertyValuePairs["defaultpath"])
+    {
+        m_defaultPath = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["defaultpath"]->value).getString();
+        if (!m_defaultPath.isEmpty() && (m_defaultPath[m_defaultPath.getSize()-1] != '/') && (m_defaultPath[m_defaultPath.getSize()-1] != '\\'))
+            m_defaultPath += '/';
+    }
+
     return true;
 }
 
@@ -513,6 +520,8 @@ void GuiBuilder::saveGuiBuilderState()
     node->propertyValuePairs["FormSize"] = std::make_unique<tgui::DataIO::ValueNode>(
         "(" + tgui::to_string(m_formSize.x) + ", " + tgui::to_string(m_formSize.y) + ")");
 
+    node->propertyValuePairs["DefaultPath"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Serializer::serialize(m_defaultPath));
+
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
 
@@ -525,12 +534,21 @@ void GuiBuilder::saveGuiBuilderState()
 
 void GuiBuilder::formSaved(const sf::String& filename)
 {
+    // Update the default path
+    const auto slashPos = filename.toWideString().find_last_of(L"/\\");
+    if (slashPos != std::string::npos)
+        m_defaultPath = filename.toWideString().substr(0, slashPos+1);
+    else
+        m_defaultPath = "";
+
+    // Update the recent files
     if (m_recentFiles.empty() || (m_recentFiles.front() != filename))
     {
         m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const sf::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
         m_recentFiles.insert(m_recentFiles.begin(), filename);
-        saveGuiBuilderState();
     }
+
+    saveGuiBuilderState();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -755,12 +773,12 @@ void GuiBuilder::loadStartScreen()
 
     auto panel = m_gui.get<tgui::Panel>("MainPanel");
     panel->get("PnlNewForm")->connect("Clicked", [=]{
-        showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
+        showLoadFileWindow("New form", "Create", getDefaultFilename(), [=](const sf::String& filename){
             createNewForm(filename);
         });
     });
     panel->get("PnlLoadForm")->connect("Clicked", [=]{
-        showLoadFileWindow("Load form", "Load", "form.txt", [this](const sf::String& filename){ loadForm(filename); });
+        showLoadFileWindow("Load form", "Load", getDefaultFilename(), [this](const sf::String& filename){ loadForm(filename); });
     });
 
     if (m_recentFiles.empty())
@@ -1288,6 +1306,17 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
     window->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
 
     return window;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+sf::String GuiBuilder::getDefaultFilename() const
+{
+    const sf::String defaultFilename = "form.txt";
+    if (!m_defaultPath.isEmpty())
+        return m_defaultPath + defaultFilename;
+    else
+        return defaultFilename;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2008,7 +2037,7 @@ void GuiBuilder::menuBarCallbackNewForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("New form", "Create", "form.txt", [=](const sf::String& filename){
+    showLoadFileWindow("New form", "Create", getDefaultFilename(), [=](const sf::String& filename){
         createNewForm(filename);
     });
 }
@@ -2019,7 +2048,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("Load form", "Load", "form.txt", [this](const sf::String& filename){
+    showLoadFileWindow("Load form", "Load", getDefaultFilename(), [this](const sf::String& filename){
         loadForm(filename);
     });
 }
