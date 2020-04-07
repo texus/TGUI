@@ -239,7 +239,7 @@ namespace tgui
         return std::filesystem::create_directory(path);
 #elif defined(SFML_SYSTEM_WINDOWS)
         const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), NULL);
-        return (status == 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
+        return (status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
 #else
         const int status = mkdir(path.asNativeString().c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
         return (status == 0) || (status == EEXIST);
