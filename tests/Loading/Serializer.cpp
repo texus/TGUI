@@ -92,7 +92,7 @@ TEST_CASE("[Serializer]")
     {
         REQUIRE(tgui::Serializer::serialize(sf::String{""}) == "\"\"");
         REQUIRE(tgui::Serializer::serialize(sf::String{"word"}) == "word");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"No/Quotes_Required@089%"}) == "No/Quotes_Required@089%");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"NoQuotes_Required@089%"}) == "NoQuotes_Required@089%");
         REQUIRE(tgui::Serializer::serialize(sf::String{"String with spaces"}) == "\"String with spaces\"");
         REQUIRE(tgui::Serializer::serialize(sf::String{"\\"}) == "\"\\\\\"");
         REQUIRE(tgui::Serializer::serialize(sf::String{"\n"}) == "\"\\n\"");

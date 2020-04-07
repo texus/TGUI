@@ -336,10 +336,14 @@ namespace tgui
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning (disable : 4996)
 #endif
         return m_container->getWidgetNames();
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning (default : 4996)
 #endif
     }
 #endif
@@ -378,10 +382,14 @@ namespace tgui
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning (disable : 4996)
 #endif
         return m_container->setWidgetName(widget, name);
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning (default : 4996)
 #endif
     }
 
@@ -392,10 +400,14 @@ namespace tgui
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning (disable : 4996)
 #endif
         return m_container->getWidgetName(widget);
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning (default : 4996)
 #endif
     }
 #endif

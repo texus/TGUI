@@ -56,11 +56,6 @@
 #include <stack>
 #include <map>
 
-#ifdef TGUI_USE_FILESYSTEM
-  // Only tested with GCC, requires c++17 (and GCC 9 unless -lstdc++fs is added to linker)
-  #include <filesystem>
-#endif
-
 #ifdef SFML_SYSTEM_WINDOWS
     #include <direct.h> // _getcwd
     #define getcwd _getcwd
@@ -76,15 +71,6 @@ static const float EDIT_BOX_HEIGHT = 24;
 
 namespace
 {
-    bool checkIfFileExists(const sf::String& filename)
-    {
-#ifdef TGUI_USE_FILESYSTEM
-        return std::filesystem::exists((char32_t*)filename.toUtf32().data());
-#else
-        return static_cast<bool>(std::ifstream(filename.toAnsiString()));
-#endif
-    }
-
     bool compareRenderers(std::map<std::string, tgui::ObjectConverter> themePropertyValuePairs, std::map<std::string, tgui::ObjectConverter> widgetPropertyValuePairs)
     {
         for (auto themeIt = themePropertyValuePairs.begin(); themeIt != themePropertyValuePairs.end(); ++themeIt)
@@ -209,6 +195,8 @@ namespace
         return true;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f parseSize(std::string str)
     {
         if (str.empty())
@@ -227,16 +215,91 @@ namespace
         const std::string y = tgui::trim(str.substr(commaPos + 1));
         return {tgui::strToFloat(x), tgui::strToFloat(y)};
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    tgui::Filesystem::Path getDataDirectory(bool createIfNotFound)
+    {
+        const auto localDataDir = tgui::Filesystem::getLocalDataDirectory();
+
+        tgui::Filesystem::Path guiBuilderDataDir;
+        if (!localDataDir.isEmpty() && tgui::Filesystem::directoryExists(localDataDir))
+        {
+            tgui::String versionNumber = tgui::String::fromNumber(TGUI_VERSION_MAJOR) + U"." + tgui::String::fromNumber(TGUI_VERSION_MINOR);
+            const auto destDir = localDataDir / U"tgui" / versionNumber / U"gui-builder";
+            if (tgui::Filesystem::directoryExists(destDir))
+                guiBuilderDataDir = destDir;
+            else if (createIfNotFound)
+            {
+                // Create the direcory structure if it doesn't exist yet
+                tgui::Filesystem::createDirectory(localDataDir / U"tgui");
+                tgui::Filesystem::createDirectory(localDataDir / U"tgui" / versionNumber);
+                if (tgui::Filesystem::createDirectory(localDataDir / U"tgui" / versionNumber / U"gui-builder"))
+                    guiBuilderDataDir = destDir;
+            }
+        }
+
+        return guiBuilderDataDir;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool openStateFile(std::ofstream& stream)
+    {
+        tgui::Filesystem::Path dataDir = getDataDirectory(true);
+        if (!dataDir.isEmpty())
+        {
+            // Try to open the files in the local user data folder
+            stream.open(std::string((dataDir / "GuiBuilderState.txt").asString()).c_str());
+            if (stream)
+                return true;
+        }
+
+        // If we failed to write to the user directory then try writing to the current working directory
+        stream.open("GuiBuilderState.txt");
+        if (stream)
+            return true;
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool openStateFile(std::ifstream& stream)
+    {
+        tgui::Filesystem::Path dataDir = getDataDirectory(false);
+        if (!dataDir.isEmpty())
+        {
+            // Try to open the files in the local user data folder
+            stream.open(std::string((dataDir / "GuiBuilderState.txt").asString()).c_str());
+            if (stream)
+                return true;
+        }
+
+        // If we failed to write to the user directory then try writing to the current working directory
+        stream.open("GuiBuilderState.txt");
+        if (stream)
+            return true;
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-GuiBuilder::GuiBuilder() :
+GuiBuilder::GuiBuilder(const char* programName) :
     m_window{{1300, 680}, "TGUI - GUI Builder"},
     m_gui         {m_window},
     m_themes      {{"White", *tgui::Theme::getDefault()}},
-    m_defaultTheme{"White"}
+    m_defaultTheme{"White"},
+    m_programPath {tgui::Filesystem::Path(programName).getParentPath()}
 {
+    // If the program is started from a different folder then it wouldn't be able to find its resources unless we set this path.
+    // One case where this seems to be required is to start the executable on macOS by double-clicking it.
+    tgui::setResourcePath(m_programPath.asString().toAnsiString()); // TODO: use tgui::String in setResourcePath and remove toAnsiString() here
+
     m_window.setFramerateLimit(60);
 
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
@@ -264,7 +327,7 @@ GuiBuilder::GuiBuilder() :
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     sf::Image icon;
-    if (icon.loadFromFile("resources/Icon.png"))
+    if (icon.loadFromFile(sf::String((tgui::Filesystem::Path(tgui::getResourcePath()) / "resources/Icon.png").asString())))
         m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     loadStartScreen();
@@ -288,8 +351,6 @@ void GuiBuilder::mainLoop()
         {
             if (event.type == sf::Event::Closed)
             {
-                saveGuiBuilderState();
-
                 while (!m_forms.empty())
                     closeForm(m_forms[0].get());
 
@@ -427,8 +488,8 @@ bool GuiBuilder::loadGuiBuilderState()
 {
     m_recentFiles.clear();
 
-    std::ifstream stateInputFile{"GuiBuilderState.txt"};
-    if (!stateInputFile.is_open())
+    std::ifstream stateInputFile;
+    if (!openStateFile(stateInputFile))
         return false;
 
     std::stringstream stream;
@@ -447,7 +508,7 @@ bool GuiBuilder::loadGuiBuilderState()
         for (const auto& value : node->propertyValuePairs["recentfiles"]->valueList)
         {
             sf::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
-            if (checkIfFileExists(filename))
+            if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / tgui::String(filename)))
             {
                 m_recentFiles.push_back(filename);
                 if (m_recentFiles.size() == 5)
@@ -485,7 +546,7 @@ void GuiBuilder::saveGuiBuilderState()
     std::string recentFileList;
     for (auto fileIt = m_recentFiles.begin(); fileIt != m_recentFiles.end(); ++fileIt)
     {
-        if (!checkIfFileExists(*fileIt))
+        if (!tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / tgui::String(*fileIt)))
             continue;
 
         if (recentFileList.empty())
@@ -525,9 +586,11 @@ void GuiBuilder::saveGuiBuilderState()
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
 
-    std::ofstream stateOutputFile{"GuiBuilderState.txt"};
-    if (stateOutputFile.is_open())
+    std::ofstream stateOutputFile;
+    if (openStateFile(stateOutputFile))
         stateOutputFile << stream.rdbuf();
+    else
+        std::cout << "Failed to open GuiBuilderState.txt for writing" << std::endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,7 +644,7 @@ void GuiBuilder::reloadProperties()
         auto rendererComboBox = m_propertiesContainer->get<tgui::ComboBox>("RendererSelectorComboBox");
         rendererComboBox->setPosition({0, topPosition});
 
-        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex() + 1) == rendererComboBox->getItemCount()) // If "Custom" is selected
+        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex()) + 1 == rendererComboBox->getItemCount()) // If "Custom" is selected
         {
             topPosition += rendererComboBox->getSize().y + 10;
             for (const auto& property : m_propertyValuePairs.second)
@@ -1208,7 +1271,7 @@ void GuiBuilder::removePopupMenu()
 
 void GuiBuilder::createNewForm(const sf::String& filename)
 {
-    if (checkIfFileExists(filename))
+    if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / tgui::String(filename)))
     {
         auto panel = tgui::Panel::create({"100%", "100%"});
         panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});

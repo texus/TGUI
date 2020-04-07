@@ -27,6 +27,7 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/Filesystem.hpp>
 
 #include <cassert>
 #include <fstream>
@@ -366,9 +367,14 @@ namespace tgui
 
     void Container::loadWidgetsFromFile(const std::string& filename, bool replaceExisting)
     {
-        std::ifstream in{filename};
+        // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
+        std::string filenameInResources = filename;
+        if (!getResourcePath().empty())
+            filenameInResources = std::string((Filesystem::Path(getResourcePath()) / filename).asString());
+
+        std::ifstream in{filenameInResources};
         if (!in.is_open())
-            throw Exception{"Failed to open '" + filename + "' to load the widgets from it."};
+            throw Exception{"Failed to open '" + filenameInResources + "' to load the widgets from it."};
 
         std::stringstream stream;
         stream << in.rdbuf();
@@ -379,12 +385,17 @@ namespace tgui
 
     void Container::saveWidgetsToFile(const std::string& filename)
     {
+        // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
+        std::string filenameInResources = filename;
+        if (!getResourcePath().empty())
+            filenameInResources = std::string((Filesystem::Path(getResourcePath()) / filename).asString());
+
         std::stringstream stream;
         saveWidgetsToStream(stream);
 
-        std::ofstream out{filename};
+        std::ofstream out{filenameInResources};
         if (!out.is_open())
-            throw Exception{"Failed to open '" + filename + "' for saving the widgets to it."};
+            throw Exception{"Failed to open '" + filenameInResources + "' for saving the widgets to it."};
 
         out << stream.rdbuf();
     }

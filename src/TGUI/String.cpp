@@ -65,7 +65,7 @@ namespace tgui
 
     int strToInt(const std::string& str, int defaultValue)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         int value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
@@ -88,7 +88,7 @@ namespace tgui
 
     unsigned int strToUInt(const std::string& str, unsigned int defaultValue)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         unsigned int value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
@@ -111,7 +111,7 @@ namespace tgui
 
     float strToFloat(const std::string& str, float defaultValue)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         float value;
         const char* cstr = str.c_str();
         if (std::from_chars(&cstr[0], &cstr[str.length()], value).ec == std::errc{})
@@ -175,6 +175,17 @@ namespace tgui
         sf::Utf32::toLatin1(m_string.begin(), m_string.end(), std::back_inserter(ansiString), 0);
 
         return strToInt(ansiString, defaultValue);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int String::toUInt(unsigned defaultValue) const
+    {
+        std::string ansiString;
+        ansiString.reserve(m_string.length() + 1);
+        sf::Utf32::toLatin1(m_string.begin(), m_string.end(), std::back_inserter(ansiString), 0);
+
+        return strToUInt(ansiString, defaultValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,22 +454,22 @@ namespace tgui
 
     String::operator std::string() const
     {
-        return asAnsiString();
+        return toAnsiString();
     }
 
     String::operator std::wstring() const
     {
-        return asWideString();
+        return toWideString();
     }
 
     String::operator std::u16string() const
     {
-        return asUtf16();
+        return toUtf16();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string String::asAnsiString() const
+    std::string String::toAnsiString() const
     {
         std::string output;
         output.reserve(m_string.length() + 1);
@@ -466,7 +477,7 @@ namespace tgui
         return output;
     }
 
-    std::wstring String::asWideString() const
+    std::wstring String::toWideString() const
     {
         std::wstring output;
         output.reserve(m_string.length() + 1);
@@ -474,7 +485,7 @@ namespace tgui
         return output;
     }
 
-    std::u16string String::asUtf16() const
+    std::u16string String::toUtf16() const
     {
         std::u16string output;
         output.reserve(m_string.length() + 1);
@@ -482,7 +493,7 @@ namespace tgui
         return output;
     }
 
-    const std::u32string& String::asUtf32() const
+    const std::u32string& String::toUtf32() const
     {
         return m_string;
     }
@@ -1296,17 +1307,17 @@ namespace tgui
 
     int String::compare(const std::string& str) const noexcept
     {
-        return m_string.compare(String{str});
+        return m_string.compare(String{str}.m_string);
     }
 
     int String::compare(const std::wstring& str) const noexcept
     {
-        return m_string.compare(String{str});
+        return m_string.compare(String{str}.m_string);
     }
 
     int String::compare(const std::u16string& str) const noexcept
     {
-        return m_string.compare(String{str});
+        return m_string.compare(String{str}.m_string);
     }
 
     int String::compare(const std::u32string& str) const noexcept
@@ -1321,17 +1332,17 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::string& str) const
     {
-        return m_string.compare(pos1, count1, String{str});
+        return m_string.compare(pos1, count1, String{str}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::wstring& str) const
     {
-        return m_string.compare(pos1, count1, String{str});
+        return m_string.compare(pos1, count1, String{str}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::u16string& str) const
     {
-        return m_string.compare(pos1, count1, String{str});
+        return m_string.compare(pos1, count1, String{str}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const
@@ -1346,17 +1357,17 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::string& str, std::size_t pos2, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{str, pos2, count2});
+        return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::wstring& str, std::size_t pos2, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{str, pos2, count2});
+        return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::u16string& str, std::size_t pos2, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{str, pos2, count2});
+        return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::u32string& str, std::size_t pos2, std::size_t count2) const
@@ -1371,17 +1382,17 @@ namespace tgui
 
     int String::compare(const char* s) const
     {
-        return m_string.compare(String{s});
+        return m_string.compare(String{s}.m_string);
     }
 
     int String::compare(const wchar_t* s) const
     {
-        return m_string.compare(String{s});
+        return m_string.compare(String{s}.m_string);
     }
 
     int String::compare(const char16_t* s) const
     {
-        return m_string.compare(String{s});
+        return m_string.compare(String{s}.m_string);
     }
 
     int String::compare(const char32_t* s) const
@@ -1391,17 +1402,17 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, const char* s) const
     {
-        return m_string.compare(pos1, count1, String{s});
+        return m_string.compare(pos1, count1, String{s}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const wchar_t* s) const
     {
-        return m_string.compare(pos1, count1, String{s});
+        return m_string.compare(pos1, count1, String{s}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const char16_t* s) const
     {
-        return m_string.compare(pos1, count1, String{s});
+        return m_string.compare(pos1, count1, String{s}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const char32_t* s) const
@@ -1411,17 +1422,17 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, const char* s, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{s, count2});
+        return m_string.compare(pos1, count1, String{s, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const wchar_t* s, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{s, count2});
+        return m_string.compare(pos1, count1, String{s, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const char16_t* s, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{s, count2});
+        return m_string.compare(pos1, count1, String{s, count2}.m_string);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const char32_t* s, std::size_t count2) const

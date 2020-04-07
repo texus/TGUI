@@ -123,7 +123,8 @@ namespace tgui
                 encodingRequired = true;
             for (const sf::Uint32 c : result)
             {
-                if ((c != '%') && (c != '/') && (c != '_') && (c != '@') && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && ((c < 'a') || (c > 'z')))
+                // Slashes have to be serialized because the DataIO parser doesn't like values starting with a slash
+                if ((c != '%') && (c != '_') && (c != '@') && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && ((c < 'a') || (c > 'z')))
                     encodingRequired = true;
             }
 

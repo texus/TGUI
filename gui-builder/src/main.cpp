@@ -24,8 +24,8 @@
 
 #include "GuiBuilder.hpp"
 
-int main()
+int main(int, char* argv[])
 {
-    GuiBuilder builder;
+    GuiBuilder builder(argv[0]);
     builder.mainLoop();
 }

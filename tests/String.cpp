@@ -105,14 +105,14 @@ TEST_CASE("[String]")
         REQUIRE(std::u16string(tgui::String(U"\U00010348")) == u"\U00010348");
         REQUIRE(std::u32string(tgui::String(U"\U00010348")) == U"\U00010348");
 
-        REQUIRE(tgui::String("xyz").asAnsiString() == "xyz");
-        REQUIRE(tgui::String(U"\u20AC").asWideString() == L"\u20AC");
-        REQUIRE(tgui::String(U"\U00010348").asUtf16() == u"\U00010348");
-        REQUIRE(tgui::String(U"\U00010348").asUtf32() == U"\U00010348");
+        REQUIRE(tgui::String("xyz").toAnsiString() == "xyz");
+        REQUIRE(tgui::String(U"\u20AC").toWideString() == L"\u20AC");
+        REQUIRE(tgui::String(U"\U00010348").toUtf16() == u"\U00010348");
+        REQUIRE(tgui::String(U"\U00010348").toUtf32() == U"\U00010348");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         REQUIRE(std::u8string(tgui::String(U"\U00010348")) == u8"\U00010348");
-        REQUIRE(tgui::String(U"\U00010348").asUtf8() == u8"\U00010348");
+        REQUIRE(tgui::String(U"\U00010348").toUtf8() == u8"\U00010348");
 #endif
     }
 
@@ -1263,6 +1263,16 @@ TEST_CASE("[String]")
         REQUIRE(str.toInt(-5) == -5);
     }
 
+    SECTION("toUInt")
+    {
+        str = "123";
+        REQUIRE(str.toUInt() == 123);
+
+        str = "text";
+        REQUIRE(str.toUInt() == 0);
+        REQUIRE(str.toUInt(5) == 5);
+    }
+
     SECTION("toFloat")
     {
         str = "0.5";
@@ -1270,6 +1280,13 @@ TEST_CASE("[String]")
 
         str = "text";
         REQUIRE(str.toFloat(-3.5f) == -3.5f);
+    }
+
+    SECTION("fromNumber")
+    {
+        REQUIRE(tgui::String::fromNumber(15) == "15");
+        REQUIRE(tgui::String::fromNumber(-3) == "-3");
+        REQUIRE(tgui::String::fromNumber(0.5) == "0.5");
     }
 
     SECTION("trim")

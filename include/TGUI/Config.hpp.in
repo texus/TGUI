@@ -74,6 +74,18 @@
     #define TGUI_UNSAFE_TYPE_INFO_COMPARISON
 #endif
 
+// Enable the use of std::filesystem if TGUI is built with c++17 with a new enough compiler.
+// Although GCC and clang supported it before version 9, this is the first version where no
+// additional library has to be linked in order to use std::filesystem. This is also the
+// reason why we can't rely on __cpp_lib_filesystem for this.
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #if defined(__clang_major__) && (__clang_major__ >= 9) \
+     || defined(__GNUC__) && (__GNUC___ >= 9) \
+     || defined(_MSC_VER) && (_MSC_VER >= 1914)
+        #define TGUI_USE_STD_FILESYSTEM
+    #endif
+#endif
+
 #if defined(__cpp_constexpr) && (__cpp_constexpr >= 201304L)
     #define TGUI_CONSTEXPR constexpr
 #else

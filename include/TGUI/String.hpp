@@ -31,6 +31,7 @@
 #include <cstring>
 #include <locale>
 #include <ostream>
+#include <sstream>
 
 #include <SFML/System/String.hpp>
 
@@ -107,7 +108,7 @@ namespace tgui
     /// Some extra helper functions are also provided to e.g. convert the string to an integer or float or to lowercase.
     ///
     /// Note that when converting to std::string, an UTF-8 encoded string will be returned, even by the asAnsiString function.
-    /// This is done to be able to use UTF-8 without c++20 support (the asUtf8 function always returns an std::u8string).
+    /// This is done to be able to use UTF-8 without c++20 support (the toUtf8 function always returns an std::u8string).
     /// Similarly, when passing an std::string or const char* to this class, the encoding is assumed to be UTF-8.
     ///
     /// Data is stored in UTF-32, so any parameter or operator using a different encoding will have to convert the string
@@ -142,6 +143,16 @@ namespace tgui
         /// @brief Returns the integer value or defaultValue if the string didn't contain a base 10 integer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int toInt(int defaultValue = 0) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts the string to an unsigned int
+        ///
+        /// @param defaultValue  Value to return if conversion fails
+        ///
+        /// @brief Returns the unsigned integer value or defaultValue if the string didn't contain a base 10 unsigned integer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int toUInt(unsigned int defaultValue = 0) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +200,24 @@ namespace tgui
         String& replace(const String& searchFor, const String& replaceWith);
 #endif
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Construct the string from a number
+        ///
+        /// @param value  Number to convert to string
+        ///
+        /// @return String representing given number
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        static String fromNumber(T value)
+        {
+            std::ostringstream oss;
+            oss.imbue(std::locale::classic());
+            oss << value;
+            return String(oss.str());
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
         String() = default;
@@ -253,18 +282,18 @@ namespace tgui
             return sf::String::fromUtf32(m_string.begin(), m_string.end());
         }
 
-        operator std::string() const;
-        operator std::wstring() const;
-        operator std::u16string() const;
-        operator const std::u32string&() const
+        explicit operator std::string() const;
+        explicit operator std::wstring() const;
+        explicit operator std::u16string() const;
+        explicit operator const std::u32string&() const
         {
             return m_string;
         }
 
-        std::string asAnsiString() const;
-        std::wstring asWideString() const;
-        std::u16string asUtf16() const;
-        const std::u32string& asUtf32() const;
+        std::string toAnsiString() const;
+        std::wstring toWideString() const;
+        std::u16string toUtf16() const;
+        const std::u32string& toUtf32() const;
 
         String& assign(std::size_t count, char ch);
         String& assign(std::size_t count, wchar_t ch);
@@ -706,9 +735,9 @@ namespace tgui
         String(std::initializer_list<char8_t> chars);
         String(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        operator std::u8string() const;
+        explicit operator std::u8string() const;
 
-        std::u8string asUtf8() const;
+        std::u8string toUtf8() const;
 
         String& assign(std::size_t count, char8_t ch);
         String& assign(const std::u8string& str);
@@ -898,10 +927,10 @@ namespace tgui
 
     inline String::operator std::u8string() const
     {
-        return asUtf8();
+        return toUtf8();
     }
 
-    inline std::u8string String::asUtf8() const
+    inline std::u8string String::toUtf8() const
     {
         std::u8string output;
         output.reserve(m_string.length() + 1);

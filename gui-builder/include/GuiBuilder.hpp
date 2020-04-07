@@ -27,6 +27,7 @@
 #define TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 
 #include <TGUI/TGUI.hpp>
+#include <TGUI/Filesystem.hpp>
 #include "WidgetProperties/WidgetProperties.hpp"
 #include "Form.hpp"
 
@@ -34,7 +35,7 @@ class GuiBuilder
 {
 public:
 
-    GuiBuilder();
+    GuiBuilder(const char* programName);
     ~GuiBuilder();
     void mainLoop();
 
@@ -140,6 +141,7 @@ private:
 
     sf::Vector2f m_formSize{800.f, 600.f};
     sf::String m_defaultPath;
+    tgui::Filesystem::Path m_programPath;
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP

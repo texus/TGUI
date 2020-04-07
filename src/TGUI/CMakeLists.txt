@@ -5,6 +5,7 @@ set(TGUI_SRC
     Color.cpp
     Container.cpp
     CustomWidgetForBindings.cpp
+    Filesystem.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
