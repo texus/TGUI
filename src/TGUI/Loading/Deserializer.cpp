@@ -228,10 +228,10 @@ namespace tgui
                     backslashPos++;
                 }
 
-                return {sf::String::fromUtf8(result.begin(), result.end())};
+                return {sf::String(String(result))}; // Pass through tgui::String to correctly keep UTF-8 encoding
             }
             else
-                return {sf::String::fromUtf8(value.begin(), value.end())};
+                return {sf::String(String(value))}; // Pass through tgui::String to correctly keep UTF-8 encoding
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

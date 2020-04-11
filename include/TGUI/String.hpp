@@ -27,6 +27,7 @@
 #define TGUI_STRING_HPP
 
 #include <TGUI/Config.hpp>
+#include <TGUI/Utf.hpp>
 #include <string>
 #include <cstring>
 #include <locale>
@@ -232,7 +233,7 @@ namespace tgui
         {
         }
 
-        String(char ansiChar, const std::locale& locale = std::locale());
+        String(char ansiChar);
         String(wchar_t wideChar);
         String(char16_t utfChar);
         String(char32_t utfChar);
@@ -272,6 +273,7 @@ namespace tgui
         String(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
+        // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
         explicit String(const sf::String& str)
             : m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}
         {
@@ -879,10 +881,9 @@ namespace tgui
     // UTF-8 function are defined in the header so that they can be enabled/disabled based on
     // the compiler settings without having to recompile TGUI with a different c++ standard.
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-    inline String::String(const std::u8string& str)
+    inline String::String(const std::u8string& str) :
+        m_string(utf::convertUtf8toUtf32(str.begin(), str.end()))
     {
-        m_string.reserve(str.length()+1);
-        sf::Utf8::toUtf32(str.begin(), str.end(), std::back_inserter(m_string));
     }
 
     inline String::String(char8_t utfChar)
@@ -891,7 +892,7 @@ namespace tgui
     }
 
     inline String::String(const char8_t* str)
-        : String{std::u8string{str}}
+        : String{utf::convertUtf8toUtf32(str, str + std::char_traits<char8_t>::length(str))}
     {
     }
 
@@ -932,10 +933,7 @@ namespace tgui
 
     inline std::u8string String::toUtf8() const
     {
-        std::u8string output;
-        output.reserve(m_string.length() + 1);
-        sf::Utf32::toUtf8(m_string.begin(), m_string.end(), std::back_inserter(output));
-        return output;
+        return utf::convertUtf32toUtf8(m_string);
     }
 
     inline String& String::assign(std::size_t count, char8_t ch)
@@ -1068,32 +1066,32 @@ namespace tgui
 
     inline int String::compare(const std::u8string& str) const noexcept
     {
-        return m_string.compare(String{str});
+        return m_string.compare(String{str}.m_string);
     }
 
     inline int String::compare(std::size_t pos1, std::size_t count1, const std::u8string& str) const
     {
-        return m_string.compare(pos1, count1, String{str});
+        return m_string.compare(pos1, count1, String{str}.m_string);
     }
 
     inline int String::compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{str, pos2, count2});
+        return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
     }
 
     inline int String::compare(const char8_t* s) const
     {
-        return m_string.compare(String{s});
+        return m_string.compare(String{s}.m_string);
     }
 
     inline int String::compare(std::size_t pos1, std::size_t count1, const char8_t* s) const
     {
-        return m_string.compare(pos1, count1, String{s});
+        return m_string.compare(pos1, count1, String{s}.m_string);
     }
 
     inline int String::compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const
     {
-        return m_string.compare(pos1, count1, String{s, count2});
+        return m_string.compare(pos1, count1, String{s, count2}.m_string);
     }
 
     inline String& String::replace(std::size_t pos, std::size_t count, const std::u8string& str)

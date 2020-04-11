@@ -42,6 +42,7 @@
     #else
         #include <sys/types.h>
         #include <sys/stat.h>
+        #include <errno.h>
     #endif
 #endif
 
@@ -242,7 +243,7 @@ namespace tgui
         return (status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
 #else
         const int status = mkdir(path.asNativeString().c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
-        return (status == 0) || (status == EEXIST);
+        return (status == 0) || (errno == EEXIST);
 #endif
     }
 

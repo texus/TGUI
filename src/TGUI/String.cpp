@@ -170,33 +170,21 @@ namespace tgui
 
     int String::toInt(int defaultValue) const
     {
-        std::string ansiString;
-        ansiString.reserve(m_string.length() + 1);
-        sf::Utf32::toLatin1(m_string.begin(), m_string.end(), std::back_inserter(ansiString), 0);
-
-        return strToInt(ansiString, defaultValue);
+        return strToInt(utf::convertUtf32toLatin1(m_string), defaultValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int String::toUInt(unsigned defaultValue) const
     {
-        std::string ansiString;
-        ansiString.reserve(m_string.length() + 1);
-        sf::Utf32::toLatin1(m_string.begin(), m_string.end(), std::back_inserter(ansiString), 0);
-
-        return strToUInt(ansiString, defaultValue);
+        return strToUInt(utf::convertUtf32toLatin1(m_string), defaultValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float String::toFloat(float defaultValue) const
     {
-        std::string ansiString;
-        ansiString.reserve(m_string.length() + 1);
-        sf::Utf32::toLatin1(m_string.begin(), m_string.end(), std::back_inserter(ansiString), 0);
-
-        return strToFloat(ansiString, defaultValue);
+        return strToFloat(utf::convertUtf32toLatin1(m_string), defaultValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,22 +253,19 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String::String(const std::string& str)
+    String::String(const std::string& str) :
+        m_string(utf::convertUtf8toUtf32(str.begin(), str.end()))
     {
-        m_string.reserve(str.length()+1);
-        sf::Utf8::toUtf32(str.begin(), str.end(), std::back_inserter(m_string));
     }
 
-    String::String(const std::wstring& str)
+    String::String(const std::wstring& str) :
+        m_string(utf::convertWidetoUtf32(str.begin(), str.end()))
     {
-        m_string.reserve(str.length()+1);
-        sf::Utf32::fromWide(str.begin(), str.end(), std::back_inserter(m_string));
     }
 
-    String::String(const std::u16string& str)
+    String::String(const std::u16string& str) :
+        m_string(utf::convertUtf16toUtf32(str.begin(), str.end()))
     {
-        m_string.reserve(str.length()+1);
-        sf::Utf16::toUtf32(str.begin(), str.end(), std::back_inserter(m_string));
     }
 
     String::String(const std::u32string& str)
@@ -288,8 +273,8 @@ namespace tgui
     {
     }
 
-    String::String(char ansiChar, const std::locale& locale)
-        : m_string(1, static_cast<char32_t>(sf::Utf32::decodeAnsi(ansiChar, locale)))
+    String::String(char ansiChar)
+        : m_string(1, static_cast<char32_t>(ansiChar))
     {
     }
 
@@ -308,20 +293,18 @@ namespace tgui
     {
     }
 
-    String::String(const char* str)
-    {
-        const std::size_t len = std::strlen(str);
-        m_string.reserve(len+1);
-        sf::Utf8::toUtf32(str, str + len, std::back_inserter(m_string));
-    }
-
-    String::String(const wchar_t* str)
-        : String{std::wstring{str}}
+    String::String(const char* str) :
+        m_string(utf::convertUtf8toUtf32(str, str + std::char_traits<char>::length(str)))
     {
     }
 
-    String::String(const char16_t* str)
-        : String{std::u16string{str}}
+    String::String(const wchar_t* str) :
+        m_string(utf::convertWidetoUtf32(str, str + std::char_traits<wchar_t>::length(str)))
+    {
+    }
+
+    String::String(const char16_t* str) :
+        m_string(utf::convertUtf16toUtf32(str, str + std::char_traits<char16_t>::length(str)))
     {
     }
 
@@ -331,7 +314,7 @@ namespace tgui
     }
 
     String::String(std::size_t count, char ch)
-        : m_string(count, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)))
+        : m_string(count, static_cast<char32_t>(ch))
     {
     }
 
@@ -471,26 +454,17 @@ namespace tgui
 
     std::string String::toAnsiString() const
     {
-        std::string output;
-        output.reserve(m_string.length() + 1);
-        sf::Utf32::toUtf8(m_string.begin(), m_string.end(), std::back_inserter(output));
-        return output;
+        return utf::convertUtf32toStdStringUtf8(m_string);
     }
 
     std::wstring String::toWideString() const
     {
-        std::wstring output;
-        output.reserve(m_string.length() + 1);
-        sf::Utf32::toWide(m_string.begin(), m_string.end(), std::back_inserter(output));
-        return output;
+        return utf::convertUtf32toWide(m_string);
     }
 
     std::u16string String::toUtf16() const
     {
-        std::u16string output;
-        output.reserve(m_string.length() + 1);
-        sf::Utf32::toUtf16(m_string.begin(), m_string.end(), std::back_inserter(output));
-        return output;
+        return utf::convertUtf32toUtf16(m_string);
     }
 
     const std::u32string& String::toUtf32() const
@@ -502,7 +476,7 @@ namespace tgui
 
     String& String::assign(std::size_t count, char ch)
     {
-        m_string.assign(count, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        m_string.assign(count, static_cast<char32_t>(ch));
         return *this;
     }
 
@@ -865,7 +839,7 @@ namespace tgui
 #ifdef TGUI_NEXT // Code not working on GCC 4.9
     String& String::insert(std::size_t index, std::size_t count, char ch)
     {
-        m_string.insert(index, count, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        m_string.insert(index, count, static_cast<char32_t>(ch));
         return *this;
     }
 
@@ -996,7 +970,7 @@ namespace tgui
 
     String::iterator String::insert(const_iterator pos, char ch)
     {
-        return m_string.insert(pos, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        return m_string.insert(pos, static_cast<char32_t>(ch));
     }
 
     String::iterator String::insert(const_iterator pos, wchar_t ch)
@@ -1016,7 +990,7 @@ namespace tgui
 
     String::iterator String::insert(const_iterator pos, std::size_t count, char ch)
     {
-        return m_string.insert(pos, count, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        return m_string.insert(pos, count, static_cast<char32_t>(ch));
     }
 
     String::iterator String::insert(const_iterator pos, std::size_t count, wchar_t ch)
@@ -1106,7 +1080,7 @@ namespace tgui
 
     void String::push_back(char ch)
     {
-        m_string.push_back(static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        m_string.push_back(static_cast<char32_t>(ch));
     }
 
     void String::push_back(wchar_t ch)
@@ -1135,7 +1109,7 @@ namespace tgui
 
     String& String::append(std::size_t count, char ch)
     {
-        m_string.append(count, static_cast<char32_t>(sf::Utf32::decodeAnsi(ch)));
+        m_string.append(count, static_cast<char32_t>(ch));
         return *this;
     }
 
