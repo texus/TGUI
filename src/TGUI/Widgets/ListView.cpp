@@ -901,7 +901,7 @@ namespace tgui
             m_verticalScrollbar->setAutoHide(true);
         }
 
-        updateScrollbars();
+        updateHorizontalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -932,7 +932,7 @@ namespace tgui
             m_horizontalScrollbar->setAutoHide(true);
         }
 
-        updateScrollbars();
+        updateHorizontalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1900,7 +1900,7 @@ namespace tgui
             maximum += static_cast<unsigned int>((m_items.size() - 1) * m_gridLinesWidth);
 
         m_verticalScrollbar->setMaximum(maximum);
-        updateScrollbars();
+        updateHorizontalScrollbarMaximum();
 
         // If the scrollbar was at the bottom then keep it at the bottom
         if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
@@ -1926,7 +1926,10 @@ namespace tgui
             else
                 width += m_columns.size() * static_cast<float>(getTotalSeparatorWidth());
 
-            m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width));
+            if (m_verticalScrollbar->isVisible())
+                m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width - m_verticalScrollbar->getSize().x));
+            else
+                m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width));
         }
 
         updateScrollbars();
