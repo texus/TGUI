@@ -165,9 +165,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Picture::getSignal(std::string signalName)
+    Signal& Picture::getSignal(String signalName)
     {
-        if (signalName == toLower(onDoubleClick.getName()))
+        if (signalName == onDoubleClick.getName().toLower())
             return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -175,14 +175,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::rendererChanged(const std::string& property)
+    void Picture::rendererChanged(const String& property)
     {
         if (property == "texture")
         {
             const auto& texture = getSharedRenderer()->getTexture();
 
             if (!m_sprite.isSet() && (getSize() == Vector2f{0,0}))
-                setSize(texture.getImageSize());
+                setSize(Vector2f{texture.getImageSize()});
 
             m_sprite.setTexture(texture);
         }
@@ -219,11 +219,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::update(sf::Time elapsedTime)
+    void Picture::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 
-        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;

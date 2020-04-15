@@ -110,6 +110,9 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(U"\U00010348").toUtf16() == u"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf32() == U"\U00010348");
 
+        // Will work for older and newer compilers as it will either use std::string or std::u8string
+        REQUIRE(tgui::String(u8"\U00010348").toUtf8() == u8"\U00010348");
+
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         REQUIRE(std::u8string(tgui::String(U"\U00010348")) == u8"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf8() == u8"\U00010348");
@@ -308,8 +311,6 @@ TEST_CASE("[String]")
         REQUIRE(str.empty());
     }
 
-// TGUI_NEXT
-/*
     SECTION("insert")
     {
         str = "^$"; REQUIRE(str.insert(1, "xyz") == "^xyz$");
@@ -393,7 +394,7 @@ TEST_CASE("[String]")
         str.pop_back();
         REQUIRE(str == "ABFJ");
     }
-*/
+
     SECTION("push_back")
     {
         str.push_back('_');
@@ -546,8 +547,6 @@ TEST_CASE("[String]")
 #endif
     }
 
-// TGUI_NEXT
-/*
     SECTION("replace")
     {
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, "abc") == U"^abc$");
@@ -621,7 +620,7 @@ TEST_CASE("[String]")
         str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::u8string(u8"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
 #endif
     }
-*/
+
     SECTION("copy")
     {
         char32_t chars[4];
@@ -1328,35 +1327,6 @@ TEST_CASE("[String]")
             REQUIRE(tgui::isWhitespace(U'\r'));
             REQUIRE(tgui::isWhitespace(U'\n'));
             REQUIRE(!tgui::isWhitespace(U'x'));
-        }
-
-        SECTION("strToInt")
-        {
-            REQUIRE(tgui::strToInt("123") == 123);
-            REQUIRE(tgui::strToInt("text", -5) == -5);
-        }
-
-        SECTION("strToFloat")
-        {
-            REQUIRE(tgui::strToFloat("0.5") == 0.5f);
-            REQUIRE(tgui::strToFloat("text", -3.5f) == -3.5f);
-        }
-
-        SECTION("toLower")
-        {
-            REQUIRE(tgui::toLower("aBCdEfgHIJ") == "abcdefghij");
-        }
-
-        SECTION("toUpper")
-        {
-            REQUIRE(tgui::toUpper("aBCdEfgHIJ") == "ABCDEFGHIJ");
-        }
-
-        SECTION("trim")
-        {
-            REQUIRE(tgui::trim("\t xyz\r\n") == "xyz");
-            REQUIRE(tgui::trim("a") == "a");
-            REQUIRE(tgui::trim("") == "");
         }
     }
 }

@@ -34,11 +34,10 @@ TEST_CASE("[TextBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(textBox->connect("TextChanged", [](){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](sf::String){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](std::string){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::String){}));
+        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::String){}));
+        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -52,10 +51,10 @@ TEST_CASE("[TextBox]")
         textBox->setSize(150, 100);
         textBox->getRenderer()->setBorders(2);
 
-        REQUIRE(textBox->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(textBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(textBox->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(textBox->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(textBox->getFullSize() == textBox->getSize());
-        REQUIRE(textBox->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(textBox->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Text")
@@ -460,8 +459,8 @@ TEST_CASE("[TextBox]")
         SECTION("colored")
         {
             tgui::ScrollbarRenderer scrollbarRenderer;
-            scrollbarRenderer.setTrackColor(sf::Color::Red);
-            scrollbarRenderer.setThumbColor(sf::Color::Blue);
+            scrollbarRenderer.setTrackColor(tgui::Color::Red);
+            scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -480,12 +479,12 @@ TEST_CASE("[TextBox]")
             
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("CaretColor", sf::Color{130, 140, 150}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{160, 170, 180}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretColor", tgui::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
@@ -508,20 +507,20 @@ TEST_CASE("[TextBox]")
                 renderer->setScrollbarWidth(15);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("CaretColor").getColor() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(160, 170, 180));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("CaretColor").getColor() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")
@@ -574,12 +573,12 @@ TEST_CASE("[TextBox]")
         textBox->setText("Cupcake ipsum dolor sit.\nAmet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon drops carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat cake bonbon.");
 
         tgui::TextBoxRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Yellow);
-        renderer.setTextColor(sf::Color::Blue);
-        renderer.setSelectedTextColor(sf::Color::Red);
-        renderer.setSelectedTextBackgroundColor(sf::Color::Cyan);
-        renderer.setCaretColor(sf::Color::Green);
-        renderer.setBorderColor(sf::Color::Magenta);
+        renderer.setBackgroundColor(tgui::Color::Yellow);
+        renderer.setTextColor(tgui::Color::Blue);
+        renderer.setSelectedTextColor(tgui::Color::Red);
+        renderer.setSelectedTextBackgroundColor(tgui::Color::Cyan);
+        renderer.setCaretColor(tgui::Color::Green);
+        renderer.setBorderColor(tgui::Color::Magenta);
         renderer.setCaretWidth(2);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
@@ -587,10 +586,10 @@ TEST_CASE("[TextBox]")
         textBox->setRenderer(renderer.getData());
 
         tgui::ScrollbarRenderer scrollbarRenderer = tgui::RendererData::create();
-        scrollbarRenderer.setTrackColor(sf::Color::Green);
-        scrollbarRenderer.setThumbColor(sf::Color::Red);
-        scrollbarRenderer.setArrowBackgroundColor(sf::Color::Blue);
-        scrollbarRenderer.setArrowColor(sf::Color::White);
+        scrollbarRenderer.setTrackColor(tgui::Color::Green);
+        scrollbarRenderer.setThumbColor(tgui::Color::Red);
+        scrollbarRenderer.setArrowBackgroundColor(tgui::Color::Blue);
+        scrollbarRenderer.setArrowColor(tgui::Color::White);
         scrollbarRenderer.setOpacity(0.7f);
         renderer.setScrollbar(scrollbarRenderer.getData());
 

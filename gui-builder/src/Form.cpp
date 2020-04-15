@@ -34,7 +34,7 @@ const static float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow, sf::Vector2f formSize) :
+Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWindow::Ptr formWindow, tgui::Vector2f formSize) :
     m_guiBuilder      {guiBuilder},
     m_formWindow      {formWindow},
     m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
@@ -48,7 +48,7 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
     m_formWindow->connect("SizeChanged", [this] { m_scrollablePanel->setSize(m_formWindow->getSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
-    eventHandler->connect("MousePressed", [=](sf::Vector2f pos){ onFormMousePress(pos); });
+    eventHandler->connect("MousePressed", [=](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
     m_scrollablePanel->setSize(m_formWindow->getSize());
@@ -59,27 +59,27 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
     {
         square = tgui::Button::create();
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
-        square->setSize(square->getRenderer()->getTexture().getImageSize());
+        square->setSize(tgui::Vector2f{square->getRenderer()->getTexture().getImageSize()});
         square->setVisible(false);
-        square->connect("MousePressed", [=](sf::Vector2f pos){ onSelectionSquarePress(square, pos); });
+        square->connect("MousePressed", [=](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
+tgui::String Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
 {
-    const std::string id = tgui::to_string(widget.get());
+    const tgui::String id = tgui::String::fromNumber(widget.get());
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
 
-    const std::string widgetType = widget->getWidgetType();
+    const tgui::String widgetType = widget->getWidgetType();
     bool foundAvailableName = false;
     unsigned int count = 0;
-    std::string name;
+    tgui::String name;
     while (!foundAvailableName)
     {
-        name = widgetType + tgui::to_string(++count);
+        name = widgetType + tgui::String::fromNumber(++count);
 
         foundAvailableName = true;
         for (const auto& pair : m_widgets)
@@ -109,7 +109,7 @@ std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, b
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::removeWidget(const std::string& id)
+void Form::removeWidget(const tgui::String& id)
 {
     const auto widget = m_widgets[id];
     assert(widget != nullptr);
@@ -117,7 +117,7 @@ void Form::removeWidget(const std::string& id)
     // Remove the child widgets
     if (widget->ptr->isContainer())
     {
-        std::vector<std::string> childIds;
+        std::vector<tgui::String> childIds;
         std::stack<tgui::Container::Ptr> parentsToSearch;
         parentsToSearch.push(widget->ptr->cast<tgui::Container>());
         while (!parentsToSearch.empty())
@@ -126,7 +126,7 @@ void Form::removeWidget(const std::string& id)
             parentsToSearch.pop();
             for (const auto& childWidget : parent->getWidgets())
             {
-                childIds.push_back(tgui::to_string(childWidget.get()));
+                childIds.push_back(tgui::String::fromNumber(childWidget.get()));
                 if (childWidget->isContainer())
                     parentsToSearch.push(childWidget->cast<tgui::Container>());
             }
@@ -144,7 +144,7 @@ void Form::removeWidget(const std::string& id)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::shared_ptr<WidgetInfo> Form::getWidget(const std::string& id) const
+std::shared_ptr<WidgetInfo> Form::getWidget(const tgui::String& id) const
 {
     assert(m_widgets.find(id) != m_widgets.end());
     return m_widgets.at(id);
@@ -152,7 +152,7 @@ std::shared_ptr<WidgetInfo> Form::getWidget(const std::string& id) const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::shared_ptr<WidgetInfo> Form::getWidgetByName(const std::string& name) const
+std::shared_ptr<WidgetInfo> Form::getWidgetByName(const tgui::String& name) const
 {
     if (name == m_filename)
         return std::shared_ptr<WidgetInfo>();
@@ -205,7 +205,7 @@ std::shared_ptr<WidgetInfo> Form::getSelectedWidget() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Form::setSelectedWidgetName(const std::string& name)
+bool Form::setSelectedWidgetName(const tgui::String& name)
 {
     assert(m_selectedWidget != nullptr);
 
@@ -268,14 +268,14 @@ void Form::updateSelectionSquarePositions()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::selectWidgetById(const std::string& id)
+void Form::selectWidgetById(const tgui::String& id)
 {
     selectWidget(m_widgets[id]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::selectWidgetByName(const std::string& name)
+void Form::selectWidgetByName(const tgui::String& name)
 {
     selectWidget(getWidgetByName(name));
 }
@@ -294,7 +294,7 @@ void Form::selectParent()
         return;
     }
 
-    selectWidget(m_widgets[tgui::to_string(m_selectedWidget->ptr->getParent())]);
+    selectWidget(m_widgets[tgui::String::fromNumber(m_selectedWidget->ptr->getParent())]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,11 +317,11 @@ void Form::mouseReleased()
 
 bool Form::rightMouseClick(sf::Vector2i pos)
 {
-    sf::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
+    tgui::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
     if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getSize()}.contains(relativeWindowPos))
         return false;
 
-    const sf::Vector2f relativePanelPos{
+    const tgui::Vector2f relativePanelPos{
         (pos.x - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().x),
         (pos.y - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().y)};
 
@@ -386,7 +386,7 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     }
     else
     {
-        sf::Vector2f selectedWidgetPoint;
+        tgui::Vector2f selectedWidgetPoint;
         if (keyEvent.code == sf::Keyboard::Left)
             selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
         else if (keyEvent.code == sf::Keyboard::Right)
@@ -404,7 +404,7 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
             if (widget == selectedWidget)
                 continue;
 
-            sf::Vector2f widgetPoint;
+            tgui::Vector2f widgetPoint;
             if (keyEvent.code == sf::Keyboard::Left)
                 widgetPoint = {widget->getPosition().x + widget->getSize().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
             else if (keyEvent.code == sf::Keyboard::Right)
@@ -430,13 +430,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
         }
 
         if (closestWidget)
-            selectWidget(m_widgets[tgui::to_string(closestWidget.get())]);
+            selectWidget(m_widgets[tgui::String::fromNumber(closestWidget.get())]);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::setFilename(const sf::String& filename)
+void Form::setFilename(const tgui::String& filename)
 {
     m_filename = filename;
     setChanged(m_changed);
@@ -444,14 +444,14 @@ void Form::setFilename(const sf::String& filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-sf::String Form::getFilename() const
+tgui::String Form::getFilename() const
 {
     return m_filename;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::setSize(sf::Vector2f size)
+void Form::setSize(tgui::Vector2f size)
 {
     m_size = size;
 
@@ -462,7 +462,7 @@ void Form::setSize(sf::Vector2f size)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-sf::Vector2f Form::getSize() const
+tgui::Vector2f Form::getSize() const
 {
     return m_size;
 }
@@ -511,7 +511,7 @@ bool Form::load()
     catch (const tgui::Exception& e)
     {
         // Failed to open file
-        std::cout << "Failed to load '" << getFilename().toAnsiString() << "', reason: " << e.what() << std::endl;
+        std::cout << "Failed to load '" << getFilename() << "', reason: " << e.what() << std::endl;
         return false;
     }
 
@@ -543,16 +543,16 @@ void Form::drawExtra(sf::RenderWindow& window) const
         return;
 
     const auto selectedWidget = m_selectedWidget->ptr;
-    const sf::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
-    const sf::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
+    const tgui::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
+    const tgui::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
     const auto widgets = selectedWidget->getParent()->getWidgets();
     for (const auto& widget : widgets)
     {
         if (widget == selectedWidget)
             continue;
 
-        const sf::Vector2f topLeft = widget->getAbsolutePosition();
-        const sf::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
+        const tgui::Vector2f topLeft = widget->getAbsolutePosition();
+        const tgui::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
 
         const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
         const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
@@ -577,7 +577,7 @@ void Form::importLoadedWidgets(tgui::Container::Ptr parent)
     const auto& widgets = parent->getWidgets();
     for (std::size_t i = 0; i < widgets.size(); ++i)
     {
-        const std::string id = tgui::to_string(widgets[i].get());
+        const tgui::String id = tgui::String::fromNumber(widgets[i].get());
         m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
         m_widgets[id]->name = widgets[i]->getWidgetName();
         m_widgets[id]->theme = "Custom";
@@ -589,7 +589,7 @@ void Form::importLoadedWidgets(tgui::Container::Ptr parent)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos)
+void Form::onSelectionSquarePress(tgui::Button::Ptr square, tgui::Vector2f pos)
 {
     m_draggingSelectionSquare = square;
     m_draggingPos = square->getPosition() + pos;
@@ -597,14 +597,14 @@ void Form::onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vector2f pos)
+tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, tgui::Vector2f pos)
 {
     // Loop through widgets in reverse order to find the top one in case of overlapping widgets
     const auto& widgets = parent->getWidgets();
     for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
     {
         tgui::Widget::Ptr widget = *it;
-        if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getFullSize().x, widget->getFullSize().y}.contains(pos))
+        if (widget && tgui::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getFullSize().x, widget->getFullSize().y}.contains(pos))
         {
             // Skip invisible widgets, those have to be selected using the combo box in the properties window.
             // This prevents clicking on stuff you don't see instead of the thing you are trying to click on.
@@ -628,12 +628,12 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vec
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::onFormMousePress(sf::Vector2f pos)
+void Form::onFormMousePress(tgui::Vector2f pos)
 {
     auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
     if (widget)
     {
-        selectWidget(m_widgets[tgui::to_string(widget.get())]);
+        selectWidget(m_widgets[tgui::String::fromNumber(widget.get())]);
         m_draggingWidget = true;
         m_draggingPos = pos;
     }
@@ -647,7 +647,7 @@ void Form::onDrag(sf::Vector2i mousePos)
 {
     assert(m_selectedWidget != nullptr);
 
-    const sf::Vector2f pos = sf::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
+    const tgui::Vector2f pos = tgui::Vector2f{sf::Vector2f{mousePos}} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
     auto selectedWidget = m_selectedWidget->ptr;
 
     bool updated = false;
@@ -757,11 +757,11 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             const float ratio = selectedWidget->getSize().y / selectedWidget->getSize().x;
 
-            sf::Vector2f change;
+            tgui::Vector2f change;
             if (ratio <= 1)
-                change = sf::Vector2f(MOVE_STEP, MOVE_STEP * ratio);
+                change = tgui::Vector2f(MOVE_STEP, MOVE_STEP * ratio);
             else
-                change = sf::Vector2f(MOVE_STEP / ratio, MOVE_STEP);
+                change = tgui::Vector2f(MOVE_STEP / ratio, MOVE_STEP);
 
             if (m_draggingSelectionSquare == m_selectionSquares[0]) // Top left
             {
@@ -878,11 +878,11 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const
+void Form::drawLine(sf::RenderWindow& window, tgui::Vector2f startPoint, tgui::Vector2f endPoint) const
 {
     sf::Vertex line[2] = {
-        {startPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}},
-        {endPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}}
+        {{startPoint.x + 0.5f, startPoint.y + 0.5f}, sf::Color{0, 0, 139}},
+        {{endPoint.x + 0.5f, endPoint.y + 0.5f}, sf::Color{0, 0, 139}}
     };
     window.draw(line, 2, sf::Lines);
 }

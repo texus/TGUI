@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t ListView::addColumn(const sf::String& text, float width, ColumnAlignment alignment)
+    std::size_t ListView::addColumn(const String& text, float width, ColumnAlignment alignment)
     {
         Column column;
         column.text = createHeaderText(text);
@@ -132,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::setColumnText(std::size_t index, const sf::String& text)
+    void ListView::setColumnText(std::size_t index, const String& text)
     {
         if (index >= m_columns.size())
         {
@@ -149,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListView::getColumnText(std::size_t index) const
+    String ListView::getColumnText(std::size_t index) const
     {
         if (index < m_columns.size())
             return m_columns[index].text.getString();
@@ -277,7 +277,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t ListView::addItem(const sf::String& text)
+    std::size_t ListView::addItem(const String& text)
     {
         TGUI_EMPLACE_BACK(item, m_items)
         item.texts.push_back(createText(text));
@@ -294,7 +294,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t ListView::addItem(const std::vector<sf::String>& itemTexts)
+    std::size_t ListView::addItem(const std::vector<String>& itemTexts)
     {
         TGUI_EMPLACE_BACK(item, m_items)
         item.texts.reserve(itemTexts.size());
@@ -314,7 +314,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::addMultipleItems(const std::vector<std::vector<sf::String>>& items)
+    void ListView::addMultipleItems(const std::vector<std::vector<String>>& items)
     {
         for (unsigned int i = 0; i < items.size(); ++i)
         {
@@ -335,7 +335,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::changeItem(std::size_t index, const std::vector<sf::String>& itemTexts)
+    bool ListView::changeItem(std::size_t index, const std::vector<String>& itemTexts)
     {
         if (index >= m_items.size())
             return false;
@@ -351,7 +351,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::changeSubItem(std::size_t index, std::size_t column, const sf::String& itemText)
+    bool ListView::changeSubItem(std::size_t index, std::size_t column, const String& itemText)
     {
         if (index >= m_items.size())
             return false;
@@ -596,7 +596,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListView::getItemCell(std::size_t rowIndex, std::size_t columnIndex) const
+    String ListView::getItemCell(std::size_t rowIndex, std::size_t columnIndex) const
     {
         if (rowIndex >= m_items.size())
             return "";
@@ -612,7 +612,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListView::getItem(std::size_t index) const
+    String ListView::getItem(std::size_t index) const
     {
         if (index >= m_items.size())
             return "";
@@ -625,9 +625,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ListView::getItemRow(std::size_t index) const
+    std::vector<String> ListView::getItemRow(std::size_t index) const
     {
-        std::vector<sf::String> row;
+        std::vector<String> row;
         if (index < m_items.size())
         {
             for (const auto& text : m_items[index].texts)
@@ -640,7 +640,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::sort(std::size_t index, const std::function<bool(const sf::String&, const sf::String&)>& cmp)
+    void ListView::sort(std::size_t index, const std::function<bool(const String&, const String&)>& cmp)
     {
         if (index >= m_items.size())
             return;
@@ -648,11 +648,11 @@ namespace tgui
         std::sort(m_items.begin(), m_items.end(),
             [index, &cmp](const ListView::Item &a, const ListView::Item& b)
             {
-                sf::String s1;
+                String s1;
                 if (index < a.texts.size())
                     s1 = a.texts[index].getString();
 
-                sf::String s2;
+                String s2;
                 if (index < b.texts.size())
                     s2 = b.texts[index].getString();
 
@@ -662,9 +662,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ListView::getItems() const
+    std::vector<String> ListView::getItems() const
     {
-        std::vector<sf::String> items(m_items.size());
+        std::vector<String> items(m_items.size());
 
         for (std::size_t i = 0; i < m_items.size(); i++)
             items[i] = getItemCell(i, 0);
@@ -674,13 +674,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::vector<sf::String>> ListView::getItemRows() const
+    std::vector<std::vector<String>> ListView::getItemRows() const
     {
-        std::vector<std::vector<sf::String>> rows;
+        std::vector<std::vector<String>> rows;
 
         for (const auto& item : m_items)
         {
-            std::vector<sf::String> row;
+            std::vector<String> row;
             for (const auto& text : item.texts)
                 row.push_back(text.getString());
 
@@ -1216,15 +1216,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ListView::getSignal(std::string signalName)
+    Signal& ListView::getSignal(String signalName)
     {
-        if (signalName == toLower(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName().toLower())
             return onItemSelect;
-        else if (signalName == toLower(onDoubleClick.getName()))
+        else if (signalName == onDoubleClick.getName().toLower())
             return onDoubleClick;
-        else if (signalName == toLower(onRightClick.getName()))
+        else if (signalName == onRightClick.getName().toLower())
             return onRightClick;
-        else if (signalName == toLower(onHeaderClick.getName()))
+        else if (signalName == onHeaderClick.getName().toLower())
             return onHeaderClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -1232,7 +1232,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::rendererChanged(const std::string& property)
+    void ListView::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -1397,7 +1397,7 @@ namespace tgui
 
             columnNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.text.getString()));
             if (column.designWidth)
-                columnNode->propertyValuePairs["Width"] = std::make_unique<DataIO::ValueNode>(to_string(column.designWidth));
+                columnNode->propertyValuePairs["Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
 
             if (column.alignment == ColumnAlignment::Center)
                 columnNode->propertyValuePairs["Alignment"] = std::make_unique<DataIO::ValueNode>("Center");
@@ -1414,7 +1414,7 @@ namespace tgui
 
             if (!item.texts.empty())
             {
-                std::string textsList = "[" + Serializer::serialize(item.texts[0].getString());
+                String textsList = "[" + Serializer::serialize(item.texts[0].getString());
                 for (std::size_t i = 1; i < item.texts.size(); ++i)
                     textsList += ", " + Serializer::serialize(item.texts[i].getString());
                 textsList += "]";
@@ -1432,7 +1432,7 @@ namespace tgui
             node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (m_headerTextSize)
-            node->propertyValuePairs["HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_headerTextSize));
+            node->propertyValuePairs["HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerTextSize));
 
         if (m_multiSelect)
             node->propertyValuePairs["MultiSelect"] = std::make_unique<DataIO::ValueNode>("true");
@@ -1440,7 +1440,7 @@ namespace tgui
         if (!m_selectedItems.empty())
         {
             auto it = m_selectedItems.cbegin();
-            std::string iList = "[" + Serializer::serialize(*it);
+            String iList = "[" + Serializer::serialize(*it);
             for (++it; it != m_selectedItems.cend(); ++it)
                 iList += ", " + Serializer::serialize(*it);
 
@@ -1450,10 +1450,10 @@ namespace tgui
         }
 
         if (m_gridLinesWidth != 1)
-            node->propertyValuePairs["GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_gridLinesWidth));
+            node->propertyValuePairs["GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_gridLinesWidth));
 
         if (m_showHorizontalGridLines)
-            node->propertyValuePairs["ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(to_string(m_showHorizontalGridLines));
+            node->propertyValuePairs["ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showHorizontalGridLines));
 
         if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
@@ -1471,13 +1471,13 @@ namespace tgui
         }
 
         node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
-        node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_requestedHeaderHeight));
-        node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_separatorWidth));
-        node->propertyValuePairs["HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_headerSeparatorHeight));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
-        node->propertyValuePairs["ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(to_string(m_showVerticalGridLines));
-        node->propertyValuePairs["ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(to_string(m_expandLastColumn));
+        node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
+        node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_separatorWidth));
+        node->propertyValuePairs["HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerSeparatorHeight));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs["ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showVerticalGridLines));
+        node->propertyValuePairs["ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_expandLastColumn));
 
         return node;
     }
@@ -1490,10 +1490,10 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) != "column")
+            if (childNode->name.toLower() != "column")
                 continue;
 
-            sf::String text;
+            String text;
             float width = 0;
             ColumnAlignment alignment = ColumnAlignment::Left;
 
@@ -1504,7 +1504,7 @@ namespace tgui
 
             if (childNode->propertyValuePairs["alignment"])
             {
-                std::string alignmentString = toLower(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["alignment"]->value).getString());
+                String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["alignment"]->value).getString().toLower();
                 if (alignmentString == "right")
                     alignment = ColumnAlignment::Right;
                 else if (alignmentString == "center")
@@ -1518,7 +1518,7 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) != "item")
+            if (childNode->name.toLower() != "item")
                 continue;
 
             if (!childNode->propertyValuePairs["texts"])
@@ -1526,7 +1526,7 @@ namespace tgui
             if (!childNode->propertyValuePairs["texts"]->listNode)
                 throw Exception{"Failed to parse 'Texts' property inside the 'Item' property, expected a list as value"};
 
-            std::vector<sf::String> itemRow;
+            std::vector<String> itemRow;
             itemRow.reserve(childNode->propertyValuePairs["texts"]->valueList.size());
             for (const auto& item : childNode->propertyValuePairs["texts"]->valueList)
                 itemRow.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
@@ -1539,17 +1539,17 @@ namespace tgui
         if (node->propertyValuePairs["headervisible"])
             setHeaderVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["headervisible"]->value).getBool());
         if (node->propertyValuePairs["headerheight"])
-            setHeaderHeight(strToFloat(node->propertyValuePairs["headerheight"]->value));
+            setHeaderHeight(node->propertyValuePairs["headerheight"]->value.toFloat());
         if (node->propertyValuePairs["headertextsize"])
-            setHeaderTextSize(strToInt(node->propertyValuePairs["headertextsize"]->value));
+            setHeaderTextSize(node->propertyValuePairs["headertextsize"]->value.toInt());
         if (node->propertyValuePairs["separatorwidth"])
-            setSeparatorWidth(strToInt(node->propertyValuePairs["separatorwidth"]->value));
+            setSeparatorWidth(node->propertyValuePairs["separatorwidth"]->value.toInt());
         if (node->propertyValuePairs["headerseparatorheight"])
-            setHeaderSeparatorHeight(strToInt(node->propertyValuePairs["headerseparatorheight"]->value));
+            setHeaderSeparatorHeight(node->propertyValuePairs["headerseparatorheight"]->value.toInt());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["itemheight"])
-            setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
+            setItemHeight(node->propertyValuePairs["itemheight"]->value.toInt());
         if (node->propertyValuePairs["multiselect"])
             setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["multiselect"]->value).getBool());
 
@@ -1559,10 +1559,10 @@ namespace tgui
                 throw Exception{"Failed to parse 'SelectedItemIndices' property, expected a list as value"};
 
             for (const auto& item : node->propertyValuePairs["selecteditemindices"]->valueList)
-                addSelectedItem(strToInt(item));
+                addSelectedItem(item.toInt());
         }
         if (node->propertyValuePairs["gridlineswidth"])
-            setGridLinesWidth(strToInt(node->propertyValuePairs["gridlineswidth"]->value));
+            setGridLinesWidth(node->propertyValuePairs["gridlineswidth"]->value.toInt());
         if (node->propertyValuePairs["showhorizontalgridlines"])
             setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["showhorizontalgridlines"]->value).getBool());
         if (node->propertyValuePairs["showverticalgridlines"])
@@ -1572,7 +1572,7 @@ namespace tgui
 
         if (node->propertyValuePairs["verticalscrollbarpolicy"])
         {
-            std::string policy = toLower(trim(node->propertyValuePairs["verticalscrollbarpolicy"]->value));
+            String policy = node->propertyValuePairs["verticalscrollbarpolicy"]->value.trim().toLower();
             if (policy == "automatic")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
@@ -1585,7 +1585,7 @@ namespace tgui
 
         if (node->propertyValuePairs["horizontalscrollbarpolicy"])
         {
-            std::string policy = toLower(trim(node->propertyValuePairs["horizontalscrollbarpolicy"]->value));
+            String policy = node->propertyValuePairs["horizontalscrollbarpolicy"]->value.trim().toLower();
             if (policy == "automatic")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
@@ -1607,7 +1607,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Text ListView::createText(const sf::String& caption)
+    Text ListView::createText(const String& caption)
     {
         Text text;
         text.setFont(m_fontCached);
@@ -1620,7 +1620,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Text ListView::createHeaderText(const sf::String& caption)
+    Text ListView::createHeaderText(const String& caption)
     {
         Text text;
         text.setFont(m_fontCached);
@@ -2017,11 +2017,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::update(sf::Time elapsedTime)
+    void ListView::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 
-        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = -1;

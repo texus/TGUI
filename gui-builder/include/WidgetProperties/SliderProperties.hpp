@@ -31,17 +31,17 @@
 
 struct SliderProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
+        auto slider = widget->cast<tgui::Slider>();
         if (property == "Minimum")
-            slider->setMinimum(tgui::strToFloat(value));
+            slider->setMinimum(value.toFloat());
         else if (property == "Maximum")
-            slider->setMaximum(tgui::strToFloat(value));
+            slider->setMaximum(value.toFloat());
         else if (property == "Value")
-            slider->setValue(tgui::strToFloat(value));
+            slider->setValue(value.toFloat());
         else if (property == "Step")
-            slider->setStep(tgui::strToFloat(value));
+            slider->setStep(value.toFloat());
         else if (property == "InvertedDirection")
             slider->setInvertedDirection(parseBoolean(value, false));
         else if (property == "VerticalScroll")
@@ -53,13 +53,13 @@ struct SliderProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
-        pair.first["Minimum"] = {"Float", tgui::to_string(slider->getMinimum())};
-        pair.first["Maximum"] = {"Float", tgui::to_string(slider->getMaximum())};
-        pair.first["Value"] = {"Float", tgui::to_string(slider->getValue())};
-        pair.first["Step"] = {"Float", tgui::to_string(slider->getStep())};
-        pair.first["InvertedDirection"] = {"Bool", tgui::to_string(slider->getInvertedDirection())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::to_string(slider->getVerticalScroll())};
+        auto slider = widget->cast<tgui::Slider>();
+        pair.first["Minimum"] = {"Float", tgui::String::fromNumber(slider->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::String::fromNumber(slider->getMaximum())};
+        pair.first["Value"] = {"Float", tgui::String::fromNumber(slider->getValue())};
+        pair.first["Step"] = {"Float", tgui::String::fromNumber(slider->getStep())};
+        pair.first["InvertedDirection"] = {"Bool", tgui::String::fromNumber(slider->getInvertedDirection())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(slider->getVerticalScroll())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

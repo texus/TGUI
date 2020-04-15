@@ -27,9 +27,8 @@
 #define TGUI_ABSOLUTE_OR_RELATIVE_VALUE_HPP
 
 #include <TGUI/Global.hpp>
-#include <TGUI/to_string.hpp>
+#include <TGUI/String.hpp>
 #include <type_traits>
-#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +71,7 @@ namespace tgui
         /// @param expression  String to parse
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         AbsoluteOrRelativeValue(const char* expression) :
-            AbsoluteOrRelativeValue{std::string{expression}}
+            AbsoluteOrRelativeValue{String{expression}}
         {
         }
 
@@ -82,17 +81,17 @@ namespace tgui
         ///
         /// @param expression  String to parse
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        AbsoluteOrRelativeValue(const std::string& expression)
+        AbsoluteOrRelativeValue(const String& expression)
         {
             if (!expression.empty() && (expression.back() == '%'))
             {
                 m_constant = false;
-                m_ratio    = strToFloat(expression.substr(0, expression.length()-1)) / 100.f;
+                m_ratio    = expression.substr(0, expression.length()-1).toFloat() / 100.f;
             }
             else
             {
                 m_constant = true;
-                m_value    = strToFloat(expression.substr(0, expression.length()));
+                m_value    = expression.substr(0, expression.length()).toFloat();
             }
         }
 
@@ -136,7 +135,7 @@ namespace tgui
         ///
         /// @param newParentSize  New size from which to take the relative value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateParentSize(float newParentSize)
+        TGUI_CONSTEXPR void updateParentSize(float newParentSize)
         {
             if (!m_constant)
             {
@@ -152,12 +151,12 @@ namespace tgui
         ///
         /// @return String representation of the value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string toString() const
+        String toString() const
         {
             if (m_constant)
-                return to_string(m_value);
+                return String::fromNumber(m_value);
             else
-                return to_string(m_ratio * 100) + '%';
+                return String::fromNumber(m_ratio * 100) + '%';
         }
 
 

@@ -47,7 +47,7 @@ namespace tgui
         /// @param type         Type of the widget
         /// @param constructor  Function used to construct the widget (all TGUI widgets use std::make_shared<WidgetType>)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setConstructFunction(const std::string& type, const std::function<Widget::Ptr()>& constructor);
+        static void setConstructFunction(const String& type, const std::function<Widget::Ptr()>& constructor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,13 +57,13 @@ namespace tgui
         ///
         /// @return Function used to construct the widget (all TGUI widgets use std::make_shared<WidgetType>)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static const std::function<Widget::Ptr()>& getConstructFunction(const std::string& type);
+        static const std::function<Widget::Ptr()>& getConstructFunction(const String& type);
 
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-        static std::map<std::string, std::function<Widget::Ptr()>> m_constructFunctions;
+        static std::map<String, std::function<Widget::Ptr()>> m_constructFunctions;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

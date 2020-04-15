@@ -44,11 +44,11 @@ TEST_CASE("[ScrollablePanel]")
 
         SECTION("Without outline")
         {
-            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(panel->getFullSize() == panel->getSize());
-            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
+            REQUIRE(panel->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == tgui::Vector2f(0, 0));
         }
 
         SECTION("With outline")
@@ -56,11 +56,11 @@ TEST_CASE("[ScrollablePanel]")
             panel->getRenderer()->setBorders({1, 2, 3, 4});
             panel->getRenderer()->setPadding({5, 6, 7, 8});
 
-            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(panel->getFullSize() == panel->getSize());
-            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(6, 8));
+            REQUIRE(panel->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == tgui::Vector2f(6, 8));
         }
 
         SECTION("Child widgets")
@@ -69,12 +69,12 @@ TEST_CASE("[ScrollablePanel]")
             childWidget->setPosition(60, 50);
             panel->add(childWidget);
 
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(100, 80));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(100, 80));
 
             panel->getRenderer()->setBorders({1, 2, 3, 4});
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(101, 82));
         }
     }
 
@@ -219,8 +219,8 @@ TEST_CASE("[ScrollablePanel]")
         auto renderer = panel->getRenderer();
 
         tgui::ScrollbarRenderer scrollbarRenderer;
-        scrollbarRenderer.setTrackColor(sf::Color::Red);
-        scrollbarRenderer.setThumbColor(sf::Color::Blue);
+        scrollbarRenderer.setTrackColor(tgui::Color::Red);
+        scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
         SECTION("set serialized property")
         {
@@ -234,8 +234,8 @@ TEST_CASE("[ScrollablePanel]")
 
         SECTION("set object property")
         {
-            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{40, 50, 60}));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
@@ -252,20 +252,20 @@ TEST_CASE("[ScrollablePanel]")
             renderer->setScrollbarWidth(15);
         }
 
-        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-        REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(40, 50, 60));
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
-        REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
-        REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
+        REQUIRE(renderer->getBackgroundColor() == tgui::Color(10, 20, 30));
+        REQUIRE(renderer->getBorderColor() == tgui::Color(40, 50, 60));
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
 
         REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
     }
 
     SECTION("Saving and loading from file")
@@ -285,7 +285,7 @@ TEST_CASE("[ScrollablePanel]")
 
             panel->setSize(200, 100);
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("ScrollablePanelWidgetFile1.txt"));
-            REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
+            REQUIRE(panel->getSize() == tgui::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("ScrollablePanelWidgetFile2.txt"));
             REQUIRE(compareFiles("ScrollablePanelWidgetFile1.txt", "ScrollablePanelWidgetFile2.txt"));
@@ -302,8 +302,8 @@ TEST_CASE("[ScrollablePanel]")
         TEST_DRAW_INIT(200, 150, panel)
 
         tgui::ScrollablePanelRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Yellow);
-        renderer.setBorderColor(sf::Color::Red);
+        renderer.setBackgroundColor(tgui::Color::Yellow);
+        renderer.setBorderColor(tgui::Color::Red);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({5, 6, 7, 8});
         renderer.setOpacity(0.7f);

@@ -73,9 +73,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::setProperty(const std::string& property, ObjectConverter&& value)
+    void WidgetRenderer::setProperty(const String& property, ObjectConverter&& value)
     {
-        std::string lowercaseProperty = toLower(property);
+        String lowercaseProperty = property.toLower();
 
         if (m_data->propertyValuePairs[lowercaseProperty] != value)
         {
@@ -88,9 +88,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter WidgetRenderer::getProperty(const std::string& property) const
+    ObjectConverter WidgetRenderer::getProperty(const String& property) const
     {
-        auto it = m_data->propertyValuePairs.find(toLower(property));
+        auto it = m_data->propertyValuePairs.find(property.toLower());
         if (it != m_data->propertyValuePairs.end())
             return it->second;
         else
@@ -99,14 +99,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::map<std::string, ObjectConverter>& WidgetRenderer::getPropertyValuePairs() const
+    const std::map<String, ObjectConverter>& WidgetRenderer::getPropertyValuePairs() const
     {
         return m_data->propertyValuePairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::subscribe(const void* id, const std::function<void(const std::string& property)>& function)
+    void WidgetRenderer::subscribe(const void* id, const std::function<void(const String& property)>& function)
     {
         m_data->observers[id] = function;
     }

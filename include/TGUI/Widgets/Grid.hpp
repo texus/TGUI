@@ -155,9 +155,6 @@ namespace tgui
         /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
-        ///
-        /// @see remove(sf::String)
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool remove(const Widget::Ptr& widget) override;
 

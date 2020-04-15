@@ -483,9 +483,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& RangeSlider::getSignal(std::string signalName)
+    Signal& RangeSlider::getSignal(String signalName)
     {
-        if (signalName == toLower(onRangeChange.getName()))
+        if (signalName == onRangeChange.getName().toLower())
             return onRangeChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -493,7 +493,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::rendererChanged(const std::string& property)
+    void RangeSlider::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -575,11 +575,11 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["SelectionStart"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectionStart));
-        node->propertyValuePairs["SelectionEnd"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectionEnd));
-        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs["SelectionStart"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionStart));
+        node->propertyValuePairs["SelectionEnd"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionEnd));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
 
         return node;
     }
@@ -591,15 +591,15 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(strToFloat(node->propertyValuePairs["minimum"]->value));
+            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
         if (node->propertyValuePairs["maximum"])
-            setMaximum(strToFloat(node->propertyValuePairs["maximum"]->value));
+            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
         if (node->propertyValuePairs["selectionstart"])
-            setSelectionStart(strToFloat(node->propertyValuePairs["selectionstart"]->value));
+            setSelectionStart(node->propertyValuePairs["selectionstart"]->value.toFloat());
         if (node->propertyValuePairs["selectionend"])
-            setSelectionEnd(strToFloat(node->propertyValuePairs["selectionend"]->value));
+            setSelectionEnd(node->propertyValuePairs["selectionend"]->value.toFloat());
         if (node->propertyValuePairs["step"])
-            setStep(strToFloat(node->propertyValuePairs["step"]->value));
+            setStep(node->propertyValuePairs["step"]->value.toFloat());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

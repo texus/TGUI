@@ -41,17 +41,17 @@ public:
 
     void reloadProperties();
     void widgetSelected(tgui::Widget::Ptr widget);
-    void formSaved(const sf::String& filename);
+    void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
 
 private:
 
-    using PropertyValuePair = std::pair<std::string, std::pair<std::string, std::string>>;
-    using OnValueChangeFunc = std::function<void(const sf::String& value)>;
+    using PropertyValuePair = std::pair<tgui::String, std::pair<tgui::String, tgui::String>>;
+    using OnValueChangeFunc = std::function<void(const tgui::String& value)>;
 
     struct CopiedWidget
     {
-        std::string theme;
+        tgui::String theme;
         tgui::Widget::Ptr widget;
         tgui::Widget::Ptr originalWidget;
         std::vector<CopiedWidget> childWidgets;
@@ -60,21 +60,21 @@ private:
     bool loadGuiBuilderState();
     void saveGuiBuilderState();
     void loadStartScreen();
-    void loadEditingScreen(const std::string& filename);
+    void loadEditingScreen(const tgui::String& filename);
     void loadToolbox();
-    void showLoadFileWindow(const sf::String& title, const sf::String& loadButtonCaption, const sf::String& defaultFilename, const std::function<void(const sf::String&)>& onLoad);
+    void showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad);
     void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
-    bool updateWidgetProperty(const std::string& property, const sf::String& value);
+    bool updateWidgetProperty(const tgui::String& property, const tgui::String& value);
     void initProperties();
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
-    void changeWidgetName(const std::string& name);
+    void changeWidgetName(const tgui::String& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
     void removePopupMenu();
-    void createNewForm(const sf::String& filename);
-    bool loadForm(const sf::String& filename);
+    void createNewForm(const tgui::String& filename);
+    bool loadForm(const tgui::String& filename);
     tgui::ChildWindow::Ptr openWindowWithFocus();
-    sf::String getDefaultFilename() const;
+    tgui::String getDefaultFilename() const;
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
@@ -83,25 +83,25 @@ private:
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
-    void fillWidgetHierarchyTreeRecursively(std::vector<sf::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
-    bool fillWidgetHierarchy(std::vector<sf::String>& hierarchy, tgui::Widget* widget);
+    void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
+    bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
 
-    tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
-    tgui::Button::Ptr addPropertyValueButtonMore(const std::string& property, float topPosition);
-    void addPropertyValueBool(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueColor(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueTextStyle(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueStringList(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueTexture(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueMultilineString(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueChildWindowTitleButtons(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
+    tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
+    tgui::Button::Ptr addPropertyValueButtonMore(const tgui::String& property, float topPosition);
+    void addPropertyValueBool(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueColor(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueTextStyle(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueOutline(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueStringList(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueTexture(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueMultilineString(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueEditBoxInputValidator(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueChildWindowTitleButtons(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueEnum(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<tgui::String>& enumValues);
 
     void menuBarCallbackNewForm();
     void menuBarCallbackLoadForm();
-    void menuBarCallbackLoadRecent(const sf::String& filename);
+    void menuBarCallbackLoadRecent(const tgui::String& filename);
     void menuBarCallbackSaveFile();
     void menuBarCallbackQuit();
     void menuBarCallbackEditThemes();
@@ -116,7 +116,7 @@ private:
 
 private:
 
-    std::vector<sf::String> m_recentFiles;
+    std::vector<tgui::String> m_recentFiles;
 
     sf::RenderWindow m_window;
     tgui::Gui m_gui;
@@ -131,16 +131,16 @@ private:
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
 
-    std::map<std::string, std::unique_ptr<WidgetProperties>> m_widgetProperties;
+    std::map<tgui::String, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
 
     std::vector<CopiedWidget> m_copiedWidgets;
 
-    std::map<std::string, tgui::Theme> m_themes;
-    std::string m_defaultTheme;
+    std::map<tgui::String, tgui::Theme> m_themes;
+    tgui::String m_defaultTheme;
 
-    sf::Vector2f m_formSize{800.f, 600.f};
-    sf::String m_defaultPath;
+    tgui::Vector2f m_formSize{800.f, 600.f};
+    tgui::String m_defaultPath;
     tgui::Filesystem::Path m_programPath;
 };
 

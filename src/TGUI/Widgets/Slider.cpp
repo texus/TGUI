@@ -491,9 +491,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Slider::getSignal(std::string signalName)
+    Signal& Slider::getSignal(String signalName)
     {
-        if (signalName == toLower(onValueChange.getName()))
+        if (signalName == onValueChange.getName().toLower())
             return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -501,7 +501,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::rendererChanged(const std::string& property)
+    void Slider::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -574,10 +574,10 @@ namespace tgui
     std::unique_ptr<DataIO::Node> Slider::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
         node->propertyValuePairs["InvertedDirection"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
         node->propertyValuePairs["ChangeValueOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeValueOnScroll));
         return node;
@@ -590,13 +590,13 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(strToFloat(node->propertyValuePairs["minimum"]->value));
+            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
         if (node->propertyValuePairs["maximum"])
-            setMaximum(strToFloat(node->propertyValuePairs["maximum"]->value));
+            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
         if (node->propertyValuePairs["value"])
-            setValue(strToFloat(node->propertyValuePairs["value"]->value));
+            setValue(node->propertyValuePairs["value"]->value.toFloat());
         if (node->propertyValuePairs["step"])
-            setStep(strToFloat(node->propertyValuePairs["step"]->value));
+            setStep(node->propertyValuePairs["step"]->value.toFloat());
         if (node->propertyValuePairs["inverteddirection"])
             setInvertedDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["inverteddirection"]->value).getBool());
         if (node->propertyValuePairs["changevalueonscroll"])

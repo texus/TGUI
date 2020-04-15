@@ -48,11 +48,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Ptr Label::create(sf::String text)
+    Label::Ptr Label::create(String text)
     {
         auto label = std::make_shared<Label>();
 
-        if (!text.isEmpty())
+        if (!text.empty())
             label->setText(text);
 
         return label;
@@ -115,7 +115,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setText(const sf::String& string)
+    void Label::setText(const String& string)
     {
         m_string = string;
         rearrangeText();
@@ -123,7 +123,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& Label::getText() const
+    const String& Label::getText() const
     {
         return m_string;
     }
@@ -359,9 +359,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Label::getSignal(std::string signalName)
+    Signal& Label::getSignal(String signalName)
     {
-        if (signalName == toLower(onDoubleClick.getName()))
+        if (signalName == onDoubleClick.getName().toLower())
             return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -369,7 +369,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::rendererChanged(const std::string& property)
+    void Label::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -471,10 +471,10 @@ namespace tgui
         else if (m_verticalAlignment == Label::VerticalAlignment::Bottom)
             node->propertyValuePairs["VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
 
-        if (!m_string.isEmpty())
+        if (!m_string.empty())
             node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
         if (m_maximumTextWidth > 0)
-            node->propertyValuePairs["MaximumTextWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximumTextWidth));
+            node->propertyValuePairs["MaximumTextWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTextWidth));
         if (m_autoSize)
             node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>("true");
         if (m_ignoringMouseEvents)
@@ -488,7 +488,7 @@ namespace tgui
                 node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         return node;
     }
 
@@ -500,7 +500,7 @@ namespace tgui
 
         if (node->propertyValuePairs["horizontalalignment"])
         {
-            std::string alignment = toLower(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["horizontalalignment"]->value).getString());
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["horizontalalignment"]->value).getString().toLower();
             if (alignment == "right")
                 setHorizontalAlignment(Label::HorizontalAlignment::Right);
             else if (alignment == "center")
@@ -511,7 +511,7 @@ namespace tgui
 
         if (node->propertyValuePairs["verticalalignment"])
         {
-            std::string alignment = toLower(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["verticalalignment"]->value).getString());
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["verticalalignment"]->value).getString().toLower();
             if (alignment == "bottom")
                 setVerticalAlignment(Label::VerticalAlignment::Bottom);
             else if (alignment == "center")
@@ -522,7 +522,7 @@ namespace tgui
 
         if (node->propertyValuePairs["scrollbarpolicy"])
         {
-            std::string policy = toLower(trim(node->propertyValuePairs["scrollbarpolicy"]->value));
+            String policy = node->propertyValuePairs["scrollbarpolicy"]->value.trim().toLower();
             if (policy == "automatic")
                 setScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
@@ -536,9 +536,9 @@ namespace tgui
         if (node->propertyValuePairs["text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["maximumtextwidth"])
-            setMaximumTextWidth(strToFloat(node->propertyValuePairs["maximumtextwidth"]->value));
+            setMaximumTextWidth(node->propertyValuePairs["maximumtextwidth"]->value.toFloat());
         if (node->propertyValuePairs["autosize"])
             setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
 
@@ -548,11 +548,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::update(sf::Time elapsedTime)
+    void Label::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 
-        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
@@ -608,14 +608,14 @@ namespace tgui
         }
 
         // Fit the text in the available space
-        sf::String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
+        String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
                                  m_paddingCached.getRight() + m_bordersCached.getRight(),
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
-        const auto lineCount = std::count(string.begin(), string.end(), static_cast<sf::Uint32>('\n')) + 1;
+        const auto lineCount = std::count(string.begin(), string.end(), U'\n') + 1;
         float requiredTextHeight = lineCount * m_fontCached.getLineSpacing(m_textSize)
                                    + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached)
                                    + Text::getExtraVerticalPadding(m_textSize);
@@ -632,7 +632,7 @@ namespace tgui
 
                 string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
 
-                const auto newLineCount = std::count(string.begin(), string.end(), static_cast<sf::Uint32>('\n')) + 1;
+                const auto newLineCount = std::count(string.begin(), string.end(), U'\n') + 1;
                 requiredTextHeight = newLineCount * m_fontCached.getLineSpacing(m_textSize)
                                      + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached)
                                      + Text::getExtraVerticalPadding(m_textSize);
@@ -649,7 +649,7 @@ namespace tgui
         float width = 0;
         std::size_t searchPosStart = 0;
         std::size_t newLinePos = 0;
-        while (newLinePos != sf::String::InvalidPos)
+        while (newLinePos != String::npos)
         {
             newLinePos = string.find('\n', searchPosStart);
 
@@ -662,10 +662,10 @@ namespace tgui
             line.setOutlineColor(m_textOutlineColorCached);
             line.setOutlineThickness(m_textOutlineThicknessCached);
 
-            if (newLinePos != sf::String::InvalidPos)
-                line.setString(string.substring(searchPosStart, newLinePos - searchPosStart));
+            if (newLinePos != String::npos)
+                line.setString(string.substr(searchPosStart, newLinePos - searchPosStart));
             else
-                line.setString(string.substring(searchPosStart));
+                line.setString(string.substr(searchPosStart));
 
             if (line.getSize().x > width)
                 width = line.getSize().x;
@@ -720,7 +720,7 @@ namespace tgui
 
                 for (auto& line : m_lines)
                 {
-                    std::size_t lastChar = line.getString().getSize();
+                    std::size_t lastChar = line.getString().length();
                     while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
                         lastChar--;
 

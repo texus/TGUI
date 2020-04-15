@@ -45,17 +45,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-    sf::String Clipboard::m_contents;
+    String Clipboard::m_contents;
     sf::WindowHandle Clipboard::m_windowHandle = sf::WindowHandle();
     bool Clipboard::m_isWindowHandleSet = false;
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Clipboard::get()
+    String Clipboard::get()
     {
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-        return sf::Clipboard::getString();
+        return String(sf::Clipboard::getString());
 #else
     #ifdef TGUI_SYSTEM_WINDOWS
         if (m_isWindowHandleSet)
@@ -85,10 +85,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Clipboard::set(const sf::String& contents)
+    void Clipboard::set(const String& contents)
     {
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-        sf::Clipboard::setString(contents);
+        sf::Clipboard::setString(sf::String(contents));
 #else
         m_contents = contents;
 
@@ -99,13 +99,13 @@ namespace tgui
             {
                 EmptyClipboard();
 
-                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, m_contents.getSize() + 1);
+                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, m_contents.length() + 1);
                 if (hGlobal != NULL)
                 {
                     char* pchData = static_cast<char*>(GlobalLock(hGlobal));
                     if (pchData != NULL)
                     {
-                        memcpy(pchData, m_contents.toAnsiString().c_str(), m_contents.getSize() + 1);
+                        memcpy(pchData, m_contents.toAnsiString().c_str(), m_contents.length() + 1);
                         SetClipboardData(CF_TEXT, hGlobal);
 
                         GlobalUnlock(hGlobal);

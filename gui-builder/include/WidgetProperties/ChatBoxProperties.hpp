@@ -33,17 +33,17 @@ struct ChatBoxProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto chatBox = std::dynamic_pointer_cast<tgui::ChatBox>(widget);
+        auto chatBox = widget->cast<tgui::ChatBox>();
         if (property == "TextSize")
-            chatBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            chatBox->setTextSize(value.toUInt());
         else if (property == "TextColor")
             chatBox->setTextColor(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor());
         else if (property == "TextStyle")
             chatBox->setTextStyle(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle());
         else if (property == "LineLimit")
-            chatBox->setLineLimit(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            chatBox->setLineLimit(value.toUInt());
         else if (property == "LinesStartFromTop")
             chatBox->setLinesStartFromTop(parseBoolean(value, true));
         else if (property == "NewLinesBelowOthers")
@@ -55,11 +55,11 @@ struct ChatBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto chatBox = std::dynamic_pointer_cast<tgui::ChatBox>(widget);
-        pair.first["TextSize"] = {"UInt", tgui::to_string(chatBox->getTextSize())};
+        auto chatBox = widget->cast<tgui::ChatBox>();
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(chatBox->getTextSize())};
         pair.first["TextColor"] = {"Color", tgui::Serializer::serialize(chatBox->getTextColor())};
         pair.first["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(chatBox->getTextStyle())};
-        pair.first["LineLimit"] = {"UInt", tgui::to_string(chatBox->getLineLimit())};
+        pair.first["LineLimit"] = {"UInt", tgui::String::fromNumber(chatBox->getLineLimit())};
         pair.first["LinesStartFromTop"] = {"Bool", tgui::Serializer::serialize(chatBox->getLinesStartFromTop())};
         pair.first["NewLinesBelowOthers"] = {"Bool", tgui::Serializer::serialize(chatBox->getNewLinesBelowOthers())};
 
@@ -69,7 +69,7 @@ struct ChatBoxProperties : WidgetProperties
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 };

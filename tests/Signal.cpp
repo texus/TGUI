@@ -32,30 +32,26 @@ TEST_CASE("[Signal]")
     SECTION("connect")
     {
         unsigned int id = widget->connect("PositionChanged", [](){});
-        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("PositionChanged", [](tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
-        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
+        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
+        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}) == ++id);
 
         REQUIRE(widget->connect("SizeChanged", [](){}) == ++id);
-        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
-        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}) == ++id);
 
         REQUIRE(widget->connect("Focused", [](){}) == ++id);
-        REQUIRE(widget->connect("Focused", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("Focused", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
         REQUIRE(widget->connect("Unfocused", [](){}) == ++id);
-        REQUIRE(widget->connect("Unfocused", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("Unfocused", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
         REQUIRE(widget->connect("MouseEntered", [](){}) == ++id);
-        REQUIRE(widget->connect("MouseEntered", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("MouseEntered", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
         REQUIRE(widget->connect("MouseLeft", [](){}) == ++id);
-        REQUIRE(widget->connect("MouseLeft", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("MouseLeft", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
         REQUIRE(widget->connect("AnimationFinished", [](){}) == ++id);
         REQUIRE(widget->connect("AnimationFinished", [](tgui::ShowAnimationType){}) == ++id);
@@ -68,29 +64,29 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->connect("Pressed", [](){}) == ++id);
         REQUIRE(widget2->connect("Pressed", [](int){}, 5) == ++id);
         REQUIRE(widget2->connect("Pressed", [](auto){}, 10.f) == ++id);
-        REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget2->connect("Pressed", [](auto, auto, auto, tgui::Widget::Ptr, std::string){}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, tgui::String){}) == ++id);
+        REQUIRE(widget2->connect("Pressed", [](auto, auto, auto, tgui::Widget::Ptr, tgui::String){}, "Hey", 15, 3.f) == ++id);
         REQUIRE(widget2->connect("Pressed", std::bind([](int){}, 5)) == ++id);
 
         REQUIRE(widget2->connect({"MouseEntered", "MouseLeft"}, [](){}) == id+2);
-        REQUIRE(widget2->connect({"PositionChanged", "SizeChanged", "MouseEntered", "MouseLeft", "Pressed"}, [](const tgui::Widget::Ptr&, const std::string&){}) == id+7);
+        REQUIRE(widget2->connect({"PositionChanged", "SizeChanged", "MouseEntered", "MouseLeft", "Pressed"}, [](const tgui::Widget::Ptr&, const tgui::String&){}) == id+7);
         id += 7;
 
         struct Class
         {
             void signalHandler1() {}
-            void signalHandler2(tgui::Widget::Ptr, const std::string&) {}
-            void signalHandler3(int, float, tgui::Widget::Ptr, const std::string&) {}
-            void signalHandler4(int&, tgui::Widget::Ptr, const std::string&) {}
-            void signalHandler5(int&, const sf::String&) {}
-            void signalHandler6(int&, tgui::Widget::Ptr, const std::string&, std::string) {}
+            void signalHandler2(tgui::Widget::Ptr, const tgui::String&) {}
+            void signalHandler3(int, float, tgui::Widget::Ptr, const tgui::String&) {}
+            void signalHandler4(int&, tgui::Widget::Ptr, const tgui::String&) {}
+            void signalHandler5(int&, const tgui::String&) {}
+            void signalHandler6(int&, tgui::Widget::Ptr, const tgui::String&, tgui::String) {}
 
             void signalHandler7() const {}
-            void signalHandler8(tgui::Widget::Ptr, const std::string&) const {}
-            void signalHandler9(int, float, tgui::Widget::Ptr, const std::string&) const {}
-            void signalHandler10(int&, tgui::Widget::Ptr, const std::string&) const {}
-            void signalHandler11(int&, const sf::String&) const {}
-            void signalHandler12(int&, tgui::Widget::Ptr, const std::string&, std::string) const {}
+            void signalHandler8(tgui::Widget::Ptr, const tgui::String&) const {}
+            void signalHandler9(int, float, tgui::Widget::Ptr, const tgui::String&) const {}
+            void signalHandler10(int&, tgui::Widget::Ptr, const tgui::String&) const {}
+            void signalHandler11(int&, const tgui::String&) const {}
+            void signalHandler12(int&, tgui::Widget::Ptr, const tgui::String&, tgui::String) const {}
         };
 
         int i;
@@ -108,7 +104,7 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler11, &instance, std::ref(i)) == ++id);
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler12, &instance, std::ref(i)) == ++id);
 
-        REQUIRE(widget2->connect("Pressed", std::function<void(std::string)>([](std::string){})) == ++id);
+        REQUIRE(widget2->connect("Pressed", std::function<void(tgui::String)>([](tgui::String){})) == ++id);
     }
 
     SECTION("disconnect")

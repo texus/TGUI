@@ -33,11 +33,9 @@ TEST_CASE("[Tabs]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(tabs->connect("TabSelected", [](){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](sf::String){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](std::string){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::String){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -51,10 +49,10 @@ TEST_CASE("[Tabs]")
         tabs->setTabHeight(24);
         tabs->getRenderer()->setBorders(2);
 
-        REQUIRE(tabs->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(tabs->getSize() == sf::Vector2f(4, 24));
+        REQUIRE(tabs->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(tabs->getSize() == tgui::Vector2f(4, 24));
         REQUIRE(tabs->getFullSize() == tabs->getSize());
-        REQUIRE(tabs->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(tabs->getWidgetOffset() == tgui::Vector2f(0, 0));
 
         tabs->add("TabText");
         REQUIRE(tabs->getSize().x > 4);
@@ -269,13 +267,13 @@ TEST_CASE("[Tabs]")
             tabs->select(0);
             REQUIRE(tabSelectedCount == 4);
 
-            const sf::Vector2f mousePos1{200, 10};
+            const tgui::Vector2f mousePos1{200, 10};
             tabs->leftMousePressed(mousePos1);
             tabs->leftMouseReleased(mousePos1);
             REQUIRE(tabs->getSelected() == "3");
             REQUIRE(tabSelectedCount == 5);
 
-            const sf::Vector2f mousePos2{199, 10};
+            const tgui::Vector2f mousePos2{199, 10};
             tabs->leftMousePressed(mousePos2);
             tabs->leftMouseReleased(mousePos2);
             REQUIRE(tabs->getSelected() == "2");
@@ -307,11 +305,11 @@ TEST_CASE("[Tabs]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
             }
@@ -327,11 +325,11 @@ TEST_CASE("[Tabs]")
                 renderer->setDistanceToSide(2);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
         }
@@ -408,20 +406,20 @@ TEST_CASE("[Tabs]")
         tabs->add("3");
 
         tgui::TabsRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setSelectedBackgroundColor(sf::Color::Black);
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setSelectedTextColor(sf::Color::White);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setSelectedBackgroundColor(tgui::Color::Black);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setSelectedTextColor(tgui::Color::White);
         renderer.setBorderColor({235, 125, 0});
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         tabs->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
-                                        renderer.setSelectedBackgroundColorHover(sf::Color::Blue);
-                                        renderer.setTextColorHover(sf::Color::Magenta);
-                                        renderer.setSelectedTextColorHover(sf::Color::Yellow);
+                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
+                                        renderer.setSelectedBackgroundColorHover(tgui::Color::Blue);
+                                        renderer.setTextColorHover(tgui::Color::Magenta);
+                                        renderer.setSelectedTextColorHover(tgui::Color::Yellow);
                                         if (textured)
                                         {
                                             renderer.setTextureTabHover("resources/Texture3.png");

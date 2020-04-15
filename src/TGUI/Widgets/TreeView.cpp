@@ -121,7 +121,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool removeItemImpl(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
+        bool removeItemImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
         {
             for (auto it = nodes.begin(); it != nodes.end(); ++it)
             {
@@ -173,7 +173,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const std::vector<sf::String>& hierarchy, unsigned int parentIndex)
+        TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const std::vector<String>& hierarchy, unsigned int parentIndex)
         {
             for (auto& node : nodes)
             {
@@ -216,7 +216,7 @@ namespace tgui
                         saveItems(itemNode, item->nodes);
                     else
                     {
-                        std::string itemList = "[" + Serializer::serialize(item->nodes[0]->text.getString());
+                        String itemList = "[" + Serializer::serialize(item->nodes[0]->text.getString());
                         for (std::size_t i = 1; i < item->nodes.size(); ++i)
                             itemList += ", " + Serializer::serialize(item->nodes[i]->text.getString());
                         itemList += "]";
@@ -401,7 +401,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TreeView::addItem(const std::vector<sf::String>& hierarchy, bool createParents)
+    bool TreeView::addItem(const std::vector<String>& hierarchy, bool createParents)
     {
         if (hierarchy.empty())
             return false;
@@ -423,7 +423,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::expand(const std::vector<sf::String>& hierarchy)
+    void TreeView::expand(const std::vector<String>& hierarchy)
     {
         expandOrCollapse(hierarchy, true);
     }
@@ -438,7 +438,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::collapse(const std::vector<sf::String>& hierarchy)
+    void TreeView::collapse(const std::vector<String>& hierarchy)
     {
         expandOrCollapse(hierarchy, false);
     }
@@ -453,12 +453,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TreeView::selectItem(const std::vector<sf::String>& hierarchy)
+    bool TreeView::selectItem(const std::vector<String>& hierarchy)
     {
         // Make sure the parent of the item we are selecting is expanded
         if (hierarchy.size() >= 2)
         {
-            if (!expandOrCollapse(std::vector<sf::String>(hierarchy.begin(), hierarchy.end()-1), true))
+            if (!expandOrCollapse(std::vector<String>(hierarchy.begin(), hierarchy.end()-1), true))
                 return false;
         }
 
@@ -487,7 +487,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TreeView::removeItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty)
+    bool TreeView::removeItem(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty)
     {
         const bool ret = removeItemImpl(hierarchy, removeParentsWhenEmpty, 0, m_nodes);
         markNodesDirty();
@@ -504,9 +504,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> TreeView::getSelectedItem() const
+    std::vector<String> TreeView::getSelectedItem() const
     {
-        std::vector<sf::String> hierarchy;
+        std::vector<String> hierarchy;
 
         if (m_selectedItem == -1)
             return hierarchy;
@@ -531,7 +531,7 @@ namespace tgui
         if (m_visibleNodes[index]->nodes.empty())
             return;
 
-        std::vector<sf::String> hierarchy;
+        std::vector<String> hierarchy;
         auto* node = m_visibleNodes[index].get();
         while (node)
         {
@@ -736,7 +736,7 @@ namespace tgui
                     // Send double click if this was a leaf node
                     if (m_visibleNodes[selectedIndex]->nodes.empty())
                     {
-                        std::vector<sf::String> hierarchy;
+                        std::vector<String> hierarchy;
                         auto* node = m_visibleNodes[selectedIndex].get();
                         while (node)
                         {
@@ -761,7 +761,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void TreeView::rightMousePressed(Vector2f pos)
     {
         pos -= getPosition();
@@ -781,19 +781,19 @@ namespace tgui
             {
                 updateSelectedItem(selectedItem);
 
-                std::vector<sf::String> hierarchy;
+                std::vector<String> hierarchy;
                 auto* node = m_visibleNodes[selectedItem].get();
                 while (node)
                 {
                     hierarchy.insert(hierarchy.begin(), node->text.getString());
                     node = node->parent;
                 }
-                
+
                 onRightClick.emit(this, hierarchy.back(), hierarchy);
             }
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TreeView::mouseMoved(Vector2f pos)
@@ -880,17 +880,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& TreeView::getSignal(std::string signalName)
+    Signal& TreeView::getSignal(String signalName)
     {
-        if (signalName == toLower(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName().toLower())
             return onItemSelect;
-        else if (signalName == toLower(onDoubleClick.getName()))
+        else if (signalName == onDoubleClick.getName().toLower())
             return onDoubleClick;
-        else if (signalName == toLower(onExpand.getName()))
+        else if (signalName == onExpand.getName().toLower())
             return onExpand;
-        else if (signalName == toLower(onCollapse.getName()))
+        else if (signalName == onCollapse.getName().toLower())
             return onCollapse;
-        else if (signalName == toLower(onRightClick.getName()))
+        else if (signalName == onRightClick.getName().toLower())
             return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -898,7 +898,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::rendererChanged(const std::string& property)
+    void TreeView::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -1020,8 +1020,8 @@ namespace tgui
     std::unique_ptr<DataIO::Node> TreeView::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         saveItems(node, m_nodes);
         return node;
     }
@@ -1033,24 +1033,24 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["itemheight"])
-            setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
+            setItemHeight(node->propertyValuePairs["itemheight"]->value.toInt());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
 
         loadItems(node, m_nodes, nullptr);
 
         // Remove the 'Item' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "item"; }), node->children.end());
+            [](const std::unique_ptr<DataIO::Node>& child){ return child->name.toLower() == "item"; }), node->children.end());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::update(sf::Time elapsedTime)
+    void TreeView::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 
-        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
@@ -1063,13 +1063,13 @@ namespace tgui
     {
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) != "item")
+            if (childNode->name.toLower() != "item")
                 continue;
 
             if (!childNode->propertyValuePairs["text"])
                 throw Exception{"Failed to parse 'Item' property, expected a nested 'Text' propery"};
 
-            const sf::String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
+            const String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
             createNode(items, parent, itemText);
 
             // Recursively handle the menu nodes
@@ -1084,7 +1084,7 @@ namespace tgui
 
                 for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
                 {
-                    const sf::String subItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
+                    const String subItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
                     createNode(items.back()->nodes, items.back().get(), subItemText);
                 }
             }
@@ -1325,7 +1325,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::createNode(std::vector<std::shared_ptr<Node>>& nodes, Node* parent, const sf::String& text)
+    void TreeView::createNode(std::vector<std::shared_ptr<Node>>& nodes, Node* parent, const String& text)
     {
         auto newNode = std::make_shared<Node>();
         newNode->text.setFont(m_fontCached);
@@ -1346,7 +1346,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TreeView::expandOrCollapse(const std::vector<sf::String>& hierarchy, bool expandNode)
+    bool TreeView::expandOrCollapse(const std::vector<String>& hierarchy, bool expandNode)
     {
         if (hierarchy.empty())
             return false;
@@ -1475,7 +1475,7 @@ namespace tgui
         m_selectedItem = item;
         if (m_selectedItem >= 0)
         {
-            std::vector<sf::String> hierarchy;
+            std::vector<String> hierarchy;
             auto* node = m_visibleNodes[m_selectedItem].get();
             while (node)
             {
@@ -1493,7 +1493,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TreeView::Node* TreeView::findParentNode(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<Node>>& nodes, Node* parent, bool createParents)
+    TreeView::Node* TreeView::findParentNode(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<Node>>& nodes, Node* parent, bool createParents)
     {
         for (auto& node : nodes)
         {

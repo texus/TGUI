@@ -8,26 +8,24 @@ jobs:
   - stage: Unit tests
     name: Linux (c++17)
     os: linux
-    dist: xenial
-    env: COMPILER=g++-7
+    dist: bionic
+    env: COMPILER=g++-8
     services:
     - xvfb
     addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
-        - g++-7
+        - g++-8
         - libudev-dev
         - libxrandr-dev
         - libgl1-mesa-dev
     cache:
       directories:
-      - $HOME/SFML-2.5.0_LINUX
+      - $HOME/SFML-2.5.1_LINUX
     script:
       - chmod +x tests/travis_linux_tests.sh
       - CXX=$COMPILER tests/travis_linux_tests.sh
-    after_success: bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
+    after_success: bash <(curl -s https://codecov.io/bash) -x gcov-7 -a "-s /home/travis/build/texus/TGUI -pr"
 
   - stage: Cross-platform tests
     name: Linux (c++14)
@@ -36,8 +34,6 @@ jobs:
     env: COMPILER=g++-5
     addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
         - g++-5
         - libudev-dev

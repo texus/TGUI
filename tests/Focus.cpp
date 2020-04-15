@@ -154,7 +154,7 @@ TEST_CASE("[Focussing widgets]")
     outerGroup->add(checkBox1);
 
     auto panel = tgui::Panel::create();
-    panel->getRenderer()->setBackgroundColor(sf::Color::Yellow);
+    panel->getRenderer()->setBackgroundColor(tgui::Color::Yellow);
     panel->setPosition({10, 40});
     panel->setSize({200, 130});
     outerGroup->add(panel);
@@ -195,7 +195,7 @@ TEST_CASE("[Focussing widgets]")
     outerGroup->add(checkBox2);
 
     auto outerPanel = tgui::Panel::create();
-    outerPanel->getRenderer()->setBackgroundColor(sf::Color::Green);
+    outerPanel->getRenderer()->setBackgroundColor(tgui::Color::Green);
     outerPanel->setPosition({20, 330});
     outerPanel->setSize({200, 130});
     rootContainer->add(outerPanel);

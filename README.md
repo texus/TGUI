@@ -22,9 +22,9 @@ You can download the source code of the current development version from the [gi
 Learn
 -----
 
-* [Tutorials](https://tgui.eu/tutorials/0.8)
-* [Documentation](https://tgui.eu/documentation/0.8)
-* [Examples](https://tgui.eu/examples/0.8)
+* Tutorials: TODO. Mostly the same as [0.8 tutorials](https://tgui.eu/tutorials/0.8)
+* Documentation: TODO. Build yourself by passing `-DTGUI_BUILD_DOC=TRUE` to CMake.
+* Examples: TODO. Mostly the same as [0.8 examples](https://tgui.eu/examples/0.8)
 * [Forum](https://forum.tgui.eu)
 
 
@@ -36,5 +36,3 @@ Name: Bruno Van de Velde
 E-mail: vdv_b@tgui.eu
 
 [![Discord](https://img.shields.io/badge/chat-on_discord-7389D8.svg?logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/Msf4vyx)
-
-[![Chat on Gitter](https://badges.gitter.im/texus/TGUI.png)](https://gitter.im/texus/TGUI)

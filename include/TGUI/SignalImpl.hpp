@@ -47,38 +47,15 @@ namespace tgui
         struct TypeSet;
 
         // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         template <typename Type>
         decltype(auto) dereference(const void* obj)
         {
-            if constexpr (std::is_same_v<Type, std::string>) // Signal handlers are allowed to have std::string parameters while the signal sends sf::String
-                return static_cast<std::string>(*static_cast<const sf::String*>(obj));
-            else if constexpr (std::is_same_v<Type, sf::Vector2f>) // Signal handlers are allowed to have sf::Vector2f parameters while the signal sends tgui::Vector2f
-                return static_cast<sf::Vector2f>(*static_cast<const Vector2f*>(obj));
-            else
-                return *static_cast<const std::decay_t<Type>*>(obj);
-        }
+#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
+            return *static_cast<const std::decay_t<Type>*>(obj);
 #else
-        template <typename Type, typename std::enable_if<std::is_same<Type, std::string>::value>::type* = nullptr>
-        decltype(auto) dereference(const void* obj)
-        {
-            // Signal handlers are allowed to have std::string parameters while the signal sends sf::String
-            return static_cast<std::string>(*static_cast<const sf::String*>(obj));
-        }
-
-        template <typename Type, typename std::enable_if<std::is_same<Type, sf::Vector2f>::value>::type* = nullptr>
-        decltype(auto) dereference(const void* obj)
-        {
-            // Signal handlers are allowed to have sf::Vector2f parameters while the signal sends tgui::Vector2f
-            return static_cast<sf::Vector2f>(*static_cast<const Vector2f*>(obj));
-        }
-
-        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value && !std::is_same<Type, sf::Vector2f>::value>::type* = nullptr>
-        decltype(auto) dereference(const void* obj)
-        {
             return *static_cast<const typename std::decay<Type>::type*>(obj);
-        }
 #endif
+        }
 
 #if !defined(__cpp_lib_invoke) || (__cpp_lib_invoke < 201411L)
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
@@ -107,7 +84,7 @@ namespace tgui
         };
 
         template <typename... UnboundArgs>
-        struct binder<TypeSet<std::shared_ptr<Widget>, std::string, UnboundArgs...>, TypeSet<>>
+        struct binder<TypeSet<std::shared_ptr<Widget>, String, UnboundArgs...>, TypeSet<>>
         {
             template <typename Func, typename... BoundArgs>
             static decltype(auto) bind(Signal& signal, Func&& func, BoundArgs&&... args)
@@ -122,14 +99,14 @@ namespace tgui
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
 #if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
-                return [=,o=offset](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                return [=,o=offset](const std::shared_ptr<Widget>& widget, const String& signalName) {
                     std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                 args...,
                                 widget,
                                 signalName,
                                 internal_signal::dereference<UnboundArgs>(internal_signal::parameters[o + Indices])...);
 #else
-                return [=,o=offset](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                return [=,o=offset](const std::shared_ptr<Widget>& widget, const String& signalName) {
                     invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
                                args...,
                                widget,
@@ -276,10 +253,10 @@ namespace tgui
 
 #if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
     template <typename Func, typename... BoundArgs>
-    unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, const BoundArgs&... args)
+    unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, const BoundArgs&... args)
     {
         unsigned int id;
-        Signal& signal = getSignal(toLower(signalName));
+        Signal& signal = getSignal(signalName.toLower());
 
         if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>
                    && std::is_invocable_v<decltype(&handler), BoundArgs...>
@@ -293,17 +270,17 @@ namespace tgui
             // Function with all parameters bound
             id = signal.connect([=]{ std::invoke(handler, args...); });
         }
-        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>>
-                        && std::is_invocable_v<decltype(&handler), BoundArgs..., const std::shared_ptr<Widget>&, const std::string&>
+        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>>
+                        && std::is_invocable_v<decltype(&handler), BoundArgs..., const std::shared_ptr<Widget>&, const String&>
                         && !std::is_function_v<Func>)
         {
             // Reference to function with caller arguments, all parameters bound
-            id = signal.connect([=, f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>& w, const std::string& s)>(handler)](const std::shared_ptr<Widget>& w, const std::string& s){ std::invoke(f, args..., w, s); });
+            id = signal.connect([=, f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>& w, const String& s)>(handler)](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(f, args..., w, s); });
         }
-        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>>)
+        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>>)
         {
             // Function with caller arguments, all parameters bound
-            id = signal.connect([=](const std::shared_ptr<Widget>& w, const std::string& s){ std::invoke(handler, args..., w, s); });
+            id = signal.connect([=](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(handler, args..., w, s); });
         }
         else
         {
@@ -312,41 +289,41 @@ namespace tgui
             id = signal.connect(binder::bind(signal, std::forward<Func>(handler), args...));
         }
 
-        m_connectedSignals[id] = toLower(signalName);
+        m_connectedSignals[id] = signalName.toLower();
         return id;
     }
 
 #else
     template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type*>
-    unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, const Args&... args)
+    unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, const Args&... args)
     {
-        const unsigned int id = getSignal(toLower(signalName)).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
-        m_connectedSignals[id] = toLower(signalName);
+        const unsigned int id = getSignal(signalName.toLower()).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
+        m_connectedSignals[id] = signalName.toLower();
         return id;
     }
 
     template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                         && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
-    unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, BoundArgs&&... args)
+                                                                         && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
+    unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, BoundArgs&&... args)
     {
-        const unsigned int id = getSignal(toLower(signalName)).connect(
-                                    [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...]
-                                    (const std::shared_ptr<Widget>& w, const std::string& s)
+        const unsigned int id = getSignal(signalName.toLower()).connect(
+                                    [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler), args...]
+                                    (const std::shared_ptr<Widget>& w, const String& s)
                                     { f(args..., w, s); }
                                 );
 
-        m_connectedSignals[id] = toLower(signalName);
+        m_connectedSignals[id] = signalName.toLower();
         return id;
     }
 
     template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
-                                                                         && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
-    unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, BoundArgs&&... args)
+                                                                         && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
+    unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, BoundArgs&&... args)
     {
-        Signal& signal = getSignal(toLower(signalName));
+        Signal& signal = getSignal(signalName.toLower());
         using binder = internal_signal::func_traits<void, typename std::decay<Func>::type, BoundArgs...>;
         const unsigned int id = signal.connect(binder::bind(signal, std::forward<Func>(handler), std::forward<BoundArgs>(args)...));
-        m_connectedSignals[id] = toLower(signalName);
+        m_connectedSignals[id] = signalName.toLower();
         return id;
     }
 #endif
@@ -354,7 +331,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename Func, typename... BoundArgs>
-    unsigned int SignalWidgetBase::connect(std::initializer_list<std::string> signalNames, Func&& handler, BoundArgs&&... args)
+    unsigned int SignalWidgetBase::connect(std::initializer_list<String> signalNames, Func&& handler, BoundArgs&&... args)
     {
         unsigned int lastId = 0;
         for (auto& signalName : signalNames)

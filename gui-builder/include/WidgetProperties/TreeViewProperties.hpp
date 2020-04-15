@@ -33,13 +33,13 @@ struct TreeViewProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto treeView = std::dynamic_pointer_cast<tgui::TreeView>(widget);
+        auto treeView = widget->cast<tgui::TreeView>();
         if (property == "TextSize")
-            treeView->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            treeView->setTextSize(value.toUInt());
         else if (property == "ItemHeight")
-            treeView->setItemHeight(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            treeView->setItemHeight(value.toUInt());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -47,9 +47,9 @@ struct TreeViewProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto treeView = std::dynamic_pointer_cast<tgui::TreeView>(widget);
-        pair.first["TextSize"] = {"UInt", tgui::to_string(treeView->getTextSize())};
-        pair.first["ItemHeight"] = {"UInt", tgui::to_string(treeView->getItemHeight())};
+        auto treeView = widget->cast<tgui::TreeView>();
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(treeView->getTextSize())};
+        pair.first["ItemHeight"] = {"UInt", tgui::String::fromNumber(treeView->getItemHeight())};
 
         const auto renderer = treeView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -66,7 +66,7 @@ struct TreeViewProperties : WidgetProperties
         pair.second["TextureBranchExpanded"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBranchExpanded())};
         pair.second["TextureBranchCollapsed"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBranchCollapsed())};
         pair.second["TextureLeaf"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureLeaf())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 };

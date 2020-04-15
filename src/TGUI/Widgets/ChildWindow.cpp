@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
 #include <TGUI/Clipping.hpp>
 #include <TGUI/SignalImpl.hpp>
 
@@ -48,7 +48,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow(const sf::String& title, unsigned int titleButtons)
+    ChildWindow::ChildWindow(const String& title, unsigned int titleButtons)
     {
         m_type = "ChildWindow";
         m_isolatedFocus = true;
@@ -71,7 +71,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::Ptr ChildWindow::create(const sf::String& title, unsigned int titleButtons)
+    ChildWindow::Ptr ChildWindow::create(const String& title, unsigned int titleButtons)
     {
         return std::make_shared<ChildWindow>(title, titleButtons);
     }
@@ -244,7 +244,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitle(const sf::String& title)
+    void ChildWindow::setTitle(const String& title)
     {
         m_titleText.setString(title);
 
@@ -254,7 +254,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& ChildWindow::getTitle() const
+    const String& ChildWindow::getTitle() const
     {
         return m_titleText.getString();
     }
@@ -759,17 +759,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ChildWindow::getSignal(std::string signalName)
+    Signal& ChildWindow::getSignal(String signalName)
     {
-        if (signalName == toLower(onMousePress.getName()))
+        if (signalName == onMousePress.getName().toLower())
             return onMousePress;
-        else if (signalName == toLower(onClose.getName()))
+        else if (signalName == onClose.getName().toLower())
             return onClose;
-        else if (signalName == toLower(onMinimize.getName()))
+        else if (signalName == onMinimize.getName().toLower())
             return onMinimize;
-        else if (signalName == toLower(onMaximize.getName()))
+        else if (signalName == onMaximize.getName().toLower())
             return onMaximize;
-        else if (signalName == toLower(onEscapeKeyPressed.getName()))
+        else if (signalName == onEscapeKeyPressed.getName().toLower())
             return onEscapeKeyPressed;
         else
             return Container::getSignal(std::move(signalName));
@@ -777,7 +777,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::rendererChanged(const std::string& property)
+    void ChildWindow::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -922,7 +922,7 @@ namespace tgui
         else if (m_titleAlignment == TitleAlignment::Right)
             node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        if (getTitle().getSize() > 0)
+        if (getTitle().length() > 0)
             node->propertyValuePairs["Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
 
         if (m_keepInParent)
@@ -934,11 +934,11 @@ namespace tgui
             node->propertyValuePairs["PositionLocked"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (m_minimumSize != Vector2f{})
-            node->propertyValuePairs["MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_minimumSize.x) + ", " + to_string(m_minimumSize.y) + ")");
+            node->propertyValuePairs["MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_minimumSize.x) + ", " + String::fromNumber(m_minimumSize.y) + ")");
         if (m_maximumSize != Vector2f{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()})
-            node->propertyValuePairs["MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_maximumSize.x) + ", " + to_string(m_maximumSize.y) + ")");
+            node->propertyValuePairs["MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_maximumSize.x) + ", " + String::fromNumber(m_maximumSize.y) + ")");
 
-        std::string serializedTitleButtons;
+        String serializedTitleButtons;
         if (m_titleButtons & TitleButton::Minimize)
             serializedTitleButtons += " | Minimize";
         if (m_titleButtons & TitleButton::Maximize)
@@ -964,11 +964,11 @@ namespace tgui
 
         if (node->propertyValuePairs["titlealignment"])
         {
-            if (toLower(node->propertyValuePairs["titlealignment"]->value) == "left")
+            if (node->propertyValuePairs["titlealignment"]->value.toLower() == "left")
                 setTitleAlignment(TitleAlignment::Left);
-            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "center")
+            else if (node->propertyValuePairs["titlealignment"]->value.toLower() == "center")
                 setTitleAlignment(TitleAlignment::Center);
-            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "right")
+            else if (node->propertyValuePairs["titlealignment"]->value.toLower() == "right")
                 setTitleAlignment(TitleAlignment::Right);
             else
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
@@ -977,10 +977,10 @@ namespace tgui
         if (node->propertyValuePairs["titlebuttons"])
         {
             int decodedTitleButtons = TitleButton::None;
-            std::vector<std::string> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
+            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
-                std::string requestedTitleButton = toLower(trim(elem));
+                String requestedTitleButton = elem.trim().toLower();
                 if (requestedTitleButton == "close")
                     decodedTitleButtons |= TitleButton::Close;
                 else if (requestedTitleButton == "maximize")

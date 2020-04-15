@@ -61,7 +61,7 @@ TEST_CASE("[ThemeLoader]")
 
     SECTION("load theme with comments")
     {
-        std::map<sf::String, sf::String> properties = loader->load("resources/ThemeComments.txt", "Button1");
+        std::map<tgui::String, tgui::String> properties = loader->load("resources/ThemeComments.txt", "Button1");
         REQUIRE(properties.size() == 1);
         REQUIRE(properties["textcolor"] == "Green");
 
@@ -76,7 +76,7 @@ TEST_CASE("[ThemeLoader]")
 
     SECTION("load theme with nested sections")
     {
-        std::map<sf::String, sf::String> properties = loader->load("resources/ThemeNested.txt", "ListBox1");
+        std::map<tgui::String, tgui::String> properties = loader->load("resources/ThemeNested.txt", "ListBox1");
         REQUIRE(properties.size() == 2);
         REQUIRE(properties["backgroundcolor"] == "White");
         REQUIRE(properties["scrollbar"] == "{\nthumbcolor = Green;\ntrackcolor = Red;\n}");

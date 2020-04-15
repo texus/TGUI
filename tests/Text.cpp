@@ -44,8 +44,8 @@ TEST_CASE("[Text]")
 
     SECTION("Color")
     {
-        text.setColor(sf::Color::Blue);
-        REQUIRE(text.getColor() == sf::Color::Blue);
+        text.setColor(tgui::Color::Blue);
+        REQUIRE(text.getColor() == tgui::Color::Blue);
     }
 
     SECTION("Opacity")
@@ -94,10 +94,10 @@ TEST_CASE("[Text]")
         SECTION("Without a font the size is (0,0)")
         {
             tgui::Text text2;
-            REQUIRE(text2.getSize() == sf::Vector2f(0, 0));
+            REQUIRE(text2.getSize() == tgui::Vector2f(0, 0));
 
             text2.setString("xyz");
-            REQUIRE(text2.getSize() == sf::Vector2f(0, 0));
+            REQUIRE(text2.getSize() == tgui::Vector2f(0, 0));
         }
 
         SECTION("Tab is 4x wider than space")

@@ -108,7 +108,7 @@
 #if defined(__cpp_constexpr) && (__cpp_constexpr >= 201304L)
     #define TGUI_CONSTEXPR constexpr
 #else
-    #define TGUI_CONSTEXPR
+    #define TGUI_CONSTEXPR inline
 #endif
 
 #if __cplusplus >= 201703L
@@ -127,10 +127,6 @@
     #define TGUI_PRINT_WARNING(msg) { sf::err() << "TGUI Warning: " << msg << std::endl; }
 #else
     #define TGUI_PRINT_WARNING(msg) {}
-#endif
-
-#ifdef TGUI_NEXT
-    #define TGUI_REMOVE_DEPRECATED_CODE
 #endif
 
 // Using [=] gives a warning in c++2a, but using [=,this] may not compile with older c++ versions

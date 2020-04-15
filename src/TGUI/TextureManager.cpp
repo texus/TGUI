@@ -31,29 +31,62 @@
 
 namespace tgui
 {
-    std::map<sf::String, std::list<TextureDataHolder>> TextureManager::m_imageMap;
+    std::map<String, std::list<TextureDataHolder>> TextureManager::m_imageMap;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const sf::String& filename, const sf::IntRect& partRect)
+    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const String& filename, const UIntRect& partRect, bool smooth)
     {
+        // Let the texture alert the texture manager when it is being copied or destroyed
+        texture.setCopyCallback(&TextureManager::copyTexture);
+        texture.setDestructCallback(&TextureManager::removeTexture);
+
+        const bool isSvg = ((filename.length() > 4) && (filename.substr(filename.length() - 4, 4).toLower() == ".svg"));
+
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);
         if (imageIt != m_imageMap.end())
         {
             // Loop all our textures to find the one containing the image
+            auto matchOnPartRect = imageIt->second.end();
+            auto matchOnSmooth = imageIt->second.end();
             for (auto dataIt = imageIt->second.begin(); dataIt != imageIt->second.end(); ++dataIt)
             {
-                // Only reuse the texture when the exact same part of the image is used
-                if (dataIt->data->rect == partRect)
+                // We can reuse everything only if the image is loaded with the same settings
+                if ((dataIt->partRect == partRect) && (dataIt->smooth == smooth))
                 {
-                    // The texture is now used at multiple places
+                    // The exact same texture is now used at multiple places
                     ++(dataIt->users);
-
-                    // Let the texture alert the texture manager when it is being copied or destroyed
-                    texture.setCopyCallback(&TextureManager::copyTexture);
-                    texture.setDestructCallback(&TextureManager::removeTexture);
                     return dataIt->data;
+                }
+                else if (dataIt->partRect == partRect)
+                    matchOnPartRect = dataIt;
+                else if (dataIt->smooth == smooth)
+                    matchOnSmooth = dataIt;
+            }
+
+            // We can still share some data on a partial match
+            if (!isSvg && ((matchOnPartRect != imageIt->second.end()) || (matchOnSmooth != imageIt->second.end())))
+            {
+                TGUI_EMPLACE_BACK(dataHolder, imageIt->second)
+                dataHolder.filename = filename;
+                dataHolder.users = 1;
+                dataHolder.partRect = partRect;
+                dataHolder.smooth = smooth;
+
+                if (matchOnPartRect != imageIt->second.end())
+                {
+                    // If only smooth is different then we can still share the image data
+                    dataHolder.data = std::make_shared<TextureData>(*matchOnPartRect->data);
+                    dataHolder.data->texture->setSmooth(smooth);
+                    return dataHolder.data;
+                }
+
+                if (matchOnSmooth != imageIt->second.end())
+                {
+                    // If only the part rect is different then we can share both image and texture
+                    dataHolder.data = imageIt->second.front().data;
+                    return dataHolder.data;
                 }
             }
         }
@@ -64,49 +97,32 @@ namespace tgui
         }
 
         // Add new data to the list
-        TextureDataHolder dataHolder;
+        TGUI_EMPLACE_BACK(dataHolder, imageIt->second)
         dataHolder.filename = filename;
         dataHolder.users = 1;
+        dataHolder.partRect = partRect;
+        dataHolder.smooth = smooth;
         dataHolder.data = std::make_shared<TextureData>();
-        dataHolder.data->rect = partRect;
-        imageIt->second.push_back(std::move(dataHolder));
-
-        // Let the texture alert the texture manager when it is being copied or destroyed
-        texture.setCopyCallback(&TextureManager::copyTexture);
-        texture.setDestructCallback(&TextureManager::removeTexture);
 
         // Load the image
         auto data = imageIt->second.back().data;
-        if ((filename.getSize() > 4) && (toLower(filename.substring(filename.getSize() - 4, 4)) == ".svg"))
+        if ((filename.length() > 4) && (filename.substr(filename.length() - 4, 4).toLower() == ".svg"))
         {
-            data->svgImage = std::make_unique<SvgImage>(filename);
+            data->svgImage.emplace(filename);
             if (data->svgImage->isSet())
                 return data;
         }
         else // Not an svg
         {
-            // Share the image if it was loaded before
-            if (imageIt->second.size() >= 2)
-                data->image = imageIt->second.begin()->data->image;
-
-            if (!data->image)
-                data->image = texture.getImageLoader()(filename);
+            data->image = texture.getImageLoader()(filename);
             if (data->image)
             {
-                // Create a texture from the image
-                bool loadFromImageSuccess;
-                if (partRect == sf::IntRect{})
-                    loadFromImageSuccess = data->texture.loadFromImage(*data->image);
-                else
+                data->texture.emplace();
+                if (data->texture->loadFromImage(*data->image))
                 {
-                    if ((partRect.left < static_cast<int>(data->image->getSize().x)) && (partRect.top < static_cast<int>(data->image->getSize().y)))
-                        loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
-                    else
-                        loadFromImageSuccess = false;
-                }
-
-                if (loadFromImageSuccess)
+                    data->texture->setSmooth(smooth);
                     return data;
+                }
             }
         }
 

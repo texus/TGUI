@@ -123,7 +123,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::addItem(const sf::String& itemName, const sf::String& id)
+    bool ListBox::addItem(const String& itemName, const String& id)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_maxItems == 0) || (m_items.size() < m_maxItems))
@@ -155,7 +155,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItem(const sf::String& itemName)
+    bool ListBox::setSelectedItem(const String& itemName)
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
@@ -170,7 +170,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItemById(const sf::String& id)
+    bool ListBox::setSelectedItemById(const String& id)
     {
         for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
@@ -213,7 +213,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::removeItem(const sf::String& itemName)
+    bool ListBox::removeItem(const String& itemName)
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
@@ -226,7 +226,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::removeItemById(const sf::String& id)
+    bool ListBox::removeItemById(const String& id)
     {
         for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
@@ -283,7 +283,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getItemById(const sf::String& id) const
+    String ListBox::getItemById(const String& id) const
     {
         for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
@@ -296,7 +296,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getItemByIndex(std::size_t index) const
+    String ListBox::getItemByIndex(std::size_t index) const
     {
         if (index >= m_items.size())
             return "";
@@ -306,14 +306,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getSelectedItem() const
+    String ListBox::getSelectedItem() const
     {
         return (m_selectedItem >= 0) ? m_items[m_selectedItem].getString() : "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getSelectedItemId() const
+    String ListBox::getSelectedItemId() const
     {
         return (m_selectedItem >= 0) ? m_itemIds[m_selectedItem] : "";
     }
@@ -327,7 +327,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
+    bool ListBox::changeItem(const String& originalValue, const String& newValue)
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
@@ -340,7 +340,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::changeItemById(const sf::String& id, const sf::String& newValue)
+    bool ListBox::changeItemById(const String& id, const String& newValue)
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
@@ -353,7 +353,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
+    bool ListBox::changeItemByIndex(std::size_t index, const String& newValue)
     {
         if (index >= m_items.size())
             return false;
@@ -371,9 +371,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ListBox::getItems() const
+    std::vector<String> ListBox::getItems() const
     {
-        std::vector<sf::String> items;
+        std::vector<String> items;
         for (const auto& item : m_items)
             items.push_back(item.getString());
 
@@ -382,7 +382,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<sf::String>& ListBox::getItemIds() const
+    const std::vector<String>& ListBox::getItemIds() const
     {
         return m_itemIds;
     }
@@ -471,14 +471,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::contains(const sf::String& item) const
+    bool ListBox::contains(const String& item) const
     {
         return std::find_if(m_items.begin(), m_items.end(), [item](const Text& text){ return text.getString() == item; }) != m_items.end();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::containsId(const sf::String& id) const
+    bool ListBox::containsId(const String& id) const
     {
         return std::find(m_itemIds.begin(), m_itemIds.end(), id) != m_itemIds.end();
     }
@@ -660,15 +660,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ListBox::getSignal(std::string signalName)
+    Signal& ListBox::getSignal(String signalName)
     {
-        if (signalName == toLower(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName().toLower())
             return onItemSelect;
-        else if (signalName == toLower(onMousePress.getName()))
+        else if (signalName == onMousePress.getName().toLower())
             return onMousePress;
-        else if (signalName == toLower(onMouseRelease.getName()))
+        else if (signalName == onMouseRelease.getName().toLower())
             return onMouseRelease;
-        else if (signalName == toLower(onDoubleClick.getName()))
+        else if (signalName == onDoubleClick.getName().toLower())
             return onDoubleClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -676,7 +676,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::rendererChanged(const std::string& property)
+    void ListBox::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -813,14 +813,14 @@ namespace tgui
             const auto& ids = getItemIds();
 
             bool itemIdsUsed = false;
-            std::string itemList = "[" + Serializer::serialize(items[0]);
-            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            String itemList = "[" + Serializer::serialize(items[0]);
+            String itemIdList = "[" + Serializer::serialize(ids[0]);
             for (std::size_t i = 1; i < items.size(); ++i)
             {
                 itemList += ", " + Serializer::serialize(items[i]);
                 itemIdList += ", " + Serializer::serialize(ids[i]);
 
-                if (!ids[i].isEmpty())
+                if (!ids[i].empty())
                     itemIdsUsed = true;
             }
             itemList += "]";
@@ -835,11 +835,11 @@ namespace tgui
             node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (m_selectedItem >= 0)
-            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectedItem));
+            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
-        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxItems));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
 
         return node;
     }
@@ -884,13 +884,13 @@ namespace tgui
         if (node->propertyValuePairs["autoscroll"])
             setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autoscroll"]->value).getBool());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["itemheight"])
-            setItemHeight(strToInt(node->propertyValuePairs["itemheight"]->value));
+            setItemHeight(node->propertyValuePairs["itemheight"]->value.toInt());
         if (node->propertyValuePairs["maximumitems"])
-            setMaximumItems(strToInt(node->propertyValuePairs["maximumitems"]->value));
+            setMaximumItems(node->propertyValuePairs["maximumitems"]->value.toInt());
         if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItemByIndex(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
+            setSelectedItemByIndex(node->propertyValuePairs["selecteditemindex"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -984,11 +984,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::update(sf::Time elapsedTime)
+    void ListBox::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 
-        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;

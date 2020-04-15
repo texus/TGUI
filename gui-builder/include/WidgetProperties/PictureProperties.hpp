@@ -31,25 +31,25 @@
 
 struct PictureProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto picture = std::dynamic_pointer_cast<tgui::Picture>(widget);
+        auto picture = widget->cast<tgui::Picture>();
         if (property == "IgnoreMouseEvents")
             picture->ignoreMouseEvents(parseBoolean(value, false));
         else if (property == "Texture")
         {
             const tgui::Texture& oldTexture = picture->getSharedRenderer()->getTexture();
-            const sf::String oldFilename = oldTexture.getId();
-            const sf::IntRect oldPartRect = oldTexture.getData() ? oldTexture.getData()->rect : sf::IntRect{};
+            const tgui::String oldFilename = oldTexture.getId();
+            const tgui::UIntRect oldPartRect = oldTexture.getPartRect();
 
             picture->getRenderer()->setProperty(property, value);
 
             const tgui::Texture& newTexture = picture->getSharedRenderer()->getTexture();
-            const sf::String newFilename = newTexture.getId();
-            const sf::IntRect newPartRect = newTexture.getData() ? newTexture.getData()->rect : sf::IntRect{};
-            const sf::Vector2f imageSize = newTexture.getImageSize();
+            const tgui::String newFilename = newTexture.getId();
+            const tgui::UIntRect newPartRect = newTexture.getPartRect();
+            const tgui::Vector2u imageSize = newTexture.getImageSize();
             if (((newFilename != oldFilename) || (newPartRect != oldPartRect)) && (imageSize.x != 0) && (imageSize.y != 0))
-                picture->setSize(imageSize);
+                picture->setSize(tgui::Vector2f{imageSize});
         }
         else
             WidgetProperties::updateProperty(widget, property, value);
@@ -58,7 +58,7 @@ struct PictureProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto picture = std::dynamic_pointer_cast<tgui::Picture>(widget);
+        auto picture = widget->cast<tgui::Picture>();
         pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(picture->isIgnoringMouseEvents())};
 
         const auto renderer = picture->getSharedRenderer();

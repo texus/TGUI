@@ -33,17 +33,17 @@ struct TextBoxProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
+        auto textBox = widget->cast<tgui::TextBox>();
         if (property == "Text")
             textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "DefaultText")
             textBox->setDefaultText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            textBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            textBox->setTextSize(value.toUInt());
         else if (property == "MaximumCharacters")
-            textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            textBox->setMaximumCharacters(value.toUInt());
         else if (property == "ReadOnly")
             textBox->setReadOnly(parseBoolean(value, false));
         else if (property == "VerticalScrollbarPolicy")
@@ -57,11 +57,11 @@ struct TextBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
+        auto textBox = widget->cast<tgui::TextBox>();
         pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(textBox->getText())};
         pair.first["DefaultText"] = {"MultilineString", tgui::Serializer::serialize(textBox->getDefaultText())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(textBox->getTextSize())};
-        pair.first["MaximumCharacters"] = {"UInt", tgui::to_string(textBox->getMaximumCharacters())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(textBox->getTextSize())};
+        pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(textBox->getMaximumCharacters())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
         pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getVerticalScrollbarPolicy())};
         pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getHorizontalScrollbarPolicy())};
@@ -75,17 +75,17 @@ struct TextBoxProperties : WidgetProperties
         pair.second["SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
-        pair.second["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};
+        pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(renderer->getCaretWidth())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 
 private:
 
-    static tgui::EditBox::Alignment deserializeAlignment(std::string value)
+    static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "right")
             return tgui::EditBox::Alignment::Right;
         else if (value == "center")
@@ -94,7 +94,7 @@ private:
             return tgui::EditBox::Alignment::Left;
     }
 
-    static std::string serializeAlignment(tgui::EditBox::Alignment alignment)
+    static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
     {
         if (alignment == tgui::EditBox::Alignment::Center)
             return "Center";

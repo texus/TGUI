@@ -130,7 +130,7 @@ namespace tgui
         {
             m_view = view;
 
-            m_container->m_size = view.getSize();
+            m_container->m_size = Vector2f{view.getSize()};
             m_container->onSizeChange.emit(m_container.get(), m_container->getSize());
 
             for (auto& layout : m_container->m_boundSizeLayouts)
@@ -165,7 +165,7 @@ namespace tgui
             {
                 case sf::Event::MouseMoved:
                 {
-                    mouseCoords = m_target->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view)};
                     event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseMove.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -174,7 +174,7 @@ namespace tgui
                 case sf::Event::MouseButtonPressed:
                 case sf::Event::MouseButtonReleased:
                 {
-                    mouseCoords = m_target->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view)};
                     event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseButton.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -182,7 +182,7 @@ namespace tgui
 
                 case sf::Event::MouseWheelScrolled:
                 {
-                    mouseCoords = m_target->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view);
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view)};
                     event.mouseWheelScroll.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseWheelScroll.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -192,7 +192,7 @@ namespace tgui
                 case sf::Event::TouchBegan:
                 case sf::Event::TouchEnded:
                 {
-                    mouseCoords = m_target->mapPixelToCoords({event.touch.x, event.touch.y}, m_view);
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({event.touch.x, event.touch.y}, m_view)};
                     event.touch.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.touch.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -236,6 +236,7 @@ namespace tgui
         else if (event.type == sf::Event::LostFocus)
         {
             m_windowFocused = false;
+            m_lastUpdateTime = decltype(m_lastUpdateTime){};
         }
         else if (event.type == sf::Event::GainedFocus)
         {
@@ -271,9 +272,14 @@ namespace tgui
 
         // Update the time
         if (m_windowFocused)
-            updateTime(m_clock.restart());
-        else
-            m_clock.restart();
+        {
+            const auto timePointNow = std::chrono::steady_clock::now();
+
+            if (m_lastUpdateTime > decltype(m_lastUpdateTime){})
+                updateTime(timePointNow - m_lastUpdateTime);
+
+            m_lastUpdateTime = timePointNow;
+        }
 
         // Change the view
         const sf::View oldView = m_target->getView();
@@ -316,33 +322,15 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    const std::vector<sf::String> Gui::getWidgetNames() const
-    {
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning (disable : 4996)
-#endif
-        return m_container->getWidgetNames();
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning (default : 4996)
-#endif
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
+    void Gui::add(const Widget::Ptr& widgetPtr, const String& widgetName)
     {
         m_container->add(widgetPtr, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Gui::get(const sf::String& widgetName) const
+    Widget::Ptr Gui::get(const String& widgetName) const
     {
         return m_container->get(widgetName);
     }
@@ -361,42 +349,6 @@ namespace tgui
         m_container->removeAllWidgets();
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    bool Gui::setWidgetName(const Widget::Ptr& widget, const std::string& name)
-    {
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning (disable : 4996)
-#endif
-        return m_container->setWidgetName(widget, name);
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning (default : 4996)
-#endif
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Gui::getWidgetName(const Widget::Ptr& widget) const
-    {
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning (disable : 4996)
-#endif
-        return m_container->getWidgetName(widget);
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning (default : 4996)
-#endif
-    }
-#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Gui::focusNextWidget()
@@ -469,14 +421,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::loadWidgetsFromFile(const std::string& filename, bool replaceExisting)
+    void Gui::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
         m_container->loadWidgetsFromFile(filename, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::saveWidgetsToFile(const std::string& filename)
+    void Gui::saveWidgetsToFile(const String& filename)
     {
         m_container->saveWidgetsToFile(filename);
     }
@@ -504,7 +456,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::updateTime(const sf::Time& elapsedTime)
+    void Gui::updateTime(Duration elapsedTime)
     {
         m_container->m_animationTimeElapsed = elapsedTime;
         m_container->update(elapsedTime);
@@ -533,11 +485,11 @@ namespace tgui
 
     void Gui::init()
     {
-    #ifdef TGUI_SYSTEM_WINDOWS
-        unsigned int doubleClickTime = GetDoubleClickTime();
-        if (doubleClickTime > 0)
-            setDoubleClickTime(doubleClickTime);
-    #endif
+#ifdef SFML_SYSTEM_WINDOWS
+        unsigned int doubleClickTimeMs = GetDoubleClickTime();
+        if (doubleClickTimeMs > 0)
+            setDoubleClickTime(std::chrono::milliseconds(doubleClickTimeMs));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

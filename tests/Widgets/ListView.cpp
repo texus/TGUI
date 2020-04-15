@@ -35,18 +35,18 @@ TEST_CASE("[ListView]")
     {
         REQUIRE_NOTHROW(listView->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(listView->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
 
         REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](){}));
         REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
 
         REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](){}));
         REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
     }
 
     SECTION("WidgetType")
@@ -60,10 +60,10 @@ TEST_CASE("[ListView]")
         listView->setSize(150, 100);
         listView->getRenderer()->setBorders(2);
 
-        REQUIRE(listView->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(listView->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(listView->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(listView->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(listView->getFullSize() == listView->getSize());
-        REQUIRE(listView->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(listView->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Adding columns")
@@ -150,34 +150,34 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getItem(0) == "1,1");
         REQUIRE(listView->getItem(1) == "2,1");
         REQUIRE(listView->getItem(2) == "3,1");
-        REQUIRE(listView->getItems() == std::vector<sf::String>{"1,1", "2,1", "3,1"});
+        REQUIRE(listView->getItems() == std::vector<tgui::String>{"1,1", "2,1", "3,1"});
 
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1", ""});
-        REQUIRE(listView->getItemRow(1) == std::vector<sf::String>{"2,1", "2,2"});
-        REQUIRE(listView->getItemRow(2) == std::vector<sf::String>{"3,1", "3,2"});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1", ""});
+        REQUIRE(listView->getItemRow(1) == std::vector<tgui::String>{"2,1", "2,2"});
+        REQUIRE(listView->getItemRow(2) == std::vector<tgui::String>{"3,1", "3,2"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
 
         listView->removeItem(1);
         REQUIRE(listView->getItemCount() == 2);
-        REQUIRE(listView->getItems() == std::vector<sf::String>{"1,1", "3,1"});
+        REQUIRE(listView->getItems() == std::vector<tgui::String>{"1,1", "3,1"});
 
         listView->removeAllItems();
         REQUIRE(listView->getItemCount() == 0);
 
-        std::vector<std::vector<sf::String>> items = {{"1,1"}, {"2,1", "2,2", "2,3"}, {"3,1", "3,2"}};
+        std::vector<std::vector<tgui::String>> items = {{"1,1"}, {"2,1", "2,2", "2,3"}, {"3,1", "3,2"}};
         listView->addMultipleItems(items);
         REQUIRE(listView->getItemCount() == 3);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
 
         REQUIRE(listView->changeItem(1, {"b,1"}));
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"b,1", ""}, {"3,1", "3,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", ""}, {"b,1", ""}, {"3,1", "3,2"}});
         REQUIRE(listView->changeItem(2, {"c,1", "c,2", "c,3"}));
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"b,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", ""}, {"b,1", ""}, {"c,1", "c,2"}});
         REQUIRE(listView->changeSubItem(0, 1, {"a,2"}));
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
         REQUIRE(!listView->changeItem(3, {"d,1"}));
         REQUIRE(!listView->changeSubItem(3, 1, {"d,2"}));
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
     }
     
     SECTION("Sort")
@@ -186,27 +186,23 @@ TEST_CASE("[ListView]")
         listView->addColumn("Col 2");
         listView->addColumn("Col 3");
 
-        std::vector<std::vector<sf::String>> items = {{"300"}, {"200", "-5", "20"}, {"1000", "7"}};
+        std::vector<std::vector<tgui::String>> items = {{"300"}, {"200", "-5", "20"}, {"1000", "7"}};
         listView->addMultipleItems(items);
 
-        auto cmp1 = [](const sf::String& a, const sf::String& b) { return a < b; };
-        auto convert = [](const std::string& s)
-        {
-            return s.empty() ? 0 : std::stoi(s);
-        };
-        auto cmp2 = [&convert](const sf::String& a, const sf::String& b) { return convert(a) > convert(b); };
+        auto cmp1 = [](const tgui::String& a, const tgui::String& b) { return a < b; };
+        auto cmp2 = [](const tgui::String& a, const tgui::String& b) { return a.toInt() > b.toInt(); };
 
         listView->sort(0, cmp1);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
 
         listView->sort(5, cmp1);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
         
         listView->sort(1, cmp2);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
 
         listView->sort(2, cmp2);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"200", "-5", "20"}, {"1000", "7", ""}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"200", "-5", "20"}, {"1000", "7", ""}, {"300", "", ""}});
     }
 
     SECTION("Returned item rows depend on columns")
@@ -214,24 +210,24 @@ TEST_CASE("[ListView]")
         listView->addItem({"1,1", "1,2", "1,3"});
         listView->addItem({"2,1", "2,2"});
 
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1"});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1"}, {"2,1"}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1"}, {"2,1"}});
 
         listView->addColumn("Col 1");
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1"});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1"}, {"2,1"}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1"}, {"2,1"}});
 
         listView->addColumn("Col 2");
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1", "1,2"});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "1,2"}, {"2,1", "2,2"}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1", "1,2"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", "2,2"}});
 
         listView->addColumn("Col 3");
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1", "1,2", "1,3"});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "1,2", "1,3"}, {"2,1", "2,2", ""}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1", "1,2", "1,3"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2", "1,3"}, {"2,1", "2,2", ""}});
 
         listView->addColumn("Col 4");
-        REQUIRE(listView->getItemRow(0) == std::vector<sf::String>{"1,1", "1,2", "1,3", ""});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "1,2", "1,3", ""}, {"2,1", "2,2", "", ""}});
+        REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1", "1,2", "1,3", ""});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2", "1,3", ""}, {"2,1", "2,2", "", ""}});
     }
 
     SECTION("Returned item cells")
@@ -241,18 +237,18 @@ TEST_CASE("[ListView]")
 
         REQUIRE(listView->getItemCell(0, 0) == "1,1");
         REQUIRE(listView->getItemCell(0, 1) == "");
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1"}, { "2,1" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
 
         listView->addColumn("Col 1");
         REQUIRE(listView->getItemCell(1, 0) == "2,1");
         REQUIRE(listView->getItemCell(0, 1) == "");
         REQUIRE(listView->getItemCell(2, 1) == "");
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1"}, { "2,1" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
 
         listView->addColumn("Col 2");
         REQUIRE(listView->getItemCell(1, 1) == "2,2");
         REQUIRE(listView->getItemCell(0, 2) == "");
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{ {"1,1", "1,2"}, { "2,1", "2,2" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1", "1,2"}, { "2,1", "2,2" }});
     }
 
     SECTION("Selecting items")
@@ -462,27 +458,27 @@ TEST_CASE("[ListView]")
         container->add(listView);
         root->add(container);
 
-        auto mouseMoved = [root,container](sf::Vector2i pos){
+        auto mouseMoved = [root,container](tgui::Vector2u pos){
             sf::Event event;
             event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = pos.x + static_cast<int>(container->getPosition().x);
-            event.mouseMove.y = pos.y + static_cast<int>(container->getPosition().y);
+            event.mouseMove.x = static_cast<int>(pos.x + container->getPosition().x);
+            event.mouseMove.y = static_cast<int>(pos.y + container->getPosition().y);
             root->handleEvent(event);
         };
-        auto mousePressed = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
+        auto mousePressed = [root,container](tgui::Vector2u pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonPressed;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x + static_cast<int>(container->getPosition().x);
-            event.mouseButton.y = pos.y + static_cast<int>(container->getPosition().y);
+            event.mouseButton.x = static_cast<int>(pos.x + container->getPosition().x);
+            event.mouseButton.y = static_cast<int>(pos.y + container->getPosition().y);
             root->handleEvent(event);
         };
-        auto mouseReleased = [root,container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
+        auto mouseReleased = [root,container](tgui::Vector2u pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonReleased;
             event.mouseButton.button = mouseButton;
-            event.mouseButton.x = pos.x + static_cast<int>(container->getPosition().x);
-            event.mouseButton.y = pos.y + static_cast<int>(container->getPosition().y);
+            event.mouseButton.x = static_cast<int>(pos.x + container->getPosition().x);
+            event.mouseButton.y = static_cast<int>(pos.y + container->getPosition().y);
             root->handleEvent(event);
         };
 
@@ -531,12 +527,12 @@ TEST_CASE("[ListView]")
             SECTION("Double click")
             {
                 // If a click happens a long time after the previous click then it isn't a double click
-                container->update(sf::milliseconds(10000));
+                container->update(std::chrono::milliseconds(10000));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 0);
 
-                container->update(sf::milliseconds(5));
+                container->update(std::chrono::milliseconds(5));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 1);
@@ -683,8 +679,8 @@ TEST_CASE("[ListView]")
         SECTION("colored")
         {
             tgui::ScrollbarRenderer scrollbarRenderer;
-            scrollbarRenderer.setTrackColor(sf::Color::Red);
-            scrollbarRenderer.setThumbColor(sf::Color::Blue);
+            scrollbarRenderer.setTrackColor(tgui::Color::Red);
+            scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -709,19 +705,19 @@ TEST_CASE("[ListView]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("HeaderBackgroundColor", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("HeaderTextColor", sf::Color{120, 130, 140}));
-                REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", sf::Color{130, 140, 150}));
-                REQUIRE_NOTHROW(renderer->setProperty("GridLinesColor", sf::Color{140, 150, 160}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("HeaderBackgroundColor", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("HeaderTextColor", tgui::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", tgui::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("GridLinesColor", tgui::Color{140, 150, 160}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
@@ -749,26 +745,26 @@ TEST_CASE("[ListView]")
                 renderer->setScrollbarWidth(15);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("SelectedBackgroundColorHover").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("SelectedTextColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("HeaderBackgroundColor").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("HeaderTextColor").getColor() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getProperty("SeparatorColor").getColor() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getProperty("GridLinesColor").getColor() == sf::Color(140, 150, 160));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TextColorHover").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColorHover").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("SelectedTextColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("HeaderBackgroundColor").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("HeaderTextColor").getColor() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("SeparatorColor").getColor() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("GridLinesColor").getColor() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
         }
     }
 
@@ -815,15 +811,15 @@ TEST_CASE("[ListView]")
         listView->setGridLinesWidth(2);
 
         tgui::ListViewRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setSelectedBackgroundColor(sf::Color::White);
-        renderer.setSelectedTextColor(sf::Color::Black);
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setSelectedBackgroundColor(tgui::Color::White);
+        renderer.setSelectedTextColor(tgui::Color::Black);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setHeaderBackgroundColor("#ff6403");
         renderer.setHeaderTextColor("#4700a5");
         renderer.setSeparatorColor("#562c05");
-        renderer.setGridLinesColor(sf::Color::Black);
+        renderer.setGridLinesColor(tgui::Color::Black);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
         renderer.setScrollbarWidth(14);
@@ -831,17 +827,17 @@ TEST_CASE("[ListView]")
         listView->setRenderer(renderer.getData());
 
         tgui::ScrollbarRenderer scrollbarRenderer = tgui::RendererData::create();
-        scrollbarRenderer.setTrackColor(sf::Color::Green);
-        scrollbarRenderer.setThumbColor(sf::Color::Red);
-        scrollbarRenderer.setArrowBackgroundColor(sf::Color::Blue);
-        scrollbarRenderer.setArrowColor(sf::Color::White);
+        scrollbarRenderer.setTrackColor(tgui::Color::Green);
+        scrollbarRenderer.setThumbColor(tgui::Color::Red);
+        scrollbarRenderer.setArrowBackgroundColor(tgui::Color::Blue);
+        scrollbarRenderer.setArrowColor(tgui::Color::White);
         scrollbarRenderer.setOpacity(0.7f);
         renderer.setScrollbar(scrollbarRenderer.getData());
 
         auto setHoverRenderer = [&]{
-                                    renderer.setBackgroundColorHover(sf::Color::Yellow);
-                                    renderer.setTextColorHover(sf::Color::Magenta);
-                                    renderer.setSelectedBackgroundColorHover(sf::Color::Cyan);
+                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
+                                    renderer.setTextColorHover(tgui::Color::Magenta);
+                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
                                     renderer.setSelectedTextColorHover("#808080");
                                  };
 
@@ -852,9 +848,9 @@ TEST_CASE("[ListView]")
         listView->addItem({"5", "5.2", "5.3"});
         listView->addItem("6");
 
-        const sf::Vector2f mousePos1{30, 85};
-        const sf::Vector2f mousePos2{30, 50};
-        const sf::Vector2f mousePos3{30, 45};
+        const tgui::Vector2f mousePos1{30, 85};
+        const tgui::Vector2f mousePos2{30, 50};
+        const tgui::Vector2f mousePos3{30, 45};
 
         SECTION("No columns")
         {

@@ -28,8 +28,8 @@
 
 void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
 {
-    std::cout << "Username: " << username->getText().toAnsiString() << std::endl;
-    std::cout << "Password: " << password->getText().toAnsiString() << std::endl;
+    std::cout << "Username: " << username->getText() << std::endl;
+    std::cout << "Password: " << password->getText() << std::endl;
 }
 
 void loadWidgets( tgui::Gui& gui )

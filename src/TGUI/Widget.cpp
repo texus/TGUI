@@ -26,7 +26,7 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
 #include <SFML/System/Err.hpp>
@@ -63,7 +63,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        static Layout2d parseLayout(std::string str)
+        static Layout2d parseLayout(String str)
         {
             if (str.empty())
                 throw Exception{"Failed to parse layout '" + str + "'. String was empty."};
@@ -79,7 +79,7 @@ namespace tgui
             unsigned int bracketCount = 0;
             auto commaOrBracketPos = str.find_first_of(",()");
             decltype(commaOrBracketPos) commaPos = 0;
-            while (commaOrBracketPos != std::string::npos)
+            while (commaOrBracketPos != String::npos)
             {
                 if (str[commaOrBracketPos] == '(')
                     bracketCount++;
@@ -100,11 +100,11 @@ namespace tgui
             }
 
             // Remove quotes around the values
-            std::string x = trim(str.substr(0, commaPos));
+            String x = str.substr(0, commaPos).trim();
             if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length()-1] == '"')))
                 x = x.substr(1, x.length()-2);
 
-            std::string y = trim(str.substr(commaPos + 1));
+            String y = str.substr(commaPos + 1).trim();
             if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length()-1] == '"')))
                 y = y.substr(1, y.length()-2);
 
@@ -488,7 +488,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::showWithEffect(ShowAnimationType type, sf::Time duration)
+    void Widget::showWithEffect(ShowAnimationType type, Duration duration)
     {
         setVisible(true);
 
@@ -578,7 +578,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
+    void Widget::hideWithEffect(ShowAnimationType type, Duration duration)
     {
         // We store the state the widget is currently in. In the event another animation was already playing, we should try to
         // use the current state to start our animation at, but this is not the state that the widget should end at. We must
@@ -713,7 +713,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Widget::getWidgetType() const
+    const String& Widget::getWidgetType() const
     {
         return m_type;
     }
@@ -801,7 +801,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setWidgetName(const sf::String& name)
+    void Widget::setWidgetName(const String& name)
     {
         if (m_name != name)
         {
@@ -816,7 +816,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Widget::getWidgetName() const
+    String Widget::getWidgetName() const
     {
         return m_name;
     }
@@ -873,7 +873,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::update(sf::Time elapsedTime)
+    void Widget::update(Duration elapsedTime)
     {
         m_animationTimeElapsed += elapsedTime;
 
@@ -946,7 +946,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::textEntered(std::uint32_t)
+    void Widget::textEntered(char32_t)
     {
     }
 
@@ -1018,21 +1018,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Widget::getSignal(std::string signalName)
+    Signal& Widget::getSignal(String signalName)
     {
-        if (signalName == toLower(onPositionChange.getName()))
+        if (signalName == onPositionChange.getName().toLower())
             return onPositionChange;
-        else if (signalName == toLower(onSizeChange.getName()))
+        else if (signalName == onSizeChange.getName().toLower())
             return onSizeChange;
-        else if (signalName == toLower(onFocus.getName()))
+        else if (signalName == onFocus.getName().toLower())
             return onFocus;
-        else if (signalName == toLower(onUnfocus.getName()))
+        else if (signalName == onUnfocus.getName().toLower())
             return onUnfocus;
-        else if (signalName == toLower(onMouseEnter.getName()))
+        else if (signalName == onMouseEnter.getName().toLower())
             return onMouseEnter;
-        else if (signalName == toLower(onMouseLeave.getName()))
+        else if (signalName == onMouseLeave.getName().toLower())
             return onMouseLeave;
-        else if (signalName == toLower(onAnimationFinished.getName()))
+        else if (signalName == onAnimationFinished.getName().toLower())
             return onAnimationFinished;
 
         throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
@@ -1040,7 +1040,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChanged(const std::string& property)
+    void Widget::rendererChanged(const String& property)
     {
         if ((property == "opacity") || (property == "opacitydisabled"))
         {
@@ -1070,14 +1070,11 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> Widget::save(SavingRenderersMap& renderers) const
     {
-        sf::String widgetName;
-        widgetName = m_name;
-
         auto node = std::make_unique<DataIO::Node>();
-        if (widgetName.isEmpty())
+        if (m_name.empty())
             node->name = getWidgetType();
         else
-            node->name = getWidgetType() + "." + Serializer::serialize(widgetName);
+            node->name = getWidgetType() + "." + Serializer::serialize(m_name);
 
         if (!isVisible())
             node->propertyValuePairs["Visible"] = std::make_unique<DataIO::ValueNode>("false");
@@ -1092,21 +1089,21 @@ namespace tgui
         {
             try
             {
-                const sf::String string = std::any_cast<sf::String>(m_userData);
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string.toAnsiString()));
+                const String string = std::any_cast<String>(m_userData);
+                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
             catch (const std::bad_any_cast&)
             {
                 try
                 {
-                    const std::string string = std::any_cast<std::string>(m_userData);
+                    const String string = std::any_cast<std::string>(m_userData);
                     node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
                 }
                 catch (const std::bad_any_cast&)
                 {
                     try
                     {
-                        const std::string string = std::any_cast<const char*>(m_userData);
+                        const String string = std::any_cast<const char*>(m_userData);
                         node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
                     }
                     catch (const std::bad_any_cast&)
@@ -1118,13 +1115,13 @@ namespace tgui
 #else
         if (m_userData.not_null())
         {
-            if (m_userData.is<sf::String>())
+            if (m_userData.is<String>())
             {
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<sf::String>().toAnsiString()));
+                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<String>()));
             }
             else if (m_userData.is<std::string>())
             {
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<std::string>()));
+                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>()))) ;
             }
             else if (m_userData.is<const char*>())
             {
@@ -1141,8 +1138,9 @@ namespace tgui
             toolTipNode->name = "ToolTip";
             toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-            toolTipNode->propertyValuePairs["InitialDelay"] = std::make_unique<DataIO::ValueNode>(to_string(ToolTip::getInitialDelay().asSeconds()));
-            toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
+            toolTipNode->propertyValuePairs["InitialDelay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(ToolTip::getInitialDelay().asSeconds()));
+            toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("("
+                + String::fromNumber(ToolTip::getDistanceToMouse().x) + "," + String::fromNumber(ToolTip::getDistanceToMouse().y) + ")");
 
             node->children.emplace_back(std::move(toolTipNode));
         }
@@ -1170,33 +1168,33 @@ namespace tgui
         if (node->propertyValuePairs["userdata"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_userData = std::make_any<std::string>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString().toAnsiString());
+            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString());
 #else
-            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString().toAnsiString());
+            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString());
 #endif
         }
 
         if (node->propertyValuePairs["renderer"])
         {
-            const sf::String value = node->propertyValuePairs["renderer"]->value;
-            if (value.isEmpty() || (value[0] != '&'))
+            const String value = node->propertyValuePairs["renderer"]->value;
+            if (value.empty() || (value[0] != '&'))
                 throw Exception{"Expected reference to renderer, did not find '&' character"};
 
-            const auto it = renderers.find(toLower(value.substring(1)));
+            const auto it = renderers.find(value.substr(1).toLower());
             if (it == renderers.end())
-                throw Exception{"Widget refers to renderer with name '" + value.substring(1) + "', but no such renderer was found"};
+                throw Exception{"Widget refers to renderer with name '" + value.substr(1) + "', but no such renderer was found"};
 
             setRenderer(it->second);
         }
 
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) == "tooltip")
+            if (childNode->name.toLower() == "tooltip")
             {
                 for (const auto& pair : childNode->propertyValuePairs)
                 {
                     if (pair.first == "initialdelay")
-                        ToolTip::setInitialDelay(sf::seconds(strToFloat(pair.second->value)));
+                        ToolTip::setInitialDelay(std::chrono::duration<float>(pair.second->value.toFloat()));
                     else if (pair.first == "distancetomouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
                 }
@@ -1219,13 +1217,13 @@ namespace tgui
                         throw Exception{"No construct function exists for widget type '" + toolTipWidgetNode->name + "'."};
                 }
             }
-            else if (toLower(childNode->name) == "renderer")
+            else if (childNode->name.toLower() == "renderer")
                 setRenderer(RendererData::createFromDataIONode(childNode.get()));
 
             /// TODO: Signals?
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-                return (toLower(child->name) == "tooltip") || (toLower(child->name) == "renderer");
+                return (child->name.toLower() == "tooltip") || (child->name.toLower() == "renderer");
             }), node->children.end());
     }
 
@@ -1247,7 +1245,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChangedCallback(const std::string& property)
+    void Widget::rendererChangedCallback(const String& property)
     {
         rendererChanged(property);
     }
@@ -1262,7 +1260,7 @@ namespace tgui
         sf::RectangleShape shape{size};
 
         if (m_opacityCached < 1)
-            shape.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
+            shape.setFillColor(Color::applyOpacity(color, m_opacityCached));
         else
             shape.setFillColor(color);
 
@@ -1277,7 +1275,7 @@ namespace tgui
                              Vector2f size,
                              Color borderColor) const
     {
-        const Color color = Color::calcColorOpacity(borderColor, m_opacityCached);
+        const Color color = Color::applyOpacity(borderColor, m_opacityCached);
 
         // If size is too small then draw entire size as border
         if ((size.x <= borders.getLeft() + borders.getRight()) || (size.y <= borders.getTop() + borders.getBottom()))

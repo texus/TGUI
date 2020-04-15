@@ -44,22 +44,22 @@ TEST_CASE("[Group]")
 
         SECTION("Without outline")
         {
-            REQUIRE(group->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(group->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(group->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(group->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(group->getFullSize() == group->getSize());
-            REQUIRE(group->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(group->getChildWidgetsOffset() == sf::Vector2f(0, 0));
+            REQUIRE(group->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(group->getChildWidgetsOffset() == tgui::Vector2f(0, 0));
         }
 
         SECTION("With outline")
         {
             group->getRenderer()->setPadding({1, 2, 3, 4});
 
-            REQUIRE(group->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(group->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(group->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(group->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(group->getFullSize() == group->getSize());
-            REQUIRE(group->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(group->getChildWidgetsOffset() == sf::Vector2f(1, 2));
+            REQUIRE(group->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(group->getChildWidgetsOffset() == tgui::Vector2f(1, 2));
         }
 
         SECTION("Child widgets")
@@ -68,12 +68,12 @@ TEST_CASE("[Group]")
             childWidget->setPosition(60, 50);
             group->add(childWidget);
 
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(100, 80));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(100, 80));
 
             group->getRenderer()->setPadding({1, 2, 3, 4});
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(101, 82));
         }
     }
 
@@ -117,7 +117,7 @@ TEST_CASE("[Group]")
             
             group->setSize(200, 100);
             REQUIRE_NOTHROW(group->loadWidgetsFromFile("GroupWidgetFile1.txt"));
-            REQUIRE(group->getSize() == sf::Vector2f(200, 100)); // The Group itself is not saved, only its children
+            REQUIRE(group->getSize() == tgui::Vector2f(200, 100)); // The Group itself is not saved, only its children
 
             REQUIRE_NOTHROW(group->saveWidgetsToFile("GroupWidgetFile2.txt"));
             REQUIRE(compareFiles("GroupWidgetFile1.txt", "GroupWidgetFile2.txt"));

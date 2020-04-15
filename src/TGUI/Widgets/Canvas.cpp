@@ -144,9 +144,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::IntRect Canvas::getViewport() const
+    IntRect Canvas::getViewport() const
     {
-        return m_renderTexture.getViewport(m_renderTexture.getView());
+        return IntRect(m_renderTexture.getViewport(m_renderTexture.getView()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,12 +186,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::rendererChanged(const std::string& property)
+    void Canvas::rendererChanged(const String& property)
     {
         Widget::rendererChanged(property);
 
         if ((property == "opacity") || (property == "opacitydisabled"))
-            m_sprite.setColor(Color::calcColorOpacity(Color::White, m_opacityCached));
+            m_sprite.setColor(Color::applyOpacity(Color::White, m_opacityCached));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,7 @@ namespace tgui
         {
             it = m_data->propertyValuePairs.find("texturetitlebar");
             if (it != m_data->propertyValuePairs.end() && it->second.getTexture().getData())
-                return it->second.getTexture().getImageSize().y;
+                return static_cast<float>(it->second.getTexture().getImageSize().y);
             else
                 return 20;
         }

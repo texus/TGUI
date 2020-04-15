@@ -61,7 +61,7 @@
 
 namespace tgui
 {
-    std::map<std::string, std::function<Widget::Ptr()>> WidgetFactory::m_constructFunctions =
+    std::map<String, std::function<Widget::Ptr()>> WidgetFactory::m_constructFunctions =
     {
         {"bitmapbutton", std::make_shared<BitmapButton>},
         {"button", std::make_shared<Button>},
@@ -100,16 +100,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetFactory::setConstructFunction(const std::string& type, const std::function<Widget::Ptr()>& constructor)
+    void WidgetFactory::setConstructFunction(const String& type, const std::function<Widget::Ptr()>& constructor)
     {
-        m_constructFunctions[toLower(type)] = constructor;
+        m_constructFunctions[type.toLower()] = constructor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::function<Widget::Ptr()>& WidgetFactory::getConstructFunction(const std::string& type)
+    const std::function<Widget::Ptr()>& WidgetFactory::getConstructFunction(const String& type)
     {
-        return m_constructFunctions[toLower(type)];
+        return m_constructFunctions[type.toLower()];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

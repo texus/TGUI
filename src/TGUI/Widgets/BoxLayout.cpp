@@ -76,14 +76,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::add(const Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayout::add(const Widget::Ptr& widget, const String& widgetName)
     {
         insert(m_widgets.size(), widget, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::insert(std::size_t index, const Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayout::insert(std::size_t index, const Widget::Ptr& widget, const String& widgetName)
     {
         // Move the widget to the right position
         if (index < m_widgets.size())
@@ -138,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::rendererChanged(const std::string& property)
+    void BoxLayout::rendererChanged(const String& property)
     {
         if (property == "spacebetweenwidgets")
         {

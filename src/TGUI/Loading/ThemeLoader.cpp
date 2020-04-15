@@ -52,18 +52,18 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<std::string, std::map<std::string, std::map<sf::String, sf::String>>> DefaultThemeLoader::m_propertiesCache;
+    std::map<String, std::map<String, std::map<String, String>>> DefaultThemeLoader::m_propertiesCache;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     namespace
     {
         // Turns texture and font filenames into paths relative to the theme file
-        void injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
+        void injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const String& path)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
-                if (((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture")) || (pair.first == "font"))
+                if (((pair.first.size() >= 7) && (pair.first.substr(0, 7).toLower() == "texture")) || (pair.first == "font"))
                 {
                     if (pair.second->value.empty() || (pair.second->value == "null") || (pair.second->value == "nullptr"))
                         continue;
@@ -105,14 +105,14 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void resolveReferences(std::map<std::string, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node)
+        void resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
                 // Check if this property is a reference to another section
                 if (!pair.second->value.empty() && (pair.second->value[0] == '&'))
                 {
-                    std::string name = toLower(Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString());
+                    String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString().toLower();
 
                     auto sectionsIt = sections.find(name);
                     if (sectionsIt == sections.end())
@@ -137,13 +137,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseThemeLoader::preload(const std::string&)
+    void BaseThemeLoader::preload(const String&)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void DefaultThemeLoader::flushCache(const std::string& filename)
+    void DefaultThemeLoader::flushCache(const String& filename)
     {
         if (filename != "")
         {
@@ -159,7 +159,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void DefaultThemeLoader::preload(const std::string& filename)
+    void DefaultThemeLoader::preload(const String& filename)
     {
         if (filename == "")
             return;
@@ -167,9 +167,9 @@ namespace tgui
         // Load the file when not already in cache
         if (m_propertiesCache.find(filename) == m_propertiesCache.end())
         {
-            std::string resourcePath;
+            String resourcePath;
             auto slashPos = filename.find_last_of("/\\");
-            if (slashPos != std::string::npos)
+            if (slashPos != String::npos)
                 resourcePath = filename.substr(0, slashPos+1);
 
             std::stringstream fileContents;
@@ -188,10 +188,10 @@ namespace tgui
             }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
-            std::map<std::string, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
+            std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
             for (const auto& child : root->children)
             {
-                std::string name = toLower(Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString());
+                String name = Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString().toLower();
                 sections.emplace(name, std::cref(child));
             }
 
@@ -202,15 +202,15 @@ namespace tgui
             for (const auto& section : sections)
             {
                 const auto& child = section.second;
-                const std::string& name = section.first;
+                const String& name = section.first;
                 for (const auto& pair : child.get()->propertyValuePairs)
-                    m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
+                    m_propertiesCache[filename][name][pair.first.toLower()] = pair.second->value;
 
                 for (const auto& nestedProperty : child.get()->children)
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);
-                    m_propertiesCache[filename][name][toLower(nestedProperty->name)] = "{\n" + ss.str() + "}";
+                    m_propertiesCache[filename][name][nestedProperty->name.toLower()] = "{\n" + ss.str() + "}";
                 }
             }
         }
@@ -218,11 +218,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::map<sf::String, sf::String>& DefaultThemeLoader::load(const std::string& filename, const std::string& section)
+    const std::map<String, String>& DefaultThemeLoader::load(const String& filename, const String& section)
     {
         preload(filename);
 
-        const std::string lowercaseClassName = toLower(section);
+        const String lowercaseClassName = section.toLower();
 
         // An empty filename is not considered an error and will result in an empty property list
         if (filename.empty())
@@ -236,22 +236,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool DefaultThemeLoader::canLoad(const std::string& filename, const std::string& section)
+    bool DefaultThemeLoader::canLoad(const String& filename, const String& section)
     {
         if (filename.empty())
             return true;
         else
-            return m_propertiesCache[filename].find(toLower(section)) != m_propertiesCache[filename].end();
+            return m_propertiesCache[filename].find(section.toLower()) != m_propertiesCache[filename].end();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void DefaultThemeLoader::readFile(const std::string& filename, std::stringstream& contents) const
+    void DefaultThemeLoader::readFile(const String& filename, std::stringstream& contents) const
     {
         if (filename.empty())
             return;
 
-        std::string fullFilename;
+        String fullFilename;
     #ifdef TGUI_SYSTEM_WINDOWS
         if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
     #else
@@ -277,9 +277,9 @@ namespace tgui
             AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
             assert(assetManager);
 
-            AAsset* asset = AAssetManager_open(assetManager, fullFilename.c_str(), AASSET_MODE_UNKNOWN);
+            AAsset* asset = AAssetManager_open(assetManager, fullFilename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
             if (!asset)
-                throw Exception{ "Failed to open theme file '" + fullFilename + "' from assets." };
+                throw Exception{"Failed to open theme file '" + fullFilename + "' from assets."};
 
             off_t assetLength = AAsset_getLength(asset);
 
@@ -297,7 +297,7 @@ namespace tgui
         else
     #endif
         {
-            std::ifstream file{fullFilename};
+            std::ifstream file{fullFilename.toAnsiString()};
             if (!file.is_open())
                 throw Exception{"Failed to open theme file '" + fullFilename + "'."};
 

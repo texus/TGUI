@@ -49,20 +49,20 @@ TEST_CASE("[Serializer]")
 
     SECTION("serialize color")
     {
-        REQUIRE(tgui::Serializer::serialize(sf::Color{100, 0, 50}) == "#640032");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color{100, 0, 50}) == "#640032");
 
-        REQUIRE(tgui::Serializer::serialize(sf::Color{1, 35, 69, 103}) == "#01234567");
-        REQUIRE(tgui::Serializer::serialize(sf::Color{137, 171, 205, 239}) == "#89ABCDEF");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color{1, 35, 69, 103}) == "#01234567");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color{137, 171, 205, 239}) == "#89ABCDEF");
 
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Black) == "black");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::White) == "white");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Red) == "red");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Green) == "green");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Magenta) == "magenta");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Yellow) == "yellow");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Cyan) == "cyan");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "transparent");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Black) == "black");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::White) == "white");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Red) == "red");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Green) == "green");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "blue");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Magenta) == "magenta");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Yellow) == "yellow");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Cyan) == "cyan");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Transparent) == "transparent");
     }
 
     SECTION("serialize outline")
@@ -90,16 +90,16 @@ TEST_CASE("[Serializer]")
 
     SECTION("serialize string")
     {
-        REQUIRE(tgui::Serializer::serialize(sf::String{""}) == "\"\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"word"}) == "word");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"NoQuotes_Required@089%"}) == "NoQuotes_Required@089%");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"String with spaces"}) == "\"String with spaces\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"\\"}) == "\"\\\\\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"\n"}) == "\"\\n\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"\t"}) == "\"\\t\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"\v"}) == "\"\\v\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"\""}) == "\"\\\"\"");
-        REQUIRE(tgui::Serializer::serialize(sf::String{"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{""}) == "\"\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"word"}) == "word");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"NoQuotes_Required@089%"}) == "NoQuotes_Required@089%");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"String with spaces"}) == "\"String with spaces\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"\\"}) == "\"\\\\\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"\n"}) == "\"\\n\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"\t"}) == "\"\\t\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"\v"}) == "\"\\v\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"\""}) == "\"\\\"\"");
+        REQUIRE(tgui::Serializer::serialize(tgui::String{"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
     }
 
     SECTION("serialize number")
@@ -126,11 +126,11 @@ TEST_CASE("[Serializer]")
         childRendererData->propertyValuePairs["Num"] = {5};
 
         auto rendererData = std::make_shared<tgui::RendererData>();
-        rendererData->propertyValuePairs["SomeColor"] = {sf::Color::Red};
+        rendererData->propertyValuePairs["SomeColor"] = {tgui::Color::Red};
         rendererData->propertyValuePairs["TextStyleProperty"] = {tgui::TextStyle::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
-        std::string result = "SomeColor = red;\n"
+        tgui::String result = "SomeColor = red;\n"
                              "TextStyleProperty = StrikeThrough;\n"
                              "\n"
                              "Nested {\n"
@@ -142,14 +142,14 @@ TEST_CASE("[Serializer]")
 
     SECTION("custom serialize function")
     {
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "blue");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);
 
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "STR");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "STR");
         REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
         
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
+        REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "blue");
     }
 }

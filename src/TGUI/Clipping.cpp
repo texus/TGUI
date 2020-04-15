@@ -38,8 +38,8 @@ namespace tgui
         m_target {target},
         m_oldView{target.getView()}
     {
-        Vector2f bottomRight = Vector2f(states.transform.transformPoint(topLeft + size));
-        topLeft = Vector2f(states.transform.transformPoint(topLeft));
+        Vector2f bottomRight{states.transform.transformPoint(sf::Vector2f{topLeft + size})};
+        topLeft = Vector2f(states.transform.transformPoint(sf::Vector2f{topLeft}));
 
         Vector2f viewTopLeft = topLeft;
         size = bottomRight - topLeft;

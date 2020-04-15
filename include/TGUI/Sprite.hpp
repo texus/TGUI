@@ -27,8 +27,8 @@
 #define TGUI_SPRITE_HPP
 
 #include <TGUI/Texture.hpp>
-#include <TGUI/Vector2f.hpp>
-#include <TGUI/FloatRect.hpp>
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Rect.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <SFML/Graphics/Transformable.hpp>

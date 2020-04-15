@@ -49,7 +49,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Animation::Animation(Type type, Widget::Ptr widget, sf::Time duration, std::function<void()> finishedCallback) :
+        Animation::Animation(Type type, Widget::Ptr widget, Duration duration, std::function<void()> finishedCallback) :
             m_type            {type},
             m_widget          {widget},
             m_totalDuration   {duration},
@@ -59,7 +59,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback) :
+        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback) :
             Animation {Type::Move, widget, duration, finishedCallback},
             m_startPos{start},
             m_endPos  {end}
@@ -68,7 +68,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool MoveAnimation::update(sf::Time elapsedTime)
+        bool MoveAnimation::update(Duration elapsedTime)
         {
             m_elapsedTime += elapsedTime;
             if (m_elapsedTime >= m_totalDuration)
@@ -77,7 +77,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
+            m_widget->setPosition(m_startPos + ((m_elapsedTime / m_totalDuration) * (m_endPos - m_startPos)));
             return false;
         }
 
@@ -91,7 +91,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback) :
+        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback) :
             Animation  {Type::Resize, widget, duration, finishedCallback},
             m_startSize{start},
             m_endSize  {end}
@@ -100,7 +100,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool ResizeAnimation::update(sf::Time elapsedTime)
+        bool ResizeAnimation::update(Duration elapsedTime)
         {
             m_elapsedTime += elapsedTime;
             if (m_elapsedTime >= m_totalDuration)
@@ -109,7 +109,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setSize(m_startSize + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endSize - m_startSize)));
+            m_widget->setSize(m_startSize + ((m_elapsedTime / m_totalDuration) * (m_endSize - m_startSize)));
             return false;
         }
 
@@ -123,7 +123,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback) :
+        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, Duration duration, std::function<void()> finishedCallback) :
             Animation     {Type::Fade, widget, duration, finishedCallback},
             m_startOpacity{std::max(0.f, std::min(1.f, start))},
             m_endOpacity  {std::max(0.f, std::min(1.f, end))}
@@ -132,7 +132,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool FadeAnimation::update(sf::Time elapsedTime)
+        bool FadeAnimation::update(Duration elapsedTime)
         {
             m_elapsedTime += elapsedTime;
             if (m_elapsedTime >= m_totalDuration)
@@ -141,7 +141,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setInheritedOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
+            m_widget->setInheritedOpacity(m_startOpacity + ((m_elapsedTime / m_totalDuration) * (m_endOpacity - m_startOpacity)));
             return false;
         }
 

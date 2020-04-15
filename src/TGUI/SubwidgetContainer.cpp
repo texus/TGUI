@@ -94,7 +94,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::textEntered(std::uint32_t key)
+    void SubwidgetContainer::textEntered(char32_t key)
     {
         m_container->textEntered(key);
         Widget::textEntered(key);
@@ -155,7 +155,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::update(sf::Time elapsedTime)
+    void SubwidgetContainer::update(Duration elapsedTime)
     {
         m_container->update(elapsedTime);
     }
@@ -164,7 +164,7 @@ namespace tgui
 
     void SubwidgetContainer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition());
+        states.transform.translate(sf::Vector2f(getPosition()));
         m_container->draw(target, states);
     }
 

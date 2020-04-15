@@ -33,11 +33,11 @@ TEST_CASE("[SvgImage]")
         tgui::SvgImage svgImage;
 
         REQUIRE(!svgImage.isSet());
-        REQUIRE(svgImage.getSize() == sf::Vector2f{0, 0});
+        REQUIRE(svgImage.getSize() == tgui::Vector2f{0, 0});
 
         sf::Texture texture;
-        svgImage.rasterize(texture, sf::Vector2u{100, 100});
-        REQUIRE(texture.getSize() == sf::Vector2u{0, 0});
+        svgImage.rasterize(texture, tgui::Vector2u{100, 100});
+        REQUIRE(tgui::Vector2u{texture.getSize()} == tgui::Vector2u{0, 0});
     }
 
     SECTION("Loading svg")
@@ -45,11 +45,11 @@ TEST_CASE("[SvgImage]")
         tgui::SvgImage svgImage{"resources/SFML.svg"};
 
         REQUIRE(svgImage.isSet());
-        REQUIRE(svgImage.getSize() == sf::Vector2f{130, 130});
+        REQUIRE(svgImage.getSize() == tgui::Vector2f{130, 130});
 
         sf::Texture texture;
-        svgImage.rasterize(texture, sf::Vector2u{100, 100});
-        REQUIRE(texture.getSize() == sf::Vector2u{100, 100});
+        svgImage.rasterize(texture, tgui::Vector2u{100, 100});
+        REQUIRE(tgui::Vector2u{texture.getSize()} == tgui::Vector2u{100, 100});
     }
 
     SECTION("Drawing svg")
@@ -66,7 +66,7 @@ TEST_CASE("[SvgImage]")
         SECTION("Moved, scaled and colorized")
         {
             tgui::Texture texture = picture->getRenderer()->getTexture();
-            texture.setColor(sf::Color::Red);
+            texture.setColor(tgui::Color::Red);
             picture->getRenderer()->setTexture(texture);
 
             picture->setPosition(40, 10);

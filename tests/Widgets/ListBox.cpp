@@ -35,55 +35,39 @@ TEST_CASE("[ListBox]")
     {
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, int){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
 
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, int){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, int){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
 
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, int){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, int){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
 
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](){}));
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, int){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, std::string){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -97,10 +81,10 @@ TEST_CASE("[ListBox]")
         listBox->setSize(150, 100);
         listBox->getRenderer()->setBorders(2);
 
-        REQUIRE(listBox->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(listBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(listBox->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(listBox->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(listBox->getFullSize() == listBox->getSize());
-        REQUIRE(listBox->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(listBox->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Adding items")
@@ -294,27 +278,27 @@ TEST_CASE("[ListBox]")
         auto container = tgui::Group::create({400.f, 300.f});
         container->add(listBox);
 
-        auto mouseMoved = [container](sf::Vector2i pos){
+        auto mouseMoved = [container](tgui::Vector2u pos){
             sf::Event event;
             event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = pos.x;
-            event.mouseMove.y = pos.y;
+            event.mouseMove.x = static_cast<int>(pos.x);
+            event.mouseMove.y = static_cast<int>(pos.y);
             container->handleEvent(event);
         };
-        auto mousePressed = [container](sf::Vector2i pos){
+        auto mousePressed = [container](tgui::Vector2u pos){
             sf::Event event;
             event.type = sf::Event::MouseButtonPressed;
             event.mouseButton.button = sf::Mouse::Left;
-            event.mouseButton.x = pos.x;
-            event.mouseButton.y = pos.y;
+            event.mouseButton.x = static_cast<int>(pos.x);
+            event.mouseButton.y = static_cast<int>(pos.y);
             container->handleEvent(event);
         };
-        auto mouseReleased = [container](sf::Vector2i pos){
+        auto mouseReleased = [container](tgui::Vector2u pos){
             sf::Event event;
             event.type = sf::Event::MouseButtonReleased;
             event.mouseButton.button = sf::Mouse::Left;
-            event.mouseButton.x = pos.x;
-            event.mouseButton.y = pos.y;
+            event.mouseButton.x = static_cast<int>(pos.x);
+            event.mouseButton.y = static_cast<int>(pos.y);
             container->handleEvent(event);
         };
 
@@ -363,12 +347,12 @@ TEST_CASE("[ListBox]")
             SECTION("Double click")
             {
                 // If a click happens a long time after the previous click then it isn't a double click
-                container->update(sf::milliseconds(10000));
+                container->update(std::chrono::milliseconds(10000));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 0);
 
-                container->update(sf::milliseconds(5));
+                container->update(std::chrono::milliseconds(5));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 1);
@@ -437,8 +421,8 @@ TEST_CASE("[ListBox]")
         SECTION("colored")
         {
             tgui::ScrollbarRenderer scrollbarRenderer;
-            scrollbarRenderer.setTrackColor(sf::Color::Red);
-            scrollbarRenderer.setThumbColor(sf::Color::Blue);
+            scrollbarRenderer.setTrackColor(tgui::Color::Red);
+            scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -461,15 +445,15 @@ TEST_CASE("[ListBox]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Bold));
@@ -497,15 +481,15 @@ TEST_CASE("[ListBox]")
                 renderer->setScrollbarWidth(15);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("SelectedBackgroundColorHover").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("SelectedTextColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TextColorHover").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColorHover").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("SelectedTextColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Bold);
@@ -513,8 +497,8 @@ TEST_CASE("[ListBox]")
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")
@@ -568,11 +552,11 @@ TEST_CASE("[ListBox]")
         listBox->setItemHeight(18);
 
         tgui::ListBoxRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setSelectedBackgroundColor(sf::Color::White);
-        renderer.setSelectedTextColor(sf::Color::Black);
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setSelectedBackgroundColor(tgui::Color::White);
+        renderer.setSelectedTextColor(tgui::Color::Black);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
         renderer.setTextStyle(tgui::TextStyle::Italic);
@@ -582,9 +566,9 @@ TEST_CASE("[ListBox]")
         listBox->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&]{
-                                    renderer.setBackgroundColorHover(sf::Color::Yellow);
-                                    renderer.setTextColorHover(sf::Color::Magenta);
-                                    renderer.setSelectedBackgroundColorHover(sf::Color::Cyan);
+                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
+                                    renderer.setTextColorHover(tgui::Color::Magenta);
+                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
                                     renderer.setSelectedTextColorHover("#808080");
                                  };
 
@@ -595,9 +579,9 @@ TEST_CASE("[ListBox]")
         listBox->addItem("5");
         listBox->addItem("6");
 
-        const sf::Vector2f mousePos1{30, 20};
-        const sf::Vector2f mousePos2{30, 35};
-        const sf::Vector2f mousePos3{30, 50};
+        const tgui::Vector2f mousePos1{30, 20};
+        const tgui::Vector2f mousePos2{30, 35};
+        const tgui::Vector2f mousePos3{30, 50};
 
         SECTION("Colored")
         {

@@ -34,9 +34,9 @@ TEST_CASE("[Picture]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
     }
 
     SECTION("WidgetType")
@@ -61,7 +61,7 @@ TEST_CASE("[Picture]")
             REQUIRE(picture->getRenderer()->getTexture().getId() == "");
         }
 
-        REQUIRE(picture->getSize() == sf::Vector2f(texture.getSize()));
+        REQUIRE(picture->getSize() == tgui::Vector2f(static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)));
     }
 
     SECTION("Position and Size")
@@ -69,10 +69,10 @@ TEST_CASE("[Picture]")
         picture->setPosition(40, 30);
         picture->setSize(150, 100);
 
-        REQUIRE(picture->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(picture->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(picture->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(picture->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(picture->getFullSize() == picture->getSize());
-        REQUIRE(picture->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(picture->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("IgnoreMouseEvents")

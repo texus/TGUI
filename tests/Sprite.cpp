@@ -37,7 +37,7 @@ TEST_CASE("[Sprite]")
 
             REQUIRE(!sprite.isSet());
             REQUIRE(sprite.getTexture().getData() == nullptr);
-            REQUIRE(sprite.getSize() == sf::Vector2f(0, 0));
+            REQUIRE(sprite.getSize() == tgui::Vector2f(0, 0));
         }
 
         SECTION("Loaded texture")
@@ -46,28 +46,28 @@ TEST_CASE("[Sprite]")
 
             REQUIRE(sprite.isSet());
             REQUIRE(sprite.getTexture().getData() != nullptr);
-            REQUIRE(sprite.getSize() == sf::Vector2f(50, 50));
+            REQUIRE(sprite.getSize() == tgui::Vector2f(50, 50));
         }
 
-        REQUIRE(sprite.getVisibleRect() == sf::FloatRect());
+        REQUIRE(sprite.getVisibleRect() == tgui::FloatRect());
         REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Normal);
     }
 
     SECTION("Size")
     {
         sprite.setTexture({});
-        REQUIRE(sprite.getSize() == sf::Vector2f());
+        REQUIRE(sprite.getSize() == tgui::Vector2f());
 
         tgui::Texture texture{"resources/image.png"};
         sprite.setTexture(texture);
-        REQUIRE(sprite.getSize() == sf::Vector2f(50, 50));
+        REQUIRE(sprite.getSize() == tgui::Vector2f(50, 50));
 
         sprite.setSize({80, 60});
-        REQUIRE(sprite.getSize() == sf::Vector2f(80, 60));
-        REQUIRE(texture.getImageSize() == sf::Vector2f(50, 50));
+        REQUIRE(sprite.getSize() == tgui::Vector2f(80, 60));
+        REQUIRE(texture.getImageSize() == tgui::Vector2u(50, 50));
 
         sprite.setTexture({"resources/image.png"});
-        REQUIRE(sprite.getSize() == sf::Vector2f(80, 60));
+        REQUIRE(sprite.getSize() == tgui::Vector2f(80, 60));
     }
 
     SECTION("Opacity")
@@ -81,13 +81,13 @@ TEST_CASE("[Sprite]")
 
     SECTION("VisibleRect")
     {
-        REQUIRE(sprite.getVisibleRect() == sf::FloatRect());
+        REQUIRE(sprite.getVisibleRect() == tgui::FloatRect());
 
         sprite.setTexture({"resources/image.png"});
-        REQUIRE(sprite.getVisibleRect() == sf::FloatRect());
+        REQUIRE(sprite.getVisibleRect() == tgui::FloatRect());
 
         sprite.setVisibleRect({10, 10, 30, 30});
-        REQUIRE(sprite.getVisibleRect() == sf::FloatRect(10, 10, 30, 30));
+        REQUIRE(sprite.getVisibleRect() == tgui::FloatRect(10, 10, 30, 30));
     }
 
     SECTION("isTransparentPixel")

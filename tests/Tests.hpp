@@ -66,12 +66,12 @@
                 compareImageFiles(filename, "expected/" filename);
 #endif
 
-static const sf::Time DOUBLE_CLICK_TIMEOUT = sf::milliseconds(500);
+static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);
 
-bool compareFiles(const std::string& leftFileName, const std::string& rightFileName);
-void compareImageFiles(const std::string& filename1, const std::string& filename2);
+bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFileName);
+void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2);
 
-void mouseCallback(unsigned int& count, sf::Vector2f pos);
+void mouseCallback(unsigned int& count, tgui::Vector2f pos);
 void genericCallback(unsigned int& count);
 
 void testWidgetSignals(tgui::Widget::Ptr widget);
@@ -81,7 +81,7 @@ void testClickableWidgetSignals(tgui::Panel::Ptr widget);
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 
 template <typename WidgetType>
-void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
+void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
 {
     if (loadFromTheme)
     {

@@ -31,17 +31,17 @@
 
 struct ScrollbarProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
+        auto scrollbar = widget->cast<tgui::Scrollbar>();
         if (property == "Maximum")
-            scrollbar->setMaximum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            scrollbar->setMaximum(value.toUInt());
         else if (property == "Value")
-            scrollbar->setValue(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            scrollbar->setValue(value.toUInt());
         else if (property == "ViewportSize")
-            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            scrollbar->setViewportSize(value.toUInt());
         else if (property == "ScrollAmount")
-            scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            scrollbar->setScrollAmount(value.toUInt());
         else if (property == "AutoHide")
             scrollbar->setAutoHide(parseBoolean(value, true));
         else if (property == "VerticalScroll")
@@ -53,13 +53,13 @@ struct ScrollbarProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
-        pair.first["Maximum"] = {"UInt", tgui::to_string(scrollbar->getMaximum())};
-        pair.first["Value"] = {"UInt", tgui::to_string(scrollbar->getValue())};
-        pair.first["ViewportSize"] = {"UInt", tgui::to_string(scrollbar->getViewportSize())};
-        pair.first["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
+        auto scrollbar = widget->cast<tgui::Scrollbar>();
+        pair.first["Maximum"] = {"UInt", tgui::String::fromNumber(scrollbar->getMaximum())};
+        pair.first["Value"] = {"UInt", tgui::String::fromNumber(scrollbar->getValue())};
+        pair.first["ViewportSize"] = {"UInt", tgui::String::fromNumber(scrollbar->getViewportSize())};
+        pair.first["ScrollAmount"] = {"UInt", tgui::String::fromNumber(scrollbar->getScrollAmount())};
         pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::to_string(scrollbar->getVerticalScroll())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(scrollbar->getVerticalScroll())};
 
         const auto renderer = scrollbar->getSharedRenderer();
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};

@@ -40,9 +40,9 @@ namespace tgui
     class TGUI_API Serializer
     {
     public:
-        using SerializeFunc = std::function<std::string(ObjectConverter&&)>;
+        using SerializeFunc = std::function<String(ObjectConverter&&)>;
 
-        static std::string serialize(ObjectConverter&& object);
+        static String serialize(ObjectConverter&& object);
 
         static void setFunction(ObjectConverter::Type type, const SerializeFunc& serializer);
         static const SerializeFunc& getFunction(ObjectConverter::Type type);

@@ -22,9 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/Canvas.hpp>
-
+#include <SFML/Graphics/View.hpp>
 namespace
 {
     bool operator==(const sf::View& left, const sf::View& right)
@@ -35,6 +33,9 @@ namespace
             && left.getViewport() == right.getViewport();
     }
 }
+
+#include "Tests.hpp"
+#include <TGUI/Widgets/Canvas.hpp>
 
 TEST_CASE("[Canvas]")
 {
@@ -49,7 +50,7 @@ TEST_CASE("[Canvas]")
     SECTION("constructor")
     {
         canvas = tgui::Canvas::create({200, 100});
-        REQUIRE(canvas->getSize() == sf::Vector2f(200, 100));
+        REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
     }
 
     SECTION("view")
@@ -63,12 +64,12 @@ TEST_CASE("[Canvas]")
         REQUIRE(canvas->getView() == sf::View({20, 10, 100, 50}));
         REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
 
-        REQUIRE(canvas->getViewport() == sf::IntRect(0, 0, 200, 100));
+        REQUIRE(canvas->getViewport() == tgui::IntRect(0, 0, 200, 100));
 
         sf::View view({20, 10, 100, 50});
         view.setViewport({0.1f, 0.2f, 0.5f, 0.6f});
         canvas->setView(view);
-        REQUIRE(canvas->getViewport() == sf::IntRect(20, 20, 100, 60));
+        REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
     }
 
     SECTION("internal render texture")
@@ -113,13 +114,13 @@ TEST_CASE("[Canvas]")
         sprite.setPosition({15, 20});
 
         std::vector<sf::Vertex> vertices = {
-                {{80, 90}, sf::Color::Red},
-                {{80, 115}, sf::Color::Red},
-                {{100, 90}, sf::Color::Red},
-                {{100, 115}, sf::Color::Red}
+                {{80, 90}, tgui::Color::Red},
+                {{80, 115}, tgui::Color::Red},
+                {{100, 90}, tgui::Color::Red},
+                {{100, 115}, tgui::Color::Red}
             };
 
-        canvas->clear(sf::Color::Yellow);
+        canvas->clear(tgui::Color::Yellow);
         canvas->draw(sprite);
         canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip);
         canvas->display();

@@ -139,7 +139,7 @@ int main()
 
         label = tgui::Label::create();
         label->setRenderer(theme.getRenderer("Label"));
-        label->setText(std::to_string(progressBar->getValue()) + "%");
+        label->setText(tgui::String::fromNumber(progressBar->getValue()) + "%");
         label->setPosition(220, 500);
         label->setTextSize(18);
         gui.add(label);
@@ -225,10 +225,10 @@ int main()
         chatbox->setTextSize(18);
         chatbox->setPosition(420, 310);
         chatbox->setLinesStartFromTop();
-        chatbox->addLine("texus: Hey, this is TGUI!", sf::Color::Green);
-        chatbox->addLine("Me: Looks awesome! ;)", sf::Color::Yellow);
-        chatbox->addLine("texus: Thanks! :)", sf::Color::Green);
-        chatbox->addLine("Me: The widgets rock ^^", sf::Color::Yellow);
+        chatbox->addLine("texus: Hey, this is TGUI!", tgui::Color::Green);
+        chatbox->addLine("Me: Looks awesome! ;)", tgui::Color::Yellow);
+        chatbox->addLine("texus: Thanks! :)", tgui::Color::Green);
+        chatbox->addLine("Me: The widgets rock ^^", tgui::Color::Yellow);
         gui.add(chatbox);
 
         sf::Texture texture;

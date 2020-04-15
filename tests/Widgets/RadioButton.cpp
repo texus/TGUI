@@ -35,18 +35,18 @@ TEST_CASE("[RadioButton]")
     {
         REQUIRE_NOTHROW(radioButton->connect("Checked", [](){}));
         REQUIRE_NOTHROW(radioButton->connect("Checked", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, tgui::String, bool){}));
 
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](){}));
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String, bool){}));
 
         REQUIRE_NOTHROW(radioButton->connect("Changed", [](){}));
         REQUIRE_NOTHROW(radioButton->connect("Changed", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, tgui::String, bool){}));
     }
 
     SECTION("WidgetType")
@@ -60,10 +60,10 @@ TEST_CASE("[RadioButton]")
         radioButton->setSize(50, 60);
         radioButton->getRenderer()->setBorders(2);
 
-        REQUIRE(radioButton->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(radioButton->getSize() == sf::Vector2f(50, 60));
+        REQUIRE(radioButton->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(radioButton->getSize() == tgui::Vector2f(50, 60));
         REQUIRE(radioButton->getFullSize() == radioButton->getSize());
-        REQUIRE(radioButton->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(radioButton->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Checked")
@@ -255,27 +255,27 @@ TEST_CASE("[RadioButton]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", sf::Color{130, 140, 150}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorChecked", sf::Color{140, 150, 160}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorCheckedHover", sf::Color{150, 160, 170}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorCheckedDisabled", sf::Color{160, 170, 180}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{80, 90, 100}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", sf::Color{170, 180, 190}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorChecked", sf::Color{180, 190, 200}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorCheckedHover", sf::Color{190, 200, 210}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorCheckedDisabled", sf::Color{200, 210, 220}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{210, 220, 230}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorChecked", sf::Color{220, 230, 240}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedHover", sf::Color{230, 240, 250}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedDisabled", sf::Color{250, 240, 230}));
-                REQUIRE_NOTHROW(renderer->setProperty("CheckColor", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("CheckColorHover", sf::Color{120, 130, 140}));
-                REQUIRE_NOTHROW(renderer->setProperty("CheckColorDisabled", sf::Color{240, 230, 220}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", tgui::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorChecked", tgui::Color{140, 150, 160}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorCheckedHover", tgui::Color{150, 160, 170}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorCheckedDisabled", tgui::Color{160, 170, 180}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", tgui::Color{170, 180, 190}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorChecked", tgui::Color{180, 190, 200}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorCheckedHover", tgui::Color{190, 200, 210}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorCheckedDisabled", tgui::Color{200, 210, 220}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{210, 220, 230}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorChecked", tgui::Color{220, 230, 240}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedHover", tgui::Color{230, 240, 250}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedDisabled", tgui::Color{250, 240, 230}));
+                REQUIRE_NOTHROW(renderer->setProperty("CheckColor", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("CheckColorHover", tgui::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("CheckColorDisabled", tgui::Color{240, 230, 220}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleChecked", tgui::TextStyle::Bold));
                 REQUIRE_NOTHROW(renderer->setProperty("TextDistanceRatio", 0.5));
@@ -311,53 +311,53 @@ TEST_CASE("[RadioButton]")
                 renderer->setBorders({1, 2, 3, 4});
             }
 
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getProperty("TextColorChecked").getColor() == sf::Color(140, 150, 160));
-            REQUIRE(renderer->getProperty("TextColorCheckedHover").getColor() == sf::Color(150, 160, 170));
-            REQUIRE(renderer->getProperty("TextColorCheckedDisabled").getColor() == sf::Color(160, 170, 180));
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(170, 180, 190));
-            REQUIRE(renderer->getProperty("BackgroundColorChecked").getColor() == sf::Color(180, 190, 200));
-            REQUIRE(renderer->getProperty("BackgroundColorCheckedHover").getColor() == sf::Color(190, 200, 210));
-            REQUIRE(renderer->getProperty("BackgroundColorCheckedDisabled").getColor() == sf::Color(200, 210, 220));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(210, 220, 230));
-            REQUIRE(renderer->getProperty("BorderColorChecked").getColor() == sf::Color(220, 230, 240));
-            REQUIRE(renderer->getProperty("BorderColorCheckedHover").getColor() == sf::Color(230, 240, 250));
-            REQUIRE(renderer->getProperty("BorderColorCheckedDisabled").getColor() == sf::Color(250, 240, 230));
-            REQUIRE(renderer->getProperty("CheckColor").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("CheckColorHover").getColor() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getProperty("CheckColorDisabled").getColor() == sf::Color(240, 230, 220));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TextColorHover").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("TextColorChecked").getColor() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getProperty("TextColorCheckedHover").getColor() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getProperty("TextColorCheckedDisabled").getColor() == tgui::Color(160, 170, 180));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == tgui::Color(170, 180, 190));
+            REQUIRE(renderer->getProperty("BackgroundColorChecked").getColor() == tgui::Color(180, 190, 200));
+            REQUIRE(renderer->getProperty("BackgroundColorCheckedHover").getColor() == tgui::Color(190, 200, 210));
+            REQUIRE(renderer->getProperty("BackgroundColorCheckedDisabled").getColor() == tgui::Color(200, 210, 220));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == tgui::Color(210, 220, 230));
+            REQUIRE(renderer->getProperty("BorderColorChecked").getColor() == tgui::Color(220, 230, 240));
+            REQUIRE(renderer->getProperty("BorderColorCheckedHover").getColor() == tgui::Color(230, 240, 250));
+            REQUIRE(renderer->getProperty("BorderColorCheckedDisabled").getColor() == tgui::Color(250, 240, 230));
+            REQUIRE(renderer->getProperty("CheckColor").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("CheckColorHover").getColor() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("CheckColorDisabled").getColor() == tgui::Color(240, 230, 220));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("TextStyleChecked").getTextStyle() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getProperty("TextDistanceRatio").getNumber() == 0.5f);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
-            REQUIRE(renderer->getTextColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getTextColorHover() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getTextColorDisabled() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getTextColorChecked() == sf::Color(140, 150, 160));
-            REQUIRE(renderer->getTextColorCheckedHover() == sf::Color(150, 160, 170));
-            REQUIRE(renderer->getTextColorCheckedDisabled() == sf::Color(160, 170, 180));
-            REQUIRE(renderer->getBackgroundColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getBackgroundColorHover() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(170, 180, 190));
-            REQUIRE(renderer->getBackgroundColorChecked() == sf::Color(180, 190, 200));
-            REQUIRE(renderer->getBackgroundColorCheckedHover() == sf::Color(190, 200, 210));
-            REQUIRE(renderer->getBackgroundColorCheckedDisabled() == sf::Color(200, 210, 220));
-            REQUIRE(renderer->getBorderColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getBorderColorHover() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getBorderColorDisabled() == sf::Color(210, 220, 230));
-            REQUIRE(renderer->getBorderColorChecked() == sf::Color(220, 230, 240));
-            REQUIRE(renderer->getBorderColorCheckedHover() == sf::Color(230, 240, 250));
-            REQUIRE(renderer->getBorderColorCheckedDisabled() == sf::Color(250, 240, 230));
-            REQUIRE(renderer->getCheckColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getCheckColorHover() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getCheckColorDisabled() == sf::Color(240, 230, 220));
+            REQUIRE(renderer->getTextColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getTextColorHover() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getTextColorDisabled() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getTextColorChecked() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getTextColorCheckedHover() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getTextColorCheckedDisabled() == tgui::Color(160, 170, 180));
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getBackgroundColorHover() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getBackgroundColorDisabled() == tgui::Color(170, 180, 190));
+            REQUIRE(renderer->getBackgroundColorChecked() == tgui::Color(180, 190, 200));
+            REQUIRE(renderer->getBackgroundColorCheckedHover() == tgui::Color(190, 200, 210));
+            REQUIRE(renderer->getBackgroundColorCheckedDisabled() == tgui::Color(200, 210, 220));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getBorderColorHover() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getBorderColorDisabled() == tgui::Color(210, 220, 230));
+            REQUIRE(renderer->getBorderColorChecked() == tgui::Color(220, 230, 240));
+            REQUIRE(renderer->getBorderColorCheckedHover() == tgui::Color(230, 240, 250));
+            REQUIRE(renderer->getBorderColorCheckedDisabled() == tgui::Color(250, 240, 230));
+            REQUIRE(renderer->getCheckColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getCheckColorHover() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getCheckColorDisabled() == tgui::Color(240, 230, 220));
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getTextStyleChecked() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getTextDistanceRatio() == 0.5f);
@@ -440,11 +440,11 @@ TEST_CASE("[RadioButton]")
         radioButton->setTextSize(16);
 
         tgui::RadioButtonRenderer renderer = tgui::RendererData::create();
-        renderer.setTextColor(sf::Color::Red);
+        renderer.setTextColor(tgui::Color::Red);
         renderer.setTextColorChecked({128, 0, 0});
-        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBackgroundColor(tgui::Color::Green);
         renderer.setBackgroundColorChecked({0, 128, 0});
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setBorderColorChecked({0, 0, 128});
         renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
@@ -452,9 +452,9 @@ TEST_CASE("[RadioButton]")
         radioButton->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTextColorHover(sf::Color::Magenta);
-                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
-                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextColorHover(tgui::Color::Magenta);
+                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
+                                        renderer.setBorderColorHover(tgui::Color::Yellow);
                                         renderer.setTextStyle(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureUncheckedHover("resources/Texture3.png");

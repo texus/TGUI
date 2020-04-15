@@ -34,7 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& ObjectConverter::getString()
+    const String& ObjectConverter::getString()
     {
         assert(m_type != Type::None);
 

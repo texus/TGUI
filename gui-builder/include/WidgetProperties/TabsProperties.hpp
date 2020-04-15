@@ -35,9 +35,9 @@ struct TabsProperties : WidgetProperties
     // TODO: TabsEnabled
     // TODO: AutoSize (and TabHeight)?
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto tabs = std::dynamic_pointer_cast<tgui::Tabs>(widget);
+        auto tabs = widget->cast<tgui::Tabs>();
         if (property == "Tabs")
         {
             tabs->removeAll();
@@ -47,15 +47,15 @@ struct TabsProperties : WidgetProperties
         }
         else if (property == "Selected")
         {
-            if (tgui::strToInt(value) < 0)
+            if (value.toInt() < 0)
                 tabs->deselect();
             else
-                tabs->select(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
+                tabs->select(value.toUInt());
         }
         else if (property == "MaximumTabWidth")
-            tabs->setMaximumTabWidth(tgui::strToFloat(value));
+            tabs->setMaximumTabWidth(value.toFloat());
         else if (property == "TextSize")
-            tabs->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            tabs->setTextSize(value.toUInt());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -63,16 +63,16 @@ struct TabsProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto tabs = std::dynamic_pointer_cast<tgui::Tabs>(widget);
+        auto tabs = widget->cast<tgui::Tabs>();
 
-        std::vector<sf::String> tabTexts;
+        std::vector<tgui::String> tabTexts;
         for (unsigned int i = 0; i < tabs->getTabsCount(); ++i)
             tabTexts.push_back(tabs->getText(i));
 
         pair.first["Tabs"] = {"List<String>", serializeList(tabTexts)};
-        pair.first["Selected"] = {"Int", tgui::to_string(tabs->getSelectedIndex())};
-        pair.first["MaximumTabWidth"] = {"Float", tgui::to_string(tabs->getMaximumTabWidth())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(tabs->getTextSize())};
+        pair.first["Selected"] = {"Int", tgui::String::fromNumber(tabs->getSelectedIndex())};
+        pair.first["MaximumTabWidth"] = {"Float", tgui::String::fromNumber(tabs->getMaximumTabWidth())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(tabs->getTextSize())};
 
         const auto renderer = tabs->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -92,7 +92,7 @@ struct TabsProperties : WidgetProperties
         pair.second["TextureSelectedTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTab())};
         pair.second["TextureSelectedTabHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTabHover())};
         pair.second["TextureDisabledTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDisabledTab())};
-        pair.second["DistanceToSide"] = {"Float", tgui::to_string(renderer->getDistanceToSide())};
+        pair.second["DistanceToSide"] = {"Float", tgui::String::fromNumber(renderer->getDistanceToSide())};
         return pair;
     }
 };

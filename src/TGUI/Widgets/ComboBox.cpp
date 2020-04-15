@@ -266,7 +266,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::addItem(const sf::String& item, const sf::String& id)
+    bool ComboBox::addItem(const String& item, const String& id)
     {
         const bool ret = m_listBox->addItem(item, id);
         updateListBoxHeight();
@@ -275,7 +275,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(const sf::String& itemName)
+    bool ComboBox::setSelectedItem(const String& itemName)
     {
         const int previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
 
@@ -290,7 +290,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItemById(const sf::String& id)
+    bool ComboBox::setSelectedItemById(const String& id)
     {
         const int previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
 
@@ -328,7 +328,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::removeItem(const sf::String& itemName)
+    bool ComboBox::removeItem(const String& itemName)
     {
         // Implemented like removeItemByIndex instead of like removeItemById because m_listBox->getItems() may be slow
 
@@ -345,7 +345,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::removeItemById(const sf::String& id)
+    bool ComboBox::removeItemById(const String& id)
     {
         const auto& ids = m_listBox->getItemIds();
         for (std::size_t i = 0; i < ids.size(); ++i)
@@ -384,21 +384,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getItemById(const sf::String& id) const
+    String ComboBox::getItemById(const String& id) const
     {
         return m_listBox->getItemById(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getSelectedItem() const
+    String ComboBox::getSelectedItem() const
     {
         return m_listBox->getSelectedItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getSelectedItemId() const
+    String ComboBox::getSelectedItemId() const
     {
         return m_listBox->getSelectedItemId();
     }
@@ -412,7 +412,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
+    bool ComboBox::changeItem(const String& originalValue, const String& newValue)
     {
         const bool ret = m_listBox->changeItem(originalValue, newValue);
         m_text.setString(m_listBox->getSelectedItem());
@@ -421,7 +421,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::changeItemById(const sf::String& id, const sf::String& newValue)
+    bool ComboBox::changeItemById(const String& id, const String& newValue)
     {
         const bool ret = m_listBox->changeItemById(id, newValue);
         m_text.setString(m_listBox->getSelectedItem());
@@ -430,7 +430,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
+    bool ComboBox::changeItemByIndex(std::size_t index, const String& newValue)
     {
         const bool ret = m_listBox->changeItemByIndex(index, newValue);
         m_text.setString(m_listBox->getSelectedItem());
@@ -439,14 +439,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ComboBox::getItems() const
+    std::vector<String> ComboBox::getItems() const
     {
         return m_listBox->getItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<sf::String>& ComboBox::getItemIds() const
+    const std::vector<String>& ComboBox::getItemIds() const
     {
         return m_listBox->getItemIds();
     }
@@ -483,14 +483,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setDefaultText(const sf::String& defaultText)
+    void ComboBox::setDefaultText(const String& defaultText)
     {
         m_defaultText.setString(defaultText);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& ComboBox::getDefaultText() const
+    const String& ComboBox::getDefaultText() const
     {
         return m_defaultText.getString();
     }
@@ -511,7 +511,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::contains(const sf::String& item) const
+    bool ComboBox::contains(const String& item) const
     {
         const auto& items = getItems();
         return std::find(items.begin(), items.end(), item) != items.end();
@@ -519,7 +519,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::containsId(const sf::String& id) const
+    bool ComboBox::containsId(const String& id) const
     {
         const auto& ids = getItemIds();
         return std::find(ids.begin(), ids.end(), id) != ids.end();
@@ -619,9 +619,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ComboBox::getSignal(std::string signalName)
+    Signal& ComboBox::getSignal(String signalName)
     {
-        if (signalName == toLower(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName().toLower())
             return onItemSelect;
         else
             return Widget::getSignal(std::move(signalName));
@@ -629,7 +629,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::rendererChanged(const std::string& property)
+    void ComboBox::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -745,14 +745,14 @@ namespace tgui
             const auto& ids = getItemIds();
 
             bool itemIdsUsed = false;
-            std::string itemList = "[" + Serializer::serialize(items[0]);
-            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            String itemList = "[" + Serializer::serialize(items[0]);
+            String itemIdList = "[" + Serializer::serialize(ids[0]);
             for (std::size_t i = 1; i < items.size(); ++i)
             {
                 itemList += ", " + Serializer::serialize(items[i]);
                 itemIdList += ", " + Serializer::serialize(ids[i]);
 
-                if (!ids[i].isEmpty())
+                if (!ids[i].empty())
                     itemIdsUsed = true;
             }
             itemList += "]";
@@ -763,9 +763,9 @@ namespace tgui
                 node->propertyValuePairs["ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
         }
 
-        node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(getTextSize()));
-        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
+        node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsToDisplay()));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getTextSize()));
+        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumItems()));
         node->propertyValuePairs["ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
 
         if (getExpandDirection() == ComboBox::ExpandDirection::Down)
@@ -774,7 +774,7 @@ namespace tgui
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
 
         if (m_listBox->getSelectedItemIndex() >= 0)
-            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_listBox->getSelectedItemIndex()));
+            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_listBox->getSelectedItemIndex()));
 
         return node;
     }
@@ -817,23 +817,23 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["itemstodisplay"])
-            setItemsToDisplay(strToInt(node->propertyValuePairs["itemstodisplay"]->value));
+            setItemsToDisplay(node->propertyValuePairs["itemstodisplay"]->value.toInt());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["maximumitems"])
-            setMaximumItems(strToInt(node->propertyValuePairs["maximumitems"]->value));
+            setMaximumItems(node->propertyValuePairs["maximumitems"]->value.toInt());
         if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItemByIndex(strToInt(node->propertyValuePairs["selecteditemindex"]->value));
+            setSelectedItemByIndex(node->propertyValuePairs["selecteditemindex"]->value.toInt());
         if (node->propertyValuePairs["changeitemonscroll"])
             m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["changeitemonscroll"]->value).getBool();
 
         if (node->propertyValuePairs["expanddirection"])
         {
-            if (toLower(node->propertyValuePairs["expanddirection"]->value) == "up")
+            if (node->propertyValuePairs["expanddirection"]->value.toLower() == "up")
                 setExpandDirection(ComboBox::ExpandDirection::Up);
-            else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "down")
+            else if (node->propertyValuePairs["expanddirection"]->value.toLower() == "down")
                 setExpandDirection(ComboBox::ExpandDirection::Down);
-            else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "automatic")
+            else if (node->propertyValuePairs["expanddirection"]->value.toLower() == "automatic")
                 setExpandDirection(ComboBox::ExpandDirection::Automatic);
             else
                 throw Exception{"Failed to parse ExpandDirection property. Only the values Up, Down and Automatic are correct."};
@@ -997,7 +997,7 @@ namespace tgui
 
         // Draw the selected item
         const int selectedItemIndex = getSelectedItemIndex();
-        if (((selectedItemIndex >= 0) && !m_text.getString().isEmpty()) || ((selectedItemIndex == -1) && !m_defaultText.getString().isEmpty()))
+        if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex == -1) && !m_defaultText.getString().empty()))
         {
             const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 

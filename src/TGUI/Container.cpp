@@ -59,7 +59,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name)
+        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const String& name)
         {
             auto node = std::make_unique<DataIO::Node>();
             node->name = name;
@@ -67,7 +67,7 @@ namespace tgui
             {
                 if (pair.second.getType() == ObjectConverter::Type::RendererData)
                 {
-                    std::stringstream ss{ObjectConverter{pair.second}.getString()};
+                    std::stringstream ss{ObjectConverter{pair.second}.getString().toAnsiString()};
                     auto rendererRootNode = DataIO::parse(ss);
 
                     // If there are braces around the renderer string, then the child node is the one we need
@@ -79,10 +79,10 @@ namespace tgui
                 }
                 else
                 {
-                    sf::String value = ObjectConverter{pair.second}.getString();
+                    String value = ObjectConverter{pair.second}.getString();
 
                     // Skip empty values
-                    if (value.isEmpty())
+                    if (value.empty())
                         continue;
 
                     // Skip "font = null"
@@ -213,7 +213,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
+    void Container::add(const Widget::Ptr& widgetPtr, const String& widgetName)
     {
         assert(widgetPtr != nullptr);
 
@@ -236,7 +236,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::get(const sf::String& widgetName) const
+    Widget::Ptr Container::get(const String& widgetName) const
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
@@ -303,35 +303,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    bool Container::setWidgetName(const Widget::Ptr& widget, const std::string& name)
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-            {
-                m_widgets[i]->setWidgetName(name);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Container::getWidgetName(const Widget::ConstPtr& widget) const
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-                return m_widgets[i]->getWidgetName();
-        }
-
-        return "";
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::uncheckRadioButtons()
     {
@@ -365,14 +336,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromFile(const std::string& filename, bool replaceExisting)
+    void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
-        std::string filenameInResources = filename;
+        String filenameInResources = filename;
         if (!getResourcePath().empty())
-            filenameInResources = std::string((Filesystem::Path(getResourcePath()) / filename).asString());
+            filenameInResources = (Filesystem::Path(getResourcePath()) / filename).asString();
 
-        std::ifstream in{filenameInResources};
+        std::ifstream in{filenameInResources.toAnsiString()};
         if (!in.is_open())
             throw Exception{"Failed to open '" + filenameInResources + "' to load the widgets from it."};
 
@@ -383,17 +354,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::saveWidgetsToFile(const std::string& filename)
+    void Container::saveWidgetsToFile(const String& filename)
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
-        std::string filenameInResources = filename;
+        String filenameInResources = filename;
         if (!getResourcePath().empty())
-            filenameInResources = std::string((Filesystem::Path(getResourcePath()) / filename).asString());
+            filenameInResources = (Filesystem::Path(getResourcePath()) / filename).asString();
 
         std::stringstream stream;
         saveWidgetsToStream(stream);
 
-        std::ofstream out{filenameInResources};
+        std::ofstream out{filenameInResources.toAnsiString()};
         if (!out.is_open())
             throw Exception{"Failed to open '" + filenameInResources + "' for saving the widgets to it."};
 
@@ -413,24 +384,24 @@ namespace tgui
         if (rootNode->propertyValuePairs.size() != 0)
             Widget::load(rootNode, {});
 
-        std::map<std::string, std::shared_ptr<RendererData>> availableRenderers;
+        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
         for (const auto& node : rootNode->children)
         {
             auto nameSeparator = node->name.find('.');
             auto widgetType = node->name.substr(0, nameSeparator);
 
-            std::string objectName;
-            if (nameSeparator != std::string::npos)
+            String objectName;
+            if (nameSeparator != String::npos)
                 objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
 
-            if (toLower(widgetType) == "renderer")
+            if (widgetType.toLower() == "renderer")
             {
                 if (!objectName.empty())
-                    availableRenderers[toLower(objectName)] = RendererData::createFromDataIONode(node.get());
+                    availableRenderers[objectName.toLower()] = RendererData::createFromDataIONode(node.get());
             }
             else // Section describes a widget
             {
-                const auto& constructor = WidgetFactory::getConstructFunction(toLower(widgetType));
+                const auto& constructor = WidgetFactory::getConstructFunction(widgetType.toLower());
                 if (constructor)
                 {
                     Widget::Ptr widget = constructor();
@@ -472,7 +443,7 @@ namespace tgui
 
             // When the widget is shared, only provide the id instead of the node itself
             ++id;
-            const std::string idStr = to_string(id);
+            const String idStr = String::fromNumber(id);
             node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
             for (const auto& child : renderer.second)
                 renderersMap[child] = std::make_pair(nullptr, idStr); // Did not compile with VS2015 Update 2 when using braces
@@ -720,7 +691,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::textEntered(std::uint32_t key)
+    void Container::textEntered(char32_t key)
     {
         sf::Event event;
         event.type = sf::Event::TextEntered;
@@ -808,7 +779,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::rendererChanged(const std::string& property)
+    void Container::rendererChanged(const String& property)
     {
         Widget::rendererChanged(property);
 
@@ -850,11 +821,11 @@ namespace tgui
             const auto nameSeparator = childNode->name.find('.');
             const auto widgetType = childNode->name.substr(0, nameSeparator);
 
-            const auto& constructor = WidgetFactory::getConstructFunction(toLower(widgetType));
+            const auto& constructor = WidgetFactory::getConstructFunction(widgetType.toLower());
             if (constructor)
             {
-                std::string className;
-                if (nameSeparator != std::string::npos)
+                String className;
+                if (nameSeparator != String::npos)
                     className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
                 Widget::Ptr childWidget = constructor();
@@ -868,7 +839,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::update(sf::Time elapsedTime)
+    void Container::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
 

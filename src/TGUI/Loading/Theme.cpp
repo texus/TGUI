@@ -274,7 +274,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme::Theme(const std::string& primary) :
+    Theme::Theme(const String& primary) :
         m_primary(primary)
     {
         if (!primary.empty())
@@ -291,7 +291,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Theme::load(const std::string& primary)
+    void Theme::load(const String& primary)
     {
         m_primary = primary;
         m_themeLoader->preload(primary);
@@ -308,7 +308,7 @@ namespace tgui
             auto& properties = m_themeLoader->load(m_primary, pair.first);
 
             // Update the property-value pairs of the renderer
-            renderer->propertyValuePairs = std::map<std::string, ObjectConverter>{};
+            renderer->propertyValuePairs = std::map<String, ObjectConverter>{};
             for (const auto& property : properties)
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
@@ -359,9 +359,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<RendererData> Theme::getRenderer(const std::string& id)
+    std::shared_ptr<RendererData> Theme::getRenderer(const String& id)
     {
-        std::string lowercaseSecondary = toLower(id);
+        String lowercaseSecondary = id.toLower();
 
         // If we already have this renderer in cache then just return it
         auto it = m_renderers.find(lowercaseSecondary);
@@ -378,9 +378,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<RendererData> Theme::getRendererNoThrow(const std::string& id)
+    std::shared_ptr<RendererData> Theme::getRendererNoThrow(const String& id)
     {
-        std::string lowercaseSecondary = toLower(id);
+        String lowercaseSecondary = id.toLower();
 
         // If we already have this renderer in cache then just return it
         auto it = m_renderers.find(lowercaseSecondary);
@@ -401,16 +401,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Theme::addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer)
+    void Theme::addRenderer(const String& id, std::shared_ptr<RendererData> renderer)
     {
-        m_renderers[toLower(id)] = renderer;
+        m_renderers[id.toLower()] = renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Theme::removeRenderer(const std::string& id)
+    bool Theme::removeRenderer(const String& id)
     {
-        auto it = m_renderers.find(toLower(id));
+        auto it = m_renderers.find(id.toLower());
         if (it != m_renderers.end())
         {
             m_renderers.erase(it);
@@ -422,7 +422,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Theme::getPrimary() const
+    const String& Theme::getPrimary() const
     {
         return m_primary;
     }

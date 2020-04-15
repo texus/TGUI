@@ -33,29 +33,29 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <iostream>
 
-using PropertyValueMap = std::map<std::string, std::pair<std::string, std::string>>;
+using PropertyValueMap = std::map<tgui::String, std::pair<tgui::String, tgui::String>>;
 using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;
 
 struct WidgetProperties
 {
     virtual ~WidgetProperties() = default;
 
-    virtual void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const
+    virtual void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const
     {
         if (property == "Left")
-            widget->setPosition(value.toAnsiString(), widget->getPositionLayout().y);
+            widget->setPosition(value, widget->getPositionLayout().y);
         else if (property == "Top")
-            widget->setPosition(widget->getPositionLayout().x, value.toAnsiString());
+            widget->setPosition(widget->getPositionLayout().x, value);
         else if (property == "Width")
-            widget->setSize(value.toAnsiString(), widget->getSizeLayout().y);
+            widget->setSize(value, widget->getSizeLayout().y);
         else if (property == "Height")
-            widget->setSize(widget->getSizeLayout().x, value.toAnsiString());
+            widget->setSize(widget->getSizeLayout().x, value);
         else if (property == "Visible")
             widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")
             widget->setEnabled(parseBoolean(value, true));
         else if (property == "UserData")
-            widget->setUserData(value.toAnsiString());
+            widget->setUserData(value);
         else // Renderer property
             widget->getRenderer()->setProperty(property, value);
     }
@@ -71,7 +71,7 @@ struct WidgetProperties
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
         try
         {
-            pairs["UserData"] = {"String", widget->getUserData<std::string>()};
+            pairs["UserData"] = {"String", widget->getUserData<tgui::String>()};
         }
         catch(const std::bad_cast&)
         {
@@ -81,17 +81,17 @@ struct WidgetProperties
 
         PropertyValueMap rendererPairs;
         const auto renderer = widget->getSharedRenderer();
-        rendererPairs["Opacity"] = {"Float", tgui::to_string(renderer->getOpacity())};
-        rendererPairs["OpacityDisabled"] = {"Float", tgui::to_string(renderer->getOpacityDisabled())};
+        rendererPairs["Opacity"] = {"Float", tgui::String::fromNumber(renderer->getOpacity())};
+        rendererPairs["OpacityDisabled"] = {"Float", tgui::String::fromNumber(renderer->getOpacityDisabled())};
         rendererPairs["Font"] = {"Font", tgui::Serializer::serialize(renderer->getFont())};
         rendererPairs["TransparentTexture"] = {"Bool", tgui::Serializer::serialize(renderer->getTransparentTexture())};
         return {pairs, rendererPairs};
     }
 
 
-    static bool parseBoolean(std::string str, bool defaultValue)
+    static bool parseBoolean(tgui::String str, bool defaultValue)
     {
-        str = tgui::toLower(tgui::trim(str));
+        str = str.trim().toLower();
         if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
             return true;
         else if (str == "false" || str == "no" || str == "off" || str == "n" || str == "f" || str == "0")
@@ -100,16 +100,16 @@ struct WidgetProperties
             return defaultValue;
     }
 
-    static std::vector<sf::String> deserializeList(const std::string& listStr)
+    static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
     {
         try
         {
-            std::stringstream ss{"list = " + listStr + ";"};
+            std::stringstream ss{("list = " + listStr + ";").toAnsiString()};
             auto node = tgui::DataIO::parse(ss);
 
             if (node->propertyValuePairs["list"])
             {
-                std::vector<sf::String> list;
+                std::vector<tgui::String> list;
                 for (const auto& value : node->propertyValuePairs["list"]->valueList)
                     list.push_back(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
 
@@ -124,12 +124,12 @@ struct WidgetProperties
         return {};
     }
 
-    static std::string serializeList(std::vector<sf::String> list)
+    static tgui::String serializeList(std::vector<tgui::String> list)
     {
         if (list.empty())
             return "[]";
 
-        std::string itemList = "[" + tgui::Serializer::serialize(list[0]);
+        tgui::String itemList = "[" + tgui::Serializer::serialize(list[0]);
         for (std::size_t i = 1; i < list.size(); ++i)
             itemList += ", " + tgui::Serializer::serialize(list[i]);
 
@@ -137,9 +137,9 @@ struct WidgetProperties
         return itemList;
     }
 
-    static tgui::Scrollbar::Policy deserializeScrollbarPolicy(std::string value)
+    static tgui::Scrollbar::Policy deserializeScrollbarPolicy(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "always")
             return tgui::Scrollbar::Policy::Always;
         else if (value == "never")
@@ -148,7 +148,7 @@ struct WidgetProperties
             return tgui::Scrollbar::Policy::Automatic;
     }
 
-    static std::string serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
+    static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
     {
         if (policy == tgui::Scrollbar::Policy::Always)
             return "Always";

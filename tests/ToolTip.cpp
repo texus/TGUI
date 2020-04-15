@@ -30,19 +30,19 @@
 
 TEST_CASE("[ToolTip]")
 {
-    sf::Time oldInitialDelay = tgui::ToolTip::getInitialDelay();
-    sf::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
+    tgui::Duration oldInitialDelay = tgui::ToolTip::getInitialDelay();
+    tgui::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
 
     SECTION("InitialDelay")
     {
-        tgui::ToolTip::setInitialDelay(sf::milliseconds(280));
-        REQUIRE(tgui::ToolTip::getInitialDelay() == sf::milliseconds(280));
+        tgui::ToolTip::setInitialDelay(std::chrono::milliseconds(280));
+        REQUIRE(tgui::ToolTip::getInitialDelay() == std::chrono::milliseconds(280));
     }
 
     SECTION("DistanceToMouse")
     {
         tgui::ToolTip::setDistanceToMouse({5, 5});
-        REQUIRE(tgui::ToolTip::getDistanceToMouse() == sf::Vector2f(5, 5));
+        REQUIRE(tgui::ToolTip::getDistanceToMouse() == tgui::Vector2f(5, 5));
     }
 
     SECTION("Setting tool tip of widget")
@@ -57,7 +57,7 @@ TEST_CASE("[ToolTip]")
 
         SECTION("Saving and loading from file")
         {
-            tgui::ToolTip::setInitialDelay(sf::milliseconds(320));
+            tgui::ToolTip::setInitialDelay(std::chrono::milliseconds(320));
             tgui::ToolTip::setDistanceToMouse({2, 1});
 
             testSavingWidget("ToolTip", widget, false);

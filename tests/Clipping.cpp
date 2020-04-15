@@ -35,7 +35,7 @@ TEST_CASE("[Clipping]")
     {
         auto panel = tgui::Panel::create({40, 30});
         panel->setPosition(395, 305);
-        panel->getRenderer()->setBackgroundColor(sf::Color::Green);
+        panel->getRenderer()->setBackgroundColor(tgui::Color::Green);
 
         auto clippedPanel = tgui::Panel::create({200, 200});
         clippedPanel->setPosition(-50, -50);
@@ -46,7 +46,7 @@ TEST_CASE("[Clipping]")
 
         auto background = tgui::Panel::create();
         background->setSize({800, 600});
-        background->getRenderer()->setBackgroundColor(sf::Color::Blue);
+        background->getRenderer()->setBackgroundColor(tgui::Color::Blue);
         gui.add(background);
         background->moveToBack();
 
@@ -62,7 +62,7 @@ TEST_CASE("[Clipping]")
     SECTION("EditBox")
     {
         auto background = tgui::Panel::create({800, 600});
-        background->getRenderer()->setBackgroundColor(sf::Color::Blue);
+        background->getRenderer()->setBackgroundColor(tgui::Color::Blue);
         TEST_DRAW_INIT(400, 300, background)
 
         auto editBox = tgui::EditBox::create();
@@ -96,7 +96,7 @@ TEST_CASE("[Clipping]")
     {
         auto panel = tgui::Panel::create({75, 25});
         panel->setPosition({10, 5});
-        panel->getRenderer()->setBackgroundColor(sf::Color::Yellow);
+        panel->getRenderer()->setBackgroundColor(tgui::Color::Yellow);
         TEST_DRAW_INIT(100, 40, panel)
 
         auto group = tgui::Group::create();

@@ -27,16 +27,16 @@
 
 TEST_CASE("[Color]")
 {
-    sf::Color color{16, 32, 64, 128};
+    tgui::Color color{16, 32, 64, 128};
     REQUIRE(tgui::Color(color).getRed() == 16);
     REQUIRE(tgui::Color(color).getGreen() == 32);
     REQUIRE(tgui::Color(color).getBlue() == 64);
     REQUIRE(tgui::Color(color).getAlpha() == 128);
-    REQUIRE(sf::Color(tgui::Color(color)) == color);
-    REQUIRE(sf::Color(tgui::Color(16, 32, 64, 128)) == color);
-    REQUIRE(sf::Color(tgui::Color("rgba(16, 32, 64, 128)")) == color);
-    REQUIRE(sf::Color(tgui::Color("#10204080")) == color);
-    REQUIRE(sf::Color(tgui::Color(std::string("#10204080"))) == color);
-    REQUIRE(sf::Color(tgui::Color(std::string("Red"))) == sf::Color::Red);
-    REQUIRE(sf::Color(tgui::Color(sf::String("blue"))) == sf::Color::Blue);
+    REQUIRE(tgui::Color(color) == color);
+    REQUIRE(tgui::Color(16, 32, 64, 128) == color);
+    REQUIRE(tgui::Color("rgba(16, 32, 64, 128)") == color);
+    REQUIRE(tgui::Color("#10204080") == color);
+    REQUIRE(tgui::Color(tgui::String("#10204080")) == color);
+    REQUIRE(tgui::Color(tgui::String("Red")) == tgui::Color::Red);
+    REQUIRE(tgui::Color(tgui::String("blue")) == tgui::Color::Blue);
 }

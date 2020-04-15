@@ -35,27 +35,27 @@ TEST_CASE("[ChildWindow]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Maximized", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
 
         REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
     }
 
     SECTION("WidgetType")
@@ -71,21 +71,21 @@ TEST_CASE("[ChildWindow]")
         childWindow->getRenderer()->setBorderBelowTitleBar(1);
         childWindow->getRenderer()->setBorders({1, 2, 3, 4});
 
-        REQUIRE(childWindow->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(childWindow->getSize() == sf::Vector2f(150, 100));
-        REQUIRE(childWindow->getFullSize() == sf::Vector2f(154, 122));
-        REQUIRE(childWindow->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(childWindow->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(childWindow->getSize() == tgui::Vector2f(150, 100));
+        REQUIRE(childWindow->getFullSize() == tgui::Vector2f(154, 122));
+        REQUIRE(childWindow->getWidgetOffset() == tgui::Vector2f(0, 0));
 
         SECTION("Child widgets")
         {
-            REQUIRE(childWindow->getChildWidgetsOffset() == sf::Vector2f(1, 18));
+            REQUIRE(childWindow->getChildWidgetsOffset() == tgui::Vector2f(1, 18));
 
             auto childWidget = tgui::ClickableWidget::create();
             childWidget->setPosition(60, 50);
             childWindow->add(childWidget);
 
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 98));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(101, 98));
         }
     }
 
@@ -93,32 +93,32 @@ TEST_CASE("[ChildWindow]")
     {
         childWindow->setSize(25, 25);
 
-        REQUIRE(childWindow->getMinimumSize() == sf::Vector2f(0, 0));
+        REQUIRE(childWindow->getMinimumSize() == tgui::Vector2f(0, 0));
         childWindow->setMinimumSize({50, 100});
-        REQUIRE(childWindow->getMinimumSize() == sf::Vector2f(50, 100));
+        REQUIRE(childWindow->getMinimumSize() == tgui::Vector2f(50, 100));
 
         // Window is resized if needed
-        REQUIRE(childWindow->getSize() == sf::Vector2f(50, 100));
+        REQUIRE(childWindow->getSize() == tgui::Vector2f(50, 100));
 
         // Size limits are for user interaction and setSize ignores this property
         childWindow->setSize({40, 30});
-        REQUIRE(childWindow->getSize() == sf::Vector2f(40, 30));
+        REQUIRE(childWindow->getSize() == tgui::Vector2f(40, 30));
     }
 
     SECTION("MaximumSize")
     {
         childWindow->setSize(250, 250);
 
-        REQUIRE(childWindow->getMaximumSize() == sf::Vector2f(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
+        REQUIRE(childWindow->getMaximumSize() == tgui::Vector2f(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
         childWindow->setMaximumSize({100, 50});
-        REQUIRE(childWindow->getMaximumSize() == sf::Vector2f(100, 50));
+        REQUIRE(childWindow->getMaximumSize() == tgui::Vector2f(100, 50));
 
         // Window is resized if needed
-        REQUIRE(childWindow->getSize() == sf::Vector2f(100, 50));
+        REQUIRE(childWindow->getSize() == tgui::Vector2f(100, 50));
 
         // Size limits are for user interaction and setSize ignores this property
         childWindow->setSize({400, 300});
-        REQUIRE(childWindow->getSize() == sf::Vector2f(400, 300));
+        REQUIRE(childWindow->getSize() == tgui::Vector2f(400, 300));
     }
 
     SECTION("Title")
@@ -261,9 +261,9 @@ TEST_CASE("[ChildWindow]")
             tgui::ButtonRenderer closeButtonRenderer;
             tgui::ButtonRenderer maximizeButtonRenderer;
             tgui::ButtonRenderer minimizeButtonRenderer;
-            closeButtonRenderer.setBackgroundColor(sf::Color::Red);
-            maximizeButtonRenderer.setBackgroundColor(sf::Color::Green);
-            minimizeButtonRenderer.setBackgroundColor(sf::Color::Blue);
+            closeButtonRenderer.setBackgroundColor(tgui::Color::Red);
+            maximizeButtonRenderer.setBackgroundColor(tgui::Color::Green);
+            minimizeButtonRenderer.setBackgroundColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -285,11 +285,11 @@ TEST_CASE("[ChildWindow]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("TitleColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", sf::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("TitleColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", 3));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
@@ -320,11 +320,11 @@ TEST_CASE("[ChildWindow]")
                 renderer->setMinimizeButton(minimizeButtonRenderer.getData());
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("TitleColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("TitleBarColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("TitleColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TitleBarColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == tgui::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("BorderBelowTitleBar").getNumber() == 3);
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
@@ -332,9 +332,9 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
             REQUIRE(renderer->getProperty("MinimumResizableBorderWidth").getNumber() == 4);
 
-            REQUIRE(renderer->getCloseButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getMaximizeButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Green);
-            REQUIRE(renderer->getMinimizeButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getCloseButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getMaximizeButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Green);
+            REQUIRE(renderer->getMinimizeButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")
@@ -404,7 +404,7 @@ TEST_CASE("[ChildWindow]")
 
             childWindow->setSize(200, 100);
             REQUIRE_NOTHROW(childWindow->loadWidgetsFromFile("ChildWindowWidgetFile1.txt"));
-            REQUIRE(childWindow->getSize() == sf::Vector2f(200, 100)); // The child window itself is not saved, only its children
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(200, 100)); // The child window itself is not saved, only its children
 
             REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("ChildWindowWidgetFile2.txt"));
             REQUIRE(compareFiles("ChildWindowWidgetFile1.txt", "ChildWindowWidgetFile2.txt"));
@@ -441,11 +441,11 @@ TEST_CASE("[ChildWindow]")
         childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Center);
 
         tgui::ChildWindowRenderer renderer = tgui::RendererData::create();
-        renderer.setTitleBarColor(sf::Color::Blue);
-        renderer.setTitleColor(sf::Color::Magenta);
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setBorderColor(sf::Color::Red);
-        renderer.setBorderColorFocused(sf::Color::Yellow);
+        renderer.setTitleBarColor(tgui::Color::Blue);
+        renderer.setTitleColor(tgui::Color::Magenta);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setBorderColor(tgui::Color::Red);
+        renderer.setBorderColorFocused(tgui::Color::Yellow);
         renderer.setDistanceToSide(10);
         renderer.setPaddingBetweenButtons(5);
         renderer.setShowTextOnTitleButtons(false);
@@ -456,8 +456,8 @@ TEST_CASE("[ChildWindow]")
         childWindow->setRenderer(renderer.getData());
 
         tgui::ButtonRenderer buttonRenderer = tgui::RendererData::create();
-        buttonRenderer.setBackgroundColor(sf::Color::Red);
-        buttonRenderer.setBorderColor(sf::Color::Green);
+        buttonRenderer.setBackgroundColor(tgui::Color::Red);
+        buttonRenderer.setBorderColor(tgui::Color::Green);
         buttonRenderer.setBorders({2});
         renderer.setCloseButton(buttonRenderer.getData());
         renderer.setMaximizeButton(buttonRenderer.getData());

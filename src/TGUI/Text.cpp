@@ -45,17 +45,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Text::setString(const sf::String& string)
+    void Text::setString(const String& string)
     {
-        m_text.setString(string);
+        m_string = string;
+        m_text.setString(sf::String(string));
         recalculateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& Text::getString() const
+    const String& Text::getString() const
     {
-        return m_text.getString();
+        return m_string;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,9 +81,9 @@ namespace tgui
         m_color = color;
 
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-        m_text.setFillColor(Color::calcColorOpacity(color, m_opacity));
+        m_text.setFillColor(sf::Color{Color::applyOpacity(color, m_opacity)});
 #else
-        m_text.setColor(Color::calcColorOpacity(color, m_opacity));
+        m_text.setColor(sf::Color{Color::applyOpacity(color, m_opacity)});
 #endif
     }
 
@@ -100,10 +101,10 @@ namespace tgui
         m_opacity = opacity;
 
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-        m_text.setFillColor(Color::calcColorOpacity(m_color, opacity));
-        m_text.setOutlineColor(Color::calcColorOpacity(m_outlineColor, opacity));
+        m_text.setFillColor(sf::Color{Color::applyOpacity(m_color, opacity)});
+        m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, opacity)});
 #else
-        m_text.setColor(Color::calcColorOpacity(m_color, opacity));
+        m_text.setColor(Color::applyOpacity(m_color, opacity));
 #endif
     }
 
@@ -127,17 +128,21 @@ namespace tgui
             // We can't keep using a pointer to the old font (it might be destroyed), but sf::Text has no function to pass an empty font
             if (m_text.getFont())
             {
+                const String& string = getString();
+                const unsigned int characterSize = getCharacterSize();
+                const TextStyle style = getStyle();
+
                 m_text = sf::Text();
-                m_text.setString(getString());
-                m_text.setCharacterSize(getCharacterSize());
-                m_text.setStyle(getStyle());
+                m_text.setString(sf::String(string));
+                m_text.setCharacterSize(characterSize);
+                m_text.setStyle(style);
 
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-                m_text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
-                m_text.setOutlineColor(Color::calcColorOpacity(getOutlineColor(), getOpacity()));
+                m_text.setFillColor(sf::Color{Color::applyOpacity(getColor(), getOpacity())});
+                m_text.setOutlineColor(sf::Color{Color::applyOpacity(getOutlineColor(), getOpacity())});
                 m_text.setOutlineThickness(getOutlineThickness());
 #else
-                m_text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
+                m_text.setColor(Color::applyOpacity(getColor(), getOpacity()));
 #endif
             }
         }
@@ -177,7 +182,7 @@ namespace tgui
         m_outlineColor = color;
 
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-        m_text.setOutlineColor(Color::calcColorOpacity(m_outlineColor, m_opacity));
+        m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, m_opacity)});
 #endif
     }
 
@@ -214,7 +219,7 @@ namespace tgui
 
     Vector2f Text::findCharacterPos(std::size_t index) const
     {
-        return m_text.findCharacterPos(index);
+        return Vector2f{m_text.findCharacterPos(index)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +250,7 @@ namespace tgui
         float width = 0;
         float maxWidth = 0;
         unsigned int lines = 1;
-        std::uint32_t prevChar = 0;
+        char32_t prevChar = 0;
         const sf::String& string = m_text.getString();
         const bool bold = (m_text.getStyle() & TextStyle::Bold) != 0;
         const unsigned int textSize = m_text.getCharacterSize();
@@ -330,19 +335,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineWidth(const sf::String &text, Font font, unsigned int characterSize, TextStyle textStyle)
+    float Text::getLineWidth(const String &text, Font font, unsigned int characterSize, TextStyle textStyle)
     {
         if (font == nullptr)
             return 0.0f;
 
-        bool bold = (textStyle & TextStyle::Bold) != 0;
+        const bool bold = (textStyle & TextStyle::Bold) != 0;
 
         float width = 0.0f;
-        std::uint32_t prevChar = 0;
-        for (std::size_t i = 0; i < text.getSize(); ++i)
+        char32_t prevChar = 0;
+        for (std::size_t i = 0; i < text.length(); ++i)
         {
             float charWidth;
-            const std::uint32_t curChar = text[i];
+            const char32_t curChar = text[i];
             if (curChar == '\n')
                 break;
             else if (curChar == '\t')
@@ -421,30 +426,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Text::wordWrap(float maxWidth, const sf::String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace)
+    String Text::wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace)
     {
         if (font == nullptr)
-            return "";
+            return U"";
 
-        sf::String result;
+        String result;
         std::size_t index = 0;
-        while (index < text.getSize())
+        while (index < text.length())
         {
             const std::size_t oldIndex = index;
 
             // Find out how many characters we can get on this line
             float width = 0;
-            std::uint32_t prevChar = 0;
-            for (std::size_t i = index; i < text.getSize(); ++i)
+            char32_t prevChar = 0;
+            for (std::size_t i = index; i < text.length(); ++i)
             {
                 float charWidth;
-                const std::uint32_t curChar = text[i];
-                if (curChar == '\n')
+                const char32_t curChar = text[i];
+                if (curChar == U'\n')
                 {
                     index++;
                     break;
                 }
-                else if (curChar == '\t')
+                else if (curChar == U'\t')
                     charWidth = font.getGlyph(' ', textSize, bold).advance * 4;
                 else
                     charWidth = font.getGlyph(curChar, textSize, bold).advance;
@@ -466,10 +471,10 @@ namespace tgui
                 index++;
 
             // Implement the word-wrap by removing the last few characters from the line
-            if (text[index-1] != '\n')
+            if (text[index-1] != U'\n')
             {
                 const std::size_t indexWithoutWordWrap = index;
-                if ((index < text.getSize()) && (!isWhitespace(text[index])))
+                if ((index < text.length()) && (!isWhitespace(text[index])))
                 {
                     std::size_t wordWrapCorrection = 0;
                     while ((index > oldIndex) && (!isWhitespace(text[index - 1])))
@@ -487,20 +492,20 @@ namespace tgui
             // If the next line starts with just a space, then the space need not be visible
             if (dropLeadingSpace)
             {
-                if ((index < text.getSize()) && (text[index] == ' '))
+                if ((index < text.length()) && (text[index] == ' '))
                 {
                     if ((index == 0) || (!isWhitespace(text[index-1])))
                     {
                         // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
-                        if (((index + 1 < text.getSize()) && (!isWhitespace(text[index + 1]))) || (index + 1 == text.getSize()))
+                        if (((index + 1 < text.length()) && (!isWhitespace(text[index + 1]))) || (index + 1 == text.length()))
                             index++;
                     }
                 }
             }
 
-            result += text.substring(oldIndex, index - oldIndex);
-            if ((index < text.getSize()) && (text[index-1] != '\n'))
-                result += "\n";
+            result += text.substr(oldIndex, index - oldIndex);
+            if ((index < text.length()) && (text[index-1] != U'\n'))
+                result += U"\n";
         }
 
         return result;

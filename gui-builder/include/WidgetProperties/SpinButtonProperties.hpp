@@ -31,17 +31,17 @@
 
 struct SpinButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
+        auto spinButton = widget->cast<tgui::SpinButton>();
         if (property == "Minimum")
-            spinButton->setMinimum(tgui::strToFloat(value));
+            spinButton->setMinimum(value.toFloat());
         else if (property == "Maximum")
-            spinButton->setMaximum(tgui::strToFloat(value));
+            spinButton->setMaximum(value.toFloat());
         else if (property == "Value")
-            spinButton->setValue(tgui::strToFloat(value));
+            spinButton->setValue(value.toFloat());
         else if (property == "Step")
-            spinButton->setStep(tgui::strToFloat(value));
+            spinButton->setStep(value.toFloat());
         else if (property == "VerticalScroll")
             spinButton->setVerticalScroll(parseBoolean(value, true));
         else
@@ -51,12 +51,12 @@ struct SpinButtonProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
-        pair.first["Minimum"] = {"Float", tgui::to_string(spinButton->getMinimum())};
-        pair.first["Maximum"] = {"Float", tgui::to_string(spinButton->getMaximum())};
-        pair.first["Value"] = {"Float", tgui::to_string(spinButton->getValue())};
-        pair.first["Step"] = {"Float", tgui::to_string(spinButton->getStep())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::to_string(spinButton->getVerticalScroll())};
+        auto spinButton = widget->cast<tgui::SpinButton>();
+        pair.first["Minimum"] = {"Float", tgui::String::fromNumber(spinButton->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::String::fromNumber(spinButton->getMaximum())};
+        pair.first["Value"] = {"Float", tgui::String::fromNumber(spinButton->getValue())};
+        pair.first["Step"] = {"Float", tgui::String::fromNumber(spinButton->getStep())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(spinButton->getVerticalScroll())};
 
         const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

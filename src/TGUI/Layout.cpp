@@ -26,7 +26,6 @@
 #include <TGUI/Layout.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/Gui.hpp>
-#include <TGUI/to_string.hpp>
 #include <SFML/System/Err.hpp>
 #include <cassert>
 
@@ -34,11 +33,11 @@
 
 namespace tgui
 {
-    static std::pair<std::string, std::string> parseMinMaxExpresssion(const std::string& expression)
+    static std::pair<String, String> parseMinMaxExpresssion(const String& expression)
     {
         unsigned int bracketCount = 0;
         auto commaOrBracketPos = expression.find_first_of(",()");
-        while (commaOrBracketPos != std::string::npos)
+        while (commaOrBracketPos != String::npos)
         {
             if (expression[commaOrBracketPos] == '(')
                 bracketCount++;
@@ -64,17 +63,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout::Layout(std::string expression)
+    Layout::Layout(String expression)
     {
         // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus)
-        expression = trim(expression);
+        expression = expression.trim();
         if (expression.empty())
             return;
 
         auto searchPos = expression.find_first_of("+-/*()");
 
         // Extract the value from the string when there are no more operators
-        if (searchPos == std::string::npos)
+        if (searchPos == String::npos)
         {
             // Convert percentages to references to the parent widget
             if (expression.back() == '%')
@@ -88,14 +87,14 @@ namespace tgui
                 else // value is a fraction of parent size
                 {
                     *this = Layout{Layout::Operation::Multiplies,
-                                   std::make_unique<Layout>(strToFloat(expression.substr(0, expression.length()-1)) / 100.f),
+                                   std::make_unique<Layout>(expression.substr(0, expression.length()-1).toFloat() / 100.f),
                                    std::make_unique<Layout>("&.innersize")};
                 }
             }
             else
             {
                 // The expression might reference to a widget instead of being a constant
-                expression = toLower(expression);
+                expression = expression.toLower();
                 if ((expression.substr(expression.size()-1) == "x")
                  || (expression.substr(expression.size()-1) == "y")
                  || (expression.substr(expression.size()-1) == "w") // width
@@ -130,7 +129,7 @@ namespace tgui
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
                 }
                 else // Constant value
-                    m_value = strToFloat(expression);
+                    m_value = expression.toFloat();
             }
 
             return;
@@ -140,7 +139,7 @@ namespace tgui
         std::list<Layout> operands;
         std::vector<Operation> operators;
         decltype(searchPos) prevSearchPos = 0;
-        while (searchPos != std::string::npos)
+        while (searchPos != String::npos)
         {
             switch (expression[searchPos])
             {
@@ -165,7 +164,7 @@ namespace tgui
                 // Find corresponding closing bracket
                 unsigned int bracketCount = 0;
                 auto bracketPos = expression.find_first_of("()", searchPos + 1);
-                while (bracketPos != std::string::npos)
+                while (bracketPos != String::npos)
                 {
                     if (expression[bracketPos] == '(')
                         bracketCount++;
@@ -200,7 +199,7 @@ namespace tgui
                     bracketPos = expression.find_first_of("()", bracketPos + 1);
                 }
 
-                if (bracketPos == std::string::npos)
+                if (bracketPos == String::npos)
                 {
                     TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                     return;
@@ -423,11 +422,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Layout::toString() const
+    String Layout::toString() const
     {
         if (m_operation == Operation::Value)
         {
-            return to_string(m_value);
+            return String::fromNumber(m_value);
         }
         else if (m_operation == Operation::Minimum)
         {
@@ -472,7 +471,7 @@ namespace tgui
             else
             {
                 if ((m_operation == Operation::Multiplies) && (m_leftOperand->m_operation == Operation::Value) && (m_rightOperand->toString() == "100%"))
-                    return to_string(m_leftOperand->getValue() * 100) + '%';
+                    return String::fromNumber(m_leftOperand->getValue() * 100) + '%';
                 else
                     return m_leftOperand->toString() + " " + operatorChar + " " + m_rightOperand->toString();
             }
@@ -662,7 +661,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Layout::parseBindingString(const std::string& expression, Widget* widget, bool xAxis)
+    void Layout::parseBindingString(const String& expression, Widget* widget, bool xAxis)
     {
         if (expression == "x" || expression == "left")
         {
@@ -718,9 +717,9 @@ namespace tgui
         else
         {
             const auto dotPos = expression.find('.');
-            if (dotPos != std::string::npos)
+            if (dotPos != String::npos)
             {
-                const std::string widgetName = expression.substr(0, dotPos);
+                const String widgetName = expression.substr(0, dotPos);
                 if (widgetName == "parent" || widgetName == "&")
                 {
                     if (widget->getParent())
@@ -735,7 +734,7 @@ namespace tgui
                         const auto& widgets = container->getWidgets();
                         for (std::size_t i = 0; i < widgets.size(); ++i)
                         {
-                            if (toLower(widgets[i]->getWidgetName()) == widgetName)
+                            if (widgets[i]->getWidgetName().toLower() == widgetName)
                                 return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
                         }
                     }
@@ -746,7 +745,7 @@ namespace tgui
                         const auto& widgets = widget->getParent()->getWidgets();
                         for (std::size_t i = 0; i < widgets.size(); ++i)
                         {
-                            if (toLower(widgets[i]->getWidgetName()) == widgetName)
+                            if (widgets[i]->getWidgetName().toLower() == widgetName)
                                 return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
                         }
                     }

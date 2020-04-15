@@ -34,18 +34,18 @@ TEST_CASE("[CheckBox]")
     {
         REQUIRE_NOTHROW(checkBox->connect("Checked", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Checked", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, tgui::String, bool){}));
 
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String, bool){}));
 
         REQUIRE_NOTHROW(checkBox->connect("Changed", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Changed", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, tgui::String, bool){}));
     }
 
     SECTION("WidgetType")
@@ -61,10 +61,10 @@ TEST_CASE("[CheckBox]")
 
         SECTION("Colored")
         {
-            REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+            REQUIRE(checkBox->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
             REQUIRE(checkBox->getFullSize() == checkBox->getSize());
-            REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+            REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, 0));
 
             SECTION("With text")
             {
@@ -73,16 +73,16 @@ TEST_CASE("[CheckBox]")
                 SECTION("Small text")
                 {
                     checkBox->setTextSize(20);
-                    REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                    REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                     REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
                     REQUIRE(checkBox->getFullSize().y == checkBox->getSize().y);
-                    REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+                    REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, 0));
                 }
 
                 SECTION("Large text")
                 {
                     checkBox->setTextSize(50);
-                    REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                    REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                     REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
                     REQUIRE(checkBox->getFullSize().y > checkBox->getSize().y);
                     REQUIRE(checkBox->getWidgetOffset().x == 0);
@@ -98,10 +98,10 @@ TEST_CASE("[CheckBox]")
                 checkBox->getRenderer()->setTextureUnchecked({"resources/CheckBox1.png", {0, 0, 32, 32}});
                 checkBox->getRenderer()->setTextureChecked({"resources/CheckBox1.png", {32, 0, 32, 32}});
 
-                REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
-                REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                REQUIRE(checkBox->getPosition() == tgui::Vector2f(40, 30));
+                REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                 REQUIRE(checkBox->getFullSize() == checkBox->getSize());
-                REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+                REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, 0));
 
                 SECTION("With text")
                 {
@@ -110,16 +110,16 @@ TEST_CASE("[CheckBox]")
                     SECTION("Small text")
                     {
                         checkBox->setTextSize(20);
-                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                         REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
                         REQUIRE(checkBox->getFullSize().y == checkBox->getSize().y);
-                        REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+                        REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, 0));
                     }
 
                     SECTION("Large text")
                     {
                         checkBox->setTextSize(50);
-                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                         REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
                         REQUIRE(checkBox->getFullSize().y > checkBox->getSize().y);
                         REQUIRE(checkBox->getWidgetOffset().x == 0);
@@ -133,10 +133,10 @@ TEST_CASE("[CheckBox]")
                 checkBox->getRenderer()->setTextureUnchecked({"resources/CheckBox2.png", {0, 8, 32, 32}});
                 checkBox->getRenderer()->setTextureChecked({"resources/CheckBox2.png", {32, 0, 38, 40}});
 
-                REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
-                REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
-                REQUIRE(checkBox->getFullSize() == sf::Vector2f(40, 42));
-                REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, -6));
+                REQUIRE(checkBox->getPosition() == tgui::Vector2f(40, 30));
+                REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
+                REQUIRE(checkBox->getFullSize() == tgui::Vector2f(40, 42));
+                REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, -6));
 
                 SECTION("With text")
                 {
@@ -145,16 +145,16 @@ TEST_CASE("[CheckBox]")
                     SECTION("Small text")
                     {
                         checkBox->setTextSize(20);
-                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                         REQUIRE(checkBox->getFullSize().x > 40);
                         REQUIRE(checkBox->getFullSize().y == 42);
-                        REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, -6));
+                        REQUIRE(checkBox->getWidgetOffset() == tgui::Vector2f(0, -6));
                     }
 
                     SECTION("Large text")
                     {
                         checkBox->setTextSize(50);
-                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getSize() == tgui::Vector2f(36, 36));
                         REQUIRE(checkBox->getFullSize().x > 40);
                         REQUIRE(checkBox->getFullSize().y > 42);
                         REQUIRE(checkBox->getWidgetOffset().x == 0);
@@ -263,11 +263,11 @@ TEST_CASE("[CheckBox]")
         checkBox->setTextSize(16);
 
         tgui::RadioButtonRenderer renderer = tgui::RendererData::create();
-        renderer.setTextColor(sf::Color::Red);
+        renderer.setTextColor(tgui::Color::Red);
         renderer.setTextColorChecked({128, 0, 0});
-        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBackgroundColor(tgui::Color::Green);
         renderer.setBackgroundColorChecked({0, 128, 0});
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setBorderColorChecked({0, 0, 128});
         renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
@@ -276,9 +276,9 @@ TEST_CASE("[CheckBox]")
         checkBox->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTextColorHover(sf::Color::Magenta);
-                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
-                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextColorHover(tgui::Color::Magenta);
+                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
+                                        renderer.setBorderColorHover(tgui::Color::Yellow);
                                         renderer.setTextStyle(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureUncheckedHover("resources/Texture3.png");

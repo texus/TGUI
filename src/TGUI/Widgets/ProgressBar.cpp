@@ -206,7 +206,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::setText(const sf::String& text)
+    void ProgressBar::setText(const String& text)
     {
         // Set the new text
         m_textBack.setString(text);
@@ -238,7 +238,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& ProgressBar::getText() const
+    const String& ProgressBar::getText() const
     {
         return m_textBack.getString();
     }
@@ -289,11 +289,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ProgressBar::getSignal(std::string signalName)
+    Signal& ProgressBar::getSignal(String signalName)
     {
-        if (signalName == toLower(onValueChange.getName()))
+        if (signalName == onValueChange.getName().toLower())
             return onValueChange;
-        else if (signalName == toLower(onFull.getName()))
+        else if (signalName == onFull.getName().toLower())
             return onFull;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -301,7 +301,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::rendererChanged(const std::string& property)
+    void ProgressBar::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -371,7 +371,7 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (!getText().isEmpty())
+        if (!getText().empty())
             node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
 
         if (m_fillDirection != ProgressBar::FillDirection::LeftToRight)
@@ -384,10 +384,10 @@ namespace tgui
                 node->propertyValuePairs["FillDirection"] = std::make_unique<DataIO::ValueNode>("BottomToTop");
         }
 
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         return node;
     }
@@ -399,19 +399,19 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(strToInt(node->propertyValuePairs["minimum"]->value));
+            setMinimum(node->propertyValuePairs["minimum"]->value.toInt());
         if (node->propertyValuePairs["maximum"])
-            setMaximum(strToInt(node->propertyValuePairs["maximum"]->value));
+            setMaximum(node->propertyValuePairs["maximum"]->value.toInt());
         if (node->propertyValuePairs["value"])
-            setValue(strToInt(node->propertyValuePairs["value"]->value));
+            setValue(node->propertyValuePairs["value"]->value.toInt());
         if (node->propertyValuePairs["text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
 
         if (node->propertyValuePairs["filldirection"])
         {
-            std::string requestedStyle = toLower(trim(node->propertyValuePairs["filldirection"]->value));
+            String requestedStyle = node->propertyValuePairs["filldirection"]->value.trim().toLower();
             if (requestedStyle == "lefttoright")
                 setFillDirection(ProgressBar::FillDirection::LeftToRight);
             else if (requestedStyle == "righttoleft")

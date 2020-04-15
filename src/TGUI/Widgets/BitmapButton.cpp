@@ -39,11 +39,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BitmapButton::Ptr BitmapButton::create(const sf::String& text)
+    BitmapButton::Ptr BitmapButton::create(const String& text)
     {
         auto button = std::make_shared<BitmapButton>();
 
-        if (!text.isEmpty())
+        if (!text.empty())
             button->setText(text);
 
         return button;
@@ -70,7 +70,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::setText(const sf::String& text)
+    void BitmapButton::setText(const String& text)
     {
         m_string = text;
         m_text.setString(text);
@@ -143,7 +143,7 @@ namespace tgui
             return;
         }
 
-        states.transform.translate(getPosition());
+        states.transform.translate(sf::Vector2f(getPosition()));
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -179,7 +179,7 @@ namespace tgui
         }
 
         Clipping clipping(target, states, {}, getInnerSize());
-        if (m_text.getString().isEmpty())
+        if (m_text.getString().empty())
         {
             states.transform.translate({(getInnerSize().x - m_glyphSprite.getSize().x) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
             m_glyphSprite.draw(target, states);
@@ -211,7 +211,7 @@ namespace tgui
 
             recalculateGlyphSize();
 
-            if (m_text.getString().isEmpty())
+            if (m_text.getString().empty())
             {
                 Widget::setSize({m_glyphSprite.getSize().x + (getInnerSize().y - m_glyphSprite.getSize().y) + m_bordersCached.getLeft() + m_bordersCached.getRight(),
                                  getSize().y});
@@ -245,7 +245,7 @@ namespace tgui
             return;
 
         if (m_relativeGlyphHeight == 0)
-            m_glyphSprite.setSize(m_glyphTexture.getImageSize());
+            m_glyphSprite.setSize(Vector2f{m_glyphTexture.getImageSize()});
         else
             m_glyphSprite.setSize({m_relativeGlyphHeight * getInnerSize().y,
                                    (m_relativeGlyphHeight * getInnerSize().y) / m_glyphTexture.getImageSize().y * m_glyphTexture.getImageSize().x});

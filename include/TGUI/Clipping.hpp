@@ -27,7 +27,7 @@
 #define TGUI_CLIPPING_HPP
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/View.hpp>
 

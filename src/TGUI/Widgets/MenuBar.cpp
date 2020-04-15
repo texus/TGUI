@@ -34,7 +34,7 @@ namespace tgui
 {
     namespace
     {
-        bool removeMenuImpl(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
+        bool removeMenuImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
         {
             for (auto it = menus.begin(); it != menus.end(); ++it)
             {
@@ -70,7 +70,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool removeSubMenusImpl(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
+        bool removeSubMenusImpl(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
         {
             for (auto it = menus.begin(); it != menus.end(); ++it)
             {
@@ -150,7 +150,7 @@ namespace tgui
                         saveMenus(menuNode, menu.menuItems);
                     else
                     {
-                        std::string itemList = "[" + Serializer::serialize(menu.menuItems[0].text.getString());
+                        String itemList = "[" + Serializer::serialize(menu.menuItems[0].text.getString());
                         for (std::size_t i = 1; i < menu.menuItems.size(); ++i)
                             itemList += ", " + Serializer::serialize(menu.menuItems[i].text.getString());
                         itemList += "]";
@@ -250,14 +250,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::addMenu(const sf::String& text)
+    void MenuBar::addMenu(const String& text)
     {
         createMenu(m_menus, text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::addMenuItem(const sf::String& text)
+    bool MenuBar::addMenuItem(const String& text)
     {
         if (!m_menus.empty())
             return addMenuItem(m_menus.back().text.getString(), text);
@@ -267,14 +267,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
+    bool MenuBar::addMenuItem(const String& menu, const String& text)
     {
         return addMenuItem({menu, text}, false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::addMenuItem(const std::vector<sf::String>& hierarchy, bool createParents)
+    bool MenuBar::addMenuItem(const std::vector<String>& hierarchy, bool createParents)
     {
         if (hierarchy.size() < 2)
             return false;
@@ -296,7 +296,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::removeMenu(const sf::String& menu)
+    bool MenuBar::removeMenu(const String& menu)
     {
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
@@ -318,14 +318,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::removeMenuItem(const sf::String& menu, const sf::String& menuItem)
+    bool MenuBar::removeMenuItem(const String& menu, const String& menuItem)
     {
         return removeMenuItem({menu, menuItem}, false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::removeMenuItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty)
+    bool MenuBar::removeMenuItem(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty)
     {
         if (hierarchy.size() < 2)
             return false;
@@ -335,14 +335,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::removeMenuItems(const sf::String& menu)
+    bool MenuBar::removeMenuItems(const String& menu)
     {
-        return removeSubMenuItems(std::vector<sf::String>{menu});
+        return removeSubMenuItems(std::vector<String>{menu});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::removeSubMenuItems(const std::vector<sf::String>& hierarchy)
+    bool MenuBar::removeSubMenuItems(const std::vector<String>& hierarchy)
     {
         if (hierarchy.empty())
             return false;
@@ -352,7 +352,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::setMenuEnabled(const sf::String& menu, bool enabled)
+    bool MenuBar::setMenuEnabled(const String& menu, bool enabled)
     {
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
@@ -372,7 +372,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::getMenuEnabled(const sf::String& menuText) const
+    bool MenuBar::getMenuEnabled(const String& menuText) const
     {
         for (auto& menu : m_menus)
         {
@@ -385,14 +385,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::setMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText, bool enabled)
+    bool MenuBar::setMenuItemEnabled(const String& menuText, const String& menuItemText, bool enabled)
     {
         return setMenuItemEnabled({menuText, menuItemText}, enabled);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::setMenuItemEnabled(const std::vector<sf::String>& hierarchy, bool enabled)
+    bool MenuBar::setMenuItemEnabled(const std::vector<String>& hierarchy, bool enabled)
     {
         if (hierarchy.size() < 2)
             return false;
@@ -420,14 +420,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::getMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText) const
+    bool MenuBar::getMenuItemEnabled(const String& menuText, const String& menuItemText) const
     {
         return getMenuItemEnabled({menuText, menuItemText});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::getMenuItemEnabled(const std::vector<sf::String>& hierarchy) const
+    bool MenuBar::getMenuItemEnabled(const std::vector<String>& hierarchy) const
     {
         if (hierarchy.size() < 2)
             return false;
@@ -579,7 +579,7 @@ namespace tgui
                 // If a menu is clicked that has no menu items then also emit a signal
                 if (m_menus[i].menuItems.empty())
                 {
-                    onMenuItemClick.emit(this, m_menus[i].text.getString(), std::vector<sf::String>(1, m_menus[i].text.getString()));
+                    onMenuItemClick.emit(this, m_menus[i].text.getString(), std::vector<String>(1, m_menus[i].text.getString()));
                     closeMenu();
                 }
 
@@ -591,7 +591,7 @@ namespace tgui
             return;
 
         auto* menu = &m_menus[m_visibleMenu];
-        std::vector<sf::String> hierarchy;
+        std::vector<String> hierarchy;
         hierarchy.push_back(m_menus[m_visibleMenu].text.getString());
         while (menu->selectedMenuItem != -1)
         {
@@ -737,9 +737,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& MenuBar::getSignal(std::string signalName)
+    Signal& MenuBar::getSignal(String signalName)
     {
-        if (signalName == toLower(onMenuItemClick.getName()))
+        if (signalName == onMenuItemClick.getName().toLower())
             return onMenuItemClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -747,7 +747,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::rendererChanged(const std::string& property)
+    void MenuBar::rendererChanged(const String& property)
     {
         if (property == "textcolor")
         {
@@ -811,8 +811,8 @@ namespace tgui
 
         saveMenus(node, m_menus);
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimumSubMenuWidth));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+        node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimumSubMenuWidth));
         if (m_invertedMenuDirection)
             node->propertyValuePairs["InvertedMenuDirection"] = std::make_unique<DataIO::ValueNode>("true");
 
@@ -826,9 +826,9 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["minimumsubmenuwidth"])
-            setMinimumSubMenuWidth(strToFloat(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+            setMinimumSubMenuWidth(node->propertyValuePairs["minimumsubmenuwidth"]->value.toFloat());
         if (node->propertyValuePairs["invertedmenudirection"])
             setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["invertedmenudirection"]->value).getBool());
 
@@ -836,7 +836,7 @@ namespace tgui
 
         // Remove the 'menu' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "menu"; }), node->children.end());
+            [](const std::unique_ptr<DataIO::Node>& child){ return child->name.toLower() == "menu"; }), node->children.end());
 
         // Update the text colors to properly display disabled menus
         updateTextColors(m_menus, m_visibleMenu);
@@ -888,7 +888,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::createMenu(std::vector<Menu>& menus, const sf::String& text)
+    void MenuBar::createMenu(std::vector<Menu>& menus, const String& text)
     {
         Menu newMenu;
         newMenu.text.setFont(m_fontCached);
@@ -901,7 +901,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MenuBar::Menu* MenuBar::findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents)
+    MenuBar::Menu* MenuBar::findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents)
     {
         for (auto& menu : menus)
         {
@@ -928,7 +928,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const MenuBar::Menu* MenuBar::findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const
+    const MenuBar::Menu* MenuBar::findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const
     {
         for (auto& menu : menus)
         {
@@ -946,7 +946,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const MenuBar::Menu* MenuBar::findMenuItem(const std::vector<sf::String>& hierarchy) const
+    const MenuBar::Menu* MenuBar::findMenuItem(const std::vector<String>& hierarchy) const
     {
         if (hierarchy.size() < 2)
             return nullptr;
@@ -972,13 +972,13 @@ namespace tgui
     {
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) != "menu")
+            if (childNode->name.toLower() != "menu")
                 continue;
 
             if (!childNode->propertyValuePairs["text"])
                 throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
 
-            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
+            const String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
             createMenu(menus, menuText);
 
             if (childNode->propertyValuePairs["enabled"])
@@ -996,7 +996,7 @@ namespace tgui
 
                 for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
                 {
-                    const sf::String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
+                    const String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
                     createMenu(menus.back().menuItems, menuItemText);
                 }
             }
@@ -1294,11 +1294,11 @@ namespace tgui
                 arrow.setPoint(2, {0, arrowHeight});
 
                 if ((!m_enabled || !menu.menuItems[j].enabled) && m_textColorDisabledCached.isSet())
-                    arrow.setFillColor(Color::calcColorOpacity(m_textColorDisabledCached, m_opacityCached));
+                    arrow.setFillColor(Color::applyOpacity(m_textColorDisabledCached, m_opacityCached));
                 else if ((menu.selectedMenuItem == static_cast<int>(j)) && m_selectedTextColorCached.isSet())
-                    arrow.setFillColor(Color::calcColorOpacity(m_selectedTextColorCached, m_opacityCached));
+                    arrow.setFillColor(Color::applyOpacity(m_selectedTextColorCached, m_opacityCached));
                 else
-                    arrow.setFillColor(Color::calcColorOpacity(m_textColorCached, m_opacityCached));
+                    arrow.setFillColor(Color::applyOpacity(m_textColorCached, m_opacityCached));
 
                 target.draw(arrow, states);
                 states.transform = textTransform;

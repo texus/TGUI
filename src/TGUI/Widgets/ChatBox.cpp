@@ -113,21 +113,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text)
+    void ChatBox::addLine(const String& text)
     {
         addLine(text, m_textColor, m_textStyle);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, Color color)
+    void ChatBox::addLine(const String& text, Color color)
     {
         addLine(text, color, m_textStyle);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, Color color, TextStyle style)
+    void ChatBox::addLine(const String& text, Color color, TextStyle style)
     {
         // Remove the oldest line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
@@ -159,7 +159,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ChatBox::getLine(std::size_t lineIndex) const
+    String ChatBox::getLine(std::size_t lineIndex) const
     {
         if (lineIndex < m_lines.size())
         {
@@ -456,7 +456,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::rendererChanged(const std::string& property)
+    void ChatBox::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -526,14 +526,14 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["TextColor"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textColor));
 
         if (m_textStyle != TextStyle::Regular)
             node->propertyValuePairs["TextStyle"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textStyle));
 
         if (m_maxLines > 0)
-            node->propertyValuePairs["LineLimit"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxLines));
+            node->propertyValuePairs["LineLimit"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxLines));
 
         if (m_linesStartFromTop)
             node->propertyValuePairs["LinesStartFromTop"] = std::make_unique<DataIO::ValueNode>("true");
@@ -573,17 +573,17 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["textcolor"])
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
         if (node->propertyValuePairs["textstyle"])
             setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["textstyle"]->value).getTextStyle());
         if (node->propertyValuePairs["linelimit"])
-            setLineLimit(strToInt(node->propertyValuePairs["linelimit"]->value));
+            setLineLimit(node->propertyValuePairs["linelimit"]->value.toInt());
 
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) == "line")
+            if (childNode->name.toLower() == "line")
             {
                 Color lineTextColor = getTextColor();
                 if (childNode->propertyValuePairs["color"])
@@ -598,7 +598,7 @@ namespace tgui
             }
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-                                        [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "line"; }), node->children.end());
+                                        [](const std::unique_ptr<DataIO::Node>& child){ return child->name.toLower() == "line"; }), node->children.end());
 
         if (node->propertyValuePairs["linesstartfromtop"])
             setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["linesstartfromtop"]->value).getBool());

@@ -28,7 +28,7 @@
 
 #include <TGUI/Font.hpp>
 #include <TGUI/Color.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -74,7 +74,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the width of a single line of text
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static float getLineWidth(const sf::String &text, Font font, unsigned int characterSize, TextStyle textStyle = {});
+        static float getLineWidth(const String &text, Font font, unsigned int characterSize, TextStyle textStyle = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace tgui
         /// @param dropLeadingSpace Should a single space at the beginning of a line be removed?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static sf::String wordWrap(float maxWidth, const sf::String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace = true);
+        static String wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ namespace tgui
         /// @param string  The new text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setString(const sf::String& string);
+        void setString(const String& string);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ namespace tgui
         /// @return The current text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::String& getString() const;
+        const String& getString() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,6 +332,7 @@ namespace tgui
     private:
 
         sf::Text     m_text;
+        String       m_string;
         Vector2f     m_size;
         Font         m_font;
         Color        m_color;

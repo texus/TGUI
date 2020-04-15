@@ -38,37 +38,37 @@ TEST_CASE("[HorizontalWrap]")
 
         auto pic1 = tgui::Picture::copy(pic);
         wrap->add(pic1);
-        REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(pic1->getPosition() == tgui::Vector2f(0, 0));
 
         auto pic2 = tgui::Picture::copy(pic);
         wrap->add(pic2);
-        REQUIRE(pic2->getPosition() == sf::Vector2f(50, 0));
+        REQUIRE(pic2->getPosition() == tgui::Vector2f(50, 0));
 
         auto pic3 = tgui::Picture::copy(pic);
         wrap->add(pic3);
-        REQUIRE(pic3->getPosition() == sf::Vector2f(0, 40));
+        REQUIRE(pic3->getPosition() == tgui::Vector2f(0, 40));
 
         auto pic4 = tgui::Picture::copy(pic);
         wrap->add(pic4);
-        REQUIRE(pic4->getPosition() == sf::Vector2f(50, 40));
+        REQUIRE(pic4->getPosition() == tgui::Vector2f(50, 40));
 
         wrap->getRenderer()->setPadding({10});
-        REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
-        REQUIRE(pic2->getPosition() == sf::Vector2f(60, 0));
-        REQUIRE(pic3->getPosition() == sf::Vector2f(0, 50));
-        REQUIRE(pic4->getPosition() == sf::Vector2f(60, 50));
+        REQUIRE(pic1->getPosition() == tgui::Vector2f(0, 0));
+        REQUIRE(pic2->getPosition() == tgui::Vector2f(60, 0));
+        REQUIRE(pic3->getPosition() == tgui::Vector2f(0, 50));
+        REQUIRE(pic4->getPosition() == tgui::Vector2f(60, 50));
 
         wrap->getRenderer()->setSpaceBetweenWidgets(20);
-        REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
-        REQUIRE(pic2->getPosition() == sf::Vector2f(70, 0));
-        REQUIRE(pic3->getPosition() == sf::Vector2f(0, 60));
-        REQUIRE(pic4->getPosition() == sf::Vector2f(70, 60));
+        REQUIRE(pic1->getPosition() == tgui::Vector2f(0, 0));
+        REQUIRE(pic2->getPosition() == tgui::Vector2f(70, 0));
+        REQUIRE(pic3->getPosition() == tgui::Vector2f(0, 60));
+        REQUIRE(pic4->getPosition() == tgui::Vector2f(70, 60));
 
         wrap->getRenderer()->setSpaceBetweenWidgets(21);
-        REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
-        REQUIRE(pic2->getPosition() == sf::Vector2f(0, 61));
-        REQUIRE(pic3->getPosition() == sf::Vector2f(0, 122));
-        REQUIRE(pic4->getPosition() == sf::Vector2f(0, 183));
+        REQUIRE(pic1->getPosition() == tgui::Vector2f(0, 0));
+        REQUIRE(pic2->getPosition() == tgui::Vector2f(0, 61));
+        REQUIRE(pic3->getPosition() == tgui::Vector2f(0, 122));
+        REQUIRE(pic4->getPosition() == tgui::Vector2f(0, 183));
 
         wrap->getRenderer()->setSpaceBetweenWidgets(20);
         wrap->removeAllWidgets();
@@ -88,10 +88,10 @@ TEST_CASE("[HorizontalWrap]")
         auto pic8 = tgui::Picture::copy(pic);
         wrap->add(pic8);
 
-        REQUIRE(pic5->getPosition() == sf::Vector2f(0, 0));
-        REQUIRE(pic6->getPosition() == sf::Vector2f(0, 80));
-        REQUIRE(pic7->getPosition() == sf::Vector2f(100, 80));
-        REQUIRE(pic8->getPosition() == sf::Vector2f(0, 160));
+        REQUIRE(pic5->getPosition() == tgui::Vector2f(0, 0));
+        REQUIRE(pic6->getPosition() == tgui::Vector2f(0, 80));
+        REQUIRE(pic7->getPosition() == tgui::Vector2f(100, 80));
+        REQUIRE(pic8->getPosition() == tgui::Vector2f(0, 160));
     }
 
     testWidgetRenderer(wrap->getRenderer());

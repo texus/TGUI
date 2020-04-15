@@ -40,7 +40,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font::Font(const std::string& id) :
+    Font::Font(const String& id) :
         m_font(Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()), // Did not compile with clang 3.6 when using braces
         m_id  (Deserializer::deserialize(ObjectConverter::Type::String, id).getString()) // Did not compile with clang 3.6 when using braces
     {
@@ -49,7 +49,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Font::Font(const char* id) :
-        Font(std::string{id})
+        Font(String{id})
     {
     }
 
@@ -139,7 +139,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Font::getId() const
+    const String& Font::getId() const
     {
         return m_id;
     }
@@ -195,7 +195,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Glyph& Font::getGlyph(std::uint32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
+    const sf::Glyph& Font::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
     {
         assert(m_font != nullptr);
 
@@ -209,7 +209,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Font::getKerning(std::uint32_t first, std::uint32_t second, unsigned int characterSize) const
+    float Font::getKerning(char32_t first, char32_t second, unsigned int characterSize) const
     {
         if (m_font)
             return m_font->getKerning(first, second, characterSize);

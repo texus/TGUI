@@ -74,7 +74,7 @@ TEST_CASE("[Theme]")
 
         theme.addRenderer("label1", data);
         REQUIRE(theme.getRenderer("label1")->propertyValuePairs.size() == 1);
-        REQUIRE(theme.getRenderer("label1")->propertyValuePairs["textcolor"].getColor() == sf::Color(255, 0, 255, 200));
+        REQUIRE(theme.getRenderer("label1")->propertyValuePairs["textcolor"].getColor() == tgui::Color(255, 0, 255, 200));
         REQUIRE(theme.getRenderer("label2")->propertyValuePairs.empty());
 
         REQUIRE(theme.removeRenderer("label1"));
@@ -93,58 +93,58 @@ TEST_CASE("[Theme]")
             {
                 auto label1 = tgui::Label::create();
                 label1->getSharedRenderer()->setTextColor("red");
-                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Red);
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == tgui::Color::Red);
 
                 label1->setRenderer(theme.getRenderer("label"));
-                REQUIRE(label1->getSharedRenderer()->getTextColor() != sf::Color::Red);
+                REQUIRE(label1->getSharedRenderer()->getTextColor() != tgui::Color::Red);
 
                 label1->getSharedRenderer()->setTextColor("green");
-                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Green);
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == tgui::Color::Green);
 
                 auto label2 = tgui::Label::create();
                 label2->getSharedRenderer()->setTextColor("blue");
-                REQUIRE(label2->getSharedRenderer()->getTextColor() == sf::Color::Blue);
+                REQUIRE(label2->getSharedRenderer()->getTextColor() == tgui::Color::Blue);
 
                 label2->setRenderer(theme.getRenderer("label"));
-                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Green);
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == tgui::Color::Green);
 
                 // Changing the renderer of one label affects the look of the other one
                 label1->getSharedRenderer()->setTextColor("yellow");
-                REQUIRE(label2->getSharedRenderer()->getTextColor() == sf::Color::Yellow);
+                REQUIRE(label2->getSharedRenderer()->getTextColor() == tgui::Color::Yellow);
             }
 
             SECTION("Using getRenderer")
             {
                 auto label1 = tgui::Label::create();
                 label1->getRenderer()->setTextColor("red");
-                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Red);
+                REQUIRE(label1->getRenderer()->getTextColor() == tgui::Color::Red);
 
                 label1->setRenderer(theme.getRenderer("label"));
-                REQUIRE(label1->getRenderer()->getTextColor() != sf::Color::Red);
+                REQUIRE(label1->getRenderer()->getTextColor() != tgui::Color::Red);
 
                 label1->getRenderer()->setTextColor("green");
-                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+                REQUIRE(label1->getRenderer()->getTextColor() == tgui::Color::Green);
 
                 auto label2 = tgui::Label::create();
                 label2->getRenderer()->setTextColor("blue");
-                REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Blue);
+                REQUIRE(label2->getRenderer()->getTextColor() == tgui::Color::Blue);
 
                 label2->setRenderer(theme.getRenderer("label"));
-                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+                REQUIRE(label1->getRenderer()->getTextColor() == tgui::Color::Green);
 
                 // Changing the renderer of one label does not affect the other one
                 label1->getRenderer()->setTextColor("yellow");
-                REQUIRE(label2->getRenderer()->getTextColor() != sf::Color::Yellow);
+                REQUIRE(label2->getRenderer()->getTextColor() != tgui::Color::Yellow);
             }
         }
 
         SECTION("Without widgets")
         {
-            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() != sf::Color::Cyan);
+            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() != tgui::Color::Cyan);
 
-            tgui::LabelRenderer(theme.getRenderer("label")).setTextColor(sf::Color::Cyan);
-            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() == sf::Color::Cyan);
-            REQUIRE(theme.getRenderer("label")->propertyValuePairs["textcolor"].getColor() == sf::Color::Cyan);
+            tgui::LabelRenderer(theme.getRenderer("label")).setTextColor(tgui::Color::Cyan);
+            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() == tgui::Color::Cyan);
+            REQUIRE(theme.getRenderer("label")->propertyValuePairs["textcolor"].getColor() == tgui::Color::Cyan);
         }
     }
 
@@ -152,13 +152,13 @@ TEST_CASE("[Theme]")
     {
         struct CustomThemeLoader : public tgui::BaseThemeLoader
         {
-            void preload(const std::string& one) override
+            void preload(const tgui::String& one) override
             {
                 REQUIRE(one == "resources/Black.txt");
                 preloadCount++;
             }
 
-            const std::map<sf::String, sf::String>& load(const std::string& one, const std::string& two) override
+            const std::map<tgui::String, tgui::String>& load(const tgui::String& one, const tgui::String& two) override
             {
                 if (one != "")
                 {
@@ -172,12 +172,12 @@ TEST_CASE("[Theme]")
                 return retVal;
             }
 
-            bool canLoad(const std::string&, const std::string&) override
+            bool canLoad(const tgui::String&, const tgui::String&) override
             {
                 return true;
             }
 
-            std::map<sf::String, sf::String> retVal;
+            std::map<tgui::String, tgui::String> retVal;
             unsigned int preloadCount = 0;
             unsigned int loadCount = 0;
         };

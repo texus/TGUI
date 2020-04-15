@@ -44,11 +44,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Ptr Button::create(const sf::String& text)
+    Button::Ptr Button::create(const String& text)
     {
         auto button = std::make_shared<Button>();
 
-        if (!text.isEmpty())
+        if (!text.empty())
             button->setText(text);
 
         return button;
@@ -112,7 +112,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setText(const sf::String& text)
+    void Button::setText(const String& text)
     {
         m_string = text;
         m_text.setString(text);
@@ -141,11 +141,11 @@ namespace tgui
         else // Place the text vertically
         {
             // The text is vertical
-            if (!m_string.isEmpty())
+            if (!m_string.empty())
             {
                 m_text.setString(m_string[0]);
 
-                for (unsigned int i = 1; i < m_string.getSize(); ++i)
+                for (unsigned int i = 1; i < m_string.length(); ++i)
                     m_text.setString(m_text.getString() + "\n" + m_string[i]);
             }
 
@@ -164,7 +164,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& Button::getText() const
+    const String& Button::getText() const
     {
         return m_string;
     }
@@ -249,9 +249,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Button::getSignal(std::string signalName)
+    Signal& Button::getSignal(String signalName)
     {
-        if (signalName == toLower(onPress.getName()))
+        if (signalName == onPress.getName().toLower())
             return onPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -259,7 +259,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::rendererChanged(const std::string& property)
+    void Button::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -368,10 +368,10 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (!m_string.isEmpty())
+        if (!m_string.empty())
             node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
         if (m_textSize > 0)
-            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         // Don't store size when auto-sizing
         if (m_autoSize)
@@ -389,7 +389,7 @@ namespace tgui
         if (node->propertyValuePairs["text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -41,32 +41,32 @@ TEST_CASE("[ChatBox]")
         chatBox->setSize(150, 100);
         chatBox->getRenderer()->setBorders(2);
 
-        REQUIRE(chatBox->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(chatBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(chatBox->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(chatBox->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(chatBox->getFullSize() == chatBox->getSize());
-        REQUIRE(chatBox->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(chatBox->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Adding lines")
     {
-        chatBox->setTextColor(sf::Color::Black);
+        chatBox->setTextColor(tgui::Color::Black);
         chatBox->setTextStyle(tgui::TextStyle::Bold);
 
         REQUIRE(chatBox->getLineAmount() == 0);
         chatBox->addLine("Line 1");
         REQUIRE(chatBox->getLineAmount() == 1);
-        chatBox->addLine("Line 2", sf::Color::Green);
+        chatBox->addLine("Line 2", tgui::Color::Green);
         REQUIRE(chatBox->getLineAmount() == 2);
-        chatBox->addLine("Line 3", sf::Color::Blue, tgui::TextStyle::Italic);
+        chatBox->addLine("Line 3", tgui::Color::Blue, tgui::TextStyle::Italic);
         REQUIRE(chatBox->getLineAmount() == 3);
 
         REQUIRE(chatBox->getLine(0) == "Line 1");
         REQUIRE(chatBox->getLine(1) == "Line 2");
         REQUIRE(chatBox->getLine(2) == "Line 3");
 
-        REQUIRE(chatBox->getLineColor(0) == sf::Color::Black);
-        REQUIRE(chatBox->getLineColor(1) == sf::Color::Green);
-        REQUIRE(chatBox->getLineColor(2) == sf::Color::Blue);
+        REQUIRE(chatBox->getLineColor(0) == tgui::Color::Black);
+        REQUIRE(chatBox->getLineColor(1) == tgui::Color::Green);
+        REQUIRE(chatBox->getLineColor(2) == tgui::Color::Blue);
 
         REQUIRE(chatBox->getLineTextStyle(0) == tgui::TextStyle::Bold);
         REQUIRE(chatBox->getLineTextStyle(1) == tgui::TextStyle::Bold);
@@ -143,11 +143,11 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Default text color")
     {
-        chatBox->setTextColor(sf::Color::Red);
-        REQUIRE(chatBox->getTextColor() == sf::Color::Red);
+        chatBox->setTextColor(tgui::Color::Red);
+        REQUIRE(chatBox->getTextColor() == tgui::Color::Red);
 
         chatBox->addLine("Text");
-        REQUIRE(chatBox->getLineColor(0) == sf::Color::Red);
+        REQUIRE(chatBox->getLineColor(0) == tgui::Color::Red);
     }
 
     SECTION("Default text style")
@@ -161,11 +161,11 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Get unexisting line")
     {
-        chatBox->setTextColor(sf::Color::Yellow);
+        chatBox->setTextColor(tgui::Color::Yellow);
 
-        chatBox->addLine("Text", sf::Color::Blue);
+        chatBox->addLine("Text", tgui::Color::Blue);
         REQUIRE(chatBox->getLine(1) == "");
-        REQUIRE(chatBox->getLineColor(1) == sf::Color::Yellow);
+        REQUIRE(chatBox->getLineColor(1) == tgui::Color::Yellow);
     }
 
     SECTION("Lines start from top or bottom")
@@ -195,8 +195,8 @@ TEST_CASE("[ChatBox]")
         SECTION("colored")
         {
             tgui::ScrollbarRenderer scrollbarRenderer;
-            scrollbarRenderer.setTrackColor(sf::Color::Red);
-            scrollbarRenderer.setThumbColor(sf::Color::Blue);
+            scrollbarRenderer.setTrackColor(tgui::Color::Red);
+            scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -210,8 +210,8 @@ TEST_CASE("[ChatBox]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
@@ -228,15 +228,15 @@ TEST_CASE("[ChatBox]")
                 renderer->setScrollbarWidth(15);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")
@@ -263,16 +263,16 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Saving and loading from file")
     {
-        chatBox->setTextColor(sf::Color::White);
+        chatBox->setTextColor(tgui::Color::White);
         chatBox->setTextStyle(tgui::TextStyle::Underlined);
         chatBox->setTextSize(34);
         chatBox->setLineLimit(5);
         chatBox->setLinesStartFromTop(true);
         chatBox->setNewLinesBelowOthers(false);
         chatBox->addLine("L2");
-        chatBox->addLine("L4", sf::Color::Magenta, tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough);
+        chatBox->addLine("L4", tgui::Color::Magenta, tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough);
         chatBox->addLine("L3");
-        chatBox->addLine("L1", sf::Color::Cyan);
+        chatBox->addLine("L1", tgui::Color::Cyan);
 
         testSavingWidget("ChatBox", chatBox);
 

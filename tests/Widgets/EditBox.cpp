@@ -33,18 +33,14 @@ TEST_CASE("[EditBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(editBox->connect("TextChanged", [](){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](sf::String){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](std::string){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::String){}));
+        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
 
         REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](sf::String){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](std::string){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::String){}));
+        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -58,10 +54,10 @@ TEST_CASE("[EditBox]")
         editBox->setSize(150, 100);
         editBox->getRenderer()->setBorders(2);
 
-        REQUIRE(editBox->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(editBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(editBox->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(editBox->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(editBox->getFullSize() == editBox->getSize());
-        REQUIRE(editBox->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(editBox->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Text")
@@ -86,9 +82,11 @@ TEST_CASE("[EditBox]")
 
     SECTION("PasswordCharacter")
     {
-        REQUIRE(editBox->getPasswordCharacter() == '\0');
-        editBox->setPasswordCharacter('*');
-        REQUIRE(editBox->getPasswordCharacter() == '*');
+        REQUIRE(editBox->getPasswordCharacter() == U'\0');
+        editBox->setPasswordCharacter(U'*');
+        REQUIRE(editBox->getPasswordCharacter() == U'*');
+        editBox->setPasswordCharacter(U'\x263a');
+        REQUIRE(editBox->getPasswordCharacter() == U'\x263a');
     }
 
     SECTION("MaximumCharacters")
@@ -163,7 +161,7 @@ TEST_CASE("[EditBox]")
 
     SECTION("Suffix")
     {
-        REQUIRE(editBox->getSuffix().isEmpty());
+        REQUIRE(editBox->getSuffix().empty());
 
         editBox->setSuffix("Tn");
         REQUIRE(editBox->getSuffix() == "Tn");
@@ -401,8 +399,8 @@ TEST_CASE("[EditBox]")
         SECTION("ReturnKeyPressed signal")
         {
             unsigned int count = 0;
-            std::string expectedText = "";
-            editBox->connect("ReturnKeyPressed", [&](sf::String text){ REQUIRE(text == expectedText); count++; });
+            tgui::String expectedText = "";
+            editBox->connect("ReturnKeyPressed", [&](tgui::String text){ REQUIRE(text == expectedText); count++; });
 
             keyEvent.code = sf::Keyboard::Return;
             editBox->keyPressed(keyEvent);
@@ -451,19 +449,19 @@ TEST_CASE("[EditBox]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", sf::Color{120, 130, 140}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("CaretColor", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{80, 90, 100}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", sf::Color{140, 150, 160}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{150, 160, 170}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", tgui::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretColor", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", tgui::Color{140, 150, 160}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{150, 160, 170}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
@@ -493,38 +491,38 @@ TEST_CASE("[EditBox]")
                 renderer->setPadding({5, 6, 7, 8});
             }
 
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("CaretColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("CaretColorHover").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(140, 150, 160));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(150, 160, 170));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("CaretColor").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("CaretColorHover").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == tgui::Color(150, 160, 170));
             REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
 
-            REQUIRE(renderer->getTextColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getTextColorDisabled() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getSelectedTextColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getSelectedTextBackgroundColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getDefaultTextColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getCaretColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getCaretColorHover() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getBackgroundColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getBackgroundColorHover() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(140, 150, 160));
-            REQUIRE(renderer->getBorderColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getBorderColorHover() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getBorderColorDisabled() == sf::Color(150, 160, 170));
+            REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getTextColorDisabled() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getSelectedTextColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getSelectedTextBackgroundColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getDefaultTextColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getCaretColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getCaretColorHover() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getBackgroundColorHover() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getBackgroundColorDisabled() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getBorderColorHover() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getBorderColorDisabled() == tgui::Color(150, 160, 170));
             REQUIRE(renderer->getCaretWidth() == 2);
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getDefaultTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
@@ -601,12 +599,12 @@ TEST_CASE("[EditBox]")
         editBox->setTextSize(16);
 
         tgui::EditBoxRenderer renderer = tgui::RendererData::create();
-        renderer.setTextColor(sf::Color::Blue);
-        renderer.setSelectedTextColor(sf::Color::White);
-        renderer.setSelectedTextBackgroundColor(sf::Color::Green);
-        renderer.setBackgroundColor(sf::Color::Yellow);
-        renderer.setCaretColor(sf::Color::Cyan);
-        renderer.setBorderColor(sf::Color::Red);
+        renderer.setTextColor(tgui::Color::Blue);
+        renderer.setSelectedTextColor(tgui::Color::White);
+        renderer.setSelectedTextBackgroundColor(tgui::Color::Green);
+        renderer.setBackgroundColor(tgui::Color::Yellow);
+        renderer.setCaretColor(tgui::Color::Cyan);
+        renderer.setBorderColor(tgui::Color::Red);
         renderer.setTextStyle(tgui::TextStyle::Underlined);
         renderer.setCaretWidth(1);
         renderer.setBorders({1, 2, 3, 4});
@@ -722,7 +720,7 @@ TEST_CASE("[EditBox]")
             editBox->setText("");
             editBox->setDefaultText("Hello");
 
-            renderer.setDefaultTextColor(sf::Color::Magenta);
+            renderer.setDefaultTextColor(tgui::Color::Magenta);
             renderer.setDefaultTextStyle(tgui::TextStyle::Italic);
 
             TEST_DRAW("EditBox_DefaultText.png")

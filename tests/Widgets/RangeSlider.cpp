@@ -38,8 +38,8 @@ TEST_CASE("[RangeSlider]")
     {
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](){}));
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](float, float){}));
-        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string, float, float){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, tgui::String, float, float){}));
     }
 
     SECTION("WidgetType")
@@ -53,8 +53,8 @@ TEST_CASE("[RangeSlider]")
         slider->setSize(150, 25);
         slider->getRenderer()->setBorders(2);
 
-        REQUIRE(slider->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(slider->getSize() == sf::Vector2f(150, 25));
+        REQUIRE(slider->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(slider->getSize() == tgui::Vector2f(150, 25));
 
         // TODO: Test getFullSize and getWidgetOffset
     }
@@ -213,14 +213,14 @@ TEST_CASE("[RangeSlider]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTrackColor", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedTrackColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTrackColor", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTrackColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -237,24 +237,24 @@ TEST_CASE("[RangeSlider]")
                 renderer->setBorders({1, 2, 3, 4});
             }
 
-            REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("SelectedTrackColor").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("SelectedTrackColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("TrackColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("SelectedTrackColor").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("SelectedTrackColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("ThumbColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
-            REQUIRE(renderer->getTrackColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getTrackColorHover() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getSelectedTrackColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getSelectedTrackColorHover() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getThumbColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getThumbColorHover() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getBorderColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getBorderColorHover() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getTrackColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getTrackColorHover() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getSelectedTrackColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getSelectedTrackColorHover() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getThumbColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getThumbColorHover() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getBorderColorHover() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
@@ -325,19 +325,19 @@ TEST_CASE("[RangeSlider]")
         slider->setSelectionEnd(1650);
 
         tgui::RangeSliderRenderer renderer = tgui::RendererData::create();
-        renderer.setTrackColor(sf::Color::Green);
-        renderer.setThumbColor(sf::Color::Red);
-        renderer.setBorderColor(sf::Color::Blue);
-        renderer.setSelectedTrackColor(sf::Color::White);
+        renderer.setTrackColor(tgui::Color::Green);
+        renderer.setThumbColor(tgui::Color::Red);
+        renderer.setBorderColor(tgui::Color::Blue);
+        renderer.setSelectedTrackColor(tgui::Color::White);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         slider->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTrackColorHover(sf::Color::Cyan);
-                                        renderer.setThumbColorHover(sf::Color::Magenta);
-                                        renderer.setBorderColorHover(sf::Color::Yellow);
-                                        renderer.setSelectedTrackColorHover(sf::Color::Black);
+                                        renderer.setTrackColorHover(tgui::Color::Cyan);
+                                        renderer.setThumbColorHover(tgui::Color::Magenta);
+                                        renderer.setBorderColorHover(tgui::Color::Yellow);
+                                        renderer.setSelectedTrackColorHover(tgui::Color::Black);
                                         if (textured)
                                         {
                                             renderer.setTextureTrackHover("resources/Texture3.png");

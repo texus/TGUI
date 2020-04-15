@@ -28,12 +28,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Global.hpp>
 #include <TGUI/Signal.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Layout.hpp>
 #include <TGUI/String.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Duration.hpp>
+#include <TGUI/Any.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
@@ -47,12 +48,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <unordered_set>
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <any>
-#else
-    #include <TGUI/Any.hpp>
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -276,8 +271,13 @@ namespace tgui
         /// @param duration Duration of the animation
         ///
         /// @see hideWithEffect
+        ///
+        /// Usage example:
+        /// @code
+        /// widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, std::chrono::milliseconds(500));
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void showWithEffect(ShowAnimationType type, sf::Time duration);
+        void showWithEffect(ShowAnimationType type, Duration duration);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,8 +292,13 @@ namespace tgui
         /// @param duration Duration of the animation
         ///
         /// @see showWithEffect
+        ///
+        /// Usage example:
+        /// @code
+        /// widget->hideWithEffect(tgui::ShowAnimationType::SlideToRight, std::chrono::milliseconds(500));
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void hideWithEffect(ShowAnimationType type, sf::Time duration);
+        void hideWithEffect(ShowAnimationType type, Duration duration);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +376,7 @@ namespace tgui
         ///
         /// @return Type of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getWidgetType() const;
+        const String& getWidgetType() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,11 +424,7 @@ namespace tgui
         /// widget->setUserData(5);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        void setUserData(std::any userData)
-#else
-        void setUserData(tgui::Any userData)
-#endif
+        void setUserData(Any userData)
         {
             m_userData = std::move(userData);
         }
@@ -436,11 +437,7 @@ namespace tgui
         template <typename T>
         T getUserData() const
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-            return std::any_cast<T>(m_userData);
-#else
-            return m_userData.as<T>();
-#endif
+            return AnyCast<T>(m_userData);
         }
 
 
@@ -515,7 +512,7 @@ namespace tgui
         ///
         /// @warning This name is overwritten when adding the widget to its parent. You should only set it afterwards.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setWidgetName(const sf::String& name);
+        void setWidgetName(const String& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,7 +520,7 @@ namespace tgui
         ///
         /// @return Name of the widget or an empty string when wasn't given a name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getWidgetName() const;
+        String getWidgetName() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -574,7 +571,7 @@ namespace tgui
         /// @internal
         /// This function is called every frame with the time passed since the last frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void update(sf::Time elapsedTime);
+        virtual void update(Duration elapsedTime);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -626,7 +623,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void textEntered(std::uint32_t key);
+        virtual void textEntered(char32_t key);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -708,18 +705,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves a signal based on its name
-        ///
-        /// @param signalName  Name of the signal
-        ///
-        /// @return Signal that corresponds to the name
-        ///
-        /// @throw Exception when the name does not match any signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Signal& getSignal(std::string signalName) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
         ///
         /// This is a pure virtual function that has to be implemented by the derived class to define how the widget is drawn.
@@ -764,8 +749,20 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        using SavingRenderersMap = std::map<const Widget*, std::pair<std::unique_ptr<DataIO::Node>, std::string>>;
-        using LoadingRenderersMap = std::map<std::string, std::shared_ptr<RendererData>>;
+        using SavingRenderersMap = std::map<const Widget*, std::pair<std::unique_ptr<DataIO::Node>, String>>;
+        using LoadingRenderersMap = std::map<String, std::shared_ptr<RendererData>>;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Signal& getSignal(String signalName) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -773,7 +770,7 @@ namespace tgui
         ///
         /// @param property  Lowercase name of the property that was changed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property);
+        virtual void rendererChanged(const String& property);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -825,7 +822,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Callback function which is called on a renderer change and which calls the virtual rendererChanged function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void rendererChangedCallback(const std::string& property);
+        void rendererChangedCallback(const String& property);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -843,8 +840,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_type;
-        sf::String m_name;
+        String m_type;
+        String m_name;
 
         Layout2d m_position;
         Layout2d m_size;
@@ -879,7 +876,7 @@ namespace tgui
         bool m_focusable = true;
 
         // Keep track of the elapsed time.
-        sf::Time m_animationTimeElapsed;
+        Duration m_animationTimeElapsed;
 
         // This is set to true for widgets that have something to be dragged around (e.g. sliders and scrollbars)
         bool m_draggableWidget = false;
@@ -905,13 +902,9 @@ namespace tgui
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::any m_userData;
-#else
-        tgui::Any m_userData;
-#endif
+        Any m_userData;
 
-        std::function<void(const std::string& property)> m_rendererChangedCallback = [this](const std::string& property){ rendererChangedCallback(property); };
+        std::function<void(const String& property)> m_rendererChangedCallback = [this](const String& property){ rendererChangedCallback(property); };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

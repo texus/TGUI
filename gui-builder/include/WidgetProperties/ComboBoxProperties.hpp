@@ -34,9 +34,9 @@ struct ComboBoxProperties : WidgetProperties
     // TODO: Item Ids
     // TODO: ListBox renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto comboBox = std::dynamic_pointer_cast<tgui::ComboBox>(widget);
+        auto comboBox = widget->cast<tgui::ComboBox>();
         if (property == "Items")
         {
             comboBox->removeAllItems();
@@ -45,15 +45,15 @@ struct ComboBoxProperties : WidgetProperties
                 comboBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            comboBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
+            comboBox->setSelectedItemByIndex(value.toUInt());
         else if (property == "ItemsToDisplay")
-            comboBox->setItemsToDisplay(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
+            comboBox->setItemsToDisplay(value.toUInt());
         else if (property == "TextSize")
-            comboBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            comboBox->setTextSize(value.toUInt());
         else if (property == "DefaultText")
             comboBox->setDefaultText(value);
         else if (property == "MaximumItems")
-            comboBox->setMaximumItems(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            comboBox->setMaximumItems(value.toUInt());
         else if (property == "ExpandDirection")
             comboBox->setExpandDirection(deserializeExpandDirection(value));
         else if (property == "ChangeItemOnScroll")
@@ -65,12 +65,12 @@ struct ComboBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto comboBox = std::dynamic_pointer_cast<tgui::ComboBox>(widget);
+        auto comboBox = widget->cast<tgui::ComboBox>();
         pair.first["Items"] = {"List<String>", serializeList(comboBox->getItems())};
-        pair.first["SelectedItemIndex"] = {"Int", tgui::to_string(comboBox->getSelectedItemIndex())};
-        pair.first["ItemsToDisplay"] = {"Int", tgui::to_string(comboBox->getItemsToDisplay())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(comboBox->getTextSize())};
-        pair.first["MaximumItems"] = {"UInt", tgui::to_string(comboBox->getMaximumItems())};
+        pair.first["SelectedItemIndex"] = {"Int", tgui::String::fromNumber(comboBox->getSelectedItemIndex())};
+        pair.first["ItemsToDisplay"] = {"Int", tgui::String::fromNumber(comboBox->getItemsToDisplay())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(comboBox->getTextSize())};
+        pair.first["MaximumItems"] = {"UInt", tgui::String::fromNumber(comboBox->getMaximumItems())};
         pair.first["ExpandDirection"] = {"Enum{Down, Up, Automatic}", serializeExpandDirection(comboBox->getExpandDirection())};
         pair.first["ChangeItemOnScroll"] = {"Bool", tgui::Serializer::serialize(comboBox->getChangeItemOnScroll())};
 
@@ -96,9 +96,9 @@ struct ComboBoxProperties : WidgetProperties
 
 private:
 
-    static tgui::ComboBox::ExpandDirection deserializeExpandDirection(std::string value)
+    static tgui::ComboBox::ExpandDirection deserializeExpandDirection(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "up")
             return tgui::ComboBox::ExpandDirection::Up;
         else if (value == "down")
@@ -107,7 +107,7 @@ private:
             return tgui::ComboBox::ExpandDirection::Automatic;
     }
 
-    static std::string serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
+    static tgui::String serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
     {
         if (alignment == tgui::ComboBox::ExpandDirection::Up)
             return "Up";

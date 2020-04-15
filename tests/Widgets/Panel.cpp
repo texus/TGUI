@@ -35,34 +35,34 @@ TEST_CASE("[Panel]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(panel->connect("MousePressed", [](){}));
-        REQUIRE_NOTHROW(panel->connect("MousePressed", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(panel->connect("MouseReleased", [](){}));
-        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(panel->connect("Clicked", [](){}));
-        REQUIRE_NOTHROW(panel->connect("Clicked", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](){}));
-        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("RightMousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](){}));
-        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("RightMouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(panel->connect("RightClicked", [](){}));
-        REQUIRE_NOTHROW(panel->connect("RightClicked", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("RightClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(panel->connect("RightClicked", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightClicked", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("RightClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(panel->connect("RightClicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
     }
 
     SECTION("WidgetType")
@@ -77,11 +77,11 @@ TEST_CASE("[Panel]")
 
         SECTION("Without outline")
         {
-            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(panel->getFullSize() == panel->getSize());
-            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
+            REQUIRE(panel->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == tgui::Vector2f(0, 0));
         }
 
         SECTION("With outline")
@@ -89,11 +89,11 @@ TEST_CASE("[Panel]")
             panel->getRenderer()->setBorders({1, 2, 3, 4});
             panel->getRenderer()->setPadding({5, 6, 7, 8});
 
-            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
-            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getPosition() == tgui::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == tgui::Vector2f(150, 100));
             REQUIRE(panel->getFullSize() == panel->getSize());
-            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(6, 8));
+            REQUIRE(panel->getWidgetOffset() == tgui::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == tgui::Vector2f(6, 8));
         }
 
         SECTION("Child widgets")
@@ -102,12 +102,12 @@ TEST_CASE("[Panel]")
             childWidget->setPosition(60, 50);
             panel->add(childWidget);
 
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(100, 80));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(100, 80));
 
             panel->getRenderer()->setBorders({1, 2, 3, 4});
-            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
+            REQUIRE(childWidget->getPosition() == tgui::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == tgui::Vector2f(101, 82));
         }
     }
 
@@ -168,8 +168,8 @@ TEST_CASE("[Panel]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
             }
@@ -182,13 +182,13 @@ TEST_CASE("[Panel]")
                 renderer->setPadding({5, 6, 7, 8});
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
 
-            REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         }
@@ -233,7 +233,7 @@ TEST_CASE("[Panel]")
             
             panel->setSize(200, 100);
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("PanelWidgetFile1.txt"));
-            REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
+            REQUIRE(panel->getSize() == tgui::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile2.txt"));
             REQUIRE(compareFiles("PanelWidgetFile1.txt", "PanelWidgetFile2.txt"));
@@ -250,8 +250,8 @@ TEST_CASE("[Panel]")
         TEST_DRAW_INIT(200, 150, panel)
 
         tgui::PanelRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Yellow);
-        renderer.setBorderColor(sf::Color::Red);
+        renderer.setBackgroundColor(tgui::Color::Yellow);
+        renderer.setBorderColor(tgui::Color::Red);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({5, 6, 7, 8});
         renderer.setOpacity(0.7f);

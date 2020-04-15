@@ -31,19 +31,19 @@
 
 struct RangeSliderProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto slider = std::dynamic_pointer_cast<tgui::RangeSlider>(widget);
+        auto slider = widget->cast<tgui::RangeSlider>();
         if (property == "Minimum")
-            slider->setMinimum(tgui::strToFloat(value));
+            slider->setMinimum(value.toFloat());
         else if (property == "Maximum")
-            slider->setMaximum(tgui::strToFloat(value));
+            slider->setMaximum(value.toFloat());
         else if (property == "SelectionStart")
-            slider->setSelectionStart(tgui::strToFloat(value));
+            slider->setSelectionStart(value.toFloat());
         else if (property == "SelectionEnd")
-            slider->setSelectionEnd(tgui::strToFloat(value));
+            slider->setSelectionEnd(value.toFloat());
         else if (property == "Step")
-            slider->setStep(tgui::strToFloat(value));
+            slider->setStep(value.toFloat());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -51,12 +51,12 @@ struct RangeSliderProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto slider = std::dynamic_pointer_cast<tgui::RangeSlider>(widget);
-        pair.first["Minimum"] = {"Float", tgui::to_string(slider->getMinimum())};
-        pair.first["Maximum"] = {"Float", tgui::to_string(slider->getMaximum())};
-        pair.first["SelectionStart"] = {"Float", tgui::to_string(slider->getSelectionStart())};
-        pair.first["SelectionEnd"] = {"Float", tgui::to_string(slider->getSelectionEnd())};
-        pair.first["Step"] = {"Float", tgui::to_string(slider->getStep())};
+        auto slider = widget->cast<tgui::RangeSlider>();
+        pair.first["Minimum"] = {"Float", tgui::String::fromNumber(slider->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::String::fromNumber(slider->getMaximum())};
+        pair.first["SelectionStart"] = {"Float", tgui::String::fromNumber(slider->getSelectionStart())};
+        pair.first["SelectionEnd"] = {"Float", tgui::String::fromNumber(slider->getSelectionEnd())};
+        pair.first["Step"] = {"Float", tgui::String::fromNumber(slider->getStep())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

@@ -44,15 +44,15 @@ namespace tgui
         typedef std::shared_ptr<const SignalManager> ConstPtr; ///< Shared constant widget pointer
 
         using Delegate = std::function<void()>;
-        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const std::string&)>;
+        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const String&)>;
 
         typedef std::weak_ptr<Widget> Weak;
         typedef unsigned int SignalID;
 
         struct SignalTuple
         {
-            std::string m_widgetName;
-            std::string m_signalName;
+            String m_widgetName;
+            String m_signalName;
             std::pair<Delegate, DelegateEx> m_func;
         };
 
@@ -99,7 +99,7 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs>
-        unsigned int connect(std::string widgetName, std::string signalName, Func&& handler, const BoundArgs&... args);
+        unsigned int connect(String widgetName, String signalName, Func&& handler, const BoundArgs&... args);
 
 #else
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
-        unsigned int connect(std::string widgetName, std::string signalName, Func&& handler, const Args&... args);
+        unsigned int connect(String widgetName, String signalName, Func&& handler, const Args&... args);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,8 +128,8 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                                && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string widgetName, std::string signalName, Func&& handler, BoundArgs&&... args);
+                                                                                && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
+        unsigned int connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args);
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ namespace tgui
         /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs>
-        unsigned int connect(std::string widgetName, std::initializer_list<std::string> signalNames, Func&& handler, BoundArgs&&... args);
+        unsigned int connect(String widgetName, std::initializer_list<String> signalNames, Func&& handler, BoundArgs&&... args);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

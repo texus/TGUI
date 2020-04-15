@@ -31,19 +31,19 @@
 
 struct EditBoxProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto editBox = std::dynamic_pointer_cast<tgui::EditBox>(widget);
+        auto editBox = widget->cast<tgui::EditBox>();
         if (property == "Text")
             editBox->setText(value);
         else if (property == "DefaultText")
             editBox->setDefaultText(value);
         else if (property == "TextSize")
-            editBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            editBox->setTextSize(value.toUInt());
         else if (property == "PasswordCharacter")
-            editBox->setPasswordCharacter(value.isEmpty() ? '\0' : static_cast<char>(value[0]));
+            editBox->setPasswordCharacter(value.empty() ? '\0' : static_cast<char>(value[0]));
         else if (property == "MaximumCharacters")
-            editBox->setMaximumCharacters(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            editBox->setMaximumCharacters(value.toUInt());
         else if (property == "Alignment")
             editBox->setAlignment(deserializeAlignment(value));
         else if (property == "LimitTextWidth")
@@ -61,12 +61,12 @@ struct EditBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto editBox = std::dynamic_pointer_cast<tgui::EditBox>(widget);
+        auto editBox = widget->cast<tgui::EditBox>();
         pair.first["Text"] = {"String", editBox->getText()};
         pair.first["DefaultText"] = {"String", editBox->getDefaultText()};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(editBox->getTextSize())};
-        pair.first["PasswordCharacter"] = {"Char", editBox->getPasswordCharacter() ? std::string(1, editBox->getPasswordCharacter()) : ""};
-        pair.first["MaximumCharacters"] = {"UInt", tgui::to_string(editBox->getMaximumCharacters())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(editBox->getTextSize())};
+        pair.first["PasswordCharacter"] = {"Char", editBox->getPasswordCharacter() ? tgui::String(1, editBox->getPasswordCharacter()) : tgui::String("")};
+        pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(editBox->getMaximumCharacters())};
         pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeAlignment(editBox->getAlignment())};
         pair.first["LimitTextWidth"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
@@ -76,7 +76,7 @@ struct EditBoxProperties : WidgetProperties
         const auto renderer = editBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
-        pair.second["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};
+        pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(renderer->getCaretWidth())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDisabled())};
         pair.second["TextColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorFocused())};
@@ -105,9 +105,9 @@ struct EditBoxProperties : WidgetProperties
 
 private:
 
-    static tgui::EditBox::Alignment deserializeAlignment(std::string value)
+    static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "right")
             return tgui::EditBox::Alignment::Right;
         else if (value == "center")
@@ -116,7 +116,7 @@ private:
             return tgui::EditBox::Alignment::Left;
     }
 
-    static std::string serializeAlignment(tgui::EditBox::Alignment alignment)
+    static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
     {
         if (alignment == tgui::EditBox::Alignment::Center)
             return "Center";

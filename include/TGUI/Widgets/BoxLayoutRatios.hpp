@@ -58,7 +58,7 @@ namespace tgui
         ///
         /// The widget will have a ratio of 1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void add(const Widget::Ptr& widget, const sf::String& widgetName = "") override;
+        void add(const Widget::Ptr& widget, const String& widgetName = "") override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ namespace tgui
         /// @param ratio       Ratio to determine the size compared to other widgets
         /// @param widgetName  An identifier to access to the widget later
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void add(const Widget::Ptr& widget, float ratio, const sf::String& widgetName = "");
+        void add(const Widget::Ptr& widget, float ratio, const String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ namespace tgui
         ///
         /// If the index is too high, the widget will simply be added at the end of the list.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void insert(std::size_t index, const Widget::Ptr& widget, const sf::String& widgetName = "") override;
+        void insert(std::size_t index, const Widget::Ptr& widget, const String& widgetName = "") override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ namespace tgui
         ///
         /// If the index is too high, the widget will simply be added at the end of the list.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void insert(std::size_t index, const Widget::Ptr& widget, float ratio, const sf::String& widgetName = "");
+        void insert(std::size_t index, const Widget::Ptr& widget, float ratio, const String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

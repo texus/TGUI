@@ -31,9 +31,9 @@
 
 struct BitmapButtonProperties : ButtonProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
+        auto button = widget->cast<tgui::BitmapButton>();
         if (property == "Image")
             button->setImage(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Texture, value).getTexture());
         else if (property == "ImageScaling")
@@ -45,7 +45,7 @@ struct BitmapButtonProperties : ButtonProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = ButtonProperties::initProperties(widget);
-        auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
+        auto button = widget->cast<tgui::BitmapButton>();
         pair.first["Image"] = {"Texture", tgui::Serializer::serialize(button->getImage())};
         pair.first["ImageScaling"] = {"Float", tgui::Serializer::serialize(button->getImageScaling())};
         return pair;

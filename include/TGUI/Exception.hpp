@@ -29,7 +29,7 @@
 
 #include <string>
 #include <stdexcept>
-#include <TGUI/Config.hpp>
+#include <TGUI/String.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,8 +44,8 @@ namespace tgui
 
     class TGUI_API Exception : public std::runtime_error {
     public:
-        explicit Exception(const std::string& argument) :
-            std::runtime_error(argument)
+        explicit Exception(const String& argument) :
+            std::runtime_error(argument.toAnsiString())
         {
         }
     };

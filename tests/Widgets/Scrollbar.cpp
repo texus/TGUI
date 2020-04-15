@@ -37,8 +37,8 @@ TEST_CASE("[Scrollbar]")
     {
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](unsigned int){}));
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, unsigned int){}));
+        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String, unsigned int){}));
     }
 
     SECTION("WidgetType")
@@ -51,10 +51,10 @@ TEST_CASE("[Scrollbar]")
         scrollbar->setPosition(40, 30);
         scrollbar->setSize(150, 25);
 
-        REQUIRE(scrollbar->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(scrollbar->getSize() == sf::Vector2f(150, 25));
+        REQUIRE(scrollbar->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(scrollbar->getSize() == tgui::Vector2f(150, 25));
         REQUIRE(scrollbar->getFullSize() == scrollbar->getSize());
-        REQUIRE(scrollbar->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(scrollbar->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("ViewportSize")
@@ -135,10 +135,10 @@ TEST_CASE("[Scrollbar]")
         scrollbar->setSize(10, 40);
         scrollbar->setVerticalScroll(false);
         REQUIRE(!scrollbar->getVerticalScroll());
-        REQUIRE(scrollbar->getSize() == sf::Vector2f(40, 10));
+        REQUIRE(scrollbar->getSize() == tgui::Vector2f(40, 10));
         scrollbar->setVerticalScroll(true);
         REQUIRE(scrollbar->getVerticalScroll());
-        REQUIRE(scrollbar->getSize() == sf::Vector2f(10, 40));
+        REQUIRE(scrollbar->getSize() == tgui::Vector2f(10, 40));
     }
 
     SECTION("Events / Signals")
@@ -172,14 +172,14 @@ TEST_CASE("[Scrollbar]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", sf::Color{80, 90, 100}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", tgui::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", tgui::Color{120, 130, 140}));
             }
 
             SECTION("functions")
@@ -194,23 +194,23 @@ TEST_CASE("[Scrollbar]")
                 renderer->setArrowColorHover({120, 130, 140});
             }
 
-            REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("TrackColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("ThumbColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("ArrowColor").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == tgui::Color(120, 130, 140));
 
-            REQUIRE(renderer->getTrackColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getTrackColorHover() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getThumbColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getThumbColorHover() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getArrowBackgroundColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getArrowBackgroundColorHover() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getArrowColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getArrowColorHover() == sf::Color(120, 130, 140));
+            REQUIRE(renderer->getTrackColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getTrackColorHover() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getThumbColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getThumbColorHover() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getArrowBackgroundColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getArrowBackgroundColorHover() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getArrowColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getArrowColorHover() == tgui::Color(120, 130, 140));
         }
 
         SECTION("textured")
@@ -303,18 +303,18 @@ TEST_CASE("[Scrollbar]")
         scrollbar->setValue(30);
 
         tgui::ScrollbarRenderer renderer = tgui::RendererData::create();
-        renderer.setTrackColor(sf::Color::Green);
-        renderer.setThumbColor(sf::Color::Red);
-        renderer.setArrowBackgroundColor(sf::Color::Blue);
-        renderer.setArrowColor(sf::Color::White);
+        renderer.setTrackColor(tgui::Color::Green);
+        renderer.setThumbColor(tgui::Color::Red);
+        renderer.setArrowBackgroundColor(tgui::Color::Blue);
+        renderer.setArrowColor(tgui::Color::White);
         renderer.setOpacity(0.7f);
         scrollbar->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTrackColorHover(sf::Color::Cyan);
-                                        renderer.setThumbColorHover(sf::Color::Magenta);
-                                        renderer.setArrowBackgroundColorHover(sf::Color::Yellow);
-                                        renderer.setArrowColorHover(sf::Color::Black);
+                                        renderer.setTrackColorHover(tgui::Color::Cyan);
+                                        renderer.setThumbColorHover(tgui::Color::Magenta);
+                                        renderer.setArrowBackgroundColorHover(tgui::Color::Yellow);
+                                        renderer.setArrowColorHover(tgui::Color::Black);
                                         if (textured)
                                         {
                                             renderer.setTextureTrackHover("resources/Texture5.png");

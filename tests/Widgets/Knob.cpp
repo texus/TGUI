@@ -37,8 +37,8 @@ TEST_CASE("[Knob]")
     {
         REQUIRE_NOTHROW(knob->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(knob->connect("ValueChanged", [](float){}));
-        REQUIRE_NOTHROW(knob->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(knob->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, float){}));
+        REQUIRE_NOTHROW(knob->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(knob->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String, float){}));
     }
 
     SECTION("WidgetType")
@@ -52,10 +52,10 @@ TEST_CASE("[Knob]")
         knob->setSize(100, 100);
         knob->getRenderer()->setBorders(2);
 
-        REQUIRE(knob->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(knob->getSize() == sf::Vector2f(100, 100));
+        REQUIRE(knob->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(knob->getSize() == tgui::Vector2f(100, 100));
         REQUIRE(knob->getFullSize() == knob->getSize());
-        REQUIRE(knob->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(knob->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("StartRotation")
@@ -172,9 +172,9 @@ TEST_CASE("[Knob]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -186,9 +186,9 @@ TEST_CASE("[Knob]")
                 renderer->setBorders({1, 2, 3, 4});
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-            REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("ThumbColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
@@ -254,9 +254,9 @@ TEST_CASE("[Knob]")
         knob->setClockwiseTurning(false);
 
         tgui::KnobRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setThumbColor(sf::Color::Red);
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setThumbColor(tgui::Color::Red);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setImageRotation(-90);
         renderer.setOpacity(0.7f);
         knob->setRenderer(renderer.getData());

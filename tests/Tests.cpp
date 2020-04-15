@@ -25,10 +25,10 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
 
-void mouseCallback(unsigned int& count, sf::Vector2f pos)
+void mouseCallback(unsigned int& count, tgui::Vector2f pos)
 {
     count++;
-    REQUIRE(pos == sf::Vector2f(75, 50));
+    REQUIRE(pos == tgui::Vector2f(75, 50));
 }
 
 void genericCallback(unsigned int& count)
@@ -88,12 +88,12 @@ void testClickableWidgetSignalsImpl(T widget)
     widget->setPosition({40, 30});
     widget->setSize({150, 100});
 
-    widget->connect("MousePressed", [&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-    widget->connect("MouseReleased", [&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-    widget->connect("Clicked", [&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
-    widget->connect("RightMousePressed", [&](sf::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
-    widget->connect("RightMouseReleased", [&](sf::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
-    widget->connect("RightClicked", [&](sf::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
+    widget->connect("MousePressed", [&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
+    widget->connect("MouseReleased", [&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
+    widget->connect("Clicked", [&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
+    widget->connect("RightMousePressed", [&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
+    widget->connect("RightMouseReleased", [&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
+    widget->connect("RightClicked", [&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
 
     SECTION("mouseOnWidget")
     {

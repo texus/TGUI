@@ -26,8 +26,8 @@
 #ifndef TGUI_ANIMATION_HPP
 #define TGUI_ANIMATION_HPP
 
-#include <TGUI/Vector2f.hpp>
-#include <SFML/System/Time.hpp>
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Duration.hpp>
 #include <functional>
 #include <memory>
 
@@ -80,18 +80,18 @@ namespace tgui
 
             Type getType() const;
 
-            virtual bool update(sf::Time elapsedTime) = 0;
+            virtual bool update(Duration elapsedTime) = 0;
             virtual void finish();
 
         protected:
-            Animation(Type type, std::shared_ptr<Widget> widget, sf::Time duration, std::function<void()> finishedCallback);
+            Animation(Type type, std::shared_ptr<Widget> widget, Duration duration, std::function<void()> finishedCallback);
 
         protected:
             Type m_type = Type::None;
             std::shared_ptr<Widget> m_widget;
 
-            sf::Time m_totalDuration;
-            sf::Time m_elapsedTime;
+            Duration m_totalDuration;
+            Duration m_elapsedTime;
 
             std::function<void()> m_finishedCallback;
         };
@@ -101,9 +101,9 @@ namespace tgui
         class TGUI_API MoveAnimation : public Animation
         {
         public:
-            MoveAnimation(std::shared_ptr<Widget> widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+            MoveAnimation(std::shared_ptr<Widget> widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback = nullptr);
 
-            bool update(sf::Time elapsedTime) override;
+            bool update(Duration elapsedTime) override;
 
             void finish() override;
 
@@ -117,9 +117,9 @@ namespace tgui
         class TGUI_API ResizeAnimation : public Animation
         {
         public:
-            ResizeAnimation(std::shared_ptr<Widget> widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+            ResizeAnimation(std::shared_ptr<Widget> widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback = nullptr);
 
-            bool update(sf::Time elapsedTime) override;
+            bool update(Duration elapsedTime) override;
 
             void finish() override;
 
@@ -133,9 +133,9 @@ namespace tgui
         class TGUI_API FadeAnimation : public Animation
         {
         public:
-            FadeAnimation(std::shared_ptr<Widget> widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+            FadeAnimation(std::shared_ptr<Widget> widget, float start, float end, Duration duration, std::function<void()> finishedCallback = nullptr);
 
-            bool update(sf::Time elapsedTime) override;
+            bool update(Duration elapsedTime) override;
 
             void finish() override;
 

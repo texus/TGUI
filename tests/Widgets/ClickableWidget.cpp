@@ -33,34 +33,34 @@ TEST_CASE("[ClickableWidget]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](){}));
-        REQUIRE_NOTHROW(widget->connect("MousePressed", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("MouseReleased", [](){}));
-        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("Clicked", [](){}));
-        REQUIRE_NOTHROW(widget->connect("Clicked", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](){}));
-        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("RightMousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](){}));
-        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("RightMouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("RightClicked", [](){}));
-        REQUIRE_NOTHROW(widget->connect("RightClicked", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("RightClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->connect("RightClicked", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightClicked", [](tgui::Vector2f){}));
+        REQUIRE_NOTHROW(widget->connect("RightClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(widget->connect("RightClicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
     }
 
     SECTION("WidgetType")
@@ -71,7 +71,7 @@ TEST_CASE("[ClickableWidget]")
     SECTION("Constructor")
     {
         widget = tgui::ClickableWidget::create({200, 100});
-        REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
+        REQUIRE(widget->getSize() == tgui::Vector2f(200, 100));
     }
 
     SECTION("Position and Size")
@@ -79,10 +79,10 @@ TEST_CASE("[ClickableWidget]")
         widget->setPosition(40, 30);
         widget->setSize(150, 100);
 
-        REQUIRE(widget->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(widget->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(widget->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(widget->getFullSize() == widget->getSize());
-        REQUIRE(widget->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(widget->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Events / Signals")

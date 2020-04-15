@@ -34,9 +34,9 @@ struct ListBoxProperties : WidgetProperties
     // TODO: Item Ids
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
+        auto listBox = widget->cast<tgui::ListBox>();
         if (property == "Items")
         {
             listBox->removeAllItems();
@@ -45,13 +45,13 @@ struct ListBoxProperties : WidgetProperties
                 listBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::strToInt(value.toAnsiString())));
+            listBox->setSelectedItemByIndex(value.toUInt());
         else if (property == "ItemHeight")
-            listBox->setItemHeight(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            listBox->setItemHeight(value.toUInt());
         else if (property == "TextSize")
-            listBox->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            listBox->setTextSize(value.toUInt());
         else if (property == "MaximumItems")
-            listBox->setMaximumItems(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            listBox->setMaximumItems(value.toUInt());
         else if (property == "AutoScroll")
             listBox->setAutoScroll(parseBoolean(value, true));
         else
@@ -61,12 +61,12 @@ struct ListBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
+        auto listBox = widget->cast<tgui::ListBox>();
         pair.first["Items"] = {"List<String>", serializeList(listBox->getItems())};
-        pair.first["SelectedItemIndex"] = {"Int", tgui::to_string(listBox->getSelectedItemIndex())};
-        pair.first["ItemHeight"] = {"UInt", tgui::to_string(listBox->getItemHeight())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(listBox->getTextSize())};
-        pair.first["MaximumItems"] = {"UInt", tgui::to_string(listBox->getMaximumItems())};
+        pair.first["SelectedItemIndex"] = {"Int", tgui::String::fromNumber(listBox->getSelectedItemIndex())};
+        pair.first["ItemHeight"] = {"UInt", tgui::String::fromNumber(listBox->getItemHeight())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(listBox->getTextSize())};
+        pair.first["MaximumItems"] = {"UInt", tgui::String::fromNumber(listBox->getMaximumItems())};
         pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
 
         const auto renderer = listBox->getSharedRenderer();
@@ -84,7 +84,7 @@ struct ListBoxProperties : WidgetProperties
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
         pair.second["SelectedTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getSelectedTextStyle())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 };

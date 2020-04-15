@@ -31,15 +31,15 @@
 
 struct RadioButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto radioButton = std::dynamic_pointer_cast<tgui::RadioButton>(widget);
+        auto radioButton = widget->cast<tgui::RadioButton>();
         if (property == "Checked")
             radioButton->setChecked(parseBoolean(value, false));
         else if (property == "Text")
             radioButton->setText(value);
         else if (property == "TextSize")
-            radioButton->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            radioButton->setTextSize(value.toUInt());
         else if (property == "TextClickable")
             radioButton->setTextClickable(parseBoolean(value, true));
         else
@@ -49,10 +49,10 @@ struct RadioButtonProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto radioButton = std::dynamic_pointer_cast<tgui::RadioButton>(widget);
+        auto radioButton = widget->cast<tgui::RadioButton>();
         pair.first["Checked"] = {"Bool", tgui::Serializer::serialize(radioButton->isChecked())};
         pair.first["Text"] = {"String", radioButton->getText()};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(radioButton->getTextSize())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(radioButton->getTextSize())};
         pair.first["TextClickable"] = {"Bool", tgui::Serializer::serialize(radioButton->isTextClickable())};
 
         const auto renderer = radioButton->getSharedRenderer();

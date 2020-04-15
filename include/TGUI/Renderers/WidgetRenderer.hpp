@@ -42,7 +42,7 @@ namespace tgui
     {
         RendererData() = default;
 
-        static std::shared_ptr<RendererData> create(const std::map<std::string, ObjectConverter>& init = {})
+        static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {})
         {
             auto data = std::make_shared<RendererData>();
             data->propertyValuePairs = init;
@@ -62,14 +62,14 @@ namespace tgui
             {
                 std::stringstream ss;
                 DataIO::emit(nestedProperty, ss);
-                rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{"{\n" + ss.str() + "}"}};
+                rendererData->propertyValuePairs[nestedProperty->name.toLower()] = {String("{\n" + ss.str() + "}")};
             }
 
             return rendererData;
         };
 
-        std::map<std::string, ObjectConverter> propertyValuePairs;
-        std::map<const void*, std::function<void(const std::string& property)>> observers;
+        std::map<String, ObjectConverter> propertyValuePairs;
+        std::map<const void*, std::function<void(const String& property)>> observers;
         bool shared = true;
     };
 
@@ -194,7 +194,7 @@ namespace tgui
         /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setProperty(const std::string& property, ObjectConverter&& value);
+        void setProperty(const String& property, ObjectConverter&& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ namespace tgui
         ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter getProperty(const std::string& property) const;
+        ObjectConverter getProperty(const String& property) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ namespace tgui
         /// @return Property-value pairs of the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::map<std::string, ObjectConverter>& getPropertyValuePairs() const;
+        const std::map<String, ObjectConverter>& getPropertyValuePairs() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace tgui
         /// @param function Callback function to call when the renderer changes
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void subscribe(const void* id, const std::function<void(const std::string& property)>& function);
+        void subscribe(const void* id, const std::function<void(const String& property)>& function);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

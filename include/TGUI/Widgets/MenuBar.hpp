@@ -48,7 +48,7 @@ namespace tgui
         /// @brief Used for return value of getMenus
         struct GetMenusElement
         {
-            sf::String text;
+            String text;
             bool enabled;
             std::vector<GetMenusElement> menuItems;
         };
@@ -119,7 +119,7 @@ namespace tgui
         /// The hierarchy does not need to exist yet and the signal will still exist when removing and readding the menu items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
-        unsigned int connectMenuItem(const sf::String& menu, const sf::String& menuItem, Func&& handler, const Args&... args)
+        unsigned int connectMenuItem(const String& menu, const String& menuItem, Func&& handler, const Args&... args)
         {
             return connectMenuItem({menu, menuItem}, std::forward<Func>(handler), args...);
         }
@@ -139,11 +139,11 @@ namespace tgui
         /// The hierarchy does not need to exist yet and the signal will still exist when removing and readding the menu items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
-        unsigned int connectMenuItem(const std::vector<sf::String>& hierarchy, Func&& handler, const Args&... args)
+        unsigned int connectMenuItem(const std::vector<String>& hierarchy, Func&& handler, const Args&... args)
         {
 #if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
             return connect("MenuItemClicked",
-                [=](const std::vector<sf::String>& clickedMenuItem)
+                [=](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
                         std::invoke(handler, args...);
@@ -151,7 +151,7 @@ namespace tgui
             );
 #else
             return connect("MenuItemClicked",
-                [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<sf::String>& clickedMenuItem)
+                [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
                         f(args...);
@@ -189,7 +189,7 @@ namespace tgui
         /// @param text  The text written on the menu
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addMenu(const sf::String& text);
+        void addMenu(const String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ namespace tgui
         /// menuBar->addMenuItem("Undo");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addMenuItem(const sf::String& text);
+        bool addMenuItem(const String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ namespace tgui
         /// menuBar->addMenuItem("Edit", "Undo");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addMenuItem(const sf::String& menu, const sf::String& text);
+        bool addMenuItem(const String& menu, const String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +243,7 @@ namespace tgui
         /// menuBar->addMenuItem({"View", "Messages", "Tags", "Important"});
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addMenuItem(const std::vector<sf::String>& hierarchy, bool createParents = true);
+        bool addMenuItem(const std::vector<String>& hierarchy, bool createParents = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ namespace tgui
         /// @return True when the menu was removed, false when menu was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeMenu(const sf::String& menu);
+        bool removeMenu(const String& menu);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +274,7 @@ namespace tgui
         /// @return True when the item was removed, false when menu or menuItem was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeMenuItem(const sf::String& menu, const sf::String& menuItem);
+        bool removeMenuItem(const String& menu, const String& menuItem);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ namespace tgui
         /// menuBar->removeMenuItem({"View", "Messages", "Tags", "Important"});
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeMenuItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty = true);
+        bool removeMenuItem(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ namespace tgui
         /// @return True when the menu existed and its children were removed, false when menu was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeMenuItems(const sf::String& menu);
+        bool removeMenuItems(const String& menu);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +315,7 @@ namespace tgui
         /// menuBar->removeSubMenuItems({"File", "Recent files"});
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeSubMenuItems(const std::vector<sf::String>& hierarchy);
+        bool removeSubMenuItems(const std::vector<String>& hierarchy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +324,7 @@ namespace tgui
         /// @param enabled  Should the menu be enabled or disabled?
         /// @return True when the menu exists, false when menu was not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setMenuEnabled(const sf::String& menu, bool enabled);
+        bool setMenuEnabled(const String& menu, bool enabled);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,7 +332,7 @@ namespace tgui
         /// @param menu  The name of the menu to check
         /// @return True if the menu is enabled, false if it was disabled or when the menu did not exist
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getMenuEnabled(const sf::String& menu) const;
+        bool getMenuEnabled(const String& menu) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +342,7 @@ namespace tgui
         /// @param enabled   Should the menu item be enabled or disabled?
         /// @return True when the menu item exists, false when menu or menuItem was not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setMenuItemEnabled(const sf::String& menu, const sf::String& menuItem, bool enabled);
+        bool setMenuItemEnabled(const String& menu, const String& menuItem, bool enabled);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ namespace tgui
         /// @param enabled    Should the menu item be enabled or disabled?
         /// @return True when the menu item exists, false when hierarchy was incorrect
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setMenuItemEnabled(const std::vector<sf::String>& hierarchy, bool enabled);
+        bool setMenuItemEnabled(const std::vector<String>& hierarchy, bool enabled);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,7 +360,7 @@ namespace tgui
         /// @param menuItem  The name of the menu item to check
         /// @return True if the menu item is enabled, false if it was disabled or when the menu or menuItem did not exist
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getMenuItemEnabled(const sf::String& menu, const sf::String& menuItem) const;
+        bool getMenuItemEnabled(const String& menu, const String& menuItem) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,7 +368,7 @@ namespace tgui
         /// @param hierarchy  Hierarchy of menu items, starting with the menu and ending with the menu item to check
         /// @return True if the menu item is enabled, false if it was disabled or when the hierarchy was incorrect
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getMenuItemEnabled(const std::vector<sf::String>& hierarchy) const;
+        bool getMenuItemEnabled(const std::vector<String>& hierarchy) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -494,7 +494,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Signal& getSignal(std::string signalName) override;
+        Signal& getSignal(String signalName) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +503,7 @@ namespace tgui
         /// @param property  Lowercase name of the property that was changed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void rendererChanged(const std::string& property) override;
+        void rendererChanged(const String& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,21 +528,21 @@ namespace tgui
 
         /// @internal
         /// Helper function to create a new menu or menu item
-        void createMenu(std::vector<Menu>& menus, const sf::String& text);
+        void createMenu(std::vector<Menu>& menus, const String& text);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy, creating the hierarchy if requested.
         /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
-        Menu* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents);
+        Menu* findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy.
         /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
-        const Menu* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const;
+        const Menu* findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const;
 
         /// @internal
         /// Search for the menu item specified in the hierarchy.
-        const Menu* findMenuItem(const std::vector<sf::String>& hierarchy) const;
+        const Menu* findMenuItem(const std::vector<String>& hierarchy) const;
 
         /// @internal
         /// Helper function to load the menus when the menu bar is being loaded from a text file

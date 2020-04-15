@@ -59,9 +59,10 @@ tgui_set_option(TGUI_CXX_STANDARD "14" STRING "C++ standard version to build TGU
 # At least c++14 has to be used
 if (TGUI_CXX_STANDARD LESS "14")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
-else()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 endif()
+
+# Generate the Config.hpp header
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
 # Define the install directory for miscellaneous files
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)

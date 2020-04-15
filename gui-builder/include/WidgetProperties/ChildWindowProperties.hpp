@@ -31,9 +31,9 @@
 
 struct ChildWindowProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto childWindow = std::dynamic_pointer_cast<tgui::ChildWindow>(widget);
+        auto childWindow = widget->cast<tgui::ChildWindow>();
         if (property == "TitleAlignment")
             childWindow->setTitleAlignment(deserializeTitleAlignment(value));
         else if (property == "TitleButtons")
@@ -61,17 +61,17 @@ struct ChildWindowProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto childWindow = std::dynamic_pointer_cast<tgui::ChildWindow>(widget);
+        auto childWindow = widget->cast<tgui::ChildWindow>();
         pair.first["TitleAlignment"] = {"Enum{Left,Center,Right}", serializeTitleAlignment(childWindow->getTitleAlignment())};
         pair.first["TitleButtons"] = {"ChildWindowTitleButtons", serializeTitleButtons(childWindow->getTitleButtons())};
         pair.first["Title"] = {"String", childWindow->getTitle()};
         pair.first["KeepInParent"] = {"Bool", tgui::Serializer::serialize(childWindow->isKeptInParent())};
         pair.first["Resizable"] = {"Bool", tgui::Serializer::serialize(childWindow->isResizable())};
         pair.first["PositionLocked"] = {"Bool", tgui::Serializer::serialize(childWindow->isPositionLocked())};
-        pair.first["MinimumWidth"] = {"Float", tgui::to_string(childWindow->getMinimumSize().x)};
-        pair.first["MinimumHeight"] = {"Float", tgui::to_string(childWindow->getMinimumSize().y)};
-        pair.first["MaximumWidth"] = {"Float", tgui::to_string(childWindow->getMaximumSize().x)};
-        pair.first["MaximumHeight"] = {"Float", tgui::to_string(childWindow->getMaximumSize().y)};
+        pair.first["MinimumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMinimumSize().x)};
+        pair.first["MinimumHeight"] = {"Float", tgui::String::fromNumber(childWindow->getMinimumSize().y)};
+        pair.first["MaximumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().x)};
+        pair.first["MaximumHeight"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().y)};
 
         const auto renderer = childWindow->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -80,11 +80,11 @@ struct ChildWindowProperties : WidgetProperties
         pair.second["TitleBarColor"] = {"Color", tgui::Serializer::serialize(renderer->getTitleBarColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BorderColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorFocused())};
-        pair.second["TitleBarHeight"] = {"Float", tgui::to_string(renderer->getTitleBarHeight())};
-        pair.second["BorderBelowTitleBar"] = {"Float", tgui::to_string(renderer->getBorderBelowTitleBar())};
-        pair.second["DistanceToSide"] = {"Float", tgui::to_string(renderer->getDistanceToSide())};
-        pair.second["PaddingBetweenButtons"] = {"Float", tgui::to_string(renderer->getPaddingBetweenButtons())};
-        pair.second["MinimumResizableBorderWidth"] = {"Float", tgui::to_string(renderer->getMinimumResizableBorderWidth())};
+        pair.second["TitleBarHeight"] = {"Float", tgui::String::fromNumber(renderer->getTitleBarHeight())};
+        pair.second["BorderBelowTitleBar"] = {"Float", tgui::String::fromNumber(renderer->getBorderBelowTitleBar())};
+        pair.second["DistanceToSide"] = {"Float", tgui::String::fromNumber(renderer->getDistanceToSide())};
+        pair.second["PaddingBetweenButtons"] = {"Float", tgui::String::fromNumber(renderer->getPaddingBetweenButtons())};
+        pair.second["MinimumResizableBorderWidth"] = {"Float", tgui::String::fromNumber(renderer->getMinimumResizableBorderWidth())};
         pair.second["ShowTextOnTitleButtons"] = {"Bool", tgui::Serializer::serialize(renderer->getTransparentTexture())};
         pair.second["TextureTitleBar"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTitleBar())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
@@ -94,9 +94,9 @@ struct ChildWindowProperties : WidgetProperties
 
 private:
 
-    static tgui::ChildWindow::TitleAlignment deserializeTitleAlignment(std::string value)
+    static tgui::ChildWindow::TitleAlignment deserializeTitleAlignment(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "right")
             return tgui::ChildWindow::TitleAlignment::Right;
         else if (value == "center")
@@ -105,13 +105,13 @@ private:
             return tgui::ChildWindow::TitleAlignment::Left;
     }
 
-    static int deserializeTitleButtons(std::string value)
+    static int deserializeTitleButtons(tgui::String value)
     {
         int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
-        std::vector<std::string> titleButtons = tgui::Deserializer::split(value, '|');
+        std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');
         for (const auto& elem : titleButtons)
         {
-            std::string requestedTitleButton = tgui::toLower(tgui::trim(elem));
+            tgui::String requestedTitleButton = elem.trim().toLower();
             if (requestedTitleButton == "close")
                 decodedTitleButtons |= tgui::TextStyle::Bold;
             else if (requestedTitleButton == "maximize")
@@ -123,7 +123,7 @@ private:
         return decodedTitleButtons;
     }
 
-    static std::string serializeTitleAlignment(tgui::ChildWindow::TitleAlignment alignment)
+    static tgui::String serializeTitleAlignment(tgui::ChildWindow::TitleAlignment alignment)
     {
         if (alignment == tgui::ChildWindow::TitleAlignment::Center)
             return "Center";
@@ -133,9 +133,9 @@ private:
             return "Left";
     }
 
-    static std::string serializeTitleButtons(unsigned int titleButtons)
+    static tgui::String serializeTitleButtons(unsigned int titleButtons)
     {
-        std::string serializedTitleButtons;
+        tgui::String serializedTitleButtons;
         if (titleButtons & tgui::ChildWindow::TitleButton::Minimize)
             serializedTitleButtons += " | Minimize";
         if (titleButtons & tgui::ChildWindow::TitleButton::Maximize)

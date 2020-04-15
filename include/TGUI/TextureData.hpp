@@ -28,11 +28,12 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Rect.hpp>
+#include <TGUI/Optional.hpp>
 #include <TGUI/SvgImage.hpp>
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Shader.hpp>
 
 #include <memory>
@@ -47,10 +48,10 @@ namespace tgui
     // Used by the Texture class
     struct TGUI_API TextureData
     {
+        // Either svgImage or texture MUST have a value. The image field can only exist in combination with the texture field
         std::shared_ptr<sf::Image> image;
-        std::unique_ptr<SvgImage> svgImage;
-        sf::Texture texture;
-        sf::IntRect rect;
+        Optional<SvgImage> svgImage;
+        Optional<sf::Texture> texture;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +60,9 @@ namespace tgui
     struct TGUI_API TextureDataHolder
     {
         std::shared_ptr<TextureData> data;
-        std::string  filename;
+        String  filename;
+        UIntRect partRect;
+        bool smooth = false;
         unsigned int users = 0;
     };
 

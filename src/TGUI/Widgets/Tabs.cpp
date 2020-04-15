@@ -25,10 +25,7 @@
 
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Clipping.hpp>
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <optional>
-#endif
+#include <TGUI/Optional.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -132,7 +129,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t Tabs::add(const sf::String& text, bool selectTab)
+    std::size_t Tabs::add(const String& text, bool selectTab)
     {
         // Use the insert function to put the tab in the right place
         insert(m_tabs.size(), text, selectTab);
@@ -143,7 +140,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::insert(std::size_t index, const sf::String& text, bool selectTab)
+    void Tabs::insert(std::size_t index, const String& text, bool selectTab)
     {
         // If the index is too high then just insert at the end
         if (index > m_tabs.size())
@@ -176,7 +173,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Tabs::getText(std::size_t index) const
+    String Tabs::getText(std::size_t index) const
     {
         if (index >= m_tabs.size())
             return "";
@@ -186,7 +183,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tabs::changeText(std::size_t index, const sf::String& text)
+    bool Tabs::changeText(std::size_t index, const String& text)
     {
         if (index >= m_tabs.size())
             return false;
@@ -198,7 +195,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tabs::select(const sf::String& text)
+    bool Tabs::select(const String& text)
     {
         for (unsigned int i = 0; i < m_tabs.size(); ++i)
         {
@@ -250,7 +247,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tabs::remove(const sf::String& text)
+    bool Tabs::remove(const String& text)
     {
         for (unsigned int i = 0; i < m_tabs.size(); ++i)
         {
@@ -296,7 +293,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Tabs::getSelected() const
+    String Tabs::getSelected() const
     {
         if (m_selectedTab >= 0)
             return m_tabs[m_selectedTab].text.getString();
@@ -542,9 +539,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Tabs::getSignal(std::string signalName)
+    Signal& Tabs::getSignal(String signalName)
     {
-        if (signalName == toLower(onTabSelect.getName()))
+        if (signalName == onTabSelect.getName().toLower())
             return onTabSelect;
         else
             return Widget::getSignal(std::move(signalName));
@@ -552,7 +549,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::rendererChanged(const std::string& property)
+    void Tabs::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -673,9 +670,9 @@ namespace tgui
         {
             bool allTabsVisible = true;
             bool allTabsEnabled = true;
-            std::string tabList = "[" + Serializer::serialize(getText(0));
-            std::string tabVisibleList = "[" + Serializer::serialize(getTabVisible(0));
-            std::string tabEnabledList = "[" + Serializer::serialize(getTabEnabled(0));
+            String tabList = "[" + Serializer::serialize(getText(0));
+            String tabVisibleList = "[" + Serializer::serialize(getTabVisible(0));
+            String tabEnabledList = "[" + Serializer::serialize(getTabEnabled(0));
             for (std::size_t i = 1; i < m_tabs.size(); ++i)
             {
                 tabList += ", " + Serializer::serialize(getText(i));
@@ -700,19 +697,19 @@ namespace tgui
         }
 
         if (getSelectedIndex() >= 0)
-            node->propertyValuePairs["Selected"] = std::make_unique<DataIO::ValueNode>(to_string(getSelectedIndex()));
+            node->propertyValuePairs["Selected"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedIndex()));
 
         if (m_maximumTabWidth > 0)
-            node->propertyValuePairs["MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximumTabWidth));
+            node->propertyValuePairs["MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTabWidth));
 
         if (m_autoSize)
         {
             node->propertyValuePairs.erase("Size");
-            node->propertyValuePairs["TabHeight"] = std::make_unique<DataIO::ValueNode>(to_string(getSize().y));
+            node->propertyValuePairs["TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSize().y));
         }
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_autoSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
 
         return node;
     }
@@ -753,13 +750,13 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["maximumtabwidth"])
-            setMaximumTabWidth(strToFloat(node->propertyValuePairs["maximumtabwidth"]->value));
+            setMaximumTabWidth(node->propertyValuePairs["maximumtabwidth"]->value.toFloat());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["tabheight"])
-            setTabHeight(strToFloat(node->propertyValuePairs["tabheight"]->value));
+            setTabHeight(node->propertyValuePairs["tabheight"]->value.toFloat());
         if (node->propertyValuePairs["selected"])
-            select(strToInt(node->propertyValuePairs["selected"]->value));
+            select(node->propertyValuePairs["selected"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -862,15 +859,9 @@ namespace tgui
 
             // Apply clipping if required for the text in this tab
             const float usableWidth = m_tabs[i].width - (2 * m_distanceToSideCached);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-            std::optional<Clipping> clipping;
+            Optional<Clipping> clipping;
             if (m_tabs[i].text.getSize().x > usableWidth)
                 clipping.emplace(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
-#else
-            std::unique_ptr<Clipping> clipping;
-            if (m_tabs[i].text.getSize().x > usableWidth)
-                clipping = std::make_unique<Clipping>(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
-#endif
 
             // Draw the text
             textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});

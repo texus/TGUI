@@ -325,9 +325,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& SpinButton::getSignal(std::string signalName)
+    Signal& SpinButton::getSignal(String signalName)
     {
-        if (signalName == toLower(onValueChange.getName()))
+        if (signalName == onValueChange.getName().toLower())
             return onValueChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -335,7 +335,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::rendererChanged(const std::string& property)
+    void SpinButton::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -401,10 +401,10 @@ namespace tgui
     std::unique_ptr<DataIO::Node> SpinButton::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
         return node;
     }
 
@@ -415,13 +415,13 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(strToFloat(node->propertyValuePairs["minimum"]->value));
+            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
         if (node->propertyValuePairs["maximum"])
-            setMaximum(strToFloat(node->propertyValuePairs["maximum"]->value));
+            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
         if (node->propertyValuePairs["value"])
-            setValue(strToFloat(node->propertyValuePairs["value"]->value));
+            setValue(node->propertyValuePairs["value"]->value.toFloat());
         if (node->propertyValuePairs["step"])
-            setStep(strToFloat(node->propertyValuePairs["step"]->value));
+            setStep(node->propertyValuePairs["step"]->value.toFloat());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,14 +482,14 @@ namespace tgui
             }
 
             if (m_mouseHover && m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
-                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorHoverCached, m_opacityCached));
+                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
             else
-                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
+                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
             if (m_mouseHover && m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
+                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
+                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);
@@ -548,14 +548,14 @@ namespace tgui
             }
 
             if (m_mouseHover && !m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
-                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorHoverCached, m_opacityCached));
+                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
             else
-                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
+                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
             if (m_mouseHover && !m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
+                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
+                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);

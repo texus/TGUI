@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Widgets/ScrollablePanel.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/Vector2.hpp>
 #include <TGUI/Clipping.hpp>
 #include <TGUI/SignalImpl.hpp>
 
@@ -204,7 +204,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::add(const Widget::Ptr& widget, const sf::String& widgetName)
+    void ScrollablePanel::add(const Widget::Ptr& widget, const String& widgetName)
     {
         Panel::add(widget, widgetName);
 
@@ -636,7 +636,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::rendererChanged(const std::string& property)
+    void ScrollablePanel::rendererChanged(const String& property)
     {
         if (property == "scrollbar")
         {
@@ -684,7 +684,7 @@ namespace tgui
                 node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
-        node->propertyValuePairs["ContentSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
+        node->propertyValuePairs["ContentSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_contentSize.x) + ", " + String::fromNumber(m_contentSize.y) + ")");
         return node;
     }
 
@@ -699,7 +699,7 @@ namespace tgui
 
         if (node->propertyValuePairs["verticalscrollbarpolicy"])
         {
-            std::string policy = toLower(trim(node->propertyValuePairs["verticalscrollbarpolicy"]->value));
+            String policy = node->propertyValuePairs["verticalscrollbarpolicy"]->value.trim().toLower();
             if (policy == "automatic")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
@@ -712,7 +712,7 @@ namespace tgui
 
         if (node->propertyValuePairs["horizontalscrollbarpolicy"])
         {
-            std::string policy = toLower(trim(node->propertyValuePairs["horizontalscrollbarpolicy"]->value));
+            String policy = node->propertyValuePairs["horizontalscrollbarpolicy"]->value.trim().toLower();
             if (policy == "automatic")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")

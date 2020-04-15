@@ -169,7 +169,7 @@ namespace tgui
         /// @internal
         /// This function is called every frame with the time passed since the last frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void update(sf::Time elapsedTime) override;
+        void update(Duration elapsedTime) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void textEntered(std::uint32_t key) override;
+        void textEntered(char32_t key) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -262,7 +262,7 @@ namespace tgui
         ///
         /// @param property  Lowercase name of the property that was changed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void rendererChanged(const std::string& property) override;
+        void rendererChanged(const String& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,30 +279,30 @@ namespace tgui
 
     public:
 
-        std::function<void(sf::Vector2f)>               implPositionChanged;
-        std::function<void(sf::Vector2f)>               implSizeChanged;
+        std::function<void(Vector2f)>                   implPositionChanged;
+        std::function<void(Vector2f)>                   implSizeChanged;
         std::function<void(bool)>                       implVisibleChanged;
         std::function<void(bool)>                       implEnableChanged;
         std::function<void(bool)>                       implFocusChanged;
         std::function<bool()>                           implCanGainFocus;
-        std::function<sf::Vector2f()>                   implGetFullSize;
-        std::function<sf::Vector2f()>                   implGetAbsolutePosition;
-        std::function<sf::Vector2f()>                   implGetWidgetOffset;
-        std::function<void(sf::Time)>                   implUpdateFunction;
-        std::function<bool(sf::Vector2f)>               implMouseOnWidget;
-        std::function<void(sf::Vector2f)>               implLeftMousePressed;
-        std::function<void(sf::Vector2f)>               implLeftMouseReleased;
-        std::function<void(sf::Vector2f)>               implRightMousePressed;
-        std::function<void(sf::Vector2f)>               implRightMouseReleased;
-        std::function<void(sf::Vector2f)>               implMouseMoved;
+        std::function<Vector2f()>                       implGetFullSize;
+        std::function<Vector2f()>                       implGetAbsolutePosition;
+        std::function<Vector2f()>                       implGetWidgetOffset;
+        std::function<void(Duration)>                   implUpdateFunction;
+        std::function<bool(Vector2f)>                   implMouseOnWidget;
+        std::function<void(Vector2f)>                   implLeftMousePressed;
+        std::function<void(Vector2f)>                   implLeftMouseReleased;
+        std::function<void(Vector2f)>                   implRightMousePressed;
+        std::function<void(Vector2f)>                   implRightMouseReleased;
+        std::function<void(Vector2f)>                   implMouseMoved;
         std::function<void(const sf::Event::KeyEvent&)> implKeyPressed;
-        std::function<void(std::uint32_t)>              implTextEntered;
-        std::function<bool(float, sf::Vector2f)>        implMouseWheelScrolled;
+        std::function<void(char32_t)>                   implTextEntered;
+        std::function<bool(float, Vector2f)>            implMouseWheelScrolled;
         std::function<void()>                           implMouseNoLongerOnWidget;
         std::function<void()>                           implLeftMouseButtonNoLongerDown;
         std::function<void()>                           implMouseEnteredWidget;
         std::function<void()>                           implMouseLeftWidget;
-        std::function<bool(const std::string&)>         implRendererChanged;
+        std::function<bool(const String&)>              implRendererChanged;
         std::function<void(sf::RenderTarget&, sf::RenderStates)> implDrawFunction;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -143,7 +143,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::rendererChanged(const std::string& property)
+    void Group::rendererChanged(const String& property)
     {
         if (property == "padding")
         {

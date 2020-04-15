@@ -40,15 +40,15 @@ namespace tgui
     class TGUI_API Deserializer
     {
     public:
-        using DeserializeFunc = std::function<ObjectConverter(const std::string&)>;
+        using DeserializeFunc = std::function<ObjectConverter(const String&)>;
 
-        static ObjectConverter deserialize(ObjectConverter::Type type, const std::string& serializedString);
+        static ObjectConverter deserialize(ObjectConverter::Type type, const String& serializedString);
 
         static void setFunction(ObjectConverter::Type type, const DeserializeFunc& deserializer);
         static const DeserializeFunc& getFunction(ObjectConverter::Type type);
 
     public:
-        static std::vector<std::string> split(const std::string& str, char delim);
+        static std::vector<String> split(const String& str, char delim);
 
     private:
         static std::map<ObjectConverter::Type, DeserializeFunc> m_deserializers;

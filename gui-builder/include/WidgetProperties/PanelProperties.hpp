@@ -34,7 +34,7 @@ struct PanelProperties : GroupProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = GroupProperties::initProperties(widget);
-        auto panel = std::dynamic_pointer_cast<tgui::Panel>(widget);
+        auto panel = widget->cast<tgui::Panel>();
 
         const auto renderer = panel->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

@@ -46,11 +46,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CheckBox::Ptr CheckBox::create(sf::String text)
+    CheckBox::Ptr CheckBox::create(String text)
     {
         auto checkBox = std::make_shared<CheckBox>();
 
-        if (!text.isEmpty())
+        if (!text.empty())
             checkBox->setText(text);
 
         return checkBox;
@@ -74,14 +74,14 @@ namespace tgui
          && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
-            if (getText().isEmpty())
+            if (getText().empty())
                 return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
             else
                 return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
         }
         else
         {
-            if (getText().isEmpty())
+            if (getText().empty())
                 return getSize();
             else
                 return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
@@ -101,7 +101,7 @@ namespace tgui
                 yOffset = sizeDiff - m_bordersCached.getTop();
         }
 
-        if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
+        if (getText().empty() || (getSize().y >= m_text.getSize().y))
             return {0, -yOffset};
         else
             return {0, -std::max(yOffset, (m_text.getSize().y - getSize().y) / 2)};
@@ -152,7 +152,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::rendererChanged(const std::string& property)
+    void CheckBox::rendererChanged(const String& property)
     {
         if (property == "textureunchecked")
             m_textureUncheckedCached = getSharedRenderer()->getTextureUnchecked();
@@ -263,7 +263,7 @@ namespace tgui
         }
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
 
-        if (!getText().isEmpty())
+        if (!getText().empty())
         {
             states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             m_text.draw(target, states);

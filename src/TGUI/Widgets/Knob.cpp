@@ -454,9 +454,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Knob::getSignal(std::string signalName)
+    Signal& Knob::getSignal(String signalName)
     {
-        if (signalName == toLower(onValueChange.getName()))
+        if (signalName == onValueChange.getName().toLower())
             return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -464,7 +464,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::rendererChanged(const std::string& property)
+    void Knob::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -515,11 +515,11 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         node->propertyValuePairs["ClockwiseTurning"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
-        node->propertyValuePairs["StartRotation"] = std::make_unique<DataIO::ValueNode>(to_string(m_startRotation));
-        node->propertyValuePairs["EndRotation"] = std::make_unique<DataIO::ValueNode>(to_string(m_endRotation));
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["StartRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_startRotation));
+        node->propertyValuePairs["EndRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_endRotation));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
 
         return node;
     }
@@ -531,15 +531,15 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["startrotation"])
-            setStartRotation(strToFloat(node->propertyValuePairs["startrotation"]->value));
+            setStartRotation(node->propertyValuePairs["startrotation"]->value.toFloat());
         if (node->propertyValuePairs["endrotation"])
-            setEndRotation(strToFloat(node->propertyValuePairs["endrotation"]->value));
+            setEndRotation(node->propertyValuePairs["endrotation"]->value.toFloat());
         if (node->propertyValuePairs["minimum"])
-            setMinimum(strToInt(node->propertyValuePairs["minimum"]->value));
+            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
         if (node->propertyValuePairs["maximum"])
-            setMaximum(strToInt(node->propertyValuePairs["maximum"]->value));
+            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
         if (node->propertyValuePairs["value"])
-            setValue(strToInt(node->propertyValuePairs["value"]->value));
+            setValue(node->propertyValuePairs["value"]->value.toFloat());
         if (node->propertyValuePairs["clockwiseturning"])
             setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["clockwiseturning"]->value).getBool());
     }
@@ -568,7 +568,7 @@ namespace tgui
 
             sf::CircleShape bordersShape{size / 2};
             bordersShape.setFillColor(Color::Transparent);
-            bordersShape.setOutlineColor(Color::calcColorOpacity(m_borderColorCached, m_opacityCached));
+            bordersShape.setOutlineColor(Color::applyOpacity(m_borderColorCached, m_opacityCached));
             bordersShape.setOutlineThickness(borderThickness);
             target.draw(bordersShape, states);
         }
@@ -579,7 +579,7 @@ namespace tgui
         else
         {
             sf::CircleShape background{size / 2};
-            background.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
+            background.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
             target.draw(background, states);
         }
 
@@ -599,7 +599,7 @@ namespace tgui
         else
         {
             sf::CircleShape thumb{size / 10.0f};
-            thumb.setFillColor(Color::calcColorOpacity(m_thumbColorCached, m_opacityCached));
+            thumb.setFillColor(Color::applyOpacity(m_thumbColorCached, m_opacityCached));
             thumb.setPosition({(size / 2.0f) - thumb.getRadius() + (std::cos(m_angle / 180 * pi) * (size / 2) * 3/5),
                                (size / 2.0f) - thumb.getRadius() + (-std::sin(m_angle / 180 * pi) * (size / 2) * 3/5)});
             target.draw(thumb, states);

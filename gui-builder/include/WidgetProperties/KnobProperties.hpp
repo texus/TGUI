@@ -31,19 +31,19 @@
 
 struct KnobProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto knob = std::dynamic_pointer_cast<tgui::Knob>(widget);
+        auto knob = widget->cast<tgui::Knob>();
         if (property == "Minimum")
-            knob->setMinimum(tgui::strToFloat(value));
+            knob->setMinimum(value.toFloat());
         else if (property == "Maximum")
-            knob->setMaximum(tgui::strToFloat(value));
+            knob->setMaximum(value.toFloat());
         else if (property == "Value")
-            knob->setValue(tgui::strToFloat(value));
+            knob->setValue(value.toFloat());
         else if (property == "StartRotation")
-            knob->setStartRotation(tgui::strToFloat(value));
+            knob->setStartRotation(value.toFloat());
         else if (property == "EndRotation")
-            knob->setEndRotation(tgui::strToFloat(value));
+            knob->setEndRotation(value.toFloat());
         else if (property == "ClockwiseTurning")
             knob->setClockwiseTurning(parseBoolean(value, true));
         else
@@ -53,12 +53,12 @@ struct KnobProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto knob = std::dynamic_pointer_cast<tgui::Knob>(widget);
-        pair.first["Minimum"] = {"Float", tgui::to_string(knob->getMinimum())};
-        pair.first["Maximum"] = {"Float", tgui::to_string(knob->getMaximum())};
-        pair.first["Value"] = {"Float", tgui::to_string(knob->getValue())};
-        pair.first["StartRotation"] = {"Float", tgui::to_string(knob->getStartRotation())};
-        pair.first["EndRotation"] = {"Float", tgui::to_string(knob->getEndRotation())};
+        auto knob = widget->cast<tgui::Knob>();
+        pair.first["Minimum"] = {"Float", tgui::String::fromNumber(knob->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::String::fromNumber(knob->getMaximum())};
+        pair.first["Value"] = {"Float", tgui::String::fromNumber(knob->getValue())};
+        pair.first["StartRotation"] = {"Float", tgui::String::fromNumber(knob->getStartRotation())};
+        pair.first["EndRotation"] = {"Float", tgui::String::fromNumber(knob->getEndRotation())};
         pair.first["ClockwiseTurning"] = {"Bool", tgui::Serializer::serialize(knob->getClockwiseTurning())};
 
         const auto renderer = knob->getSharedRenderer();

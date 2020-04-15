@@ -33,11 +33,9 @@ TEST_CASE("[MessageBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](sf::String){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](std::string){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::String){}));
+        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -78,7 +76,7 @@ TEST_CASE("[MessageBox]")
         auto renderer = messageBox->getRenderer();
 
         tgui::ButtonRenderer buttonsRenderer;
-        buttonsRenderer.setBackgroundColor(sf::Color::Cyan);
+        buttonsRenderer.setBackgroundColor(tgui::Color::Cyan);
 
         SECTION("set serialized property")
         {
@@ -88,7 +86,7 @@ TEST_CASE("[MessageBox]")
 
         SECTION("set object property")
         {
-            REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{10, 20, 30}));
             REQUIRE_NOTHROW(renderer->setProperty("Button", buttonsRenderer.getData()));
         }
 
@@ -98,10 +96,10 @@ TEST_CASE("[MessageBox]")
             renderer->setButton(buttonsRenderer.getData());
         }
 
-        REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(10, 20, 30));
 
         REQUIRE(renderer->getButton()->propertyValuePairs.size() == 1);
-        REQUIRE(renderer->getButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Cyan);
+        REQUIRE(renderer->getButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Cyan);
     }
 
     SECTION("Saving and loading from file")

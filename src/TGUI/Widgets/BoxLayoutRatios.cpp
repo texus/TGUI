@@ -38,28 +38,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::add(const Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayoutRatios::add(const Widget::Ptr& widget, const String& widgetName)
     {
         insert(m_widgets.size(), widget, 1, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::add(const Widget::Ptr& widget, float ratio, const sf::String& widgetName)
+    void BoxLayoutRatios::add(const Widget::Ptr& widget, float ratio, const String& widgetName)
     {
         insert(m_widgets.size(), widget, ratio, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, const String& widgetName)
     {
         insert(index, widget, 1, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, float ratio, const sf::String& widgetName)
+    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, float ratio, const String& widgetName)
     {
         if (index < m_ratios.size())
             m_ratios.insert(m_ratios.begin() + index, ratio);
@@ -157,7 +157,7 @@ namespace tgui
 
         if (m_widgets.size() > 0)
         {
-            std::string ratioList = "[" + Serializer::serialize(m_ratios[0]);
+            String ratioList = "[" + Serializer::serialize(m_ratios[0]);
             for (std::size_t i = 1; i < m_widgets.size(); ++i)
                 ratioList += ", " + Serializer::serialize(m_ratios[i]);
 

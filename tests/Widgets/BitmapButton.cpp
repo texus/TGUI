@@ -33,11 +33,9 @@ TEST_CASE("[BitmapButton]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(button->connect("Pressed", [](){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](sf::String){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](std::string){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::String){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -51,10 +49,10 @@ TEST_CASE("[BitmapButton]")
         button->setSize(150, 100);
         button->getRenderer()->setBorders(2);
 
-        REQUIRE(button->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(button->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(button->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(button->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(button->getFullSize() == button->getSize());
-        REQUIRE(button->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(button->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Text")
@@ -163,18 +161,18 @@ TEST_CASE("[BitmapButton]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorDown", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", sf::Color{90, 100, 110}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDown", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDown", sf::Color{120, 130, 140}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDown", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", tgui::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDown", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", tgui::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDown", tgui::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", tgui::TextStyle::Underlined));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
@@ -203,36 +201,36 @@ TEST_CASE("[BitmapButton]")
                 renderer->setBorders({1, 2, 3, 4});
             }
 
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TextColorDown").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("BorderColorDown").getColor() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("TextColorHover").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TextColorDown").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("BorderColorDown").getColor() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == tgui::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == tgui::TextStyle::Underlined);
             REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
-            REQUIRE(renderer->getTextColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getTextColorHover() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getTextColorDown() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getTextColorDisabled() == sf::Color(90, 100, 110));
-            REQUIRE(renderer->getBackgroundColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getBackgroundColorHover() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getBackgroundColorDown() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getBorderColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getBorderColorHover() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getBorderColorDown() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getBorderColorDisabled() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getTextColorHover() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getTextColorDown() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getTextColorDisabled() == tgui::Color(90, 100, 110));
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getBackgroundColorHover() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getBackgroundColorDown() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getBackgroundColorDisabled() == tgui::Color(100, 110, 120));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getBorderColorHover() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getBorderColorDown() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getBorderColorDisabled() == tgui::Color(130, 140, 150));
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getTextStyleHover() == tgui::TextStyle::Underlined);
             REQUIRE(renderer->getTextStyleDown() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
@@ -309,26 +307,26 @@ TEST_CASE("[BitmapButton]")
         button->setTextSize(16);
 
         tgui::ButtonRenderer renderer = tgui::RendererData::create();
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         button->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTextColorHover(sf::Color::Magenta);
-                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
-                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextColorHover(tgui::Color::Magenta);
+                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
+                                        renderer.setBorderColorHover(tgui::Color::Yellow);
                                         renderer.setTextStyleHover(tgui::TextStyle::Bold);
                                         if (textured)
                                             renderer.setTextureHover("resources/Texture2.png");
                                      };
 
         auto setDownRenderer = [&](bool textured){
-                                        renderer.setTextColorDown(sf::Color::Black);
-                                        renderer.setBackgroundColorDown(sf::Color::White);
+                                        renderer.setTextColorDown(tgui::Color::Black);
+                                        renderer.setBackgroundColorDown(tgui::Color::White);
                                         renderer.setBorderColorDown({128, 128, 128});
                                         renderer.setTextStyleDown(tgui::TextStyle::Underlined);
                                         renderer.setTextColorDisabled({128, 128, 0});

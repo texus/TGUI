@@ -106,7 +106,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::update(sf::Time elapsedTime)
+    void CustomWidgetForBindings::update(Duration elapsedTime)
     {
         Widget::update(elapsedTime);
         implUpdateFunction(elapsedTime);
@@ -169,7 +169,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::textEntered(std::uint32_t key)
+    void CustomWidgetForBindings::textEntered(char32_t key)
     {
         Widget::textEntered(key);
         implTextEntered(key);
@@ -200,7 +200,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::rendererChanged(const std::string& property)
+    void CustomWidgetForBindings::rendererChanged(const String& property)
     {
         if (!implRendererChanged(property))
             Widget::rendererChanged(property);

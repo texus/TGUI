@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_WIDGET_INFO_HPP
 
 #include <TGUI/Widget.hpp>
-#include <string>
 
 struct WidgetInfo
 {
@@ -35,8 +34,8 @@ struct WidgetInfo
     WidgetInfo(tgui::Widget::Ptr widget) : ptr{widget} {}
 
     tgui::Widget::Ptr ptr = nullptr;
-    std::string name = "";
-    std::string theme = "White";
+    tgui::String name = "";
+    tgui::String theme = "White";
 };
 
 #endif // TGUI_GUI_BUILDER_WIDGET_INFO_HPP

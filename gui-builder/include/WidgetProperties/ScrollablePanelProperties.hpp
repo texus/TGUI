@@ -33,17 +33,17 @@ struct ScrollablePanelProperties : PanelProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto panel = std::dynamic_pointer_cast<tgui::ScrollablePanel>(widget);
+        auto panel = widget->cast<tgui::ScrollablePanel>();
         if (property == "VerticalScrollbarPolicy")
             panel->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "HorizontalScrollbarPolicy")
             panel->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "VerticalScrollAmount")
-            panel->setVerticalScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            panel->setVerticalScrollAmount(value.toUInt());
         else if (property == "HorizontalScrollAmount")
-            panel->setHorizontalScrollAmount(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            panel->setHorizontalScrollAmount(value.toUInt());
         else if (property == "ContentWidth")
             panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")
@@ -55,16 +55,16 @@ struct ScrollablePanelProperties : PanelProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = PanelProperties::initProperties(widget);
-        auto panel = std::dynamic_pointer_cast<tgui::ScrollablePanel>(widget);
+        auto panel = widget->cast<tgui::ScrollablePanel>();
         pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbarPolicy())};
         pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getHorizontalScrollbarPolicy())};
-        pair.first["VerticalScrollAmount"] = {"UInt", tgui::to_string(panel->getVerticalScrollAmount())};
-        pair.first["HorizontalScrollAmount"] = {"UInt", tgui::to_string(panel->getHorizontalScrollAmount())};
-        pair.first["ContentWidth"] = {"Float", tgui::to_string(panel->getContentSize().x)};
-        pair.first["ContentHeight"] = {"Float", tgui::to_string(panel->getContentSize().y)};
+        pair.first["VerticalScrollAmount"] = {"UInt", tgui::String::fromNumber(panel->getVerticalScrollAmount())};
+        pair.first["HorizontalScrollAmount"] = {"UInt", tgui::String::fromNumber(panel->getHorizontalScrollAmount())};
+        pair.first["ContentWidth"] = {"Float", tgui::String::fromNumber(panel->getContentSize().x)};
+        pair.first["ContentHeight"] = {"Float", tgui::String::fromNumber(panel->getContentSize().y)};
 
         const auto renderer = panel->getSharedRenderer();
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 };

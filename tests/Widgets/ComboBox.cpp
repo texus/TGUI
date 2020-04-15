@@ -36,16 +36,12 @@ TEST_CASE("[ComboBox]")
     {
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](std::string){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](std::string, std::string){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, int){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string, std::string, std::string){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::String){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -59,10 +55,10 @@ TEST_CASE("[ComboBox]")
         comboBox->setSize(150, 35);
         comboBox->getRenderer()->setBorders(2);
 
-        REQUIRE(comboBox->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(comboBox->getSize() == sf::Vector2f(150, 35));
+        REQUIRE(comboBox->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(comboBox->getSize() == tgui::Vector2f(150, 35));
         REQUIRE(comboBox->getFullSize() == comboBox->getSize());
-        REQUIRE(comboBox->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(comboBox->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Adding items")
@@ -250,7 +246,7 @@ TEST_CASE("[ComboBox]")
 
     SECTION("DefaultText")
     {
-        REQUIRE(comboBox->getDefaultText().isEmpty());
+        REQUIRE(comboBox->getDefaultText().empty());
         comboBox->setDefaultText("Hello");
         REQUIRE(comboBox->getDefaultText() == "Hello");
     }
@@ -287,7 +283,7 @@ TEST_CASE("[ComboBox]")
             auto container = tgui::Group::create({400.f, 300.f});
             container->add(comboBox);
 
-            auto mouseClick = [container](sf::Vector2f pos) {
+            auto mouseClick = [container](tgui::Vector2f pos) {
                 container->mouseMoved(pos);
                 container->leftMousePressed(pos);
                 container->leftMouseReleased(pos);
@@ -305,9 +301,9 @@ TEST_CASE("[ComboBox]")
             comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
             comboBox->setChangeItemOnScroll(true);
 
-            const sf::Vector2f mousePosOnComboBox = {100, 15};
-            const sf::Vector2f mousePosOnItem1 = {100, 40};
-            const sf::Vector2f mousePosOnItem2 = {100, 60};
+            const tgui::Vector2f mousePosOnComboBox = {100, 15};
+            const tgui::Vector2f mousePosOnItem1 = {100, 40};
+            const tgui::Vector2f mousePosOnItem2 = {100, 60};
 
             SECTION("Click")
             {
@@ -384,8 +380,8 @@ TEST_CASE("[ComboBox]")
         SECTION("colored")
         {
             tgui::ListBoxRenderer listBoxRenderer;
-            listBoxRenderer.setBackgroundColor(sf::Color::Red);
-            listBoxRenderer.setTextColor(sf::Color::Blue);
+            listBoxRenderer.setBackgroundColor(tgui::Color::Red);
+            listBoxRenderer.setTextColor(tgui::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -406,14 +402,14 @@ TEST_CASE("[ComboBox]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", tgui::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", tgui::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Bold));
@@ -438,22 +434,22 @@ TEST_CASE("[ComboBox]")
                 renderer->setListBox(listBoxRenderer.getData());
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("ArrowColor").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == tgui::TextStyle::Italic);
 
             REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getListBox()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
-            REQUIRE(renderer->getListBox()->propertyValuePairs["textcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["textcolor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")
@@ -517,12 +513,12 @@ TEST_CASE("[ComboBox]")
         comboBox->setTextSize(14);
 
         tgui::ComboBoxRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setDefaultTextColor(sf::Color::White);
-        renderer.setBorderColor(sf::Color::Blue);
-        renderer.setArrowBackgroundColor(sf::Color::Cyan);
-        renderer.setArrowColor(sf::Color::Magenta);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setDefaultTextColor(tgui::Color::White);
+        renderer.setBorderColor(tgui::Color::Blue);
+        renderer.setArrowBackgroundColor(tgui::Color::Cyan);
+        renderer.setArrowColor(tgui::Color::Magenta);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setDefaultTextStyle(tgui::TextStyle::Italic);
@@ -530,8 +526,8 @@ TEST_CASE("[ComboBox]")
         comboBox->setRenderer(renderer.getData());
 
         auto setHoverRenderer = [&](bool textured){
-            renderer.setArrowBackgroundColorHover(sf::Color::Yellow);
-            renderer.setArrowColorHover(sf::Color::Black);
+            renderer.setArrowBackgroundColorHover(tgui::Color::Yellow);
+            renderer.setArrowColorHover(tgui::Color::Black);
             if (textured)
                 renderer.setTextureArrowHover("resources/Texture3.png");
         };
@@ -540,7 +536,7 @@ TEST_CASE("[ComboBox]")
         comboBox->addItem("2");
         comboBox->addItem("3");
 
-        const sf::Vector2f mousePos{60, 15};
+        const tgui::Vector2f mousePos{60, 15};
 
         SECTION("Colored")
         {

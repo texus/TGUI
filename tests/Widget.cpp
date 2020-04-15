@@ -136,43 +136,43 @@ TEST_CASE("[Widget]")
         widget->setSize(100, 30);
 
         // Position can be absolute
-        REQUIRE(widget->getPosition() == sf::Vector2f(20, 10));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(20, 10));
 
         // Position can be relative to the size of the parent
         widget->setPosition("20%", "10%");
-        REQUIRE(widget->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
 
         // Relative positions are updated when the parent changes size
         container->setSize(800, 150);
-        REQUIRE(widget->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
 
         auto widget2 = widget->clone();
         auto widget3 = widget->clone();
 
         // Widget clones are unaffected by changes to the original widget
         widget->setPosition("60%", "15%");
-        REQUIRE(widget2->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget2->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
 
         // Relative positions of cloned widgets are still updated when the size of the parent changes
         container->add(widget2);
         container->setSize(400, 300);
-        REQUIRE(widget2->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget2->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
 
         // There is however no relation with the old parent anymore unless the widget is added again
-        REQUIRE(widget3->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget3->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
         container->add(widget3);
-        REQUIRE(widget3->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget3->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
 
         // The position can be changed from a relative to an absolute value at any time
         widget2->setPosition(60, 70);
-        REQUIRE(widget2->getPosition() == sf::Vector2f(60, 70));
+        REQUIRE(widget2->getPosition() == tgui::Vector2f(60, 70));
 
         // Relative positions only work with a parent
         auto widget4 = std::make_shared<tgui::ClickableWidget>();
         widget4->setPosition("20%", "10%");
-        REQUIRE(widget4->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(widget4->getPosition() == tgui::Vector2f(0, 0));
         container->add(widget4);
-        REQUIRE(widget4->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget4->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
     }
 
     SECTION("Size")
@@ -185,43 +185,43 @@ TEST_CASE("[Widget]")
         widget->setSize(100, 30);
 
         // Size can be absolute
-        REQUIRE(widget->getSize() == sf::Vector2f(100, 30));
+        REQUIRE(widget->getSize() == tgui::Vector2f(100, 30));
 
         // Size can be relative to the size of the parent
         widget->setSize("30%", "5%");
-        REQUIRE(widget->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
 
         // Relative sizes are updated when the parent changes size
         container->setSize(800, 150);
-        REQUIRE(widget->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
 
         auto widget2 = widget->clone();
         auto widget3 = widget->clone();
 
         // Widget clones are unaffected by changes to the original widget
         widget->setSize("60%", "15%");
-        REQUIRE(widget2->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget2->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
 
         // Relative sizes of cloned widgets are still updated when the size of the parent changes
         container->add(widget2);
         container->setSize(400, 300);
-        REQUIRE(widget2->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget2->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
 
         // There is however no relation with the old parent anymore unless the widget is added again
-        REQUIRE(widget3->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget3->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
         container->add(widget3);
-        REQUIRE(widget3->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget3->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
 
         // The size can be changed from a relative to an absolute value at any time
         widget2->setSize(70, 20);
-        REQUIRE(widget2->getSize() == sf::Vector2f(70, 20));
+        REQUIRE(widget2->getSize() == tgui::Vector2f(70, 20));
 
         // Relative sizes only work with a parent
         auto widget4 = std::make_shared<tgui::ClickableWidget>();
         widget4->setSize("30%", "5%");
-        REQUIRE(widget4->getSize() == sf::Vector2f(0, 0));
+        REQUIRE(widget4->getSize() == tgui::Vector2f(0, 0));
         container->add(widget4);
-        REQUIRE(widget4->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget4->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
     }
 
     SECTION("Renderer")
@@ -326,9 +326,9 @@ TEST_CASE("[Widget]")
         widget->setPosition(50, "15%");
         widget->setSize("min(20% - (10 * 5), 100)", "70");
 
-        std::string UserData = "Main Widget User Data .With:Special{Chars}";
-        widget->setUserData(UserData);
-        REQUIRE(widget->getUserData<std::string>() == UserData);
+        tgui::String userData = "Main Widget User Data .With:Special{Chars}";
+        widget->setUserData(userData);
+        REQUIRE(widget->getUserData<tgui::String>() == userData);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
@@ -337,7 +337,7 @@ TEST_CASE("[Widget]")
 
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
         REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
-        REQUIRE(parent->get("Widget Name.With:Special{Chars}")->getUserData<std::string>() == UserData);
+        REQUIRE(parent->get("Widget Name.With:Special{Chars}")->getUserData<tgui::String>() == userData);
 
         parent->removeAllWidgets();
         parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt");

@@ -29,9 +29,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Vector2f.hpp>
+#include <TGUI/String.hpp>
+#include <TGUI/Vector2.hpp>
 #include <TGUI/Animation.hpp>
-#include <SFML/System/String.hpp>
 #include <type_traits>
 #include <functional>
 #include <typeindex>
@@ -223,7 +223,7 @@ namespace tgui
     public:
 
         using Delegate = std::function<void()>;
-        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const std::string&)>;
+        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const String&)>;
 
 
         virtual ~Signal() = default;
@@ -235,7 +235,7 @@ namespace tgui
         /// @param name             Name of the signal
         /// @param extraParameters  Amount of extra parameters to reserve space for
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Signal(std::string&& name, std::size_t extraParameters = 0) :
+        Signal(String&& name, std::size_t extraParameters = 0) :
             m_name{std::move(name)}
         {
             if (1 + extraParameters > internal_signal::parameters.size())
@@ -331,7 +331,7 @@ namespace tgui
         ///
         /// @return signal name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getName() const
+        String getName() const
         {
             return m_name;
         }
@@ -387,7 +387,7 @@ namespace tgui
     protected:
 
         bool m_enabled = true;
-        std::string m_name;
+        String m_name;
         std::map<unsigned int, std::function<void()>> m_handlers;
     };
 
@@ -399,13 +399,13 @@ namespace tgui
     { \
     public: \
         using Delegate##TypeName = std::function<void(Type)>; \
-        using Delegate##TypeName##Ex = std::function<void(std::shared_ptr<Widget>, const std::string&, Type)>; \
+        using Delegate##TypeName##Ex = std::function<void(std::shared_ptr<Widget>, const String&, Type)>; \
         using Signal::connect; \
         \
         /************************************************************************************************************************ \
          * @brief Constructor
          ************************************************************************************************************************/ \
-        Signal##TypeName(std::string&& name) : \
+        Signal##TypeName(String&& name) : \
             Signal{std::move(name), 1} \
         { \
         } \
@@ -454,7 +454,7 @@ namespace tgui
     TGUI_SIGNAL_VALUE_DECLARATION(UInt, unsigned int)
     TGUI_SIGNAL_VALUE_DECLARATION(Bool, bool)
     TGUI_SIGNAL_VALUE_DECLARATION(Float, float)
-    TGUI_SIGNAL_VALUE_DECLARATION(String, const sf::String&)
+    TGUI_SIGNAL_VALUE_DECLARATION(String, const String&)
     TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, Vector2f)
 
 
@@ -466,13 +466,13 @@ namespace tgui
     public:
 
         using DelegateRange = std::function<void(float, float)>;
-        using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const std::string&, float, float)>;
+        using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const String&, float, float)>;
         using Signal::connect;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalRange(std::string&& name) :
+        SignalRange(String&& name) :
             Signal{std::move(name), 2}
         {
         }
@@ -527,14 +527,14 @@ namespace tgui
     public:
 
         using DelegateChildWindow = std::function<void(std::shared_ptr<ChildWindow>)>;
-        using DelegateChildWindowEx = std::function<void(std::shared_ptr<Widget>, const std::string&, std::shared_ptr<ChildWindow>)>;
+        using DelegateChildWindowEx = std::function<void(std::shared_ptr<Widget>, const String&, std::shared_ptr<ChildWindow>)>;
         using Signal::connect;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalChildWindow(std::string&& name) :
+        SignalChildWindow(String&& name) :
             Signal{std::move(name), 1}
         {
         }
@@ -588,19 +588,19 @@ namespace tgui
     {
     public:
 
-        using DelegateItem = std::function<void(const sf::String&)>;
-        using DelegateItemAndId = std::function<void(const sf::String&, const sf::String&)>;
+        using DelegateItem = std::function<void(const String&)>;
+        using DelegateItemAndId = std::function<void(const String&, const String&)>;
         using DelegateItemIndex = std::function<void(int)>;
-        using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
-        using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&, const sf::String&)>;
-        using DelegateItemIndexEx = std::function<void(std::shared_ptr<Widget>, const std::string&, int)>;
+        using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&)>;
+        using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&, const String&)>;
+        using DelegateItemIndexEx = std::function<void(std::shared_ptr<Widget>, const String&, int)>;
         using Signal::connect;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalItem(std::string&& name) :
+        SignalItem(String&& name) :
             Signal{std::move(name), 3}
         {
         }
@@ -670,7 +670,7 @@ namespace tgui
         /// @internal
         /// @brief Call all connected signal handlers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, const sf::String& item, const sf::String& id, int index)
+        bool emit(const Widget* widget, const String& item, const String& id, int index)
         {
             if (m_handlers.empty())
                 return false;
@@ -711,7 +711,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalAnimation(std::string&& name) :
+        SignalAnimation(String&& name) :
             Signal{std::move(name), 2}
         {
         }
@@ -752,17 +752,17 @@ namespace tgui
     {
     public:
 
-        using DelegateMenuItem = std::function<void(const sf::String&)>;
-        using DelegateMenuItemFull = std::function<void(const std::vector<sf::String>&)>;
-        using DelegateMenuItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
-        using DelegateMenuItemFullEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const std::vector<sf::String>&)>;
+        using DelegateMenuItem = std::function<void(const String&)>;
+        using DelegateMenuItemFull = std::function<void(const std::vector<String>&)>;
+        using DelegateMenuItemEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&)>;
+        using DelegateMenuItemFullEx = std::function<void(std::shared_ptr<Widget>, const String&, const std::vector<String>&)>;
         using Signal::connect;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalItemHierarchy(std::string&& name) :
+        SignalItemHierarchy(String&& name) :
             Signal{std::move(name), 2}
         {
         }
@@ -812,7 +812,7 @@ namespace tgui
         /// @internal
         /// @brief Call all connected signal handlers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, const sf::String& item, const std::vector<sf::String>& fullItem)
+        bool emit(const Widget* widget, const String& item, const std::vector<String>& fullItem)
         {
             if (m_handlers.empty())
                 return false;
@@ -857,7 +857,7 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs>
-        unsigned int connect(std::string signalName, Func&& handler, const BoundArgs&... args);
+        unsigned int connect(String signalName, Func&& handler, const BoundArgs&... args);
 
 #else
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -870,7 +870,7 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, const Args&... args);
+        unsigned int connect(String signalName, Func&& handler, const Args&... args);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -884,8 +884,8 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                             && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, BoundArgs&&... args);
+                                                                             && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
+        unsigned int connect(String signalName, Func&& handler, BoundArgs&&... args);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -898,8 +898,8 @@ namespace tgui
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
-                                                                             && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, BoundArgs&&... args);
+                                                                             && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
+        unsigned int connect(String signalName, Func&& handler, BoundArgs&&... args);
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -912,7 +912,7 @@ namespace tgui
         /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs>
-        unsigned int connect(std::initializer_list<std::string> signalNames, Func&& handler, BoundArgs&&... args);
+        unsigned int connect(std::initializer_list<String> signalNames, Func&& handler, BoundArgs&&... args);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -930,7 +930,7 @@ namespace tgui
         ///
         /// @param signalName   Name of the signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll(std::string signalName);
+        void disconnectAll(String signalName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -942,13 +942,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Signal& getSignal(std::string signalName) = 0;
+        virtual Signal& getSignal(String signalName) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::map<unsigned int, std::string> m_connectedSignals;
+        std::map<unsigned int, String> m_connectedSignals;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

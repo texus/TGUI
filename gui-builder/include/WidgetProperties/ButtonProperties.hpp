@@ -31,13 +31,13 @@
 
 struct ButtonProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto button = std::dynamic_pointer_cast<tgui::Button>(widget);
+        auto button = widget->cast<tgui::Button>();
         if (property == "Text")
             button->setText(value);
         else if (property == "TextSize")
-            button->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            button->setTextSize(value.toUInt());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -45,9 +45,9 @@ struct ButtonProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto button = std::dynamic_pointer_cast<tgui::Button>(widget);
+        auto button = widget->cast<tgui::Button>();
         pair.first["Text"] = {"String", button->getText()};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(button->getTextSize())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(button->getTextSize())};
 
         const auto renderer = button->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
@@ -67,7 +67,7 @@ struct ButtonProperties : WidgetProperties
         pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};
         pair.second["BorderColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorFocused())};
         pair.second["TextOutlineColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextOutlineColor())};
-        pair.second["TextOutlineThickness"] = {"Float", tgui::to_string(renderer->getTextOutlineThickness())};
+        pair.second["TextOutlineThickness"] = {"Float", tgui::String::fromNumber(renderer->getTextOutlineThickness())};
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
         pair.second["TextureHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureHover())};
         pair.second["TextureDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDown())};

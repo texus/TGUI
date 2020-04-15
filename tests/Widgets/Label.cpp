@@ -35,11 +35,9 @@ TEST_CASE("[Label]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](sf::String){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](std::string){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string, std::string){}));
+        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::String){}));
+        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -53,10 +51,10 @@ TEST_CASE("[Label]")
         label->setSize(150, 100);
         label->getRenderer()->setBorders(2);
 
-        REQUIRE(label->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(label->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(label->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(label->getSize() == tgui::Vector2f(150, 100));
         REQUIRE(label->getFullSize() == label->getSize());
-        REQUIRE(label->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(label->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Text")
@@ -225,8 +223,8 @@ TEST_CASE("[Label]")
         tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
         tgui::ScrollbarRenderer scrollbarRenderer;
-        scrollbarRenderer.setTrackColor(sf::Color::Red);
-        scrollbarRenderer.setThumbColor(sf::Color::Blue);
+        scrollbarRenderer.setTrackColor(tgui::Color::Red);
+        scrollbarRenderer.setThumbColor(tgui::Color::Blue);
 
         SECTION("set serialized property")
         {
@@ -245,10 +243,10 @@ TEST_CASE("[Label]")
 
         SECTION("set object property")
         {
-            REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{100, 50, 150}));
-            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{150, 100, 50}));
-            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{50, 150, 100}));
-            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{100, 50, 150}));
+            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{150, 100, 50}));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{50, 150, 100}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", tgui::Color{10, 20, 30}));
             REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
@@ -273,10 +271,10 @@ TEST_CASE("[Label]")
             renderer->setScrollbarWidth(15);
         }
 
-        REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(100, 50, 150));
-        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(150, 100, 50));
-        REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(50, 150, 100));
-        REQUIRE(renderer->getProperty("TextOutlineColor").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(100, 50, 150));
+        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(150, 100, 50));
+        REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(50, 150, 100));
+        REQUIRE(renderer->getProperty("TextOutlineColor").getColor() == tgui::Color(10, 20, 30));
         REQUIRE(renderer->getProperty("TextOutlineThickness").getNumber() == 2);
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
@@ -284,10 +282,10 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
         REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
-        REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
-        REQUIRE(renderer->getBackgroundColor() == sf::Color(150, 100, 50));
-        REQUIRE(renderer->getBorderColor() == sf::Color(50, 150, 100));
-        REQUIRE(renderer->getTextOutlineColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getTextColor() == tgui::Color(100, 50, 150));
+        REQUIRE(renderer->getBackgroundColor() == tgui::Color(150, 100, 50));
+        REQUIRE(renderer->getBorderColor() == tgui::Color(50, 150, 100));
+        REQUIRE(renderer->getTextOutlineColor() == tgui::Color(10, 20, 30));
         REQUIRE(renderer->getTextOutlineThickness() == 2);
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
@@ -295,8 +293,8 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
 
         REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
     }
 
     SECTION("Saving and loading from file")
@@ -315,7 +313,7 @@ TEST_CASE("[Label]")
     SECTION("Draw")
     {
         label->setPosition(10, 5);
-        label->getRenderer()->setTextColor(sf::Color::Red);
+        label->getRenderer()->setTextColor(tgui::Color::Red);
 
         SECTION("Simple")
         {
@@ -326,7 +324,7 @@ TEST_CASE("[Label]")
             TEST_DRAW("Label_Simple.png")
 
             label->getRenderer()->setTextOutlineThickness(1);
-            label->getRenderer()->setTextOutlineColor(sf::Color::Cyan);
+            label->getRenderer()->setTextOutlineColor(tgui::Color::Cyan);
             TEST_DRAW("Label_Simple_Outline.png")
         }
 
@@ -337,8 +335,8 @@ TEST_CASE("[Label]")
             label->setText("Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
             label->setTextSize(18);
             label->setSize(400, 205);
-            label->getRenderer()->setBackgroundColor(sf::Color::Blue);
-            label->getRenderer()->setBorderColor(sf::Color::Yellow);
+            label->getRenderer()->setBackgroundColor(tgui::Color::Blue);
+            label->getRenderer()->setBorderColor(tgui::Color::Yellow);
             label->getRenderer()->setBorders({1, 2, 3, 4});
             label->getRenderer()->setPadding({4, 3, 2, 1});
             label->getRenderer()->setOpacity(0.7f);

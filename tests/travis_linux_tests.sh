@@ -1,6 +1,6 @@
 set -eo pipefail
 
-export SFML_VERSION=2.5.0
+export SFML_VERSION=2.5.1
 export SFML_ROOT=$HOME/SFML-${SFML_VERSION}_LINUX
 export BUILD_FOLDER=build_$CXX
 

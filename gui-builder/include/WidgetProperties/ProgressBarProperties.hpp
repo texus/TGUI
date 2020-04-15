@@ -31,19 +31,19 @@
 
 struct ProgressBarProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto progressBar = std::dynamic_pointer_cast<tgui::ProgressBar>(widget);
+        auto progressBar = widget->cast<tgui::ProgressBar>();
         if (property == "Minimum")
-            progressBar->setMinimum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            progressBar->setMinimum(value.toUInt());
         else if (property == "Maximum")
-            progressBar->setMaximum(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            progressBar->setMaximum(value.toUInt());
         else if (property == "Value")
-            progressBar->setValue(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            progressBar->setValue(value.toUInt());
         else if (property == "Text")
             progressBar->setText(value);
         else if (property == "TextSize")
-            progressBar->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            progressBar->setTextSize(value.toUInt());
         else if (property == "FillDirection")
             progressBar->setFillDirection(deserializeFillDirection(value));
         else
@@ -53,12 +53,12 @@ struct ProgressBarProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto progressBar = std::dynamic_pointer_cast<tgui::ProgressBar>(widget);
-        pair.first["Minimum"] = {"UInt", tgui::to_string(progressBar->getMinimum())};
-        pair.first["Maximum"] = {"UInt", tgui::to_string(progressBar->getMaximum())};
-        pair.first["Value"] = {"UInt", tgui::to_string(progressBar->getValue())};
+        auto progressBar = widget->cast<tgui::ProgressBar>();
+        pair.first["Minimum"] = {"UInt", tgui::String::fromNumber(progressBar->getMinimum())};
+        pair.first["Maximum"] = {"UInt", tgui::String::fromNumber(progressBar->getMaximum())};
+        pair.first["Value"] = {"UInt", tgui::String::fromNumber(progressBar->getValue())};
         pair.first["Text"] = {"String", progressBar->getText()};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(progressBar->getTextSize())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(progressBar->getTextSize())};
         pair.first["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}", serializeFillDirection(progressBar->getFillDirection())};
 
         const auto renderer = progressBar->getSharedRenderer();
@@ -76,9 +76,9 @@ struct ProgressBarProperties : WidgetProperties
 
 private:
 
-    static tgui::ProgressBar::FillDirection deserializeFillDirection(std::string value)
+    static tgui::ProgressBar::FillDirection deserializeFillDirection(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "bottomtotop")
             return tgui::ProgressBar::FillDirection::BottomToTop;
         else if (value == "toptobottom")
@@ -89,7 +89,7 @@ private:
             return tgui::ProgressBar::FillDirection::LeftToRight;
     }
 
-    static std::string serializeFillDirection(tgui::ProgressBar::FillDirection direction)
+    static tgui::String serializeFillDirection(tgui::ProgressBar::FillDirection direction)
     {
         if (direction == tgui::ProgressBar::FillDirection::BottomToTop)
             return "BottomToTop";

@@ -108,7 +108,7 @@ namespace tgui
 
     Vector2f RadioButton::getFullSize() const
     {
-        if (getText().isEmpty())
+        if (getText().empty())
             return getSize();
         else
             return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
@@ -118,7 +118,7 @@ namespace tgui
 
     Vector2f RadioButton::getWidgetOffset() const
     {
-        if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
+        if (getText().empty() || (getSize().y >= m_text.getSize().y))
             return {0, 0};
         else
             return {0, -(m_text.getSize().y - getSize().y) / 2};
@@ -157,7 +157,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setText(const sf::String& text)
+    void RadioButton::setText(const String& text)
     {
         // Set the new text
         m_text.setString(text);
@@ -171,7 +171,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& RadioButton::getText() const
+    const String& RadioButton::getText() const
     {
         return m_text.getString();
     }
@@ -211,15 +211,15 @@ namespace tgui
     {
         pos -= getPosition();
 
-        if (m_allowTextClick && !getText().isEmpty())
+        if (m_allowTextClick && !getText().empty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
             if (FloatRect{0, 0, getSize().x + getSize().x * m_textDistanceRatioCached, getSize().y}.contains(pos))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
-                                                                                 pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains({pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
+                                                                                  pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)}))
                 return true;
         }
         else // You are not allowed to click on the text
@@ -275,13 +275,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& RadioButton::getSignal(std::string signalName)
+    Signal& RadioButton::getSignal(String signalName)
     {
-        if (signalName == toLower(onCheck.getName()))
+        if (signalName == onCheck.getName().toLower())
             return onCheck;
-        else if (signalName == toLower(onUncheck.getName()))
+        else if (signalName == onUncheck.getName().toLower())
             return onUncheck;
-        else if (signalName == toLower(onChange.getName()))
+        else if (signalName == onChange.getName().toLower())
             return onChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -289,7 +289,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::rendererChanged(const std::string& property)
+    void RadioButton::rendererChanged(const String& property)
     {
         if (property == "borders")
         {
@@ -458,14 +458,14 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (!getText().isEmpty())
+        if (!getText().empty())
             node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
         if (m_checked)
             node->propertyValuePairs["Checked"] = std::make_unique<DataIO::ValueNode>("true");
         if (!isTextClickable())
             node->propertyValuePairs["TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         return node;
     }
 
@@ -478,7 +478,7 @@ namespace tgui
         if (node->propertyValuePairs["text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
         if (node->propertyValuePairs["textsize"])
-            setTextSize(strToInt(node->propertyValuePairs["textsize"]->value));
+            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
         if (node->propertyValuePairs["textclickable"])
             setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textclickable"]->value).getBool());
         if (node->propertyValuePairs["checked"])
@@ -662,7 +662,7 @@ namespace tgui
             sf::CircleShape circle{innerRadius + m_bordersCached.getLeft()};
             circle.setOutlineThickness(-m_bordersCached.getLeft());
             circle.setFillColor(Color::Transparent);
-            circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), m_opacityCached));
+            circle.setOutlineColor(Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
             target.draw(circle, states);
         }
 
@@ -696,21 +696,21 @@ namespace tgui
         else // There are no images
         {
             sf::CircleShape circle{innerRadius};
-            circle.setFillColor(Color::calcColorOpacity(getCurrentBackgroundColor(), m_opacityCached));
+            circle.setFillColor(Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
             target.draw(circle, states);
 
             // Draw the check if the radio button is checked
             if (m_checked)
             {
                 sf::CircleShape checkShape{innerRadius * 0.4f};
-                checkShape.setFillColor(Color::calcColorOpacity(getCurrentCheckColor(), m_opacityCached));
+                checkShape.setFillColor(Color::applyOpacity(getCurrentCheckColor(), m_opacityCached));
                 checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
                 target.draw(checkShape, states);
             }
         }
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getLeft()});
 
-        if (!getText().isEmpty())
+        if (!getText().empty())
         {
             states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             m_text.draw(target, states);

@@ -51,26 +51,26 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize color")
     {
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, ",,").getColor() == sf::Color(0, 0, 0));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "10, 20, 30").getColor() == sf::Color(10, 20, 30));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "40, 50, 60, 70").getColor() == sf::Color(40, 50, 60, 70));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "(80, 90, 100)").getColor() == sf::Color(80, 90, 100));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "(110, 120, 130, 140)").getColor() == sf::Color(110, 120, 130, 140));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(100, 0, 50)").getColor() == sf::Color(100, 0, 50));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgba(100, 0, 50, 200)").getColor() == sf::Color(100, 0, 50, 200));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#123").getColor() == sf::Color(17, 34, 51));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#4567").getColor() == sf::Color(68, 85, 102, 119));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#89ABCD").getColor() == sf::Color(137, 171, 205));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#FEDCBA98").getColor() == sf::Color(254, 220, 186, 152));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, ",,").getColor() == tgui::Color(0, 0, 0));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "10, 20, 30").getColor() == tgui::Color(10, 20, 30));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "40, 50, 60, 70").getColor() == tgui::Color(40, 50, 60, 70));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "(80, 90, 100)").getColor() == tgui::Color(80, 90, 100));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "(110, 120, 130, 140)").getColor() == tgui::Color(110, 120, 130, 140));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(100, 0, 50)").getColor() == tgui::Color(100, 0, 50));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgba(100, 0, 50, 200)").getColor() == tgui::Color(100, 0, 50, 200));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#123").getColor() == tgui::Color(17, 34, 51));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#4567").getColor() == tgui::Color(68, 85, 102, 119));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#89ABCD").getColor() == tgui::Color(137, 171, 205));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#FEDCBA98").getColor() == tgui::Color(254, 220, 186, 152));
 
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "BLACK").getColor() == sf::Color::Black);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "White").getColor() == sf::Color::White);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "red").getColor() == sf::Color::Red);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "green").getColor() == sf::Color::Green);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "blue").getColor() == sf::Color::Blue);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "magenta").getColor() == sf::Color::Magenta);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "yellow").getColor() == sf::Color::Yellow);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "cyan").getColor() == sf::Color::Cyan);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "BLACK").getColor() == tgui::Color::Black);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "White").getColor() == tgui::Color::White);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "red").getColor() == tgui::Color::Red);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "green").getColor() == tgui::Color::Green);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "blue").getColor() == tgui::Color::Blue);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "magenta").getColor() == tgui::Color::Magenta);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "yellow").getColor() == tgui::Color::Yellow);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "cyan").getColor() == tgui::Color::Cyan);
 
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "red").getColor().isSet());
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#89ABCD").getColor().isSet());
@@ -131,38 +131,38 @@ TEST_CASE("[Deserializer]")
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "resources/image.png").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect());
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 50, 50));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
         REQUIRE(!texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Smooth").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect());
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 50, 50));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
         REQUIRE(texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 25, 25)").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect(0, 0, 25, 25));
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 25, 25));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 25, 25));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 25, 25));
         REQUIRE(!texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 30, 30) Smooth").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect());
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 30, 30));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 30, 30));
         REQUIRE(texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect(0, 0, 40, 40));
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 20, 20));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 40, 40));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 20, 20));
         REQUIRE(!texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 10) Part(20, 10, 40, 30) Smooth").getTexture();
         REQUIRE(texture.getData() != nullptr);
-        REQUIRE(texture.getData()->rect == sf::IntRect(20, 10, 40, 30));
-        REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 20, 10));
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(20, 10, 40, 30));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 20, 10));
         REQUIRE(texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "none").getTexture();
@@ -194,7 +194,7 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize renderer")
     {
-        std::string data = "{\n"
+        tgui::String data = "{\n"
                            "  Nested = {\n"
                            "    Num = 5;\n"
                            "  };\n"
@@ -211,14 +211,14 @@ TEST_CASE("[Deserializer]")
 
     SECTION("custom deserialize function")
     {
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color(10, 20, 30));
         auto oldFunc = tgui::Deserializer::getFunction(tgui::ObjectConverter::Type::Color);
         
-        tgui::Deserializer::setFunction(Type::Color, [](const std::string&){ return tgui::ObjectConverter{sf::Color::Green}; });
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color::Green);
+        tgui::Deserializer::setFunction(Type::Color, [](const tgui::String&){ return tgui::ObjectConverter{tgui::Color::Green}; });
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color::Green);
         REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(50, 60, 70, 80)").getOutline() == tgui::Outline(50, 60, 70, 80));
         
         tgui::Deserializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color(10, 20, 30));
     }
 }

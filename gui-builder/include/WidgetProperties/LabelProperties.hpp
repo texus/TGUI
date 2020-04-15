@@ -33,13 +33,13 @@ struct LabelProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const sf::String& value) const override
+    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
+        auto label = widget->cast<tgui::Label>();
         if (property == "Text")
             label->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            label->setTextSize(static_cast<unsigned int>(tgui::strToInt(value.toAnsiString())));
+            label->setTextSize(value.toUInt());
         else if (property == "HorizontalAlignment")
             label->setHorizontalAlignment(deserializeHorizontalAlignment(value));
         else if (property == "VerticalAlignment")
@@ -49,7 +49,7 @@ struct LabelProperties : WidgetProperties
         else if (property == "AutoSize")
             label->setAutoSize(parseBoolean(value, true));
         else if (property == "MaximumTextWidth")
-            label->setMaximumTextWidth(tgui::strToFloat(value));
+            label->setMaximumTextWidth(value.toFloat());
         else if (property == "IgnoreMouseEvents")
             label->ignoreMouseEvents(parseBoolean(value, false));
         else
@@ -59,14 +59,14 @@ struct LabelProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
+        auto label = widget->cast<tgui::Label>();
         pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(label->getText())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(label->getTextSize())};
         pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
         pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
         pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(label->getScrollbarPolicy())};
         pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
-        pair.first["MaximumTextWidth"] = {"Float", tgui::to_string(label->getMaximumTextWidth())};
+        pair.first["MaximumTextWidth"] = {"Float", tgui::String::fromNumber(label->getMaximumTextWidth())};
         pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};
 
         const auto renderer = label->getSharedRenderer();
@@ -76,18 +76,18 @@ struct LabelProperties : WidgetProperties
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextOutlineColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextOutlineColor())};
-        pair.second["TextOutlineThickness"] = {"Float", tgui::to_string(renderer->getTextOutlineThickness())};
+        pair.second["TextOutlineThickness"] = {"Float", tgui::String::fromNumber(renderer->getTextOutlineThickness())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
 
 private:
 
-    static tgui::Label::HorizontalAlignment deserializeHorizontalAlignment(std::string value)
+    static tgui::Label::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "right")
             return tgui::Label::HorizontalAlignment::Right;
         else if (value == "center")
@@ -96,9 +96,9 @@ private:
             return tgui::Label::HorizontalAlignment::Left;
     }
 
-    static tgui::Label::VerticalAlignment deserializeVerticalAlignment(std::string value)
+    static tgui::Label::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
     {
-        value = tgui::toLower(tgui::trim(value));
+        value = value.trim().toLower();
         if (value == "bottom")
             return tgui::Label::VerticalAlignment::Bottom;
         else if (value == "center")
@@ -107,7 +107,7 @@ private:
             return tgui::Label::VerticalAlignment::Top;
     }
 
-    static std::string serializeHorizontalAlignment(tgui::Label::HorizontalAlignment alignment)
+    static tgui::String serializeHorizontalAlignment(tgui::Label::HorizontalAlignment alignment)
     {
         if (alignment == tgui::Label::HorizontalAlignment::Center)
             return "Center";
@@ -117,7 +117,7 @@ private:
             return "Left";
     }
 
-    static std::string serializeVerticalAlignment(tgui::Label::VerticalAlignment alignment)
+    static tgui::String serializeVerticalAlignment(tgui::Label::VerticalAlignment alignment)
     {
         if (alignment == tgui::Label::VerticalAlignment::Center)
             return "Center";

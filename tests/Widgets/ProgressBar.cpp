@@ -37,11 +37,11 @@ TEST_CASE("[ProgressBar]")
     {
         REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](unsigned int){}));
-        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, unsigned int){}));
+        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String){}));
+        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String, unsigned int){}));
 
         REQUIRE_NOTHROW(progressBar->connect("Full", [](){}));
-        REQUIRE_NOTHROW(progressBar->connect("Full", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(progressBar->connect("Full", [](tgui::Widget::Ptr, tgui::String){}));
     }
 
     SECTION("WidgetType")
@@ -55,10 +55,10 @@ TEST_CASE("[ProgressBar]")
         progressBar->setSize(300, 40);
         progressBar->getRenderer()->setBorders(2);
 
-        REQUIRE(progressBar->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(progressBar->getSize() == sf::Vector2f(300, 40));
+        REQUIRE(progressBar->getPosition() == tgui::Vector2f(40, 30));
+        REQUIRE(progressBar->getSize() == tgui::Vector2f(300, 40));
         REQUIRE(progressBar->getFullSize() == progressBar->getSize());
-        REQUIRE(progressBar->getWidgetOffset() == sf::Vector2f(0, 0));
+        REQUIRE(progressBar->getWidgetOffset() == tgui::Vector2f(0, 0));
     }
 
     SECTION("Minimum")
@@ -229,11 +229,11 @@ TEST_CASE("[ProgressBar]")
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("FillColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("FillColor", tgui::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
@@ -249,19 +249,19 @@ TEST_CASE("[ProgressBar]")
                 renderer->setBorders({1, 2, 3, 4});
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("FillColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("TextColorFilled").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("FillColor").getColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TextColorFilled").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
-            REQUIRE(renderer->getBackgroundColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getFillColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getTextColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getTextColorFilled() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getBorderColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getFillColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getTextColor() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getTextColorFilled() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(60, 70, 80));
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
@@ -316,10 +316,10 @@ TEST_CASE("[ProgressBar]")
         progressBar->setTextSize(16);
 
         tgui::ProgressBarRenderer renderer = tgui::RendererData::create();
-        renderer.setBackgroundColor(sf::Color::Green);
-        renderer.setFillColor(sf::Color::Yellow);
-        renderer.setTextColor(sf::Color::Red);
-        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setFillColor(tgui::Color::Yellow);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setBorderColor(tgui::Color::Blue);
         renderer.setTextStyle(tgui::TextStyle::Italic);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
@@ -339,7 +339,7 @@ TEST_CASE("[ProgressBar]")
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
                     TEST_DRAW("ProgressBar_LeftToRight.png")
 
-                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    renderer.setTextColorFilled(tgui::Color::Magenta);
                     TEST_DRAW("ProgressBar_LeftToRight_TextFillColor.png")
                 }
 
@@ -348,7 +348,7 @@ TEST_CASE("[ProgressBar]")
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
                     TEST_DRAW("ProgressBar_RightToLeft.png")
 
-                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    renderer.setTextColorFilled(tgui::Color::Magenta);
                     TEST_DRAW("ProgressBar_RightToLeft_TextFillColor.png")
                 }
             }
@@ -390,7 +390,7 @@ TEST_CASE("[ProgressBar]")
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
                     TEST_DRAW("ProgressBar_Textured_LeftToRight.png")
 
-                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    renderer.setTextColorFilled(tgui::Color::Magenta);
                     TEST_DRAW("ProgressBar_Textured_LeftToRight_TextFillColor.png")
                 }
 
@@ -399,7 +399,7 @@ TEST_CASE("[ProgressBar]")
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
                     TEST_DRAW("ProgressBar_Textured_RightToLeft.png")
 
-                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    renderer.setTextColorFilled(tgui::Color::Magenta);
                     TEST_DRAW("ProgressBar_Textured_RightToLeft_TextFillColor.png")
                 }
             }
