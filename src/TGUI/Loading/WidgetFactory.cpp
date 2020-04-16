@@ -63,53 +63,53 @@ namespace tgui
 {
     std::map<String, std::function<Widget::Ptr()>> WidgetFactory::m_constructFunctions =
     {
-        {"bitmapbutton", std::make_shared<BitmapButton>},
-        {"button", std::make_shared<Button>},
-        {"canvas", std::make_shared<Canvas>},
-        {"chatbox", std::make_shared<ChatBox>},
-        {"checkbox", std::make_shared<CheckBox>},
-        {"childwindow", std::make_shared<ChildWindow>},
-        {"clickablewidget", std::make_shared<ClickableWidget>},
-        {"combobox", std::make_shared<ComboBox>},
-        {"editbox", std::make_shared<EditBox>},
-        {"grid", std::make_shared<Grid>},
-        {"group", std::make_shared<Group>},
-        {"horizontallayout", std::make_shared<HorizontalLayout>},
-        {"horizontalwrap", std::make_shared<HorizontalWrap>},
-        {"knob", std::make_shared<Knob>},
-        {"label", std::make_shared<Label>},
-        {"listbox", std::make_shared<ListBox>},
-        {"listview", std::make_shared<ListView>},
-        {"menubar", std::make_shared<MenuBar>},
-        {"messagebox", std::make_shared<MessageBox>},
-        {"panel", std::make_shared<Panel>},
-        {"picture", std::make_shared<Picture>},
-        {"progressbar", std::make_shared<ProgressBar>},
-        {"radiobutton", std::make_shared<RadioButton>},
-        {"radiobuttongroup", std::make_shared<RadioButtonGroup>},
-        {"rangeslider", std::make_shared<RangeSlider>},
-        {"scrollablepanel", std::make_shared<ScrollablePanel>},
-        {"scrollbar", std::make_shared<Scrollbar>},
-        {"slider", std::make_shared<Slider>},
-        {"spinbutton", std::make_shared<SpinButton>},
-        {"tabs", std::make_shared<Tabs>},
-        {"textbox", std::make_shared<TextBox>},
-        {"treeview", std::make_shared<TreeView>},
-        {"verticallayout", std::make_shared<VerticalLayout>}
+        {"BitmapButton", std::make_shared<BitmapButton>},
+        {"Button", std::make_shared<Button>},
+        {"Canvas", std::make_shared<Canvas>},
+        {"ChatBox", std::make_shared<ChatBox>},
+        {"CheckBox", std::make_shared<CheckBox>},
+        {"ChildWindow", std::make_shared<ChildWindow>},
+        {"ClickableWidget", std::make_shared<ClickableWidget>},
+        {"ComboBox", std::make_shared<ComboBox>},
+        {"EditBox", std::make_shared<EditBox>},
+        {"Grid", std::make_shared<Grid>},
+        {"Group", std::make_shared<Group>},
+        {"HorizontalLayout", std::make_shared<HorizontalLayout>},
+        {"HorizontalWrap", std::make_shared<HorizontalWrap>},
+        {"Knob", std::make_shared<Knob>},
+        {"Label", std::make_shared<Label>},
+        {"ListBox", std::make_shared<ListBox>},
+        {"ListView", std::make_shared<ListView>},
+        {"MenuBar", std::make_shared<MenuBar>},
+        {"MessageBox", std::make_shared<MessageBox>},
+        {"Panel", std::make_shared<Panel>},
+        {"Picture", std::make_shared<Picture>},
+        {"ProgressBar", std::make_shared<ProgressBar>},
+        {"RadioButton", std::make_shared<RadioButton>},
+        {"RadioButtonGroup", std::make_shared<RadioButtonGroup>},
+        {"RangeSlider", std::make_shared<RangeSlider>},
+        {"ScrollablePanel", std::make_shared<ScrollablePanel>},
+        {"Scrollbar", std::make_shared<Scrollbar>},
+        {"Slider", std::make_shared<Slider>},
+        {"SpinButton", std::make_shared<SpinButton>},
+        {"Tabs", std::make_shared<Tabs>},
+        {"TextBox", std::make_shared<TextBox>},
+        {"TreeView", std::make_shared<TreeView>},
+        {"VerticalLayout", std::make_shared<VerticalLayout>}
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void WidgetFactory::setConstructFunction(const String& type, const std::function<Widget::Ptr()>& constructor)
     {
-        m_constructFunctions[type.toLower()] = constructor;
+        m_constructFunctions[type] = constructor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const std::function<Widget::Ptr()>& WidgetFactory::getConstructFunction(const String& type)
     {
-        return m_constructFunctions[type.toLower()];
+        return m_constructFunctions[type];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
