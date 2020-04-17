@@ -38,6 +38,7 @@ namespace tgui
     {
         m_type = "CheckBox";
 
+        m_renderer = aurora::makeCopied<CheckBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
@@ -64,6 +65,34 @@ namespace tgui
             return std::static_pointer_cast<CheckBox>(checkbox->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    CheckBoxRenderer* CheckBox::getSharedRenderer()
+    {
+        return aurora::downcast<CheckBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const CheckBoxRenderer* CheckBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const CheckBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    CheckBoxRenderer* CheckBox::getRenderer()
+    {
+        return aurora::downcast<CheckBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const CheckBoxRenderer* CheckBox::getRenderer() const
+    {
+        return aurora::downcast<const CheckBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

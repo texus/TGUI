@@ -262,7 +262,7 @@ TEST_CASE("[CheckBox]")
         checkBox->setText("Check me!");
         checkBox->setTextSize(16);
 
-        tgui::RadioButtonRenderer renderer = tgui::RendererData::create();
+        tgui::CheckBoxRenderer renderer = tgui::RendererData::create();
         renderer.setTextColor(tgui::Color::Red);
         renderer.setTextColorChecked({128, 0, 0});
         renderer.setBackgroundColor(tgui::Color::Green);
