@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Vector2f.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 #include <TGUI/SignalImpl.hpp>
 
@@ -533,8 +534,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+                || keyboard::isShiftPressed()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);

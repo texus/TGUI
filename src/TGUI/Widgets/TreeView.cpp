@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/TreeView.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 #include <cmath>
 
@@ -761,7 +762,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void TreeView::rightMousePressed(Vector2f pos)
     {
         pos -= getPosition();
@@ -788,12 +789,12 @@ namespace tgui
                     hierarchy.insert(hierarchy.begin(), node->text.getString());
                     node = node->parent;
                 }
-                
+
                 onRightClick.emit(this, hierarchy.back(), hierarchy);
             }
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TreeView::mouseMoved(Vector2f pos)
@@ -839,8 +840,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+                || keyboard::isShiftPressed()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);

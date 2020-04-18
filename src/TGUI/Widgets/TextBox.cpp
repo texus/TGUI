@@ -26,6 +26,7 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 
 #include <cmath>
@@ -673,411 +674,59 @@ namespace tgui
 
     void TextBox::keyPressed(const sf::Event::KeyEvent& event)
     {
-        switch (event.code)
+        if (event.code == sf::Keyboard::Tab)
+            textEntered('\t');
+        else if (event.code == sf::Keyboard::Return)
+            textEntered('\n');
+        else if (event.code == sf::Keyboard::Backspace)
+            backspaceKeyPressed();
+        else if (event.code == sf::Keyboard::Delete)
+            deleteKeyPressed();
+        else if (keyboard::isKeyPressCopy(event))
+            copySelectedTextToClipboard();
+        else if (keyboard::isKeyPressCut(event))
+            cutSelectedTextToClipboard();
+        else if (keyboard::isKeyPressPaste(event))
+            pasteTextFromClipboard();
+        else if (keyboard::isKeyPressSelectAll(event))
+            selectAllText();
+        else
         {
-            case sf::Keyboard::Up:
-            {
+            bool caretMoved = true;
+            if (event.code == sf::Keyboard::PageUp)
+                moveCaretPageUp();
+            else if (event.code == sf::Keyboard::PageDown)
+                moveCaretPageDown();
+            else if (keyboard::isKeyPressMoveCaretLeft(event))
+                moveCaretLeft(event.shift);
+            else if (keyboard::isKeyPressMoveCaretRight(event))
+                moveCaretRight(event.shift);
+            else if (keyboard::isKeyPressMoveCaretWordBegin(event))
+                moveCaretWordBegin();
+            else if (keyboard::isKeyPressMoveCaretWordEnd(event))
+                moveCaretWordEnd();
+            else if (keyboard::isKeyPressMoveCaretUp(event))
                 m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y - (m_lineHeight / 2.f) - m_verticalScrollbar->getValue()});
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::Down:
-            {
+            else if (keyboard::isKeyPressMoveCaretDown(event))
                 m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y + (m_lineHeight * 1.5f) - m_verticalScrollbar->getValue()});
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::Left:
-            {
-                if (event.control)
-                {
-                    // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
-                    bool skippedWhitespace = false;
-                    bool done = false;
-                    for (std::size_t j = m_selEnd.y + 1; j > 0; --j)
-                    {
-                        for (std::size_t i = m_selEnd.x; i > 0; --i)
-                        {
-                            if (skippedWhitespace)
-                            {
-                                if (isWhitespace(m_lines[m_selEnd.y][i-1]))
-                                {
-                                    m_selEnd.x = i;
-                                    done = true;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                if (!isWhitespace(m_lines[m_selEnd.y][i-1]))
-                                    skippedWhitespace = true;
-                            }
-                        }
-
-                        if (!done)
-                        {
-                            if (!skippedWhitespace)
-                            {
-                                if (m_selEnd.y > 0)
-                                {
-                                    m_selEnd.y--;
-                                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
-                                }
-                            }
-                            else
-                            {
-                                m_selEnd.x = 0;
-                                break;
-                            }
-                        }
-                        else
-                            break;
-                    }
-                }
-                else // Control key is not being pressed
-                {
-                    if ((m_selStart != m_selEnd) && !event.shift)
-                    {
-                        if ((m_selStart.y < m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x < m_selEnd.x)))
-                            m_selEnd = m_selStart;
-                    }
-                    else if (m_selEnd.x > 0)
-                        m_selEnd.x--;
-                    else
-                    {
-                        // You are at the left side of a line so move up
-                        if (m_selEnd.y > 0)
-                        {
-                            m_selEnd.y--;
-                            m_selEnd.x = m_lines[m_selEnd.y].getSize();
-                        }
-                    }
-                }
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::Right:
-            {
-                if (event.control)
-                {
-                    // Move to the end of the word (or to the end of the next word when already at the end)
-                    bool skippedWhitespace = false;
-                    bool done = false;
-                    for (std::size_t j = m_selEnd.y; j < m_lines.size(); ++j)
-                    {
-                        for (std::size_t i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
-                        {
-                            if (skippedWhitespace)
-                            {
-                                if (isWhitespace(m_lines[m_selEnd.y][i]))
-                                {
-                                    m_selEnd.x = i;
-                                    done = true;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                if (!isWhitespace(m_lines[m_selEnd.y][i]))
-                                    skippedWhitespace = true;
-                            }
-                        }
-
-                        if (!done)
-                        {
-                            if (!skippedWhitespace)
-                            {
-                                if (m_selEnd.y + 1 < m_lines.size())
-                                {
-                                    m_selEnd.y++;
-                                    m_selEnd.x = 0;
-                                }
-                            }
-                            else
-                            {
-                                m_selEnd.x = m_lines[m_selEnd.y].getSize();
-                                break;
-                            }
-                        }
-                        else
-                            break;
-                    }
-                }
-                else // Control key is not being pressed
-                {
-                    if ((m_selStart != m_selEnd) && !event.shift)
-                    {
-                        if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
-                            m_selEnd = m_selStart;
-                    }
-                    else
-                    {
-                        // Move to the next line if you are at the end of the line
-                        if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
-                        {
-                            if (m_selEnd.y + 1 < m_lines.size())
-                            {
-                                m_selEnd.y++;
-                                m_selEnd.x = 0;
-                            }
-                        }
-                        else
-                            m_selEnd.x++;
-                    }
-                }
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::Home:
-            {
-                if (event.control)
-                    m_selEnd = {0, 0};
-                else
-                    m_selEnd.x = 0;
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::End:
-            {
-                if (event.control)
-                    m_selEnd = {m_lines[m_lines.size()-1].getSize(), m_lines.size()-1};
-                else
-                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::PageUp:
-            {
-                // Move to the top line when not there already
-                if (m_selEnd.y != m_topLine)
-                    m_selEnd.y = m_topLine;
-                else
-                {
-                    // Scroll up when we already where at the top line
-                    const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
-                    if (m_topLine < visibleLines - 1)
-                        m_selEnd.y = 0;
-                    else
-                        m_selEnd.y = m_topLine - visibleLines + 1;
-                }
-
+            else if (keyboard::isKeyPressMoveCaretLineStart(event))
                 m_selEnd.x = 0;
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelectionTexts();
-                break;
-            }
-
-            case sf::Keyboard::PageDown:
-            {
-                // Move to the bottom line when not there already
-                if (m_topLine + m_visibleLines > m_lines.size())
-                    m_selEnd.y = m_lines.size() - 1;
-                else if (m_selEnd.y != m_topLine + m_visibleLines - 1)
-                    m_selEnd.y = m_topLine + m_visibleLines - 1;
-                else
-                {
-                    // Scroll down when we already where at the bottom line
-                    const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
-                    if (m_selEnd.y + visibleLines >= m_lines.size() + 2)
-                        m_selEnd.y = m_lines.size() - 1;
-                    else
-                        m_selEnd.y = m_selEnd.y + visibleLines - 2;
-                }
-
+            else if (keyboard::isKeyPressMoveCaretLineEnd(event))
                 m_selEnd.x = m_lines[m_selEnd.y].getSize();
+            else if (keyboard::isKeyPressMoveCaretDocumentBegin(event))
+                m_selEnd = {0, 0};
+            else if (keyboard::isKeyPressMoveCaretDocumentEnd(event))
+                m_selEnd = {m_lines[m_lines.size()-1].getSize(), m_lines.size()-1};
+            else
+                caretMoved = false;
 
+            if (caretMoved)
+            {
                 if (!event.shift)
                     m_selStart = m_selEnd;
 
                 updateSelectionTexts();
-                break;
             }
-
-            case sf::Keyboard::Tab:
-            {
-                textEntered('\t');
-                break;
-            }
-
-            case sf::Keyboard::Return:
-            {
-                textEntered('\n');
-                break;
-            }
-
-            case sf::Keyboard::BackSpace:
-            {
-                if (m_readOnly)
-                    break;
-
-                // Check that we did not select any characters
-                if (m_selStart == m_selEnd)
-                {
-                    const std::size_t pos = getSelectionEnd();
-                    if (pos > 0)
-                    {
-                        if (m_selEnd.x > 0)
-                        {
-                            // There is a specific case that we have to watch out for. When we are removing the last character on
-                            // a line which was placed there by word wrap and a newline follows this character then the caret
-                            // has to be placed at the line above (before the newline) instead of at the same line (after the newline)
-                            if ((m_lines[m_selEnd.y].getSize() == 1) && (pos > 1) && (pos < m_text.getSize()) && (m_text[pos-2] != '\n') && (m_text[pos] == '\n') && (m_selEnd.y > 0))
-                            {
-                                m_selEnd.y--;
-                                m_selEnd.x = m_lines[m_selEnd.y].getSize();
-                            }
-                            else // Just remove the character normally
-                                --m_selEnd.x;
-                        }
-                        else // At the beginning of the line
-                        {
-                            if (m_selEnd.y > 0)
-                            {
-                                --m_selEnd.y;
-                                m_selEnd.x = m_lines[m_selEnd.y].getSize();
-
-                                if ((m_text[pos-1] != '\n') && m_selEnd.x > 0)
-                                    --m_selEnd.x;
-                            }
-                        }
-
-                        m_selStart = m_selEnd;
-
-                        m_text.erase(pos - 1, 1);
-                        rearrangeText(true);
-                    }
-                }
-                else // When you did select some characters then delete them
-                    deleteSelectedCharacters();
-
-                // The caret should be visible again
-                m_caretVisible = true;
-                m_animationTimeElapsed = {};
-
-                onTextChange.emit(this, m_text);
-                break;
-            }
-
-            case sf::Keyboard::Delete:
-            {
-                if (m_readOnly)
-                    break;
-
-                // Check that we did not select any characters
-                if (m_selStart == m_selEnd)
-                {
-                    m_text.erase(getSelectionEnd(), 1);
-                    rearrangeText(true);
-                }
-                else // You did select some characters, so remove them
-                    deleteSelectedCharacters();
-
-                onTextChange.emit(this, m_text);
-                break;
-            }
-
-            case sf::Keyboard::A:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system)
-                {
-                    m_selStart = {0, 0};
-                    m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
-                    updateSelectionTexts();
-                }
-
-                break;
-            }
-
-            case sf::Keyboard::C:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system)
-                {
-                    const std::size_t selStart = getSelectionStart();
-                    const std::size_t selEnd = getSelectionEnd();
-                    if (selStart <= selEnd)
-                        Clipboard::set(m_text.substring(selStart, selEnd - selStart));
-                    else
-                        Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
-                }
-                break;
-            }
-
-            case sf::Keyboard::X:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
-                {
-                    const std::size_t selStart = getSelectionStart();
-                    const std::size_t selEnd = getSelectionEnd();
-                    if (selStart <= selEnd)
-                        Clipboard::set(m_text.substring(selStart, selEnd - selStart));
-                    else
-                        Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
-
-                    deleteSelectedCharacters();
-                }
-                break;
-            }
-
-            case sf::Keyboard::V:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
-                {
-                    const sf::String clipboardContents = Clipboard::get();
-
-                    // Only continue pasting if you actually have to do something
-                    if ((m_selStart != m_selEnd) || (clipboardContents != ""))
-                    {
-                        deleteSelectedCharacters();
-
-                        m_text.insert(getSelectionEnd(), clipboardContents);
-                        m_lines[m_selEnd.y].insert(m_selEnd.x, clipboardContents);
-
-                        m_selEnd.x += clipboardContents.getSize();
-                        m_selStart = m_selEnd;
-                        rearrangeText(true);
-
-                        onTextChange.emit(this, m_text);
-                    }
-                }
-
-                break;
-            }
-
-            default:
-                break;
         }
 
         // The caret should be visible again
@@ -1155,8 +804,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+                || keyboard::isShiftPressed()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
@@ -1283,6 +931,326 @@ namespace tgui
 
             rearrangeText(true);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretLeft(bool shiftPressed)
+    {
+        if ((m_selStart != m_selEnd) && !shiftPressed)
+        {
+            if ((m_selStart.y < m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x < m_selEnd.x)))
+                m_selEnd = m_selStart;
+            else
+                m_selStart = m_selEnd;
+        }
+        else
+        {
+            if (m_selEnd.x > 0)
+                m_selEnd.x--;
+            else
+            {
+                // You are at the left side of a line so move up
+                if (m_selEnd.y > 0)
+                {
+                    m_selEnd.y--;
+                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretRight(bool shiftPressed)
+    {
+        if ((m_selStart != m_selEnd) && !shiftPressed)
+        {
+            if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
+                m_selEnd = m_selStart;
+        }
+        else
+        {
+            // Move to the next line if you are at the end of the line
+            if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
+            {
+                if (m_selEnd.y + 1 < m_lines.size())
+                {
+                    m_selEnd.y++;
+                    m_selEnd.x = 0;
+                }
+            }
+            else
+                m_selEnd.x++;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretWordBegin()
+    {
+        // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
+        bool skippedWhitespace = false;
+        bool done = false;
+        for (std::size_t j = m_selEnd.y + 1; j > 0; --j)
+        {
+            for (std::size_t i = m_selEnd.x; i > 0; --i)
+            {
+                if (skippedWhitespace)
+                {
+                    if (isWhitespace(m_lines[m_selEnd.y][i-1]))
+                    {
+                        m_selEnd.x = i;
+                        done = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (!isWhitespace(m_lines[m_selEnd.y][i-1]))
+                        skippedWhitespace = true;
+                }
+            }
+
+            if (!done)
+            {
+                if (!skippedWhitespace)
+                {
+                    if (m_selEnd.y > 0)
+                    {
+                        m_selEnd.y--;
+                        m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                    }
+                }
+                else
+                {
+                    m_selEnd.x = 0;
+                    break;
+                }
+            }
+            else
+                break;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretWordEnd()
+    {
+        // Move to the end of the word (or to the end of the next word when already at the end)
+        bool skippedWhitespace = false;
+        bool done = false;
+        for (std::size_t j = m_selEnd.y; j < m_lines.size(); ++j)
+        {
+            for (std::size_t i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
+            {
+                if (skippedWhitespace)
+                {
+                    if (isWhitespace(m_lines[m_selEnd.y][i]))
+                    {
+                        m_selEnd.x = i;
+                        done = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (!isWhitespace(m_lines[m_selEnd.y][i]))
+                        skippedWhitespace = true;
+                }
+            }
+
+            if (!done)
+            {
+                if (!skippedWhitespace)
+                {
+                    if (m_selEnd.y + 1 < m_lines.size())
+                    {
+                        m_selEnd.y++;
+                        m_selEnd.x = 0;
+                    }
+                }
+                else
+                {
+                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                    break;
+                }
+            }
+            else
+                break;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretPageUp()
+    {
+        // Move to the top line when not there already
+        if (m_selEnd.y != m_topLine)
+            m_selEnd.y = m_topLine;
+        else
+        {
+            // Scroll up when we already where at the top line
+            const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
+            if (m_topLine < visibleLines - 1)
+                m_selEnd.y = 0;
+            else
+                m_selEnd.y = m_topLine - visibleLines + 1;
+        }
+
+        m_selEnd.x = 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::moveCaretPageDown()
+    {
+        // Move to the bottom line when not there already
+        if (m_topLine + m_visibleLines > m_lines.size())
+            m_selEnd.y = m_lines.size() - 1;
+        else if (m_selEnd.y != m_topLine + m_visibleLines - 1)
+            m_selEnd.y = m_topLine + m_visibleLines - 1;
+        else
+        {
+            // Scroll down when we already where at the bottom line
+            const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
+            if (m_selEnd.y + visibleLines >= m_lines.size() + 2)
+                m_selEnd.y = m_lines.size() - 1;
+            else
+                m_selEnd.y = m_selEnd.y + visibleLines - 2;
+        }
+
+        m_selEnd.x = m_lines[m_selEnd.y].getSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::backspaceKeyPressed()
+    {
+        if (m_readOnly)
+            return;
+
+        // Check that we did not select any characters
+        if (m_selStart == m_selEnd)
+        {
+            const std::size_t pos = getSelectionEnd();
+            if (pos > 0)
+            {
+                if (m_selEnd.x > 0)
+                {
+                    // There is a specific case that we have to watch out for. When we are removing the last character on
+                    // a line which was placed there by word wrap and a newline follows this character then the caret
+                    // has to be placed at the line above (before the newline) instead of at the same line (after the newline)
+                    if ((m_lines[m_selEnd.y].getSize() == 1) && (pos > 1) && (pos < m_text.getSize()) && (m_text[pos-2] != '\n') && (m_text[pos] == '\n') && (m_selEnd.y > 0))
+                    {
+                        m_selEnd.y--;
+                        m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                    }
+                    else // Just remove the character normally
+                        --m_selEnd.x;
+                }
+                else // At the beginning of the line
+                {
+                    if (m_selEnd.y > 0)
+                    {
+                        --m_selEnd.y;
+                        m_selEnd.x = m_lines[m_selEnd.y].getSize();
+
+                        if ((m_text[pos-1] != '\n') && m_selEnd.x > 0)
+                            --m_selEnd.x;
+                    }
+                }
+
+                m_selStart = m_selEnd;
+
+                m_text.erase(pos - 1, 1);
+                rearrangeText(true);
+            }
+        }
+        else // When you did select some characters then delete them
+            deleteSelectedCharacters();
+
+        // The caret should be visible again
+        m_caretVisible = true;
+        m_animationTimeElapsed = {};
+
+        onTextChange.emit(this, m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::deleteKeyPressed()
+    {
+        if (m_readOnly)
+            return;
+
+        // Check that we did not select any characters
+        if (m_selStart == m_selEnd)
+        {
+            m_text.erase(getSelectionEnd(), 1);
+            rearrangeText(true);
+        }
+        else // You did select some characters, so remove them
+            deleteSelectedCharacters();
+
+        onTextChange.emit(this, m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::copySelectedTextToClipboard()
+    {
+        const std::size_t selStart = getSelectionStart();
+        const std::size_t selEnd = getSelectionEnd();
+        if (selStart <= selEnd)
+            Clipboard::set(m_text.substring(selStart, selEnd - selStart));
+        else
+            Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::cutSelectedTextToClipboard()
+    {
+        const std::size_t selStart = getSelectionStart();
+        const std::size_t selEnd = getSelectionEnd();
+        if (selStart <= selEnd)
+            Clipboard::set(m_text.substring(selStart, selEnd - selStart));
+        else
+            Clipboard::set(m_text.substring(selEnd, selStart - selEnd));
+
+        deleteSelectedCharacters();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::pasteTextFromClipboard()
+    {
+        const sf::String clipboardContents = Clipboard::get();
+
+        // Only continue pasting if you actually have to do something
+        if ((m_selStart != m_selEnd) || (clipboardContents != ""))
+        {
+            deleteSelectedCharacters();
+
+            m_text.insert(getSelectionEnd(), clipboardContents);
+            m_lines[m_selEnd.y].insert(m_selEnd.x, clipboardContents);
+
+            m_selEnd.x += clipboardContents.getSize();
+            m_selStart = m_selEnd;
+            rearrangeText(true);
+
+            onTextChange.emit(this, m_text);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::selectAllText()
+    {
+        m_selStart = {0, 0};
+        m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+        updateSelectionTexts();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

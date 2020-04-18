@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/ListView.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 #include <cmath>
 
@@ -1003,7 +1004,7 @@ namespace tgui
             if (!mouseOnSelectedItem)
                 m_possibleDoubleClick = -1;
 
-            if (m_multiSelect && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)))
+            if (m_multiSelect && keyboard::isMultiselectModifierPressed())
             {
                 if (mouseOnSelectedItem)
                     removeSelectedItem(m_hoveredItem);
@@ -1012,7 +1013,7 @@ namespace tgui
 
                 m_lastMouseDownItem = m_hoveredItem;
             }
-            else if (m_multiSelect && (m_hoveredItem >= 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+            else if (m_multiSelect && (m_hoveredItem >= 0) && keyboard::isShiftPressed())
             {
                 if (m_lastMouseDownItem < 0)
                     m_lastMouseDownItem = m_hoveredItem;
@@ -1142,15 +1143,15 @@ namespace tgui
 
                     if (m_multiSelect)
                     {
-                        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                        if (keyboard::isMultiselectModifierPressed())
                         {
-                            // If the control key is pressed then toggle the selection of the item below the mouse
+                            // If the control/command key is pressed then toggle the selection of the item below the mouse
                             if (mouseOnSelectedItem)
                                 removeSelectedItem(m_hoveredItem);
                             else
                                 addSelectedItem(m_hoveredItem);
                         }
-                        else // Control isn't pressed. Select items between current position and item where mouse went down
+                        else // Control/command isn't pressed. Select items between current position and item where mouse went down
                         {
                             if (m_hoveredItem >= 0)
                             {
@@ -1181,8 +1182,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+                || keyboard::isShiftPressed()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos); // Update on which item the mouse is hovered

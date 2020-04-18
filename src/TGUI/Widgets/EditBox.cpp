@@ -26,6 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 
 /// TODO: Where m_selStart and m_selEnd are compared, use std::min and std::max and merge the if and else bodies
@@ -635,260 +636,47 @@ namespace tgui
 
     void EditBox::keyPressed(const sf::Event::KeyEvent& event)
     {
-        // Check if one of the correct keys was pressed
-        switch (event.code)
+        if (event.code == sf::Keyboard::Return)
+            onReturnKeyPress.emit(this, m_text);
+        else if (event.code == sf::Keyboard::Backspace)
+            backspaceKeyPressed();
+        else if (event.code == sf::Keyboard::Delete)
+            deleteKeyPressed();
+        else if (keyboard::isKeyPressCopy(event))
+            copySelectedTextToClipboard();
+        else if (keyboard::isKeyPressCut(event))
+            cutSelectedTextToClipboard();
+        else if (keyboard::isKeyPressPaste(event))
+            pasteTextFromClipboard();
+        else if (keyboard::isKeyPressSelectAll(event))
+            selectText();
+        else
         {
-            case sf::Keyboard::Left:
-            {
-                if (event.control)
-                {
-                    // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
-                    bool done = false;
-                    bool skippedWhitespace = false;
-                    for (std::size_t i = m_selEnd; i > 0; --i)
-                    {
-                        if (skippedWhitespace)
-                        {
-                            if (isWhitespace(m_text[i-1]))
-                            {
-                                m_selEnd = i;
-                                done = true;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if (!isWhitespace(m_text[i-1]))
-                                skippedWhitespace = true;
-                        }
-                    }
-
-                    if (!done && skippedWhitespace)
-                        m_selEnd = 0;
-                }
-                else // Control key is not being pressed
-                {
-                    // If text is selected then move to the cursor to the left side of the selected text
-                    if ((m_selChars > 0) && !event.shift)
-                    {
-                        m_selEnd = std::min(m_selStart, m_selEnd);
-                    }
-                    else if (m_selEnd > 0)
-                        m_selEnd--;
-                }
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelection();
-                break;
-            }
-            case sf::Keyboard::Right:
-            {
-                if (event.control)
-                {
-                    // Move to the end of the word (or to the end of the next word when already at the end)
-                    bool done = false;
-                    bool skippedWhitespace = false;
-                    for (std::size_t i = m_selEnd; i < m_text.getSize(); ++i)
-                    {
-                        if (skippedWhitespace)
-                        {
-                            if (isWhitespace(m_text[i]))
-                            {
-                                m_selEnd = i;
-                                done = true;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if (!isWhitespace(m_text[i]))
-                                skippedWhitespace = true;
-                        }
-                    }
-
-                    if (!done && skippedWhitespace)
-                        m_selEnd = m_text.getSize();
-                }
-                else // Control key is not being pressed
-                {
-                    // If text is selected then move to the cursor to the right side of the selected text
-                    if ((m_selChars > 0) && !event.shift)
-                    {
-                        m_selEnd = std::max(m_selStart, m_selEnd);
-                    }
-                    else if (m_selEnd < m_text.getSize())
-                        m_selEnd++;
-                }
-
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelection();
-                break;
-            }
-            case sf::Keyboard::Home:
-            {
-                // Set the caret to the beginning of the text
+            bool caretMoved = true;
+            if (keyboard::isKeyPressMoveCaretLeft(event))
+                moveCaretLeft(event.shift);
+            else if (keyboard::isKeyPressMoveCaretRight(event))
+                moveCaretRight(event.shift);
+            else if (keyboard::isKeyPressMoveCaretWordBegin(event))
+                moveCaretWordBegin();
+            else if (keyboard::isKeyPressMoveCaretWordEnd(event))
+                moveCaretWordEnd();
+            else if (keyboard::isKeyPressMoveCaretLineStart(event) || keyboard::isKeyPressMoveCaretUp(event)
+                  || keyboard::isKeyPressMoveCaretDocumentBegin(event) || (event.code == sf::Keyboard::PageUp))
                 m_selEnd = 0;
-                if (!event.shift)
-                    m_selStart = m_selEnd;
-
-                updateSelection();
-                break;
-            }
-            case sf::Keyboard::End:
-            {
-                // Set the caret behind the text
+            else if (keyboard::isKeyPressMoveCaretLineEnd(event) || keyboard::isKeyPressMoveCaretDown(event)
+                  || keyboard::isKeyPressMoveCaretDocumentEnd(event) || (event.code == sf::Keyboard::PageDown))
                 m_selEnd = m_text.getSize();
+            else
+                caretMoved = false;
+
+            if (caretMoved)
+            {
                 if (!event.shift)
                     m_selStart = m_selEnd;
 
                 updateSelection();
-                break;
             }
-            case sf::Keyboard::Return:
-            {
-                onReturnKeyPress.emit(this, m_text);
-                break;
-            }
-            case sf::Keyboard::BackSpace:
-            {
-                if (m_readOnly)
-                    return;
-
-                // Make sure that we did not select any characters
-                if (m_selChars == 0)
-                {
-                    // We can't delete any characters when you are at the beginning of the string
-                    if (m_selEnd == 0)
-                        return;
-
-                    // Erase the character
-                    sf::String displayedString = m_textFull.getString();
-                    displayedString.erase(m_selEnd-1, 1);
-                    m_textFull.setString(displayedString);
-                    m_text.erase(m_selEnd-1, 1);
-
-                    // Set the caret back on the correct position
-                    setCaretPosition(m_selEnd - 1);
-
-                    const float width = getVisibleEditBoxWidth();
-
-                    // If the text can be moved to the right then do so
-                    const float textWidth = getFullTextWidth();
-                    if (textWidth > width)
-                    {
-                        if (textWidth - m_textCropPosition < width)
-                            m_textCropPosition = static_cast<unsigned int>(textWidth - width);
-                    }
-                    else
-                        m_textCropPosition = 0;
-                }
-                else // When you did select some characters, delete them
-                    deleteSelectedCharacters();
-
-                onTextChange.emit(this, m_text);
-                break;
-            }
-            case sf::Keyboard::Delete:
-            {
-                if (m_readOnly)
-                    return;
-
-                // Make sure that no text is selected
-                if (m_selChars == 0)
-                {
-                    // When the caret is at the end of the line then you can't delete anything
-                    if (m_selEnd == m_text.getSize())
-                        return;
-
-                    // Erase the character
-                    sf::String displayedString = m_textFull.getString();
-                    displayedString.erase(m_selEnd, 1);
-                    m_textFull.setString(displayedString);
-                    m_text.erase(m_selEnd, 1);
-
-                    // Set the caret back on the correct position
-                    setCaretPosition(m_selEnd);
-
-                    // If the text can be moved to the right then do so
-                    const float width = getVisibleEditBoxWidth();
-                    const float textWidth = getFullTextWidth();
-                    if (textWidth > width)
-                    {
-                        if (textWidth - m_textCropPosition < width)
-                            m_textCropPosition = static_cast<unsigned int>(textWidth - width);
-                    }
-                    else
-                        m_textCropPosition = 0;
-                }
-                else // You did select some characters, delete them
-                    deleteSelectedCharacters();
-
-                onTextChange.emit(this, m_text);
-                break;
-            }
-            case sf::Keyboard::C:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system)
-                    Clipboard::set(m_textSelection.getString());
-
-                break;
-            }
-            case sf::Keyboard::V:
-            {
-                if (m_readOnly)
-                    return;
-
-                if (event.control && !event.alt && !event.shift && !event.system)
-                {
-                    const auto clipboardContents = Clipboard::get();
-
-                    // Only continue pasting if you actually have to do something
-                    if ((m_selChars > 0) || (clipboardContents.getSize() > 0))
-                    {
-                        deleteSelectedCharacters();
-
-                        const std::size_t oldCaretPos = m_selEnd;
-
-                        if (m_text.getSize() > m_selEnd)
-                            setText(m_text.toWideString().substr(0, m_selEnd) + Clipboard::get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
-                        else
-                            setText(m_text + clipboardContents);
-
-                        setCaretPosition(oldCaretPos + clipboardContents.getSize());
-                    }
-                }
-
-                break;
-            }
-            case sf::Keyboard::X:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system)
-                {
-                    Clipboard::set(m_textSelection.getString());
-
-                    if (m_readOnly)
-                        return;
-
-                    deleteSelectedCharacters();
-
-                    onTextChange.emit(this, m_text);
-                }
-
-                break;
-            }
-            case sf::Keyboard::A:
-            {
-                if (event.control && !event.alt && !event.shift && !event.system)
-                    selectText();
-
-                break;
-            }
-            default:
-                break;
         }
 
         // The caret should be visible again
@@ -1504,6 +1292,212 @@ namespace tgui
             // Too slow for double clicking
             m_possibleDoubleClick = false;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::backspaceKeyPressed()
+    {
+        if (m_readOnly)
+            return;
+
+        // Make sure that we did not select any characters
+        if (m_selChars == 0)
+        {
+            // We can't delete any characters when you are at the beginning of the string
+            if (m_selEnd == 0)
+                return;
+
+            // Erase the character
+            sf::String displayedString = m_textFull.getString();
+            displayedString.erase(m_selEnd-1, 1);
+            m_textFull.setString(displayedString);
+            m_text.erase(m_selEnd-1, 1);
+
+            // Set the caret back on the correct position
+            setCaretPosition(m_selEnd - 1);
+
+            const float width = getVisibleEditBoxWidth();
+
+            // If the text can be moved to the right then do so
+            const float textWidth = getFullTextWidth();
+            if (textWidth > width)
+            {
+                if (textWidth - m_textCropPosition < width)
+                    m_textCropPosition = static_cast<unsigned int>(textWidth - width);
+            }
+            else
+                m_textCropPosition = 0;
+        }
+        else // When you did select some characters, delete them
+            deleteSelectedCharacters();
+
+        onTextChange.emit(this, m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::deleteKeyPressed()
+    {
+        if (m_readOnly)
+            return;
+
+        // Make sure that no text is selected
+        if (m_selChars == 0)
+        {
+            // When the caret is at the end of the line then you can't delete anything
+            if (m_selEnd == m_text.getSize())
+                return;
+
+            // Erase the character
+            sf::String displayedString = m_textFull.getString();
+            displayedString.erase(m_selEnd, 1);
+            m_textFull.setString(displayedString);
+            m_text.erase(m_selEnd, 1);
+
+            // Set the caret back on the correct position
+            setCaretPosition(m_selEnd);
+
+            // If the text can be moved to the right then do so
+            const float width = getVisibleEditBoxWidth();
+            const float textWidth = getFullTextWidth();
+            if (textWidth > width)
+            {
+                if (textWidth - m_textCropPosition < width)
+                    m_textCropPosition = static_cast<unsigned int>(textWidth - width);
+            }
+            else
+                m_textCropPosition = 0;
+        }
+        else // You did select some characters, delete them
+            deleteSelectedCharacters();
+
+        onTextChange.emit(this, m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::copySelectedTextToClipboard()
+    {
+        Clipboard::set(m_textSelection.getString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::cutSelectedTextToClipboard()
+    {
+        Clipboard::set(m_textSelection.getString());
+
+        if (m_readOnly)
+            return;
+
+        deleteSelectedCharacters();
+
+        onTextChange.emit(this, m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::pasteTextFromClipboard()
+    {
+        if (m_readOnly)
+            return;
+
+        // Only continue pasting if you actually have to do something
+        const auto clipboardContents = Clipboard::get();
+        if ((m_selChars > 0) || (clipboardContents.getSize() > 0))
+        {
+            deleteSelectedCharacters();
+
+            const std::size_t oldCaretPos = m_selEnd;
+
+            if (m_text.getSize() > m_selEnd)
+                setText(m_text.toWideString().substr(0, m_selEnd) + Clipboard::get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
+            else
+                setText(m_text + clipboardContents);
+
+            setCaretPosition(oldCaretPos + clipboardContents.getSize());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::moveCaretLeft(bool shiftPressed)
+    {
+        // If text is selected then move to the cursor to the left side of the selected text
+        if ((m_selChars > 0) && !shiftPressed)
+            m_selEnd = std::min(m_selStart, m_selEnd);
+        else if (m_selEnd > 0)
+            m_selEnd--;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::moveCaretRight(bool shiftPressed)
+    {
+        // If text is selected then move to the cursor to the right side of the selected text
+        if ((m_selChars > 0) && !shiftPressed)
+            m_selEnd = std::max(m_selStart, m_selEnd);
+        else if (m_selEnd < m_text.getSize())
+            m_selEnd++;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::moveCaretWordBegin()
+    {
+        // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
+        bool done = false;
+        bool skippedWhitespace = false;
+        for (std::size_t i = m_selEnd; i > 0; --i)
+        {
+            if (skippedWhitespace)
+            {
+                if (isWhitespace(m_text[i-1]))
+                {
+                    m_selEnd = i;
+                    done = true;
+                    break;
+                }
+            }
+            else
+            {
+                if (!isWhitespace(m_text[i-1]))
+                    skippedWhitespace = true;
+            }
+        }
+
+        if (!done && skippedWhitespace)
+            m_selEnd = 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::moveCaretWordEnd()
+    {
+        // Move to the end of the word (or to the end of the next word when already at the end)
+        bool done = false;
+        bool skippedWhitespace = false;
+        for (std::size_t i = m_selEnd; i < m_text.getSize(); ++i)
+        {
+            if (skippedWhitespace)
+            {
+                if (isWhitespace(m_text[i]))
+                {
+                    m_selEnd = i;
+                    done = true;
+                    break;
+                }
+            }
+            else
+            {
+                if (!isWhitespace(m_text[i]))
+                    skippedWhitespace = true;
+            }
+        }
+
+        if (!done && skippedWhitespace)
+            m_selEnd = m_text.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
