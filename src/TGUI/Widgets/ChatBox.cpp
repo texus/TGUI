@@ -458,21 +458,21 @@ namespace tgui
 
     void ChatBox::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "scrollbar")
+        else if (property == "Scrollbar")
         {
             m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
 
@@ -483,21 +483,21 @@ namespace tgui
                 setSize(m_size);
             }
         }
-        else if (property == "scrollbarwidth")
+        else if (property == "ScrollbarWidth")
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
             m_scroll->setSize({width, m_scroll->getSize().y});
             setSize(m_size);
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -507,7 +507,7 @@ namespace tgui
             for (auto& line : m_lines)
                 line.text.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -572,40 +572,40 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["textcolor"])
-            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
-        if (node->propertyValuePairs["textstyle"])
-            setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["textstyle"]->value).getTextStyle());
-        if (node->propertyValuePairs["linelimit"])
-            setLineLimit(node->propertyValuePairs["linelimit"]->value.toInt());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["TextColor"])
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["TextColor"]->value).getColor());
+        if (node->propertyValuePairs["TextStyle"])
+            setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["TextStyle"]->value).getTextStyle());
+        if (node->propertyValuePairs["LineLimit"])
+            setLineLimit(node->propertyValuePairs["LineLimit"]->value.toInt());
 
         for (const auto& childNode : node->children)
         {
-            if (childNode->name.toLower() == "line")
+            if (childNode->name == "Line")
             {
                 Color lineTextColor = getTextColor();
-                if (childNode->propertyValuePairs["color"])
-                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["color"]->value).getColor();
+                if (childNode->propertyValuePairs["Color"])
+                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["Color"]->value).getColor();
 
                 TextStyle lineTextStyle = getTextStyle();
-                if (childNode->propertyValuePairs["style"])
-                    lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs["style"]->value).getTextStyle();
+                if (childNode->propertyValuePairs["Style"])
+                    lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs["Style"]->value).getTextStyle();
 
-                if (childNode->propertyValuePairs["text"])
-                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor, lineTextStyle);
+                if (childNode->propertyValuePairs["Text"])
+                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Text"]->value).getString(), lineTextColor, lineTextStyle);
             }
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-                                        [](const std::unique_ptr<DataIO::Node>& child){ return child->name.toLower() == "line"; }), node->children.end());
+                                        [](const std::unique_ptr<DataIO::Node>& child){ return child->name == "Line"; }), node->children.end());
 
-        if (node->propertyValuePairs["linesstartfromtop"])
-            setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["linesstartfromtop"]->value).getBool());
+        if (node->propertyValuePairs["LinesStartFromTop"])
+            setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["LinesStartFromTop"]->value).getBool());
 
         // This has to be parsed after the lines have been added
-        if (node->propertyValuePairs["newlinesbelowothers"])
-            setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["newlinesbelowothers"]->value).getBool());
+        if (node->propertyValuePairs["NewLinesBelowOthers"])
+            setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["NewLinesBelowOthers"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

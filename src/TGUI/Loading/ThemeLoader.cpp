@@ -63,9 +63,9 @@ namespace tgui
         {
             for (const auto& pair : node->propertyValuePairs)
             {
-                if (((pair.first.size() >= 7) && (pair.first.substr(0, 7).toLower() == "texture")) || (pair.first == "font"))
+                if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
                 {
-                    if (pair.second->value.empty() || (pair.second->value == "null") || (pair.second->value == "nullptr"))
+                    if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
                         continue;
 
                     // Insert the path into the filename unless the filename is already an absolute path
@@ -112,9 +112,8 @@ namespace tgui
                 // Check if this property is a reference to another section
                 if (!pair.second->value.empty() && (pair.second->value[0] == '&'))
                 {
-                    String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString().toLower();
-
-                    auto sectionsIt = sections.find(name);
+                    const String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString();
+                    const auto sectionsIt = sections.find(name);
                     if (sectionsIt == sections.end())
                         throw Exception{"Undefined reference to '" + name + "' encountered."};
 
@@ -191,7 +190,7 @@ namespace tgui
             std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
             for (const auto& child : root->children)
             {
-                String name = Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString().toLower();
+                const String name = Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString();
                 sections.emplace(name, std::cref(child));
             }
 
@@ -204,13 +203,13 @@ namespace tgui
                 const auto& child = section.second;
                 const String& name = section.first;
                 for (const auto& pair : child.get()->propertyValuePairs)
-                    m_propertiesCache[filename][name][pair.first.toLower()] = pair.second->value;
+                    m_propertiesCache[filename][name][pair.first] = pair.second->value;
 
                 for (const auto& nestedProperty : child.get()->children)
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);
-                    m_propertiesCache[filename][name][nestedProperty->name.toLower()] = "{\n" + ss.str() + "}";
+                    m_propertiesCache[filename][name][nestedProperty->name] = "{\n" + ss.str() + "}";
                 }
             }
         }
@@ -222,16 +221,14 @@ namespace tgui
     {
         preload(filename);
 
-        const String lowercaseClassName = section.toLower();
-
         // An empty filename is not considered an error and will result in an empty property list
         if (filename.empty())
-            return m_propertiesCache[""][lowercaseClassName];
+            return m_propertiesCache[""][section];
 
-        if (m_propertiesCache[filename].find(lowercaseClassName) == m_propertiesCache[filename].end())
+        if (m_propertiesCache[filename].find(section) == m_propertiesCache[filename].end())
             throw Exception{"No section '" + section + "' was found in file '" + filename + "'."};
 
-        return m_propertiesCache[filename][lowercaseClassName];
+        return m_propertiesCache[filename][section];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +238,7 @@ namespace tgui
         if (filename.empty())
             return true;
         else
-            return m_propertiesCache[filename].find(section.toLower()) != m_propertiesCache[filename].end();
+            return m_propertiesCache[filename].find(section) != m_propertiesCache[filename].end();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

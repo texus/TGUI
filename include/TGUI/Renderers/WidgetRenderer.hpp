@@ -62,7 +62,7 @@ namespace tgui
             {
                 std::stringstream ss;
                 DataIO::emit(nestedProperty, ss);
-                rendererData->propertyValuePairs[nestedProperty->name.toLower()] = {String("{\n" + ss.str() + "}")};
+                rendererData->propertyValuePairs[nestedProperty->name] = {String("{\n" + ss.str() + "}")};
             }
 
             return rendererData;

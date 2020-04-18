@@ -285,7 +285,7 @@ namespace tgui
 
     Signal& MessageBox::getSignal(String signalName)
     {
-        if (signalName == onButtonPress.getName().toLower())
+        if (signalName.equalIgnoreCase(onButtonPress.getName()))
             return onButtonPress;
         else
             return ChildWindow::getSignal(std::move(signalName));
@@ -295,17 +295,17 @@ namespace tgui
 
     void MessageBox::rendererChanged(const String& property)
     {
-        if (property == "textcolor")
+        if (property == "TextColor")
         {
             m_label->getRenderer()->setTextColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "button")
+        else if (property == "Button")
         {
             const auto& renderer = getSharedRenderer()->getButton();
             for (auto& button : m_buttons)
                 button->setRenderer(renderer);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             ChildWindow::rendererChanged(property);
 
@@ -339,8 +339,8 @@ namespace tgui
 
         ChildWindow::load(node, renderers);
 
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
         identifyLabelAndButtons();
     }

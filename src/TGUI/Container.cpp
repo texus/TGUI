@@ -85,8 +85,8 @@ namespace tgui
                     if (value.empty())
                         continue;
 
-                    // Skip "font = null"
-                    if (pair.first == "font" && value == "null")
+                    // Skip "Font = null"
+                    if (pair.first == "Font" && value == "null")
                         continue;
 
                     node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(value);
@@ -394,14 +394,14 @@ namespace tgui
             if (nameSeparator != String::npos)
                 objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
 
-            if (widgetType.toLower() == "renderer")
+            if (widgetType == "Renderer")
             {
                 if (!objectName.empty())
-                    availableRenderers[objectName.toLower()] = RendererData::createFromDataIONode(node.get());
+                    availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
             }
             else // Section describes a widget
             {
-                const auto& constructor = WidgetFactory::getConstructFunction(widgetType.toLower());
+                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
                 if (constructor)
                 {
                     Widget::Ptr widget = constructor();
@@ -783,12 +783,12 @@ namespace tgui
     {
         Widget::rendererChanged(property);
 
-        if ((property == "opacity") || (property == "opacitydisabled"))
+        if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->setInheritedOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             for (const auto& widget : m_widgets)
             {
@@ -821,7 +821,7 @@ namespace tgui
             const auto nameSeparator = childNode->name.find('.');
             const auto widgetType = childNode->name.substr(0, nameSeparator);
 
-            const auto& constructor = WidgetFactory::getConstructFunction(widgetType.toLower());
+            const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
             if (constructor)
             {
                 String className;

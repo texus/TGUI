@@ -119,17 +119,17 @@ namespace tgui
 
     Signal& ClickableWidget::getSignal(String signalName)
     {
-        if (signalName == onMousePress.getName().toLower())
+        if (signalName.equalIgnoreCase(onMousePress.getName()))
             return onMousePress;
-        else if (signalName == onMouseRelease.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMouseRelease.getName()))
             return onMouseRelease;
-        else if (signalName == onClick.getName().toLower())
+        else if (signalName.equalIgnoreCase(onClick.getName()))
             return onClick;
-        else if (signalName == onRightMousePress.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightMousePress.getName()))
             return onRightMousePress;
-        else if (signalName == onRightMouseRelease.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightMouseRelease.getName()))
             return onRightMouseRelease;
-        else if (signalName == onRightClick.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightClick.getName()))
             return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));

@@ -763,8 +763,8 @@ TEST_CASE("[ListView]")
             REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
-            REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["TrackColor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getScrollbar()->propertyValuePairs["ThumbColor"].getColor() == tgui::Color::Blue);
         }
     }
 
@@ -793,7 +793,7 @@ TEST_CASE("[ListView]")
         listView->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         listView->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
 
-        testSavingWidget("listView", listView);
+        testSavingWidget("ListView", listView);
     }
 
     SECTION("Draw")

@@ -327,7 +327,7 @@ namespace tgui
 
     Signal& SpinButton::getSignal(String signalName)
     {
-        if (signalName == onValueChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onValueChange.getName()))
             return onValueChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -337,53 +337,53 @@ namespace tgui
 
     void SpinButton::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "borderbetweenarrows")
+        else if (property == "BorderBetweenArrows")
         {
             m_borderBetweenArrowsCached = getSharedRenderer()->getBorderBetweenArrows();
             setSize(m_size);
         }
-        else if (property == "texturearrowup")
+        else if (property == "TextureArrowUp")
         {
             m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
         }
-        else if (property == "texturearrowuphover")
+        else if (property == "TextureArrowUpHover")
         {
             m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
-        else if (property == "texturearrowdown")
+        else if (property == "TextureArrowDown")
         {
             m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
         }
-        else if (property == "texturearrowdownhover")
+        else if (property == "TextureArrowDownHover")
         {
             m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "backgroundcolorhover")
+        else if (property == "BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "arrowcolor")
+        else if (property == "ArrowColor")
         {
             m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
-        else if (property == "arrowcolorhover")
+        else if (property == "ArrowColorHover")
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -414,14 +414,14 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["minimum"])
-            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
-        if (node->propertyValuePairs["maximum"])
-            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
-        if (node->propertyValuePairs["value"])
-            setValue(node->propertyValuePairs["value"]->value.toFloat());
-        if (node->propertyValuePairs["step"])
-            setStep(node->propertyValuePairs["step"]->value.toFloat());
+        if (node->propertyValuePairs["Minimum"])
+            setMinimum(node->propertyValuePairs["Minimum"]->value.toFloat());
+        if (node->propertyValuePairs["Maximum"])
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toFloat());
+        if (node->propertyValuePairs["Value"])
+            setValue(node->propertyValuePairs["Value"]->value.toFloat());
+        if (node->propertyValuePairs["Step"])
+            setStep(node->propertyValuePairs["Step"]->value.toFloat());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

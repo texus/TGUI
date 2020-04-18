@@ -361,7 +361,7 @@ namespace tgui
 
     Signal& Label::getSignal(String signalName)
     {
-        if (signalName == onDoubleClick.getName().toLower())
+        if (signalName.equalIgnoreCase(onDoubleClick.getName()))
             return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -371,7 +371,7 @@ namespace tgui
 
     void Label::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
@@ -379,48 +379,48 @@ namespace tgui
                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
             rearrangeText();
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             m_paddingCached.updateParentSize(getSize());
             rearrangeText();
         }
-        else if (property == "textstyle")
+        else if (property == "TextStyle")
         {
             m_textStyleCached = getSharedRenderer()->getTextStyle();
             rearrangeText();
         }
-        else if (property == "textcolor")
+        else if (property == "TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             for (auto& line : m_lines)
                 line.setColor(m_textColorCached);
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "textoutlinethickness")
+        else if (property == "TextOutlineThickness")
         {
             m_textOutlineThicknessCached = getSharedRenderer()->getTextOutlineThickness();
             for (auto& line : m_lines)
                 line.setOutlineThickness(m_textOutlineThicknessCached);
         }
-        else if (property == "textoutlinecolor")
+        else if (property == "TextOutlineColor")
         {
             m_textOutlineColorCached = getSharedRenderer()->getTextOutlineColor();
             for (auto& line : m_lines)
                 line.setOutlineColor(m_textOutlineColorCached);
         }
-        else if (property == "scrollbar")
+        else if (property == "Scrollbar")
         {
             m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
@@ -431,18 +431,18 @@ namespace tgui
                 rearrangeText();
             }
         }
-        else if (property == "scrollbarwidth")
+        else if (property == "ScrollbarWidth")
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
             m_scrollbar->setSize({width, m_scrollbar->getSize().y});
             rearrangeText();
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
             rearrangeText();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -498,52 +498,52 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["horizontalalignment"])
+        if (node->propertyValuePairs["HorizontalAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["horizontalalignment"]->value).getString().toLower();
-            if (alignment == "right")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["HorizontalAlignment"]->value).getString();
+            if (alignment == "Right")
                 setHorizontalAlignment(Label::HorizontalAlignment::Right);
-            else if (alignment == "center")
+            else if (alignment == "Center")
                 setHorizontalAlignment(Label::HorizontalAlignment::Center);
-            else if (alignment != "left")
+            else if (alignment != "Left")
                 throw Exception{"Failed to parse HorizontalAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs["verticalalignment"])
+        if (node->propertyValuePairs["VerticalAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["verticalalignment"]->value).getString().toLower();
-            if (alignment == "bottom")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["VerticalAlignment"]->value).getString();
+            if (alignment == "Bottom")
                 setVerticalAlignment(Label::VerticalAlignment::Bottom);
-            else if (alignment == "center")
+            else if (alignment == "Center")
                 setVerticalAlignment(Label::VerticalAlignment::Center);
-            else if (alignment != "top")
+            else if (alignment != "Top")
                 throw Exception{"Failed to parse VerticalAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs["scrollbarpolicy"])
+        if (node->propertyValuePairs["ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["scrollbarpolicy"]->value.trim().toLower();
-            if (policy == "automatic")
+            String policy = node->propertyValuePairs["ScrollbarPolicy"]->value.trim();
+            if (policy == "Automatic")
                 setScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "always")
+            else if (policy == "Always")
                 setScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "never")
+            else if (policy == "Never")
                 setScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse ScrollbarPolicy property, found unknown value."};
+                throw Exception{"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
 
-        if (node->propertyValuePairs["text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["maximumtextwidth"])
-            setMaximumTextWidth(node->propertyValuePairs["maximumtextwidth"]->value.toFloat());
-        if (node->propertyValuePairs["autosize"])
-            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
+        if (node->propertyValuePairs["Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["MaximumTextWidth"])
+            setMaximumTextWidth(node->propertyValuePairs["MaximumTextWidth"]->value.toFloat());
+        if (node->propertyValuePairs["AutoSize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool());
 
-        if (node->propertyValuePairs["ignoremouseevents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
+        if (node->propertyValuePairs["IgnoreMouseEvents"])
+            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["IgnoreMouseEvents"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

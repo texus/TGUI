@@ -761,15 +761,15 @@ namespace tgui
 
     Signal& ChildWindow::getSignal(String signalName)
     {
-        if (signalName == onMousePress.getName().toLower())
+        if (signalName.equalIgnoreCase(onMousePress.getName()))
             return onMousePress;
-        else if (signalName == onClose.getName().toLower())
+        else if (signalName.equalIgnoreCase(onClose.getName()))
             return onClose;
-        else if (signalName == onMinimize.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMinimize.getName()))
             return onMinimize;
-        else if (signalName == onMaximize.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMaximize.getName()))
             return onMaximize;
-        else if (signalName == onEscapeKeyPressed.getName().toLower())
+        else if (signalName.equalIgnoreCase(onEscapeKeyPressed.getName()))
             return onEscapeKeyPressed;
         else
             return Container::getSignal(std::move(signalName));
@@ -779,16 +779,16 @@ namespace tgui
 
     void ChildWindow::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "titlecolor")
+        else if (property == "TitleColor")
         {
             m_titleText.setColor(getSharedRenderer()->getTitleColor());
         }
-        else if (property == "texturetitlebar")
+        else if (property == "TextureTitleBar")
         {
             m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
 
@@ -797,39 +797,39 @@ namespace tgui
             if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
                 updateTitleBarHeight();
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "titlebarheight")
+        else if (property == "TitleBarHeight")
         {
             m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
             updateTitleBarHeight();
         }
-        else if (property == "borderbelowtitlebar")
+        else if (property == "BorderBelowTitleBar")
         {
             m_borderBelowTitleBarCached = getSharedRenderer()->getBorderBelowTitleBar();
         }
-        else if (property == "distancetoside")
+        else if (property == "DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             setPosition(m_position);
         }
-        else if (property == "paddingbetweenbuttons")
+        else if (property == "PaddingBetweenButtons")
         {
             m_paddingBetweenButtonsCached = getSharedRenderer()->getPaddingBetweenButtons();
             setPosition(m_position);
         }
-        else if (property == "minimumresizableborderwidth")
+        else if (property == "MinimumResizableBorderWidth")
         {
             m_minimumResizableBorderWidthCached = getSharedRenderer()->getMinimumResizableBorderWidth();
         }
-        else if (property == "showtextontitlebuttons")
+        else if (property == "ShowTextOnTitleButtons")
         {
             m_showTextOnTitleButtonsCached = getSharedRenderer()->getShowTextOnTitleButtons();
             setTitleButtons(m_titleButtons);
         }
-        else if (property == "closebutton")
+        else if (property == "CloseButton")
         {
             if (m_closeButton->isVisible())
             {
@@ -839,7 +839,7 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "maximizebutton")
+        else if (property == "MaximizeButton")
         {
             if (m_maximizeButton->isVisible())
             {
@@ -849,7 +849,7 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "minimizebutton")
+        else if (property == "MinimizeButton")
         {
             if (m_minimizeButton->isVisible())
             {
@@ -859,23 +859,23 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "titlebarcolor")
+        else if (property == "TitleBarColor")
         {
             m_titleBarColorCached = getSharedRenderer()->getTitleBarColor();
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "bordercolorfocused")
+        else if (property == "BorderColorFocused")
         {
             m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Container::rendererChanged(property);
 
@@ -889,7 +889,7 @@ namespace tgui
             m_spriteTitleBar.setOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Container::rendererChanged(property);
 
@@ -962,52 +962,52 @@ namespace tgui
     {
         Container::load(node, renderers);
 
-        if (node->propertyValuePairs["titlealignment"])
+        if (node->propertyValuePairs["TitleAlignment"])
         {
-            if (node->propertyValuePairs["titlealignment"]->value.toLower() == "left")
+            if (node->propertyValuePairs["TitleAlignment"]->value == "Left")
                 setTitleAlignment(TitleAlignment::Left);
-            else if (node->propertyValuePairs["titlealignment"]->value.toLower() == "center")
+            else if (node->propertyValuePairs["TitleAlignment"]->value == "Center")
                 setTitleAlignment(TitleAlignment::Center);
-            else if (node->propertyValuePairs["titlealignment"]->value.toLower() == "right")
+            else if (node->propertyValuePairs["TitleAlignment"]->value == "Right")
                 setTitleAlignment(TitleAlignment::Right);
             else
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
-        if (node->propertyValuePairs["titlebuttons"])
+        if (node->propertyValuePairs["TitleButtons"])
         {
             int decodedTitleButtons = TitleButton::None;
-            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
+            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs["TitleButtons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
-                String requestedTitleButton = elem.trim().toLower();
-                if (requestedTitleButton == "close")
+                String requestedTitleButton = elem.trim();
+                if (requestedTitleButton == "Close")
                     decodedTitleButtons |= TitleButton::Close;
-                else if (requestedTitleButton == "maximize")
+                else if (requestedTitleButton == "Maximize")
                     decodedTitleButtons |= TitleButton::Maximize;
-                else if (requestedTitleButton == "minimize")
+                else if (requestedTitleButton == "Minimize")
                     decodedTitleButtons |= TitleButton::Minimize;
             }
 
             setTitleButtons(decodedTitleButtons);
         }
 
-        if (node->propertyValuePairs["title"])
-            setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["title"]->value).getString());
+        if (node->propertyValuePairs["Title"])
+            setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Title"]->value).getString());
 
-        if (node->propertyValuePairs["keepinparent"])
-            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["keepinparent"]->value).getBool());
+        if (node->propertyValuePairs["KeepInParent"])
+            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["KeepInParent"]->value).getBool());
 
-        if (node->propertyValuePairs["resizable"])
-            setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["resizable"]->value).getBool());
-        if (node->propertyValuePairs["positionlocked"])
-            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["positionlocked"]->value).getBool());
+        if (node->propertyValuePairs["Resizable"])
+            setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Resizable"]->value).getBool());
+        if (node->propertyValuePairs["PositionLocked"])
+            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["PositionLocked"]->value).getBool());
 
-        if (node->propertyValuePairs["minimumsize"])
-            setMinimumSize(Vector2f{node->propertyValuePairs["minimumsize"]->value});
+        if (node->propertyValuePairs["MinimumSize"])
+            setMinimumSize(Vector2f{node->propertyValuePairs["MinimumSize"]->value});
 
-        if (node->propertyValuePairs["maximumsize"])
-            setMaximumSize(Vector2f{node->propertyValuePairs["maximumsize"]->value});
+        if (node->propertyValuePairs["MaximumSize"])
+            setMaximumSize(Vector2f{node->propertyValuePairs["MaximumSize"]->value});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

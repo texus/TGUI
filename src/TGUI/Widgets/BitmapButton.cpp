@@ -127,10 +127,10 @@ namespace tgui
     {
         Button::load(node, renderers);
 
-        if (node->propertyValuePairs["image"])
-            setImage(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["image"]->value).getTexture());
-        if (node->propertyValuePairs["imagescaling"])
-            setImageScaling(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["imagescaling"]->value).getNumber());
+        if (node->propertyValuePairs["Image"])
+            setImage(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["Image"]->value).getTexture());
+        if (node->propertyValuePairs["ImageScaling"])
+            setImageScaling(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["ImageScaling"]->value).getNumber());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

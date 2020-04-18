@@ -332,9 +332,9 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
             REQUIRE(renderer->getProperty("MinimumResizableBorderWidth").getNumber() == 4);
 
-            REQUIRE(renderer->getCloseButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Red);
-            REQUIRE(renderer->getMaximizeButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Green);
-            REQUIRE(renderer->getMinimizeButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Blue);
+            REQUIRE(renderer->getCloseButton()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getMaximizeButton()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Green);
+            REQUIRE(renderer->getMinimizeButton()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")

@@ -734,7 +734,7 @@ namespace tgui
                         const auto& widgets = container->getWidgets();
                         for (std::size_t i = 0; i < widgets.size(); ++i)
                         {
-                            if (widgets[i]->getWidgetName().toLower() == widgetName)
+                            if (widgets[i]->getWidgetName().equalIgnoreCase(widgetName))
                                 return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
                         }
                     }
@@ -745,7 +745,7 @@ namespace tgui
                         const auto& widgets = widget->getParent()->getWidgets();
                         for (std::size_t i = 0; i < widgets.size(); ++i)
                         {
-                            if (widgets[i]->getWidgetName().toLower() == widgetName)
+                            if (widgets[i]->getWidgetName().equalIgnoreCase(widgetName))
                                 return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
                         }
                     }

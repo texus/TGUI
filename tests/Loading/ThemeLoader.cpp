@@ -63,51 +63,51 @@ TEST_CASE("[ThemeLoader]")
     {
         std::map<tgui::String, tgui::String> properties = loader->load("resources/ThemeComments.txt", "Button1");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "Green");
+        REQUIRE(properties["TextColor"] == "Green");
 
         properties = loader->load("resources/ThemeComments.txt", "Correct/*Comment*/Name");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "rgb(0, 255, 0 )");
+        REQUIRE(properties["TextColor"] == "rgb(0, 255, 0 )");
 
         properties = loader->load("resources/ThemeComments.txt", "CorrectName");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "#ABCDEF");
+        REQUIRE(properties["TextColor"] == "#ABCDEF");
     }
 
     SECTION("load theme with nested sections")
     {
         std::map<tgui::String, tgui::String> properties = loader->load("resources/ThemeNested.txt", "ListBox1");
         REQUIRE(properties.size() == 2);
-        REQUIRE(properties["backgroundcolor"] == "White");
-        REQUIRE(properties["scrollbar"] == "{\nthumbcolor = Green;\ntrackcolor = Red;\n}");
+        REQUIRE(properties["BackgroundColor"] == "White");
+        REQUIRE(properties["Scrollbar"] == "{\nThumbColor = Green;\nTrackColor = Red;\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ListBox2");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["scrollbar"] == "{\nthumbcolor = Blue;\n}");
+        REQUIRE(properties["Scrollbar"] == "{\nThumbColor = Blue;\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ListBox3");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["scrollbar"] == "{\ntrackcolor = Yellow;\n}");
+        REQUIRE(properties["Scrollbar"] == "{\nTrackColor = Yellow;\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox1");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = White;\nscrollbar = {\nthumbcolor = Green;\ntrackcolor = Red;\n};\n}");
+        REQUIRE(properties["ListBox"] == "{\nBackgroundColor = White;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox2");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["listbox"] == "{\nScrollbar {\n    thumbcolor = Blue;\n}\n}");
+        REQUIRE(properties["ListBox"] == "{\nScrollbar {\n    ThumbColor = Blue;\n}\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox3");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["listbox"] == "{\nScrollbar {\n    trackcolor = Yellow;\n}\n}");
+        REQUIRE(properties["ListBox"] == "{\nScrollbar {\n    TrackColor = Yellow;\n}\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox4");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = Magenta;\nscrollbar = {\nthumbcolor = Green;\ntrackcolor = Red;\n};\n}");
+        REQUIRE(properties["ListBox"] == "{\nBackgroundColor = Magenta;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox5");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = Cyan;\n\nScrollbar {\n    trackcolor = Black;\n}\n}");
+        REQUIRE(properties["ListBox"] == "{\nBackgroundColor = Cyan;\n\nScrollbar {\n    TrackColor = Black;\n}\n}");
     }
 
     SECTION("cache")
@@ -125,23 +125,23 @@ TEST_CASE("[ThemeLoader]")
             auto& cache1 = propertyCache["resources/ThemeSpecialCases.txt"];
             auto& cache2 = propertyCache["resources/ThemeButton1.txt"];
             REQUIRE(cache1.size() == 4);
-            REQUIRE(cache1["button1"].size() == 1);
-            REQUIRE(cache1["button1"]["textcolor"] == "rgb(255, 0, 0)");
-            REQUIRE(cache1["name.with.dots"].size() == 2);
-            REQUIRE(cache1["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
-            REQUIRE(cache1["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-            REQUIRE(cache1["specialchars.{}=:;/*#//\t\\\""].size() == 1);
-            REQUIRE(cache1["specialchars.{}=:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
+            REQUIRE(cache1["Button1"].size() == 1);
+            REQUIRE(cache1["Button1"]["TextColor"] == "rgb(255, 0, 0)");
+            REQUIRE(cache1["Name.With.Dots"].size() == 2);
+            REQUIRE(cache1["Name.With.Dots"]["TextColor"] == "rgb(0, 255, 0)");
+            REQUIRE(cache1["Name.With.Dots"]["BackgroundColor"] == "rgb(255, 255, 255)");
+            REQUIRE(cache1["SpecialChars.{}=:;/*#//\t\\\""].size() == 1);
+            REQUIRE(cache1["SpecialChars.{}=:;/*#//\t\\\""]["TextColor"] == "rgba(,,,)");
             REQUIRE(cache1["label"].size() == 1);
-            REQUIRE(cache1["label"]["textcolor"] == "rgb(0, 0, 255)");
+            REQUIRE(cache1["label"]["TextColor"] == "rgb(0, 0, 255)");
             REQUIRE(cache2.size() == 1);
-            REQUIRE(cache2["button1"].size() == 1);
-            REQUIRE(cache2["button1"]["textcolor"] == "rgb(255, 255, 0)");
+            REQUIRE(cache2["Button1"].size() == 1);
+            REQUIRE(cache2["Button1"]["TextColor"] == "rgb(255, 255, 0)");
 
-            auto properties = loader->load("resources/ThemeSpecialCases.txt", "name.WITH.dots");
+            auto properties = loader->load("resources/ThemeSpecialCases.txt", "Name.With.Dots");
             REQUIRE(properties.size() == 2);
-            REQUIRE(properties["textcolor"] == "rgb(0, 255, 0)");
-            REQUIRE(properties["backgroundcolor"] == "rgb(255, 255, 255)");
+            REQUIRE(properties["TextColor"] == "rgb(0, 255, 0)");
+            REQUIRE(properties["BackgroundColor"] == "rgb(255, 255, 255)");
             REQUIRE(propertyCache.size() == 2);
 
             properties = loader->load("resources/ThemeButton1.txt", "Button1");
@@ -159,23 +159,23 @@ TEST_CASE("[ThemeLoader]")
 
         SECTION("without preload")
         {
-            auto properties = loader->load("resources/ThemeSpecialCases.txt", "name.WITH.dots");
+            auto properties = loader->load("resources/ThemeSpecialCases.txt", "Name.With.Dots");
             REQUIRE(properties.size() == 2);
-            REQUIRE(properties["textcolor"] == "rgb(0, 255, 0)");
-            REQUIRE(properties["backgroundcolor"] == "rgb(255, 255, 255)");
+            REQUIRE(properties["TextColor"] == "rgb(0, 255, 0)");
+            REQUIRE(properties["BackgroundColor"] == "rgb(255, 255, 255)");
             REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 1);
 
             auto& cache = tgui::DefaultThemeLoaderTest::getPropertiesCache(loader)["resources/ThemeSpecialCases.txt"];
             REQUIRE(cache.size() == 4);
-            REQUIRE(cache["button1"].size() == 1);
-            REQUIRE(cache["button1"]["textcolor"] == "rgb(255, 0, 0)");
-            REQUIRE(cache["name.with.dots"].size() == 2);
-            REQUIRE(cache["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
-            REQUIRE(cache["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-            REQUIRE(cache["specialchars.{}=:;/*#//\t\\\""].size() == 1);
-            REQUIRE(cache["specialchars.{}=:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
+            REQUIRE(cache["Button1"].size() == 1);
+            REQUIRE(cache["Button1"]["TextColor"] == "rgb(255, 0, 0)");
+            REQUIRE(cache["Name.With.Dots"].size() == 2);
+            REQUIRE(cache["Name.With.Dots"]["TextColor"] == "rgb(0, 255, 0)");
+            REQUIRE(cache["Name.With.Dots"]["BackgroundColor"] == "rgb(255, 255, 255)");
+            REQUIRE(cache["SpecialChars.{}=:;/*#//\t\\\""].size() == 1);
+            REQUIRE(cache["SpecialChars.{}=:;/*#//\t\\\""]["TextColor"] == "rgba(,,,)");
             REQUIRE(cache["label"].size() == 1);
-            REQUIRE(cache["label"]["textcolor"] == "rgb(0, 0, 255)");
+            REQUIRE(cache["label"]["TextColor"] == "rgb(0, 0, 255)");
 
             properties = loader->load("resources/Black.txt", "EditBox");
             REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);

@@ -448,8 +448,8 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == tgui::TextStyle::Italic);
 
             REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 2);
-            REQUIRE(renderer->getListBox()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Red);
-            REQUIRE(renderer->getListBox()->propertyValuePairs["textcolor"].getColor() == tgui::Color::Blue);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Red);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["TextColor"].getColor() == tgui::Color::Blue);
         }
 
         SECTION("textured")

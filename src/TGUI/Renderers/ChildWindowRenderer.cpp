@@ -56,12 +56,12 @@ namespace tgui
 
     float ChildWindowRenderer::getTitleBarHeight() const
     {
-        auto it = m_data->propertyValuePairs.find("titlebarheight");
+        auto it = m_data->propertyValuePairs.find("TitleBarHeight");
         if (it != m_data->propertyValuePairs.end())
             return it->second.getNumber();
         else
         {
-            it = m_data->propertyValuePairs.find("texturetitlebar");
+            it = m_data->propertyValuePairs.find("TextureTitleBar");
             if (it != m_data->propertyValuePairs.end() && it->second.getTexture().getData())
                 return static_cast<float>(it->second.getTexture().getImageSize().y);
             else
@@ -73,7 +73,7 @@ namespace tgui
 
     void ChildWindowRenderer::setTitleBarHeight(float number)
     {
-        setProperty("titlebarheight", ObjectConverter{number});
+        setProperty("TitleBarHeight", ObjectConverter{number});
     }
 }
 

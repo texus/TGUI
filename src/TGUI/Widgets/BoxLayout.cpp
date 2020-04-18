@@ -140,12 +140,12 @@ namespace tgui
 
     void BoxLayout::rendererChanged(const String& property)
     {
-        if (property == "spacebetweenwidgets")
+        if (property == "SpaceBetweenWidgets")
         {
             m_spaceBetweenWidgetsCached = getSharedRenderer()->getSpaceBetweenWidgets();
             updateWidgets();
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             Group::rendererChanged(property);
 

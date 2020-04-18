@@ -242,7 +242,7 @@ TEST_CASE("[Widget]")
             REQUIRE(renderer->getOpacity() == 0.f);
 
             auto pairs = renderer->getPropertyValuePairs();
-            REQUIRE(pairs["opacity"].getNumber() == renderer->getOpacity());
+            REQUIRE(pairs["Opacity"].getNumber() == renderer->getOpacity());
             REQUIRE(renderer->getProperty("Opacity").getNumber() == renderer->getOpacity());
         }
 
@@ -265,8 +265,8 @@ TEST_CASE("[Widget]")
             REQUIRE(renderer->getOpacityDisabled() == -1.f);
 
             auto pairs = renderer->getPropertyValuePairs();
-            REQUIRE(pairs["opacitydisabled"].getNumber() == renderer->getOpacityDisabled());
-            REQUIRE(renderer->getProperty("opacitydisabled").getNumber() == renderer->getOpacityDisabled());
+            REQUIRE(pairs["OpacityDisabled"].getNumber() == renderer->getOpacityDisabled());
+            REQUIRE(renderer->getProperty("OpacityDisabled").getNumber() == renderer->getOpacityDisabled());
         }
 
         SECTION("Font")
@@ -276,8 +276,8 @@ TEST_CASE("[Widget]")
             renderer->setFont("resources/DejaVuSans.ttf");
 
             auto pairs = renderer->getPropertyValuePairs();
-            REQUIRE(pairs["font"].getFont() != nullptr);
-            REQUIRE(renderer->getProperty("font").getFont() != nullptr);
+            REQUIRE(pairs["Font"].getFont() != nullptr);
+            REQUIRE(renderer->getProperty("Font").getFont() != nullptr);
             REQUIRE(renderer->getFont() != nullptr);
             REQUIRE(renderer->getFont().getId() == "resources/DejaVuSans.ttf");
 
@@ -309,8 +309,8 @@ TEST_CASE("[Widget]")
 
             auto clonedRenderer = renderer->clone();
             REQUIRE(clonedRenderer != renderer->getData());
-            REQUIRE(clonedRenderer->propertyValuePairs["opacity"].getNumber() == 0.5f);
-            REQUIRE(clonedRenderer->propertyValuePairs["font"].getFont().getId() == "resources/DejaVuSans.ttf");
+            REQUIRE(clonedRenderer->propertyValuePairs["Opacity"].getNumber() == 0.5f);
+            REQUIRE(clonedRenderer->propertyValuePairs["Font"].getFont().getId() == "resources/DejaVuSans.ttf");
         }
 
         // TODO: Other tests with the renderer class (e.g. sharing and copying a renderer when using multiple widgets)

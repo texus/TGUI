@@ -180,6 +180,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool String::equalIgnoreCase(const String& other) const
+    {
+        return std::equal(m_string.begin(), m_string.end(), other.begin(), other.end(), [](char32_t char1, char32_t char2){
+            if (char1 == char2)
+                return true;
+            else if ((char1 < 128) && (char2 < 128))
+                return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
+            else
+                return false;
+        });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     String& String::replace(const String& searchFor, const String& replaceWith)
     {
         std::size_t step = replaceWith.length();
@@ -250,11 +264,6 @@ namespace tgui
 
     String::String(const char16_t* str) :
         m_string(utf::convertUtf16toUtf32(str, str + std::char_traits<char16_t>::length(str)))
-    {
-    }
-
-    String::String(const char32_t* str)
-        : m_string{str}
     {
     }
 

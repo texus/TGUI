@@ -256,7 +256,7 @@ namespace tgui
     unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, const BoundArgs&... args)
     {
         unsigned int id;
-        Signal& signal = getSignal(signalName.toLower());
+        Signal& signal = getSignal(signalName);
 
         if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>
                    && std::is_invocable_v<decltype(&handler), BoundArgs...>
@@ -289,7 +289,7 @@ namespace tgui
             id = signal.connect(binder::bind(signal, std::forward<Func>(handler), args...));
         }
 
-        m_connectedSignals[id] = signalName.toLower();
+        m_connectedSignals[id] = std::move(signalName);
         return id;
     }
 
@@ -297,8 +297,8 @@ namespace tgui
     template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, const Args&... args)
     {
-        const unsigned int id = getSignal(signalName.toLower()).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
-        m_connectedSignals[id] = signalName.toLower();
+        const unsigned int id = getSignal(signalName).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
+        m_connectedSignals[id] = std::move(signalName);
         return id;
     }
 
@@ -306,13 +306,13 @@ namespace tgui
                                                                          && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, BoundArgs&&... args)
     {
-        const unsigned int id = getSignal(signalName.toLower()).connect(
+        const unsigned int id = getSignal(signalName).connect(
                                     [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler), args...]
                                     (const std::shared_ptr<Widget>& w, const String& s)
                                     { f(args..., w, s); }
                                 );
 
-        m_connectedSignals[id] = signalName.toLower();
+        m_connectedSignals[id] = std::move(signalName);
         return id;
     }
 
@@ -320,10 +320,10 @@ namespace tgui
                                                                          && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(String signalName, Func&& handler, BoundArgs&&... args)
     {
-        Signal& signal = getSignal(signalName.toLower());
+        Signal& signal = getSignal(signalName);
         using binder = internal_signal::func_traits<void, typename std::decay<Func>::type, BoundArgs...>;
         const unsigned int id = signal.connect(binder::bind(signal, std::forward<Func>(handler), std::forward<BoundArgs>(args)...));
-        m_connectedSignals[id] = signalName.toLower();
+        m_connectedSignals[id] = std::move(signalName);
         return id;
     }
 #endif

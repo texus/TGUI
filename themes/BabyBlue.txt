@@ -22,7 +22,7 @@ CheckBox {
 }
 
 ChildWindow {
-    TextureTitlebar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
+    TextureTitleBar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
     TitleColor             = rgb(100, 100, 100);
     BackgroundColor        = rgb(230, 230, 230);
     BorderColor            = White;
@@ -95,7 +95,7 @@ MessageBox {
     Button    = &Button;
     TextColor = rgb(100, 100, 100);
 
-    TextureTitlebar = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
+    TextureTitleBar = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
     TitleColor      = rgb(100, 100, 100);
     BackgroundColor = rgb(230, 230, 230);
     BorderColor     = White;

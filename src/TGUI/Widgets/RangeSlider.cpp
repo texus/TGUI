@@ -485,7 +485,7 @@ namespace tgui
 
     Signal& RangeSlider::getSignal(String signalName)
     {
-        if (signalName == onRangeChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onRangeChange.getName()))
             return onRangeChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -495,12 +495,12 @@ namespace tgui
 
     void RangeSlider::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "texturetrack")
+        else if (property == "TextureTrack")
         {
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
 
@@ -511,52 +511,52 @@ namespace tgui
 
             setSize(m_size);
         }
-        else if (property == "texturetrackhover")
+        else if (property == "TextureTrackHover")
         {
             m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
-        else if (property == "texturethumb")
+        else if (property == "TextureThumb")
         {
             m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             setSize(m_size);
         }
-        else if (property == "texturethumbhover")
+        else if (property == "TextureThumbHover")
         {
             m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
         }
-        else if (property == "trackcolor")
+        else if (property == "TrackColor")
         {
             m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
-        else if (property == "trackcolorhover")
+        else if (property == "TrackColorHover")
         {
             m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
-        else if (property == "selectedtrackcolor")
+        else if (property == "SelectedTrackColor")
         {
             m_selectedTrackColorCached = getSharedRenderer()->getSelectedTrackColor();
         }
-        else if (property == "selectedtrackcolorhover")
+        else if (property == "SelectedTrackColorHover")
         {
             m_selectedTrackColorHoverCached = getSharedRenderer()->getSelectedTrackColorHover();
         }
-        else if (property == "thumbcolor")
+        else if (property == "ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "thumbcolorhover")
+        else if (property == "ThumbColorHover")
         {
             m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "bordercolorhover")
+        else if (property == "BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -590,16 +590,16 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["minimum"])
-            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
-        if (node->propertyValuePairs["maximum"])
-            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
-        if (node->propertyValuePairs["selectionstart"])
-            setSelectionStart(node->propertyValuePairs["selectionstart"]->value.toFloat());
-        if (node->propertyValuePairs["selectionend"])
-            setSelectionEnd(node->propertyValuePairs["selectionend"]->value.toFloat());
-        if (node->propertyValuePairs["step"])
-            setStep(node->propertyValuePairs["step"]->value.toFloat());
+        if (node->propertyValuePairs["Minimum"])
+            setMinimum(node->propertyValuePairs["Minimum"]->value.toFloat());
+        if (node->propertyValuePairs["Maximum"])
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toFloat());
+        if (node->propertyValuePairs["SelectionStart"])
+            setSelectionStart(node->propertyValuePairs["SelectionStart"]->value.toFloat());
+        if (node->propertyValuePairs["SelectionEnd"])
+            setSelectionEnd(node->propertyValuePairs["SelectionEnd"]->value.toFloat());
+        if (node->propertyValuePairs["Step"])
+            setStep(node->propertyValuePairs["Step"]->value.toFloat());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

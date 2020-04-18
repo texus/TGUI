@@ -541,7 +541,7 @@ namespace tgui
 
     Signal& Tabs::getSignal(String signalName)
     {
-        if (signalName == onTabSelect.getName().toLower())
+        if (signalName.equalIgnoreCase(onTabSelect.getName()))
             return onTabSelect;
         else
             return Widget::getSignal(std::move(signalName));
@@ -551,86 +551,86 @@ namespace tgui
 
     void Tabs::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             recalculateTabsWidth();
         }
-        else if (property == "textcolor")
+        else if (property == "TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors();
         }
-        else if (property == "textcolorhover")
+        else if (property == "TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateTextColors();
         }
-        else if (property == "textcolordisabled")
+        else if (property == "TextColorDisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
             updateTextColors();
         }
-        else if (property == "selectedtextcolor")
+        else if (property == "SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors();
         }
-        else if (property == "selectedtextcolorhover")
+        else if (property == "SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateTextColors();
         }
-        else if (property == "texturetab")
+        else if (property == "TextureTab")
         {
             m_spriteTab.setTexture(getSharedRenderer()->getTextureTab());
         }
-        else if (property == "texturetabhover")
+        else if (property == "TextureTabHover")
         {
             m_spriteTabHover.setTexture(getSharedRenderer()->getTextureTabHover());
         }
-        else if (property == "textureselectedtab")
+        else if (property == "TextureSelectedTab")
         {
             m_spriteSelectedTab.setTexture(getSharedRenderer()->getTextureSelectedTab());
         }
-        else if (property == "textureselectedtabhover")
+        else if (property == "TextureSelectedTabHover")
         {
             m_spriteSelectedTabHover.setTexture(getSharedRenderer()->getTextureSelectedTabHover());
         }
-        else if (property == "texturedisabledtab")
+        else if (property == "TextureDisabledTab")
         {
             m_spriteDisabledTab.setTexture(getSharedRenderer()->getTextureDisabledTab());
         }
-        else if (property == "distancetoside")
+        else if (property == "DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             recalculateTabsWidth();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "backgroundcolorhover")
+        else if (property == "BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "backgroundcolordisabled")
+        else if (property == "BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "selectedbackgroundcolor")
+        else if (property == "SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "selectedbackgroundcolorhover")
+        else if (property == "SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -643,7 +643,7 @@ namespace tgui
             for (auto& tab : m_tabs)
                 tab.text.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -720,43 +720,43 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["tabs"])
+        if (node->propertyValuePairs["Tabs"])
         {
-            if (!node->propertyValuePairs["tabs"]->listNode)
+            if (!node->propertyValuePairs["Tabs"]->listNode)
                 throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
 
-            for (const auto& tabText : node->propertyValuePairs["tabs"]->valueList)
+            for (const auto& tabText : node->propertyValuePairs["Tabs"]->valueList)
                 add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString(), false);
         }
 
-        if (node->propertyValuePairs["tabsvisible"])
+        if (node->propertyValuePairs["TabsVisible"])
         {
-            if (!node->propertyValuePairs["tabsvisible"]->listNode)
+            if (!node->propertyValuePairs["TabsVisible"]->listNode)
                 throw Exception{"Failed to parse 'TabsVisible' property, expected a list as value"};
 
-            const auto& values = node->propertyValuePairs["tabsvisible"]->valueList;
+            const auto& values = node->propertyValuePairs["TabsVisible"]->valueList;
             for (unsigned int i = 0; i < values.size(); ++i)
                 setTabVisible(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
-        if (node->propertyValuePairs["tabsenabled"])
+        if (node->propertyValuePairs["TabsEnabled"])
         {
-            if (!node->propertyValuePairs["tabsenabled"]->listNode)
+            if (!node->propertyValuePairs["TabsEnabled"]->listNode)
                 throw Exception{"Failed to parse 'TabsEnabled' property, expected a list as value"};
 
-            const auto& values = node->propertyValuePairs["tabsenabled"]->valueList;
+            const auto& values = node->propertyValuePairs["TabsEnabled"]->valueList;
             for (unsigned int i = 0; i < values.size(); ++i)
                 setTabEnabled(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
-        if (node->propertyValuePairs["maximumtabwidth"])
-            setMaximumTabWidth(node->propertyValuePairs["maximumtabwidth"]->value.toFloat());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["tabheight"])
-            setTabHeight(node->propertyValuePairs["tabheight"]->value.toFloat());
-        if (node->propertyValuePairs["selected"])
-            select(node->propertyValuePairs["selected"]->value.toInt());
+        if (node->propertyValuePairs["MaximumTabWidth"])
+            setMaximumTabWidth(node->propertyValuePairs["MaximumTabWidth"]->value.toFloat());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["TabHeight"])
+            setTabHeight(node->propertyValuePairs["TabHeight"]->value.toFloat());
+        if (node->propertyValuePairs["Selected"])
+            select(node->propertyValuePairs["Selected"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -174,16 +174,16 @@ namespace tgui
     {
         BoxLayout::load(node, renderers);
 
-        if (node->propertyValuePairs["ratios"])
+        if (node->propertyValuePairs["Ratios"])
         {
-            if (!node->propertyValuePairs["ratios"]->listNode)
+            if (!node->propertyValuePairs["Ratios"]->listNode)
                 throw Exception{"Failed to parse 'Ratios' property, expected a list as value"};
 
-            if (node->propertyValuePairs["ratios"]->valueList.size() != getWidgets().size())
+            if (node->propertyValuePairs["Ratios"]->valueList.size() != getWidgets().size())
                 throw Exception{"Amounts of values for 'Ratios' differs from the amount in child widgets"};
 
-            for (std::size_t i = 0; i < node->propertyValuePairs["ratios"]->valueList.size(); ++i)
-                setRatio(i, Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["ratios"]->valueList[i]).getNumber());
+            for (std::size_t i = 0; i < node->propertyValuePairs["Ratios"]->valueList.size(); ++i)
+                setRatio(i, Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["Ratios"]->valueList[i]).getNumber());
         }
     }
 

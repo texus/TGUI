@@ -99,7 +99,7 @@ TEST_CASE("[MessageBox]")
         REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(10, 20, 30));
 
         REQUIRE(renderer->getButton()->propertyValuePairs.size() == 1);
-        REQUIRE(renderer->getButton()->propertyValuePairs["backgroundcolor"].getColor() == tgui::Color::Cyan);
+        REQUIRE(renderer->getButton()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Cyan);
     }
 
     SECTION("Saving and loading from file")

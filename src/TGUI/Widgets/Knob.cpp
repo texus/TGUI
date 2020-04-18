@@ -456,7 +456,7 @@ namespace tgui
 
     Signal& Knob::getSignal(String signalName)
     {
-        if (signalName == onValueChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onValueChange.getName()))
             return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -466,38 +466,38 @@ namespace tgui
 
     void Knob::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
             setSize(m_size);
         }
-        else if (property == "textureforeground")
+        else if (property == "TextureForeground")
         {
             m_spriteForeground.setTexture(getSharedRenderer()->getTextureForeground());
             setSize(m_size);
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "thumbcolor")
+        else if (property == "ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "imagerotation")
+        else if (property == "ImageRotation")
         {
             m_imageRotationCached = getSharedRenderer()->getImageRotation();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -530,18 +530,18 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["startrotation"])
-            setStartRotation(node->propertyValuePairs["startrotation"]->value.toFloat());
-        if (node->propertyValuePairs["endrotation"])
-            setEndRotation(node->propertyValuePairs["endrotation"]->value.toFloat());
-        if (node->propertyValuePairs["minimum"])
-            setMinimum(node->propertyValuePairs["minimum"]->value.toFloat());
-        if (node->propertyValuePairs["maximum"])
-            setMaximum(node->propertyValuePairs["maximum"]->value.toFloat());
-        if (node->propertyValuePairs["value"])
-            setValue(node->propertyValuePairs["value"]->value.toFloat());
-        if (node->propertyValuePairs["clockwiseturning"])
-            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["clockwiseturning"]->value).getBool());
+        if (node->propertyValuePairs["StartRotation"])
+            setStartRotation(node->propertyValuePairs["StartRotation"]->value.toFloat());
+        if (node->propertyValuePairs["EndRotation"])
+            setEndRotation(node->propertyValuePairs["EndRotation"]->value.toFloat());
+        if (node->propertyValuePairs["Minimum"])
+            setMinimum(node->propertyValuePairs["Minimum"]->value.toFloat());
+        if (node->propertyValuePairs["Maximum"])
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toFloat());
+        if (node->propertyValuePairs["Value"])
+            setValue(node->propertyValuePairs["Value"]->value.toFloat());
+        if (node->propertyValuePairs["ClockwiseTurning"])
+            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ClockwiseTurning"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

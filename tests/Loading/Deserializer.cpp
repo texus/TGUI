@@ -204,9 +204,9 @@ TEST_CASE("[Deserializer]")
 
         std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
         REQUIRE(rendererData->propertyValuePairs.size() == 3);
-        REQUIRE(rendererData->propertyValuePairs["somecolor"].getString() == "Red");
-        REQUIRE(rendererData->propertyValuePairs["textstyleproperty"].getString() == "StrikeThrough");
-        REQUIRE(rendererData->propertyValuePairs["nested"].getString() == "{\nnum = 5;\n}");
+        REQUIRE(rendererData->propertyValuePairs["SomeColor"].getString() == "Red");
+        REQUIRE(rendererData->propertyValuePairs["TextStyleProperty"].getString() == "StrikeThrough");
+        REQUIRE(rendererData->propertyValuePairs["Nested"].getString() == "{\nNum = 5;\n}");
     }
 
     SECTION("custom deserialize function")

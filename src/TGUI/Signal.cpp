@@ -511,7 +511,7 @@ namespace tgui
 
     void SignalWidgetBase::disconnectAll(String signalName)
     {
-        return getSignal(std::move(signalName).toLower()).disconnectAll();
+        return getSignal(std::move(signalName)).disconnectAll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

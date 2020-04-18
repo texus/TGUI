@@ -636,7 +636,7 @@ namespace tgui
 
     void ScrollablePanel::rendererChanged(const String& property)
     {
-        if (property == "scrollbar")
+        if (property == "Scrollbar")
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -650,7 +650,7 @@ namespace tgui
                 updateScrollbars();
             }
         }
-        else if (property == "scrollbarwidth")
+        else if (property == "ScrollbarWidth")
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
@@ -692,33 +692,33 @@ namespace tgui
     {
         Panel::load(node, renderers);
 
-        if (node->propertyValuePairs["contentsize"])
-            setContentSize(Vector2f{node->propertyValuePairs["contentsize"]->value});
+        if (node->propertyValuePairs["ContentSize"])
+            setContentSize(Vector2f{node->propertyValuePairs["ContentSize"]->value});
 
-        if (node->propertyValuePairs["verticalscrollbarpolicy"])
+        if (node->propertyValuePairs["VerticalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["verticalscrollbarpolicy"]->value.trim().toLower();
-            if (policy == "automatic")
+            String policy = node->propertyValuePairs["VerticalScrollbarPolicy"]->value.trim();
+            if (policy == "Automatic")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "always")
+            else if (policy == "Always")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "never")
+            else if (policy == "Never")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value."};
+                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
 
-        if (node->propertyValuePairs["horizontalscrollbarpolicy"])
+        if (node->propertyValuePairs["HorizontalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["horizontalscrollbarpolicy"]->value.trim().toLower();
-            if (policy == "automatic")
+            String policy = node->propertyValuePairs["HorizontalScrollbarPolicy"]->value.trim();
+            if (policy == "Automatic")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "always")
+            else if (policy == "Always")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "never")
+            else if (policy == "Never")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
+                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
     }
 

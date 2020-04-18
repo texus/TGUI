@@ -38,7 +38,7 @@ namespace tgui
 
     void WidgetRenderer::setOpacity(float opacity)
     {
-        setProperty("opacity", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
+        setProperty("Opacity", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,23 +48,23 @@ namespace tgui
     void WidgetRenderer::setOpacityDisabled(float opacity)
     {
         if (opacity != -1.f)
-            setProperty("opacitydisabled", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
+            setProperty("OpacityDisabled", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
         else
-            setProperty("opacitydisabled", ObjectConverter{-1.f});
+            setProperty("OpacityDisabled", ObjectConverter{-1.f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void WidgetRenderer::setFont(Font font)
     {
-        setProperty("font", font);
+        setProperty("Font", font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Font WidgetRenderer::getFont() const
     {
-        auto it = m_data->propertyValuePairs.find("font");
+        auto it = m_data->propertyValuePairs.find("Font");
         if (it != m_data->propertyValuePairs.end())
             return it->second.getFont();
         else
@@ -75,14 +75,12 @@ namespace tgui
 
     void WidgetRenderer::setProperty(const String& property, ObjectConverter&& value)
     {
-        String lowercaseProperty = property.toLower();
-
-        if (m_data->propertyValuePairs[lowercaseProperty] != value)
+        if (m_data->propertyValuePairs[property] != value)
         {
-            m_data->propertyValuePairs[lowercaseProperty] = value;
+            m_data->propertyValuePairs[property] = value;
 
             for (const auto& observer : m_data->observers)
-                observer.second(lowercaseProperty);
+                observer.second(property);
         }
     }
 
@@ -90,7 +88,7 @@ namespace tgui
 
     ObjectConverter WidgetRenderer::getProperty(const String& property) const
     {
-        auto it = m_data->propertyValuePairs.find(property.toLower());
+        auto it = m_data->propertyValuePairs.find(property);
         if (it != m_data->propertyValuePairs.end())
             return it->second;
         else

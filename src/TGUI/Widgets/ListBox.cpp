@@ -662,13 +662,13 @@ namespace tgui
 
     Signal& ListBox::getSignal(String signalName)
     {
-        if (signalName == onItemSelect.getName().toLower())
+        if (signalName.equalIgnoreCase(onItemSelect.getName()))
             return onItemSelect;
-        else if (signalName == onMousePress.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMousePress.getName()))
             return onMousePress;
-        else if (signalName == onMouseRelease.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMouseRelease.getName()))
             return onMouseRelease;
-        else if (signalName == onDoubleClick.getName().toLower())
+        else if (signalName.equalIgnoreCase(onDoubleClick.getName()))
             return onDoubleClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -678,41 +678,41 @@ namespace tgui
 
     void ListBox::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "textcolor")
+        else if (property == "TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateItemColorsAndStyle();
         }
-        else if (property == "textcolorhover")
+        else if (property == "TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateItemColorsAndStyle();
         }
-        else if (property == "selectedtextcolor")
+        else if (property == "SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateItemColorsAndStyle();
         }
-        else if (property == "selectedtextcolorhover")
+        else if (property == "SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateItemColorsAndStyle();
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "textstyle")
+        else if (property == "TextStyle")
         {
             m_textStyleCached = getSharedRenderer()->getTextStyle();
 
@@ -722,7 +722,7 @@ namespace tgui
             if ((m_selectedItem >= 0) && m_selectedTextStyleCached.isSet())
                 m_items[m_selectedItem].setStyle(m_selectedTextStyleCached);
         }
-        else if (property == "selectedtextstyle")
+        else if (property == "SelectedTextStyle")
         {
             m_selectedTextStyleCached = getSharedRenderer()->getSelectedTextStyle();
 
@@ -734,7 +734,7 @@ namespace tgui
                     m_items[m_selectedItem].setStyle(m_textStyleCached);
             }
         }
-        else if (property == "scrollbar")
+        else if (property == "Scrollbar")
         {
             m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
 
@@ -745,33 +745,33 @@ namespace tgui
                 setSize(m_size);
             }
         }
-        else if (property == "scrollbarwidth")
+        else if (property == "ScrollbarWidth")
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
             m_scroll->setSize({width, m_scroll->getSize().y});
             setSize(m_size);
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "backgroundcolorhover")
+        else if (property == "BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "selectedbackgroundcolor")
+        else if (property == "SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "selectedbackgroundcolorhover")
+        else if (property == "SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -780,7 +780,7 @@ namespace tgui
             for (auto& item : m_items)
                 item.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -850,47 +850,47 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["items"])
+        if (node->propertyValuePairs["Items"])
         {
-            if (!node->propertyValuePairs["items"]->listNode)
+            if (!node->propertyValuePairs["Items"]->listNode)
                 throw Exception{"Failed to parse 'Items' property, expected a list as value"};
 
-            if (node->propertyValuePairs["itemids"])
+            if (node->propertyValuePairs["ItemIds"])
             {
-                if (!node->propertyValuePairs["itemids"]->listNode)
+                if (!node->propertyValuePairs["ItemIds"]->listNode)
                     throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
 
-                if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
+                if (node->propertyValuePairs["Items"]->valueList.size() != node->propertyValuePairs["ItemIds"]->valueList.size())
                     throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
 
-                for (std::size_t i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < node->propertyValuePairs["Items"]->valueList.size(); ++i)
                 {
-                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
-                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Items"]->valueList[i]).getString(),
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ItemIds"]->valueList[i]).getString());
                 }
             }
             else // There are no item ids
             {
-                for (const auto& item : node->propertyValuePairs["items"]->valueList)
+                for (const auto& item : node->propertyValuePairs["Items"]->valueList)
                     addItem(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
             }
         }
         else // If there are no items, there should be no item ids
         {
-            if (node->propertyValuePairs["itemids"])
+            if (node->propertyValuePairs["ItemIds"])
                 throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
         }
 
-        if (node->propertyValuePairs["autoscroll"])
-            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autoscroll"]->value).getBool());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["itemheight"])
-            setItemHeight(node->propertyValuePairs["itemheight"]->value.toInt());
-        if (node->propertyValuePairs["maximumitems"])
-            setMaximumItems(node->propertyValuePairs["maximumitems"]->value.toInt());
-        if (node->propertyValuePairs["selecteditemindex"])
-            setSelectedItemByIndex(node->propertyValuePairs["selecteditemindex"]->value.toInt());
+        if (node->propertyValuePairs["AutoScroll"])
+            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["ItemHeight"])
+            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
+        if (node->propertyValuePairs["MaximumItems"])
+            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toInt());
+        if (node->propertyValuePairs["SelectedItemIndex"])
+            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

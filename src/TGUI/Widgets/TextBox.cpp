@@ -1726,9 +1726,9 @@ namespace tgui
 
     Signal& TextBox::getSignal(String signalName)
     {
-        if (signalName == onTextChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onTextChange.getName()))
             return onTextChange;
-        else if (signalName == onSelectionChange.getName().toLower())
+        else if (signalName.equalIgnoreCase(onSelectionChange.getName()))
             return onSelectionChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -1738,36 +1738,36 @@ namespace tgui
 
     void TextBox::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "textcolor")
+        else if (property == "TextColor")
         {
             m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
             m_textAfterSelection1.setColor(getSharedRenderer()->getTextColor());
             m_textAfterSelection2.setColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "selectedtextcolor")
+        else if (property == "SelectedTextColor")
         {
             m_textSelection1.setColor(getSharedRenderer()->getSelectedTextColor());
             m_textSelection2.setColor(getSharedRenderer()->getSelectedTextColor());
         }
-        else if (property == "defaulttextcolor")
+        else if (property == "DefaultTextColor")
         {
             m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor());
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "scrollbar")
+        else if (property == "Scrollbar")
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -1780,34 +1780,34 @@ namespace tgui
                 setSize(m_size);
             }
         }
-        else if (property == "scrollbarwidth")
+        else if (property == "ScrollbarWidth")
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
             m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
             setSize(m_size);
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "selectedtextbackgroundcolor")
+        else if (property == "SelectedTextBackgroundColor")
         {
             m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "caretcolor")
+        else if (property == "CaretColor")
         {
             m_caretColorCached = getSharedRenderer()->getCaretColor();
         }
-        else if (property == "caretwidth")
+        else if (property == "CaretWidth")
         {
             m_caretWidthCached = getSharedRenderer()->getCaretWidth();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -1821,7 +1821,7 @@ namespace tgui
             m_textSelection2.setOpacity(m_opacityCached);
             m_defaultText.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -1875,41 +1875,41 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
-        if (node->propertyValuePairs["defaulttext"])
-            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["defaulttext"]->value).getString());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["maximumcharacters"])
-            setMaximumCharacters(node->propertyValuePairs["maximumcharacters"]->value.toInt());
-        if (node->propertyValuePairs["readonly"])
-            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
+        if (node->propertyValuePairs["Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs["DefaultText"])
+            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["DefaultText"]->value).getString());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["MaximumCharacters"])
+            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toInt());
+        if (node->propertyValuePairs["ReadOnly"])
+            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ReadOnly"]->value).getBool());
 
-        if (node->propertyValuePairs["verticalscrollbarpolicy"])
+        if (node->propertyValuePairs["VerticalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["verticalscrollbarpolicy"]->value.trim().toLower();
-            if (policy == "automatic")
+            String policy = node->propertyValuePairs["VerticalScrollbarPolicy"]->value.trim();
+            if (policy == "Automatic")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "always")
+            else if (policy == "Always")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "never")
+            else if (policy == "Never")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value."};
+                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
 
-        if (node->propertyValuePairs["horizontalscrollbarpolicy"])
+        if (node->propertyValuePairs["HorizontalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["horizontalscrollbarpolicy"]->value.trim().toLower();
-            if (policy == "automatic")
+            String policy = node->propertyValuePairs["HorizontalScrollbarPolicy"]->value.trim();
+            if (policy == "Automatic")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "always")
+            else if (policy == "Always")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "never")
+            else if (policy == "Never")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
+                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
     }
 

@@ -143,6 +143,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Compares this string to another and checks if they are equal if ASCII letters would have been lowercase
+        ///
+        /// @param other  The other string to compare this one with
+        ///
+        /// @return Are the strings equal except for the case of ASCII letters?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool equalIgnoreCase(const String& other) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Replaces all occurrences of a substring with a replacement string
         ///
         /// @param searchFor   The value being searched for
@@ -179,8 +189,8 @@ namespace tgui
         String(const std::u16string& str);
         String(const std::u32string& str);
 
-        String(std::u32string&& str)
-            : m_string{std::move(str)}
+        String(std::u32string&& str) :
+            m_string{std::move(str)}
         {
         }
 
@@ -192,7 +202,10 @@ namespace tgui
         String(const char* str);
         String(const wchar_t* str);
         String(const char16_t* str);
-        String(const char32_t* str);
+        String(const char32_t* str) :
+            m_string{str}
+        {
+        }
 
         String(std::size_t count, char ch);
         String(std::size_t count, wchar_t ch);

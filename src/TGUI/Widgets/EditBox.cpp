@@ -896,9 +896,9 @@ namespace tgui
 
     Signal& EditBox::getSignal(String signalName)
     {
-        if (signalName == onTextChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onTextChange.getName()))
             return onTextChange;
-        else if (signalName == onReturnKeyPress.getName().toLower())
+        else if (signalName.equalIgnoreCase(onReturnKeyPress.getName()))
             return onReturnKeyPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -908,12 +908,12 @@ namespace tgui
 
     void EditBox::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "padding")
+        else if (property == "Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             m_paddingCached.updateParentSize(getSize());
@@ -921,40 +921,40 @@ namespace tgui
 
             m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
-        else if (property == "caretwidth")
+        else if (property == "CaretWidth")
         {
             m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getSharedRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
             m_caret.setSize({getSharedRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
-        else if ((property == "textcolor") || (property == "textcolordisabled") || (property == "textcolorfocused"))
+        else if ((property == "TextColor") || (property == "TextColorDisabled") || (property == "TextColorFocused"))
         {
             updateTextColor();
         }
-        else if (property == "selectedtextcolor")
+        else if (property == "SelectedTextColor")
         {
             m_textSelection.setColor(getSharedRenderer()->getSelectedTextColor());
         }
-        else if (property == "defaulttextcolor")
+        else if (property == "DefaultTextColor")
         {
             m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor());
         }
-        else if (property == "texture")
+        else if (property == "Texture")
         {
             m_sprite.setTexture(getSharedRenderer()->getTexture());
         }
-        else if (property == "texturehover")
+        else if (property == "TextureHover")
         {
             m_spriteHover.setTexture(getSharedRenderer()->getTextureHover());
         }
-        else if (property == "texturedisabled")
+        else if (property == "TextureDisabled")
         {
             m_spriteDisabled.setTexture(getSharedRenderer()->getTextureDisabled());
         }
-        else if (property == "texturefocused")
+        else if (property == "TextureFocused")
         {
             m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
         }
-        else if (property == "textstyle")
+        else if (property == "TextStyle")
         {
             const TextStyle style = getSharedRenderer()->getTextStyle();
             m_textBeforeSelection.setStyle(style);
@@ -963,59 +963,59 @@ namespace tgui
             m_textSuffix.setStyle(style);
             m_textFull.setStyle(style);
         }
-        else if (property == "defaulttextstyle")
+        else if (property == "DefaultTextStyle")
         {
             m_defaultText.setStyle(getSharedRenderer()->getDefaultTextStyle());
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "bordercolorhover")
+        else if (property == "BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if (property == "bordercolordisabled")
+        else if (property == "BorderColorDisabled")
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
-        else if (property == "bordercolorfocused")
+        else if (property == "BorderColorFocused")
         {
             m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "backgroundcolorhover")
+        else if (property == "BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "backgroundcolordisabled")
+        else if (property == "BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "backgroundcolorfocused")
+        else if (property == "BackgroundColorFocused")
         {
             m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
         }
-        else if (property == "caretcolor")
+        else if (property == "CaretColor")
         {
             m_caretColorCached = getSharedRenderer()->getCaretColor();
         }
-        else if (property == "caretcolorhover")
+        else if (property == "CaretColorHover")
         {
             m_caretColorHoverCached = getSharedRenderer()->getCaretColorHover();
         }
-        else if (property == "caretcolorfocused")
+        else if (property == "CaretColorFocused")
         {
             m_caretColorFocusedCached = getSharedRenderer()->getCaretColorFocused();
         }
-        else if (property == "selectedtextbackgroundcolor")
+        else if (property == "SelectedTextBackgroundColor")
         {
             m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -1030,7 +1030,7 @@ namespace tgui
             m_spriteDisabled.setOpacity(m_opacityCached);
             m_spriteFocused.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -1098,47 +1098,47 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
-        if (node->propertyValuePairs["defaulttext"])
-            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["defaulttext"]->value).getString());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["maximumcharacters"])
-            setMaximumCharacters(node->propertyValuePairs["maximumcharacters"]->value.toInt());
-        if (node->propertyValuePairs["textwidthlimited"])
-            limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textwidthlimited"]->value).getBool());
-        if (node->propertyValuePairs["readonly"])
-            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
-        if (node->propertyValuePairs["suffix"])
-            setSuffix(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["suffix"]->value).getString());
-        if (node->propertyValuePairs["passwordcharacter"])
+        if (node->propertyValuePairs["Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs["DefaultText"])
+            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["DefaultText"]->value).getString());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["MaximumCharacters"])
+            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toInt());
+        if (node->propertyValuePairs["TextWidthLimited"])
+            limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["TextWidthLimited"]->value).getBool());
+        if (node->propertyValuePairs["ReadOnly"])
+            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ReadOnly"]->value).getBool());
+        if (node->propertyValuePairs["Suffix"])
+            setSuffix(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Suffix"]->value).getString());
+        if (node->propertyValuePairs["PasswordCharacter"])
         {
-            const String pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["passwordcharacter"]->value).getString();
+            const String pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["PasswordCharacter"]->value).getString();
             if (!pass.empty())
                 setPasswordCharacter(pass[0]);
         }
-        if (node->propertyValuePairs["alignment"])
+        if (node->propertyValuePairs["Alignment"])
         {
-            if (node->propertyValuePairs["alignment"]->value.toLower() == "left")
+            if (node->propertyValuePairs["Alignment"]->value == "Left")
                 setAlignment(EditBox::Alignment::Left);
-            else if (node->propertyValuePairs["alignment"]->value.toLower() == "center")
+            else if (node->propertyValuePairs["Alignment"]->value == "Center")
                 setAlignment(EditBox::Alignment::Center);
-            else if (node->propertyValuePairs["alignment"]->value.toLower() == "right")
+            else if (node->propertyValuePairs["Alignment"]->value == "Right")
                 setAlignment(EditBox::Alignment::Right);
             else
                 throw Exception{"Failed to parse Alignment property. Only the values Left, Center and Right are correct."};
         }
-        if (node->propertyValuePairs["inputvalidator"])
+        if (node->propertyValuePairs["InputValidator"])
         {
-            if (node->propertyValuePairs["inputvalidator"]->value.toLower() == "int")
+            if (node->propertyValuePairs["InputValidator"]->value == "Int")
                 setInputValidator(EditBox::Validator::Int);
-            else if (node->propertyValuePairs["inputvalidator"]->value.toLower() == "uint")
+            else if (node->propertyValuePairs["InputValidator"]->value == "UInt")
                 setInputValidator(EditBox::Validator::UInt);
-            else if (node->propertyValuePairs["inputvalidator"]->value.toLower() == "float")
+            else if (node->propertyValuePairs["InputValidator"]->value == "Float")
                 setInputValidator(EditBox::Validator::Float);
             else
-                setInputValidator(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["inputvalidator"]->value).getString());
+                setInputValidator(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["InputValidator"]->value).getString());
         }
     }
 

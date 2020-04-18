@@ -682,7 +682,7 @@ namespace tgui
 
         // Refresh widget opacity if there is a different value set for enabled and disabled widgets
         if (getSharedRenderer()->getOpacityDisabled() != -1)
-            rendererChanged("opacitydisabled");
+            rendererChanged("OpacityDisabled");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -746,7 +746,7 @@ namespace tgui
     void Widget::setInheritedFont(const Font& font)
     {
         m_inheritedFont = font;
-        rendererChanged("font");
+        rendererChanged("Font");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -761,7 +761,7 @@ namespace tgui
     void Widget::setInheritedOpacity(float opacity)
     {
         m_inheritedOpacity = opacity;
-        rendererChanged("opacity");
+        rendererChanged("Opacity");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,19 +1020,19 @@ namespace tgui
 
     Signal& Widget::getSignal(String signalName)
     {
-        if (signalName == onPositionChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onPositionChange.getName()))
             return onPositionChange;
-        else if (signalName == onSizeChange.getName().toLower())
+        else if (signalName.equalIgnoreCase(onSizeChange.getName()))
             return onSizeChange;
-        else if (signalName == onFocus.getName().toLower())
+        else if (signalName.equalIgnoreCase(onFocus.getName()))
             return onFocus;
-        else if (signalName == onUnfocus.getName().toLower())
+        else if (signalName.equalIgnoreCase(onUnfocus.getName()))
             return onUnfocus;
-        else if (signalName == onMouseEnter.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMouseEnter.getName()))
             return onMouseEnter;
-        else if (signalName == onMouseLeave.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMouseLeave.getName()))
             return onMouseLeave;
-        else if (signalName == onAnimationFinished.getName().toLower())
+        else if (signalName.equalIgnoreCase(onAnimationFinished.getName()))
             return onAnimationFinished;
 
         throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
@@ -1042,14 +1042,14 @@ namespace tgui
 
     void Widget::rendererChanged(const String& property)
     {
-        if ((property == "opacity") || (property == "opacitydisabled"))
+        if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             if (!m_enabled && (getSharedRenderer()->getOpacityDisabled() != -1))
                 m_opacityCached = getSharedRenderer()->getOpacityDisabled() * m_inheritedOpacity;
             else
                 m_opacityCached = getSharedRenderer()->getOpacity() * m_inheritedOpacity;
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             if (getSharedRenderer()->getFont())
                 m_fontCached = getSharedRenderer()->getFont();
@@ -1058,7 +1058,7 @@ namespace tgui
             else
                 m_fontCached = getGlobalFont();
         }
-        else if (property == "transparenttexture")
+        else if (property == "TransparentTexture")
         {
             m_transparentTextureCached = getSharedRenderer()->getTransparentTexture();
         }
@@ -1148,7 +1148,7 @@ namespace tgui
         if (renderers.at(this).first)
             node->children.emplace_back(std::move(renderers.at(this).first));
         else
-            node->propertyValuePairs["renderer"] = std::make_unique<DataIO::ValueNode>("&" + renderers.at(this).second);
+            node->propertyValuePairs["Renderer"] = std::make_unique<DataIO::ValueNode>("&" + renderers.at(this).second);
 
         return node;
     }
@@ -1157,30 +1157,30 @@ namespace tgui
 
     void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
-        if (node->propertyValuePairs["visible"])
-            setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool());
-        if (node->propertyValuePairs["enabled"])
-            setEnabled(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool());
-        if (node->propertyValuePairs["position"])
-            setPosition(parseLayout(node->propertyValuePairs["position"]->value));
-        if (node->propertyValuePairs["size"])
-            setSize(parseLayout(node->propertyValuePairs["size"]->value));
-        if (node->propertyValuePairs["userdata"])
+        if (node->propertyValuePairs["Visible"])
+            setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Visible"]->value).getBool());
+        if (node->propertyValuePairs["Enabled"])
+            setEnabled(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Enabled"]->value).getBool());
+        if (node->propertyValuePairs["Position"])
+            setPosition(parseLayout(node->propertyValuePairs["Position"]->value));
+        if (node->propertyValuePairs["Size"])
+            setSize(parseLayout(node->propertyValuePairs["Size"]->value));
+        if (node->propertyValuePairs["UserData"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString());
+            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["UserData"]->value).getString());
 #else
-            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["userdata"]->value).getString());
+            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["UserData"]->value).getString());
 #endif
         }
 
-        if (node->propertyValuePairs["renderer"])
+        if (node->propertyValuePairs["Renderer"])
         {
-            const String value = node->propertyValuePairs["renderer"]->value;
+            const String value = node->propertyValuePairs["Renderer"]->value;
             if (value.empty() || (value[0] != '&'))
                 throw Exception{"Expected reference to renderer, did not find '&' character"};
 
-            const auto it = renderers.find(value.substr(1).toLower());
+            const auto it = renderers.find(value.substr(1));
             if (it == renderers.end())
                 throw Exception{"Widget refers to renderer with name '" + value.substr(1) + "', but no such renderer was found"};
 
@@ -1189,13 +1189,13 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (childNode->name.toLower() == "tooltip")
+            if (childNode->name == "ToolTip")
             {
                 for (const auto& pair : childNode->propertyValuePairs)
                 {
-                    if (pair.first == "initialdelay")
+                    if (pair.first == "InitialDelay")
                         ToolTip::setInitialDelay(std::chrono::duration<float>(pair.second->value.toFloat()));
-                    else if (pair.first == "distancetomouse")
+                    else if (pair.first == "DistanceToMouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
                 }
 
@@ -1217,13 +1217,13 @@ namespace tgui
                         throw Exception{"No construct function exists for widget type '" + toolTipWidgetNode->name + "'."};
                 }
             }
-            else if (childNode->name.toLower() == "renderer")
+            else if (childNode->name == "Renderer")
                 setRenderer(RendererData::createFromDataIONode(childNode.get()));
 
             /// TODO: Signals?
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-                return (child->name.toLower() == "tooltip") || (child->name.toLower() == "renderer");
+                return (child->name == "ToolTip") || (child->name == "Renderer");
             }), node->children.end());
     }
 

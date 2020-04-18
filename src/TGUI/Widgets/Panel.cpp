@@ -184,17 +184,17 @@ namespace tgui
 
     Signal& Panel::getSignal(String signalName)
     {
-        if (signalName == onMousePress.getName().toLower())
+        if (signalName.equalIgnoreCase(onMousePress.getName()))
             return onMousePress;
-        else if (signalName == onMouseRelease.getName().toLower())
+        else if (signalName.equalIgnoreCase(onMouseRelease.getName()))
             return onMouseRelease;
-        else if (signalName == onClick.getName().toLower())
+        else if (signalName.equalIgnoreCase(onClick.getName()))
             return onClick;
-        else if (signalName == onRightMousePress.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightMousePress.getName()))
             return onRightMousePress;
-        else if (signalName == onRightMouseRelease.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightMouseRelease.getName()))
             return onRightMouseRelease;
-        else if (signalName == onRightClick.getName().toLower())
+        else if (signalName.equalIgnoreCase(onRightClick.getName()))
             return onRightClick;
         else
             return Group::getSignal(std::move(signalName));
@@ -204,24 +204,24 @@ namespace tgui
 
     void Panel::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Container::rendererChanged(property);
             m_spriteBackground.setOpacity(m_opacityCached);

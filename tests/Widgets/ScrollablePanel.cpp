@@ -264,8 +264,8 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
 
         REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == tgui::Color::Red);
-        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == tgui::Color::Blue);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["TrackColor"].getColor() == tgui::Color::Red);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["ThumbColor"].getColor() == tgui::Color::Blue);
     }
 
     SECTION("Saving and loading from file")

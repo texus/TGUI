@@ -88,14 +88,14 @@ TEST_CASE("[DataIO]")
             REQUIRE(rootNode->children.size() == 1);
             REQUIRE(rootNode->children[0]->name == "\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\"");
             REQUIRE(rootNode->children[0]->propertyValuePairs.size() == 1);
-            REQUIRE(rootNode->children[0]->propertyValuePairs["property"]->value == "\"\\\\\\\"Value\\\"\\\\\"");
+            REQUIRE(rootNode->children[0]->propertyValuePairs["Property"]->value == "\"\\\\\\\"Value\\\"\\\\\"");
 
             REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
                                                     rootNode->children[0]->name).getString()
                     == "SpecialChars.{}=:;/*#//\t\"\\");
 
             REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
-                                                    rootNode->children[0]->propertyValuePairs["property"]->value).getString()
+                                                    rootNode->children[0]->propertyValuePairs["Property"]->value).getString()
                     == "\\\"Value\"\\");
         }
 
@@ -263,31 +263,31 @@ TEST_CASE("[DataIO]")
         REQUIRE(parsedRoot->parent == nullptr);
         REQUIRE(parsedRoot->children.size() == 2);
         REQUIRE(parsedRoot->propertyValuePairs.size() == 2);
-        REQUIRE(!parsedRoot->propertyValuePairs["globalproperty1"]->listNode);
-        REQUIRE(parsedRoot->propertyValuePairs["globalproperty1"]->value == "GlobalValue1");
-        REQUIRE(!parsedRoot->propertyValuePairs["globalproperty2"]->listNode);
-        REQUIRE(parsedRoot->propertyValuePairs["globalproperty2"]->value == "GlobalValue2");
+        REQUIRE(!parsedRoot->propertyValuePairs["GlobalProperty1"]->listNode);
+        REQUIRE(parsedRoot->propertyValuePairs["GlobalProperty1"]->value == "GlobalValue1");
+        REQUIRE(!parsedRoot->propertyValuePairs["GlobalProperty2"]->listNode);
+        REQUIRE(parsedRoot->propertyValuePairs["GlobalProperty2"]->value == "GlobalValue2");
         REQUIRE(parsedRoot->children[0]->name == "Child1");
         REQUIRE(parsedRoot->children[0]->parent == parsedRoot.get());
         REQUIRE(parsedRoot->children[0]->children.size() == 1);
         REQUIRE(parsedRoot->children[0]->propertyValuePairs.size() == 1);
-        REQUIRE(!parsedRoot->children[0]->propertyValuePairs["property"]->listNode);
-        REQUIRE(parsedRoot->children[0]->propertyValuePairs["property"]->value == "Value");
+        REQUIRE(!parsedRoot->children[0]->propertyValuePairs["Property"]->listNode);
+        REQUIRE(parsedRoot->children[0]->propertyValuePairs["Property"]->value == "Value");
         REQUIRE(parsedRoot->children[0]->children[0]->name == "NestedChild");
         REQUIRE(parsedRoot->children[0]->children[0]->parent == parsedRoot->children[0].get());
         REQUIRE(parsedRoot->children[0]->children[0]->children.empty());
         REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs.size() == 3);
-        REQUIRE(!parsedRoot->children[0]->children[0]->propertyValuePairs["propertya"]->listNode);
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertya"]->value == "ValueA");
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyb"]->listNode);
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyb"]->value == "[]");
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyb"]->valueList.empty());
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->listNode);
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->value == "[X, Y, Z]");
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->valueList.size() == 3);
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->valueList[0] == "X");
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->valueList[1] == "Y");
-        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["propertyc"]->valueList[2] == "Z");
+        REQUIRE(!parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyA"]->listNode);
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyA"]->value == "ValueA");
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyB"]->listNode);
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyB"]->value == "[]");
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyB"]->valueList.empty());
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->listNode);
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->value == "[X, Y, Z]");
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList.size() == 3);
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[0] == "X");
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[1] == "Y");
+        REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[2] == "Z");
         REQUIRE(parsedRoot->children[1]->name == "");
         REQUIRE(parsedRoot->children[1]->parent == parsedRoot.get());
         REQUIRE(parsedRoot->children[1]->children.empty());

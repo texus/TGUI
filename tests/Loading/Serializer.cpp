@@ -134,7 +134,7 @@ TEST_CASE("[Serializer]")
                              "TextStyleProperty = StrikeThrough;\n"
                              "\n"
                              "Nested {\n"
-                             "    num = 5;\n"
+                             "    Num = 5;\n"
                              "}\n";
 
         REQUIRE(tgui::Serializer::serialize(rendererData) == result);

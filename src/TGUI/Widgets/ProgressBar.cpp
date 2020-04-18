@@ -291,9 +291,9 @@ namespace tgui
 
     Signal& ProgressBar::getSignal(String signalName)
     {
-        if (signalName == onValueChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onValueChange.getName()))
             return onValueChange;
-        else if (signalName == onFull.getName().toLower())
+        else if (signalName.equalIgnoreCase(onFull.getName()))
             return onFull;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -303,12 +303,12 @@ namespace tgui
 
     void ProgressBar::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if ((property == "textcolor") || (property == "textcolorfilled"))
+        else if ((property == "TextColor") || (property == "TextColorFilled"))
         {
             m_textBack.setColor(getSharedRenderer()->getTextColor());
 
@@ -317,33 +317,33 @@ namespace tgui
             else
                 m_textFront.setColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "texturefill")
+        else if (property == "TextureFill")
         {
             m_spriteFill.setTexture(getSharedRenderer()->getTextureFill());
             recalculateFillSize();
         }
-        else if (property == "textstyle")
+        else if (property == "TextStyle")
         {
             m_textBack.setStyle(getSharedRenderer()->getTextStyle());
             m_textFront.setStyle(getSharedRenderer()->getTextStyle());
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "fillcolor")
+        else if (property == "FillColor")
         {
             m_fillColorCached = getSharedRenderer()->getFillColor();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -353,7 +353,7 @@ namespace tgui
             m_textBack.setOpacity(m_opacityCached);
             m_textFront.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -398,30 +398,30 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["minimum"])
-            setMinimum(node->propertyValuePairs["minimum"]->value.toInt());
-        if (node->propertyValuePairs["maximum"])
-            setMaximum(node->propertyValuePairs["maximum"]->value.toInt());
-        if (node->propertyValuePairs["value"])
-            setValue(node->propertyValuePairs["value"]->value.toInt());
-        if (node->propertyValuePairs["text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
+        if (node->propertyValuePairs["Minimum"])
+            setMinimum(node->propertyValuePairs["Minimum"]->value.toInt());
+        if (node->propertyValuePairs["Maximum"])
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toInt());
+        if (node->propertyValuePairs["Value"])
+            setValue(node->propertyValuePairs["Value"]->value.toInt());
+        if (node->propertyValuePairs["Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
-        if (node->propertyValuePairs["filldirection"])
+        if (node->propertyValuePairs["FillDirection"])
         {
-            String requestedStyle = node->propertyValuePairs["filldirection"]->value.trim().toLower();
-            if (requestedStyle == "lefttoright")
+            String direction = node->propertyValuePairs["FillDirection"]->value.trim();
+            if (direction == "LeftToRight")
                 setFillDirection(ProgressBar::FillDirection::LeftToRight);
-            else if (requestedStyle == "righttoleft")
+            else if (direction == "RightToLeft")
                 setFillDirection(ProgressBar::FillDirection::RightToLeft);
-            else if (requestedStyle == "toptobottom")
+            else if (direction == "TopToBottom")
                 setFillDirection(ProgressBar::FillDirection::TopToBottom);
-            else if (requestedStyle == "bottomtotop")
+            else if (direction == "BottomToTop")
                 setFillDirection(ProgressBar::FillDirection::BottomToTop);
             else
-                throw Exception{"Failed to parse FillDirection property, found unknown value."};
+                throw Exception{"Failed to parse FillDirection property, found unknown value '" + direction + "'."};
         }
     }
 

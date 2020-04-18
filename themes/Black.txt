@@ -13,7 +13,7 @@ ChatBox {
     Padding           = (3, 3, 3, 3);
 }
 
-Checkbox {
+CheckBox {
     TextureUnchecked        = "Black.png" Part(92, 0, 32, 32);
     TextureChecked          = "Black.png" Part(124, 0, 32, 32);
     TextureUncheckedHover   = "Black.png" Part(156, 0, 32, 32);
@@ -25,7 +25,7 @@ Checkbox {
 }
 
 ChildWindow {
-    TextureTitlebar        = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
+    TextureTitleBar        = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
     TitleColor             = rgb(190, 190, 190);
     BackgroundColor        = rgb( 80,  80,  80);
     BorderColor            = Black;
@@ -114,7 +114,7 @@ MessageBox {
     TextColor       = rgb(190, 190, 190);
     Button          = &Button;
 
-    TextureTitlebar = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
+    TextureTitleBar = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
     TitleColor      = rgb(190, 190, 190);
     BackgroundColor = rgb( 80,  80,  80);
     BorderColor     = Black;

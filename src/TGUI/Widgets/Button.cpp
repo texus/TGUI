@@ -251,7 +251,7 @@ namespace tgui
 
     Signal& Button::getSignal(String signalName)
     {
-        if (signalName == onPress.getName().toLower())
+        if (signalName.equalIgnoreCase(onPress.getName()))
             return onPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -261,85 +261,85 @@ namespace tgui
 
     void Button::rendererChanged(const String& property)
     {
-        if (property == "borders")
+        if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             updateSize();
         }
-        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled") || (property == "textcolorfocused")
-              || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled") || (property == "textstylefocused"))
+        else if ((property == "TextColor") || (property == "TextColorHover") || (property == "TextColorDown") || (property == "TextColorDisabled") || (property == "TextColorFocused")
+              || (property == "TextStyle") || (property == "TextStyleHover") || (property == "TextStyleDown") || (property == "TextStyleDisabled") || (property == "TextStyleFocused"))
         {
             updateTextColorAndStyle();
         }
-        else if (property == "texture")
+        else if (property == "Texture")
         {
             m_sprite.setTexture(getSharedRenderer()->getTexture());
         }
-        else if (property == "texturehover")
+        else if (property == "TextureHover")
         {
             m_spriteHover.setTexture(getSharedRenderer()->getTextureHover());
         }
-        else if (property == "texturedown")
+        else if (property == "TextureDown")
         {
             m_spriteDown.setTexture(getSharedRenderer()->getTextureDown());
         }
-        else if (property == "texturedisabled")
+        else if (property == "TextureDisabled")
         {
             m_spriteDisabled.setTexture(getSharedRenderer()->getTextureDisabled());
         }
-        else if (property == "texturefocused")
+        else if (property == "TextureFocused")
         {
             m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
         }
-        else if (property == "bordercolor")
+        else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "bordercolorhover")
+        else if (property == "BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if (property == "bordercolordown")
+        else if (property == "BorderColorDown")
         {
             m_borderColorDownCached = getSharedRenderer()->getBorderColorDown();
         }
-        else if (property == "bordercolordisabled")
+        else if (property == "BorderColorDisabled")
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
-        else if (property == "bordercolorfocused")
+        else if (property == "BorderColorFocused")
         {
             m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "backgroundcolorhover")
+        else if (property == "BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "backgroundcolordown")
+        else if (property == "BackgroundColorDown")
         {
             m_backgroundColorDownCached = getSharedRenderer()->getBackgroundColorDown();
         }
-        else if (property == "backgroundcolordisabled")
+        else if (property == "BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "backgroundcolorfocused")
+        else if (property == "BackgroundColorFocused")
         {
             m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
         }
-        else if (property == "textoutlinethickness")
+        else if (property == "TextOutlineThickness")
         {
             m_text.setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
         }
-        else if (property == "textoutlinecolor")
+        else if (property == "TextOutlineColor")
         {
             m_text.setOutlineColor(getSharedRenderer()->getTextOutlineColor());
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -351,7 +351,7 @@ namespace tgui
 
             m_text.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
 
@@ -386,10 +386,10 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
+        if (node->propertyValuePairs["Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

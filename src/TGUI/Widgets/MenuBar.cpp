@@ -739,7 +739,7 @@ namespace tgui
 
     Signal& MenuBar::getSignal(String signalName)
     {
-        if (signalName == onMenuItemClick.getName().toLower())
+        if (signalName.equalIgnoreCase(onMenuItemClick.getName()))
             return onMenuItemClick;
         else
             return Widget::getSignal(std::move(signalName));
@@ -749,52 +749,52 @@ namespace tgui
 
     void MenuBar::rendererChanged(const String& property)
     {
-        if (property == "textcolor")
+        if (property == "TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "selectedtextcolor")
+        else if (property == "SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "textcolordisabled")
+        else if (property == "TextColorDisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "texturebackground")
+        else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "textureitembackground")
+        else if (property == "TextureItemBackground")
         {
             m_spriteItemBackground.setTexture(getSharedRenderer()->getTextureItemBackground());
         }
-        else if (property == "textureselecteditembackground")
+        else if (property == "TextureSelectedItemBackground")
         {
             m_spriteSelectedItemBackground.setTexture(getSharedRenderer()->getTextureSelectedItemBackground());
         }
-        else if (property == "backgroundcolor")
+        else if (property == "BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "selectedbackgroundcolor")
+        else if (property == "SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "distancetoside")
+        else if (property == "DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
             updateTextOpacity(m_menus);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
-        else if (property == "font")
+        else if (property == "Font")
         {
             Widget::rendererChanged(property);
             updateTextFont(m_menus);
@@ -825,18 +825,18 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["textsize"])
-            setTextSize(node->propertyValuePairs["textsize"]->value.toInt());
-        if (node->propertyValuePairs["minimumsubmenuwidth"])
-            setMinimumSubMenuWidth(node->propertyValuePairs["minimumsubmenuwidth"]->value.toFloat());
-        if (node->propertyValuePairs["invertedmenudirection"])
-            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["invertedmenudirection"]->value).getBool());
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+        if (node->propertyValuePairs["MinimumSubMenuWidth"])
+            setMinimumSubMenuWidth(node->propertyValuePairs["MinimumSubMenuWidth"]->value.toFloat());
+        if (node->propertyValuePairs["InvertedMenuDirection"])
+            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["InvertedMenuDirection"]->value).getBool());
 
         loadMenus(node, m_menus);
 
         // Remove the 'menu' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name.toLower() == "menu"; }), node->children.end());
+            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == "Menu"; }), node->children.end());
 
         // Update the text colors to properly display disabled menus
         updateTextColors(m_menus, m_visibleMenu);
@@ -970,31 +970,31 @@ namespace tgui
     {
         for (const auto& childNode : node->children)
         {
-            if (childNode->name.toLower() != "menu")
+            if (childNode->name != "Menu")
                 continue;
 
-            if (!childNode->propertyValuePairs["text"])
+            if (!childNode->propertyValuePairs["Text"])
                 throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
 
-            const String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
+            const String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Text"]->value).getString();
             createMenu(menus, menuText);
 
-            if (childNode->propertyValuePairs["enabled"])
-                menus.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["enabled"]->value).getBool();
+            if (childNode->propertyValuePairs["Enabled"])
+                menus.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["Enabled"]->value).getBool();
 
             // Recursively handle the menu nodes
             if (!childNode->children.empty())
                 loadMenus(childNode, menus.back().menuItems);
 
             // Menu items can also be stored in an string array in the 'Items' property instead of as a nested Menu section
-            if (childNode->propertyValuePairs["items"])
+            if (childNode->propertyValuePairs["Items"])
             {
-                if (!childNode->propertyValuePairs["items"]->listNode)
+                if (!childNode->propertyValuePairs["Items"]->listNode)
                     throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
 
-                for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < childNode->propertyValuePairs["Items"]->valueList.size(); ++i)
                 {
-                    const String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
+                    const String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Items"]->valueList[i]).getString();
                     createMenu(menus.back().menuItems, menuItemText);
                 }
             }

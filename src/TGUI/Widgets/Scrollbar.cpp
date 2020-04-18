@@ -774,7 +774,7 @@ namespace tgui
 
     Signal& Scrollbar::getSignal(String signalName)
     {
-        if (signalName == onValueChange.getName().toLower())
+        if (signalName.equalIgnoreCase(onValueChange.getName()))
             return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
@@ -784,7 +784,7 @@ namespace tgui
 
     void Scrollbar::rendererChanged(const String& property)
     {
-        if (property == "texturetrack")
+        if (property == "TextureTrack")
         {
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
             if (m_sizeSet)
@@ -799,70 +799,70 @@ namespace tgui
                 m_sizeSet = false;
             }
         }
-        else if (property == "texturetrackhover")
+        else if (property == "TextureTrackHover")
         {
             m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
-        else if (property == "texturethumb")
+        else if (property == "TextureThumb")
         {
             m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             updateSize();
         }
-        else if (property == "texturethumbhover")
+        else if (property == "TextureThumbHover")
         {
             m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
         }
-        else if (property == "texturearrowup")
+        else if (property == "TextureArrowUp")
         {
             m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
             updateSize();
         }
-        else if (property == "texturearrowuphover")
+        else if (property == "TextureArrowUpHover")
         {
             m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
-        else if (property == "texturearrowdown")
+        else if (property == "TextureArrowDown")
         {
             m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
             updateSize();
         }
-        else if (property == "texturearrowdownhover")
+        else if (property == "TextureArrowDownHover")
         {
             m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
-        else if (property == "trackcolor")
+        else if (property == "TrackColor")
         {
             m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
-        else if (property == "trackcolorhover")
+        else if (property == "TrackColorHover")
         {
             m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
-        else if (property == "thumbcolor")
+        else if (property == "ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "thumbcolorhover")
+        else if (property == "ThumbColorHover")
         {
             m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
-        else if (property == "arrowbackgroundcolor")
+        else if (property == "ArrowBackgroundColor")
         {
             m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
         }
-        else if (property == "arrowbackgroundcolorhover")
+        else if (property == "ArrowBackgroundColorHover")
         {
             m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
         }
-        else if (property == "arrowcolor")
+        else if (property == "ArrowColor")
         {
             m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
-        else if (property == "arrowcolorhover")
+        else if (property == "ArrowColorHover")
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -900,16 +900,16 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["viewportsize"])
-            setViewportSize(node->propertyValuePairs["viewportsize"]->value.toInt());
-        if (node->propertyValuePairs["maximum"])
-            setMaximum(node->propertyValuePairs["maximum"]->value.toInt());
-        if (node->propertyValuePairs["value"])
-            setValue(node->propertyValuePairs["value"]->value.toInt());
-        if (node->propertyValuePairs["scrollamount"])
-            setScrollAmount(node->propertyValuePairs["scrollamount"]->value.toInt());
-        if (node->propertyValuePairs["autohide"])
-            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autohide"]->value).getBool());
+        if (node->propertyValuePairs["ViewportSize"])
+            setViewportSize(node->propertyValuePairs["ViewportSize"]->value.toInt());
+        if (node->propertyValuePairs["Maximum"])
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toInt());
+        if (node->propertyValuePairs["Value"])
+            setValue(node->propertyValuePairs["Value"]->value.toInt());
+        if (node->propertyValuePairs["ScrollAmount"])
+            setScrollAmount(node->propertyValuePairs["ScrollAmount"]->value.toInt());
+        if (node->propertyValuePairs["AutoHide"])
+            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoHide"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

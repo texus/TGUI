@@ -36,19 +36,19 @@ namespace tgui
     {
         unsigned char hexToDec(char32_t c)
         {
-            assert((c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F')  || (c >= U'a' && c <= U'f'));
+            assert((c >= U'0' && c <= U'9') || (c >= U'a' && c <= U'f'));
 
-            if (c == U'A' || c == U'a')
+            if (c == U'a')
                 return 10;
-            else if (c == U'B' || c == U'b')
+            else if (c == U'b')
                 return 11;
-            else if (c == U'C' || c == U'c')
+            else if (c == U'c')
                 return 12;
-            else if (c == U'D' || c == U'd')
+            else if (c == U'd')
                 return 13;
-            else if (c == U'E' || c == U'e')
+            else if (c == U'e')
                 return 14;
-            else if (c == U'F' || c == U'f')
+            else if (c == U'f')
                 return 15;
             else // if (c >= U'0' && c <= U'9')
                 return static_cast<unsigned char>(c - U'0');
@@ -88,12 +88,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ObjectConverter deserializeBool(const String& value)
+        ObjectConverter deserializeBool(const String& str)
         {
-            const String str = value.toLower();
-            if (str == "true" || str == "yes" || str == "on" || str == "1")
+            if (str.equalIgnoreCase("true") || str.equalIgnoreCase("yes") || str.equalIgnoreCase("on") || str.equalIgnoreCase("1"))
                 return {true};
-            else if (str == "false" || str == "no" || str == "off" || str == "0")
+            else if (str.equalIgnoreCase("false") || str.equalIgnoreCase("no") || str.equalIgnoreCase("off") || str.equalIgnoreCase("0"))
                 return {false};
             else
                 throw Exception{"Failed to deserialize boolean from '" + str + "'"};
@@ -103,7 +102,7 @@ namespace tgui
 
         ObjectConverter deserializeFont(const String& value)
         {
-            if (value == "null" || value == "nullptr")
+            if (value.equalIgnoreCase("null") || value.equalIgnoreCase("nullptr"))
                 return Font{};
 
             String filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
@@ -135,17 +134,20 @@ namespace tgui
                 return Color();
 
             // Check if the color is represented by a string with its name
-            const auto it = Color::colorMap.find(str.toLower());
+            const auto it = Color::colorMap.find(str);
             if (it != Color::colorMap.end())
                 return it->second;
 
             // The color can be represented with a hexadecimal number
             if (str[0] == '#')
             {
+                if ((str.length() != 4) && (str.length() != 5) && (str.length() != 7) && (str.length() != 9))
+                    throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
+
                 // You can only have hex characters
                 for (std::size_t i = 1; i < str.length(); ++i)
                 {
-                    if (!((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'F')  || (str[i] >= 'a' && str[i] <= 'f')))
+                    if (!((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'a' && str[i] <= 'f')))
                         throw Exception{"Failed to deserialize color '" + str + "'. Value started but '#' but contained an invalid character afterwards."};
                 }
 
@@ -169,15 +171,13 @@ namespace tgui
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
                                  static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6]))};
                 }
-                else if (str.length() == 9)
+                else // if (str.length() == 9)
                 {
                     return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
                                  static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6])),
                                  static_cast<std::uint8_t>(hexToDec(str[7]) * 16 + hexToDec(str[8]))};
                 }
-                else
-                    throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
@@ -270,7 +270,7 @@ namespace tgui
 
         ObjectConverter deserializeTexture(const String& value)
         {
-            if (value.empty() || (value.toLower() == "none"))
+            if (value.empty() || value.equalIgnoreCase("none"))
                 return Texture{};
 
             // If there are no quotes then the value just contains a filename
@@ -327,7 +327,7 @@ namespace tgui
                     word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
                 else
                 {
-                    if (value.substr(c - value.begin()).trim().toLower() == "smooth")
+                    if (value.substr(c - value.begin()).trim().equalIgnoreCase("smooth"))
                     {
                         smooth = true;
                         break;
@@ -337,12 +337,12 @@ namespace tgui
                 }
 
                 UIntRect* rect = nullptr;
-                if ((word == "Part") || (word == "part"))
+                if (word.equalIgnoreCase("part"))
                 {
                     rect = &partRect;
                     std::advance(c, 4);
                 }
-                else if ((word == "Middle") || (word == "middle"))
+                else if (word.equalIgnoreCase("middle"))
                 {
                     rect = &middleRect;
                     std::advance(c, 6);
@@ -378,14 +378,13 @@ namespace tgui
             std::vector<String> styles = Deserializer::split(style, '|');
             for (const auto& elem : styles)
             {
-                String requestedStyle = elem.toLower();
-                if (requestedStyle == "bold")
+                if (elem.equalIgnoreCase("bold"))
                     decodedStyle |= TextStyle::Bold;
-                else if (requestedStyle == "italic")
+                else if (elem.equalIgnoreCase("italic"))
                     decodedStyle |= TextStyle::Italic;
-                else if (requestedStyle == "underlined")
+                else if (elem.equalIgnoreCase("underlined"))
                     decodedStyle |= TextStyle::Underlined;
-                else if (requestedStyle == "strikethrough")
+                else if (elem.equalIgnoreCase("strikethrough"))
                     decodedStyle |= TextStyle::StrikeThrough;
             }
 
@@ -411,7 +410,7 @@ namespace tgui
             {
                 std::stringstream ss2;
                 DataIO::emit(child, ss2);
-                rendererData->propertyValuePairs[child->name.toLower()] = {String("{\n" + ss2.str() + "}")};
+                rendererData->propertyValuePairs[child->name] = {String("{\n" + ss2.str() + "}")};
             }
 
             return rendererData;

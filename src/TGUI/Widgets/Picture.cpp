@@ -167,7 +167,7 @@ namespace tgui
 
     Signal& Picture::getSignal(String signalName)
     {
-        if (signalName == onDoubleClick.getName().toLower())
+        if (signalName.equalIgnoreCase(onDoubleClick.getName()))
             return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
@@ -177,7 +177,7 @@ namespace tgui
 
     void Picture::rendererChanged(const String& property)
     {
-        if (property == "texture")
+        if (property == "Texture")
         {
             const auto& texture = getSharedRenderer()->getTexture();
 
@@ -186,7 +186,7 @@ namespace tgui
 
             m_sprite.setTexture(texture);
         }
-        else if ((property == "opacity") || (property == "opacitydisabled"))
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
             m_sprite.setOpacity(m_opacityCached);
@@ -213,8 +213,8 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["ignoremouseevents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
+        if (node->propertyValuePairs["IgnoreMouseEvents"])
+            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["IgnoreMouseEvents"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

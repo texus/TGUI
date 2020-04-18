@@ -523,15 +523,15 @@ namespace tgui
     {
         Container::load(node, renderers);
 
-        if (node->propertyValuePairs["autosize"])
-            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
+        if (node->propertyValuePairs["AutoSize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool());
 
-        if (node->propertyValuePairs["gridwidgets"])
+        if (node->propertyValuePairs["GridWidgets"])
         {
-            if (!node->propertyValuePairs["gridwidgets"]->listNode)
+            if (!node->propertyValuePairs["GridWidgets"]->listNode)
                 throw Exception{"Failed to parse 'GridWidgets' property, expected a list as value"};
 
-            const auto& elements = node->propertyValuePairs["gridwidgets"]->valueList;
+            const auto& elements = node->propertyValuePairs["GridWidgets"]->valueList;
             if (elements.size() != getWidgets().size())
                 throw Exception{"Failed to parse 'GridWidgets' property, the amount of items has to match with the amount of child widgets"};
 
@@ -590,24 +590,24 @@ namespace tgui
                 if (pos == String::npos)
                     throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
 
-                String alignmentStr = str.substr(pos + 1).trim().toLower();
-                if (alignmentStr == "center")
+                String alignmentStr = str.substr(pos + 1).trim();
+                if (alignmentStr == "Center")
                     alignment = Grid::Alignment::Center;
-                else if (alignmentStr == "upperleft")
+                else if (alignmentStr == "UpperLeft")
                     alignment = Grid::Alignment::UpperLeft;
-                else if (alignmentStr == "up")
+                else if (alignmentStr == "Up")
                     alignment = Grid::Alignment::Up;
-                else if (alignmentStr == "upperright")
+                else if (alignmentStr == "UpperRight")
                     alignment = Grid::Alignment::UpperRight;
-                else if (alignmentStr == "right")
+                else if (alignmentStr == "Right")
                     alignment = Grid::Alignment::Right;
-                else if (alignmentStr == "bottomright")
+                else if (alignmentStr == "BottomRight")
                     alignment = Grid::Alignment::BottomRight;
-                else if (alignmentStr == "bottom")
+                else if (alignmentStr == "Bottom")
                     alignment = Grid::Alignment::Bottom;
-                else if (alignmentStr == "bottomleft")
+                else if (alignmentStr == "BottomLeft")
                     alignment = Grid::Alignment::BottomLeft;
-                else if (alignmentStr == "left")
+                else if (alignmentStr == "Left")
                     alignment = Grid::Alignment::Left;
                 else
                     throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};

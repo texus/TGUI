@@ -66,19 +66,19 @@ TEST_CASE("[Theme]")
     SECTION("Adding and removing renderers")
     {
         auto data = std::make_shared<tgui::RendererData>();
-        data->propertyValuePairs["textcolor"] = {tgui::Color(255, 0, 255, 200)};
+        data->propertyValuePairs["TextColor"] = {tgui::Color(255, 0, 255, 200)};
 
         tgui::Theme theme;
-        REQUIRE(theme.getRenderer("label1")->propertyValuePairs.empty());
-        REQUIRE(theme.getRenderer("label2")->propertyValuePairs.empty());
+        REQUIRE(theme.getRenderer("Label1")->propertyValuePairs.empty());
+        REQUIRE(theme.getRenderer("Label2")->propertyValuePairs.empty());
 
-        theme.addRenderer("label1", data);
-        REQUIRE(theme.getRenderer("label1")->propertyValuePairs.size() == 1);
-        REQUIRE(theme.getRenderer("label1")->propertyValuePairs["textcolor"].getColor() == tgui::Color(255, 0, 255, 200));
-        REQUIRE(theme.getRenderer("label2")->propertyValuePairs.empty());
+        theme.addRenderer("Label1", data);
+        REQUIRE(theme.getRenderer("Label1")->propertyValuePairs.size() == 1);
+        REQUIRE(theme.getRenderer("Label1")->propertyValuePairs["TextColor"].getColor() == tgui::Color(255, 0, 255, 200));
+        REQUIRE(theme.getRenderer("Label2")->propertyValuePairs.empty());
 
-        REQUIRE(theme.removeRenderer("label1"));
-        REQUIRE(theme.getRenderer("label1")->propertyValuePairs.empty());
+        REQUIRE(theme.removeRenderer("Label1"));
+        REQUIRE(theme.getRenderer("Label1")->propertyValuePairs.empty());
 
         REQUIRE(!theme.removeRenderer("nonexistent"));
     }
@@ -95,7 +95,7 @@ TEST_CASE("[Theme]")
                 label1->getSharedRenderer()->setTextColor("red");
                 REQUIRE(label1->getSharedRenderer()->getTextColor() == tgui::Color::Red);
 
-                label1->setRenderer(theme.getRenderer("label"));
+                label1->setRenderer(theme.getRenderer("Label"));
                 REQUIRE(label1->getSharedRenderer()->getTextColor() != tgui::Color::Red);
 
                 label1->getSharedRenderer()->setTextColor("green");
@@ -105,7 +105,7 @@ TEST_CASE("[Theme]")
                 label2->getSharedRenderer()->setTextColor("blue");
                 REQUIRE(label2->getSharedRenderer()->getTextColor() == tgui::Color::Blue);
 
-                label2->setRenderer(theme.getRenderer("label"));
+                label2->setRenderer(theme.getRenderer("Label"));
                 REQUIRE(label1->getSharedRenderer()->getTextColor() == tgui::Color::Green);
 
                 // Changing the renderer of one label affects the look of the other one
@@ -119,7 +119,7 @@ TEST_CASE("[Theme]")
                 label1->getRenderer()->setTextColor("red");
                 REQUIRE(label1->getRenderer()->getTextColor() == tgui::Color::Red);
 
-                label1->setRenderer(theme.getRenderer("label"));
+                label1->setRenderer(theme.getRenderer("Label"));
                 REQUIRE(label1->getRenderer()->getTextColor() != tgui::Color::Red);
 
                 label1->getRenderer()->setTextColor("green");
@@ -129,7 +129,7 @@ TEST_CASE("[Theme]")
                 label2->getRenderer()->setTextColor("blue");
                 REQUIRE(label2->getRenderer()->getTextColor() == tgui::Color::Blue);
 
-                label2->setRenderer(theme.getRenderer("label"));
+                label2->setRenderer(theme.getRenderer("Label"));
                 REQUIRE(label1->getRenderer()->getTextColor() == tgui::Color::Green);
 
                 // Changing the renderer of one label does not affect the other one
@@ -140,11 +140,11 @@ TEST_CASE("[Theme]")
 
         SECTION("Without widgets")
         {
-            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() != tgui::Color::Cyan);
+            REQUIRE(tgui::LabelRenderer(theme.getRenderer("Label")).getTextColor() != tgui::Color::Cyan);
 
-            tgui::LabelRenderer(theme.getRenderer("label")).setTextColor(tgui::Color::Cyan);
-            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() == tgui::Color::Cyan);
-            REQUIRE(theme.getRenderer("label")->propertyValuePairs["textcolor"].getColor() == tgui::Color::Cyan);
+            tgui::LabelRenderer(theme.getRenderer("Label")).setTextColor(tgui::Color::Cyan);
+            REQUIRE(tgui::LabelRenderer(theme.getRenderer("Label")).getTextColor() == tgui::Color::Cyan);
+            REQUIRE(theme.getRenderer("Label")->propertyValuePairs["TextColor"].getColor() == tgui::Color::Cyan);
         }
     }
 
@@ -163,10 +163,10 @@ TEST_CASE("[Theme]")
                 if (one != "")
                 {
                     REQUIRE(one == "resources/Black.txt");
-                    REQUIRE(two == "editbox");
+                    REQUIRE(two == "EditBox");
                 }
                 else
-                    REQUIRE(two == "button");
+                    REQUIRE(two == "Button");
 
                 loadCount++;
                 return retVal;
@@ -187,7 +187,7 @@ TEST_CASE("[Theme]")
         REQUIRE(tgui::Theme::getThemeLoader() == loader);
 
         tgui::Theme theme1;
-        theme1.getRenderer("BUTTON");
+        theme1.getRenderer("Button");
 
         tgui::Theme theme2("resources/Black.txt");
         theme2.getRenderer("EditBox");

@@ -346,7 +346,7 @@ namespace tgui
                     }
                 }
 
-                node->propertyValuePairs[key.toLower()] = std::move(valueNode);
+                node->propertyValuePairs[key] = std::move(valueNode);
                 return "";
             }
             else
