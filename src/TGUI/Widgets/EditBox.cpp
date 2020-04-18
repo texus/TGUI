@@ -638,7 +638,7 @@ namespace tgui
     {
         if (event.code == sf::Keyboard::Return)
             onReturnKeyPress.emit(this, m_text);
-        else if (event.code == sf::Keyboard::Backspace)
+        else if (event.code == sf::Keyboard::BackSpace)
             backspaceKeyPressed();
         else if (event.code == sf::Keyboard::Delete)
             deleteKeyPressed();
