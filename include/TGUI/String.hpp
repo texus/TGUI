@@ -331,14 +331,21 @@ namespace tgui
         reference       back();
         const_reference back() const;
 
-        const char32_t* data() const noexcept;
+        const char32_t* data() const noexcept
+        {
+            return m_string.data();
+        }
+
 #if __cplusplus >= 201703L
         char32_t* data() noexcept
         {
             return m_string.data();
         }
 #endif
-        const char32_t* c_str() const noexcept;
+        const char32_t* c_str() const noexcept
+        {
+            return m_string.c_str();
+        }
 
         iterator begin() noexcept;
         const_iterator begin() const noexcept;
@@ -356,9 +363,21 @@ namespace tgui
         const_reverse_iterator rend() const noexcept;
         const_reverse_iterator crend() const noexcept;
 
-        bool empty() const noexcept;
-        std::size_t size() const noexcept;
-        std::size_t length() const noexcept;
+        bool empty() const noexcept
+        {
+            return m_string.empty();
+        }
+
+        std::size_t size() const noexcept
+        {
+            return m_string.size();
+        }
+
+        std::size_t length() const noexcept
+        {
+            return m_string.length();
+        }
+
         std::size_t max_size() const noexcept;
 
         void reserve(std::size_t newCap);

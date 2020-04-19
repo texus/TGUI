@@ -1,6 +1,7 @@
 TGUI 0.9-dev
 ------------
 
+- Renderer names and widget/renderer properties are now case-sensitive
 - Replaced all std::string and sf::String by tgui::String
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle

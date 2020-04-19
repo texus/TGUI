@@ -662,18 +662,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const char32_t* String::data() const noexcept
-    {
-        return m_string.data();
-    }
-
-    const char32_t* String::c_str() const noexcept
-    {
-        return m_string.c_str();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     String::iterator String::begin() noexcept
     {
         return m_string.begin();
@@ -747,20 +735,7 @@ namespace tgui
         m_string.clear();
     }
 
-    bool String::empty() const noexcept
-    {
-        return m_string.empty();
-    }
-
-    std::size_t String::size() const noexcept
-    {
-        return m_string.size();
-    }
-
-    std::size_t String::length() const noexcept
-    {
-        return m_string.length();
-    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::size_t String::max_size() const noexcept
     {
