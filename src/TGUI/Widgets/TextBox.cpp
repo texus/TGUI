@@ -128,7 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setText(const sf::String& text)
+    void TextBox::setText(const sf::String& text, bool triggerTextChangedSignal)
     {
         // Remove all the excess characters when a character limit is set
         if ((m_maxChars > 0) && (text.getSize() > m_maxChars))
@@ -137,6 +137,9 @@ namespace tgui
             m_text = text;
 
         rearrangeText(false);
+
+        if (triggerTextChangedSignal)
+            onTextChange.emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

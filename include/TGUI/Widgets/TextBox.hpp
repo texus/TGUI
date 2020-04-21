@@ -109,9 +109,9 @@ namespace tgui
         /// @brief Changes the text of the text box
         ///
         /// @param text  New text
-        ///
+        /// @param triggerTextChangedSignal Should the "TextChanged" callback be send? False by default for compatibility.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setText(const sf::String& text);
+        void setText(const sf::String& text, bool triggerTextChangedSignal = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
