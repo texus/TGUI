@@ -70,10 +70,10 @@ jobs:
     os: osx
     cache:
       directories:
-      - $HOME/SFML_OSX
+      - $HOME/SFML_MACOS
     script:
-      - chmod +x tests/travis_osx.sh
-      - tests/travis_osx.sh
+      - chmod +x tests/travis_macos.sh
+      - tests/travis_macos.sh
 
 notifications:
   webhooks:

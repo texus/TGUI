@@ -19,13 +19,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 # Set a default build type
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 
-# Set CMAKE_MODULE_PATH to find SFML < 2.5 without manually having to specify a module path
-if(NOT SFML_DIR AND NOT CMAKE_MODULE_PATH)
-    set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-endif()
-
 # Project name and version
-project(TGUI VERSION 0.8.7)
+project(TGUI VERSION 0.9.0)
 
 # TGUI uses the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
 include(GNUInstallDirs)
@@ -180,6 +175,7 @@ if(NOT DEFINED SFML_STATIC_LIBRARIES)
 endif()
 
 # Attempt to find the SFML dependencies when linking statically
+# TODO: SFML_ROOT isn't used anymore, can we remove this once we remove support for SFML < 2.5?
 if(NOT TGUI_SHARED_LIBS)
     if(SFML_ROOT)
         if(TGUI_OS_WINDOWS)
@@ -227,8 +223,7 @@ if(NOT TARGET sfml-graphics)
     # find_package couldn't find SFML
     if(NOT SFML_FOUND)
         set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
-        set(SFML_ROOT "" CACHE PATH "SFML root directory")
-        message(FATAL_ERROR "CMake couldn't find SFML.\nEither set SFML_DIR to the directory containing SFMLConfig.cmake or set the SFML_ROOT entry to SFML's root directory (containing \"include\" and \"lib\" directories).")
+        message(FATAL_ERROR "CMake couldn't find SFML.\nSet SFML_DIR to the directory containing SFMLConfig.cmake.")
     endif()
 endif()
 

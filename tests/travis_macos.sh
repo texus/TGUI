@@ -2,7 +2,7 @@ set -e
 mkdir build
 
 export SFML_VERSION=2.3.2
-export SFML_ROOT=$HOME/SFML_OSX
+export SFML_ROOT=$HOME/SFML_MACOS
 
 if [[ ! -d "$SFML_ROOT/lib" ]]; then
   echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
@@ -19,7 +19,7 @@ else
 fi
 
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/TGUI_INSTALL -DTGUI_BUILD_FRAMEWORK=TRUE -DSFML_INCLUDE_DIR=$SFML_ROOT/lib/SFML.framework -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE ..
+cmake -DCMAKE_MODULE_PATH="${SFML_ROOT}/cmake/Modules" -DCMAKE_INSTALL_PREFIX=$HOME/TGUI_INSTALL -DTGUI_BUILD_FRAMEWORK=TRUE -DSFML_INCLUDE_DIR=$SFML_ROOT/lib/SFML.framework -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE ..
 make -j2
 make install
 cd ..
