@@ -33,20 +33,14 @@ TEST_CASE("[ListView]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](){}));
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listView->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
+        listView->onItemSelect([](){});
+        listView->onItemSelect([](int){});
 
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listView->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
+        listView->onDoubleClick([](){});
+        listView->onDoubleClick([](int){});
 
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](){}));
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](int){}));
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listView->connect("HeaderClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
+        listView->onHeaderClick([](){});
+        listView->onHeaderClick([](int){});
     }
 
     SECTION("WidgetType")
@@ -499,8 +493,8 @@ TEST_CASE("[ListView]")
 
         unsigned int itemSelectedCount = 0;
         unsigned int doubleClickedCount = 0;
-        listView->connect("ItemSelected", &genericCallback, std::ref(itemSelectedCount));
-        listView->connect("DoubleClicked", &genericCallback, std::ref(doubleClickedCount));
+        listView->onItemSelect(&genericCallback, std::ref(itemSelectedCount));
+        listView->onDoubleClick(&genericCallback, std::ref(doubleClickedCount));
 
         SECTION("Click on item")
         {
@@ -550,7 +544,7 @@ TEST_CASE("[ListView]")
         {
             int lastHeaderIndex = -1;
             unsigned int headerClickCount = 0;
-            listView->connect("HeaderClicked", [&](int index){ lastHeaderIndex = index; ++headerClickCount; });
+            listView->onHeaderClick([&](int index){ lastHeaderIndex = index; ++headerClickCount; });
 
             listView->setHeaderHeight(30);
             listView->addColumn("Col 1", 50);
@@ -579,7 +573,7 @@ TEST_CASE("[ListView]")
         {
             int lastIndex = -1;
             unsigned int rightClickCount = 0;
-            listView->connect("RightClicked", [&](int index){ lastIndex = index; ++rightClickCount; });
+            listView->onRightClick([&](int index){ lastIndex = index; ++rightClickCount; });
 
             // Right click 3th item
             mousePressed({40, 70}, sf::Mouse::Right);

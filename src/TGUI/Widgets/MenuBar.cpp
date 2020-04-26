@@ -739,7 +739,7 @@ namespace tgui
 
     Signal& MenuBar::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onMenuItemClick.getName()))
+        if (signalName == onMenuItemClick.getName())
             return onMenuItemClick;
         else
             return Widget::getSignal(std::move(signalName));

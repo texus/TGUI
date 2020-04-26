@@ -361,7 +361,7 @@ namespace tgui
 
     Signal& Label::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onDoubleClick.getName()))
+        if (signalName == onDoubleClick.getName())
             return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));

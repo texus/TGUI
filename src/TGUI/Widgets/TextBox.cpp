@@ -1728,9 +1728,9 @@ namespace tgui
 
     Signal& TextBox::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onTextChange.getName()))
+        if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName.equalIgnoreCase(onSelectionChange.getName()))
+        else if (signalName == onSelectionChange.getName())
             return onSelectionChange;
         else
             return Widget::getSignal(std::move(signalName));

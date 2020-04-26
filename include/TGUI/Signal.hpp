@@ -46,12 +46,6 @@ namespace tgui
 {
     class Widget;
     class ChildWindow;
-    class SignalWidgetBase;
-
-    namespace internal_signal
-    {
-        extern TGUI_API std::deque<const void*> parameters;
-    }
 
     /// @brief Lists the names of all signals for all widgets
     namespace Signals
@@ -100,6 +94,7 @@ namespace tgui
         {
             static constexpr const char* const TextChanged = "TextChanged";             ///< The text was changed. Optional parameter: new text
             static constexpr const char* const ReturnKeyPressed = "ReturnKeyPressed";   ///< The return key was pressed. Optional parameter: text in the edit box
+            static constexpr const char* const ReturnOrUnfocused = "ReturnOrUnfocused"; ///< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
         };
 
         struct Knob : public Widget
@@ -222,10 +217,9 @@ namespace tgui
     {
     public:
 
-        using Delegate = std::function<void()>;
-        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const String&)>;
-
-
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default destructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ~Signal() = default;
 
 
@@ -238,8 +232,8 @@ namespace tgui
         Signal(String&& name, std::size_t extraParameters = 0) :
             m_name{std::move(name)}
         {
-            if (1 + extraParameters > internal_signal::parameters.size())
-                internal_signal::parameters.resize(1 + extraParameters);
+            if (1 + extraParameters > m_parameters.size())
+                m_parameters.resize(1 + extraParameters);
         }
 
 
@@ -270,21 +264,62 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const Delegate& handler);
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a pointer to the widget and the name of the signal as arguments
+        /// @param func  Callback function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateEx& handler);
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            const auto id = ++m_lastSignalId;
+            if constexpr(sizeof...(BoundArgs) == 0)
+                m_handlers[id] = func;
+            else
+                m_handlers[id] = [=]{ invokeFunc(func, args...); };
+
+            return id;
+        }
+#else
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            const auto id = ++m_lastSignalId;
+            m_handlers[id] = [=]{ invokeFunc(func, args...); };
+            return id;
+        }
+#endif
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that is given a pointer to the widget and the name of the signal as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
+        unsigned int connectEx(const Func& func, const BoundArgs&... args)
+        {
+            // The name is copied so that the lambda does not depend on the 'this' pointer
+            return connect([func, name=m_name, args...](){ invokeFunc(func, args..., getWidget(), name); });
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,20 +345,7 @@ namespace tgui
         ///
         /// @return True when at least one signal handler was called
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget)
-        {
-            if (m_handlers.empty() || !m_enabled)
-                return false;
-
-            internal_signal::parameters[0] = static_cast<const void*>(&widget);
-
-            // Copy the handlers before calling them in case the widget (and this signal) gets destroyed during the handler
-            auto handlers = m_handlers;
-            for (auto& handler : handlers)
-                handler.second();
-
-            return true;
-        }
+        bool emit(const Widget* widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,21 +388,44 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Extracts the widget stored in the first parameter
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static std::shared_ptr<Widget> getWidget();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Turns the void* parameters back into its original type right before calling the callback function
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Type>
+        static const std::decay_t<Type>& dereferenceParam(std::size_t paramIndex)
+        {
+            return *static_cast<const std::decay_t<Type>*>(m_parameters[paramIndex]);
+        }
+
+
+#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
+        template <typename Func, typename... Args>
+        static void invokeFunc(Func&& func, Args&&... args)
+        {
+            std::invoke(std::forward<Func>(func), std::forward<Args>(args)...);
+        }
+#else
+        // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
+        template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
+        static void invokeFunc(Func&& func, Args&&... args)
+        {
+            std::mem_fn(func)(std::forward<Args>(args)...);
+        }
+
+        template <typename Func, typename... Args, typename std::enable_if<!std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
+        static void invokeFunc(Func&& func, Args&&... args)
+        {
+            std::forward<Func>(func)(std::forward<Args>(args)...);
+        }
+#endif
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -389,90 +434,103 @@ namespace tgui
         bool m_enabled = true;
         String m_name;
         std::map<unsigned int, std::function<void()>> m_handlers;
-    };
 
-    #define TGUI_SIGNAL_VALUE_DECLARATION(TypeName, Type) \
-    /**************************************************************************************************************************** \
-     * @brief Signal to which the user can subscribe to get callbacks from
-     ****************************************************************************************************************************/ \
-    class TGUI_API Signal##TypeName : public Signal \
-    { \
-    public: \
-        using Delegate##TypeName = std::function<void(Type)>; \
-        using Delegate##TypeName##Ex = std::function<void(std::shared_ptr<Widget>, const String&, Type)>; \
-        using Signal::connect; \
-        \
-        /************************************************************************************************************************ \
-         * @brief Constructor
-         ************************************************************************************************************************/ \
-        Signal##TypeName(String&& name) : \
-            Signal{std::move(name), 1} \
-        { \
-        } \
-        \
-        /************************************************************************************************************************ \
-         * @brief Connects a signal handler that will be called when this signal is emitted
-         *
-         * @param handler  Callback function that is given a Vector2f as argument
-         *
-         * @return Unique id of the connection
-         ************************************************************************************************************************/ \
-        unsigned int connect(const Delegate##TypeName& handler); \
-        \
-        /************************************************************************************************************************ \
-         * @brief Connects a signal handler that will be called when this signal is emitted
-         *
-         * @param handler  Callback function that is given a pointer to the widget, the name of the signal and a Vector2f as arguments
-         *
-         * @return Unique id of the connection
-         ************************************************************************************************************************/ \
-        unsigned int connect(const Delegate##TypeName##Ex& handler); \
-        \
-        /************************************************************************************************************************ \
-         * @internal
-         * @brief Call all connected signal handlers
-         ************************************************************************************************************************/ \
-        bool emit(const Widget* widget, Type param) \
-        { \
-            if (m_handlers.empty()) \
-                return false; \
-         \
-            internal_signal::parameters[1] = static_cast<const void*>(&param); \
-            return Signal::emit(widget); \
-        } \
-        \
-    private: \
-        /************************************************************************************************************************ \
-         * @internal
-         * @brief Checks whether the unbound parameters match with this signal
-         * @return The index in the parameters list where the parameters will be stored
-         ************************************************************************************************************************/ \
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override; \
+        static unsigned int m_lastSignalId;
+        static std::deque<const void*> m_parameters;
     };
-
-    TGUI_SIGNAL_VALUE_DECLARATION(Int, int)
-    TGUI_SIGNAL_VALUE_DECLARATION(UInt, unsigned int)
-    TGUI_SIGNAL_VALUE_DECLARATION(Bool, bool)
-    TGUI_SIGNAL_VALUE_DECLARATION(Float, float)
-    TGUI_SIGNAL_VALUE_DECLARATION(String, const String&)
-    TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, Vector2f)
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - T (value according to template parameter)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API SignalRange : public Signal
+    template <typename T>
+    class SignalTyped : public Signal
     {
     public:
 
-        using DelegateRange = std::function<void(float, float)>;
-        using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const String&, float, float)>;
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
         using Signal::connect;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalRange(String&& name) :
+        SignalTyped(String&& name) :
+            Signal{std::move(name), 1}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that have their last parameter unbound of type T
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., T)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<T>(1)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget  Widget that is triggering the signal
+        /// @param param   Parameter that will be passed to callback function if it has an unbound parameter
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, T param)
+        {
+            if (m_handlers.empty())
+                return false;
+
+            m_parameters[1] = static_cast<const void*>(&param);
+            return Signal::emit(widget);
+        }
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - T1, T2  (always occur together, having only one unbound parameter is unsupported)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename T1, typename T2>
+    class SignalTyped2 : public Signal
+    {
+    public:
+
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
+        using Signal::connect;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalTyped2(String&& name) :
             Signal{std::move(name), 2}
         {
         }
@@ -481,53 +539,73 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a child window as argument
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateRange& handler);
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a child window as arguments
+        /// @param func  Callback function that have their last two parameters unbound of types T1 and T2
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateRangeEx& handler);
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., T1, T2)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<T1>(1), dereferenceParam<T2>(2)); });
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Call all connected signal handlers
+        ///
+        /// @param widget  Widget that is triggering the signal
+        /// @param param1  First parameter that will be passed to callback function if it has two unbound parameters
+        /// @param param2  Second parameter that will be passed to callback function if it has two unbound parameters
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, float value1, float value2);
+        bool emit(const Widget* widget, T1 param1, T2 param2)
+        {
+            if (m_handlers.empty())
+                return false;
 
-
-    private:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            m_parameters[1] = static_cast<const void*>(&param1);
+            m_parameters[2] = static_cast<const void*>(&param2);
+            return Signal::emit(widget);
+        }
     };
+
+    using SignalInt = SignalTyped<int>; ///< Signal with one "int" as optional unbound parameter
+    using SignalUInt = SignalTyped<unsigned int>; ///< Signal with one "unsigned int" as optional unbound parameter
+    using SignalBool = SignalTyped<bool>; ///< Signal with one "bool" as optional unbound parameter
+    using SignalFloat = SignalTyped<float>; ///< Signal with one "float" as optional unbound parameter
+    using SignalString = SignalTyped<const String&>; ///< Signal with one "String" as optional unbound parameter
+    using SignalVector2f = SignalTyped<Vector2f>; ///< Signal with one "Vector2f" as optional unbound parameter
+    using SignalRange = SignalTyped2<float, float>; ///< Signal with two floats as optional unbound parameters
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - ChildWindow::Ptr
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalChildWindow : public Signal
     {
     public:
 
-        using DelegateChildWindow = std::function<void(std::shared_ptr<ChildWindow>)>;
-        using DelegateChildWindowEx = std::function<void(std::shared_ptr<Widget>, const String&, std::shared_ptr<ChildWindow>)>;
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
         using Signal::connect;
 
 
@@ -543,38 +621,50 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a child window as argument
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateChildWindow& handler);
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a child window as arguments
+        /// @param func  Callback function that has an unbound ChildWindow::Ptr as last parameter
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateChildWindowEx& handler);
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<ChildWindow>&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceChildWindow()); });
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Call all connected signal handlers
+        ///
+        /// @param param  Widget triggering the signal, will be passed to callback function if it has an unbound parameter
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool emit(ChildWindow* param);
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
+        /// @brief Turns the void* parameter back into the ChildWindow::Ptr right before calling the callback function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
+        static std::shared_ptr<ChildWindow> dereferenceChildWindow();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,17 +673,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - int (item index)
+    /// - String (item text)
+    /// - String, String (item text and item id)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalItem : public Signal
     {
     public:
 
-        using DelegateItem = std::function<void(const String&)>;
-        using DelegateItemAndId = std::function<void(const String&, const String&)>;
-        using DelegateItemIndex = std::function<void(int)>;
-        using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&)>;
-        using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&, const String&)>;
-        using DelegateItemIndexEx = std::function<void(std::shared_ptr<Widget>, const String&, int)>;
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
         using Signal::connect;
 
 
@@ -609,87 +699,74 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a string as argument
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItem& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a string as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItemEx& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given two strings as argument
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItemAndId& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and two strings as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItemAndIdEx& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given the index of the item as argument
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItemIndex& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and the index of the item as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateItemIndexEx& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Call all connected signal handlers
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, const String& item, const String& id, int index)
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
-            if (m_handlers.empty())
-                return false;
-
-            internal_signal::parameters[1] = static_cast<const void*>(&item);
-            internal_signal::parameters[2] = static_cast<const void*>(&id);
-            internal_signal::parameters[3] = static_cast<const void*>(&index);
-            return Signal::emit(widget);
+            return connect(func, args...);
         }
 
 
-    private:
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound integer (for the index) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<int>(1)); });
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound string (for the item text) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<String>(2)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound string (for the item text) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&, const String&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<String>(2), dereferenceParam<String>(3)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget Widget that is triggering the signal
+        /// @param index  Index of the item, or -1 if there is no item
+        /// @param item   Text of the item, or an empty string if there is no item
+        /// @param id     Id of the item, or an empty string if there is no item
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, int index, const String& item, const String& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -699,14 +776,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
     ///
-    /// Possible optional parameters:
+    /// Optional unbound parameters:
     /// - ShowAnimationType
-    /// - bool
+    /// - bool (true for showing and false for hiding)
     /// - ShowAnimationType, bool
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalAnimation : public Signal
     {
     public:
+
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
+        using Signal::connect;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
@@ -716,29 +797,77 @@ namespace tgui
         {
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Call all connected signal handlers
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, ShowAnimationType type, bool visible)
-        {
-            if (m_handlers.empty())
-                return false;
 
-            internal_signal::parameters[1] = static_cast<const void*>(&type);
-            internal_signal::parameters[2] = static_cast<const void*>(&visible);
-            return Signal::emit(widget);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
         }
 
 
-    private:
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound ShowAnimationType as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowAnimationType)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowAnimationType>(1)); });
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound bool (showing widget or not) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., bool)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<bool>(2)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an ShowAnimationType and bool (showing widget or not) as two last parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowAnimationType, bool)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowAnimationType>(1), dereferenceParam<bool>(2)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget  Widget that is triggering the signal
+        /// @param type    Type of the animation
+        /// @param visible True when the widget became visible, false if the widget is now hidden
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, ShowAnimationType type, bool visible);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -747,15 +876,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - String (text of the leaf)
+    /// - std::vector<String> (texts of hierarchy from root to leaf)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalItemHierarchy : public Signal
     {
     public:
 
-        using DelegateMenuItem = std::function<void(const String&)>;
-        using DelegateMenuItemFull = std::function<void(const std::vector<String>&)>;
-        using DelegateMenuItemEx = std::function<void(std::shared_ptr<Widget>, const String&, const String&)>;
-        using DelegateMenuItemFullEx = std::function<void(std::shared_ptr<Widget>, const String&, const std::vector<String>&)>;
+        // You can use the connect function declared in this class, but also the one defined in the Signal class
         using Signal::connect;
 
 
@@ -771,184 +901,58 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param handler  Callback function that is given a string as argument
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateMenuItem& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a string as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateMenuItemEx& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a list of strings as argument
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateMenuItemFull& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a list of strings as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(const DelegateMenuItemFullEx& handler);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Call all connected signal handlers
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, const String& item, const std::vector<String>& fullItem)
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
-            if (m_handlers.empty())
-                return false;
-
-            internal_signal::parameters[1] = static_cast<const void*>(&item);
-            internal_signal::parameters[2] = static_cast<const void*>(&fullItem);
-            return Signal::emit(widget);
+            return connect(func, args...);
         }
 
 
-    private:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Checks whether the unbound parameters match with this signal
-        /// @return The index in the parameters list where the parameters will be stored
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for Widget which provides functionality to connect signals based on their name
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API SignalWidgetBase
-    {
-    public:
-
-        virtual ~SignalWidgetBase() = default;
-
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given the extra arguments provided to this function as arguments
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        /// @param func  Callback function that has an unbound string (for the leaf item text) as last parameter
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs>
-        unsigned int connect(String signalName, Func&& handler, const BoundArgs&... args);
-
-#else
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given the extra arguments provided to this function as arguments
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
-        unsigned int connect(String signalName, Func&& handler, const Args&... args);
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<String>(1)); });
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given a pointer to the widget, the name of the signal and the extra
-        ///                     arguments provided to this function as arguments
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        /// @param func  Callback function that has an unbound std::vector<String> (for hierarchy) as last parameter
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                             && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
-        unsigned int connect(String signalName, Func&& handler, BoundArgs&&... args);
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::vector<String>&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<std::vector<String>>(2)); });
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
+        /// @brief Call all connected signal handlers
         ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        /// @param widget   Widget that is triggering the signal
+        /// @param item     Text of the leaf item
+        /// @param fullItem Hierarchy from root to leaf
         ///
-        /// @return Unique id of the connection
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
-                                                                             && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
-        unsigned int connect(String signalName, Func&& handler, BoundArgs&&... args);
-#endif
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connect a signal handler to multiple signals
-        ///
-        /// @param signalNames  List of signal names that will trigger the signal handler
-        /// @param handler      Callback function
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs>
-        unsigned int connect(std::initializer_list<String> signalNames, Func&& handler, BoundArgs&&... args);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects a signal handler
-        ///
-        /// @param id           Id of the connection
-        ///
-        /// @return True when a connection with this id existed and was removed
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool disconnect(unsigned int id);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects all signal handler from a certain signal
-        ///
-        /// @param signalName   Name of the signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll(String signalName);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects all signal handlers from signals
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves a signal based on its name
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Signal& getSignal(String signalName) = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-
-        std::map<unsigned int, String> m_connectedSignals;
+        bool emit(const Widget* widget, const String& item, const std::vector<String>& fullItem);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

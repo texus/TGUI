@@ -456,7 +456,7 @@ namespace tgui
 
     Signal& Knob::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onValueChange.getName()))
+        if (signalName == onValueChange.getName())
             return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));

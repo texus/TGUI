@@ -26,7 +26,6 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Clipping.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,9 +63,9 @@ namespace tgui
         setTitleButtons(titleButtons);
         setSize({400, 300});
 
-        m_maximizeButton->connect("pressed", [this]{ onMaximize.emit(this); });
-        m_minimizeButton->connect("pressed", [this]{ onMinimize.emit(this); });
-        m_closeButton->connect("pressed", [this]{ close(); });
+        m_maximizeButton->onPress([this]{ onMaximize.emit(this); });
+        m_minimizeButton->onPress([this]{ onMinimize.emit(this); });
+        m_closeButton->onPress([this]{ close(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -695,7 +694,7 @@ namespace tgui
     void ChildWindow::keyPressed(const sf::Event::KeyEvent& event)
     {
         if (event.code == sf::Keyboard::Escape)
-            onEscapeKeyPressed.emit(this);
+            onEscapeKeyPress.emit(this);
 
         Container::keyPressed(event);
     }
@@ -761,16 +760,16 @@ namespace tgui
 
     Signal& ChildWindow::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onMousePress.getName()))
+        if (signalName == onMousePress.getName())
             return onMousePress;
-        else if (signalName.equalIgnoreCase(onClose.getName()))
+        else if (signalName == onClose.getName())
             return onClose;
-        else if (signalName.equalIgnoreCase(onMinimize.getName()))
+        else if (signalName == onMinimize.getName())
             return onMinimize;
-        else if (signalName.equalIgnoreCase(onMaximize.getName()))
+        else if (signalName == onMaximize.getName())
             return onMaximize;
-        else if (signalName.equalIgnoreCase(onEscapeKeyPressed.getName()))
-            return onEscapeKeyPressed;
+        else if (signalName == onEscapeKeyPress.getName())
+            return onEscapeKeyPress;
         else
             return Container::getSignal(std::move(signalName));
     }

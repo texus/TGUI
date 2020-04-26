@@ -327,7 +327,7 @@ namespace tgui
 
     Signal& SpinButton::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onValueChange.getName()))
+        if (signalName == onValueChange.getName())
             return onValueChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));

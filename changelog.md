@@ -1,10 +1,11 @@
 TGUI 0.9-dev
 ------------
 
-- Renderer names and widget/renderer properties are now case-sensitive
+- Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Replaced all std::string and sf::String by tgui::String
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle
+- Signal names, renderer names and widget/renderer properties are now case-sensitive
 - Swapped padding and alignment parameters of addWidget in Grid
 - Changed Knob value type from int to float
 - Changed default value of ChangeItemOnScroll in ComboBox to false

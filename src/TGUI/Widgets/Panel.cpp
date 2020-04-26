@@ -184,17 +184,17 @@ namespace tgui
 
     Signal& Panel::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onMousePress.getName()))
+        if (signalName == onMousePress.getName())
             return onMousePress;
-        else if (signalName.equalIgnoreCase(onMouseRelease.getName()))
+        else if (signalName == onMouseRelease.getName())
             return onMouseRelease;
-        else if (signalName.equalIgnoreCase(onClick.getName()))
+        else if (signalName == onClick.getName())
             return onClick;
-        else if (signalName.equalIgnoreCase(onRightMousePress.getName()))
+        else if (signalName == onRightMousePress.getName())
             return onRightMousePress;
-        else if (signalName.equalIgnoreCase(onRightMouseRelease.getName()))
+        else if (signalName == onRightMouseRelease.getName())
             return onRightMouseRelease;
-        else if (signalName.equalIgnoreCase(onRightClick.getName()))
+        else if (signalName == onRightClick.getName())
             return onRightClick;
         else
             return Group::getSignal(std::move(signalName));

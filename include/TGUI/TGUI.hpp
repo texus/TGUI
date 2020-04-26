@@ -73,9 +73,6 @@
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Widgets/VerticalLayout.hpp>
 
-#include <TGUI/SignalImpl.hpp>
-#include <TGUI/SignalManagerImpl.hpp>
-
 #include <SFML/Graphics.hpp>
 #ifdef TGUI_SYSTEM_IOS
   #include <SFML/Main.hpp>

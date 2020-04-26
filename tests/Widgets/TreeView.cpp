@@ -33,15 +33,25 @@ TEST_CASE("[TreeView]")
 
     SECTION("Signals")
     {
-        for (const auto& signal : {"ItemSelected", "ItemSelected", "ItemSelected", "ItemSelected", "RightClicked"})
-        {
-            REQUIRE_NOTHROW(treeView->connect(signal, [](){}));
-            REQUIRE_NOTHROW(treeView->connect(signal, [](tgui::String){}));
-            REQUIRE_NOTHROW(treeView->connect(signal, [](std::vector<tgui::String>){}));
-            REQUIRE_NOTHROW(treeView->connect(signal, [](tgui::Widget::Ptr, tgui::String){}));
-            REQUIRE_NOTHROW(treeView->connect(signal, [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-            REQUIRE_NOTHROW(treeView->connect(signal, [](tgui::Widget::Ptr, tgui::String, std::vector<tgui::String>){}));
-        }
+        treeView->onItemSelect([](){});
+        treeView->onItemSelect([](tgui::String){});
+        treeView->onItemSelect([](std::vector<tgui::String>){});
+
+        treeView->onDoubleClick([](){});
+        treeView->onDoubleClick([](tgui::String){});
+        treeView->onDoubleClick([](std::vector<tgui::String>){});
+
+        treeView->onExpand([](){});
+        treeView->onExpand([](tgui::String){});
+        treeView->onExpand([](std::vector<tgui::String>){});
+
+        treeView->onCollapse([](){});
+        treeView->onCollapse([](tgui::String){});
+        treeView->onCollapse([](std::vector<tgui::String>){});
+
+        treeView->onRightClick([](){});
+        treeView->onRightClick([](tgui::String){});
+        treeView->onRightClick([](std::vector<tgui::String>){});
     }
 
     SECTION("WidgetType")

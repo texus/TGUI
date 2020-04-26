@@ -26,43 +26,13 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 #include <set>
-
-#undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace
-{
-    unsigned int lastUniqueSignalId = 0;
-
-    unsigned int generateUniqueId()
-    {
-        return ++lastUniqueSignalId;
-    }
-
-    template <typename T>
-    bool checkParamType(std::initializer_list<std::type_index>::const_iterator type)
-    {
-#ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        return strcmp(type->name(), typeid(T).name()) == 0;
-#else
-        return *type == typeid(T);
-#endif
-    }
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    namespace internal_signal
-    {
-        std::deque<const void*> parameters;
-    }
-
     namespace Signals
     {
         constexpr const char* const Widget::PositionChanged;
@@ -127,6 +97,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int Signal::m_lastSignalId = 0;
+    std::deque<const void*> Signal::m_parameters;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal::Signal(const Signal& other) :
         m_enabled {other.m_enabled},
         m_name    {other.m_name},
@@ -150,24 +125,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Signal::connect(const Delegate& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = handler;
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Signal::connect(const DelegateEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool Signal::disconnect(unsigned int id)
     {
         return m_handlers.erase(id);
@@ -182,161 +139,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Signal::getWidget()
+    bool Signal::emit(const Widget* widget)
     {
-        return internal_signal::dereference<Widget*>(internal_signal::parameters[0])->shared_from_this();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Signal::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if (unboundParameters.size() == 0)
-            return 0;
-        else
-            throw Exception{"Signal '" + m_name + "' could not provide data for unbound parameters."};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
-    unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
-    { \
-        const auto id = generateUniqueId(); \
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
-        return id; \
-    } \
-    \
-    unsigned int Signal##TypeName::connect(const Delegate##TypeName##Ex& handler) \
-    { \
-        const auto id = generateUniqueId(); \
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
-        return id; \
-    }
-
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Int, int)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(UInt, unsigned int)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Bool, bool)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, const String&)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, Vector2f)
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalInt::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<int>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalUInt::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<unsigned int>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalBool::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<bool>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalFloat::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<float>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalString::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<String>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<Vector2f>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalRange::connect(const DelegateRange& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalRange::connect(const DelegateRangeEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool SignalRange::emit(const Widget* widget, float start, float end)
-    {
-        if (m_handlers.empty())
+        if (m_handlers.empty() || !m_enabled)
             return false;
 
-        internal_signal::parameters[1] = static_cast<const void*>(&start);
-        internal_signal::parameters[2] = static_cast<const void*>(&end);
-        return Signal::emit(widget);
+        m_parameters[0] = static_cast<const void*>(&widget);
+
+        // Copy the handlers before calling them in case the widget (and this signal) gets destroyed during the handler
+        auto handlers = m_handlers;
+        for (const auto& handler : handlers)
+            handler.second();
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalRange::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
+    Widget::Ptr Signal::getWidget()
     {
-        if ((unboundParameters.size() == 2) && checkParamType<float>(unboundParameters.begin()) && checkParamType<float>(unboundParameters.begin()+1))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalChildWindow::connect(const DelegateChildWindow& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<ChildWindow::Ptr>(internal_signal::parameters[1])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalChildWindow::connect(const DelegateChildWindowEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<ChildWindow::Ptr>(internal_signal::parameters[1])); };
-        return id;
+        return dereferenceParam<Widget*>(0)->shared_from_this();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,184 +168,52 @@ namespace tgui
         if (m_handlers.empty())
             return false;
 
-        ChildWindow::Ptr sharedPtr = std::static_pointer_cast<ChildWindow>(childWindow->shared_from_this());
-        internal_signal::parameters[1] = static_cast<const void*>(&sharedPtr);
+        m_parameters[1] = static_cast<const void*>(&childWindow);
         return Signal::emit(childWindow);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalChildWindow::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
+    std::shared_ptr<ChildWindow> SignalChildWindow::dereferenceChildWindow()
     {
-        if ((unboundParameters.size() == 1) && checkParamType<ChildWindow::Ptr>(unboundParameters.begin()))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
+        return dereferenceParam<ChildWindow*>(1)->shared_from_this()->cast<ChildWindow>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalItem::connect(const DelegateItem& handler)
+    bool SignalItem::emit(const Widget* widget, int index, const String& item, const String& id)
     {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<String>(internal_signal::parameters[1])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::connect(const DelegateItemEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<String>(internal_signal::parameters[1])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::connect(const DelegateItemAndId& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<String>(internal_signal::parameters[1]), internal_signal::dereference<String>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::connect(const DelegateItemAndIdEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<String>(internal_signal::parameters[1]), internal_signal::dereference<String>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::connect(const DelegateItemIndex& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<int>(internal_signal::parameters[3])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::connect(const DelegateItemIndexEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[3])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<String>(unboundParameters.begin()))
-            return 1;
-        else if ((unboundParameters.size() == 2) && checkParamType<String>(unboundParameters.begin()) && checkParamType<String>(unboundParameters.begin()+1))
-            return 1;
-        else if ((unboundParameters.size() == 1) && checkParamType<int>(unboundParameters.begin()))
-            return 3;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItemHierarchy::connect(const DelegateMenuItem& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<String>(internal_signal::parameters[1])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<String>(internal_signal::parameters[1])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemFull& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<std::vector<String>>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemFullEx& handler)
-    {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<String>>(internal_signal::parameters[2])); };
-        return id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalItemHierarchy::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<String>(unboundParameters.begin()))
-            return 1;
-        if ((unboundParameters.size() == 1) && checkParamType<std::vector<String>>(unboundParameters.begin()))
-            return 2;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SignalAnimation::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
-    {
-        if ((unboundParameters.size() == 1) && checkParamType<ShowAnimationType>(unboundParameters.begin()))
-            return 1;
-        if ((unboundParameters.size() == 1) && checkParamType<bool>(unboundParameters.begin()))
-            return 2;
-        if ((unboundParameters.size() == 2) && checkParamType<ShowAnimationType>(unboundParameters.begin()) && checkParamType<bool>(unboundParameters.begin()+1))
-            return 1;
-        else
-            return Signal::validateTypes(unboundParameters);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool SignalWidgetBase::disconnect(unsigned int id)
-    {
-        auto it = m_connectedSignals.find(id);
-        if (it != m_connectedSignals.end())
-        {
-            const bool ret = getSignal(it->second).disconnect(id);
-            m_connectedSignals.erase(it);
-            return ret;
-        }
-        else // The id was not found
+        if (m_handlers.empty())
             return false;
+
+        m_parameters[1] = static_cast<const void*>(&index);
+        m_parameters[2] = static_cast<const void*>(&item);
+        m_parameters[3] = static_cast<const void*>(&id);
+        return Signal::emit(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalWidgetBase::disconnectAll(String signalName)
+    bool SignalAnimation::emit(const Widget* widget, ShowAnimationType type, bool visible)
     {
-        return getSignal(std::move(signalName)).disconnectAll();
+        if (m_handlers.empty())
+            return false;
+
+        m_parameters[1] = static_cast<const void*>(&type);
+        m_parameters[2] = static_cast<const void*>(&visible);
+        return Signal::emit(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalWidgetBase::disconnectAll()
+    bool SignalItemHierarchy::emit(const Widget* widget, const String& item, const std::vector<String>& fullItem)
     {
-        std::set<String> signalNames;
-        for (const auto& connection : m_connectedSignals)
-            signalNames.insert(connection.second);
+        if (m_handlers.empty())
+            return false;
 
-        for (auto& name : signalNames)
-            getSignal(std::move(name)).disconnectAll();
+        m_parameters[1] = static_cast<const void*>(&item);
+        m_parameters[2] = static_cast<const void*>(&fullItem);
+        return Signal::emit(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

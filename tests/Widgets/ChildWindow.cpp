@@ -34,28 +34,19 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
+        childWindow->onMousePress([](){});
 
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
+        childWindow->onClose([](){});
+        childWindow->onClose([](tgui::ChildWindow::Ptr){});
 
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
+        childWindow->onMaximize([](){});
+        childWindow->onMaximize([](tgui::ChildWindow::Ptr){});
 
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
+        childWindow->onMinimize([](){});
+        childWindow->onMinimize([](tgui::ChildWindow::Ptr){});
 
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, tgui::String, tgui::ChildWindow::Ptr){}));
+        childWindow->onEscapeKeyPress([](){});
+        childWindow->onEscapeKeyPress([](tgui::ChildWindow::Ptr){});
     }
 
     SECTION("WidgetType")
@@ -208,8 +199,8 @@ TEST_CASE("[ChildWindow]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            childWindow->connect("MouseEntered", &genericCallback, std::ref(mouseEnteredCount));
-            childWindow->connect("MouseLeft", &genericCallback, std::ref(mouseLeftCount));
+            childWindow->onMouseEnter(&genericCallback, std::ref(mouseEnteredCount));
+            childWindow->onMouseLeave(&genericCallback, std::ref(mouseLeftCount));
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});
@@ -235,7 +226,7 @@ TEST_CASE("[ChildWindow]")
         SECTION("EscapeKeyPressed")
         {
             unsigned int escapeKeyPressedCount = 0;
-            childWindow->connect("EscapeKeyPressed", &genericCallback, std::ref(escapeKeyPressedCount));
+            childWindow->onEscapeKeyPress(&genericCallback, std::ref(escapeKeyPressedCount));
 
             sf::Event::KeyEvent event;
             event.code = sf::Keyboard::Escape;

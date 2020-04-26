@@ -541,7 +541,7 @@ namespace tgui
 
     Signal& Tabs::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onTabSelect.getName()))
+        if (signalName == onTabSelect.getName())
             return onTabSelect;
         else
             return Widget::getSignal(std::move(signalName));

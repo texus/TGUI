@@ -32,10 +32,8 @@ TEST_CASE("[MessageBox]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::String){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        messageBox->onButtonPress([](){});
+        messageBox->onButtonPress([](tgui::String){});
     }
 
     SECTION("WidgetType")

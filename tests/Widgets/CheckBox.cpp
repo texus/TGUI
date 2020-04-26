@@ -32,20 +32,14 @@ TEST_CASE("[CheckBox]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](){}));
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        checkBox->onCheck([](){});
+        checkBox->onCheck([](bool){});
 
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](){}));
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        checkBox->onUncheck([](){});
+        checkBox->onUncheck([](bool){});
 
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](){}));
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](bool){}));
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        checkBox->onChange([](){});
+        checkBox->onChange([](bool){});
     }
 
     SECTION("WidgetType")
@@ -189,9 +183,9 @@ TEST_CASE("[CheckBox]")
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
             unsigned int changedCount = 0;
-            checkBox->connect("Checked", &genericCallback, std::ref(checkCount));
-            checkBox->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
-            checkBox->connect("Changed", &genericCallback, std::ref(changedCount));
+            checkBox->onCheck(&genericCallback, std::ref(checkCount));
+            checkBox->onUncheck(&genericCallback, std::ref(uncheckCount));
+            checkBox->onChange(&genericCallback, std::ref(changedCount));
 
             checkBox->setChecked(true);
             REQUIRE(checkCount == 1);

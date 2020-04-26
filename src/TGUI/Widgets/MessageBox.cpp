@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/MessageBox.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -71,8 +70,8 @@ namespace tgui
     {
         for (auto& button : m_buttons)
         {
-            button->disconnectAll("Pressed");
-            button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
+            button->onPress.disconnectAll();
+            button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
         }
     }
 
@@ -111,8 +110,8 @@ namespace tgui
 
             for (auto& button : m_buttons)
             {
-                button->disconnectAll("Pressed");
-                button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
+                button->onPress.disconnectAll();
+                button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
             }
         }
 
@@ -207,7 +206,7 @@ namespace tgui
         auto button = Button::create(caption);
         button->setRenderer(getSharedRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, caption); });
+        button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -285,7 +284,7 @@ namespace tgui
 
     Signal& MessageBox::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onButtonPress.getName()))
+        if (signalName == onButtonPress.getName())
             return onButtonPress;
         else
             return ChildWindow::getSignal(std::move(signalName));
@@ -356,8 +355,8 @@ namespace tgui
             if ((m_widgets[i]->getWidgetName().length() >= 32) && (m_widgets[i]->getWidgetName().substr(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
             {
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
-                button->disconnectAll("Pressed");
-                button->connect("Pressed", TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
+                button->onPress.disconnectAll();
+                button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
                 m_buttons.push_back(button);
             }
         }

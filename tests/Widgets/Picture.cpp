@@ -33,10 +33,8 @@ TEST_CASE("[Picture]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Vector2f){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::Vector2f){}));
+        picture->onDoubleClick([](){});
+        picture->onDoubleClick([](tgui::Vector2f){});
     }
 
     SECTION("WidgetType")
@@ -98,7 +96,7 @@ TEST_CASE("[Picture]")
             picture->setSize(150, 100);
 
             unsigned int doubleClickedCount = 0;
-            picture->connect("DoubleClicked", &mouseCallback, std::ref(doubleClickedCount));
+            picture->onDoubleClick(&mouseCallback, std::ref(doubleClickedCount));
 
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});
@@ -133,8 +131,8 @@ TEST_CASE("[Picture]")
             parent->add(backgroundPic);
             parent->add(picture);
 
-            backgroundPic->connect("MousePressed", &genericCallback, std::ref(mousePressedCountBack));
-            picture->connect("MousePressed", &genericCallback, std::ref(mousePressedCountFront));
+            backgroundPic->onMousePress(&genericCallback, std::ref(mousePressedCountBack));
+            picture->onMousePress(&genericCallback, std::ref(mousePressedCountFront));
 
             parent->leftMousePressed({175, 135});
             parent->leftMouseReleased({175, 135});

@@ -882,15 +882,15 @@ namespace tgui
 
     Signal& TreeView::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else if (signalName.equalIgnoreCase(onDoubleClick.getName()))
+        else if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName.equalIgnoreCase(onExpand.getName()))
+        else if (signalName == onExpand.getName())
             return onExpand;
-        else if (signalName.equalIgnoreCase(onCollapse.getName()))
+        else if (signalName == onCollapse.getName())
             return onCollapse;
-        else if (signalName.equalIgnoreCase(onRightClick.getName()))
+        else if (signalName == onRightClick.getName())
             return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));

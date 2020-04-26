@@ -30,6 +30,7 @@
 #include <TGUI/Widget.hpp>
 #include <memory>
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -51,16 +52,16 @@ namespace tgui
 
         struct SignalTuple
         {
-            String m_widgetName;
-            String m_signalName;
-            std::pair<Delegate, DelegateEx> m_func;
+            String widgetName;
+            String signalName;
+            std::pair<Delegate, DelegateEx> func;
         };
 
         struct ConnectedSignalTuple
         {
-            SignalID m_signalId;
-            Weak m_widget;
-            unsigned int m_signalWidgetID;
+            SignalID signalId;
+            Weak widget;
+            unsigned int signalWidgetID;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,20 +134,6 @@ namespace tgui
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connect a signal handler to multiple signals
-        ///
-        /// @param widgetName   Name of the widget to connect to
-        /// @param signalNames  List of signal names that will trigger the signal handler
-        /// @param handler      Callback function
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs>
-        unsigned int connect(String widgetName, std::initializer_list<String> signalNames, Func&& handler, BoundArgs&&... args);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Disconnect a signal handler
         ///
         /// @param id  Unique id of the connection returned by the connect function
@@ -195,7 +182,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::pair<Delegate, DelegateEx> makeSignal(const DelegateEx&);
+        std::pair<Delegate, DelegateEx> makeSignalEx(const DelegateEx&);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +203,69 @@ namespace tgui
         std::map<SignalID, SignalTuple> m_signals;
         std::vector<ConnectedSignalTuple> m_connectedSignals;
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
+    template <typename Func, typename... BoundArgs>
+    unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const BoundArgs&... args)
+    {
+        const unsigned int id = generateUniqueId();
+
+        if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>
+                   && std::is_invocable_v<decltype(&handler), BoundArgs...>
+                   && !std::is_function_v<Func>)
+        {
+            // Reference to function
+            m_signals[id] = {widgetName, signalName, makeSignal([=, f=std::function<void(const BoundArgs&...)>(handler)]{ std::invoke(f, args...); })};
+        }
+        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>)
+        {
+            // Function pointer
+            m_signals[id] = {widgetName, signalName, makeSignal([=]{ std::invoke(handler, args...); })};
+        }
+        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>>
+                        && std::is_invocable_v<decltype(&handler), BoundArgs..., const std::shared_ptr<Widget>&, const String&>
+                        && !std::is_function_v<Func>)
+        {
+            // Reference to function with caller arguments
+            m_signals[id] = {widgetName, signalName, makeSignalEx([=, f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>& w, const String& s)>(handler)](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(f, args..., w, s); })};
+        }
+        else
+        {
+            // Function pointer with caller arguments
+            m_signals[id] = {widgetName, signalName, makeSignalEx([=](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(handler, args..., w, s); })};
+        }
+
+        connect(id);
+        return id;
+    }
+#else
+    template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type*>
+    unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const Args&... args)
+    {
+        const unsigned int id = generateUniqueId();
+        m_signals[id] = {widgetName, signalName, makeSignal([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); })};
+
+        connect(id);
+        return id;
+    }
+
+    template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                                                                            && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
+    unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args)
+    {
+        const unsigned int id = generateUniqueId();
+        m_signals[id] = {widgetName, signalName, makeSignalEx(
+                [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler), args...]
+                        (const std::shared_ptr<Widget>& w, const String& s)
+                { f(args..., w, s); }
+        )};
+
+        connect(id);
+        return id;
+    }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

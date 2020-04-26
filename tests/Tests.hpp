@@ -43,7 +43,6 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 #define TEST_DRAW_INIT(width, height, widget) \
             sf::RenderTexture target; \

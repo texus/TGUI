@@ -414,11 +414,14 @@ namespace tgui
             // If there is a selection then undo it now
             if (m_selChars)
                 setCaretPosition(m_selEnd);
+
+            if (m_focused)
+                onReturnOrUnfocus.emit(this, m_text);
         }
 
-    #if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
+#if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
         sf::Keyboard::setVirtualKeyboardVisible(focused);
-    #endif
+#endif
 
         Widget::setFocused(focused);
     }
@@ -681,6 +684,7 @@ namespace tgui
             case sf::Keyboard::Return:
             {
                 onReturnKeyPress.emit(this, m_text);
+                onReturnOrUnfocus.emit(this, m_text);
                 break;
             }
             case sf::Keyboard::BackSpace:
@@ -896,10 +900,12 @@ namespace tgui
 
     Signal& EditBox::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onTextChange.getName()))
+        if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName.equalIgnoreCase(onReturnKeyPress.getName()))
+        else if (signalName == onReturnKeyPress.getName())
             return onReturnKeyPress;
+        else if (signalName == onReturnOrUnfocus.getName())
+            return onReturnOrUnfocus;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

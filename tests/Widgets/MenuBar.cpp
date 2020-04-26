@@ -33,15 +33,12 @@ TEST_CASE("[MenuBar]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](){}));
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](tgui::String){}));
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](std::vector<tgui::String>){}));
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](tgui::Widget::Ptr, tgui::String, std::vector<tgui::String>){}));
+        menuBar->onMenuItemClick([](){});
+        menuBar->onMenuItemClick([](tgui::String){});
+        menuBar->onMenuItemClick([](std::vector<tgui::String>){});
 
-        REQUIRE_NOTHROW(menuBar->connectMenuItem("File", "Save", [](){}));
-        REQUIRE_NOTHROW(menuBar->connectMenuItem({"Help", "About", "Version"}, [](){}));
+        menuBar->connectMenuItem("File", "Save", [](){});
+        menuBar->connectMenuItem({"Help", "About", "Version"}, [](){});
     }
 
     SECTION("WidgetType")

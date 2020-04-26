@@ -33,20 +33,14 @@ TEST_CASE("[RadioButton]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](){}));
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        radioButton->onCheck([](){});
+        radioButton->onCheck([](bool){});
 
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](){}));
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        radioButton->onUncheck([](){});
+        radioButton->onUncheck([](bool){});
 
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](){}));
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](bool){}));
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, tgui::String, bool){}));
+        radioButton->onChange([](){});
+        radioButton->onChange([](bool){});
     }
 
     SECTION("WidgetType")
@@ -166,9 +160,9 @@ TEST_CASE("[RadioButton]")
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
             unsigned int changedCount = 0;
-            radioButton->connect("Checked", &genericCallback, std::ref(checkCount));
-            radioButton->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
-            radioButton->connect("Changed", &genericCallback, std::ref(changedCount));
+            radioButton->onCheck(&genericCallback, std::ref(checkCount));
+            radioButton->onUncheck(&genericCallback, std::ref(uncheckCount));
+            radioButton->onChange(&genericCallback, std::ref(changedCount));
 
             radioButton->leftMousePressed({105, 90});
             REQUIRE(checkCount == 0);

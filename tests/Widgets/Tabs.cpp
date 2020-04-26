@@ -32,10 +32,8 @@ TEST_CASE("[Tabs]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::String){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        tabs->onTabSelect([](){});
+        tabs->onTabSelect([](tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -252,7 +250,7 @@ TEST_CASE("[Tabs]")
             tabs->setSize({300, 20});
 
             unsigned int tabSelectedCount = 0;
-            tabs->connect("TabSelected", &genericCallback, std::ref(tabSelectedCount));
+            tabs->onTabSelect(&genericCallback, std::ref(tabSelectedCount));
 
             tabs->add("1");
             tabs->add("2");

@@ -34,10 +34,8 @@ TEST_CASE("[Label]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::String){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        label->onDoubleClick([](){});
+        label->onDoubleClick([](tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -156,7 +154,7 @@ TEST_CASE("[Label]")
         SECTION("Double click")
         {
             unsigned int doubleClickedCount = 0;
-            label->connect("DoubleClicked", &genericCallback, std::ref(doubleClickedCount));
+            label->onDoubleClick(&genericCallback, std::ref(doubleClickedCount));
 
             label->setPosition(40, 30);
             label->setSize(150, 100);
@@ -194,8 +192,8 @@ TEST_CASE("[Label]")
             parent->add(backgroundLabel);
             parent->add(label);
 
-            backgroundLabel->connect("MousePressed", &genericCallback, std::ref(mousePressedCountBack));
-            label->connect("MousePressed", &genericCallback, std::ref(mousePressedCountFront));
+            backgroundLabel->onMousePress(&genericCallback, std::ref(mousePressedCountBack));
+            label->onMousePress(&genericCallback, std::ref(mousePressedCountFront));
 
             parent->leftMousePressed({175, 135});
             parent->leftMouseReleased({175, 135});

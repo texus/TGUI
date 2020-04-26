@@ -1218,13 +1218,13 @@ namespace tgui
 
     Signal& ListView::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else if (signalName.equalIgnoreCase(onDoubleClick.getName()))
+        else if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName.equalIgnoreCase(onRightClick.getName()))
+        else if (signalName == onRightClick.getName())
             return onRightClick;
-        else if (signalName.equalIgnoreCase(onHeaderClick.getName()))
+        else if (signalName == onHeaderClick.getName())
             return onHeaderClick;
         else
             return Widget::getSignal(std::move(signalName));

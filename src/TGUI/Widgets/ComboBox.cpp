@@ -27,7 +27,6 @@
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Clipping.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -283,7 +282,7 @@ namespace tgui
         m_text.setString(m_listBox->getSelectedItem());
 
         if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
-            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+            onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
 
         return ret;
     }
@@ -298,7 +297,7 @@ namespace tgui
         m_text.setString(m_listBox->getSelectedItem());
 
         if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
-            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+            onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
 
         return ret;
     }
@@ -313,7 +312,7 @@ namespace tgui
         m_text.setString(m_listBox->getSelectedItem());
 
         if (previousSelectedItemIndex != m_listBox->getSelectedItemIndex())
-            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+            onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
 
         return ret;
     }
@@ -600,7 +599,7 @@ namespace tgui
             {
                 m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
                 m_text.setString(m_listBox->getSelectedItem());
-                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+                onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
             }
         }
         else // You are scrolling up
@@ -610,7 +609,7 @@ namespace tgui
             {
                 m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));
                 m_text.setString(m_listBox->getSelectedItem());
-                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+                onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
             }
         }
 
@@ -621,7 +620,7 @@ namespace tgui
 
     Signal& ComboBox::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onItemSelect.getName()))
+        if (signalName == onItemSelect.getName())
             return onItemSelect;
         else
             return Widget::getSignal(std::move(signalName));
@@ -921,7 +920,7 @@ namespace tgui
         if (selectedItemIndex != m_previousSelectedItemIndex)
         {
             m_text.setString(m_listBox->getSelectedItem());
-            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId(), m_listBox->getSelectedItemIndex());
+            onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
         }
     }
 
@@ -931,12 +930,12 @@ namespace tgui
     {
         m_listBox->setVisible(false);
 
-        m_listBox->connect("Unfocused", [this](){
-                                                    if (!m_mouseHover)
-                                                        hideListBox();
-                                                });
+        m_listBox->onUnfocus([this](){
+            if (!m_mouseHover)
+                hideListBox();
+        });
 
-        m_listBox->connect("MouseReleased", [this](){ hideListBox(); });
+        m_listBox->onMouseRelease([this](){ hideListBox(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

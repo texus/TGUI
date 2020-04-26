@@ -26,7 +26,6 @@
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Clipping.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 #include <cmath>
 
@@ -53,14 +52,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(const ScrollablePanel& other) :
-        Panel                      {other},
-        m_contentSize              {other.m_contentSize},
-        m_mostBottomRightPosition  {other.m_mostBottomRightPosition},
-        m_verticalScrollbar        {other.m_verticalScrollbar},
-        m_horizontalScrollbar      {other.m_horizontalScrollbar},
-        m_verticalScrollbarPolicy  {other.m_verticalScrollbarPolicy},
-        m_horizontalScrollbarPolicy{other.m_horizontalScrollbarPolicy},
-        m_connectedCallbacks       {}
+        Panel                       {other},
+        m_contentSize               {other.m_contentSize},
+        m_mostBottomRightPosition   {other.m_mostBottomRightPosition},
+        m_verticalScrollbar         {other.m_verticalScrollbar},
+        m_horizontalScrollbar       {other.m_horizontalScrollbar},
+        m_verticalScrollbarPolicy   {other.m_verticalScrollbarPolicy},
+        m_horizontalScrollbarPolicy {other.m_horizontalScrollbarPolicy},
+        m_connectedPositionCallbacks{},
+        m_connectedSizeCallbacks    {}
     {
         if (m_contentSize == Vector2f{0, 0})
         {
@@ -72,14 +72,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) :
-        Panel                      {std::move(other)},
-        m_contentSize              {std::move(other.m_contentSize)},
-        m_mostBottomRightPosition  {std::move(other.m_mostBottomRightPosition)},
-        m_verticalScrollbar        {std::move(other.m_verticalScrollbar)},
-        m_horizontalScrollbar      {std::move(other.m_horizontalScrollbar)},
-        m_verticalScrollbarPolicy  {std::move(other.m_verticalScrollbarPolicy)},
-        m_horizontalScrollbarPolicy{std::move(other.m_horizontalScrollbarPolicy)},
-        m_connectedCallbacks       {std::move(other.m_connectedCallbacks)}
+        Panel                       {std::move(other)},
+        m_contentSize               {std::move(other.m_contentSize)},
+        m_mostBottomRightPosition   {std::move(other.m_mostBottomRightPosition)},
+        m_verticalScrollbar         {std::move(other.m_verticalScrollbar)},
+        m_horizontalScrollbar       {std::move(other.m_horizontalScrollbar)},
+        m_verticalScrollbarPolicy   {std::move(other.m_verticalScrollbarPolicy)},
+        m_horizontalScrollbarPolicy {std::move(other.m_horizontalScrollbarPolicy)},
+        m_connectedPositionCallbacks{std::move(other.m_connectedPositionCallbacks)},
+        m_connectedSizeCallbacks    {std::move(other.m_connectedSizeCallbacks)}
     {
         disconnectAllChildWidgets();
 
@@ -226,12 +227,18 @@ namespace tgui
 
     bool ScrollablePanel::remove(const Widget::Ptr& widget)
     {
-        const auto callbackIt = m_connectedCallbacks.find(widget);
-        if (callbackIt != m_connectedCallbacks.end())
+        const auto posCallbackIt = m_connectedPositionCallbacks.find(widget);
+        if (posCallbackIt != m_connectedPositionCallbacks.end())
         {
-            widget->disconnect(callbackIt->second-1);
-            widget->disconnect(callbackIt->second);
-            m_connectedCallbacks.erase(callbackIt);
+            widget->onPositionChange.disconnect(posCallbackIt->second);
+            m_connectedPositionCallbacks.erase(posCallbackIt);
+        }
+
+        const auto sizeCallbackIt = m_connectedSizeCallbacks.find(widget);
+        if (sizeCallbackIt != m_connectedSizeCallbacks.end())
+        {
+            widget->onSizeChange.disconnect(sizeCallbackIt->second);
+            m_connectedSizeCallbacks.erase(sizeCallbackIt);
         }
 
         const bool ret = Panel::remove(widget);
@@ -799,20 +806,22 @@ namespace tgui
 
     void ScrollablePanel::connectPositionAndSize(Widget::Ptr widget)
     {
-        m_connectedCallbacks[widget] = widget->connect({"PositionChanged", "SizeChanged"}, [this](){ recalculateMostBottomRightPosition(); updateScrollbars(); });
+        const auto updateFunc = [this]{ recalculateMostBottomRightPosition(); updateScrollbars(); };
+        m_connectedPositionCallbacks[widget] = widget->onPositionChange(updateFunc);
+        m_connectedSizeCallbacks[widget] = widget->onSizeChange(updateFunc);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ScrollablePanel::disconnectAllChildWidgets()
     {
-        for (const auto& pair : m_connectedCallbacks)
-        {
-            pair.first->disconnect(pair.second-1);
-            pair.first->disconnect(pair.second);
-        }
+        for (const auto& pair : m_connectedPositionCallbacks)
+            pair.first->onPositionChange.disconnect(pair.second);
+        for (const auto& pair : m_connectedSizeCallbacks)
+            pair.first->onSizeChange.disconnect(pair.second);
 
-        m_connectedCallbacks.clear();
+        m_connectedPositionCallbacks.clear();
+        m_connectedSizeCallbacks.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

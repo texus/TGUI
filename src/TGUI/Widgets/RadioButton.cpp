@@ -277,11 +277,11 @@ namespace tgui
 
     Signal& RadioButton::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onCheck.getName()))
+        if (signalName == onCheck.getName())
             return onCheck;
-        else if (signalName.equalIgnoreCase(onUncheck.getName()))
+        else if (signalName == onUncheck.getName())
             return onUncheck;
-        else if (signalName.equalIgnoreCase(onChange.getName()))
+        else if (signalName == onChange.getName())
             return onChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));

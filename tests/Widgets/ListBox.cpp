@@ -33,41 +33,25 @@ TEST_CASE("[ListBox]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
+        listBox->onItemSelect([](){});
+        listBox->onItemSelect([](int){});
+        listBox->onItemSelect([](tgui::String){});
+        listBox->onItemSelect([](tgui::String, tgui::String){});
 
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, int){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MousePressed", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
+        listBox->onMousePress([](){});
+        listBox->onMousePress([](int){});
+        listBox->onMousePress([](tgui::String){});
+        listBox->onMousePress([](tgui::String, tgui::String){});
 
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, int){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
+        listBox->onMouseRelease([](){});
+        listBox->onMouseRelease([](int){});
+        listBox->onMouseRelease([](tgui::String){});
+        listBox->onMouseRelease([](tgui::String, tgui::String){});
 
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](int){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, int){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
+        listBox->onDoubleClick([](){});
+        listBox->onDoubleClick([](int){});
+        listBox->onDoubleClick([](tgui::String){});
+        listBox->onDoubleClick([](tgui::String, tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -319,8 +303,8 @@ TEST_CASE("[ListBox]")
 
         unsigned int itemSelectedCount = 0;
         unsigned int doubleClickedCount = 0;
-        listBox->connect("ItemSelected", &genericCallback, std::ref(itemSelectedCount));
-        listBox->connect("DoubleClicked", &genericCallback, std::ref(doubleClickedCount));
+        listBox->onItemSelect(&genericCallback, std::ref(itemSelectedCount));
+        listBox->onDoubleClick(&genericCallback, std::ref(doubleClickedCount));
 
         SECTION("Click on item")
         {

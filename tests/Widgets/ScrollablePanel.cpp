@@ -138,9 +138,9 @@ TEST_CASE("[ScrollablePanel]")
         panel->setPosition(40, 30);
         panel->setSize(150, 100);
 
-        panel->connect("MousePressed", &mouseCallback, std::ref(mousePressedCount));
-        panel->connect("MouseReleased", &mouseCallback, std::ref(mouseReleasedCount));
-        panel->connect("Clicked", &mouseCallback, std::ref(clickedCount));
+        panel->onMousePress(&mouseCallback, std::ref(mousePressedCount));
+        panel->onMouseRelease(&mouseCallback, std::ref(mouseReleasedCount));
+        panel->onClick(&mouseCallback, std::ref(clickedCount));
 
         SECTION("mouseOnWidget")
         {
@@ -160,8 +160,8 @@ TEST_CASE("[ScrollablePanel]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            panel->connect("MouseEntered", &genericCallback, std::ref(mouseEnteredCount));
-            panel->connect("MouseLeft", &genericCallback, std::ref(mouseLeftCount));
+            panel->onMouseEnter(&genericCallback, std::ref(mouseEnteredCount));
+            panel->onMouseLeave(&genericCallback, std::ref(mouseLeftCount));
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});

@@ -412,7 +412,8 @@ namespace tgui
         unsigned int m_verticalScrollAmount = 0;
         unsigned int m_horizontalScrollAmount = 0;
 
-        std::map<Widget::Ptr, unsigned int> m_connectedCallbacks;
+        std::map<Widget::Ptr, unsigned int> m_connectedPositionCallbacks;
+        std::map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

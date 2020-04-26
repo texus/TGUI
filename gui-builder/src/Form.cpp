@@ -44,11 +44,11 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
     m_widgets["form"] = nullptr;
 
     m_formWindow->setTitle(filename);
-    m_formWindow->connect("Closed", [this]{ m_guiBuilder->closeForm(this); });
-    m_formWindow->connect("SizeChanged", [this] { m_scrollablePanel->setSize(m_formWindow->getSize()); });
+    m_formWindow->onClose([this]{ m_guiBuilder->closeForm(this); });
+    m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
-    eventHandler->connect("MousePressed", [=](tgui::Vector2f pos){ onFormMousePress(pos); });
+    eventHandler->onMousePress([=](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
     m_scrollablePanel->setSize(m_formWindow->getSize());
@@ -61,7 +61,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
         square->setSize(tgui::Vector2f{square->getRenderer()->getTexture().getImageSize()});
         square->setVisible(false);
-        square->connect("MousePressed", [=](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
+        square->onMousePress([=](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
 }

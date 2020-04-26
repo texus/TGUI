@@ -142,7 +142,7 @@ namespace tgui
         unsigned int connectMenuItem(const std::vector<String>& hierarchy, Func&& handler, const Args&... args)
         {
 #if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
-            return connect("MenuItemClicked",
+            return onMenuItemClick.connect(
                 [=](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
@@ -150,7 +150,7 @@ namespace tgui
                 }
             );
 #else
-            return connect("MenuItemClicked",
+            return onMenuItemClick.connect(
                 [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)

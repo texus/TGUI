@@ -35,10 +35,8 @@ TEST_CASE("[Scrollbar]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](){}));
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](unsigned int){}));
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, tgui::String, unsigned int){}));
+        scrollbar->onValueChange([](){});
+        scrollbar->onValueChange([](unsigned int){});
     }
 
     SECTION("WidgetType")

@@ -375,7 +375,7 @@ namespace tgui
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
 
-        std::map<Widget::Ptr, unsigned int> m_connectedCallbacks;
+        std::map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

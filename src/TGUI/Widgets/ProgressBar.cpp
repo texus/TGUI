@@ -291,9 +291,9 @@ namespace tgui
 
     Signal& ProgressBar::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onValueChange.getName()))
+        if (signalName == onValueChange.getName())
             return onValueChange;
-        else if (signalName.equalIgnoreCase(onFull.getName()))
+        else if (signalName == onFull.getName())
             return onFull;
         else
             return ClickableWidget::getSignal(std::move(signalName));

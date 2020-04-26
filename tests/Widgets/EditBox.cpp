@@ -32,15 +32,14 @@ TEST_CASE("[EditBox]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::String){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        editBox->onTextChange([](){});
+        editBox->onTextChange([](tgui::String){});
 
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::String){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        editBox->onReturnKeyPress([](){});
+        editBox->onReturnKeyPress([](tgui::String){});
+
+        editBox->onReturnOrUnfocus([](){});
+        editBox->onReturnOrUnfocus([](tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -358,7 +357,7 @@ TEST_CASE("[EditBox]")
         SECTION("TextChanged signal")
         {
             unsigned int textChangedCount = 0;
-            editBox->connect("TextChanged", &genericCallback, std::ref(textChangedCount));
+            editBox->onTextChange(&genericCallback, std::ref(textChangedCount));
 
             editBox->textEntered('a');
             REQUIRE(textChangedCount == 1);
@@ -400,7 +399,7 @@ TEST_CASE("[EditBox]")
         {
             unsigned int count = 0;
             tgui::String expectedText = "";
-            editBox->connect("ReturnKeyPressed", [&](tgui::String text){ REQUIRE(text == expectedText); count++; });
+            editBox->onReturnKeyPress([&](tgui::String text){ REQUIRE(text == expectedText); count++; });
 
             keyEvent.code = sf::Keyboard::Return;
             editBox->keyPressed(keyEvent);

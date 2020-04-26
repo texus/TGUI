@@ -195,7 +195,7 @@ int main()
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->connect("pressed", [=](){ child->setVisible(false); });
+        button->onPress([=](){ child->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();
@@ -254,7 +254,7 @@ int main()
         button->setPosition(window.getSize().x - 115.f, window.getSize().y - 50.f);
         button->setText("Exit");
         button->setSize(100, 40);
-        button->connect("pressed", [&](){ window.close(); });
+        button->onPress([&](){ window.close(); });
         gui.add(button);
     }
     catch (const tgui::Exception& e)

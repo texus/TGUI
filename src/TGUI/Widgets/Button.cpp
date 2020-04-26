@@ -251,7 +251,7 @@ namespace tgui
 
     Signal& Button::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onPress.getName()))
+        if (signalName == onPress.getName())
             return onPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));

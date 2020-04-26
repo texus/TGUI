@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Grid.hpp>
-#include <TGUI/SignalImpl.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,19 +60,19 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Grid::Grid(Grid&& gridToMove) :
-        Container           {std::move(gridToMove)},
-        m_autoSize          {std::move(gridToMove.m_autoSize)},
-        m_gridWidgets       {std::move(gridToMove.m_gridWidgets)},
-        m_objPadding        {std::move(gridToMove.m_objPadding)},
-        m_objAlignment      {std::move(gridToMove.m_objAlignment)},
-        m_rowHeight         {std::move(gridToMove.m_rowHeight)},
-        m_columnWidth       {std::move(gridToMove.m_columnWidth)},
-        m_connectedCallbacks{}
+        Container     {std::move(gridToMove)},
+        m_autoSize    {std::move(gridToMove.m_autoSize)},
+        m_gridWidgets {std::move(gridToMove.m_gridWidgets)},
+        m_objPadding  {std::move(gridToMove.m_objPadding)},
+        m_objAlignment{std::move(gridToMove.m_objAlignment)},
+        m_rowHeight   {std::move(gridToMove.m_rowHeight)},
+        m_columnWidth {std::move(gridToMove.m_columnWidth)},
+        m_connectedSizeCallbacks{}
     {
         for (auto& widget : m_widgets)
         {
-            widget->disconnect(gridToMove.m_connectedCallbacks[widget]);
-            m_connectedCallbacks[widget] = widget->connect("SizeChanged", [this](){ updateWidgets(); });
+            widget->onSizeChange.disconnect(gridToMove.m_connectedSizeCallbacks[widget]);
+            m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
         }
     }
 
@@ -86,7 +85,7 @@ namespace tgui
         {
             Container::operator=(right);
             m_autoSize = right.m_autoSize;
-            m_connectedCallbacks.clear();
+            m_connectedSizeCallbacks.clear();
 
             for (std::size_t row = 0; row < right.m_gridWidgets.size(); ++row)
             {
@@ -113,18 +112,18 @@ namespace tgui
         if (this != &right)
         {
             Container::operator=(std::move(right));
-            m_autoSize           = std::move(right.m_autoSize);
-            m_gridWidgets        = std::move(right.m_gridWidgets);
-            m_objPadding         = std::move(right.m_objPadding);
-            m_objAlignment       = std::move(right.m_objAlignment);
-            m_rowHeight          = std::move(right.m_rowHeight);
-            m_columnWidth        = std::move(right.m_columnWidth);
-            m_connectedCallbacks = std::move(right.m_connectedCallbacks);
+            m_autoSize               = std::move(right.m_autoSize);
+            m_gridWidgets            = std::move(right.m_gridWidgets);
+            m_objPadding             = std::move(right.m_objPadding);
+            m_objAlignment           = std::move(right.m_objAlignment);
+            m_rowHeight              = std::move(right.m_rowHeight);
+            m_columnWidth            = std::move(right.m_columnWidth);
+            m_connectedSizeCallbacks = std::move(right.m_connectedSizeCallbacks);
 
             for (auto& widget : m_widgets)
             {
-                widget->disconnect(right.m_connectedCallbacks[widget]);
-                m_connectedCallbacks[widget] = widget->connect("SizeChanged", [this](){ updateWidgets(); });
+                widget->onSizeChange.disconnect(right.m_connectedSizeCallbacks[widget]);
+                m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
             }
         }
 
@@ -181,11 +180,11 @@ namespace tgui
 
     bool Grid::remove(const Widget::Ptr& widget)
     {
-        const auto callbackIt = m_connectedCallbacks.find(widget);
-        if (callbackIt != m_connectedCallbacks.end())
+        const auto callbackIt = m_connectedSizeCallbacks.find(widget);
+        if (callbackIt != m_connectedSizeCallbacks.end())
         {
-            widget->disconnect(callbackIt->second);
-            m_connectedCallbacks.erase(callbackIt);
+            widget->onSizeChange.disconnect(callbackIt->second);
+            m_connectedSizeCallbacks.erase(callbackIt);
         }
 
         // Find the widget in the grid
@@ -250,7 +249,7 @@ namespace tgui
         m_rowHeight.clear();
         m_columnWidth.clear();
 
-        m_connectedCallbacks.clear();
+        m_connectedSizeCallbacks.clear();
 
         updateWidgets();
     }
@@ -296,7 +295,7 @@ namespace tgui
         updateWidgets();
 
         // Automatically update the widgets when their size changes
-        m_connectedCallbacks[widget] = widget->connect("SizeChanged", [this](){ updateWidgets(); });
+        m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

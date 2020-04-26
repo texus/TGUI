@@ -476,7 +476,7 @@ namespace tgui
         SignalChildWindow onClose      = {"Closed"};        ///< The window was closed. Optional parameter: pointer to the window
         SignalChildWindow onMinimize   = {"Minimized"};     ///< The window was minimized. Optional parameter: pointer to the window
         SignalChildWindow onMaximize   = {"Maximized"};     ///< The window was maximized. Optional parameter: pointer to the window
-        SignalChildWindow onEscapeKeyPressed = {"EscapeKeyPressed"}; ///< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+        SignalChildWindow onEscapeKeyPress = {"EscapeKeyPressed"}; ///< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

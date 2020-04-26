@@ -485,7 +485,7 @@ namespace tgui
 
     Signal& RangeSlider::getSignal(String signalName)
     {
-        if (signalName.equalIgnoreCase(onRangeChange.getName()))
+        if (signalName == onRangeChange.getName())
             return onRangeChange;
         else
             return Widget::getSignal(std::move(signalName));

@@ -24,8 +24,6 @@
 
 
 #include <TGUI/SignalManager.hpp>
-#include <TGUI/SignalManagerImpl.hpp>
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,24 +62,21 @@ namespace tgui
         auto it = m_signals.find(id);
         if (it != m_signals.end())
         {
-            m_signals.erase(it);
-
             for (auto it2 = m_connectedSignals.begin(); it2 != m_connectedSignals.end();)
             {
-                if (it2->m_signalId != id)
+                if (it2->signalId != id)
                 {
                     ++it2;
                     continue;
                 }
 
-                if (auto widget = it2->m_widget.lock())
-                {
-                    widget->disconnect(it2->m_signalWidgetID);
-                }
+                if (auto widget = it2->widget.lock())
+                    widget->getSignal(it->second.signalName).disconnect(it2->signalWidgetID);
 
                 it2 = m_connectedSignals.erase(it2);
             }
 
+            m_signals.erase(it);
             return true;
         }
         else
@@ -94,12 +89,10 @@ namespace tgui
 
     void SignalManager::disconnectAll()
     {
-        for (auto &it : m_connectedSignals)
+        for (auto &signalTuple : m_connectedSignals)
         {
-            if (auto widget = it.m_widget.lock())
-            {
-                widget->disconnect(it.m_signalWidgetID);
-            }
+            if (auto widget = signalTuple.widget.lock())
+                widget->getSignal(m_signals[signalTuple.signalId].signalName).disconnect(signalTuple.signalWidgetID);
         }
 
         m_signals.clear();
@@ -114,17 +107,13 @@ namespace tgui
 
         for (auto &it : m_signals)
         {
-            if (it.second.m_widgetName == widgetPtr->getWidgetName())
+            if (it.second.widgetName == widgetPtr->getWidgetName())
             {
                 unsigned int id;
-                if (it.second.m_func.first)
-                {
-                    id = widgetPtr->connect(it.second.m_signalName, it.second.m_func.first);
-                }
+                if (it.second.func.first)
+                    id = widgetPtr->getSignal(it.second.signalName).connect(it.second.func.first);
                 else
-                {
-                    id = widgetPtr->connect(it.second.m_signalName, it.second.m_func.second);
-                }
+                    id = widgetPtr->getSignal(it.second.signalName).connectEx(it.second.func.second);
 
                 m_connectedSignals.push_back({it.first, widgetPtr, id});
             }
@@ -148,13 +137,13 @@ namespace tgui
         }
         for (auto it = m_connectedSignals.begin(); it != m_connectedSignals.end();)
         {
-            if (it->m_widget.expired())
+            if (it->widget.expired())
             {
                 it = m_connectedSignals.erase(it);
             }
-            else if(it->m_widget.lock().get() == widget)
+            else if(it->widget.lock().get() == widget)
             {
-                widget->disconnect(it->m_signalWidgetID);
+                widget->getSignal(m_signals[it->signalId].signalName).disconnect(it->signalWidgetID);
                 it = m_connectedSignals.erase(it);
             }
             else
@@ -173,23 +162,20 @@ namespace tgui
 
         for (auto &it : m_widgets)
         {
-            if (auto widget = it.lock())
-            {
-                if (widget->getWidgetName() == handle.m_widgetName)
-                {
-                    unsigned int id;
-                    if (handle.m_func.first)
-                    {
-                        id = widget->connect(handle.m_signalName, handle.m_func.first);
-                    }
-                    else
-                    {
-                        id = widget->connect(handle.m_signalName, handle.m_func.second);
-                    }
+            auto widget = it.lock();
+            if (!widget)
+                continue;
 
-                    m_connectedSignals.push_back({sid, it, id});
-                }
-            }
+            if (widget->getWidgetName() != handle.widgetName)
+                continue;
+
+            unsigned int id;
+            if (handle.func.first)
+                id = widget->getSignal(handle.signalName).connect(handle.func.first);
+            else
+                id = widget->getSignal(handle.signalName).connectEx(handle.func.second);
+
+            m_connectedSignals.push_back({sid, it, id});
         }
     }
 
@@ -204,7 +190,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::pair<SignalManager::Delegate, SignalManager::DelegateEx>
-    SignalManager::makeSignal(const SignalManager::DelegateEx &handle)
+    SignalManager::makeSignalEx(const SignalManager::DelegateEx &handle)
     {
         return std::make_pair(SignalManager::Delegate{}, handle);
     }

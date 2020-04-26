@@ -65,7 +65,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Widget : public SignalWidgetBase, public std::enable_shared_from_this<Widget>
+    class TGUI_API Widget : public std::enable_shared_from_this<Widget>
     {
     public:
 
@@ -91,7 +91,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~Widget();
+        virtual ~Widget();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Overload of copy assignment operator
@@ -560,6 +560,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(String signalName);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// This function is called when the widget is added to a container.
         /// You should not call this function yourself.
@@ -754,18 +766,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves a signal based on its name
-        ///
-        /// @param signalName  Name of the signal
-        ///
-        /// @return Signal that corresponds to the name
-        ///
-        /// @throw Exception when the name does not match any signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Signal& getSignal(String signalName) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -834,7 +834,7 @@ namespace tgui
         Signal          onUnfocus        = {"Unfocused"};               ///< The widget was unfocused
         Signal          onMouseEnter     = {"MouseEntered"};            ///< The mouse entered the widget
         Signal          onMouseLeave     = {"MouseLeft"};               ///< The mouse left the widget
-        SignalAnimation onAnimationFinished = {"AnimationFinished"};    ///< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
+        SignalAnimation onAnimationFinish = {"AnimationFinished"};      ///< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

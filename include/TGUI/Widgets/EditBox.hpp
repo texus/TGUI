@@ -562,6 +562,7 @@ namespace tgui
 
         SignalString onTextChange     = {"TextChanged"};        ///< The text was changed. Optional parameter: new text
         SignalString onReturnKeyPress = {"ReturnKeyPressed"};   ///< The return key was pressed. Optional parameter: text in the edit box
+        SignalString onReturnOrUnfocus = {"ReturnOrUnfocused"}; ///< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

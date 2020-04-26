@@ -34,14 +34,10 @@ TEST_CASE("[ComboBox]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](int){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, int){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
-        REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, tgui::String, tgui::String, tgui::String){}));
+        comboBox->onItemSelect([](){});
+        comboBox->onItemSelect([](int){});
+        comboBox->onItemSelect([](tgui::String){});
+        comboBox->onItemSelect([](tgui::String, tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -290,7 +286,7 @@ TEST_CASE("[ComboBox]")
             };
 
             unsigned int itemSelectedCount = 0;
-            comboBox->connect("ItemSelected", &genericCallback, std::ref(itemSelectedCount));
+            comboBox->onItemSelect(&genericCallback, std::ref(itemSelectedCount));
 
             comboBox->setPosition(25, 6);
             comboBox->setSize(150, 24);

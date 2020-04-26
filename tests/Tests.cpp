@@ -45,8 +45,8 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
         unsigned int mouseEnteredCount = 0;
         unsigned int mouseLeftCount = 0;
 
-        widget->connect("MouseEntered", [&]{ genericCallback(mouseEnteredCount); });
-        widget->connect("MouseLeft", [&]{ genericCallback(mouseLeftCount); });
+        widget->onMouseEnter([&]{ genericCallback(mouseEnteredCount); });
+        widget->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
 
         auto parent = tgui::Panel::create({300, 200});
         parent->setPosition({30, 25});
@@ -88,12 +88,12 @@ void testClickableWidgetSignalsImpl(T widget)
     widget->setPosition({40, 30});
     widget->setSize({150, 100});
 
-    widget->connect("MousePressed", [&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-    widget->connect("MouseReleased", [&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-    widget->connect("Clicked", [&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
-    widget->connect("RightMousePressed", [&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
-    widget->connect("RightMouseReleased", [&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
-    widget->connect("RightClicked", [&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
+    widget->onMousePress([&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
+    widget->onMouseRelease([&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
+    widget->onClick([&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
+    widget->onRightMousePress([&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
+    widget->onRightMouseRelease([&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
+    widget->onRightClick([&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
 
     SECTION("mouseOnWidget")
     {

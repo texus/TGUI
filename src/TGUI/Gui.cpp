@@ -32,13 +32,7 @@
 #include <cassert>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #ifndef NOMINMAX // MinGW already defines this which causes a warning without this check
-        #define NOMINMAX
-    #endif
-    #define NOMB
-    #define VC_EXTRALEAN
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
+    #include <TGUI/WindowsInclude.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

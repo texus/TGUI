@@ -32,10 +32,8 @@ TEST_CASE("[BitmapButton]")
 
     SECTION("Signals")
     {
-        REQUIRE_NOTHROW(button->connect("Pressed", [](){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::String){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, tgui::String){}));
-        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, tgui::String, tgui::String){}));
+        button->onPress([](){});
+        button->onPress([](tgui::String){});
     }
 
     SECTION("WidgetType")
@@ -95,7 +93,7 @@ TEST_CASE("[BitmapButton]")
             button->setSize(150, 100);
 
             unsigned int pressedCount = 0;
-            button->connect("Pressed", &genericCallback, std::ref(pressedCount));
+            button->onPress(&genericCallback, std::ref(pressedCount));
 
             SECTION("mouse click")
             {
