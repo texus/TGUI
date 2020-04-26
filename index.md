@@ -4,7 +4,7 @@ title: Texus' Graphical User Interface
 redirect_from: "/v0.7-dev/index.html"
 ---
 
-TGUI is a cross-platform c++ GUI library for [SFML](https://www.sfml-dev.org).
+TGUI is a cross-platform modern c++ GUI library for [SFML](https://www.sfml-dev.org).
 
 A .Net binding for the library is available at [tgui.net](https://tgui.net).
 
@@ -34,7 +34,7 @@ The gui is easy to use, with only a few lines you can e.g. have a fully function
   </div>
   <div class="HomePageLargerColumn">
     <h3>Cross-platform</h3>
-    <p>TGUI will work on all platforms that SFML supports. This means that you can use it on <b>Windows</b>, <b>Linux</b>, <b>Mac OS X</b>, <b>FreeBSD</b> and experimentally on <b>Raspberry Pi</b>, <b>Android</b> and <b>iOS</b>.</p>
+    <p>TGUI will work on all platforms that SFML supports. This means that you can use it on <b>Windows</b>, <b>Linux</b>, <b>macOS</b>, <b>FreeBSD</b> and experimentally on <b>Raspberry Pi</b>, <b>Android</b> and <b>iOS</b>.</p>
   </div>
 </div>
 
