@@ -65,7 +65,8 @@ void loadWidgets( tgui::Gui& gui )
     gui.add(button);
 
     // Call the login function when the button is pressed and pass the edit boxes that we created as parameters
-    button->onPress(login, editBoxUsername, editBoxPassword);
+    // The "&" in front of "login" can be removed on newer compilers, but is kept here for compatibility with GCC < 8.
+    button->onPress(&login, editBoxUsername, editBoxPassword);
 }
 
 int main()

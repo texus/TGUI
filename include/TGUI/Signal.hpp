@@ -284,27 +284,21 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             const auto id = ++m_lastSignalId;
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
             if constexpr(sizeof...(BoundArgs) == 0)
                 m_handlers[id] = func;
             else
+#endif
+            {
                 m_handlers[id] = [=]{ invokeFunc(func, args...); };
+            }
 
             return id;
         }
-#else
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
-        unsigned int connect(const Func& func, const BoundArgs&... args)
-        {
-            const auto id = ++m_lastSignalId;
-            m_handlers[id] = [=]{ invokeFunc(func, args...); };
-            return id;
-        }
-#endif
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,9 +445,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,6 +466,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 
@@ -523,10 +529,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,6 +550,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 
@@ -605,10 +622,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -630,6 +643,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 
@@ -683,10 +711,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,6 +732,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 
@@ -785,10 +824,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -810,6 +845,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 
@@ -885,10 +935,6 @@ namespace tgui
     {
     public:
 
-        // You can use the connect function declared in this class, but also the one defined in the Signal class
-        using Signal::connect;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -910,6 +956,21 @@ namespace tgui
         unsigned int operator()(const Func& func, const BoundArgs&... args)
         {
             return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
         }
 
 

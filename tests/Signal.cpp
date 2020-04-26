@@ -63,7 +63,6 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->onPress([](auto){}, 10.f) == ++id);
         REQUIRE(widget2->onPress.connectEx([](tgui::Widget::Ptr, tgui::String){}) == ++id);
         REQUIRE(widget2->onPress.connectEx([](auto, auto, auto, tgui::Widget::Ptr, tgui::String){}, "Hey", 15, 3.f) == ++id);
-        REQUIRE(widget2->onPress.connect(std::bind([](int){}, 5)) == ++id);
 
         struct Class
         {

@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     auto button = tgui::Button::create("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
-    button->connect("clicked", [&](){ window.close(); });
+    button->onPress([&]{ window.close(); });
     gui.add(button);
 
     // Clicking on this edit box will open the keyboard and allow you to type in it
