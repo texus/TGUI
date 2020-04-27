@@ -535,11 +535,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::setItemData(std::size_t index, Any data)
+    {
+        if (index >= m_items.size())
+        {
+            TGUI_PRINT_WARNING("ListView::setItemData called with invalid index.");
+            return;
+        }
+
+        m_items[index].data = std::move(data);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::setItemIcon(std::size_t index, const Texture& texture)
     {
         if (index >= m_items.size())
         {
-            TGUI_PRINT_WARNING("setItemIcon called with invalid index.");
+            TGUI_PRINT_WARNING("ListView::setItemIcon called with invalid index.");
             return;
         }
 
@@ -582,7 +595,7 @@ namespace tgui
             return m_items[index].icon.getTexture();
         else
         {
-            TGUI_PRINT_WARNING("getItemIcon called with invalid index.");
+            TGUI_PRINT_WARNING("ListView::getItemIcon called with invalid index.");
             return {};
         }
     }

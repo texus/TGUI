@@ -1,6 +1,7 @@
 TGUI 0.9-dev
 ------------
 
+- ListBox and ListView can now store user data in their items
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Replaced all std::string and sf::String by tgui::String
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions

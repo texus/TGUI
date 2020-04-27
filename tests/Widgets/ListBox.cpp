@@ -223,6 +223,31 @@ TEST_CASE("[ListBox]")
         REQUIRE(!listBox->containsId("1"));
     }
 
+    SECTION("Data")
+    {
+        listBox->addItem("Item 1", "1");
+        listBox->addItem("Item 2", "2");
+        listBox->addItem("Item 3", "3");
+
+        listBox->setItemData(0, "Test");
+        listBox->setItemData(1, 5);
+        listBox->setItemData(2, tgui::String("x"));
+
+        REQUIRE(tgui::String(listBox->getItemData<const char*>(0)) == "Test");
+        REQUIRE(listBox->getItemData<int>(1) == 5);
+        REQUIRE(listBox->getItemData<tgui::String>(2) == "x");
+
+        // Wrong type results in std::bad_cast
+        REQUIRE_THROWS_AS(listBox->getItemData<int>(2), std::bad_cast);
+
+        // Using an index beyond the added items also results in std::bad_cast
+        REQUIRE_THROWS_AS(listBox->getItemData<tgui::String>(3), std::bad_cast);
+
+        // Re-assigning data is allowed to change the type
+        listBox->setItemData(0, 3);
+        REQUIRE(listBox->getItemData<int>(0) == 3);
+    }
+
     SECTION("ItemHeight")
     {
         listBox->setItemHeight(20);

@@ -445,7 +445,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<String>& ComboBox::getItemIds() const
+    std::vector<String> ComboBox::getItemIds() const
     {
         return m_listBox->getItemIds();
     }

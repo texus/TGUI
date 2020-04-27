@@ -62,6 +62,7 @@ namespace tgui
         struct Item
         {
             std::vector<Text> texts;
+            Any data;
             Sprite icon;
         };
 
@@ -364,6 +365,36 @@ namespace tgui
         /// @return Whether several items can be selected
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getMultiSelect() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Store some user data with the item
+        ///
+        /// @param data  User data to store
+        ///
+        /// Examples:
+        /// @code
+        /// listView->setItemData(idx, "Data"); // Note: type to retrieve with getItemData is 'const char*' here
+        /// listView->setItemData(idx, 5);
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setItemData(std::size_t index, Any data);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns user data stored in the item
+        /// @return Stored data
+        /// @throw std::bad_cast if the template type does not match the type inside the std::any variable passed in setItemData
+        ///        or when the index was too high (which acts as if you access an empty std::any variable).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        T getItemData(std::size_t index) const
+        {
+            if (index < m_items.size())
+                return AnyCast<T>(m_items[index].data);
+            else
+                throw std::bad_cast();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

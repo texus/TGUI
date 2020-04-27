@@ -173,7 +173,34 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->changeSubItem(3, 1, {"d,2"}));
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
     }
-    
+
+    SECTION("Data")
+    {
+        listView->addColumn("Col 1");
+        listView->addColumn("Col 2");
+        listView->addItem({"1,1", "1,2"});
+        listView->addItem({"2,1", "2,2"});
+        listView->addItem({"3,1", "3,2"});
+
+        listView->setItemData(0, "Test");
+        listView->setItemData(1, 5);
+        listView->setItemData(2, tgui::String("x"));
+
+        REQUIRE(tgui::String(listView->getItemData<const char*>(0)) == "Test");
+        REQUIRE(listView->getItemData<int>(1) == 5);
+        REQUIRE(listView->getItemData<tgui::String>(2) == "x");
+
+        // Wrong type results in std::bad_cast
+        REQUIRE_THROWS_AS(listView->getItemData<int>(2), std::bad_cast);
+
+        // Using an index beyond the added items also results in std::bad_cast
+        REQUIRE_THROWS_AS(listView->getItemData<tgui::String>(3), std::bad_cast);
+
+        // Re-assigning data is allowed to change the type
+        listView->setItemData(0, 3);
+        REQUIRE(listView->getItemData<int>(0) == 3);
+    }
+
     SECTION("Sort")
     {
         listView->addColumn("Col 1");
