@@ -1079,29 +1079,20 @@ namespace tgui
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
         {
-            try
+            if (m_userData.type() == typeid(String))
             {
                 const String string = std::any_cast<String>(m_userData);
                 node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
-            catch (const std::bad_any_cast&)
+            else if (m_userData.type() == typeid(std::string))
             {
-                try
-                {
-                    const String string = std::any_cast<std::string>(m_userData);
-                    node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
-                }
-                catch (const std::bad_any_cast&)
-                {
-                    try
-                    {
-                        const String string = std::any_cast<const char*>(m_userData);
-                        node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
-                    }
-                    catch (const std::bad_any_cast&)
-                    {
-                    }
-                }
+                const String string = std::any_cast<std::string>(m_userData);
+                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
+            }
+            else if (m_userData.type() == typeid(const char*))
+            {
+                const String string = std::any_cast<const char*>(m_userData);
+                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
         }
 #else
