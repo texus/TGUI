@@ -42,8 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ProgressBar> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ProgressBar> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ProgressBar> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ProgressBar> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,10 +54,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class FillDirection
         {
-            LeftToRight,  ///< Start filling at the left side and go to the right
-            RightToLeft,  ///< Start filling at the right side and go to the left
-            TopToBottom,  ///< Start filling at the top an go downward
-            BottomToTop   ///< Start filling at the bottom and go upward
+            LeftToRight,  //!< Start filling at the left side and go to the right
+            RightToLeft,  //!< Start filling at the right side and go to the left
+            TopToBottom,  //!< Start filling at the top an go downward
+            BottomToTop   //!< Start filling at the bottom and go upward
         };
 
 
@@ -329,8 +329,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalUInt onValueChange = {"ValueChanged"}; ///< Value of the progress bar changed. Optional parameter: new value
-        Signal     onFull        = {"Full"};         ///< Value of the progress bar changed and he progress bar became full
+        SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the progress bar changed. Optional parameter: new value
+        Signal     onFull        = {"Full"};         //!< Value of the progress bar changed and he progress bar became full
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

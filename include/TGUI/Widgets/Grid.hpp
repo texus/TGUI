@@ -39,8 +39,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Grid> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Grid> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Grid> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Grid> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,15 +52,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class Alignment
         {
-            Center,      ///< Center the widget in the cell
-            UpperLeft,   ///< Draw the widget in the upper left corner of the cell
-            Up,          ///< Draw the widget at the upper side of the cell (horizontally centered)
-            UpperRight,  ///< Draw the widget in the upper right corner of the cell
-            Right,       ///< Draw the widget at the right side of the cell (vertically centered)
-            BottomRight, ///< Draw the widget in the bottom right corner of the cell
-            Bottom,      ///< Draw the widget at the bottom of the cell (horizontally centered)
-            BottomLeft,  ///< Draw the widget in the bottom left corner of the cell
-            Left         ///< Draw the widget at the left side of the cell (vertically centered)
+            Center,      //!< Center the widget in the cell
+            UpperLeft,   //!< Draw the widget in the upper left corner of the cell
+            Up,          //!< Draw the widget at the upper side of the cell (horizontally centered)
+            UpperRight,  //!< Draw the widget in the upper right corner of the cell
+            Right,       //!< Draw the widget at the right side of the cell (vertically centered)
+            BottomRight, //!< Draw the widget in the bottom right corner of the cell
+            Bottom,      //!< Draw the widget at the bottom of the cell (horizontally centered)
+            BottomLeft,  //!< Draw the widget in the bottom left corner of the cell
+            Left         //!< Draw the widget at the left side of the cell (vertically centered)
         };
 
 

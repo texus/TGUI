@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<CustomWidgetForBindings> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const CustomWidgetForBindings> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<CustomWidgetForBindings> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const CustomWidgetForBindings> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

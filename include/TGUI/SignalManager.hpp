@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SignalManager> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const SignalManager> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<SignalManager> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const SignalManager> ConstPtr; //!< Shared constant widget pointer
 
         using Delegate = std::function<void()>;
         using DelegateEx = std::function<void(std::shared_ptr<Widget>, const String&)>;

@@ -44,26 +44,26 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ChildWindow> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ChildWindow> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ChildWindow> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ChildWindow> ConstPtr; //!< Shared constant widget pointer
 
 
         /// Title alignments, possible options for the setTitleAlignment function
         enum class TitleAlignment
         {
-            Left,   ///< Places the title on the left side of the title bar
-            Center, ///< Places the title in the middle of the title bar
-            Right   ///< Places the title on the right side of the title bar
+            Left,   //!< Places the title on the left side of the title bar
+            Center, //!< Places the title in the middle of the title bar
+            Right   //!< Places the title on the right side of the title bar
         };
 
 
         /// Title buttons (use bitwise OR to combine)
         enum TitleButton
         {
-            None     = 0,      ///< No buttons
-            Close    = 1 << 0, ///< Include a close button
-            Maximize = 1 << 1, ///< Include a maximize button
-            Minimize = 1 << 2  ///< Include a minimize button
+            None     = 0,      //!< No buttons
+            Close    = 1 << 0, //!< Include a close button
+            Maximize = 1 << 1, //!< Include a maximize button
+            Minimize = 1 << 2  //!< Include a minimize button
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,11 +472,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        Signal            onMousePress = {"MousePressed"};  ///< The mouse went down on the widget
-        SignalChildWindow onClose      = {"Closed"};        ///< The window was closed. Optional parameter: pointer to the window
-        SignalChildWindow onMinimize   = {"Minimized"};     ///< The window was minimized. Optional parameter: pointer to the window
-        SignalChildWindow onMaximize   = {"Maximized"};     ///< The window was maximized. Optional parameter: pointer to the window
-        SignalChildWindow onEscapeKeyPress = {"EscapeKeyPressed"}; ///< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+        Signal            onMousePress = {"MousePressed"};  //!< The mouse went down on the widget
+        SignalChildWindow onClose      = {"Closed"};        //!< The window was closed. Optional parameter: pointer to the window
+        SignalChildWindow onMinimize   = {"Minimized"};     //!< The window was minimized. Optional parameter: pointer to the window
+        SignalChildWindow onMaximize   = {"Maximized"};     //!< The window was maximized. Optional parameter: pointer to the window
+        SignalChildWindow onEscapeKeyPress = {"EscapeKeyPressed"}; //!< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

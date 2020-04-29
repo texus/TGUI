@@ -44,15 +44,15 @@ namespace tgui
         /// @brief The side where the list will be displayed
         enum class ExpandDirection
         {
-            Down, ///< Display the list below the combo box
-            Up,   ///< Display the list above the combo box
-            Automatic  ///< Display the list below the combo box unless it wouldn't fit on the screen
+            Down, //!< Display the list below the combo box
+            Up,   //!< Display the list above the combo box
+            Automatic  //!< Display the list below the combo box unless it wouldn't fit on the screen
         };
 
     public:
 
-        typedef std::shared_ptr<ComboBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ComboBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ComboBox> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ComboBox> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -630,7 +630,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalItem onItemSelect = {"ItemSelected"}; ///< An item was selected in the combo box. Optional parameter: selected item or its index
+        SignalItem onItemSelect = {"ItemSelected"}; //!< An item was selected in the combo box. Optional parameter: selected item or its index
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

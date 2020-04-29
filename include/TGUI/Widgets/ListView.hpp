@@ -46,17 +46,17 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<ListView> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ListView> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ListView> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ListView> ConstPtr; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment for all texts within a column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class ColumnAlignment
         {
-            Left,   ///< Place the text on the left side (default)
-            Center, ///< Center the text inside the column
-            Right   ///< Place the text on the right side (e.g. for numbers)
+            Left,   //!< Place the text on the left side (default)
+            Center, //!< Center the text inside the column
+            Right   //!< Place the text on the right side (e.g. for numbers)
         };
 
         struct Item
@@ -932,10 +932,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalInt onItemSelect  = {"ItemSelected"};   ///< An item was selected in the list view (only used when MultiSelect is false). Optional parameter: selected item index (-1 when deselecting)
-        SignalInt onDoubleClick = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item index
-        SignalInt onRightClick  = {"RightClicked"};   ///< Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item)
-        SignalInt onHeaderClick = {"HeaderClicked"};  ///< The header was clicked. Optional parameter: column index
+        SignalInt onItemSelect  = {"ItemSelected"};   //!< An item was selected in the list view (only used when MultiSelect is false). Optional parameter: selected item index (-1 when deselecting)
+        SignalInt onDoubleClick = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item index
+        SignalInt onRightClick  = {"RightClicked"};   //!< Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item)
+        SignalInt onHeaderClick = {"HeaderClicked"};  //!< The header was clicked. Optional parameter: column index
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

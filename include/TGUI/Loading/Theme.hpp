@@ -163,8 +163,8 @@ namespace tgui
     protected:
 
         static Theme* m_defaultTheme;
-        static std::shared_ptr<BaseThemeLoader> m_themeLoader;  ///< Theme loader which will do the actual loading
-        std::map<String, std::shared_ptr<RendererData>> m_renderers; ///< Maps ids to renderer datas
+        static std::shared_ptr<BaseThemeLoader> m_themeLoader;  //!< Theme loader which will do the actual loading
+        std::map<String, std::shared_ptr<RendererData>> m_renderers; //!< Maps ids to renderer datas
         String m_primary;
     };
 

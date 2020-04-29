@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Knob> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Knob> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Knob> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Knob> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,7 +334,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalFloat onValueChange = {"ValueChanged"}; ///< The value of the knob changed. Optional parameter: new value
+        SignalFloat onValueChange = {"ValueChanged"}; //!< The value of the knob changed. Optional parameter: new value
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

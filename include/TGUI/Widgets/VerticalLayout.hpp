@@ -40,8 +40,8 @@ namespace tgui
     class TGUI_API VerticalLayout : public BoxLayoutRatios
     {
     public:
-        typedef std::shared_ptr<VerticalLayout> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const VerticalLayout> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<VerticalLayout> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const VerticalLayout> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

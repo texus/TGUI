@@ -43,8 +43,8 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<ListBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ListBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ListBox> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ListBox> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -635,10 +635,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalItem onItemSelect   = {"ItemSelected"};   ///< An item was selected in the list box. Optional parameter: selected item or its index
-        SignalItem onMousePress   = {"MousePressed"};   ///< The mouse went down on an item. Optional parameter: selected item or its index
-        SignalItem onMouseRelease = {"MouseReleased"};  ///< The mouse was released on one of the items. Optional parameter: selected item or its index
-        SignalItem onDoubleClick  = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item or its index
+        SignalItem onItemSelect   = {"ItemSelected"};   //!< An item was selected in the list box. Optional parameter: selected item or its index
+        SignalItem onMousePress   = {"MousePressed"};   //!< The mouse went down on an item. Optional parameter: selected item or its index
+        SignalItem onMouseRelease = {"MouseReleased"};  //!< The mouse was released on one of the items. Optional parameter: selected item or its index
+        SignalItem onDoubleClick  = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item or its index
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

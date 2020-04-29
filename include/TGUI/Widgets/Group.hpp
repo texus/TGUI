@@ -44,8 +44,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Group> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Group> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Group> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Group> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

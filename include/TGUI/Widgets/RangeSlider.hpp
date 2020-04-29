@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<RangeSlider> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const RangeSlider> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<RangeSlider> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const RangeSlider> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,7 +331,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalRange onRangeChange = {"RangeChanged"}; ///< Value of the slider changed. Optional parameter: new value
+        SignalRange onRangeChange = {"RangeChanged"}; //!< Value of the slider changed. Optional parameter: new value
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

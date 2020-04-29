@@ -42,8 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Tabs> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Tabs> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Tabs> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Tabs> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onTabSelect = {"TabSelected"}; ///< A tab that was selected. Optional parameter: selected item
+        SignalString onTabSelect = {"TabSelected"}; //!< A tab that was selected. Optional parameter: selected item
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

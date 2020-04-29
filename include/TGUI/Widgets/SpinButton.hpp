@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SpinButton> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const SpinButton> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<SpinButton> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const SpinButton> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalFloat onValueChange = {"ValueChanged"}; ///< Value of the spin button changed. Optional parameter: new value
+        SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the spin button changed. Optional parameter: new value
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

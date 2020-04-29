@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Canvas> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Canvas> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Canvas> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Canvas> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

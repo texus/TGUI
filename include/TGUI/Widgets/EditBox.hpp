@@ -46,8 +46,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<EditBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const EditBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<EditBox> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const EditBox> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,10 +71,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Validator
         {
-            static TGUI_API const char* All;   ///< Accept any input
-            static TGUI_API const char* Int;   ///< Accept negative and positive integers
-            static TGUI_API const char* UInt;  ///< Accept only positive integers
-            static TGUI_API const char* Float; ///< Accept decimal numbers
+            static TGUI_API const char* All;   //!< Accept any input
+            static TGUI_API const char* Int;   //!< Accept negative and positive integers
+            static TGUI_API const char* UInt;  //!< Accept only positive integers
+            static TGUI_API const char* Float; //!< Accept decimal numbers
         };
 
 
@@ -560,9 +560,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onTextChange     = {"TextChanged"};        ///< The text was changed. Optional parameter: new text
-        SignalString onReturnKeyPress = {"ReturnKeyPressed"};   ///< The return key was pressed. Optional parameter: text in the edit box
-        SignalString onReturnOrUnfocus = {"ReturnOrUnfocused"}; ///< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
+        SignalString onTextChange     = {"TextChanged"};        //!< The text was changed. Optional parameter: new text
+        SignalString onReturnKeyPress = {"ReturnKeyPressed"};   //!< The return key was pressed. Optional parameter: text in the edit box
+        SignalString onReturnOrUnfocus = {"ReturnOrUnfocused"}; //!< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Panel> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Panel> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Panel> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Panel> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,13 +199,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f onMousePress   = {"MousePressed"};   ///< The mouse went down on the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onClick        = {"Clicked"};        ///< The panel was clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onMousePress   = {"MousePressed"};   //!< The mouse went down on the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onMouseRelease = {"MouseReleased"};  //!< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onClick        = {"Clicked"};        //!< The panel was clicked. Optional parameter: mouse position relative to panel
 
-        SignalVector2f onRightMousePress   = {"RightMousePressed"};   ///< The right mouse button went down on the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  ///< The right mouse button was released on top of the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onRightClick        = {"RightClicked"};        ///< The panel was right clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightMousePress   = {"RightMousePressed"};   //!< The right mouse button went down on the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  //!< The right mouse button was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightClick        = {"RightClicked"};        //!< The panel was right clicked. Optional parameter: mouse position relative to panel
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

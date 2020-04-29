@@ -277,10 +277,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        AbsoluteOrRelativeValue m_left = 0;      ///< Width of the left outline
-        AbsoluteOrRelativeValue m_top = 0;       ///< Height of the top outline
-        AbsoluteOrRelativeValue m_right = 0;     ///< Width of the right outline
-        AbsoluteOrRelativeValue m_bottom = 0;    ///< Height of the bottom outline
+        AbsoluteOrRelativeValue m_left = 0;      //!< Width of the left outline
+        AbsoluteOrRelativeValue m_top = 0;       //!< Height of the top outline
+        AbsoluteOrRelativeValue m_right = 0;     //!< Width of the right outline
+        AbsoluteOrRelativeValue m_bottom = 0;    //!< Height of the bottom outline
     };
 
 

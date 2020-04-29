@@ -47,8 +47,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<TextBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const TextBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<TextBox> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const TextBox> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -551,8 +551,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onTextChange = {"TextChanged"};     ///< The text was changed. Optional parameter: new text
-        Signal onSelectionChange = {"SelectionChanged"}; ///< Selected text changed
+        SignalString onTextChange = {"TextChanged"};     //!< The text was changed. Optional parameter: new text
+        Signal onSelectionChange = {"SelectionChanged"}; //!< Selected text changed
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

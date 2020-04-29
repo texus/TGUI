@@ -40,8 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ClickableWidget> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ClickableWidget> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ClickableWidget> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ClickableWidget> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,13 +142,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f onMousePress   = {"MousePressed"};   ///< The mouse went down on the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onClick        = {"Clicked"};        ///< The widget was clicked. Optional parameter: mouse position relative to widget
+        SignalVector2f onMousePress   = {"MousePressed"};   //!< The mouse went down on the widget. Optional parameter: mouse position relative to widget
+        SignalVector2f onMouseRelease = {"MouseReleased"};  //!< The mouse was released on top of the widget. Optional parameter: mouse position relative to widget
+        SignalVector2f onClick        = {"Clicked"};        //!< The widget was clicked. Optional parameter: mouse position relative to widget
 
-        SignalVector2f onRightMousePress   = {"RightMousePressed"};   ///< The right mouse button went down on the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  ///< The right mouse button was released on top of the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onRightClick        = {"RightClicked"};        ///< The widget was right clicked. Optional parameter: mouse position relative to widget
+        SignalVector2f onRightMousePress   = {"RightMousePressed"};   //!< The right mouse button went down on the widget. Optional parameter: mouse position relative to widget
+        SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  //!< The right mouse button was released on top of the widget. Optional parameter: mouse position relative to widget
+        SignalVector2f onRightClick        = {"RightClicked"};        //!< The widget was right clicked. Optional parameter: mouse position relative to widget
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

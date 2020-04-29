@@ -291,12 +291,12 @@ namespace tgui
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void leftMouseReleased(Vector2f pos) override;
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rightMousePressed(Vector2f pos) override;
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -460,11 +460,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalItemHierarchy onItemSelect = {"ItemSelected"};   ///< An node was selected in the tree view. Optional parameter: selected node
-        SignalItemHierarchy onDoubleClick = {"DoubleClicked"}; ///< A leaf node was double clicked. Optional parameter: selected node
-        SignalItemHierarchy onExpand = {"Expanded"};           ///< A branch node was expanded in the tree view. Optional parameter: expanded node
-        SignalItemHierarchy onCollapse = {"Collapsed"};        ///< A branch node was collapsed in the tree view. Optional parameter: collapsed node
-        SignalItemHierarchy onRightClick = {"RightClicked"};   ///< A node was right clicked. Optional parameter: node below mouse
+        SignalItemHierarchy onItemSelect = {"ItemSelected"};   //!< An node was selected in the tree view. Optional parameter: selected node
+        SignalItemHierarchy onDoubleClick = {"DoubleClicked"}; //!< A leaf node was double clicked. Optional parameter: selected node
+        SignalItemHierarchy onExpand = {"Expanded"};           //!< A branch node was expanded in the tree view. Optional parameter: expanded node
+        SignalItemHierarchy onCollapse = {"Collapsed"};        //!< A branch node was collapsed in the tree view. Optional parameter: collapsed node
+        SignalItemHierarchy onRightClick = {"RightClicked"};   //!< A node was right clicked. Optional parameter: node below mouse
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

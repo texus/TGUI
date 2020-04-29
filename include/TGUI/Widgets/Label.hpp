@@ -44,17 +44,17 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Label> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Label> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Label> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Label> ConstPtr; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The horizontal text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class HorizontalAlignment
         {
-            Left,   ///< Put the text on the left side (default)
-            Center, ///< Center the text horizontally
-            Right   ///< Put the text on the right side (e.g. for numbers)
+            Left,   //!< Put the text on the left side (default)
+            Center, //!< Center the text horizontally
+            Right   //!< Put the text on the right side (e.g. for numbers)
         };
 
 
@@ -63,9 +63,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class VerticalAlignment
         {
-            Top ,   ///< Put the text at the top (default)
-            Center, ///< Center the text vertically
-            Bottom  ///< Put the text at the bottom
+            Top ,   //!< Put the text at the top (default)
+            Center, //!< Center the text vertically
+            Bottom  //!< Put the text at the bottom
         };
 
 
@@ -398,7 +398,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onDoubleClick = {"DoubleClicked"}; ///< The label was double clicked. Optional parameter: text of the label
+        SignalString onDoubleClick = {"DoubleClicked"}; //!< The label was double clicked. Optional parameter: text of the label
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

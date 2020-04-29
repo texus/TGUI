@@ -41,16 +41,16 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Scrollbar> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Scrollbar> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Scrollbar> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Scrollbar> ConstPtr; //!< Shared constant widget pointer
 
 
         /// @brief Defines when the scrollbar shows up
         enum class Policy
         {
-            Automatic,  ///< Show the scrollbar only when needed (default)
-            Always,     ///< Always show the scrollbar, even when the contents fits
-            Never       ///< Never show the scrollbar, even if the contents does not fit
+            Automatic,  //!< Show the scrollbar only when needed (default)
+            Always,     //!< Always show the scrollbar, even when the contents fits
+            Never       //!< Never show the scrollbar, even if the contents does not fit
         };
 
 
@@ -339,7 +339,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalUInt onValueChange = {"ValueChanged"}; ///< Value of the scrollbar changed. Optional parameter: new value
+        SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the scrollbar changed. Optional parameter: new value
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

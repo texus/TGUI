@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Picture> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Picture> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Picture> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Picture> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f onDoubleClick = {"DoubleClicked"};  ///< The picture was double clicked. Optional parameter: mouse position relative to picture
+        SignalVector2f onDoubleClick = {"DoubleClicked"};  //!< The picture was double clicked. Optional parameter: mouse position relative to picture
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

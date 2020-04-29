@@ -42,8 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ScrollablePanel> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ScrollablePanel> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<ScrollablePanel> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const ScrollablePanel> ConstPtr; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor

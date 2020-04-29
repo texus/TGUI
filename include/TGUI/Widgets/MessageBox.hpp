@@ -45,8 +45,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<MessageBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const MessageBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<MessageBox> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const MessageBox> ConstPtr; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onButtonPress = {"ButtonPressed"}; ///< One of the buttons was pressed. Optional parameter: text of the pressed button
+        SignalString onButtonPress = {"ButtonPressed"}; //!< One of the buttons was pressed. Optional parameter: text of the pressed button
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
