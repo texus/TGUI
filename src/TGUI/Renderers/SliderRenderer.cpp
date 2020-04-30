@@ -43,6 +43,8 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(SliderRenderer, TextureTrackHover)
     TGUI_RENDERER_PROPERTY_TEXTURE(SliderRenderer, TextureThumb)
     TGUI_RENDERER_PROPERTY_TEXTURE(SliderRenderer, TextureThumbHover)
+
+    TGUI_RENDERER_PROPERTY_BOOL(SliderRenderer, ThumbWithinTrack, false)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 TGUI 0.9-dev
 ------------
 
+- Added ThumbWithinTrack to Slider renderer to have thumb align with track on sides
 - ListBox and ListView can now store user data in their items
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Replaced all std::string and sf::String by tgui::String

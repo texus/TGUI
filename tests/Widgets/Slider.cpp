@@ -298,6 +298,7 @@ TEST_CASE("[Slider]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbWithinTrack", "true"));
             }
 
             SECTION("set object property")
@@ -309,6 +310,7 @@ TEST_CASE("[Slider]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbWithinTrack", true));
             }
 
             SECTION("functions")
@@ -320,6 +322,7 @@ TEST_CASE("[Slider]")
                 renderer->setBorderColor({70, 80, 90});
                 renderer->setBorderColorHover({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
+                renderer->setThumbWithinTrack(true);
             }
 
             REQUIRE(renderer->getProperty("TrackColor").getColor() == tgui::Color(30, 40, 50));
@@ -329,6 +332,7 @@ TEST_CASE("[Slider]")
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("ThumbWithinTrack").getBool());
 
             REQUIRE(renderer->getTrackColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getTrackColorHover() == tgui::Color(40, 50, 60));
@@ -337,6 +341,7 @@ TEST_CASE("[Slider]")
             REQUIRE(renderer->getBorderColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getBorderColorHover() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getThumbWithinTrack());
         }
 
         SECTION("textured")
@@ -450,6 +455,16 @@ TEST_CASE("[Slider]")
                     TEST_DRAW("Slider_Hover_HoverSet.png")
                 }
             }
+
+            SECTION("ThumbWithinTrack")
+            {
+                slider->setValue(slider->getMinimum());
+                renderer.setThumbWithinTrack(false);
+                TEST_DRAW("Slider_ThumbOutsideTrack.png")
+
+                renderer.setThumbWithinTrack(true);
+                TEST_DRAW("Slider_ThumbInsideTrack.png")
+            }
         }
 
         SECTION("Textured")
@@ -479,6 +494,16 @@ TEST_CASE("[Slider]")
                     setHoverRenderer(true);
                     TEST_DRAW("Slider_Hover_TextureHoverSet.png")
                 }
+            }
+
+            SECTION("ThumbWithinTrack")
+            {
+                slider->setValue(slider->getMaximum());
+                renderer.setThumbWithinTrack(false);
+                TEST_DRAW("Slider_TextureThumbOutsideTrack.png")
+
+                renderer.setThumbWithinTrack(true);
+                TEST_DRAW("Slider_TextureThumbInsideTrack.png")
             }
         }
     }

@@ -401,6 +401,7 @@ namespace tgui
         Color   m_thumbColorHoverCached;
         Color   m_trackColorCached;
         Color   m_trackColorHoverCached;
+        bool    m_thumbWithinTrackCached = false;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -358,11 +358,12 @@ namespace tgui
     {
         m_mouseDown = true;
 
-        if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+        const Vector2f localPos = pos - getPosition();
+        if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(localPos))
         {
             m_mouseDownOnThumb = true;
-            m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
-            m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
+            m_mouseDownOnThumbPos.x = localPos.x - m_thumb.left;
+            m_mouseDownOnThumbPos.y = localPos.y - m_thumb.top;
         }
         else // The mouse is not on top of the thumb
             m_mouseDownOnThumb = false;
@@ -403,7 +404,12 @@ namespace tgui
                 m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
             }
 
-            float value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+            float value;
+            if (m_thumbWithinTrackCached)
+                value = m_maximum - (((pos.y - m_mouseDownOnThumbPos.y) / (getSize().y - m_thumb.height)) * (m_maximum - m_minimum));
+            else
+                value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);
 
@@ -411,14 +417,11 @@ namespace tgui
 
             // Set the thumb position for smooth scrolling
             const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
-            if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
+            if ((m_thumbWithinTrackCached && ((thumbTop > 0) && (thumbTop + m_thumb.height < getSize().y)))
+             || (!m_thumbWithinTrackCached && ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))))
                 m_thumb.top = thumbTop;
             else
-            {
-                m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
-                if (m_invertedDirection)
-                    m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
-            }
+                updateThumbPosition();
         }
         else // the slider lies horizontal
         {
@@ -430,7 +433,12 @@ namespace tgui
                 m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
             }
 
-            float value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+            float value;
+            if (m_thumbWithinTrackCached)
+                value = (((pos.x - m_mouseDownOnThumbPos.x) / (getSize().x - m_thumb.width)) * (m_maximum - m_minimum)) + m_minimum;
+            else
+                value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);
 
@@ -438,14 +446,11 @@ namespace tgui
 
             // Set the thumb position for smooth scrolling
             const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
-            if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
+            if ((m_thumbWithinTrackCached && ((thumbLeft > 0) && (thumbLeft + m_thumb.width < getSize().x)))
+             || (!m_thumbWithinTrackCached && ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))))
                 m_thumb.left = thumbLeft;
             else
-            {
-                m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
-                if (m_invertedDirection)
-                    m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
-            }
+                updateThumbPosition();
         }
     }
 
@@ -556,6 +561,11 @@ namespace tgui
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
+        else if (property == "ThumbWithinTrack")
+        {
+            m_thumbWithinTrackCached = getSharedRenderer()->getThumbWithinTrack();
+            updateThumbPosition();
+        }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
@@ -618,15 +628,23 @@ namespace tgui
         if (m_verticalScroll)
         {
             m_thumb.left = m_bordersCached.getLeft() + (getInnerSize().x - m_thumb.width) / 2.0f;
-            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+
+            if (m_thumbWithinTrackCached)
+                m_thumb.top = (getSize().y - m_thumb.height) / (m_maximum - m_minimum) * (m_maximum - m_value);
+            else
+                m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
 
             if (m_invertedDirection)
                 m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
         }
         else
         {
-            m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
             m_thumb.top = m_bordersCached.getTop() + (getInnerSize().y - m_thumb.height) / 2.0f;
+
+            if (m_thumbWithinTrackCached)
+                m_thumb.left = (getSize().x - m_thumb.width) / (m_maximum - m_minimum) * (m_value - m_minimum);
+            else
+                m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
 
             if (m_invertedDirection)
                 m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
