@@ -58,6 +58,10 @@ TEST_CASE("[Slider]")
             REQUIRE(slider->getSize() == tgui::Vector2f(150, 25));
             REQUIRE(slider->getFullSize() == tgui::Vector2f(slider->getSize().x + thumbWidth, thumbHeight));
             REQUIRE(slider->getWidgetOffset() == -tgui::Vector2f(thumbWidth / 2.f, (thumbHeight - slider->getSize().y) / 2.f));
+
+            slider->getSharedRenderer()->setThumbWithinTrack(true);
+            REQUIRE(slider->getFullSize() == tgui::Vector2f(slider->getSize().x, thumbHeight));
+            REQUIRE(slider->getWidgetOffset() == -tgui::Vector2f(0, (thumbHeight - slider->getSize().y) / 2.f));
         }
 
         SECTION("Vertical")
@@ -70,6 +74,10 @@ TEST_CASE("[Slider]")
             REQUIRE(slider->getSize() == tgui::Vector2f(20, 140));
             REQUIRE(slider->getFullSize() == tgui::Vector2f(thumbWidth, slider->getSize().y + thumbHeight));
             REQUIRE(slider->getWidgetOffset() == -tgui::Vector2f((thumbWidth - slider->getSize().x) / 2.f, thumbHeight / 2.f));
+
+            slider->getSharedRenderer()->setThumbWithinTrack(true);
+            REQUIRE(slider->getFullSize() == tgui::Vector2f(thumbWidth, slider->getSize().y));
+            REQUIRE(slider->getWidgetOffset() == -tgui::Vector2f((thumbWidth - slider->getSize().x) / 2.f, 0));
         }
 
         REQUIRE(slider->getPosition() == tgui::Vector2f(40, 30));

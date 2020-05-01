@@ -174,20 +174,40 @@ namespace tgui
 
     Vector2f Slider::getFullSize() const
     {
-        if (m_verticalScroll)
-            return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
+        if (m_thumbWithinTrackCached)
+        {
+            if (m_verticalScroll)
+                return {std::max(getSize().x, m_thumb.width), getSize().y};
+            else
+                return {getSize().x, std::max(getSize().y, m_thumb.height)};
+        }
         else
-            return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
+        {
+            if (m_verticalScroll)
+                return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
+            else
+                return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Slider::getWidgetOffset() const
     {
-        if (m_verticalScroll)
-            return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
+        if (m_thumbWithinTrackCached)
+        {
+            if (m_verticalScroll)
+                return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), 0};
+            else
+                return {0, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
+        }
         else
-            return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
+        {
+            if (m_verticalScroll)
+                return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
+            else
+                return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
