@@ -38,7 +38,7 @@ PROJECT_NAME           = "TGUI"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.8-dev
+PROJECT_NUMBER         = 0.9-dev
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -843,13 +843,12 @@ EXCLUDE_PATTERNS       =
 # exclude all test directories use the pattern */test/*
 
 EXCLUDE_SYMBOLS        = priv \
-                         internal_signal \
                          DataIO \
-                         LayoutImpl \
                          TextureData \
                          TextureDataHolder \
-                         TypeSet \
-                         GuiContainer
+                         GuiContainer \
+                         Any \
+                         Optional
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

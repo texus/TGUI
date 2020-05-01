@@ -1,7 +1,7 @@
 TGUI - Texus' Graphical User Interface
 =======================================
 
-In one line: TGUI is an easy to use, cross-platform, c++ GUI for [SFML](https://www.sfml-dev.org).
+In one line: TGUI is a cross-platform modern c++ GUI for [SFML](https://www.sfml-dev.org).
 
 For more information, take a look at the [website](https://tgui.eu).
 
@@ -23,7 +23,7 @@ Learn
 -----
 
 * Tutorials: TODO. Mostly the same as [0.8 tutorials](https://tgui.eu/tutorials/0.8)
-* Documentation: TODO. Build yourself by passing `-DTGUI_BUILD_DOC=TRUE` to CMake.
+* [Documentation](https://tgui.eu/documentation/0.9)
 * Examples: TODO. Mostly the same as [0.8 examples](https://tgui.eu/examples/0.8)
 * [Forum](https://forum.tgui.eu)
 
