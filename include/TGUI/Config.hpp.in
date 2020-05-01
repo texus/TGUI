@@ -71,11 +71,6 @@
 #endif
 
 
-// Version of the library
-#define TGUI_VERSION_MAJOR @TGUI_VERSION_MAJOR@
-#define TGUI_VERSION_MINOR @TGUI_VERSION_MINOR@
-#define TGUI_VERSION_PATCH @TGUI_VERSION_PATCH@
-
 // Define that specifies the mininmum c++ support in both the TGUI code and user code.
 // This constant can be lower than the actual c++ standard version used to compile with,
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.
@@ -91,6 +86,11 @@
      || defined(_MSC_VER) && (_MSC_VER >= 1914)
         #define TGUI_USE_STD_FILESYSTEM
     #endif
+#endif
+
+// Include the version header when c++20 is available to use the library feature-testing macros
+#if TGUI_COMPILED_WITH_CPP_VER >= 20
+    #include <version>
 #endif
 
 #if defined(__cpp_constexpr) && (__cpp_constexpr >= 201304L)
@@ -117,11 +117,17 @@
     #define TGUI_PRINT_WARNING(msg) {}
 #endif
 
-// Using [=] gives a warning in c++2a, but using [=,this] may not compile with older c++ versions
+// Using [=] gives a warning in c++20, but using [=,this] may not compile with older c++ versions
 #if __cplusplus > 201703L
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=,this]
 #else
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=]
 #endif
+
+
+// Version of the library
+#define TGUI_VERSION_MAJOR @TGUI_VERSION_MAJOR@
+#define TGUI_VERSION_MINOR @TGUI_VERSION_MINOR@
+#define TGUI_VERSION_PATCH @TGUI_VERSION_PATCH@
 
 #endif // TGUI_CONFIG_HPP
