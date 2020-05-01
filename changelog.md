@@ -8,6 +8,7 @@ TGUI 0.9-dev
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle
 - Signal names, renderer names and widget/renderer properties are now case-sensitive
+- Size of ChildWindow now includes borders and title bar
 - Swapped padding and alignment parameters of addWidget in Grid
 - Changed Knob value type from int to float
 - Changed default value of ChangeItemOnScroll in ComboBox to false

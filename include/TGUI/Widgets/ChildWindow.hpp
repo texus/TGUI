@@ -129,22 +129,31 @@ namespace tgui
         ///
         /// @param size   Sets the new size of the child window
         ///
-        /// This is the size of the child window, without the title bar nor the borders.
-        ///
+        /// This is the size of the entire child window, including the title bar and the borders.
+        /// To set the size of the contents of the window (exluding the title bar and borders), use setClientSize instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the full child window
+        /// @brief Changes the client size of the child window
         ///
-        /// @return Size of the child window
+        /// @param size  New size of the child window contents
         ///
-        /// The size returned by this function is the size of the child window, including the title bar and the borders.
-        ///
+        /// This sets the size of the child window excluding the title bar and the borders.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f getFullSize() const override;
+        void setClientSize(Vector2f size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the client size of the child window
+        ///
+        /// @return Size of the child window contents
+        ///
+        /// This sets the size of the child window excluding the title bar and the borders.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getClientSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +161,8 @@ namespace tgui
         ///
         /// @param size   Sets the new maximum size of the child window
         ///
-        /// This function sets the maximum size of the window excluding borders and titlebar.
+        /// This function sets the maximum size of the entire window, including borders and titlebar.
         /// If the window is larger than the new maximum size, it will automatically be shrunk.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumSize(Vector2f size);
 
@@ -164,8 +172,7 @@ namespace tgui
         ///
         /// @return Maximum size of the child window
         ///
-        /// The size returned by this function is the maximum size of the child window, excluding the title bar and the borders.
-        ///
+        /// This size includes the title bar and the borders.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getMaximumSize() const;
 
@@ -175,9 +182,8 @@ namespace tgui
         ///
         /// @param size   Sets the new minimum size of the child window
         ///
-        /// This function sets the minimum size of the window excluding borders and titlebar.
+        /// This function sets the minimum size of the entire window, including borders and titlebar.
         /// If the window is smaller than the new minimum size, it will automatically be enlarged.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMinimumSize(Vector2f size);
 
@@ -187,8 +193,7 @@ namespace tgui
         ///
         /// @return Minimum size of the child window
         ///
-        /// The size returned by this function is the minimum size of the child window, excluding the title bar and the borders.
-        ///
+        /// This size includes the title bar and the borders.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getMinimumSize() const;
 

@@ -64,7 +64,7 @@ TEST_CASE("[ChildWindow]")
 
         REQUIRE(childWindow->getPosition() == tgui::Vector2f(40, 30));
         REQUIRE(childWindow->getSize() == tgui::Vector2f(150, 100));
-        REQUIRE(childWindow->getFullSize() == tgui::Vector2f(154, 122));
+        REQUIRE(childWindow->getFullSize() == tgui::Vector2f(150, 100));
         REQUIRE(childWindow->getWidgetOffset() == tgui::Vector2f(0, 0));
 
         SECTION("Child widgets")
@@ -190,8 +190,8 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(!childWindow->mouseOnWidget({39, 29}));
             REQUIRE(childWindow->mouseOnWidget({40, 30}));
             REQUIRE(childWindow->mouseOnWidget({115, 80}));
-            REQUIRE(childWindow->mouseOnWidget({193, 153}));
-            REQUIRE(!childWindow->mouseOnWidget({194, 154}));
+            REQUIRE(childWindow->mouseOnWidget({189, 129}));
+            REQUIRE(!childWindow->mouseOnWidget({190, 130}));
         }
 
         SECTION("mouse move")
@@ -214,11 +214,11 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({223, 178});
+            parent->mouseMoved({219, 154});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({224, 179});
+            parent->mouseMoved({220, 155});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 1);
         }
@@ -424,7 +424,7 @@ TEST_CASE("[ChildWindow]")
     {
         TEST_DRAW_INIT(200, 185, childWindow)
 
-        childWindow->setSize({180, 140});
+        childWindow->setSize({186, 179});
         childWindow->setPosition({10, 5});
         childWindow->setTitle("Window");
         childWindow->setTitleTextSize(18);
