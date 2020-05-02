@@ -865,7 +865,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::update(Duration elapsedTime)
+    void Widget::updateTime(Duration elapsedTime)
     {
         m_animationTimeElapsed += elapsedTime;
 

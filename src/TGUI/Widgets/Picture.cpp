@@ -219,9 +219,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::update(Duration elapsedTime)
+    void Picture::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {

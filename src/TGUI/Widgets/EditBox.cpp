@@ -1481,9 +1481,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::update(Duration elapsedTime)
+    void EditBox::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
 
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= std::chrono::milliseconds(500))

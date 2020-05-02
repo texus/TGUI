@@ -2030,9 +2030,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::update(Duration elapsedTime)
+    void ListView::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {

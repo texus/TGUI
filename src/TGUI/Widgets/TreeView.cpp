@@ -1046,9 +1046,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::update(Duration elapsedTime)
+    void TreeView::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
         {

@@ -356,12 +356,12 @@ TEST_CASE("[ListBox]")
             SECTION("Double click")
             {
                 // If a click happens a long time after the previous click then it isn't a double click
-                container->update(std::chrono::milliseconds(10000));
+                container->updateTime(std::chrono::milliseconds(10000));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 0);
 
-                container->update(std::chrono::milliseconds(5));
+                container->updateTime(std::chrono::milliseconds(5));
                 mousePressed({40, 70});
                 mouseReleased({40, 70});
                 REQUIRE(doubleClickedCount == 1);

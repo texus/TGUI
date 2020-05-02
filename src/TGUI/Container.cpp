@@ -839,16 +839,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::update(Duration elapsedTime)
+    void Container::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
 
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Update the elapsed time in widgets that need it
             if (m_widgets[i]->isVisible())
-                m_widgets[i]->update(elapsedTime);
+                m_widgets[i]->updateTime(elapsedTime);
         }
 
         m_animationTimeElapsed = {};

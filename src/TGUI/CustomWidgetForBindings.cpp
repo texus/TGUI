@@ -106,9 +106,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::update(Duration elapsedTime)
+    void CustomWidgetForBindings::updateTime(Duration elapsedTime)
     {
-        Widget::update(elapsedTime);
+        Widget::updateTime(elapsedTime);
         implUpdateFunction(elapsedTime);
     }
 
