@@ -12,6 +12,7 @@ TGUI 0.9-dev
 - Size of ChildWindow now includes borders and title bar
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid
+- Changed return type of addItem in ListBox to return index of the item
 - Changed Knob value type from int to float
 - Changed default value of ChangeItemOnScroll in ComboBox to false
 - Changed default value of ExpandDirection in ComboBox to Automatic

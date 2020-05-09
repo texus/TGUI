@@ -123,35 +123,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::addItem(const String& itemName, const String& id)
+    std::size_t ListBox::addItem(const String& itemName, const String& id)
     {
         // Check if the item limit is reached (if there is one)
-        if ((m_maxItems == 0) || (m_items.size() < m_maxItems))
-        {
-            m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
+        if ((m_maxItems > 0) && (m_items.size() >= m_maxItems))
+            return m_maxItems;
 
-            // Scroll down when auto-scrolling is enabled
-            if (m_autoScroll && (m_scroll->getViewportSize() < m_scroll->getMaximum()))
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
+        m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
 
-            // Create the new item
-            Text newItem;
-            newItem.setFont(m_fontCached);
-            newItem.setColor(m_textColorCached);
-            newItem.setOpacity(m_opacityCached);
-            newItem.setStyle(m_textStyleCached);
-            newItem.setCharacterSize(m_textSize);
-            newItem.setString(itemName);
-            newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_scroll->getViewportSize() < m_scroll->getMaximum()))
+            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
 
-            // Add the new item to the list
-            m_items.emplace_back();
-            m_items.back().text = std::move(newItem);
-            m_items.back().id = id;
-            return true;
-        }
-        else // The item limit was reached
-            return false;
+        // Create the new item
+        Text newItem;
+        newItem.setFont(m_fontCached);
+        newItem.setColor(m_textColorCached);
+        newItem.setOpacity(m_opacityCached);
+        newItem.setStyle(m_textStyleCached);
+        newItem.setCharacterSize(m_textSize);
+        newItem.setString(itemName);
+        newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
+
+        // Add the new item to the list
+        m_items.emplace_back();
+        m_items.back().text = std::move(newItem);
+        m_items.back().id = id;
+        return m_items.size() - 1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
