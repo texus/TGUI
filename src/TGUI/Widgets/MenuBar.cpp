@@ -610,7 +610,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::mouseOnWidget(Vector2f pos) const
+    bool MenuBar::isMouseOnWidget(Vector2f pos) const
     {
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
@@ -1467,7 +1467,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBarMenuPlaceholder::mouseOnWidget(Vector2f pos) const
+    bool MenuBarMenuPlaceholder::isMouseOnWidget(Vector2f pos) const
     {
         return m_menuBar->isMouseOnOpenMenu(pos - getPosition());
     }

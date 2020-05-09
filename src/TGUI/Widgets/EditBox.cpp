@@ -428,9 +428,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::mouseOnWidget(Vector2f pos) const
+    bool EditBox::isMouseOnWidget(Vector2f pos) const
     {
-        if (ClickableWidget::mouseOnWidget(pos))
+        if (ClickableWidget::isMouseOnWidget(pos))
         {
             if (!m_transparentTextureCached || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;

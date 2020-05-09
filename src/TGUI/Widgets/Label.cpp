@@ -258,19 +258,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::mouseOnWidget(Vector2f pos) const
+    bool Label::isMouseOnWidget(Vector2f pos) const
     {
         if (m_ignoringMouseEvents)
             return false;
 
-        return ClickableWidget::mouseOnWidget(pos);
+        return ClickableWidget::isMouseOnWidget(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::leftMousePressed(Vector2f pos)
     {
-        if (m_scrollbar->isShown() && m_scrollbar->mouseOnWidget(pos - getPosition()))
+        if (m_scrollbar->isShown() && m_scrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_mouseDown = true;
             m_scrollbar->leftMousePressed(pos - getPosition());
@@ -316,7 +316,7 @@ namespace tgui
 
     void Label::mouseMoved(Vector2f pos)
     {
-        if (m_scrollbar->isShown() && ((m_scrollbar->isMouseDown() && m_scrollbar->isMouseDownOnThumb()) || m_scrollbar->mouseOnWidget(pos - getPosition())))
+        if (m_scrollbar->isShown() && ((m_scrollbar->isMouseDown() && m_scrollbar->isMouseDownOnThumb()) || m_scrollbar->isMouseOnWidget(pos - getPosition())))
             m_scrollbar->mouseMoved(pos - getPosition());
         else
         {

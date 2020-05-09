@@ -57,7 +57,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::mouseOnWidget(Vector2f pos) const
+    bool ClickableWidget::isMouseOnWidget(Vector2f pos) const
     {
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }

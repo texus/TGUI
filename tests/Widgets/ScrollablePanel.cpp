@@ -142,13 +142,13 @@ TEST_CASE("[ScrollablePanel]")
         panel->onMouseRelease(&mouseCallback, std::ref(mouseReleasedCount));
         panel->onClick(&mouseCallback, std::ref(clickedCount));
 
-        SECTION("mouseOnWidget")
+        SECTION("isMouseOnWidget")
         {
-            REQUIRE(!panel->mouseOnWidget({39, 29}));
-            REQUIRE(panel->mouseOnWidget({40, 30}));
-            REQUIRE(panel->mouseOnWidget({115, 80}));
-            REQUIRE(panel->mouseOnWidget({189, 129}));
-            REQUIRE(!panel->mouseOnWidget({190, 130}));
+            REQUIRE(!panel->isMouseOnWidget({39, 29}));
+            REQUIRE(panel->isMouseOnWidget({40, 30}));
+            REQUIRE(panel->isMouseOnWidget({115, 80}));
+            REQUIRE(panel->isMouseOnWidget({189, 129}));
+            REQUIRE(!panel->isMouseOnWidget({190, 130}));
 
             REQUIRE(mousePressedCount == 0);
             REQUIRE(mouseReleasedCount == 0);

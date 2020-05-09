@@ -618,7 +618,7 @@ namespace tgui
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         /// @return Is the mouse on top of the widget?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnWidget(Vector2f pos) const = 0;
+        virtual bool isMouseOnWidget(Vector2f pos) const = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

@@ -333,7 +333,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::mouseOnWidget(Vector2f pos) const
+    bool ChatBox::isMouseOnWidget(Vector2f pos) const
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
@@ -352,7 +352,7 @@ namespace tgui
         m_mouseDown = true;
 
         // Pass the event to the scrollbar
-        if (m_scroll->mouseOnWidget(pos - getPosition()))
+        if (m_scroll->isMouseOnWidget(pos - getPosition()))
             m_scroll->leftMousePressed(pos - getPosition());
     }
 
@@ -372,7 +372,7 @@ namespace tgui
             mouseEnteredWidget();
 
         // Pass the event to the scrollbar when the mouse is on top of it or when we are dragging its thumb
-        if (((m_scroll->isMouseDown()) && (m_scroll->isMouseDownOnThumb())) || m_scroll->mouseOnWidget(pos - getPosition()))
+        if (((m_scroll->isMouseDown()) && (m_scroll->isMouseDownOnThumb())) || m_scroll->isMouseOnWidget(pos - getPosition()))
             m_scroll->mouseMoved(pos - getPosition());
         else
             m_scroll->mouseNoLongerOnWidget();

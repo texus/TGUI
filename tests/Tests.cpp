@@ -95,13 +95,13 @@ void testClickableWidgetSignalsImpl(T widget)
     widget->onRightMouseRelease([&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
     widget->onRightClick([&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
 
-    SECTION("mouseOnWidget")
+    SECTION("isMouseOnWidget")
     {
-        REQUIRE(!widget->mouseOnWidget({39, 29}));
-        REQUIRE(widget->mouseOnWidget({40, 30}));
-        REQUIRE(widget->mouseOnWidget({115, 80}));
-        REQUIRE(widget->mouseOnWidget({189, 129}));
-        REQUIRE(!widget->mouseOnWidget({190, 130}));
+        REQUIRE(!widget->isMouseOnWidget({39, 29}));
+        REQUIRE(widget->isMouseOnWidget({40, 30}));
+        REQUIRE(widget->isMouseOnWidget({115, 80}));
+        REQUIRE(widget->isMouseOnWidget({189, 129}));
+        REQUIRE(!widget->isMouseOnWidget({190, 130}));
 
         REQUIRE(mousePressedCount == 0);
         REQUIRE(mouseReleasedCount == 0);

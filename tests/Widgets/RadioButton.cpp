@@ -126,22 +126,22 @@ TEST_CASE("[RadioButton]")
 
             radioButton->setTextClickable(false);
             REQUIRE(!radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget({110, 60}));
+            REQUIRE(!radioButton->isMouseOnWidget({110, 60}));
 
             radioButton->setTextClickable(true);
             REQUIRE(radioButton->isTextClickable());
-            REQUIRE(radioButton->mouseOnWidget({110, 60}));
+            REQUIRE(radioButton->isMouseOnWidget({110, 60}));
         }
 
         SECTION("Without text")
         {
             radioButton->setTextClickable(false);
             REQUIRE(!radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget({110, 60}));
+            REQUIRE(!radioButton->isMouseOnWidget({110, 60}));
 
             radioButton->setTextClickable(true);
             REQUIRE(radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget({110, 60}));
+            REQUIRE(!radioButton->isMouseOnWidget({110, 60}));
         }
     }
 

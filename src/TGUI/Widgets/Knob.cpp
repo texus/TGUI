@@ -262,7 +262,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::mouseOnWidget(Vector2f pos) const
+    bool Knob::isMouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 

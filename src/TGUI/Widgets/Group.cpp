@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::mouseOnWidget(Vector2f pos) const
+    bool Group::isMouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
@@ -124,7 +124,7 @@ namespace tgui
             {
                 if (widget->isVisible())
                 {
-                    if (widget->mouseOnWidget(pos - offset))
+                    if (widget->isMouseOnWidget(pos - offset))
                         return true;
                 }
             }

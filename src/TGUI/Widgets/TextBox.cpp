@@ -437,7 +437,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::mouseOnWidget(Vector2f pos) const
+    bool TextBox::isMouseOnWidget(Vector2f pos) const
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
@@ -458,12 +458,12 @@ namespace tgui
         m_mouseDown = true;
 
         // If there is a scrollbar then pass the event
-        if ((m_verticalScrollbar->isShown()) && (m_verticalScrollbar->mouseOnWidget(pos)))
+        if ((m_verticalScrollbar->isShown()) && (m_verticalScrollbar->isMouseOnWidget(pos)))
         {
             m_verticalScrollbar->leftMousePressed(pos);
             recalculateVisibleLines();
         }
-        else if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->mouseOnWidget(pos))
+        else if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->isMouseOnWidget(pos))
         {
             m_horizontalScrollbar->leftMousePressed(pos);
         }
@@ -573,14 +573,14 @@ namespace tgui
         m_possibleDoubleClick = false;
 
         // Check if the mouse event should go to the vertical scrollbar
-        if (m_verticalScrollbar->isShown() && ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->mouseOnWidget(pos)))
+        if (m_verticalScrollbar->isShown() && ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos)))
         {
             m_verticalScrollbar->mouseMoved(pos);
             recalculateVisibleLines();
         }
 
         // Check if the mouse event should go to the horizontal scrollbar
-        else if (m_horizontalScrollbar->isShown() && ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->mouseOnWidget(pos)))
+        else if (m_horizontalScrollbar->isShown() && ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->isMouseOnWidget(pos)))
         {
             m_horizontalScrollbar->mouseMoved(pos);
         }
@@ -1127,7 +1127,7 @@ namespace tgui
     {
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
-                || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
+                || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
                 || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
         {

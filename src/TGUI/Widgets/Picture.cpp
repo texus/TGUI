@@ -125,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::mouseOnWidget(Vector2f pos) const
+    bool Picture::isMouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 

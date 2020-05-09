@@ -514,7 +514,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseOnWidget(Vector2f pos) const
+    bool ListBox::isMouseOnWidget(Vector2f pos) const
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
@@ -533,7 +533,7 @@ namespace tgui
 
         m_mouseDown = true;
 
-        if (m_scroll->mouseOnWidget(pos))
+        if (m_scroll->isMouseOnWidget(pos))
         {
             m_scroll->leftMousePressed(pos);
         }
@@ -603,7 +603,7 @@ namespace tgui
         updateHoveringItem(-1);
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->mouseOnWidget(pos))
+        if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->isMouseOnWidget(pos))
         {
             m_scroll->mouseMoved(pos);
         }

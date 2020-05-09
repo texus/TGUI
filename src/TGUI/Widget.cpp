@@ -974,7 +974,7 @@ namespace tgui
 
     Widget::Ptr Widget::askToolTip(Vector2f mousePos)
     {
-        if (m_toolTip && mouseOnWidget(mousePos))
+        if (m_toolTip && isMouseOnWidget(mousePos))
             return getToolTip();
         else
             return nullptr;

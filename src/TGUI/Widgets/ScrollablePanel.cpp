@@ -457,9 +457,9 @@ namespace tgui
     {
         m_mouseDown = true;
 
-        if (m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
+        if (m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_verticalScrollbar->leftMousePressed(pos - getPosition());
-        else if (m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+        else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar->leftMousePressed(pos - getPosition());
         else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
@@ -472,9 +472,9 @@ namespace tgui
 
     void ScrollablePanel::leftMouseReleased(Vector2f pos)
     {
-        if (m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
+        if (m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_verticalScrollbar->leftMouseReleased(pos - getPosition());
-        else if (m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+        else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar->leftMouseReleased(pos - getPosition());
         else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
@@ -488,11 +488,11 @@ namespace tgui
     void ScrollablePanel::mouseMoved(Vector2f pos)
     {
         // Check if the mouse event should go to the scrollbar
-        if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
+        if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_verticalScrollbar->mouseMoved(pos - getPosition());
         }
-        else if ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+        else if ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_horizontalScrollbar->mouseMoved(pos - getPosition());
         }
@@ -530,7 +530,7 @@ namespace tgui
 
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
-                || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
+                || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
                 || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
         {
@@ -568,7 +568,7 @@ namespace tgui
 
     Widget::Ptr ScrollablePanel::askToolTip(Vector2f mousePos)
     {
-        if (mouseOnWidget(mousePos))
+        if (isMouseOnWidget(mousePos))
         {
             Widget::Ptr toolTip = nullptr;
 

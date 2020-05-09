@@ -237,7 +237,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseOnWidget(Vector2f pos) const
+    bool Scrollbar::isMouseOnWidget(Vector2f pos) const
     {
         // Don't make any calculations when no scrollbar is needed
         if (m_autoHide && (m_maximum <= m_viewportSize))
@@ -408,7 +408,7 @@ namespace tgui
     void Scrollbar::mouseMoved(Vector2f pos)
     {
         // When dragging the scrollbar we can pass here without the mouse being on top of the scrollbar
-        if (mouseOnWidget(pos))
+        if (isMouseOnWidget(pos))
         {
             if (!m_mouseHover)
                 mouseEnteredWidget();
@@ -597,7 +597,7 @@ namespace tgui
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
         // Update over which part the mouse is hovering
-        if (mouseOnWidget(pos - getPosition()))
+        if (isMouseOnWidget(pos - getPosition()))
             mouseMoved(pos - getPosition());
 
         return true;

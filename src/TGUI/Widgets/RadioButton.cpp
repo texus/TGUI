@@ -207,7 +207,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RadioButton::mouseOnWidget(Vector2f pos) const
+    bool RadioButton::isMouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 

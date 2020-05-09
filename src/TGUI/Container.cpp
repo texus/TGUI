@@ -752,7 +752,7 @@ namespace tgui
 
     Widget::Ptr Container::askToolTip(Vector2f mousePos)
     {
-        if (mouseOnWidget(mousePos))
+        if (isMouseOnWidget(mousePos))
         {
             Widget::Ptr toolTip = nullptr;
 
@@ -1043,7 +1043,7 @@ namespace tgui
         {
             if ((*it)->isVisible())
             {
-                if ((*it)->mouseOnWidget(mousePos))
+                if ((*it)->isMouseOnWidget(mousePos))
                 {
                     if ((*it)->isEnabled())
                         widget = *it;
@@ -1154,7 +1154,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RootContainer::mouseOnWidget(Vector2f) const
+    bool RootContainer::isMouseOnWidget(Vector2f) const
     {
         return true;
     }

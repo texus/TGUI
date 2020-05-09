@@ -548,7 +548,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseOnWidget(Vector2f pos) const
+    bool ComboBox::isMouseOnWidget(Vector2f pos) const
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {

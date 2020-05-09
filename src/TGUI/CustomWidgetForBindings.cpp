@@ -114,7 +114,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool CustomWidgetForBindings::mouseOnWidget(Vector2f pos) const
+    bool CustomWidgetForBindings::isMouseOnWidget(Vector2f pos) const
     {
         return implMouseOnWidget(pos);
     }

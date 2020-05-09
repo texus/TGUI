@@ -185,13 +185,13 @@ TEST_CASE("[ChildWindow]")
         childWindow->getRenderer()->setTitleBarHeight(20);
         childWindow->getRenderer()->setBorders({2});
 
-        SECTION("mouseOnWidget")
+        SECTION("isMouseOnWidget")
         {
-            REQUIRE(!childWindow->mouseOnWidget({39, 29}));
-            REQUIRE(childWindow->mouseOnWidget({40, 30}));
-            REQUIRE(childWindow->mouseOnWidget({115, 80}));
-            REQUIRE(childWindow->mouseOnWidget({189, 129}));
-            REQUIRE(!childWindow->mouseOnWidget({190, 130}));
+            REQUIRE(!childWindow->isMouseOnWidget({39, 29}));
+            REQUIRE(childWindow->isMouseOnWidget({40, 30}));
+            REQUIRE(childWindow->isMouseOnWidget({115, 80}));
+            REQUIRE(childWindow->isMouseOnWidget({189, 129}));
+            REQUIRE(!childWindow->isMouseOnWidget({190, 130}));
         }
 
         SECTION("mouse move")

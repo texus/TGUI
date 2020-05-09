@@ -357,7 +357,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseOnWidget(Vector2f pos) const
+    bool Slider::isMouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 

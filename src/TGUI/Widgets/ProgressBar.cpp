@@ -276,9 +276,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ProgressBar::mouseOnWidget(Vector2f pos) const
+    bool ProgressBar::isMouseOnWidget(Vector2f pos) const
     {
-        if (ClickableWidget::mouseOnWidget(pos))
+        if (ClickableWidget::isMouseOnWidget(pos))
         {
             if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;

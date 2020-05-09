@@ -439,7 +439,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::mouseOnWidget(Vector2f pos) const
+    bool ChildWindow::isMouseOnWidget(Vector2f pos) const
     {
         FloatRect region{getPosition(), getSize()};
 
@@ -514,7 +514,7 @@ namespace tgui
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button->isVisible() && button->mouseOnWidget(pos))
+                if (button->isVisible() && button->isMouseOnWidget(pos))
                 {
                     button->leftMousePressed(pos);
                     return;
@@ -556,7 +556,7 @@ namespace tgui
                 // Send the mouse release event to the title buttons
                 for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                 {
-                    if (button->isVisible() && button->mouseOnWidget(pos))
+                    if (button->isVisible() && button->isMouseOnWidget(pos))
                     {
                         button->leftMouseReleased(pos);
                         break;
@@ -678,7 +678,7 @@ namespace tgui
                     {
                         if (button->isVisible())
                         {
-                            if (button->mouseOnWidget(pos))
+                            if (button->isMouseOnWidget(pos))
                                 button->mouseMoved(pos);
                             else
                                 button->mouseNoLongerOnWidget();
