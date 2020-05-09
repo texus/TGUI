@@ -585,7 +585,7 @@ namespace tgui
 
         if (m_parent)
         {
-            // Find the GuiContainer that contains the menu bar
+            // Find the RootContainer that contains the menu bar
             Container* container = m_parent;
             while (container->getParent() != nullptr)
                 container = container->getParent();

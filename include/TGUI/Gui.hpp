@@ -171,12 +171,12 @@ namespace tgui
         /// This could be useful when having a function that should accept both the gui and e.g. a child window as parameter.
         ///
         /// @warning Not all functions in the Container class make sense for the Gui (which is the reason that the Gui does not
-        ///          inherit from Container). So calling some functions (e.g. setSize) will have no effect.
+        ///          inherit from Container), so calling some functions (e.g. setSize) on the container will have no effect.
         ///
         /// @return Reference to the internal Container class
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        GuiContainer::Ptr getContainer() const;
+        RootContainer::Ptr getContainer() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,7 +428,7 @@ namespace tgui
     #endif
 
         // Internal container to store all widgets
-        GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();
+        RootContainer::Ptr m_container = std::make_shared<RootContainer>();
 
         Widget::Ptr m_visibleToolTip = nullptr;
         Duration m_tooltipTime;

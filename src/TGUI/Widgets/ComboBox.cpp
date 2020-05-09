@@ -874,7 +874,7 @@ namespace tgui
 
         m_listBox->setVisible(true);
 
-        // Find the GuiContainer that contains the combo box
+        // Find the RootContainer that contains the combo box
         Container* container = getParent();
         while (container->getParent() != nullptr)
             container = container->getParent();
@@ -908,13 +908,8 @@ namespace tgui
         m_listBox->setVisible(false);
         m_listBox->mouseNoLongerOnWidget();
 
-        // Find the GuiContainer in order to remove the ListBox from it
-        Widget* container = this;
-        while (container->getParent() != nullptr)
-            container = container->getParent();
-
-        if (container != this)
-            static_cast<Container*>(container)->remove(m_listBox);
+        if (m_listBox->getParent())
+            m_listBox->getParent()->remove(m_listBox);
 
         const int selectedItemIndex = m_listBox->getSelectedItemIndex();
         if (selectedItemIndex != m_previousSelectedItemIndex)

@@ -471,7 +471,7 @@ TEST_CASE("[ListView]")
 
     SECTION("Events / Signals")
     {
-        auto root = std::make_shared<tgui::GuiContainer>();
+        auto root = std::make_shared<tgui::RootContainer>();
         root->setSize(800, 600);
 
         auto container = tgui::Group::create({400.f, 300.f});

@@ -289,7 +289,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GuiContainer::Ptr Gui::getContainer() const
+    RootContainer::Ptr Gui::getContainer() const
     {
         return m_container;
     }

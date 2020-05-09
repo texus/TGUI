@@ -89,7 +89,7 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
         widget->getRenderer()->setFont("resources/DejaVuSans.ttf");
     }
 
-    auto parent = std::make_shared<tgui::GuiContainer>();
+    auto parent = std::make_shared<tgui::RootContainer>();
     parent->add(widget);
 
     REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile1.txt"));
@@ -128,7 +128,7 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
         // clone function
         tgui::Widget::Ptr temp7 = temp6->clone();
 
-        parent = std::make_shared<tgui::GuiContainer>();
+        parent = std::make_shared<tgui::RootContainer>();
         parent->add(temp7);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
@@ -137,7 +137,7 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
 
     SECTION("Saving again after loading")
     {
-        parent = std::make_shared<tgui::GuiContainer>();
+        parent = std::make_shared<tgui::RootContainer>();
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile3.txt"));
