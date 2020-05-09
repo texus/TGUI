@@ -430,28 +430,30 @@ TEST_CASE("[MenuBar]")
         renderer.setOpacity(0.7f);
         menuBar->setRenderer(renderer.getData());
 
+        auto container = gui.getContainer();
+
         SECTION("Colored")
         {
             TEST_DRAW("MenuBar.png")
 
-            tgui::Vector2f mousePos = {25, 15};
-            menuBar->mouseMoved(mousePos);
-            menuBar->leftMousePressed(mousePos);
-            menuBar->leftMouseReleased(mousePos);
+            tgui::Vector2f mousePos = {35, 20};
+            container->mouseMoved(mousePos);
+            container->leftMousePressed(mousePos);
+            container->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuDisabled.png")
 
-            mousePos = {52, 15};
-            menuBar->mouseMoved(mousePos);
-            menuBar->leftMousePressed(mousePos);
-            menuBar->leftMouseReleased(mousePos);
+            mousePos = {62, 20};
+            container->mouseMoved(mousePos);
+            container->leftMousePressed(mousePos);
+            container->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuOpen.png")
 
-            mousePos = {52, 35};
-            menuBar->mouseMoved(mousePos);
+            mousePos = {62, 40};
+            container->mouseMoved(mousePos);
             TEST_DRAW("MenuBar_MenuHover.png")
 
-            mousePos = {52, 55};
-            menuBar->mouseMoved(mousePos);
+            mousePos = {62, 60};
+            container->mouseMoved(mousePos);
             TEST_DRAW("MenuBar_MenuHoverDisabled.png")
 
             menuBar->setEnabled(false);
@@ -466,24 +468,24 @@ TEST_CASE("[MenuBar]")
 
             TEST_DRAW("MenuBar_Textured.png")
 
-            tgui::Vector2f mousePos = {25, 15};
-            menuBar->mouseMoved(mousePos);
-            menuBar->leftMousePressed(mousePos);
-            menuBar->leftMouseReleased(mousePos);
+            tgui::Vector2f mousePos = {35, 20};
+            container->mouseMoved(mousePos);
+            container->leftMousePressed(mousePos);
+            container->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuDisabled_Textured.png")
 
-            mousePos = {52, 15};
-            menuBar->mouseMoved(mousePos);
-            menuBar->leftMousePressed(mousePos);
-            menuBar->leftMouseReleased(mousePos);
+            mousePos = {62, 20};
+            container->mouseMoved(mousePos);
+            container->leftMousePressed(mousePos);
+            container->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuOpen_Textured.png")
 
-            mousePos = {52, 35};
-            menuBar->mouseMoved(mousePos);
+            mousePos = {62, 40};
+            container->mouseMoved(mousePos);
             TEST_DRAW("MenuBar_MenuHover_Textured.png")
 
-            mousePos = {52, 55};
-            menuBar->mouseMoved(mousePos);
+            mousePos = {62, 60};
+            container->mouseMoved(mousePos);
             TEST_DRAW("MenuBar_MenuHoverDisabled_Textured.png")
 
             menuBar->setEnabled(false);

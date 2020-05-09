@@ -264,26 +264,22 @@ namespace tgui
         // Loop through every widget
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            // Check if the pointer matches
-            if (m_widgets[i] == widget)
+            if (m_widgets[i] != widget)
+                continue;
+
+            if (m_widgetBelowMouse == widget)
+                m_widgetBelowMouse = nullptr;
+
+            if (widget == m_focusedWidget)
             {
-                if (m_widgetBelowMouse == widget)
-                {
-                    widget->mouseNoLongerOnWidget();
-                    m_widgetBelowMouse = nullptr;
-                }
-
-                if (widget == m_focusedWidget)
-                {
-                    m_focusedWidget = nullptr;
-                    widget->setFocused(false);
-                }
-
-                // Remove the widget
-                widget->setParent(nullptr);
-                m_widgets.erase(m_widgets.begin() + i);
-                return true;
+                m_focusedWidget = nullptr;
+                widget->setFocused(false);
             }
+
+            // Remove the widget
+            widget->setParent(nullptr);
+            m_widgets.erase(m_widgets.begin() + i);
+            return true;
         }
 
         return false;
