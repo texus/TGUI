@@ -8,6 +8,7 @@ TGUI 0.9-dev
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle
 - Signal names, renderer names and widget/renderer properties are now case-sensitive
+- Added setWidth and setHeight helper functions
 - Size of ChildWindow now includes borders and title bar
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid

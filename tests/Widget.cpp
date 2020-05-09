@@ -222,6 +222,14 @@ TEST_CASE("[Widget]")
         REQUIRE(widget4->getSize() == tgui::Vector2f(0, 0));
         container->add(widget4);
         REQUIRE(widget4->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
+
+        auto widget5 = tgui::ClickableWidget::copy(widget4);
+        widget5->setWidth(120);
+        REQUIRE(widget5->getSize() == tgui::Vector2f(120, 300*0.05f));
+
+        auto widget6 = tgui::ClickableWidget::copy(widget4);
+        widget6->setHeight(80);
+        REQUIRE(widget6->getSize() == tgui::Vector2f(400*0.3f, 80));
     }
 
     SECTION("Renderer")
