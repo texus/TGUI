@@ -9,6 +9,7 @@ TGUI 0.9-dev
 - Replaced sf::Text::Style with tgui::TextStyle
 - Signal names, renderer names and widget/renderer properties are now case-sensitive
 - Added setWidth and setHeight helper functions
+- Textures are now smooth by default
 - Size of ChildWindow now includes borders and title bar
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid

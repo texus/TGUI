@@ -67,7 +67,7 @@ TEST_CASE("[Texture]")
                 REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(texture.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
-                REQUIRE(texture.isSmooth() == false);
+                REQUIRE(texture.isSmooth() == true);
             }
 
             SECTION("load")
@@ -80,7 +80,7 @@ TEST_CASE("[Texture]")
                 REQUIRE(texture.getPartRect() == tgui::UIntRect(10, 5, 40, 30));
                 REQUIRE(texture.getImageSize() == tgui::Vector2u(40, 30));
                 REQUIRE(texture.getMiddleRect() == tgui::UIntRect(6, 5, 28, 20));
-                REQUIRE(texture.isSmooth() == false);
+                REQUIRE(texture.isSmooth() == true);
             }
         }
     }
@@ -90,7 +90,7 @@ TEST_CASE("[Texture]")
         unsigned int copyCount = 0;
         unsigned int destructCount = 0;
         {
-            tgui::Texture texture{"resources/image.png", {}, {10, 0, 30, 50}, true};
+            tgui::Texture texture{"resources/image.png", {}, {10, 0, 30, 50}, false};
             texture.setCopyCallback([&](std::shared_ptr<tgui::TextureData> data)
                 {
                     copyCount++;
@@ -110,7 +110,7 @@ TEST_CASE("[Texture]")
             REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
             REQUIRE(texture.getImageSize() == tgui::Vector2u(50, 50));
             REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
-            REQUIRE(texture.isSmooth() == true);
+            REQUIRE(texture.isSmooth() == false);
 
             REQUIRE(copyCount == 0);
             REQUIRE(destructCount == 0);
@@ -122,7 +122,7 @@ TEST_CASE("[Texture]")
                 REQUIRE(textureCopy.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(textureCopy.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(textureCopy.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
-                REQUIRE(textureCopy.isSmooth() == true);
+                REQUIRE(textureCopy.isSmooth() == false);
 
                 REQUIRE(copyCount == 1);
                 REQUIRE(destructCount == 0);
@@ -140,7 +140,7 @@ TEST_CASE("[Texture]")
                 REQUIRE(textureCopy.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(textureCopy.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(textureCopy.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
-                REQUIRE(textureCopy.isSmooth() == true);
+                REQUIRE(textureCopy.isSmooth() == false);
 
                 REQUIRE(copyCount == 2);
                 REQUIRE(destructCount == 1);

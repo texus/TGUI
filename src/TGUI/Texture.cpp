@@ -244,7 +244,7 @@ namespace tgui
         if (m_data && m_data->texture)
             return m_data->texture->isSmooth();
         else
-            return false;
+            return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

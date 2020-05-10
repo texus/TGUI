@@ -317,7 +317,7 @@ namespace tgui
             // There may be optional parameters
             UIntRect partRect;
             UIntRect middleRect;
-            bool smooth = false;
+            bool smooth = true;
 
             while (removeWhitespace(value, c))
             {
@@ -327,9 +327,9 @@ namespace tgui
                     word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
                 else
                 {
-                    if (value.substr(c - value.begin()).trim().equalIgnoreCase("smooth"))
+                    if (value.substr(c - value.begin()).trim().equalIgnoreCase("nosmooth"))
                     {
-                        smooth = true;
+                        smooth = false;
                         break;
                     }
                     else

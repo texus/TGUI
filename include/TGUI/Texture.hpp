@@ -67,7 +67,7 @@ namespace tgui
         Texture(const char* id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = false)
+                bool smooth = true)
             : Texture(String{id}, partRect, middlePart, smooth)
         {
         }
@@ -87,7 +87,7 @@ namespace tgui
         Texture(const String& id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = false);
+                bool smooth = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ namespace tgui
         void load(const String& id,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {},
-                  bool smooth = false);
+                  bool smooth = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
