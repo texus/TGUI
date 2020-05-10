@@ -251,9 +251,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::keyPressed(const sf::Event::KeyEvent& event)
+    void RadioButton::keyPressed(const Event::KeyEvent& event)
     {
-        if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             setChecked(true);
     }
 

@@ -904,21 +904,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mousePressed(sf::Mouse::Button button, Vector2f pos)
+    void Widget::mousePressed(Event::MouseButton button, Vector2f pos)
     {
-        if (button == sf::Mouse::Left)
+        if (button == Event::MouseButton::Left)
             leftMousePressed(pos);
-        else if (button == sf::Mouse::Right)
+        else if (button == Event::MouseButton::Right)
             rightMousePressed(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseReleased(sf::Mouse::Button button, Vector2f pos)
+    void Widget::mouseReleased(Event::MouseButton button, Vector2f pos)
     {
-        if (button == sf::Mouse::Left)
+        if (button == Event::MouseButton::Left)
             leftMouseReleased(pos);
-        else if (button == sf::Mouse::Right)
+        else if (button == Event::MouseButton::Right)
             rightMouseReleased(pos);
     }
 
@@ -932,7 +932,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::keyPressed(const sf::Event::KeyEvent&)
+    void Widget::keyPressed(const Event::KeyEvent&)
     {
     }
 

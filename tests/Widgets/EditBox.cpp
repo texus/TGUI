@@ -346,7 +346,7 @@ TEST_CASE("[EditBox]")
         editBox->setPosition(40, 30);
         editBox->setSize(150, 100);
 
-        sf::Event::KeyEvent keyEvent;
+        tgui::Event::KeyEvent keyEvent;
         keyEvent.alt = false;
         keyEvent.control = false;
         keyEvent.shift = false;
@@ -366,31 +366,31 @@ TEST_CASE("[EditBox]")
             editBox->textEntered('d');
             REQUIRE(textChangedCount == 4);
 
-            keyEvent.code = sf::Keyboard::Left;
+            keyEvent.code = tgui::Event::KeyboardKey::Left;
             editBox->keyPressed(keyEvent);
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 4);
 
-            keyEvent.code = sf::Keyboard::BackSpace;
+            keyEvent.code = tgui::Event::KeyboardKey::Backspace;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 5);
 
-            keyEvent.code = sf::Keyboard::Delete;
+            keyEvent.code = tgui::Event::KeyboardKey::Delete;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 6);
 
             editBox->selectText();
             keyEvent.control = true;
 
-            keyEvent.code = sf::Keyboard::C;
+            keyEvent.code = tgui::Event::KeyboardKey::C;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 6);
 
-            keyEvent.code = sf::Keyboard::X;
+            keyEvent.code = tgui::Event::KeyboardKey::X;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 7);
 
-            keyEvent.code = sf::Keyboard::V;
+            keyEvent.code = tgui::Event::KeyboardKey::V;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 8);
         }
@@ -401,7 +401,7 @@ TEST_CASE("[EditBox]")
             tgui::String expectedText = "";
             editBox->onReturnKeyPress([&](tgui::String text){ REQUIRE(text == expectedText); count++; });
 
-            keyEvent.code = sf::Keyboard::Return;
+            keyEvent.code = tgui::Event::KeyboardKey::Enter;
             editBox->keyPressed(keyEvent);
             REQUIRE(count == 1);
 
@@ -411,7 +411,7 @@ TEST_CASE("[EditBox]")
             editBox->textEntered('d');
             expectedText = "abcd";
 
-            keyEvent.code = sf::Keyboard::Return;
+            keyEvent.code = tgui::Event::KeyboardKey::Enter;
             editBox->keyPressed(keyEvent);
             REQUIRE(count == 2);
         }
@@ -769,12 +769,12 @@ TEST_CASE("[EditBox]")
     {
         SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)")
         {
-            sf::Event::KeyEvent event;
+            tgui::Event::KeyEvent event;
             event.control = true;
             event.alt     = false;
             event.shift   = false;
             event.system  = false;
-            event.code    = sf::Keyboard::A;
+            event.code    = tgui::Event::KeyboardKey::A;
 
             editBox->setText("Test");
             editBox->keyPressed(event);

@@ -112,17 +112,17 @@ TEST_CASE("[BitmapButton]")
 
             SECTION("key pressed")
             {
-                sf::Event::KeyEvent keyEvent;
+                tgui::Event::KeyEvent keyEvent;
                 keyEvent.alt = false;
                 keyEvent.control = false;
                 keyEvent.shift = false;
                 keyEvent.system = false;
 
-                keyEvent.code = sf::Keyboard::Space;
+                keyEvent.code = tgui::Event::KeyboardKey::Space;
                 button->keyPressed(keyEvent);
                 REQUIRE(pressedCount == 1);
 
-                keyEvent.code = sf::Keyboard::Return;
+                keyEvent.code = tgui::Event::KeyboardKey::Enter;
                 button->keyPressed(keyEvent);
                 REQUIRE(pressedCount == 2);
             }

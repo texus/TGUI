@@ -86,7 +86,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::keyPressed(const sf::Event::KeyEvent& event)
+    void SubwidgetContainer::keyPressed(const Event::KeyEvent& event)
     {
         m_container->keyPressed(event);
         Widget::keyPressed(event);

@@ -215,19 +215,19 @@ TEST_CASE("[CheckBox]")
 
             SECTION("Key pressed")
             {
-                sf::Event::KeyEvent keyEvent;
+                tgui::Event::KeyEvent keyEvent;
                 keyEvent.alt = false;
                 keyEvent.control = false;
                 keyEvent.shift = false;
                 keyEvent.system = false;
 
-                keyEvent.code = sf::Keyboard::Space;
+                keyEvent.code = tgui::Event::KeyboardKey::Space;
                 checkBox->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
                 REQUIRE(uncheckCount == 2);
                 REQUIRE(changedCount == 5);
 
-                keyEvent.code = sf::Keyboard::Return;
+                keyEvent.code = tgui::Event::KeyboardKey::Enter;
                 checkBox->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
                 REQUIRE(uncheckCount == 3);

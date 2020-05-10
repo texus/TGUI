@@ -287,28 +287,14 @@ TEST_CASE("[ListBox]")
         auto container = tgui::Group::create({400.f, 300.f});
         container->add(listBox);
 
-        auto mouseMoved = [container](tgui::Vector2u pos){
-            sf::Event event;
-            event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = static_cast<int>(pos.x);
-            event.mouseMove.y = static_cast<int>(pos.y);
-            container->handleEvent(event);
+        auto mouseMoved = [container](tgui::Vector2f pos){
+            container->processMouseMoveEvent(pos);
         };
-        auto mousePressed = [container](tgui::Vector2u pos){
-            sf::Event event;
-            event.type = sf::Event::MouseButtonPressed;
-            event.mouseButton.button = sf::Mouse::Left;
-            event.mouseButton.x = static_cast<int>(pos.x);
-            event.mouseButton.y = static_cast<int>(pos.y);
-            container->handleEvent(event);
+        auto mousePressed = [container](tgui::Vector2f pos){
+            container->processMousePressEvent(tgui::Event::MouseButton::Left, pos);
         };
-        auto mouseReleased = [container](tgui::Vector2u pos){
-            sf::Event event;
-            event.type = sf::Event::MouseButtonReleased;
-            event.mouseButton.button = sf::Mouse::Left;
-            event.mouseButton.x = static_cast<int>(pos.x);
-            event.mouseButton.y = static_cast<int>(pos.y);
-            container->handleEvent(event);
+        auto mouseReleased = [container](tgui::Vector2f pos){
+            container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos);
         };
 
         listBox->setPosition(10, 20);

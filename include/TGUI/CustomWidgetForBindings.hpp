@@ -206,7 +206,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void keyPressed(const sf::Event::KeyEvent& event) override;
+        void keyPressed(const Event::KeyEvent& event) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -295,7 +295,7 @@ namespace tgui
         std::function<void(Vector2f)>                   implRightMousePressed;
         std::function<void(Vector2f)>                   implRightMouseReleased;
         std::function<void(Vector2f)>                   implMouseMoved;
-        std::function<void(const sf::Event::KeyEvent&)> implKeyPressed;
+        std::function<void(const Event::KeyEvent&)>     implKeyPressed;
         std::function<void(char32_t)>                   implTextEntered;
         std::function<bool(float, Vector2f)>            implMouseWheelScrolled;
         std::function<void()>                           implMouseNoLongerOnWidget;

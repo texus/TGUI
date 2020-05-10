@@ -604,59 +604,33 @@ namespace tgui
 
     void Container::leftMousePressed(Vector2f pos)
     {
-        sf::Event event;
-        event.type = sf::Event::MouseButtonPressed;
-        event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
-
-        // Let the event manager handle the event
-        handleEvent(event);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::leftMouseReleased(Vector2f pos)
-    {
-        sf::Event event;
-        event.type = sf::Event::MouseButtonReleased;
-        event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
-
-        // Let the event manager handle the event, but don't let it call leftMouseButtonNoLongerDown on all widgets (it will be done later)
-        m_handingMouseReleased = true;
-        handleEvent(event);
-        m_handingMouseReleased = false;
+        processMousePressEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::rightMousePressed(Vector2f pos)
     {
-        sf::Event event;
-        event.type = sf::Event::MouseButtonPressed;
-        event.mouseButton.button = sf::Mouse::Right;
-        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
+        processMousePressEvent(Event::MouseButton::Right, pos - getPosition() - getChildWidgetsOffset());
+    }
 
-        // Let the event manager handle the event
-        handleEvent(event);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::leftMouseReleased(Vector2f pos)
+    {
+        // Don't let processMouseReleaseEvent call leftMouseButtonNoLongerDown on all widgets (it will be done later)
+        m_handingMouseReleased = true;
+        processMouseReleaseEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
+        m_handingMouseReleased = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::rightMouseReleased(Vector2f pos)
     {
-        sf::Event event;
-        event.type = sf::Event::MouseButtonReleased;
-        event.mouseButton.button = sf::Mouse::Right;
-        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
-
-        // Let the event manager handle the event, but don't let it call rightMouseButtonNoLongerDown on all widgets (it will be done later)
+        // Don't let processMouseReleaseEvent call rightMouseButtonNoLongerDown on all widgets (it will be done later)
         m_handingMouseReleased = true;
-        handleEvent(event);
+        processMouseReleaseEvent(Event::MouseButton::Right, pos - getPosition() - getChildWidgetsOffset());
         m_handingMouseReleased = false;
     }
 
@@ -665,51 +639,28 @@ namespace tgui
     void Container::mouseMoved(Vector2f pos)
     {
         Widget::mouseMoved(pos);
-
-        sf::Event event;
-        event.type = sf::Event::MouseMoved;
-        event.mouseMove.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseMove.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
-        handleEvent(event);
+        processMouseMoveEvent(pos - getPosition() - getChildWidgetsOffset());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::keyPressed(const sf::Event::KeyEvent& event)
+    void Container::keyPressed(const Event::KeyEvent& event)
     {
-        sf::Event newEvent;
-        newEvent.type = sf::Event::KeyPressed;
-        newEvent.key = event;
-
-        // Let the event manager handle the event
-        handleEvent(newEvent);
+        processKeyPressEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::textEntered(char32_t key)
     {
-        sf::Event event;
-        event.type = sf::Event::TextEntered;
-        event.text.unicode = key;
-
-        // Let the event manager handle the event
-        handleEvent(event);
+        processTextEnteredEvent(key);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Container::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        sf::Event event;
-        event.type = sf::Event::MouseWheelScrolled;
-        event.mouseWheelScroll.delta = delta;
-        event.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
-        event.mouseWheelScroll.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
-        event.mouseWheelScroll.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
-
-        // Let the event manager handle the event
-        return handleEvent(event);
+        return processMouseWheelScrollEvent(delta, pos - getPosition() - getChildWidgetsOffset());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -835,6 +786,155 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Container::processMouseMoveEvent(Vector2f mousePos)
+    {
+        // Loop through all widgets
+        for (auto& widget : m_widgets)
+        {
+            // Check if the mouse went down on the widget
+            if (widget->m_mouseDown)
+            {
+                // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
+                if (widget->m_draggableWidget || widget->isContainer())
+                {
+                    widget->mouseMoved(mousePos);
+                    return true;
+                }
+            }
+        }
+
+        // Check if the mouse is on top of a widget
+        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+        if (widget != nullptr)
+        {
+            // Send the event to the widget
+            widget->mouseMoved(mousePos);
+            return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::processMousePressEvent(Event::MouseButton button, Vector2f mousePos)
+    {
+        // Check if the mouse is on top of a widget
+        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+        if (widget)
+        {
+            // Unfocus the previously focused widget
+            if (m_focusedWidget && (m_focusedWidget != widget))
+                m_focusedWidget->setFocused(false);
+
+            // Focus the widget unless it is a container, in which case it will get focused when the event is handled by the bottom widget
+            m_focusedWidget = widget;
+            if (!widget->isContainer())
+                widget->setFocused(true);
+
+            widget->mousePressed(button, mousePos);
+            return true;
+        }
+        else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+        {
+            if (m_focusedWidget)
+                m_focusedWidget->setFocused(false);
+
+            m_focusedWidget = nullptr;
+            setFocused(true);
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::processMouseReleaseEvent(Event::MouseButton button, Vector2f mousePos)
+    {
+        // Check if the mouse is on top of a widget
+        Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
+        if (widgetBelowMouse != nullptr)
+            widgetBelowMouse->mouseReleased(button, mousePos);
+
+        if (button == Event::MouseButton::Left)
+        {
+            // Tell all widgets that the mouse has gone up
+            // But don't do this when leftMouseReleased was called on this container because
+            // it will happen afterwards when leftMouseButtonNoLongerDown is called on it
+            if (!m_handingMouseReleased)
+            {
+                // TODO: Only call leftMouseButtonNoLongerDown on the widget that last got the left mouse down event
+                for (auto& widget : m_widgets)
+                    widget->leftMouseButtonNoLongerDown();
+            }
+        }
+        else if (button == Event::MouseButton::Right)
+        {
+            // TODO: Same remark as above for leftMouseButtonNoLongerDown
+            if (!m_handingMouseReleased)
+            {
+                for (auto& widget : m_widgets)
+                    widget->rightMouseButtonNoLongerDown();
+            }
+        }
+
+        if (widgetBelowMouse != nullptr)
+            return true;
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::processMouseWheelScrollEvent(float delta, Vector2f pos)
+    {
+        // Send the event to the widget below the mouse
+        Widget::Ptr widget = mouseOnWhichWidget(pos);
+        if (widget != nullptr)
+            return widget->mouseWheelScrolled(delta, pos);
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::processKeyPressEvent(Event::KeyEvent event)
+    {
+        // Only continue when the character was recognised
+        if (event.code == Event::KeyboardKey::Unknown)
+            return false;
+
+        // Check if there is a focused widget
+        if (m_focusedWidget && m_focusedWidget->isFocused())
+        {
+            // Tell the widget that the key was pressed
+            m_focusedWidget->keyPressed(event);
+            return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::processTextEnteredEvent(char32_t key)
+    {
+        // Check if the character that we pressed is allowed
+        if ((key < 32) || (key == 127))
+            return false;
+
+        // Tell the widget that the key was pressed
+        if (m_focusedWidget && m_focusedWidget->isFocused())
+        {
+            m_focusedWidget->textEntered(key);
+            return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::updateTime(Duration elapsedTime)
     {
         Widget::updateTime(elapsedTime);
@@ -848,190 +948,6 @@ namespace tgui
         }
 
         m_animationTimeElapsed = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Container::handleEvent(sf::Event& event)
-    {
-        // Check if a mouse button has moved
-        if ((event.type == sf::Event::MouseMoved) || ((event.type == sf::Event::TouchMoved) && (event.touch.finger == 0)))
-        {
-            Vector2f mousePos;
-            if (event.type == sf::Event::MouseMoved)
-                mousePos = {static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)};
-            else
-                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
-
-            // Loop through all widgets
-            for (auto& widget : m_widgets)
-            {
-                // Check if the mouse went down on the widget
-                if (widget->m_mouseDown)
-                {
-                    // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                    if (widget->m_draggableWidget || widget->isContainer())
-                    {
-                        widget->mouseMoved(mousePos);
-                        return true;
-                    }
-                }
-            }
-
-            // Check if the mouse is on top of a widget
-            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
-            if (widget != nullptr)
-            {
-                // Send the event to the widget
-                widget->mouseMoved(mousePos);
-                return true;
-            }
-
-            return false;
-        }
-
-        // Check if a mouse button was pressed or a touch event occurred
-        else if ((event.type == sf::Event::MouseButtonPressed) || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
-        {
-            Vector2f mousePos;
-            if (event.type == sf::Event::MouseButtonPressed)
-                mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
-            else
-                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
-
-            // Check if the mouse is on top of a widget
-            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
-            if (widget)
-            {
-                // Unfocus the previously focused widget
-                if (m_focusedWidget && (m_focusedWidget != widget))
-                    m_focusedWidget->setFocused(false);
-
-                // Focus the widget unless it is a container, in which case it will get focused when the event is handled by the bottom widget
-                m_focusedWidget = widget;
-                if (!widget->isContainer())
-                    widget->setFocused(true);
-
-                if (event.type == sf::Event::MouseButtonPressed)
-                    widget->mousePressed(event.mouseButton.button, mousePos);
-                else // Touch began of finger 0
-                    widget->mousePressed(sf::Mouse::Button::Left, mousePos);
-
-                return true;
-            }
-            else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
-            {
-                if (m_focusedWidget)
-                    m_focusedWidget->setFocused(false);
-
-                m_focusedWidget = nullptr;
-                setFocused(true);
-            }
-
-            return false;
-        }
-
-        // Check if a mouse button was released
-        else if ((event.type == sf::Event::MouseButtonReleased) || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
-        {
-            Vector2f mousePos;
-            if (event.type == sf::Event::MouseButtonReleased)
-                mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
-            else
-                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
-
-            // Check if the mouse is on top of a widget
-            Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
-            if (widgetBelowMouse != nullptr)
-            {
-                if (event.type == sf::Event::MouseButtonReleased)
-                    widgetBelowMouse->mouseReleased(event.mouseButton.button, mousePos);
-                else
-                    widgetBelowMouse->mouseReleased(sf::Mouse::Button::Left, mousePos);
-            }
-
-            if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
-              || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
-            {
-                // Tell all widgets that the mouse has gone up
-                // But don't do this when leftMouseReleased was called on this container because
-                // it will happen afterwards when leftMouseButtonNoLongerDown is called on it
-                if (!m_handingMouseReleased)
-                {
-                    // TODO: Only call leftMouseButtonNoLongerDown on the widget that last got the left mouse down event
-                    for (auto& widget : m_widgets)
-                        widget->leftMouseButtonNoLongerDown();
-                }
-            }
-            else if ((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Right))
-            {
-                // TODO: Same remark as above for leftMouseButtonNoLongerDown
-                if (!m_handingMouseReleased)
-                {
-                    for (auto& widget : m_widgets)
-                        widget->rightMouseButtonNoLongerDown();
-                }
-            }
-
-            if (widgetBelowMouse != nullptr)
-                return true;
-
-            return false;
-        }
-
-        // Check if a key was pressed
-        else if (event.type == sf::Event::KeyPressed)
-        {
-            // Only continue when the character was recognised
-            if (event.key.code != sf::Keyboard::Unknown)
-            {
-                // Check if there is a focused widget
-                if (m_focusedWidget && m_focusedWidget->isFocused())
-                {
-                #if defined(TGUI_SYSTEM_ANDROID) && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-                    // SFML versions prior to 2.5 sent Delete instead of BackSpace
-                    if (event.key.code == sf::Keyboard::Delete)
-                        event.key.code = sf::Keyboard::BackSpace;
-                #endif
-
-                    // Tell the widget that the key was pressed
-                    m_focusedWidget->keyPressed(event.key);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        // Also check if text was entered (not a special key)
-        else if (event.type == sf::Event::TextEntered)
-        {
-            // Check if the character that we pressed is allowed
-            if ((event.text.unicode >= 32) && (event.text.unicode != 127))
-            {
-                // Tell the widget that the key was pressed
-                if (m_focusedWidget && m_focusedWidget->isFocused())
-                {
-                    m_focusedWidget->textEntered(event.text.unicode);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        // Check for mouse wheel scrolling
-        else if ((event.type == sf::Event::MouseWheelScrolled) && (event.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel))
-        {
-            // Send the event to the widget below the mouse
-            Widget::Ptr widget = mouseOnWhichWidget({static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
-            if (widget != nullptr)
-                return widget->mouseWheelScrolled(event.mouseWheelScroll.delta, {static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
-
-            return false;
-        }
-        else // Event is ignored
-            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

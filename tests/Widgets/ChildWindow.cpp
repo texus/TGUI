@@ -228,8 +228,8 @@ TEST_CASE("[ChildWindow]")
             unsigned int escapeKeyPressedCount = 0;
             childWindow->onEscapeKeyPress(&genericCallback, std::ref(escapeKeyPressedCount));
 
-            sf::Event::KeyEvent event;
-            event.code = sf::Keyboard::Escape;
+            tgui::Event::KeyEvent event;
+            event.code = tgui::Event::KeyboardKey::Escape;
             event.alt = false;
             event.control = false;
             event.shift = false;

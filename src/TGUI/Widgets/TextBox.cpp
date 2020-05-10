@@ -644,11 +644,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::keyPressed(const sf::Event::KeyEvent& event)
+    void TextBox::keyPressed(const Event::KeyEvent& event)
     {
         switch (event.code)
         {
-            case sf::Keyboard::Up:
+            case Event::KeyboardKey::Up:
             {
                 m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y - (m_lineHeight / 2.f) - m_verticalScrollbar->getValue()});
 
@@ -659,7 +659,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Down:
+            case Event::KeyboardKey::Down:
             {
                 m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y + (m_lineHeight * 1.5f) - m_verticalScrollbar->getValue()});
 
@@ -670,7 +670,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Left:
+            case Event::KeyboardKey::Left:
             {
                 if (event.control)
                 {
@@ -744,7 +744,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Right:
+            case Event::KeyboardKey::Right:
             {
                 if (event.control)
                 {
@@ -821,7 +821,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Home:
+            case Event::KeyboardKey::Home:
             {
                 if (event.control)
                     m_selEnd = {0, 0};
@@ -835,7 +835,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::End:
+            case Event::KeyboardKey::End:
             {
                 if (event.control)
                     m_selEnd = {m_lines[m_lines.size()-1].length(), m_lines.size()-1};
@@ -849,7 +849,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::PageUp:
+            case Event::KeyboardKey::PageUp:
             {
                 // Move to the top line when not there already
                 if (m_selEnd.y != m_topLine)
@@ -873,7 +873,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::PageDown:
+            case Event::KeyboardKey::PageDown:
             {
                 // Move to the bottom line when not there already
                 if (m_topLine + m_visibleLines > m_lines.size())
@@ -899,19 +899,19 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Tab:
+            case Event::KeyboardKey::Tab:
             {
                 textEntered(U'\t');
                 break;
             }
 
-            case sf::Keyboard::Return:
+            case Event::KeyboardKey::Enter:
             {
                 textEntered(U'\n');
                 break;
             }
 
-            case sf::Keyboard::BackSpace:
+            case Event::KeyboardKey::Backspace:
             {
                 if (m_readOnly)
                     break;
@@ -964,7 +964,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::Delete:
+            case Event::KeyboardKey::Delete:
             {
                 if (m_readOnly)
                     break;
@@ -982,7 +982,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::A:
+            case Event::KeyboardKey::A:
             {
                 if (event.control && !event.alt && !event.shift && !event.system)
                 {
@@ -994,7 +994,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::C:
+            case Event::KeyboardKey::C:
             {
                 if (event.control && !event.alt && !event.shift && !event.system)
                 {
@@ -1008,7 +1008,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::X:
+            case Event::KeyboardKey::X:
             {
                 if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
                 {
@@ -1024,7 +1024,7 @@ namespace tgui
                 break;
             }
 
-            case sf::Keyboard::V:
+            case Event::KeyboardKey::V:
             {
                 if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
                 {

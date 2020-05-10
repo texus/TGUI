@@ -566,12 +566,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::keyPressed(const sf::Event::KeyEvent& event)
+    void EditBox::keyPressed(const Event::KeyEvent& event)
     {
         // Check if one of the correct keys was pressed
         switch (event.code)
         {
-            case sf::Keyboard::Left:
+            case Event::KeyboardKey::Left:
             {
                 if (event.control)
                 {
@@ -616,7 +616,7 @@ namespace tgui
                 updateSelection();
                 break;
             }
-            case sf::Keyboard::Right:
+            case Event::KeyboardKey::Right:
             {
                 if (event.control)
                 {
@@ -661,7 +661,7 @@ namespace tgui
                 updateSelection();
                 break;
             }
-            case sf::Keyboard::Home:
+            case Event::KeyboardKey::Home:
             {
                 // Set the caret to the beginning of the text
                 m_selEnd = 0;
@@ -671,7 +671,7 @@ namespace tgui
                 updateSelection();
                 break;
             }
-            case sf::Keyboard::End:
+            case Event::KeyboardKey::End:
             {
                 // Set the caret behind the text
                 m_selEnd = m_text.length();
@@ -681,13 +681,13 @@ namespace tgui
                 updateSelection();
                 break;
             }
-            case sf::Keyboard::Return:
+            case Event::KeyboardKey::Enter:
             {
                 onReturnKeyPress.emit(this, m_text);
                 onReturnOrUnfocus.emit(this, m_text);
                 break;
             }
-            case sf::Keyboard::BackSpace:
+            case Event::KeyboardKey::Backspace:
             {
                 if (m_readOnly)
                     return;
@@ -725,7 +725,7 @@ namespace tgui
                 onTextChange.emit(this, m_text);
                 break;
             }
-            case sf::Keyboard::Delete:
+            case Event::KeyboardKey::Delete:
             {
                 if (m_readOnly)
                     return;
@@ -762,14 +762,14 @@ namespace tgui
                 onTextChange.emit(this, m_text);
                 break;
             }
-            case sf::Keyboard::C:
+            case Event::KeyboardKey::C:
             {
                 if (event.control && !event.alt && !event.shift && !event.system)
                     Clipboard::set(m_textSelection.getString());
 
                 break;
             }
-            case sf::Keyboard::V:
+            case Event::KeyboardKey::V:
             {
                 if (m_readOnly)
                     return;
@@ -796,7 +796,7 @@ namespace tgui
 
                 break;
             }
-            case sf::Keyboard::X:
+            case Event::KeyboardKey::X:
             {
                 if (event.control && !event.alt && !event.shift && !event.system)
                 {
@@ -812,7 +812,7 @@ namespace tgui
 
                 break;
             }
-            case sf::Keyboard::A:
+            case Event::KeyboardKey::A:
             {
                 if (event.control && !event.alt && !event.shift && !event.system)
                     selectText();

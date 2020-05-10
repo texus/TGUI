@@ -199,12 +199,12 @@ namespace tgui
     {
         assert(m_font != nullptr);
 
-    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         return m_font->getGlyph(codePoint, characterSize, bold, outlineThickness);
-    #else
+#else
         (void)outlineThickness;
         return m_font->getGlyph(codePoint, characterSize, bold);
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -52,17 +52,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui();
 
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructs the gui and set the window on which the gui should be drawn
-        ///
-        /// @param window  The sfml window that will be used by the gui
-        ///
-        /// If you use this constructor then you will no longer have to call setTarget yourself.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Gui(sf::RenderWindow& window);
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the gui and set the target on which the gui should be drawn
@@ -86,15 +75,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui& operator=(const Gui& right) = delete;
 
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the window on which the gui should be drawn
-        ///
-        /// @param window  The sfml window that will be used by the gui
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTarget(sf::RenderWindow& window);
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the target on which the gui should be drawn
@@ -421,11 +401,6 @@ namespace tgui
         // The sfml render target to draw on
         sf::RenderTarget* m_target;
         bool m_windowFocused = true;
-
-    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        // Does m_target contains a sf::RenderWindow?
-        bool m_accessToWindow;
-    #endif
 
         // Internal container to store all widgets
         RootContainer::Ptr m_container = std::make_shared<RootContainer>();

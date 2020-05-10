@@ -189,13 +189,13 @@ TEST_CASE("[RadioButton]")
 
             SECTION("Key pressed")
             {
-                sf::Event::KeyEvent keyEvent;
+                tgui::Event::KeyEvent keyEvent;
                 keyEvent.alt = false;
                 keyEvent.control = false;
                 keyEvent.shift = false;
                 keyEvent.system = false;
 
-                keyEvent.code = sf::Keyboard::Space;
+                keyEvent.code = tgui::Event::KeyboardKey::Space;
                 radioButton->keyPressed(keyEvent);
                 REQUIRE(checkCount == 2);
                 REQUIRE(changedCount == 3);
@@ -203,7 +203,7 @@ TEST_CASE("[RadioButton]")
                 radioButton->setChecked(false);
                 REQUIRE(changedCount == 4);
 
-                keyEvent.code = sf::Keyboard::Return;
+                keyEvent.code = tgui::Event::KeyboardKey::Enter;
                 radioButton->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
                 REQUIRE(changedCount == 5);

@@ -479,28 +479,14 @@ TEST_CASE("[ListView]")
         container->add(listView);
         root->add(container);
 
-        auto mouseMoved = [root,container](tgui::Vector2u pos){
-            sf::Event event;
-            event.type = sf::Event::MouseMoved;
-            event.mouseMove.x = static_cast<int>(pos.x + container->getPosition().x);
-            event.mouseMove.y = static_cast<int>(pos.y + container->getPosition().y);
-            root->handleEvent(event);
+        auto mouseMoved = [container](tgui::Vector2f pos){
+            container->processMouseMoveEvent(pos);
         };
-        auto mousePressed = [root,container](tgui::Vector2u pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
-            sf::Event event;
-            event.type = sf::Event::MouseButtonPressed;
-            event.mouseButton.button = mouseButton;
-            event.mouseButton.x = static_cast<int>(pos.x + container->getPosition().x);
-            event.mouseButton.y = static_cast<int>(pos.y + container->getPosition().y);
-            root->handleEvent(event);
+        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
+            container->processMousePressEvent(button, pos);
         };
-        auto mouseReleased = [root,container](tgui::Vector2u pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
-            sf::Event event;
-            event.type = sf::Event::MouseButtonReleased;
-            event.mouseButton.button = mouseButton;
-            event.mouseButton.x = static_cast<int>(pos.x + container->getPosition().x);
-            event.mouseButton.y = static_cast<int>(pos.y + container->getPosition().y);
-            root->handleEvent(event);
+        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
+            container->processMouseReleaseEvent(button, pos);
         };
 
         listView->setPosition(10, 20);
@@ -603,15 +589,15 @@ TEST_CASE("[ListView]")
             listView->onRightClick([&](int index){ lastIndex = index; ++rightClickCount; });
 
             // Right click 3th item
-            mousePressed({40, 70}, sf::Mouse::Right);
-            mouseReleased({40, 70}, sf::Mouse::Right);
+            mousePressed({40, 70}, tgui::Event::MouseButton::Right);
+            mouseReleased({40, 70}, tgui::Event::MouseButton::Right);
             REQUIRE(rightClickCount == 1);
             REQUIRE(lastIndex == 2);
 
             // Right click behind last item
             listView->removeItem(1);
-            mousePressed({40, 70}, sf::Mouse::Right);
-            mouseReleased({40, 70}, sf::Mouse::Right);
+            mousePressed({40, 70}, tgui::Event::MouseButton::Right);
+            mouseReleased({40, 70}, tgui::Event::MouseButton::Right);
             REQUIRE(rightClickCount == 2);
             REQUIRE(lastIndex == -1);
 
@@ -619,8 +605,8 @@ TEST_CASE("[ListView]")
             listView->addItem("Item 5");
             listView->addItem("Item 6");
             listView->addItem("Item 7");
-            mousePressed({125, 50}, sf::Mouse::Right);
-            mouseReleased({125, 50}, sf::Mouse::Right);
+            mousePressed({125, 50}, tgui::Event::MouseButton::Right);
+            mouseReleased({125, 50}, tgui::Event::MouseButton::Right);
             REQUIRE(rightClickCount == 2);
         }
 
