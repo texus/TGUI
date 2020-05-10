@@ -11,6 +11,7 @@ TGUI 0.9-dev
 - Added setWidth and setHeight helper functions
 - Textures are now smooth by default
 - Size of ChildWindow now includes borders and title bar
+- When setView is not called on Gui, view will now scale with window size
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid
 - Changed return type of addItem in ListBox to return index of the item

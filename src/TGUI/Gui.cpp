@@ -32,10 +32,6 @@
 
 #include <cassert>
 
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -187,6 +183,13 @@ namespace tgui
                 eventTGUI.type = Event::Type::LostFocus;
                 return true;
             }
+            case sf::Event::Resized:
+            {
+                eventTGUI.type = Event::Type::Resized;
+                eventTGUI.size.width = eventSFML.size.width;
+                eventTGUI.size.height = eventSFML.size.height;
+                return true;
+            }
             case sf::Event::TextEntered:
             {
                 eventTGUI.type = Event::Type::TextEntered;
@@ -290,7 +293,6 @@ namespace tgui
     Gui::Gui() :
         m_target(nullptr)
     {
-        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,8 +301,7 @@ namespace tgui
         m_target(&target)
     {
         setView(target.getDefaultView());
-
-        init();
+        m_customViewSet = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,6 +311,7 @@ namespace tgui
         m_target = &target;
 
         setView(target.getDefaultView());
+        m_customViewSet = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +337,8 @@ namespace tgui
         }
         else // Set it anyway in case something changed that we didn't care to check
             m_view = view;
+
+        m_customViewSet = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,6 +424,15 @@ namespace tgui
             case Event::Type::GainedFocus:
             {
                 m_windowFocused = true;
+                break;
+            }
+            case Event::Type::Resized:
+            {
+                if (!m_customViewSet && m_target)
+                {
+                    setView(sf::View({0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
+                    m_customViewSet = false;
+                }
                 break;
             }
         }
@@ -657,17 +670,6 @@ namespace tgui
                 m_tooltipPossible = false;
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::init()
-    {
-#ifdef SFML_SYSTEM_WINDOWS
-        unsigned int doubleClickTimeMs = GetDoubleClickTime();
-        if (doubleClickTimeMs > 0)
-            setDoubleClickTime(std::chrono::milliseconds(doubleClickTimeMs));
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
