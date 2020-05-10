@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/TreeView.hpp>
+#include <TGUI/Keyboard.hpp>
 #include <TGUI/Clipping.hpp>
 #include <cmath>
 
@@ -839,8 +840,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
+                || keyboard::isShiftPressed()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);
