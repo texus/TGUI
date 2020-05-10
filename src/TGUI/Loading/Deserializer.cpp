@@ -71,7 +71,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool readUIntRect(String value, UIntRect& rect)
+        bool readUIntRect(String value, UIntRect& rect, bool rectRequiresFourValues)
         {
             if (!value.empty() && (value[0] == '(') && (value[value.length()-1] == ')'))
             {
@@ -79,6 +79,16 @@ namespace tgui
                 if (tokens.size() == 4)
                 {
                     rect = {tokens[0].toUInt(), tokens[1].toUInt(), tokens[2].toUInt(), tokens[3].toUInt()};
+                    return true;
+                }
+                else if (!rectRequiresFourValues && (tokens.size() == 2))
+                {
+                    rect = {tokens[0].toUInt(), tokens[1].toUInt(), 0, 0};
+                    return true;
+                }
+                else if (!rectRequiresFourValues && (tokens.size() == 1))
+                {
+                    rect = {tokens[0].toUInt(), tokens[0].toUInt(), 0, 0};
                     return true;
                 }
             }
@@ -336,6 +346,10 @@ namespace tgui
                         throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
                 }
 
+                if (word.empty())
+                    throw Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
+
+                bool rectRequiresFourValues = true;
                 UIntRect* rect = nullptr;
                 if (word.equalIgnoreCase("part"))
                 {
@@ -344,21 +358,17 @@ namespace tgui
                 }
                 else if (word.equalIgnoreCase("middle"))
                 {
+                    rectRequiresFourValues = false;
                     rect = &middleRect;
                     std::advance(c, 6);
                 }
                 else
-                {
-                    if (word.empty())
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
-                    else
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
-                }
+                    throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
 
                 auto closeBracketPos = value.find(U')', c - value.begin());
                 if (closeBracketPos != String::npos)
                 {
-                    if (!readUIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect))
+                    if (!readUIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect, rectRequiresFourValues))
                         throw Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
                 }
                 else

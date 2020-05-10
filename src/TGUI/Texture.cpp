@@ -383,9 +383,21 @@ namespace tgui
             m_partRect = partRect;
 
         if (middleRect == UIntRect{})
-            m_middleRect = {{0, 0}, m_partRect.getSize()};
+            m_middleRect = {0, 0, m_partRect.width, m_partRect.height};
         else
+        {
             m_middleRect = middleRect;
+
+            // If the middle rect was only partially provided then we need to calculate the width and height ourselves
+            if ((middleRect.left > 0) && (middleRect.top > 0) && (middleRect.width == 0) && (middleRect.height == 0))
+            {
+                if (m_partRect.width > 2 * middleRect.left)
+                    m_middleRect.width = m_partRect.width - (2 * middleRect.left);
+
+                if (m_partRect.width > 2 * middleRect.left)
+                    m_middleRect.height = m_partRect.height - (2 * middleRect.top);
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
