@@ -306,6 +306,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int ListBox::getIndexById(const sf::String& id) const
+    {
+        for (std::size_t i = 0; i < m_itemIds.size(); ++i)
+        {
+            if (m_itemIds[i] == id)
+                return static_cast<int>(i);
+        }
+
+        return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::String ListBox::getIdByIndex(std::size_t index) const
+    {
+        if (index >= m_itemIds.size())
+            return "";
+
+        return m_itemIds[index];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::String ListBox::getSelectedItem() const
     {
         return (m_selectedItem >= 0) ? m_items[m_selectedItem].getString() : "";
