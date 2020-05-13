@@ -89,6 +89,26 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItemById("3") == "");
     }
 
+    SECTION("Getters")
+    {
+        listBox->addItem("Item 1", "1");
+        listBox->addItem("Item 2", "2");
+
+        REQUIRE(listBox->getItems()[0] == "Item 1");
+
+        REQUIRE(listBox->getItemById("1") == "Item 1");
+        REQUIRE(listBox->getItemById("3") == "");
+
+        REQUIRE(listBox->getItemByIndex(1) == "Item 2");
+        REQUIRE(listBox->getItemByIndex(2) == "");
+
+        REQUIRE(listBox->getIndexById("1") == 0);
+        REQUIRE(listBox->getIndexById("3") == -1);
+
+        REQUIRE(listBox->getIdByIndex(1) == "2");
+        REQUIRE(listBox->getIdByIndex(2) == "");
+    }
+
     SECTION("Removing items")
     {
         listBox->addItem("Item 1", "1");
