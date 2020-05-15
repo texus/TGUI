@@ -21,6 +21,7 @@ TGUI 0.9-dev
 - Changed default value of ScrollbarPolicy in Label to Automatic
 - Renamed getMenuList in MenuBar to getMenus
 - Renamed mouseOnWidget to isMouseOnWidget
+- Gui::getFont now returns the global font if no font was set in the Gui
 - Container now translates the widget position before calling draw function
 - Removed all code that was marked as deprecated
 

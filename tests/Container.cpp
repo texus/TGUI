@@ -43,7 +43,7 @@ TEST_CASE("[Container]")
     SECTION("default font")
     {
         REQUIRE(tgui::getGlobalFont() != nullptr);
-        REQUIRE(std::make_shared<tgui::Gui>()->getFont() == nullptr);
+        REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
         REQUIRE(tgui::Panel::create()->getRenderer()->getFont() == nullptr);
     }
 

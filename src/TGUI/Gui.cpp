@@ -502,7 +502,10 @@ namespace tgui
 
     std::shared_ptr<sf::Font> Gui::getFont() const
     {
-        return m_container->getInheritedFont();
+       if (m_container->getInheritedFont())
+          return m_container->getInheritedFont();
+        else
+            return getGlobalFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
