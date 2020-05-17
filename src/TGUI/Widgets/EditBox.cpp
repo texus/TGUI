@@ -1281,7 +1281,7 @@ namespace tgui
         Widget::update(elapsedTime);
 
         // Only show/hide the caret every half second
-        if (m_animationTimeElapsed >= sf::milliseconds(500))
+        if (m_animationTimeElapsed >= sf::milliseconds(getEditCursorBlinkRate()))
         {
             // Reset the elapsed time
             m_animationTimeElapsed = {};

@@ -40,6 +40,7 @@ namespace tgui
     {
         unsigned int globalTextSize = 13;
         unsigned int globalDoubleClickTime = 500;
+        unsigned int globalEditBlinkRate = 500;
         std::string globalResourcePath = "";
         std::shared_ptr<sf::Font> globalFont = nullptr;
     }
@@ -97,6 +98,20 @@ namespace tgui
     unsigned int getDoubleClickTime()
     {
         return globalDoubleClickTime;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setEditCursorBlinkRate(unsigned int blinkRateMilliseconds)
+    {
+        globalEditBlinkRate = blinkRateMilliseconds;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int getEditCursorBlinkRate()
+    {
+        return globalEditBlinkRate;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
