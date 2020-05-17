@@ -41,6 +41,7 @@ namespace tgui
     {
         unsigned int globalTextSize = 13;
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
+        Duration globalEditBlinkRate = std::chrono::milliseconds(500);
         String globalResourcePath = "";
         std::shared_ptr<sf::Font> globalFont = nullptr;
     }
@@ -122,9 +123,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool compareFloats(float x, float y)
+    void setEditCursorBlinkRate(Duration blinkRate)
     {
-        return (std::abs(x - y) < 0.0000001f);
+        globalEditBlinkRate = blinkRate;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Duration getEditCursorBlinkRate()
+    {
+        return globalEditBlinkRate;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

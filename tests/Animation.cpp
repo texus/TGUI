@@ -24,8 +24,14 @@
 
 #include "Tests.hpp"
 #include <TGUI/TGUI.hpp>
+#include <cmath>
 
-bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
+static bool compareOpacity(float val1, float val2)
+{
+    return (std::abs(val1 - val2) < 0.00001f);
+}
+
+static bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
 {
     return std::abs(left.x - right.x) < 0.0001f
         && std::abs(left.y - right.y) < 0.0001f;
@@ -76,7 +82,7 @@ TEST_CASE("[Animation]") {
                 widget->showWithEffect(tgui::ShowAnimationType::Fade, std::chrono::milliseconds(300));
                 REQUIRE(widget->getInheritedOpacity() == 0);
                 widget->updateTime(std::chrono::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getInheritedOpacity(), 0.3f));
+                REQUIRE(compareOpacity(widget->getInheritedOpacity(), 0.3f));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getInheritedOpacity() == 0.9f);
             }
@@ -141,7 +147,7 @@ TEST_CASE("[Animation]") {
                 widget->hideWithEffect(tgui::ShowAnimationType::Fade, std::chrono::milliseconds(300));
                 REQUIRE(widget->getInheritedOpacity() == 0.9f);
                 widget->updateTime(std::chrono::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getInheritedOpacity(), 0.6f));
+                REQUIRE(compareOpacity(widget->getInheritedOpacity(), 0.6f));
             }
 
             SECTION("Scale") {

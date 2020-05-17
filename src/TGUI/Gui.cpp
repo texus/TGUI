@@ -180,7 +180,7 @@ namespace tgui
             }
             case sf::Event::GainedFocus:
             {
-                eventTGUI.type = Event::Type::LostFocus;
+                eventTGUI.type = Event::Type::GainedFocus;
                 return true;
             }
             case sf::Event::Resized:

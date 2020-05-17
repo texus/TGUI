@@ -336,6 +336,13 @@ TEST_CASE("[EditBox]")
         }
     }
 
+    SECTION("Blink rate")
+    {
+        REQUIRE(tgui::getEditCursorBlinkRate() == std::chrono::milliseconds(500));
+        tgui::setEditCursorBlinkRate(std::chrono::milliseconds(100));
+        REQUIRE(tgui::getEditCursorBlinkRate() == std::chrono::milliseconds(100));
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")

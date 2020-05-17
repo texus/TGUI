@@ -552,7 +552,7 @@ namespace tgui
     {
         Widget::updateTime(elapsedTime);
 
-        if (m_animationTimeElapsed >= std::chrono::milliseconds(getDoubleClickTime()))
+        if (m_animationTimeElapsed >= getDoubleClickTime())
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
