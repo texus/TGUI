@@ -203,4 +203,23 @@ TEST_CASE("[Picture]")
 
         TEST_DRAW("Picture.png")
     }
+
+    SECTION("Bug Fixes")
+    {
+        SECTION("Relative size didn't work when loading from file")
+        {
+            std::stringstream ss(R"(Picture.Picture1 {
+                Size = (100%, 100%);
+                Renderer {
+                    Texture = "resources/Texture1.png";
+                }
+            })");
+
+            auto parent = tgui::Group::create();
+            parent->setSize(280, 140);
+            parent->loadWidgetsFromStream(ss);
+
+            REQUIRE(parent->getWidgets()[0]->getSize() == tgui::Vector2f(280, 140));
+        }
+    }
 }
