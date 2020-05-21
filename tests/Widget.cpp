@@ -25,6 +25,9 @@
 #include "Tests.hpp"
 #include <TGUI/Gui.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 
 TEST_CASE("[Widget]")
@@ -232,6 +235,31 @@ TEST_CASE("[Widget]")
         REQUIRE(widget6->getSize() == tgui::Vector2f(400*0.3f, 80));
     }
 
+    SECTION("Origin")
+    {
+        REQUIRE(widget->getOrigin() == tgui::Vector2f(0, 0));
+        widget->setOrigin(1, 0.5f);
+        REQUIRE(widget->getOrigin() == tgui::Vector2f(1, 0.5f));
+        widget->setOrigin({0.5, 1});
+        REQUIRE(widget->getOrigin() == tgui::Vector2f(0.5f, 1));
+    }
+
+    SECTION("Scale")
+    {
+        REQUIRE(widget->getScale() == tgui::Vector2f(1, 1));
+        widget->setScale({2, 0.5f});
+        REQUIRE(widget->getScale() == tgui::Vector2f(2, 0.5f));
+        widget->setScale(2);
+        REQUIRE(widget->getScale() == tgui::Vector2f(2, 2));
+    }
+
+    SECTION("Rotation")
+    {
+        REQUIRE(widget->getRotation() == 0);
+        widget->setRotation(60);
+        REQUIRE(widget->getRotation() == 60);
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();
@@ -354,6 +382,65 @@ TEST_CASE("[Widget]")
         REQUIRE(parent->getWidgets().size() == 1);
         parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt", false);
         REQUIRE(parent->getWidgets().size() == 2);
+    }
+
+    SECTION("Draw")
+    {
+        SECTION("Origin, scale and rotation")
+        {
+            auto outerPanel = tgui::Panel::create();
+            outerPanel->setSize(275, 220);
+            outerPanel->setPosition(180, 180);
+            outerPanel->getRenderer()->setBackgroundColor({180, 180, 180});
+            outerPanel->getRenderer()->setBorders({2});
+
+            TEST_DRAW_INIT(360, 360, outerPanel)
+
+            auto innerPanel = tgui::Panel::create();
+            innerPanel->setSize(150, 230);
+            innerPanel->getRenderer()->setBackgroundColor({220, 220, 220});
+            innerPanel->getRenderer()->setBorders({2});
+            outerPanel->add(innerPanel);
+
+            auto button = tgui::Button::create();
+            button->setPosition(20, 130);
+            button->setText("Done");
+            innerPanel->add(button);
+
+            auto label = tgui::Label::create();
+            label->setText("Functions added to TGUI 0.9-dev:");
+            label->setPosition(20, 20);
+            outerPanel->add(label);
+
+            auto checkBox = tgui::CheckBox::create();
+            checkBox->setText("setOrigin");
+            checkBox->setChecked(true);
+            checkBox->setPosition({10, 10});
+            innerPanel->add(checkBox);
+
+            checkBox = tgui::CheckBox::create();
+            checkBox->setText("setRotation");
+            checkBox->setChecked(true);
+            checkBox->setPosition({10, 50});
+            innerPanel->add(checkBox);
+
+            checkBox = tgui::CheckBox::create();
+            checkBox->setText("setScale");
+            checkBox->setChecked(true);
+            checkBox->setPosition({10, 90});
+            innerPanel->add(checkBox);
+
+            outerPanel->setOrigin({0.5f, 0.5f});
+            outerPanel->setRotation(-45);
+
+            innerPanel->setOrigin({0, 1});
+            innerPanel->setPosition(20, 45);
+            innerPanel->setRotation(90);
+
+            button->setScale({2, 4});
+
+            TEST_DRAW("OriginScaleRotation.png")
+        }
     }
 
     SECTION("Bug Fixes")

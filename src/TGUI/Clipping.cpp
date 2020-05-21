@@ -38,6 +38,11 @@ namespace tgui
         m_target {target},
         m_oldView{target.getView()}
     {
+        /// TODO: We currently can't clip rotated objects
+        const float* transformMatrix = states.transform.getMatrix();
+        if ((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f))
+            return;
+
         Vector2f bottomRight{states.transform.transformPoint(sf::Vector2f{topLeft + size})};
         topLeft = Vector2f(states.transform.transformPoint(sf::Vector2f{topLeft}));
 

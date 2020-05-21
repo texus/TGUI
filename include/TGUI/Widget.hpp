@@ -271,7 +271,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the absolute position of the widget instead of the relative position to its parent
+        /// @brief Get the absolute position of the top-left point of the widget instead of the relative position to its parent
         ///
         /// @return Absolute position of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,6 +286,106 @@ namespace tgui
         /// @return Offset of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getWidgetOffset() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the origin point on which the position, scale and rotation is based
+        ///
+        /// @param x  Relative horizontal position of the origin point
+        /// @param y  Relative vertical position of the origin point
+        ///
+        /// Valid x and y values range from 0 to 1, with 0 representing the left/top of the widget and 1 being right/bottom
+        ///
+        /// @warning This functionality is still experimental.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOrigin(float x, float y)
+        {
+            setOrigin({x, y});
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the origin point on which the position, scale and rotation is based
+        ///
+        /// @param setOrigin  Relative position of the origin point
+        ///
+        /// Valid x and y values range from 0 to 1, with 0 representing the left/top of the widget and 1 being right/bottom
+        ///
+        /// @warning This functionality is still experimental.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOrigin(Vector2f origin);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the relative origin point on which the position, scale and rotation is based
+        /// @return Relative origin point of the widget (0 for left/top, 1 for right/bottom)
+        /// @see setOrigin
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getOrigin() const
+        {
+            return m_origin;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the scaling to be applied to the widget
+        ///
+        /// @param scaleFactor How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
+        ///
+        /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
+        /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
+        ///
+        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScale(Vector2f scaleFactors);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the scaling to be applied to the widget
+        ///
+        /// @param scaleFactor  How many times should the widget be enlarged (or shrunk if scale factor is smaller than 1)
+        ///
+        /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
+        /// of 2 will appear on the screen as a (100, 40) widget with its entire contents stretched.
+        ///
+        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScale(float scaleFactor)
+        {
+            setScale({scaleFactor, scaleFactor});
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the scaling to be applied to the widget
+        /// @return How many times the widget is enlarged (or shrunk if scale factor is smaller than 1)
+        /// @see setScaling
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getScale() const
+        {
+            return m_scaleFactors;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the rotation to be applied to the widget
+        ///
+        /// @param angle  How many degrees clockwise should the widget be rotated?
+        ///
+        /// @warning This functionality is still experimental. Clipping isn't supported and is disabled when a rotation is set!
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setRotation(float angle);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the rotation to be applied to the widget
+        /// @return How many degrees the widget is rotated clockwise
+        /// @see setRotation
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getRotation() const
+        {
+            return m_rotationDeg;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -875,6 +975,10 @@ namespace tgui
         Layout2d m_position;
         Layout2d m_size;
         unsigned int m_textSize = 0;
+
+        Vector2f m_origin;
+        Vector2f m_scaleFactors = {1, 1};
+        double m_rotationDeg = 0;
 
         // The previous position and size have to be stored because when setPosition/setSize is called, the layout may already be
         // changed and there would be no way for the widget to detect whether the values changed or not.

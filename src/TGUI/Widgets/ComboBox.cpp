@@ -873,6 +873,7 @@ namespace tgui
         m_previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
 
         m_listBox->setVisible(true);
+        m_listBox->setScale(getScale());
 
         // Find the RootContainer that contains the combo box
         Container* container = getParent();

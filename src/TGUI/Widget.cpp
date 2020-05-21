@@ -66,7 +66,7 @@ namespace tgui
         static Layout2d parseLayout(String str)
         {
             if (str.empty())
-                throw Exception{"Failed to parse layout '" + str + "'. String was empty."};
+                throw Exception{"Failed to parse layout. String was empty."};
 
             // Remove the brackets around the value
             if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
@@ -114,6 +114,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    static Vector2f parseVector2f(String str)
+    {
+        if (str.empty())
+            throw Exception{"Failed to parse Vector2f string. String was empty."};
+
+        // Remove the brackets around the value
+        if ((str.front() == '(') && (str.back() == ')'))
+            str = str.substr(1, str.length() - 2);
+
+        const auto commaPos = str.find(',');
+        if (commaPos == String::npos)
+            throw Exception{"Failed to parse Vector2f string '" + str + "'. No comma found."};
+
+        return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Widget()
     {
         m_renderer->subscribe(this, m_rendererChangedCallback);
@@ -145,6 +163,9 @@ namespace tgui
         m_position                     {other.m_position},
         m_size                         {other.m_size},
         m_textSize                     {other.m_textSize},
+        m_origin                       {other.m_origin},
+        m_scaleFactors                 {other.m_scaleFactors},
+        m_rotationDeg                  {other.m_rotationDeg},
         m_boundPositionLayouts         {},
         m_boundSizeLayouts             {},
         m_enabled                      {other.m_enabled},
@@ -181,6 +202,9 @@ namespace tgui
         m_position                     {std::move(other.m_position)},
         m_size                         {std::move(other.m_size)},
         m_textSize                     {std::move(other.m_textSize)},
+        m_origin                       {std::move(other.m_origin)},
+        m_scaleFactors                 {std::move(other.m_scaleFactors)},
+        m_rotationDeg                  {std::move(other.m_rotationDeg)},
         m_boundPositionLayouts         {std::move(other.m_boundPositionLayouts)},
         m_boundSizeLayouts             {std::move(other.m_boundSizeLayouts)},
         m_enabled                      {std::move(other.m_enabled)},
@@ -234,6 +258,9 @@ namespace tgui
             m_position             = other.m_position;
             m_size                 = other.m_size;
             m_textSize             = other.m_textSize;
+            m_origin               = other.m_origin;
+            m_scaleFactors         = other.m_scaleFactors;
+            m_rotationDeg          = other.m_rotationDeg;
             m_boundPositionLayouts = {};
             m_boundSizeLayouts     = {};
             m_enabled              = other.m_enabled;
@@ -289,6 +316,9 @@ namespace tgui
             m_position             = std::move(other.m_position);
             m_size                 = std::move(other.m_size);
             m_textSize             = std::move(other.m_textSize);
+            m_origin               = std::move(other.m_origin);
+            m_scaleFactors         = std::move(other.m_scaleFactors);
+            m_rotationDeg          = std::move(other.m_rotationDeg);
             m_boundPositionLayouts = std::move(other.m_boundPositionLayouts);
             m_boundSizeLayouts     = std::move(other.m_boundSizeLayouts);
             m_enabled              = std::move(other.m_enabled);
@@ -469,10 +499,24 @@ namespace tgui
 
     Vector2f Widget::getAbsolutePosition() const
     {
+        Vector2f pos = getPosition();
         if (m_parent)
-            return m_parent->getAbsolutePosition() + m_parent->getChildWidgetsOffset() + getPosition();
-        else
-            return getPosition();
+            pos += m_parent->getAbsolutePosition() + m_parent->getChildWidgetsOffset();
+
+        const bool defaultOrigin = (getOrigin().x == 0) && (getOrigin().y == 0);
+        const bool scaledOrRotated = (getScale().x != 1) || (getScale().y != 1) || (getRotation() != 0);
+        if (defaultOrigin && !scaledOrRotated)
+            return pos;
+
+        const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
+        if (!scaledOrRotated)
+            return pos - origin;
+
+        sf::Transform transform;
+        transform.translate(-origin);
+        transform.rotate(getRotation(), origin);
+        transform.scale(getScale(), origin);
+        return Vector2f(transform.transformPoint({0, 0})) + pos;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -480,6 +524,27 @@ namespace tgui
     Vector2f Widget::getWidgetOffset() const
     {
         return Vector2f{0, 0};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setOrigin(Vector2f origin)
+    {
+        m_origin = origin;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setScale(Vector2f scaleFactors)
+    {
+        m_scaleFactors = scaleFactors;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setRotation(float angle)
+    {
+        m_rotationDeg = angle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1076,6 +1141,12 @@ namespace tgui
             node->propertyValuePairs["Position"] = std::make_unique<DataIO::ValueNode>(m_position.toString());
         if (getSize() != Vector2f{})
             node->propertyValuePairs["Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
+        if (getOrigin() != Vector2f{})
+            node->propertyValuePairs["Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
+        if (getScale() != Vector2f{})
+            node->propertyValuePairs["Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
+        if (getRotation() != 0)
+            node->propertyValuePairs["Rotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_rotationDeg));
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
         {
@@ -1148,6 +1219,13 @@ namespace tgui
             setPosition(parseLayout(node->propertyValuePairs["Position"]->value));
         if (node->propertyValuePairs["Size"])
             setSize(parseLayout(node->propertyValuePairs["Size"]->value));
+        if (node->propertyValuePairs["Origin"])
+            setOrigin(parseVector2f(node->propertyValuePairs["Origin"]->value));
+        if (node->propertyValuePairs["Scale"])
+            setScale(parseVector2f(node->propertyValuePairs["Scale"]->value));
+        if (node->propertyValuePairs["Rotation"])
+            setRotation(node->propertyValuePairs["Rotation"]->value.toFloat());
+
         if (node->propertyValuePairs["UserData"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17

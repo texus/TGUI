@@ -209,8 +209,10 @@ namespace
         if (str.empty())
             return {800, 600};
 
-        // Extract the x and y values
         const auto commaPos = str.find(',');
+        if (commaPos == tgui::String::npos)
+            return {800, 600};
+
         return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
     }
 

@@ -97,6 +97,27 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        static Vector2f transformMousePos(const Widget::Ptr& widget, Vector2f mousePos)
+        {
+            const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
+            const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
+            if (defaultOrigin && !scaledOrRotated)
+                return mousePos;
+
+            const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+            if (!scaledOrRotated)
+                return mousePos + origin;
+
+            sf::Transform transform;
+            transform.translate(widget->getPosition() - origin);
+            transform.rotate(widget->getRotation(), origin);
+            transform.scale(widget->getScale(), origin);
+            mousePos = transform.getInverse().transformPoint(mousePos);
+            return mousePos + widget->getPosition();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,18 +317,6 @@ namespace tgui
 
         m_widgetBelowMouse = nullptr;
         m_focusedWidget = nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::uncheckRadioButtons()
-    {
-        // Loop through all radio buttons and uncheck them
-        for (auto& widget : m_widgets)
-        {
-            if (widget->getWidgetType() == "RadioButton")
-                std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -712,7 +721,7 @@ namespace tgui
             Widget::Ptr widget = mouseOnWhichWidget(mousePos);
             if (widget)
             {
-                toolTip = widget->askToolTip(mousePos);
+                toolTip = widget->askToolTip(transformMousePos(widget, mousePos));
                 if (toolTip)
                     return toolTip;
             }
@@ -797,7 +806,7 @@ namespace tgui
                 // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
                 if (widget->m_draggableWidget || widget->isContainer())
                 {
-                    widget->mouseMoved(mousePos);
+                    widget->mouseMoved(transformMousePos(widget, mousePos));
                     return true;
                 }
             }
@@ -808,7 +817,7 @@ namespace tgui
         if (widget != nullptr)
         {
             // Send the event to the widget
-            widget->mouseMoved(mousePos);
+            widget->mouseMoved(transformMousePos(widget, mousePos));
             return true;
         }
 
@@ -832,7 +841,7 @@ namespace tgui
             if (!widget->isContainer())
                 widget->setFocused(true);
 
-            widget->mousePressed(button, mousePos);
+            widget->mousePressed(button, transformMousePos(widget, mousePos));
             return true;
         }
         else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
@@ -854,7 +863,7 @@ namespace tgui
         // Check if the mouse is on top of a widget
         Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
         if (widgetBelowMouse != nullptr)
-            widgetBelowMouse->mouseReleased(button, mousePos);
+            widgetBelowMouse->mouseReleased(button, transformMousePos(widgetBelowMouse, mousePos));
 
         if (button == Event::MouseButton::Left)
         {
@@ -891,7 +900,7 @@ namespace tgui
         // Send the event to the widget below the mouse
         Widget::Ptr widget = mouseOnWhichWidget(pos);
         if (widget != nullptr)
-            return widget->mouseWheelScrolled(delta, pos);
+            return widget->mouseWheelScrolled(delta, transformMousePos(widget, pos));
 
         return false;
     }
@@ -954,27 +963,28 @@ namespace tgui
 
     Widget::Ptr Container::mouseOnWhichWidget(Vector2f mousePos)
     {
-        Widget::Ptr widget = nullptr;
+        Widget::Ptr widgetBelowMouse = nullptr;
         for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
-            if ((*it)->isVisible())
-            {
-                if ((*it)->isMouseOnWidget(mousePos))
-                {
-                    if ((*it)->isEnabled())
-                        widget = *it;
+            auto& widget = *it;
+            if (!widget->isVisible())
+                continue;
 
-                    break;
-                }
-            }
+            if (!widget->isMouseOnWidget(transformMousePos(widget, mousePos)))
+                continue;
+
+            if (widget->isEnabled())
+                widgetBelowMouse = widget;
+
+            break;
         }
 
         // If the mouse is on a different widget, tell the old widget that the mouse has left
-        if (m_widgetBelowMouse && (widget != m_widgetBelowMouse))
+        if (m_widgetBelowMouse && (widgetBelowMouse != m_widgetBelowMouse))
             m_widgetBelowMouse->mouseNoLongerOnWidget();
 
-        m_widgetBelowMouse = widget;
-        return widget;
+        m_widgetBelowMouse = widgetBelowMouse;
+        return widgetBelowMouse;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -986,8 +996,15 @@ namespace tgui
             if (!widget->isVisible())
                 continue;
 
+            const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+
             sf::RenderStates widgetStates = states;
-            widgetStates.transform.translate(sf::Vector2f(widget->getPosition()));
+            widgetStates.transform.translate(widget->getPosition() - origin);
+            if (widget->getRotation() != 0)
+                widgetStates.transform.rotate(widget->getRotation(), origin);
+            if ((widget->getScale().x != 1) || (widget->getScale().y != 1))
+                widgetStates.transform.scale(widget->getScale(), origin);
+
             widget->draw(target, widgetStates);
         }
     }
