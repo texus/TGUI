@@ -55,6 +55,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void RadioButtonGroup::uncheckRadioButtons()
+    {
+        // Loop through all radio buttons and uncheck them
+        for (auto& widget : m_widgets)
+        {
+            if (widget->getWidgetType() == "RadioButton")
+                std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RadioButton::Ptr RadioButtonGroup::getCheckedRadioButton() const
+    {
+        for (const auto& widget : m_widgets)
+        {
+            if (widget->getWidgetType() != "RadioButton")
+                continue;
+
+            tgui::RadioButton::Ptr radioButton = std::static_pointer_cast<RadioButton>(widget);
+            if (radioButton->isChecked())
+                return radioButton;
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RadioButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Note that it calls the function from Container, not Group!

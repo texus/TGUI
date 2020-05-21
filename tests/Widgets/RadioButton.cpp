@@ -81,18 +81,26 @@ TEST_CASE("[RadioButton]")
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(!radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
+        REQUIRE(!parent1->getCheckedRadioButton());
+        REQUIRE(!parent2->getCheckedRadioButton());
         radioButton1->setChecked(true);
         REQUIRE(radioButton1->isChecked());
         REQUIRE(!radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
+        REQUIRE(parent1->getCheckedRadioButton() == radioButton1);
+        REQUIRE(!parent2->getCheckedRadioButton());
         radioButton2->setChecked(true);
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
+        REQUIRE(parent1->getCheckedRadioButton() == radioButton2);
+        REQUIRE(!parent2->getCheckedRadioButton());
         radioButton3->setChecked(true);
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(radioButton2->isChecked());
         REQUIRE(radioButton3->isChecked());
+        REQUIRE(parent1->getCheckedRadioButton() == radioButton2);
+        REQUIRE(parent2->getCheckedRadioButton() == radioButton3);
 
         parent1->uncheckRadioButtons();
         REQUIRE(!radioButton1->isChecked());

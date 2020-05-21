@@ -10,11 +10,13 @@ TGUI 0.9-dev
 - Replaced sf::Text::Style with tgui::TextStyle
 - Signal names, renderer names and widget/renderer properties are now case-sensitive
 - Added setWidth and setHeight helper functions
+- Added getCheckedRadioButton to RadioButtonGroup
 - Textures are now smooth by default
 - Size of ChildWindow now includes borders and title bar
 - When setView is not called on Gui, view will now scale with window size
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid
+- Moved uncheckRadioButtons from Container to RadioButtonGroup
 - Changed return type of addItem in ListBox to return index of the item
 - Changed Knob value type from int to float
 - Changed default value of ChangeItemOnScroll in ComboBox to false
