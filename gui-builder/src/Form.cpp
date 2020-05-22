@@ -76,11 +76,11 @@ tgui::String Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, 
     const tgui::String widgetType = widget->getWidgetType();
     bool foundAvailableName = false;
     unsigned int count = 0;
-    tgui::String name;
+    tgui::String name = widget->getWidgetName();
+    if (name.empty())
+        name = widgetType + tgui::String::fromNumber(++count);
     while (!foundAvailableName)
     {
-        name = widgetType + tgui::String::fromNumber(++count);
-
         foundAvailableName = true;
         for (const auto& pair : m_widgets)
         {
@@ -91,6 +91,9 @@ tgui::String Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, 
                 break;
             }
         }
+
+        if (!foundAvailableName)
+            name = widgetType + tgui::String::fromNumber(++count);
     }
 
     m_widgets[id]->name = name;
@@ -239,14 +242,6 @@ void Form::updateSelectionSquarePositions()
     {
         position += parentWidget->getPosition() + parentWidget->getChildWidgetsOffset();
         parentWidget = parentWidget->getParent();
-    }
-
-    // Exception for ChildWindow as its size is currently its client size instead of the full size
-    if (widget->getWidgetType() == "ChildWindow")
-    {
-        auto renderer = widget->cast<tgui::ChildWindow>()->getSharedRenderer();
-        position.x += renderer->getBorders().getLeft();
-        position.y += renderer->getBorders().getTop() + renderer->getTitleBarHeight() + renderer->getBorderBelowTitleBar();
     }
 
     m_selectionSquares[0]->setPosition({position.x,                               position.y});
