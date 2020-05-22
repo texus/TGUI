@@ -1,15 +1,15 @@
 MenuBar.MenuBar {
     MinimumSubMenuWidth = 125;
-    Size = (&.size, 20);
+    Size = (100%, 20);
     TextSize = 13;
 
     Renderer {
-        backgroundcolor = #D8D8D8;
-        distancetoside = 4;
-        selectedbackgroundcolor = #006EFF;
-        selectedtextcolor = white;
-        textcolor = black;
-        textcolordisabled = #7D7D7D;
+        BackgroundColor = #D8D8D8;
+        DistanceToSide = 4;
+        SelectedBackgroundColor = #006EFF;
+        SelectedTextColor = white;
+        TextColor = black;
+        TextColorDisabled = #7D7D7D;
     }
 
     Menu {
@@ -54,33 +54,33 @@ MenuBar.MenuBar {
 }
 
 ChildWindow.PropertiesWindow {
-    Position = (&.w - w, menubar.h);
-    Size = (24%, (&.h - menubar.h) - 20);
+    Position = (100% - w, menubar.h);
+    Size = (24%, (100% - menubar.h));
     Title = Properties;
     TitleAlignment = Center;
     TitleButtons = None;
 
     Renderer {
-        backgroundcolor = #E6E6E6;
-        bordercolor = Black;
-        bordercolorfocused = Blue;
-        borders = (1, 1, 1, 1);
-        distancetoside = 3;
-        paddingbetweenbuttons = 1;
-        titlebarcolor = White;
-        titlecolor = Black;
+        BackgroundColor = #E6E6E6;
+        BorderColor = Black;
+        BorderColorFocused = Blue;
+        Borders = (1, 1, 1, 1);
+        DistanceToSide = 3;
+        PaddingBetweenButtons = 1;
+        TitleBarColor = White;
+        TitleColor = Black;
 
-        closebutton {
-            backgroundcolor = #F5F5F5;
-            backgroundcolordown = #EBEBEB;
-            backgroundcolorhover = white;
-            bordercolor = #3C3C3C;
-            bordercolordown = black;
-            bordercolorhover = black;
-            borders = (1, 1, 1, 1);
-            textcolor = #3C3C3C;
-            textcolordown = black;
-            textcolorhover = black;
+        CloseButton {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDown = black;
+            BorderColorHover = black;
+            Borders = (1, 1, 1, 1);
+            TextColor = #3C3C3C;
+            TextColorDown = black;
+            TextColorHover = black;
         }
     }
 
@@ -94,57 +94,57 @@ ChildWindow.PropertiesWindow {
         TextSize = 13;
 
         Renderer {
-            arrowbackgroundcolor = #F5F5F5;
-            arrowbackgroundcolorhover = White;
-            arrowcolor = #3C3C3C;
-            arrowcolorhover = Black;
-            backgroundcolor = #F5F5F5;
-            bordercolor = Black;
-            borders = (2, 2, 2, 2);
-            padding = (2, 0, 0, 0);
-            textcolor = Black;
+            ArrowBackgroundColor = #F5F5F5;
+            ArrowBackgroundColorHover = White;
+            ArrowColor = #3C3C3C;
+            ArrowColorHover = Black;
+            BackgroundColor = #F5F5F5;
+            BorderColor = Black;
+            Borders = (2, 2, 2, 2);
+            Padding = (2, 0, 0, 0);
+            TextColor = Black;
         }
     }
 
     ScrollablePanel.Properties {
         ContentSize = (0, 0);
         Position = (10, (10 + 24) + 10);
-        Size = ((&.w - x) - 5, (&.h - y) - 10);
+        Size = ((100% - x) - 5, (100% - y) - 10);
 
         Renderer {
-            backgroundcolor = #E6E6E6;
+            BackgroundColor = #E6E6E6;
         }
     }
 }
 
 ChildWindow.ToolboxWindow {
-    Position = (0, 20);
-    Size = (12%, ((&.h * 0.5) - menubar.h) - 20);
+    Position = (0, menubar.h);
+    Size = (12%, (100% - menubar.h) * 0.5);
     Title = Toolbox;
     TitleAlignment = Center;
     TitleButtons = None;
 
     Renderer {
-        backgroundcolor = #E6E6E6;
-        bordercolor = Black;
-        bordercolorfocused = Blue;
-        borders = (1, 1, 1, 1);
-        distancetoside = 3;
-        paddingbetweenbuttons = 1;
-        titlebarcolor = White;
-        titlecolor = Black;
+        BackgroundColor = #E6E6E6;
+        BorderColor = Black;
+        BorderColorFocused = Blue;
+        Borders = (1, 1, 1, 1);
+        DistanceToSide = 3;
+        PaddingBetweenButtons = 1;
+        TitleBarColor = White;
+        TitleColor = Black;
 
-        closebutton {
-            backgroundcolor = #F5F5F5;
-            backgroundcolordown = #EBEBEB;
-            backgroundcolorhover = white;
-            bordercolor = #3C3C3C;
-            bordercolordown = black;
-            bordercolorhover = black;
-            borders = (1, 1, 1, 1);
-            textcolor = #3C3C3C;
-            textcolordown = black;
-            textcolorhover = black;
+        CloseButton {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDown = black;
+            BorderColorHover = black;
+            Borders = (1, 1, 1, 1);
+            TextColor = #3C3C3C;
+            TextColorDown = black;
+            TextColorHover = black;
         }
     }
 
@@ -153,39 +153,39 @@ ChildWindow.ToolboxWindow {
         Size = (100%, 100%);
 
         Renderer {
-            backgroundcolor = #E6E6E6;
+            BackgroundColor = #E6E6E6;
         }
     }
 }
 
 ChildWindow.HierarchyWindow {
-    Position = (0, (toolboxwindow.h + menubar.h) + 20);
-    Size = (12%, (&.h * 0.5) - 20);
+    Position = (0, toolboxwindow.bottom);
+    Size = (12%, (100% - menubar.h) * 0.5);
     Title = "Widgets hierarchy";
     TitleAlignment = Center;
     TitleButtons = None;
 
     Renderer {
-        backgroundcolor = #E6E6E6;
-        bordercolor = Black;
-        bordercolorfocused = Blue;
-        borders = (1, 1, 1, 1);
-        distancetoside = 3;
-        paddingbetweenbuttons = 1;
-        titlebarcolor = White;
-        titlecolor = Black;
+        BackgroundColor = #E6E6E6;
+        BorderColor = Black;
+        BorderColorFocused = Blue;
+        Borders = (1, 1, 1, 1);
+        DistanceToSide = 3;
+        PaddingBetweenButtons = 1;
+        TitleBarColor = White;
+        TitleColor = Black;
 
-        closebutton {
-            backgroundcolor = #F5F5F5;
-            backgroundcolordown = #EBEBEB;
-            backgroundcolorhover = white;
-            bordercolor = #3C3C3C;
-            bordercolordown = black;
-            bordercolorhover = black;
-            borders = (1, 1, 1, 1);
-            textcolor = #3C3C3C;
-            textcolordown = black;
-            textcolorhover = black;
+        CloseButton {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDown = black;
+            BorderColorHover = black;
+            Borders = (1, 1, 1, 1);
+            TextColor = #3C3C3C;
+            TextColorDown = black;
+            TextColorHover = black;
         }
     }
 
@@ -195,41 +195,41 @@ ChildWindow.HierarchyWindow {
         TextSize = 13;
 
         Renderer {
-            backgroundcolor = #F5F5F5;
-            backgroundcolorhover = white;
-            bordercolor = black;
-            borders = (0, 0, 0, 0);
-            padding = (0, 0, 0, 0);
-            selectedbackgroundcolor = #006EFF;
-            selectedbackgroundcolorhover = #1E96FF;
-            selectedtextcolor = white;
-            textcolor = #3C3C3C;
-            textcolorhover = black;
+            BackgroundColor = #F5F5F5;
+            BackgroundColorHover = white;
+            BorderColor = black;
+            Borders = (0, 0, 0, 0);
+            Padding = (0, 0, 0, 0);
+            SelectedBackgroundColor = #006EFF;
+            SelectedBackgroundColorHover = #1E96FF;
+            SelectedTextColor = white;
+            TextColor = #3C3C3C;
+            TextColorHover = black;
         }
     }
 }
 
 ChildWindow.Form {
-    Position = (((((&.w - toolboxwindow.w) - propertieswindow.w) - w) / 2) + toolboxwindow.w, (&.h - h) / 2);
+    Position = (((((100% - toolboxwindow.w) - propertieswindow.w) - w) / 2) + toolboxwindow.w, (100% - menubar.h - h) / 2 + menubar.h);
     Resizable = true;
-    Size = (&.w - (toolboxwindow.w + propertieswindow.w + 20), &.h - menubar.h - 20);
+    Size = (100% - (toolboxwindow.w + propertieswindow.w + 20), 100% - menubar.h);
     TitleAlignment = Center;
     TitleButtons = Close;
 
     Renderer {
-        backgroundcolor = #E6E6E6;
-        bordercolor = Black;
-        bordercolorfocused = Blue;
-        borders = (1, 1, 1, 1);
-        distancetoside = 3;
-        paddingbetweenbuttons = 1;
-        showtextontitlebuttons = true;
-        texturetitlebar = None;
-        titlebarcolor = White;
-        titlecolor = Black;
+        BackgroundColor = #E6E6E6;
+        BorderColor = Black;
+        BorderColorFocused = Blue;
+        Borders = (1, 1, 1, 1);
+        DistanceToSide = 3;
+        PaddingBetweenButtons = 1;
+        ShowTextOnTitleButtons = true;
+        TextureTitleBar = None;
+        TitleBarColor = White;
+        TitleColor = Black;
 
-        closebutton {
-            borders = (1, 1, 1, 1);
+        CloseButton {
+            Borders = (1, 1, 1, 1);
         }
     }
 
@@ -238,7 +238,7 @@ ChildWindow.Form {
         Size = (100%, 100%);
 
         Renderer {
-            backgroundcolor = #D7D7D7;
+            BackgroundColor = #D7D7D7;
         }
 
         Panel.WidgetContainer {
@@ -246,8 +246,8 @@ ChildWindow.Form {
             Size = (100%, 100%);
 
             Renderer {
-                backgroundcolor = #E6E6E6;
-                borders = (0, 0, 0, 0);
+                BackgroundColor = #E6E6E6;
+                Borders = (0, 0, 0, 0);
             }
         }
     }

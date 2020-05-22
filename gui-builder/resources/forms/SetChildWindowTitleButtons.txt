@@ -1,27 +1,27 @@
 Renderer.1 {
-    backgroundcolor = #F5F5F5;
-    backgroundcolordisabled = #E6E6E6;
-    backgroundcolorhover = white;
-    bordercolor = #3C3C3C;
-    bordercolordisabled = #7D7D7D;
-    bordercolorfocused = #1E1EB4;
-    bordercolorhover = black;
-    borders = (1, 1, 1, 1);
-    checkcolor = #3C3C3C;
-    checkcolordisabled = #7D7D7D;
-    checkcolorhover = black;
-    textcolor = #3C3C3C;
-    textcolordisabled = #7D7D7D;
-    textcolorhover = black;
-    textdistanceratio = 0.2;
-    texturechecked = None;
-    texturecheckeddisabled = None;
-    texturecheckedfocused = None;
-    texturecheckedhover = None;
-    textureunchecked = None;
-    textureuncheckeddisabled = None;
-    textureuncheckedfocused = None;
-    textureuncheckedhover = None;
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorFocused = #1E1EB4;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    CheckColor = #3C3C3C;
+    CheckColorDisabled = #7D7D7D;
+    CheckColorHover = black;
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    TextColorHover = black;
+    TextDistanceRatio = 0.2;
+    TextureChecked = None;
+    TextureCheckedDisabled = None;
+    TextureCheckedFocused = None;
+    TextureCheckedHover = None;
+    TextureUnchecked = None;
+    TextureUncheckedDisabled = None;
+    TextureUncheckedFocused = None;
+    TextureUncheckedHover = None;
 }
 
 CheckBox.CheckBoxClose {
@@ -29,7 +29,7 @@ CheckBox.CheckBoxClose {
     Size = (18, 18);
     Text = Close;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 CheckBox.CheckBoxMaximize {
@@ -37,7 +37,7 @@ CheckBox.CheckBoxMaximize {
     Size = (18, 18);
     Text = Maximize;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 CheckBox.CheckBoxMinimize {
@@ -45,5 +45,5 @@ CheckBox.CheckBoxMinimize {
     Size = (18, 18);
     Text = Minimize;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }

@@ -44,7 +44,7 @@ namespace tgui
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
         m_label->setTextSize(m_textSize);
 
-        setSize({400, 150});
+        setClientSize({400, 150});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +264,7 @@ namespace tgui
             size.x = buttonsAreaWidth;
 
         // Set the size of the window
-        setSize(size);
+        setClientSize(size);
 
         // Set the text on the correct position
         m_label->setPosition({distance, distance});

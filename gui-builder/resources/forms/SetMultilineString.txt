@@ -7,15 +7,15 @@ TextBox.TextBox {
     TextSize = 13;
 
     Renderer {
-        backgroundcolor = white;
-        bordercolor = black;
-        borders = (1, 1, 1, 1);
-        caretcolor = black;
-        caretwidth = 1;
-        padding = (0, 0, 0, 0);
-        selectedtextbackgroundcolor = #006EFF;
-        selectedtextcolor = white;
-        textcolor = #3C3C3C;
-        texturebackground = None;
+        BackgroundColor = white;
+        BorderColor = black;
+        Borders = (1, 1, 1, 1);
+        CaretColor = black;
+        CaretWidth = 1;
+        Padding = (0, 0, 0, 0);
+        SelectedTextBackgroundColor = #006EFF;
+        SelectedTextColor = white;
+        TextColor = #3C3C3C;
+        TextureBackground = None;
     }
 }

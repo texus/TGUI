@@ -195,6 +195,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f ChildWindow::getInnerSize() const
+    {
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setClientSize(Vector2f size)
     {
         setSize({size.x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
@@ -205,8 +213,7 @@ namespace tgui
 
     Vector2f ChildWindow::getClientSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
+        return getInnerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

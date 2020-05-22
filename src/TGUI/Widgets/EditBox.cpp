@@ -570,7 +570,10 @@ namespace tgui
     void EditBox::keyPressed(const Event::KeyEvent& event)
     {
         if (event.code == Event::KeyboardKey::Enter)
+        {
             onReturnKeyPress.emit(this, m_text);
+            onReturnOrUnfocus.emit(this, m_text);
+        }
         else if (event.code == Event::KeyboardKey::Backspace)
             backspaceKeyPressed();
         else if (event.code == Event::KeyboardKey::Delete)

@@ -497,15 +497,15 @@ bool GuiBuilder::loadGuiBuilderState()
 
     const auto node = tgui::DataIO::parse(stream);
 
-    if (node->propertyValuePairs["recentfiles"])
+    if (node->propertyValuePairs["RecentFiles"])
     {
-        if (node->propertyValuePairs["formsize"])
+        if (node->propertyValuePairs["FormSize"])
         {
-            const auto& size = node->propertyValuePairs["formsize"]->value;
+            const auto& size = node->propertyValuePairs["FormSize"]->value;
             m_formSize = parseSize(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, size).getString());
         }
 
-        for (const auto& value : node->propertyValuePairs["recentfiles"]->valueList)
+        for (const auto& value : node->propertyValuePairs["RecentFiles"]->valueList)
         {
             tgui::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
             if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / filename))
@@ -517,18 +517,18 @@ bool GuiBuilder::loadGuiBuilderState()
         }
     }
 
-    if (node->propertyValuePairs["themes"])
+    if (node->propertyValuePairs["Themes"])
     {
-        for (const auto& theme : node->propertyValuePairs["themes"]->valueList)
+        for (const auto& theme : node->propertyValuePairs["Themes"]->valueList)
         {
             const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
             m_themes[deserializedTheme] = {deserializedTheme};
         }
     }
 
-    if (node->propertyValuePairs["defaultpath"])
+    if (node->propertyValuePairs["DefaultPath"])
     {
-        m_defaultPath = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["defaultpath"]->value).getString();
+        m_defaultPath = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["DefaultPath"]->value).getString();
         if (!m_defaultPath.empty() && (m_defaultPath[m_defaultPath.length()-1] != '/') && (m_defaultPath[m_defaultPath.length()-1] != '\\'))
             m_defaultPath += '/';
     }
@@ -791,7 +791,7 @@ void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::Strin
 {
     auto filenameWindow = openWindowWithFocus();
     filenameWindow->setTitle(title);
-    filenameWindow->setSize(400, 100);
+    filenameWindow->setClientSize({400, 100});
     filenameWindow->loadWidgetsFromFile("resources/forms/LoadFile.txt");
 
     auto editBoxFilename = filenameWindow->get<tgui::EditBox>("EditFilename");
@@ -855,7 +855,7 @@ void GuiBuilder::loadStartScreen()
             labelRecentForm->setVisible(true);
             labelRecentForm->onClick([=,filename=m_recentFiles[i]]{ loadForm(filename); });
 
-            auto buttonRemoveFormFromList = panel->get<tgui::Button>("BtnDeleteRecentForm" + tgui::String::fromNumber(i+1));
+            auto buttonRemoveFormFromList = panel->get<tgui::ClickableWidget>("BtnDeleteRecentForm" + tgui::String::fromNumber(i+1));
             buttonRemoveFormFromList->setVisible(true);
             buttonRemoveFormFromList->onClick([this,filename=m_recentFiles[i]]{
                 m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const tgui::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
@@ -1600,7 +1600,7 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
     buttonMore->onPress([=]{
         auto textStyleWindow = openWindowWithFocus();
         textStyleWindow->setTitle("Set text style");
-        textStyleWindow->setSize(180, 160);
+        textStyleWindow->setClientSize({180, 160});
         textStyleWindow->loadWidgetsFromFile("resources/forms/SetTextStyle.txt");
 
         auto checkBoxBold = textStyleWindow->get<tgui::CheckBox>("CheckBoxBold");
@@ -1639,7 +1639,7 @@ void GuiBuilder::addPropertyValueOutline(const tgui::String& property, const tgu
     buttonMore->onPress([=]{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set outline");
-        outlineWindow->setSize(150, 150);
+        outlineWindow->setClientSize({150, 150});
         outlineWindow->loadWidgetsFromFile("resources/forms/SetOutline.txt");
 
         auto editLeft = outlineWindow->get<tgui::EditBox>("EditLeft");
@@ -1679,7 +1679,7 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
     buttonMore->onPress([=]{
         auto multilineStringWindow = openWindowWithFocus();
         multilineStringWindow->setTitle("Set multiline text");
-        multilineStringWindow->setSize(470, 220);
+        multilineStringWindow->setClientSize({470, 220});
         multilineStringWindow->loadWidgetsFromFile("resources/forms/SetMultilineString.txt");
 
         auto textBox = multilineStringWindow->get<tgui::TextBox>("TextBox");
@@ -1707,7 +1707,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
     buttonMore->onPress([=]{
         auto stringListWindow = openWindowWithFocus();
         stringListWindow->setTitle("Set string list");
-        stringListWindow->setSize(352, 215);
+        stringListWindow->setClientSize({352, 215});
         stringListWindow->loadWidgetsFromFile("resources/forms/SetStringList.txt");
 
         auto listBox = stringListWindow->get<tgui::ListBox>("ListBox");
@@ -1817,7 +1817,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
     buttonMore->onPress([=]{
         auto textureWindow = openWindowWithFocus();
         textureWindow->setTitle("Set texture");
-        textureWindow->setSize(235, 235);
+        textureWindow->setClientSize({235, 235});
         textureWindow->loadWidgetsFromFile("resources/forms/SetTexture.txt");
 
         auto previewCanvas = textureWindow->get<tgui::Canvas>("ImagePreview");
@@ -1858,7 +1858,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             }
 
             const tgui::Vector2u imageSize = texture->getImageSize();
-            const tgui::Vector2f extraSpace{20, 135};
+            const tgui::Vector2f extraSpace{20, 155};
             const tgui::Vector2f minSize{235, 140};
             const tgui::Layout2d maxSize{tgui::bindWidth(m_gui) - 50, tgui::bindHeight(m_gui) - 50};
             const tgui::Layout scaling = tgui::bindMin(1.f, tgui::bindMin((maxSize.x - extraSpace.x) / imageSize.x, (maxSize.y - extraSpace.y) / imageSize.y));
@@ -1967,7 +1967,7 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const tgui::String& prope
     buttonMore->onPress([=]{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set accepted input");
-        outlineWindow->setSize(190, 215);
+        outlineWindow->setClientSize({190, 215});
         outlineWindow->loadWidgetsFromFile("resources/forms/SetEditBoxInputValidator.txt");
 
         auto checkAny = outlineWindow->get<tgui::RadioButton>("CheckAny");
@@ -2019,7 +2019,7 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
     buttonMore->onPress([=]{
         auto titleButtonWindow = openWindowWithFocus();
         titleButtonWindow->setTitle("Set title buttons");
-        titleButtonWindow->setSize(125, 125);
+        titleButtonWindow->setClientSize({125, 125});
         titleButtonWindow->loadWidgetsFromFile("resources/forms/SetChildWindowTitleButtons.txt");
 
         auto checkClose = titleButtonWindow->get<tgui::RadioButton>("CheckBoxClose");
@@ -2148,7 +2148,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
 {
     auto editThemesWindow = openWindowWithFocus();
     editThemesWindow->setTitle("Edit themes");
-    editThemesWindow->setSize({320, 280});
+    editThemesWindow->setClientSize({320, 280});
     editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
 
     auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
@@ -2383,7 +2383,7 @@ void GuiBuilder::menuBarCallbackKeyboardShortcuts()
 {
     auto keyboardShortcutsWindow = openWindowWithFocus();
     keyboardShortcutsWindow->setTitle("Keyboard shortcuts");
-    keyboardShortcutsWindow->setSize(375, 310);
+    keyboardShortcutsWindow->setClientSize({375, 310});
     keyboardShortcutsWindow->loadWidgetsFromFile("resources/forms/KeyboardShortcuts.txt");
 }
 
@@ -2393,7 +2393,7 @@ void GuiBuilder::menuBarCallbackAbout()
 {
     auto aboutWindow = openWindowWithFocus();
     aboutWindow->setTitle("About");
-    aboutWindow->setSize(365, 130);
+    aboutWindow->setClientSize({365, 130});
     aboutWindow->loadWidgetsFromFile("resources/forms/About.txt");
 
     auto labelVersion = aboutWindow->get<tgui::Label>("LabelVersion");

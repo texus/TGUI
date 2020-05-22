@@ -1,8 +1,8 @@
 Renderer.1 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = #3C3C3C;
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
 }
 
 Picture.Widget1 {
@@ -10,8 +10,8 @@ Picture.Widget1 {
     Size = (64, 64);
 
     Renderer {
-        texture = "resources/Icon.png";
-        transparenttexture = false;
+        Texture = "resources/Icon.png";
+        TransparentTexture = false;
     }
 }
 
@@ -22,7 +22,7 @@ Label.Widget2 {
     Size = (275.8, 43);
     Text = "TGUI Gui Builder";
     TextSize = 32;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget3 {
@@ -32,7 +32,7 @@ Label.Widget3 {
     Size = (79.4, 24);
     Text = "Version:";
     TextSize = 18;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.LabelVersion {
@@ -42,5 +42,5 @@ Label.LabelVersion {
     Size = (49.4, 24);
     Text = "X.Y.Z";
     TextSize = 18;
-    renderer = &1;
+    Renderer = &1;
 }

@@ -1,8 +1,8 @@
 Renderer.1 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = #3C3C3C;
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
 }
 
 Label.Widget1 {
@@ -12,7 +12,7 @@ Label.Widget1 {
     Size = (48.2, 18);
     Text = Arrows;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget2 {
@@ -22,7 +22,7 @@ Label.Widget2 {
     Size = (88.2, 18);
     Text = "Ctrl + Arrows";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget3 {
@@ -32,7 +32,7 @@ Label.Widget3 {
     Size = (95.2, 18);
     Text = "Shift + Arrows";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget4 {
@@ -42,7 +42,7 @@ Label.Widget4 {
     Size = (135.2, 18);
     Text = "Ctrl + Shift + Arrows";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget5 {
@@ -52,7 +52,7 @@ Label.Widget5 {
     Size = (52.2, 18);
     Text = "Ctrl + C";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget6 {
@@ -62,7 +62,7 @@ Label.Widget6 {
     Size = (52.2, 18);
     Text = "Ctrl + V";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget7 {
@@ -72,7 +72,7 @@ Label.Widget7 {
     Size = (52.2, 18);
     Text = "Ctrl + X";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget8 {
@@ -82,7 +82,7 @@ Label.Widget8 {
     Size = (24.2, 18);
     Text = Del;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget9 {
@@ -92,7 +92,7 @@ Label.Widget9 {
     Size = (25.2, 18);
     Text = Esc;
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget10 {
@@ -102,7 +102,7 @@ Label.Widget10 {
     Size = (51.2, 18);
     Text = "Ctrl + S";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget11 {
@@ -112,7 +112,7 @@ Label.Widget11 {
     Size = (148.2, 18);
     Text = "Select different widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget12 {
@@ -122,7 +122,7 @@ Label.Widget12 {
     Size = (92.2, 18);
     Text = "Resize widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget13 {
@@ -132,7 +132,7 @@ Label.Widget13 {
     Size = (130.2, 18);
     Text = "Move widget 1 pixel";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget14 {
@@ -142,7 +142,7 @@ Label.Widget14 {
     Size = (180.2, 18);
     Text = "Move widget multiple pixels";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget15 {
@@ -152,7 +152,7 @@ Label.Widget15 {
     Size = (152.2, 18);
     Text = "Select parent of widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget16 {
@@ -162,7 +162,7 @@ Label.Widget16 {
     Size = (104.2, 18);
     Text = "Remove widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget17 {
@@ -172,7 +172,7 @@ Label.Widget17 {
     Size = (165.2, 18);
     Text = "Copy and remove widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget18 {
@@ -182,7 +182,7 @@ Label.Widget18 {
     Size = (83.2, 18);
     Text = "Copy widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget19 {
@@ -192,7 +192,7 @@ Label.Widget19 {
     Size = (86.2, 18);
     Text = "Paste widget";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget20 {
@@ -202,5 +202,5 @@ Label.Widget20 {
     Size = (70.2, 18);
     Text = "Save form";
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }

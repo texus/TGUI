@@ -1,22 +1,22 @@
 Renderer.1 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = #3C3C3C;
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
 }
 
 Renderer.2 {
-    backgroundcolor = #D7D7D7;
-    bordercolor = black;
-    borders = (1, 1, 1, 1);
+    BackgroundColor = #D7D7D7;
+    BorderColor = black;
+    Borders = (1, 1, 1, 1);
 }
 
 Renderer.3 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = blue;
-    textstyle = Underlined;
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = blue;
+    TextStyle = Underlined;
 }
 
 Panel.MainPanel {
@@ -24,15 +24,15 @@ Panel.MainPanel {
     Size = (512, 370);
 
     Renderer {
-        backgroundcolor = #E6E6E6;
-        bordercolor = black;
-        borders = (1, 1, 1, 1);
+        BackgroundColor = #E6E6E6;
+        BorderColor = black;
+        Borders = (1, 1, 1, 1);
     }
 
     Panel.PnlNewForm {
         Position = (270, 30);
         Size = (200, 124);
-        renderer = &2;
+        Renderer = &2;
 
         Label.Widget17 {
             AutoSize = true;
@@ -42,7 +42,7 @@ Panel.MainPanel {
             Size = (161.4, 24);
             Text = "Create new form";
             TextSize = 18;
-            renderer = &1;
+            Renderer = &1;
         }
 
         Picture.Widget36 {
@@ -51,8 +51,8 @@ Panel.MainPanel {
             Size = (48, 48);
 
             Renderer {
-                texture = "resources/NewFile.png";
-                transparenttexture = false;
+                Texture = "resources/NewFile.png";
+                TransparentTexture = false;
             }
         }
     }
@@ -66,11 +66,11 @@ Panel.MainPanel {
         TextSize = 13;
 
         Renderer {
-            backgroundcolor = transparent;
-            bordercolor = #3C3C3C;
-            borders = (0, 0, 0, 0);
-            textcolor = #3C3C3C;
-            textstyle = Bold;
+            BackgroundColor = transparent;
+            BorderColor = #3C3C3C;
+            Borders = (0, 0, 0, 0);
+            TextColor = #3C3C3C;
+            TextStyle = Bold;
         }
     }
 
@@ -80,8 +80,8 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            texture = "resources/Trash.png";
-            transparenttexture = false;
+            Texture = "resources/Trash.png";
+            TransparentTexture = false;
         }
     }
 
@@ -93,7 +93,7 @@ Panel.MainPanel {
         Text = "form.txt";
         TextSize = 13;
         Visible = false;
-        renderer = &3;
+        Renderer = &3;
     }
 
     Label.LblRecentForm2 {
@@ -104,7 +104,7 @@ Panel.MainPanel {
         Text = "form.txt";
         TextSize = 13;
         Visible = false;
-        renderer = &3;
+        Renderer = &3;
     }
 
     Label.LblRecentForm3 {
@@ -115,7 +115,7 @@ Panel.MainPanel {
         Text = "form.txt";
         TextSize = 13;
         Visible = false;
-        renderer = &3;
+        Renderer = &3;
     }
 
     Label.LblRecentForm5 {
@@ -126,7 +126,7 @@ Panel.MainPanel {
         Text = "form.txt";
         TextSize = 13;
         Visible = false;
-        renderer = &3;
+        Renderer = &3;
     }
 
     Label.LblRecentForm4 {
@@ -137,7 +137,7 @@ Panel.MainPanel {
         Text = "form.txt";
         TextSize = 13;
         Visible = false;
-        renderer = &3;
+        Renderer = &3;
     }
 
     Picture.BtnDeleteRecentForm2 {
@@ -146,8 +146,8 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            texture = "resources/Trash.png";
-            transparenttexture = false;
+            Texture = "resources/Trash.png";
+            TransparentTexture = false;
         }
     }
 
@@ -157,8 +157,8 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            texture = "resources/Trash.png";
-            transparenttexture = false;
+            Texture = "resources/Trash.png";
+            TransparentTexture = false;
         }
     }
 
@@ -168,8 +168,8 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            texture = "resources/Trash.png";
-            transparenttexture = false;
+            Texture = "resources/Trash.png";
+            TransparentTexture = false;
         }
     }
 
@@ -179,8 +179,8 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            texture = "resources/Trash.png";
-            transparenttexture = false;
+            Texture = "resources/Trash.png";
+            TransparentTexture = false;
         }
     }
 
@@ -192,13 +192,13 @@ Panel.MainPanel {
         Text = "No recent files";
         TextSize = 13;
         Visible = false;
-        renderer = &1;
+        Renderer = &1;
     }
 
     Panel.PnlLoadForm {
         Position = (40, 30);
         Size = (200, 124);
-        renderer = &2;
+        Renderer = &2;
 
         Picture.Widget34 {
             IgnoreMouseEvents = true;
@@ -206,8 +206,8 @@ Panel.MainPanel {
             Size = (48, 48);
 
             Renderer {
-                texture = "resources/LoadFile.png";
-                transparenttexture = false;
+                Texture = "resources/LoadFile.png";
+                TransparentTexture = false;
             }
         }
 
@@ -219,7 +219,7 @@ Panel.MainPanel {
             Size = (177.4, 24);
             Text = "Load existing form";
             TextSize = 18;
-            renderer = &1;
+            Renderer = &1;
         }
     }
 }

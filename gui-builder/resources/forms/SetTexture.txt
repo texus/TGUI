@@ -1,37 +1,37 @@
 Renderer.1 {
-    backgroundcolor = #F5F5F5;
-    backgroundcolordisabled = #E6E6E6;
-    backgroundcolorhover = white;
-    bordercolor = #3C3C3C;
-    bordercolordisabled = #7D7D7D;
-    bordercolorhover = black;
-    borders = (1, 1, 1, 1);
-    caretcolor = black;
-    caretwidth = 1;
-    defaulttextcolor = #A0A0A0;
-    padding = (0, 0, 0, 0);
-    selectedtextbackgroundcolor = #006EFF;
-    selectedtextcolor = white;
-    textcolor = #3C3C3C;
-    textcolordisabled = #7D7D7D;
-    texture = None;
-    texturedisabled = None;
-    texturefocused = None;
-    texturehover = None;
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    CaretColor = black;
+    CaretWidth = 1;
+    DefaultTextColor = #A0A0A0;
+    Padding = (0, 0, 0, 0);
+    SelectedTextBackgroundColor = #006EFF;
+    SelectedTextColor = white;
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    Texture = None;
+    TextureDisabled = None;
+    TextureFocused = None;
+    TextureHover = None;
 }
 
 Renderer.2 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = #3C3C3C;
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
 }
 
 Renderer.3 {
-    backgroundcolor = #F5F5F5;
-    bordercolor = #3C3C3C;
-    borders = (1, 1, 1, 1);
-    textcolor = #3C3C3C;
+    BackgroundColor = #F5F5F5;
+    BorderColor = #3C3C3C;
+    Borders = (1, 1, 1, 1);
+    TextColor = #3C3C3C;
 }
 
 Canvas.ImagePreview {
@@ -49,25 +49,25 @@ Button.BtnSelectFile {
     TextSize = 13;
 
     Renderer {
-        backgroundcolor = #F5F5F5;
-        backgroundcolordisabled = #E6E6E6;
-        backgroundcolordown = #EBEBEB;
-        backgroundcolorhover = white;
-        bordercolor = #3C3C3C;
-        bordercolordisabled = #7D7D7D;
-        bordercolordown = black;
-        bordercolorfocused = #1E1EB4;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        textcolor = #3C3C3C;
-        textcolordisabled = #7D7D7D;
-        textcolordown = black;
-        textcolorhover = black;
-        texture = None;
-        texturedisabled = None;
-        texturedown = None;
-        texturefocused = None;
-        texturehover = None;
+        BackgroundColor = #F5F5F5;
+        BackgroundColorDisabled = #E6E6E6;
+        BackgroundColorDown = #EBEBEB;
+        BackgroundColorHover = white;
+        BorderColor = #3C3C3C;
+        BorderColorDisabled = #7D7D7D;
+        BorderColorDown = black;
+        BorderColorFocused = #1E1EB4;
+        BorderColorHover = black;
+        Borders = (1, 1, 1, 1);
+        TextColor = #3C3C3C;
+        TextColorDisabled = #7D7D7D;
+        TextColorDown = black;
+        TextColorHover = black;
+        Texture = None;
+        TextureDisabled = None;
+        TextureDown = None;
+        TextureFocused = None;
+        TextureHover = None;
     }
 }
 
@@ -78,21 +78,21 @@ Label.Widget3 {
     Size = (34.2, 18);
     Text = "Part:";
     TextSize = 13;
-    renderer = &2;
+    Renderer = &2;
 }
 
 EditBox.EditPartRect {
     Position = (((&.w - 215) / 2) + 52, &.h - 75);
     Size = (138, 22);
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 EditBox.EditMiddleRect {
     Position = (((&.w - 215) / 2) + 52, &.h - 40);
     Size = (138, 22);
     TextSize = 13;
-    renderer = &1;
+    Renderer = &1;
 }
 
 Label.Widget6 {
@@ -102,7 +102,7 @@ Label.Widget6 {
     Size = (48.2, 18);
     Text = "Middle:";
     TextSize = 13;
-    renderer = &2;
+    Renderer = &2;
 }
 
 Picture.InfoPartRect {
@@ -119,13 +119,13 @@ Picture.InfoPartRect {
             Size = (320.2, 20);
             Text = "Part of the image to load (left, top, width, height)";
             TextSize = 13;
-            renderer = &3;
+            Renderer = &3;
         }
     }
 
     Renderer {
-        texture = "resources/Info.png";
-        transparenttexture = false;
+        Texture = "resources/Info.png";
+        TransparentTexture = false;
     }
 }
 
@@ -143,11 +143,11 @@ Picture.InfoMiddleRect {
             Size = (550.2, 20);
             Text = "Middle part of the image (relative to Part rect) which defines how the image is scaled";
             TextSize = 13;
-            renderer = &3;
+            Renderer = &3;
         }
     }
 
     Renderer {
-        texture = "resources/Info.png";
+        Texture = "resources/Info.png";
     }
 }
