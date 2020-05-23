@@ -130,6 +130,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enables or disables the widget
+        /// @param enabled  Is the widget enabled?
+        ///
+        /// The disabled widget will no longer receive events and thus no longer send callbacks.
+        /// All widgets are enabled by default.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setEnabled(bool enabled) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the number of items that are displayed in the list
         ///
         /// @param nrOfItemsInListToDisplay  The maximum number of items to display when the list of items is shown
@@ -660,18 +670,25 @@ namespace tgui
 #endif
 
         Sprite m_spriteBackground;
+        Sprite m_spriteBackgroundDisabled;
         Sprite m_spriteArrow;
         Sprite m_spriteArrowHover;
+        Sprite m_spriteArrowDisabled;
 
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_paddingCached;
         Color   m_borderColorCached;
         Color   m_backgroundColorCached;
+        Color   m_backgroundColorDisabledCached;
         Color   m_arrowColorCached;
         Color   m_arrowColorHoverCached;
+        Color   m_arrowColorDisabledCached;
         Color   m_arrowBackgroundColorCached;
         Color   m_arrowBackgroundColorHoverCached;
+        Color   m_arrowBackgroundColorDisabledCached;
+        Color   m_textColorCached;
+        Color   m_textColorDisabledCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

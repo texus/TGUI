@@ -398,11 +398,15 @@ TEST_CASE("[ComboBox]")
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(20, 30, 40)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", "rgb(120, 130, 140)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", "rgb(40, 50, 60)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorDisabled", "rgb(130, 140, 150)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(60, 70, 80)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorDisabled", "rgb(140, 150, 160)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", "rgb(150, 160, 170)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
@@ -415,11 +419,15 @@ TEST_CASE("[ComboBox]")
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", sf::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorDisabled", sf::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorDisabled", sf::Color{140, 150, 160}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", sf::Color{150, 160, 170}));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
@@ -432,11 +440,15 @@ TEST_CASE("[ComboBox]")
             SECTION("functions")
             {
                 renderer->setBackgroundColor({20, 30, 40});
+                renderer->setBackgroundColorDisabled({120, 130, 140});
                 renderer->setArrowBackgroundColor({30, 40, 50});
                 renderer->setArrowBackgroundColorHover({40, 50, 60});
+                renderer->setArrowBackgroundColorDisabled({130, 140, 150});
                 renderer->setArrowColor({50, 60, 70});
                 renderer->setArrowColorHover({60, 70, 80});
+                renderer->setArrowColorDisabled({140, 150, 160});
                 renderer->setTextColor({70, 80, 90});
+                renderer->setTextColorDisabled({150, 160, 170});
                 renderer->setDefaultTextColor({110, 120, 130});
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
@@ -447,11 +459,15 @@ TEST_CASE("[ComboBox]")
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
+            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColorDisabled").getColor() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("ArrowColorDisabled").getColor() == sf::Color(140, 150, 160));
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(150, 160, 170));
             REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
@@ -467,37 +483,49 @@ TEST_CASE("[ComboBox]")
         SECTION("textured")
         {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            tgui::Texture textureBackgroundDisabled("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
             tgui::Texture textureArrow("resources/Black.png", {92,  0, 32, 32});
             tgui::Texture textureArrowHover("resources/Black.png", {92, 32, 32, 32});
+            tgui::Texture textureArrowDisabled("resources/Black.png", {92,  0, 32, 32});
 
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackgroundDisabled", tgui::Serializer::serialize(textureBackgroundDisabled)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrow", tgui::Serializer::serialize(textureArrow)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrowHover", tgui::Serializer::serialize(textureArrowHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDisabled", tgui::Serializer::serialize(textureArrowDisabled)));
             }
 
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackgroundDisabled", textureBackgroundDisabled));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrow", textureArrow));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrowHover", textureArrowHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDisabled", textureArrowDisabled));
             }
 
             SECTION("functions")
             {
                 renderer->setTextureBackground(textureBackground);
+                renderer->setTextureBackgroundDisabled(textureBackgroundDisabled);
                 renderer->setTextureArrow(textureArrow);
                 renderer->setTextureArrowHover(textureArrowHover);
+                renderer->setTextureArrowDisabled(textureArrowDisabled);
             }
 
             REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureBackgroundDisabled").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureArrow").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureArrowHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDisabled").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureBackgroundDisabled().getData() == textureBackgroundDisabled.getData());
             REQUIRE(renderer->getTextureArrow().getData() == textureArrow.getData());
             REQUIRE(renderer->getTextureArrowHover().getData() == textureArrowHover.getData());
+            REQUIRE(renderer->getTextureArrowDisabled().getData() == textureArrowDisabled.getData());
         }
     }
 
@@ -542,6 +570,18 @@ TEST_CASE("[ComboBox]")
             renderer.setArrowColorHover(sf::Color::Black);
             if (textured)
                 renderer.setTextureArrowHover("resources/Texture3.png");
+        };
+
+        auto setDisabledRenderer = [&](bool textured){
+            renderer.setTextColorDisabled({128, 128, 0});
+            renderer.setBackgroundColorDisabled({0, 128, 128});
+            renderer.setArrowBackgroundColorDisabled({128, 0, 128});
+            renderer.setArrowColorDisabled({160, 200, 0});
+            if (textured)
+            {
+                renderer.setTextureBackgroundDisabled("resources/Texture4.png");
+                renderer.setTextureArrowDisabled("resources/Texture5.png");
+            }
         };
 
         comboBox->addItem("1");
@@ -598,6 +638,18 @@ TEST_CASE("[ComboBox]")
                         TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet.png")
                     }
                 }
+
+                SECTION("Disabled")
+                {
+                    comboBox->setEnabled(false);
+                    TEST_DRAW("ComboBox_Disabled_NormalSet.png")
+
+                    SECTION("DisabledSet")
+                    {
+                        setDisabledRenderer(true);
+                        TEST_DRAW("ComboBox_Disabled_DisabledSet.png")
+                    }
+                }
             }
         }
 
@@ -650,6 +702,18 @@ TEST_CASE("[ComboBox]")
                     {
                         setHoverRenderer(true);
                         TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet_Textured.png")
+                    }
+                }
+
+                SECTION("Disabled")
+                {
+                    comboBox->setEnabled(false);
+                    TEST_DRAW("ComboBox_Disabled_TextureNormalSet.png")
+
+                    SECTION("DisabledSet")
+                    {
+                        setDisabledRenderer(true);
+                        TEST_DRAW("ComboBox_Disabled_TextureDisabledSet.png")
                     }
                 }
             }

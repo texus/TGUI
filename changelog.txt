@@ -5,6 +5,7 @@ TGUI 0.8.8  (TBD)
 - Changed the keyboard shortcuts in EditBox and TextBox for macOS
 - Added getIndexById and getIdByIndex to ListBox
 - Added global setEditCursorBlinkRate function
+- Added renderer properties in ComboBox for disabled state
 - Picture had wrong size when loading from file with a relative size
 
 

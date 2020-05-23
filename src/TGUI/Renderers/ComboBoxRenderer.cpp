@@ -34,17 +34,23 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(ComboBoxRenderer, Padding)
 
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColorDisabled, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColorDisabled, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, DefaultTextColor, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureBackgroundDisabled)
     TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrow)
     TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowDisabled)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, DefaultTextStyle, {})
