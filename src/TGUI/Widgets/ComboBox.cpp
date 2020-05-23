@@ -220,6 +220,7 @@ namespace tgui
         m_paddingCached.updateParentSize(getSize());
 
         m_spriteBackground.setSize(getInnerSize());
+        m_spriteBackgroundDisabled.setSize(getInnerSize());
 
         const float height = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
 
@@ -233,10 +234,22 @@ namespace tgui
         {
             m_spriteArrow.setSize({m_spriteArrow.getTexture().getImageSize().x * (height / m_spriteArrow.getTexture().getImageSize().y), height});
             m_spriteArrowHover.setSize(m_spriteArrow.getSize());
+            m_spriteArrowDisabled.setSize(m_spriteArrow.getSize());
         }
 
         m_text.setCharacterSize(m_listBox->getTextSize());
         m_defaultText.setCharacterSize(m_listBox->getTextSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setEnabled(bool enabled)
+    {
+        Widget::setEnabled(enabled);
+        if (m_enabled || !m_textColorDisabledCached.isSet())
+            m_text.setColor(m_textColorCached);
+        else
+            m_text.setColor(m_textColorDisabledCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -642,9 +655,17 @@ namespace tgui
         }
         else if (property == "TextColor")
         {
-            m_text.setColor(getSharedRenderer()->getTextColor());
+            m_textColorCached = getSharedRenderer()->getTextColor();
+            if (m_enabled || !m_textColorDisabledCached.isSet())
+                m_text.setColor(m_textColorCached);
             if (!getSharedRenderer()->getDefaultTextColor().isSet())
                 m_defaultText.setColor(getSharedRenderer()->getTextColor());
+        }
+        else if (property == "TextColorDisabled")
+        {
+            m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
+            if (!m_enabled && m_textColorDisabledCached.isSet())
+                m_text.setColor(m_textColorDisabledCached);
         }
         else if (property == "TextStyle")
         {
@@ -670,6 +691,10 @@ namespace tgui
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
+        else if (property == "TextureBackgroundDisabled")
+        {
+            m_spriteBackgroundDisabled.setTexture(getSharedRenderer()->getTextureBackgroundDisabled());
+        }
         else if (property == "TextureArrow")
         {
             m_spriteArrow.setTexture(getSharedRenderer()->getTextureArrow());
@@ -678,6 +703,10 @@ namespace tgui
         else if (property == "TextureArrowHover")
         {
             m_spriteArrowHover.setTexture(getSharedRenderer()->getTextureArrowHover());
+        }
+        else if (property == "TextureArrowDisabled")
+        {
+            m_spriteArrowDisabled.setTexture(getSharedRenderer()->getTextureArrowDisabled());
         }
         else if (property == "ListBox")
         {
@@ -691,6 +720,10 @@ namespace tgui
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
+        else if (property == "BackgroundColorDisabled")
+        {
+            m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
+        }
         else if (property == "ArrowBackgroundColor")
         {
             m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
@@ -698,6 +731,10 @@ namespace tgui
         else if (property == "ArrowBackgroundColorHover")
         {
             m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
+        }
+        else if (property == "ArrowBackgroundColorDisabled")
+        {
+            m_arrowBackgroundColorDisabledCached = getSharedRenderer()->getArrowBackgroundColorDisabled();
         }
         else if (property == "ArrowColor")
         {
@@ -707,13 +744,19 @@ namespace tgui
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
+        else if (property == "ArrowColorDisabled")
+        {
+            m_arrowColorDisabledCached = getSharedRenderer()->getArrowColorDisabled();
+        }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
             m_spriteBackground.setOpacity(m_opacityCached);
+            m_spriteBackgroundDisabled.setOpacity(m_opacityCached);
             m_spriteArrow.setOpacity(m_opacityCached);
             m_spriteArrowHover.setOpacity(m_opacityCached);
+            m_spriteArrowDisabled.setOpacity(m_opacityCached);
 
             m_text.setOpacity(m_opacityCached);
             m_defaultText.setOpacity(m_opacityCached);
@@ -949,9 +992,19 @@ namespace tgui
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+        {
+            if (!m_enabled && m_spriteBackgroundDisabled.isSet())
+                m_spriteBackgroundDisabled.draw(target, states);
+            else
+                m_spriteBackground.draw(target, states);
+        }
         else
-            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+        {
+            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorDisabledCached);
+            else
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+        }
 
         // Check if we have a texture for the arrow
         float arrowSize;
@@ -960,7 +1013,9 @@ namespace tgui
             arrowSize = m_spriteArrow.getSize().x;
             states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
-            if (m_mouseHover && m_spriteArrowHover.isSet())
+            if (!m_enabled && m_spriteArrowDisabled.isSet())
+                m_spriteArrowDisabled.draw(target, states);
+            else if (m_mouseHover && m_spriteArrowHover.isSet())
                 m_spriteArrowHover.draw(target, states);
             else
                 m_spriteArrow.draw(target, states);
@@ -970,7 +1025,9 @@ namespace tgui
             arrowSize = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
             states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
-            if (m_mouseHover && m_arrowBackgroundColorHoverCached.isSet())
+            if (!m_enabled && m_arrowBackgroundColorDisabledCached.isSet())
+                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorDisabledCached);
+            else if (m_mouseHover && m_arrowBackgroundColorHoverCached.isSet())
                 drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorHoverCached);
             else
                 drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorCached);
@@ -980,7 +1037,9 @@ namespace tgui
             arrow.setPoint(1, {arrowSize / 2, arrowSize * 4/5});
             arrow.setPoint(2, {arrowSize * 4/5, arrowSize / 5});
 
-            if (m_mouseHover && m_arrowColorHoverCached.isSet())
+            if (!m_enabled && m_arrowColorDisabledCached.isSet())
+                arrow.setFillColor(m_arrowColorDisabledCached);
+            else if (m_mouseHover && m_arrowColorHoverCached.isSet())
                 arrow.setFillColor(m_arrowColorHoverCached);
             else
                 arrow.setFillColor(m_arrowColorCached);
