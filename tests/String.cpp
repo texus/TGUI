@@ -96,6 +96,10 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 6) == u8"\u03b4\u03b5");
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"\u03b2\u03b3\u03b4");
 #endif
+
+        REQUIRE(tgui::String(15) == "15");
+        REQUIRE(tgui::String(-3) == "-3");
+        REQUIRE(tgui::String(0.5) == "0.5");
     }
 
     SECTION("Conversions")

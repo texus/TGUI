@@ -548,15 +548,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::updateTime(Duration elapsedTime)
+    bool Label::updateTime(Duration elapsedTime)
     {
-        Widget::updateTime(elapsedTime);
+        const bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= getDoubleClickTime())
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

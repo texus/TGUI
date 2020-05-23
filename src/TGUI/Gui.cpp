@@ -27,10 +27,12 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Clipping.hpp>
 #include <TGUI/Event.hpp>
+#include <TGUI/Timer.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
 #include <cassert>
+#include <thread>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -290,13 +292,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui() :
-        m_target(nullptr)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Gui::Gui(sf::RenderTarget& target) :
         m_target(&target)
     {
@@ -418,7 +413,6 @@ namespace tgui
             case Event::Type::LostFocus:
             {
                 m_windowFocused = false;
-                m_lastUpdateTime = decltype(m_lastUpdateTime){};
                 break;
             }
             case Event::Type::GainedFocus:
@@ -461,16 +455,8 @@ namespace tgui
     {
         assert(m_target != nullptr);
 
-        // Update the time
-        if (m_windowFocused)
-        {
-            const auto timePointNow = std::chrono::steady_clock::now();
-
-            if (m_lastUpdateTime > decltype(m_lastUpdateTime){})
-                updateTime(timePointNow - m_lastUpdateTime);
-
-            m_lastUpdateTime = timePointNow;
-        }
+        if (m_drawUpdatesTime)
+            updateTime();
 
         // Change the view
         const sf::View oldView = m_target->getView();
@@ -643,10 +629,105 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::updateTime(Duration elapsedTime)
+    void Gui::mainLoop()
     {
+        sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(m_target);
+        if (!window)
+            return;
+
+        // Helper function that calculates the amount of time to sleep, which is 10ms unless a timer will expire before this time
+        const auto getTimerWakeUpTime = []{
+            Optional<Duration> duration = Timer::getNextScheduledTime();
+            if (duration && (*duration < std::chrono::milliseconds(10)))
+                return *duration;
+            else
+                return Duration{std::chrono::milliseconds(10)};
+        };
+
+        setDrawingUpdatesTime(false);
+
+        sf::Event event;
+        bool refreshRequired = true;
+        std::chrono::steady_clock::time_point m_lastRenderTime;
+        while (window->isOpen())
+        {
+            bool eventProcessed = false;
+            while (true)
+            {
+                while (window->pollEvent(event))
+                {
+                    eventProcessed = true;
+                    handleEvent(event);
+                    if (event.type == sf::Event::Closed)
+                        window->close();
+                }
+
+                if (updateTime())
+                    break;
+
+                if (eventProcessed || refreshRequired)
+                    break;
+
+                std::this_thread::sleep_for(std::chrono::nanoseconds(getTimerWakeUpTime()));
+            }
+
+            refreshRequired = true;
+
+            // Don't try to render too often, even when the screen is changing (e.g. during animation)
+            const auto timePointNow = std::chrono::steady_clock::now();
+            const auto timePointNextAllowed = m_lastRenderTime + std::chrono::milliseconds(35);
+            if (timePointNextAllowed > timePointNow)
+            {
+                const auto timerWakeUpTime = getTimerWakeUpTime();
+                if (timePointNextAllowed - timePointNow < timerWakeUpTime)
+                    std::this_thread::sleep_for(timePointNextAllowed - timePointNow);
+                else
+                    std::this_thread::sleep_for(std::chrono::nanoseconds(timerWakeUpTime));
+
+                continue;
+            }
+
+            window->clear({240, 240, 240});
+            draw();
+            window->display();
+
+            refreshRequired = false;
+            m_lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::setDrawingUpdatesTime(bool drawUpdatesTime)
+    {
+        m_drawUpdatesTime = drawUpdatesTime;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::updateTime()
+    {
+        const auto timePointNow = std::chrono::steady_clock::now();
+
+        bool screenRefreshRequired = false;
+        if (m_lastUpdateTime > decltype(m_lastUpdateTime){})
+            screenRefreshRequired = updateTime(timePointNow - m_lastUpdateTime);
+
+        m_lastUpdateTime = timePointNow;
+        return screenRefreshRequired;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::updateTime(Duration elapsedTime)
+    {
+        bool screenRefreshRequired = Timer::updateTime(elapsedTime);
+
+        if (!m_windowFocused)
+            return screenRefreshRequired;
+
         m_container->m_animationTimeElapsed = elapsedTime;
-        m_container->updateTime(elapsedTime);
+        screenRefreshRequired |= m_container->updateTime(elapsedTime);
 
         if (m_tooltipPossible)
         {
@@ -661,11 +742,14 @@ namespace tgui
 
                     // Change the relative tool tip position in an absolute one
                     tooltip->setPosition(m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition());
+                    screenRefreshRequired = true;
                 }
 
                 m_tooltipPossible = false;
             }
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

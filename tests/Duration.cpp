@@ -32,11 +32,15 @@ TEST_CASE("[Duration]")
         SECTION("Default initialized to 0")
         {
             REQUIRE(tgui::Duration().asSeconds() == 0);
+        }
 
+        SECTION("Constructors")
+        {
             REQUIRE(tgui::Duration(std::chrono::microseconds(10)) == std::chrono::nanoseconds(10000));
             REQUIRE(tgui::Duration(std::chrono::milliseconds(500) / 2) == std::chrono::nanoseconds(250000000));
             REQUIRE(tgui::Duration(std::chrono::microseconds(10) / 5.0) == std::chrono::nanoseconds(2000));
-
+            REQUIRE(tgui::Duration(0) == std::chrono::nanoseconds(0));
+            REQUIRE(tgui::Duration(15) == std::chrono::milliseconds(15));
             REQUIRE(tgui::Duration(sf::milliseconds(20)) == std::chrono::milliseconds(20));
         }
     }

@@ -29,6 +29,7 @@
 
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Animation.hpp>
+#include <TGUI/Timer.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>

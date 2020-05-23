@@ -1020,15 +1020,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::updateTime(Duration elapsedTime)
+    bool ListBox::updateTime(Duration elapsedTime)
     {
-        Widget::updateTime(elapsedTime);
+        const bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= getDoubleClickTime())
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

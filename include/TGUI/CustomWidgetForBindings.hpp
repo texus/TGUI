@@ -169,7 +169,7 @@ namespace tgui
         /// @internal
         /// This function is called every frame with the time passed since the last frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateTime(Duration elapsedTime) override;
+        bool updateTime(Duration elapsedTime) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +288,7 @@ namespace tgui
         std::function<Vector2f()>                       implGetFullSize;
         std::function<Vector2f()>                       implGetAbsolutePosition;
         std::function<Vector2f()>                       implGetWidgetOffset;
-        std::function<void(Duration)>                   implUpdateFunction;
+        std::function<bool(Duration)>                   implUpdateTimeFunction;
         std::function<bool(Vector2f)>                   implMouseOnWidget;
         std::function<void(Vector2f)>                   implLeftMousePressed;
         std::function<void(Vector2f)>                   implLeftMouseReleased;

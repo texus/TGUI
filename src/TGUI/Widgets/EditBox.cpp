@@ -1273,9 +1273,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::updateTime(Duration elapsedTime)
+    bool EditBox::updateTime(Duration elapsedTime)
     {
-        Widget::updateTime(elapsedTime);
+        bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= getEditCursorBlinkRate())
@@ -1288,7 +1288,11 @@ namespace tgui
 
             // Too slow for double clicking
             m_possibleDoubleClick = false;
+
+            screenRefreshRequired = true;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

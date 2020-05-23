@@ -106,10 +106,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::updateTime(Duration elapsedTime)
+    bool CustomWidgetForBindings::updateTime(Duration elapsedTime)
     {
-        Widget::updateTime(elapsedTime);
-        implUpdateFunction(elapsedTime);
+        bool screenRefreshRequired = Widget::updateTime(elapsedTime);
+        screenRefreshRequired |= implUpdateTimeFunction(elapsedTime);
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

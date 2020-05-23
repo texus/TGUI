@@ -48,9 +48,8 @@ namespace tgui
         /// @brief Default constructor
         ///
         /// If you use this constructor then you will still have to call the setTarget yourself.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Gui();
+        Gui() = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,11 +369,56 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        // Updates the internal clock to make animation possible. This function is called automatically by the draw function.
-        // You will thus only need to call it yourself when you are drawing everything manually.
+        /// @brief Give the gui control over the main loop
+        ///
+        /// This function is only intended in cases where your program only needs to respond to gui events.
+        /// For multimedia applications, games, or other programs where you want a high framerate or do a lot of processing
+        /// in the main loop, you should use your own main loop.
+        ///
+        /// You can consider this function to execute something similar (but not identical) to the following code:
+        /// @code
+        /// while (window.isOpen())
+        /// {
+        ///     while (window.waitEvent(event))
+        ///     {
+        ///         gui.handleEvent(event);
+        ///         if (event.type == sf::Event::Closed)
+        ///             window.close();
+        ///     }
+        ///
+        ///     window.clear({240, 240, 240});
+        ///     gui.draw();
+        ///     window.display();
+        /// }
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateTime(Duration elapsedTime);
+        void mainLoop();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether drawing the gui will automatically update the internal clock or whether the user does it manually
+        ///
+        /// @param drawUpdatesTime  True if gui.draw() updates the clock (default), false if gui.updateTime() has to be called
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDrawingUpdatesTime(bool drawUpdatesTime);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Updates the internal clock (for timers, animations and blinking edit cursors)
+        ///
+        /// You do not need to call this function unless you set DrawingUpdatesTime to false (it is true by default).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool updateTime();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Updates the internal clock (for timers, animations and blinking edit cursors)
+        ///
+        /// This function should not be used directly, use the updateTime() function without arguments instead.
+        /// @see updateTime()
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool updateTime(Duration elapsedTime);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,7 +427,7 @@ namespace tgui
         std::chrono::steady_clock::time_point m_lastUpdateTime;
 
         // The sfml render target to draw on
-        sf::RenderTarget* m_target;
+        sf::RenderTarget* m_target = nullptr;
         bool m_windowFocused = true;
 
         // Internal container to store all widgets
@@ -396,6 +440,7 @@ namespace tgui
 
         sf::View m_view{{0, 0, 1, 1}};
 
+        bool m_drawUpdatesTime = true;
         bool m_TabKeyUsageEnabled = true;
         bool m_customViewSet = false;
 

@@ -207,6 +207,13 @@ namespace tgui
         {
         }
 
+        // Constructor to initialize the string from a number (integer or float)
+        template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+        explicit String(T number) :
+            String{fromNumber(number)}
+        {
+        }
+
         String(std::size_t count, char ch);
         String(std::size_t count, wchar_t ch);
         String(std::size_t count, char16_t ch);

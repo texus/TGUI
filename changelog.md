@@ -1,6 +1,7 @@
 TGUI 0.9-dev
 ------------
 
+- Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget
 - Added ThumbWithinTrack to Slider renderer to have thumb align with track on sides
 - ListBox and ListView can now store user data in their items

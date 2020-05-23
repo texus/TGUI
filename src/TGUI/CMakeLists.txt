@@ -20,6 +20,7 @@ set(TGUI_SRC
     Text.cpp
     Texture.cpp
     TextureManager.cpp
+    Timer.cpp
     ToolTip.cpp
     Widget.cpp
     Loading/DataIO.cpp
