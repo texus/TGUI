@@ -568,7 +568,7 @@ void GuiBuilder::saveGuiBuilderState()
             themeIt++;
 
         tgui::String themeList = "[" + tgui::Serializer::serialize(themeIt->first);
-        for (; themeIt != m_themes.end(); ++themeIt)
+        for (++themeIt; themeIt != m_themes.end(); ++themeIt)
         {
             if (themeIt->first != "White")
                 themeList += ", " + tgui::Serializer::serialize(themeIt->first);
