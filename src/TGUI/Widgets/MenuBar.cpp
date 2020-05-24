@@ -724,17 +724,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseButtonNoLongerDown()
-    {
-        // Close the open menu, but not when it just opened because of this mouse click
-        if (!m_mouseDown)
-            closeMenu();
-
-        Widget::leftMouseButtonNoLongerDown();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Signal& MenuBar::getSignal(String signalName)
     {
         if (signalName == onMenuItemClick.getName())
@@ -1189,7 +1178,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseReleasedOnMenu(Vector2f)
+    void MenuBar::leftMouseReleasedOnMenu()
     {
         assert(m_visibleMenu >= 0);
 
@@ -1203,12 +1192,13 @@ namespace tgui
             if (menuItem.menuItems.empty())
             {
                 onMenuItemClick.emit(this, menuItem.text.getString(), hierarchy);
-                closeMenu();
                 break;
             }
 
             menu = &menuItem;
         }
+
+        closeMenu();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1467,34 +1457,54 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBarMenuPlaceholder::isMouseOnWidget(Vector2f pos) const
+    bool MenuBarMenuPlaceholder::isMouseOnWidget(Vector2f) const
     {
-        return m_menuBar->isMouseOnOpenMenu(pos - getPosition());
+        return true; // Absorb all mouse events until the menu is closed
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarMenuPlaceholder::leftMousePressed(Vector2f)
+    void MenuBarMenuPlaceholder::leftMouseButtonNoLongerDown()
     {
-        m_mouseDown = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBarMenuPlaceholder::leftMouseReleased(Vector2f pos)
-    {
-        if (!m_mouseDown)
-            return;
-
-        m_menuBar->leftMouseReleasedOnMenu(pos - getPosition());
+        m_menuBar->leftMouseReleasedOnMenu();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MenuBarMenuPlaceholder::mouseMoved(Vector2f pos)
     {
-        Widget::mouseMoved(pos);
-        m_menuBar->mouseMovedOnMenu(pos - getPosition());
+        bool mouseOnMenuBar = false;
+        if (m_menuBar->isMouseOnOpenMenu(pos - getPosition()))
+        {
+            m_mouseHover = true;
+            m_menuBar->mouseMovedOnMenu(pos - getPosition());
+        }
+        else
+        {
+            if (m_mouseHover)
+            {
+                // Deselect the selected item of the deepest submenu
+                m_menuBar->deselectBottomItem();
+                m_mouseHover = false;
+            }
+
+            if (m_menuBar->getParent())
+            {
+                const Vector2f menuBarMousePos = pos - m_menuBar->getParent()->getAbsolutePosition();
+                if (m_menuBar->isMouseOnWidget(menuBarMousePos))
+                {
+                    mouseOnMenuBar = true;
+                    m_mouseWasOnMenuBar = true;
+                    m_menuBar->mouseMoved(menuBarMousePos);
+                }
+            }
+        }
+
+        if (!mouseOnMenuBar && m_mouseWasOnMenuBar)
+        {
+            m_mouseWasOnMenuBar = false;
+            m_menuBar->mouseNoLongerOnWidget();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1510,15 +1520,6 @@ namespace tgui
     {
         // This function should never be called
         return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBarMenuPlaceholder::mouseLeftWidget()
-    {
-        // Deselect the selected item of the deepest submenu
-        m_menuBar->deselectBottomItem();
-        Widget::mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
