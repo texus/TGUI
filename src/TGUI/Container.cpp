@@ -807,18 +807,13 @@ namespace tgui
 
     bool Container::processMouseMoveEvent(Vector2f mousePos)
     {
-        // Loop through all widgets
-        for (auto& widget : m_widgets)
+        // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them
+        if (m_widgetWithLeftMouseDown)
         {
-            // Check if the mouse went down on the widget
-            if (widget->m_mouseDown)
+            if (m_widgetWithLeftMouseDown->isDraggableWidget() || m_widgetWithLeftMouseDown->isContainer())
             {
-                // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                if (widget->m_draggableWidget || widget->isContainer())
-                {
-                    widget->mouseMoved(transformMousePos(widget, mousePos));
-                    return true;
-                }
+                m_widgetWithLeftMouseDown->mouseMoved(transformMousePos(m_widgetWithLeftMouseDown, mousePos));
+                return true;
             }
         }
 

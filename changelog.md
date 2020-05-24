@@ -27,8 +27,8 @@ TGUI 0.9-dev
 - Renamed mouseOnWidget to isMouseOnWidget
 - Gui::getFont now returns the global font if no font was set in the Gui
 - Container now translates the widget position before calling draw function
+- Dragging scrollbar inside child window didn't work when mouse left child window
 - Removed all code that was marked as deprecated
-
 
 Older Releases
 --------------

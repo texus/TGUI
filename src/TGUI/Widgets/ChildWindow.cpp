@@ -667,7 +667,7 @@ namespace tgui
         }
         else // Not dragging child window
         {
-            if (FloatRect{getChildWidgetsOffset(), getClientSize()}.contains(pos))
+            if (m_widgetWithLeftMouseDown || FloatRect{getChildWidgetsOffset(), getClientSize()}.contains(pos))
             {
                 // Propagate the event to the child widgets
                 Container::mouseMoved(pos + getPosition());
