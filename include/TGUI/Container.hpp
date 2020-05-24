@@ -479,12 +479,11 @@ namespace tgui
         std::vector<Widget::Ptr> m_widgets;
 
         Widget::Ptr m_widgetBelowMouse;
+        Widget::Ptr m_widgetWithLeftMouseDown;
+        Widget::Ptr m_widgetWithRightMouseDown;
         Widget::Ptr m_focusedWidget;
 
         Vector2f m_prevInnerSize;
-
-        // Did we enter handleEvent directly or because we got a MouseReleased event?
-        bool m_handingMouseReleased = false;
 
         // Does focusing the next widget always keep a widget from this container focused (e.g. in a ChildWindow)?
         bool m_isolatedFocus = false;

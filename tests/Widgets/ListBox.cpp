@@ -411,6 +411,7 @@ TEST_CASE("[ListBox]")
             mouseMoved({40, 52});
             REQUIRE(itemSelectedCount == 3);
             REQUIRE(listBox->getSelectedItemIndex() == 2);
+            mouseReleased({40, 52});
 
             listBox->setAutoScroll(false);
             listBox->addItem("Item 5");

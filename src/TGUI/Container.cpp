@@ -140,11 +140,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container(Container&& other) :
-        Widget                {std::move(other)},
-        m_widgets             {std::move(other.m_widgets)},
-        m_widgetBelowMouse    {std::move(other.m_widgetBelowMouse)},
-        m_focusedWidget       {std::move(other.m_focusedWidget)},
-        m_handingMouseReleased{std::move(other.m_handingMouseReleased)}
+        Widget                    {std::move(other)},
+        m_widgets                 {std::move(other.m_widgets)},
+        m_widgetBelowMouse        {std::move(other.m_widgetBelowMouse)},
+        m_widgetWithLeftMouseDown {std::move(other.m_widgetWithLeftMouseDown)},
+        m_widgetWithRightMouseDown{std::move(other.m_widgetWithRightMouseDown)},
+        m_focusedWidget           {std::move(other.m_focusedWidget)}
     {
         for (auto& widget : m_widgets)
             widget->setParent(this);
@@ -173,6 +174,8 @@ namespace tgui
             Widget::operator=(right);
 
             m_widgetBelowMouse = nullptr;
+            m_widgetWithLeftMouseDown = nullptr;
+            m_widgetWithRightMouseDown = nullptr;
             m_focusedWidget = nullptr;
 
             // Remove all the old widgets
@@ -197,10 +200,11 @@ namespace tgui
         if (this != &right)
         {
             Widget::operator=(std::move(right));
-            m_widgets              = std::move(right.m_widgets);
-            m_widgetBelowMouse     = std::move(right.m_widgetBelowMouse);
-            m_focusedWidget        = std::move(right.m_focusedWidget);
-            m_handingMouseReleased = std::move(right.m_handingMouseReleased);
+            m_widgets                  = std::move(right.m_widgets);
+            m_widgetBelowMouse         = std::move(right.m_widgetBelowMouse);
+            m_widgetWithLeftMouseDown  = std::move(right.m_widgetWithLeftMouseDown);
+            m_widgetWithRightMouseDown = std::move(right.m_widgetWithRightMouseDown);
+            m_focusedWidget            = std::move(right.m_focusedWidget);
 
             for (auto& widget : m_widgets)
                 widget->setParent(this);
@@ -290,6 +294,10 @@ namespace tgui
 
             if (m_widgetBelowMouse == widget)
                 m_widgetBelowMouse = nullptr;
+            if (m_widgetWithLeftMouseDown == widget)
+                m_widgetWithLeftMouseDown = nullptr;
+            if (m_widgetWithRightMouseDown == widget)
+                m_widgetWithRightMouseDown = nullptr;
 
             if (widget == m_focusedWidget)
             {
@@ -316,6 +324,8 @@ namespace tgui
         m_widgets.clear();
 
         m_widgetBelowMouse = nullptr;
+        m_widgetWithLeftMouseDown = nullptr;
+        m_widgetWithRightMouseDown = nullptr;
         m_focusedWidget = nullptr;
     }
 
@@ -627,20 +637,14 @@ namespace tgui
 
     void Container::leftMouseReleased(Vector2f pos)
     {
-        // Don't let processMouseReleaseEvent call leftMouseButtonNoLongerDown on all widgets (it will be done later)
-        m_handingMouseReleased = true;
         processMouseReleaseEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
-        m_handingMouseReleased = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::rightMouseReleased(Vector2f pos)
     {
-        // Don't let processMouseReleaseEvent call rightMouseButtonNoLongerDown on all widgets (it will be done later)
-        m_handingMouseReleased = true;
         processMouseReleaseEvent(Event::MouseButton::Right, pos - getPosition() - getChildWidgetsOffset());
-        m_handingMouseReleased = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -694,8 +698,11 @@ namespace tgui
     {
         Widget::leftMouseButtonNoLongerDown();
 
-        for (auto& widget : m_widgets)
-            widget->leftMouseButtonNoLongerDown();
+        if (m_widgetWithLeftMouseDown)
+        {
+            m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
+            m_widgetWithLeftMouseDown = nullptr;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,8 +711,11 @@ namespace tgui
     {
         Widget::rightMouseButtonNoLongerDown();
 
-        for (auto& widget : m_widgets)
-            widget->rightMouseButtonNoLongerDown();
+        if (m_widgetWithRightMouseDown)
+        {
+            m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
+            m_widgetWithRightMouseDown = nullptr;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -832,6 +842,11 @@ namespace tgui
         Widget::Ptr widget = mouseOnWhichWidget(mousePos);
         if (widget)
         {
+            if (button == Event::MouseButton::Left)
+                m_widgetWithLeftMouseDown = widget;
+            else if (button == Event::MouseButton::Right)
+                m_widgetWithRightMouseDown = widget;
+
             // Unfocus the previously focused widget
             if (m_focusedWidget && (m_focusedWidget != widget))
                 m_focusedWidget->setFocused(false);
@@ -846,6 +861,11 @@ namespace tgui
         }
         else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
         {
+            if (button == Event::MouseButton::Left)
+                m_widgetWithLeftMouseDown = nullptr;
+            else if (button == Event::MouseButton::Right)
+                m_widgetWithRightMouseDown = nullptr;
+
             if (m_focusedWidget)
                 m_focusedWidget->setFocused(false);
 
@@ -860,37 +880,22 @@ namespace tgui
 
     bool Container::processMouseReleaseEvent(Event::MouseButton button, Vector2f mousePos)
     {
-        // Check if the mouse is on top of a widget
         Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
         if (widgetBelowMouse != nullptr)
             widgetBelowMouse->mouseReleased(button, transformMousePos(widgetBelowMouse, mousePos));
 
-        if (button == Event::MouseButton::Left)
+        if ((button == Event::MouseButton::Left) && m_widgetWithLeftMouseDown)
         {
-            // Tell all widgets that the mouse has gone up
-            // But don't do this when leftMouseReleased was called on this container because
-            // it will happen afterwards when leftMouseButtonNoLongerDown is called on it
-            if (!m_handingMouseReleased)
-            {
-                // TODO: Only call leftMouseButtonNoLongerDown on the widget that last got the left mouse down event
-                for (auto& widget : m_widgets)
-                    widget->leftMouseButtonNoLongerDown();
-            }
+            m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
+            m_widgetWithLeftMouseDown = nullptr;
         }
-        else if (button == Event::MouseButton::Right)
+        else if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
         {
-            // TODO: Same remark as above for leftMouseButtonNoLongerDown
-            if (!m_handingMouseReleased)
-            {
-                for (auto& widget : m_widgets)
-                    widget->rightMouseButtonNoLongerDown();
-            }
+            m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
+            m_widgetWithRightMouseDown = nullptr;
         }
 
-        if (widgetBelowMouse != nullptr)
-            return true;
-
-        return false;
+        return (widgetBelowMouse != nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

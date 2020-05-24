@@ -388,9 +388,23 @@ namespace tgui
                 else if (event.type == Event::Type::MouseWheelScrolled)
                     return m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords);
                 else if (event.type == Event::Type::MouseButtonPressed)
+                {
+                    // For touches, always send a mouse move event before the mouse press,
+                    // because widgets may assume that the mouse had to move to the clicked location first
+                    if (sfmlEvent.type == sf::Event::TouchBegan)
+                        m_container->processMouseMoveEvent(mouseCoords);
+
                     return m_container->processMousePressEvent(Event::MouseButton::Left, mouseCoords);
+                }
                 else // if (event.type == Event::Type::MouseButtonReleased)
-                    return m_container->processMouseReleaseEvent(Event::MouseButton::Left, mouseCoords);
+                {
+                    const bool eventHandled = m_container->processMouseReleaseEvent(Event::MouseButton::Left, mouseCoords);
+                    if (event.mouseButton.button == Event::MouseButton::Left)
+                        m_container->leftMouseButtonNoLongerDown();
+                    else if (event.mouseButton.button == Event::MouseButton::Right)
+                        m_container->rightMouseButtonNoLongerDown();
+                    return eventHandled;
+                }
             }
             case Event::Type::KeyPressed:
             {
