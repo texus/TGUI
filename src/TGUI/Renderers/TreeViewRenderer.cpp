@@ -47,7 +47,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureBranchCollapsed)
     TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureLeaf)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(TreeViewRenderer, Scrollbar, "scrollbar")
+    TGUI_RENDERER_PROPERTY_RENDERER(TreeViewRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(TreeViewRenderer, ScrollbarWidth, 0)
 }
 

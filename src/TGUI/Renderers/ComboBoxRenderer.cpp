@@ -55,7 +55,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, TextStyle::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, DefaultTextStyle, {})
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox, "listbox")
+    TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox, "ListBox")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

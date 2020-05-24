@@ -32,7 +32,7 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_COLOR(MessageBoxRenderer, TextColor, Color::Black)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(MessageBoxRenderer, Button, "button")
+    TGUI_RENDERER_PROPERTY_RENDERER(MessageBoxRenderer, Button, "Button")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

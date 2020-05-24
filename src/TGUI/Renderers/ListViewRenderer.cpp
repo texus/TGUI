@@ -47,7 +47,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(ListViewRenderer, SeparatorColor, Color(200, 200, 200))
     TGUI_RENDERER_PROPERTY_COLOR(ListViewRenderer, GridLinesColor, {})
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ListViewRenderer, Scrollbar, "scrollbar")
+    TGUI_RENDERER_PROPERTY_RENDERER(ListViewRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(ListViewRenderer, ScrollbarWidth, 0)
 }
 
