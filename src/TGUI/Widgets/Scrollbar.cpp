@@ -183,7 +183,7 @@ namespace tgui
 
     void Scrollbar::setScrollAmount(unsigned int scrollAmount)
     {
-        m_scrollAmount = scrollAmount;
+        m_scrollAmount = std::max(1u, scrollAmount);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

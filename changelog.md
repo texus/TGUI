@@ -25,6 +25,7 @@ TGUI 0.9-dev
 - Changed default value of ScrollbarPolicy in Label to Automatic
 - Renamed getMenuList in MenuBar to getMenus
 - Renamed mouseOnWidget to isMouseOnWidget
+- Default scroll amount in ScrollablePanel now depends on global text size
 - Gui::getFont now returns the global font if no font was set in the Gui
 - Container now translates the widget position before calling draw function
 - Dragging scrollbar inside child window didn't work when mouse left child window

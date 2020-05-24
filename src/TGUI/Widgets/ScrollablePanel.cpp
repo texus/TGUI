@@ -387,10 +387,7 @@ namespace tgui
         m_verticalScrollAmount = scrollAmount;
 
         if (scrollAmount == 0)
-        {
-            const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize()) / m_verticalScrollbar->getViewportSize());
-            m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
-        }
+            m_verticalScrollbar->setScrollAmount(getGlobalTextSize() * 5);
         else
             m_verticalScrollbar->setScrollAmount(scrollAmount);
     }
