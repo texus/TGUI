@@ -51,7 +51,6 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
     eventHandler->onMousePress([=](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
-    m_scrollablePanel->setSize(m_formWindow->getSize());
     setSize(formSize);
 
     tgui::Theme selectionSquareTheme{"resources/SelectionSquare.txt"};
