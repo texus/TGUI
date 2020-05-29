@@ -868,19 +868,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::update(sf::Time elapsedTime)
+    bool Container::update(sf::Time elapsedTime)
     {
-        Widget::update(elapsedTime);
+        bool screenRefreshRequired = Widget::update(elapsedTime);
 
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Update the elapsed time in widgets that need it
             if (m_widgets[i]->isVisible())
-                m_widgets[i]->update(elapsedTime);
+                screenRefreshRequired |= m_widgets[i]->update(elapsedTime);
         }
 
         m_animationTimeElapsed = {};
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

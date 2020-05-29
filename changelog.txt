@@ -6,6 +6,7 @@ TGUI 0.8.8  (TBD)
 - Added getIndexById and getIdByIndex to ListBox
 - Added global setEditCursorBlinkRate function
 - Added renderer properties in ComboBox for disabled state
+- Made updateTime() in Gui public and let it return if something changed
 - Picture had wrong size when loading from file with a relative size
 
 

@@ -441,11 +441,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether drawing the gui will automatically update the internal clock or whether the user does it manually
+        ///
+        /// @param drawUpdatesTime  True if gui.draw() updates the clock (default), false if gui.updateTime() has to be called
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDrawingUpdatesTime(bool drawUpdatesTime);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Updates the internal clock (for animations and blinking edit cursors)
+        ///
+        /// @return True if the the contents of the screen changed, false if nothing changed
+        ///
+        /// You do not need to call this function unless you set DrawingUpdatesTime to false (it is true by default).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool updateTime();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         // Updates the internal clock to make animation possible. This function is called automatically by the draw function.
         // You will thus only need to call it yourself when you are drawing everything manually.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateTime(const sf::Time& elapsedTime);
+        bool updateTime(const sf::Time& elapsedTime);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,6 +500,7 @@ namespace tgui
 
         sf::View m_view{{0, 0, 1, 1}};
 
+        bool m_drawUpdatesTime = true;
         bool m_TabKeyUsageEnabled = true;
 
 

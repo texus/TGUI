@@ -873,10 +873,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::update(sf::Time elapsedTime)
+    bool Widget::update(sf::Time elapsedTime)
     {
         m_animationTimeElapsed += elapsedTime;
 
+        const bool screenRefreshRequired = !m_showAnimations.empty();
         for (unsigned int i = 0; i < m_showAnimations.size();)
         {
             if (m_showAnimations[i]->update(elapsedTime))
@@ -884,6 +885,8 @@ namespace tgui
             else
                 i++;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

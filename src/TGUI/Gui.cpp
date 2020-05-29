@@ -283,11 +283,8 @@ namespace tgui
     {
         assert(m_target != nullptr);
 
-        // Update the time
-        if (m_windowFocused)
-            updateTime(m_clock.restart());
-        else
-            m_clock.restart();
+        if (m_drawUpdatesTime)
+            updateTime();
 
         // Change the view
         const sf::View oldView = m_target->getView();
@@ -518,10 +515,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::updateTime(const sf::Time& elapsedTime)
+    void Gui::setDrawingUpdatesTime(bool drawUpdatesTime)
+    {
+        m_drawUpdatesTime = drawUpdatesTime;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::updateTime()
+    {
+        if (m_windowFocused)
+            return updateTime(m_clock.restart());
+        else
+        {
+            m_clock.restart();
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::updateTime(const sf::Time& elapsedTime)
     {
         m_container->m_animationTimeElapsed = elapsedTime;
-        m_container->update(elapsedTime);
+        bool screenRefreshRequired = m_container->update(elapsedTime);
 
         if (m_tooltipPossible)
         {
@@ -536,11 +553,14 @@ namespace tgui
 
                     // Change the relative tool tip position in an absolute one
                     tooltip->setPosition(m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition());
+                    screenRefreshRequired = true;
                 }
 
                 m_tooltipPossible = false;
             }
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

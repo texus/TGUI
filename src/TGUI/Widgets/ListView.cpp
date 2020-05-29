@@ -2027,15 +2027,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::update(sf::Time elapsedTime)
+    bool ListView::update(sf::Time elapsedTime)
     {
-        Widget::update(elapsedTime);
+        const bool screenRefreshRequired = Widget::update(elapsedTime);
 
         if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = -1;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

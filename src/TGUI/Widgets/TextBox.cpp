@@ -1577,9 +1577,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::update(sf::Time elapsedTime)
+    bool TextBox::update(sf::Time elapsedTime)
     {
-        Widget::update(elapsedTime);
+        bool screenRefreshRequired = Widget::update(elapsedTime);
 
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= sf::milliseconds(getEditCursorBlinkRate()))
@@ -1592,7 +1592,11 @@ namespace tgui
 
             // Too slow for double clicking
             m_possibleDoubleClick = false;
+
+            screenRefreshRequired = true;
         }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
