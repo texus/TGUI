@@ -26,12 +26,12 @@
 #include <TGUI/TGUI.hpp>
 
 // The background image will rotate with the screen
-void setBackground(tgui::Gui& gui, sf::View view)
+void setBackground(tgui::Gui& gui, sf::Vector2u screenSize)
 {
-    gui.get("Landscape")->setSize(view.getSize().x, view.getSize().y);
-    gui.get("Portrait")->setSize(view.getSize().x, view.getSize().y);
+    gui.get("Landscape")->setSize(screenSize.x, screenSize.y);
+    gui.get("Portrait")->setSize(screenSize.x, screenSize.y);
 
-    if (view.getSize().x > view.getSize().y)
+    if (screenSize.x > screenSize.y)
     {
         gui.get("Landscape")->setVisible(true);
         gui.get("Portrait")->setVisible(false);
@@ -43,10 +43,9 @@ void setBackground(tgui::Gui& gui, sf::View view)
     }
 }
 
-int main(int argc, char *argv[])
+int main(int, char**)
 {
-    sf::VideoMode screen(sf::VideoMode::getDesktopMode());
-    sf::RenderWindow window(screen, "");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "");
     window.setFramerateLimit(30);
 
     tgui::Gui gui(window);
@@ -71,7 +70,7 @@ int main(int argc, char *argv[])
     editBox->setDefaultText("Enter text here...");
     gui.add(editBox);
 
-    setBackground(gui, window.getDefaultView());
+    setBackground(gui, window.getSize());
 
     // We shouldn't try drawing to the screen while in background
     // so we'll have to track that. You can do minor background
@@ -99,13 +98,7 @@ int main(int argc, char *argv[])
                 }
                 case sf::Event::Resized:
                 {
-                    sf::View view = window.getView();
-                    view.setSize(event.size.width, event.size.height);
-                    view.setCenter(event.size.width / 2, event.size.height / 2);
-                    window.setView(view);
-                    gui.setView(view);
-
-                    setBackground(gui, view);
+                    setBackground(gui, {event.size.width, event.size.height});
                     break;
                 }
 
