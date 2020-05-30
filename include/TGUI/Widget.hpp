@@ -992,7 +992,7 @@ namespace tgui
 
         Vector2f m_origin;
         Vector2f m_scaleFactors = {1, 1};
-        double m_rotationDeg = 0;
+        float m_rotationDeg = 0;
 
         // The previous position and size have to be stored because when setPosition/setSize is called, the layout may already be
         // changed and there would be no way for the widget to detect whether the values changed or not.
