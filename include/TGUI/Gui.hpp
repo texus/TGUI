@@ -28,6 +28,7 @@
 
 
 #include <TGUI/Container.hpp>
+#include <TGUI/RelFloatRect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <chrono>
 #include <queue>
@@ -42,7 +43,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Gui
     {
-      public:
+    public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
@@ -94,21 +95,80 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the view that is used by the gui
+        /// @brief Sets the part of the screen to which the gui will render in pixels
         ///
-        /// @param view  The new view
+        /// @param viewport  Rect of the window to which the gui should draw
         ///
+        /// Example code to render the gui on only the right side of an 800x600 window:
+        /// @code
+        /// gui.setAbsoluteViewport({400, 0, 400, 600});
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setView(const sf::View& view);
+        void setAbsoluteViewport(const FloatRect& viewport);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the view that is currently used by the gui
+        /// @brief Sets the part of the screen to which the gui will render as a ratio relative to the window size
         ///
-        /// @return Currently set view
+        /// @param viewport  Rect of the window to which the gui should draw, relative to the window size
         ///
+        /// The default viewport is set to (0, 0, 1, 1) so that it fills the entire window.
+        ///
+        /// Example code to render the gui on only the right side of window:
+        /// @code
+        /// gui.setRelativeViewport({0.5f, 0, 0.5f, 1});
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::View& getView() const;
+        void setRelativeViewport(const FloatRect& viewport);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns to which part of the screen the gui will render
+        /// @return Rect of the window to which the gui will draw
+        ///
+        /// By default the viewport will fill the entire screen.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        RelFloatRect getViewport() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the part of the gui that will be used to fill the viewport in pixels
+        ///
+        /// @param view  Rect of the gui that will be stretched to fill the viewport
+        ///
+        /// No stretching will occur when the view has the same size as the viewport (default).
+        ///
+        /// Example code to use the contents of the gui container from top-left (200,100) to bottom-right (600, 400) and stetch
+        /// it to fill the entire window (which equals the entire window by default):
+        /// @code
+        /// gui.setAbsoluteView({200, 100, 400, 300});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAbsoluteView(const FloatRect& view);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the part of the gui that will be used to fill the viewport
+        ///
+        /// @param view  Rect of the gui that will be stretched to fill the viewport, relative to the viewport size
+        ///
+        /// The default view is (0, 0, 1, 1) so that no scaling happens even when the viewport is changed.
+        ///
+        /// Example code to zoom in on the gui and display everything at 2x the size:
+        /// @code
+        /// gui.setRelativeView({0, 0, 0.5f, 0.5f});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setRelativeView(const FloatRect& view);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the part of the gui that will be used to fill the viewport
+        /// @return
+        ///
+        /// By default the view will have the same size as the viewport.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        RelFloatRect getView() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,6 +466,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Updates the internal clock (for timers, animations and blinking edit cursors)
         ///
+        /// @return True if the the contents of the screen changed, false if nothing changed
+        ///
         /// You do not need to call this function unless you set DrawingUpdatesTime to false (it is true by default).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool updateTime();
@@ -422,7 +484,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    private:
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the view and changes the size of the root container when needed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateContainerSize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
 
         std::chrono::steady_clock::time_point m_lastUpdateTime;
 
@@ -438,11 +510,12 @@ namespace tgui
         bool m_tooltipPossible = false;
         Vector2f m_lastMousePos;
 
-        sf::View m_view{{0, 0, 1, 1}};
+        RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
+        RelFloatRect m_view{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
+        sf::View m_viewSFML;
 
         bool m_drawUpdatesTime = true;
-        bool m_TabKeyUsageEnabled = true;
-        bool m_customViewSet = false;
+        bool m_tabKeyUsageEnabled = true;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

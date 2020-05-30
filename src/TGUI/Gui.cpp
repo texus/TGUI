@@ -293,10 +293,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui(sf::RenderTarget& target) :
-        m_target(&target)
+        m_target{&target}
     {
-        setView(target.getDefaultView());
-        m_customViewSet = false;
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,9 +303,7 @@ namespace tgui
     void Gui::setTarget(sf::RenderTarget& target)
     {
         m_target = &target;
-
-        setView(target.getDefaultView());
-        m_customViewSet = false;
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,27 +315,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setView(const sf::View& view)
+    void Gui::setAbsoluteViewport(const FloatRect& viewport)
     {
-        if ((m_view.getCenter() != view.getCenter()) || (m_view.getSize() != view.getSize()))
-        {
-            m_view = view;
-
-            m_container->m_size = Vector2f{view.getSize()};
-            m_container->onSizeChange.emit(m_container.get(), m_container->getSize());
-
-            for (auto& layout : m_container->m_boundSizeLayouts)
-                layout->recalculateValue();
-        }
-        else // Set it anyway in case something changed that we didn't care to check
-            m_view = view;
-
-        m_customViewSet = true;
+        m_viewport = {viewport.left, viewport.top, viewport.width, viewport.height};
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::View& Gui::getView() const
+    void Gui::setRelativeViewport(const FloatRect& viewport)
+    {
+        m_viewport = {RelativeValue(viewport.left), RelativeValue(viewport.top), RelativeValue(viewport.width), RelativeValue(viewport.height)};
+        updateContainerSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RelFloatRect Gui::getViewport() const
+    {
+        return m_viewport;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::setAbsoluteView(const FloatRect& view)
+    {
+        m_view = {view.left, view.top, view.width, view.height};
+        updateContainerSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::setRelativeView(const FloatRect& view)
+    {
+        m_view = {RelativeValue(view.left), RelativeValue(view.top), RelativeValue(view.width), RelativeValue(view.height)};
+        updateContainerSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RelFloatRect Gui::getView() const
     {
         return m_view;
     }
@@ -362,11 +378,11 @@ namespace tgui
             {
                 Vector2f mouseCoords;
                 if (event.type == Event::Type::MouseMoved)
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseMove.x, sfmlEvent.mouseMove.y}, m_view)};
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseMove.x, sfmlEvent.mouseMove.y}, m_viewSFML)};
                 else if (event.type == Event::Type::MouseWheelScrolled)
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseWheelScroll.x, sfmlEvent.mouseWheelScroll.y}, m_view)};
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseWheelScroll.x, sfmlEvent.mouseWheelScroll.y}, m_viewSFML)};
                 else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y}, m_view)};
+                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y}, m_viewSFML)};
 
                 // If a tooltip is visible then hide it now
                 if (m_visibleToolTip != nullptr)
@@ -436,11 +452,7 @@ namespace tgui
             }
             case Event::Type::Resized:
             {
-                if (!m_customViewSet && m_target)
-                {
-                    setView(sf::View({0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
-                    m_customViewSet = false;
-                }
+                updateContainerSize();
                 break;
             }
         }
@@ -453,14 +465,14 @@ namespace tgui
 
     void Gui::setTabKeyUsageEnabled(bool enabled)
     {
-        m_TabKeyUsageEnabled = enabled;
+        m_tabKeyUsageEnabled = enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Gui::isTabKeyUsageEnabled() const
     {
-        return m_TabKeyUsageEnabled;
+        return m_tabKeyUsageEnabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,8 +486,8 @@ namespace tgui
 
         // Change the view
         const sf::View oldView = m_target->getView();
-        m_target->setView(m_view);
-        Clipping::setGuiView(m_view);
+        m_target->setView(m_viewSFML);
+        Clipping::setGuiView(m_viewSFML);
 
         // Draw the widgets
         m_container->draw(*m_target, sf::RenderStates::Default);
@@ -764,6 +776,28 @@ namespace tgui
         }
 
         return screenRefreshRequired;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::updateContainerSize()
+    {
+        m_viewport.updateParentSize({static_cast<float>(m_target->getSize().x), static_cast<float>(m_target->getSize().y)});
+        m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});
+
+        m_viewSFML.setViewport({m_viewport.getLeft() / m_target->getSize().x, m_viewport.getTop() / m_target->getSize().y,
+                                m_viewport.getWidth() / m_target->getSize().x, m_viewport.getHeight() / m_target->getSize().y});
+        m_viewSFML.setSize(m_view.getWidth(), m_view.getHeight());
+        m_viewSFML.setCenter(m_view.getLeft() + (m_view.getWidth() / 2.f), m_view.getTop() + (m_view.getHeight() / 2.f));
+
+        const Vector2f viewSize = Vector2f{m_view.getWidth(), m_view.getHeight()};
+        if (viewSize == m_container->m_size.getValue())
+            return;
+
+        m_container->m_size = viewSize;
+        m_container->onSizeChange.emit(m_container.get(), viewSize);
+        for (auto& layout : m_container->m_boundSizeLayouts)
+            layout->recalculateValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -91,19 +91,12 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
+            // Pass the event to all the widgets
+            gui.handleEvent(event);
+
             // When the window is closed, the application ends
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            // When the window is resized, the view is changed
-            else if (event.type == sf::Event::Resized)
-            {
-                window.setView(sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
-                gui.setView(window.getView());
-            }
-
-            // Pass the event to all the widgets
-            gui.handleEvent(event);
         }
 
         window.clear();

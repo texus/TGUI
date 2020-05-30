@@ -211,7 +211,7 @@ TEST_CASE("[Layouts]")
                 REQUIRE(height.getValue() == 15);
                 REQUIRE(size.getValue() == tgui::Vector2f(20, 15));
 
-                gui.setView(sf::View{{4, 3, 40, 30}});
+                gui.setAbsoluteView({4, 3, 40, 30});
 
                 REQUIRE(width.getValue() == 40);
                 REQUIRE(height.getValue() == 30);

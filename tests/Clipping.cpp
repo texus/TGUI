@@ -50,11 +50,8 @@ TEST_CASE("[Clipping]")
         gui.add(background);
         background->moveToBack();
 
-        sf::View view = gui.getView();
-        view.setViewport({0.1f, 0.2f, 0.8f, 0.6f});
-        view.setCenter(415, 320);
-        view.setSize(80, 40);
-        gui.setView(view);
+        gui.setRelativeViewport({0.1f, 0.2f, 0.8f, 0.6f});
+        gui.setAbsoluteView({375, 300, 80, 40});
 
         TEST_DRAW("Clipping_Panel.png")
     }
@@ -76,17 +73,15 @@ TEST_CASE("[Clipping]")
         gui.add(editBox);
         editBox->setCaretPosition(0);
 
-        sf::View view({250, 160, 140, 57});
-        view.setViewport({0.1f, 0.2f, 0.7f, 0.76f});
-        gui.setView(view);
+        gui.setRelativeViewport({0.1f, 0.2f, 0.7f, 0.76f});
+        gui.setAbsoluteView({250, 160, 140, 57});
 
         TEST_DRAW("Clipping_EditBox.png")
 
         SECTION("Outside viewport")
         {
-            sf::View view2({250, 160, 210, 38});
-            view2.setViewport({0.2f, 0.1f, 0.7f, 0.6f});
-            gui.setView(view2);
+            gui.setRelativeViewport({0.2f, 0.1f, 0.7f, 0.6f});
+            gui.setAbsoluteView({250, 160, 210, 38});
 
             TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
         }
