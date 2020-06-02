@@ -119,14 +119,17 @@ namespace tgui
         else
             return defaultValue;
 #else
-        try
-        {
-            return std::stof(str);
-        }
-        catch (const std::exception&)
-        {
-            return defaultValue;
-        }
+        // We can't use std::stof because it always depends on the global locale
+        std::istringstream iss(str);
+        iss.imbue(std::locale::classic());
+
+        float result = 0;
+        iss >> result;
+
+        if (iss.fail())
+            result = defaultValue;
+
+        return result;
 #endif
     }
 

@@ -8,6 +8,7 @@ TGUI 0.8.8  (TBD)
 - Added renderer properties in ComboBox for disabled state
 - Made updateTime() in Gui public and let it return if something changed
 - Picture had wrong size when loading from file with a relative size
+- String to float conversion could fail since 0.8.6 when C locale was changed
 
 
 TGUI 0.8.7  (8 February 2020)
