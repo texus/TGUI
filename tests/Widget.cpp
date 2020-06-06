@@ -273,7 +273,7 @@ TEST_CASE("[Widget]")
         widget->setOrigin(0.3f, 0.4f);
         widget->setRotation(50);
         REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.3f, 0.4f));
-        widget->setScale(50, {0.8f, 0.7f});
+        widget->setRotation(50, {0.8f, 0.7f});
         REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.8f, 0.7f));
     }
 
