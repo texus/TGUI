@@ -251,6 +251,17 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getScale() == tgui::Vector2f(2, 0.5f));
         widget->setScale(2);
         REQUIRE(widget->getScale() == tgui::Vector2f(2, 2));
+
+        widget->setOrigin(0.3f, 0.4f);
+        widget->setScale(3);
+        REQUIRE(widget->getScaleOrigin() == tgui::Vector2f(0.3f, 0.4f));
+        widget->setScale(3, {0.8f, 0.7f});
+        REQUIRE(widget->getScaleOrigin() == tgui::Vector2f(0.8f, 0.7f));
+
+        widget->setScale({1.5f, 4});
+        REQUIRE(widget->getScaleOrigin() == tgui::Vector2f(0.3f, 0.4f));
+        widget->setScale({1.5f, 4}, {0.8f, 0.7f});
+        REQUIRE(widget->getScaleOrigin() == tgui::Vector2f(0.8f, 0.7f));
     }
 
     SECTION("Rotation")
@@ -258,6 +269,12 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getRotation() == 0);
         widget->setRotation(60);
         REQUIRE(widget->getRotation() == 60);
+
+        widget->setOrigin(0.3f, 0.4f);
+        widget->setRotation(50);
+        REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.3f, 0.4f));
+        widget->setScale(50, {0.8f, 0.7f});
+        REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.8f, 0.7f));
     }
 
     SECTION("Renderer")

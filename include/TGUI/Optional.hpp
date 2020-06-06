@@ -45,11 +45,6 @@ namespace tgui
     public:
         Optional() noexcept = default;
 
-        Optional(std::nullptr_t) noexcept :
-            m_ptr(nullptr)
-        {
-        }
-
         Optional(const T& val) noexcept :
             m_ptr(std::make_unique<T>(val))
         {
@@ -73,12 +68,27 @@ namespace tgui
             m_ptr = std::make_unique<T>(args...);
         }
 
+        void reset() noexcept
+        {
+            m_ptr = nullptr;
+        }
+
         T& operator*()
         {
             return *m_ptr;
         }
 
+        const T& operator*() const
+        {
+            return *m_ptr;
+        }
+
         T* operator->() noexcept
+        {
+            return m_ptr.get();
+        }
+
+        const T* operator->() const noexcept
         {
             return m_ptr.get();
         }

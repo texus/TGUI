@@ -307,7 +307,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the origin point on which the position, scale and rotation is based
         ///
-        /// @param setOrigin  Relative position of the origin point
+        /// @param origin  Relative position of the origin point
         ///
         /// Valid x and y values range from 0 to 1, with 0 representing the left/top of the widget and 1 being right/bottom
         ///
@@ -335,6 +335,9 @@ namespace tgui
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
         /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
         ///
+        /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
+        /// and scale then you can use the setScale(Vector2f,Vector2f) function to pass a scaling origin.
+        ///
         /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(Vector2f scaleFactors);
@@ -343,16 +346,55 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the scaling to be applied to the widget
         ///
-        /// @param scaleFactor  How many times should the widget be enlarged (or shrunk if scale factor is smaller than 1)
+        /// @param scaleFactor How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
+        /// @param origin      The origin from where to scale the widget. The widget origin will be used if no value is provided.
+        ///
+        /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
+        /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
+        ///
+        /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
+        ///
+        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScale(Vector2f scaleFactors, Vector2f origin);
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the scaling to be applied to the widget
+        ///
+        /// @param scaleFactor How many times should the widget be enlarged (or shrunk if scale factor is smaller than 1)
         ///
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
         /// of 2 will appear on the screen as a (100, 40) widget with its entire contents stretched.
+        ///
+        /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
+        /// and scale then you can use the setScale(float,Vector2f) function to pass a scaling origin.
         ///
         /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(float scaleFactor)
         {
             setScale({scaleFactor, scaleFactor});
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the scaling to be applied to the widget
+        ///
+        /// @param scaleFactor How many times should the widget be enlarged (or shrunk if scale factor is smaller than 1)
+        /// @param origin      The origin from where to scale the widget. The widget origin will be used if no value is provided.
+        ///
+        /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
+        /// of 2 will appear on the screen as a (100, 40) widget with its entire contents stretched.
+        ///
+        /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
+        ///
+        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScale(float scaleFactor, Vector2f origin)
+        {
+            setScale({scaleFactor, scaleFactor}, origin);
         }
 
 
@@ -368,13 +410,37 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the origin used for scaling
+        /// @return Origin from where the widget is scaled
+        /// @see setScale
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getScaleOrigin() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the rotation to be applied to the widget
         ///
         /// @param angle  How many degrees clockwise should the widget be rotated?
         ///
+        /// The origin of the rotation is set with the setOrigin function. If you want to use a separate origin for position
+        /// and rotation then you can use the setRotation(float,Vector2f) function to pass a rotation origin.
+        ///
         /// @warning This functionality is still experimental. Clipping isn't supported and is disabled when a rotation is set!
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setRotation(float angle);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the rotation to be applied to the widget
+        ///
+        /// @param angle  How many degrees clockwise should the widget be rotated?
+        /// @param origin The origin around which the rotation should occur
+        ///
+        /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
+        ///
+        /// @warning This functionality is still experimental. Clipping isn't supported and is disabled when a rotation is set!
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setRotation(float angle, Vector2f origin);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,6 +452,14 @@ namespace tgui
         {
             return m_rotationDeg;
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the origin used for rotations
+        /// @return Origin around which the rotation occurs
+        /// @see setRotation
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getRotationOrigin() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -991,6 +1065,8 @@ namespace tgui
         unsigned int m_textSize = 0;
 
         Vector2f m_origin;
+        Optional<Vector2f> m_rotationOrigin;
+        Optional<Vector2f> m_scaleOrigin;
         Vector2f m_scaleFactors = {1, 1};
         float m_rotationDeg = 0;
 

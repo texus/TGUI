@@ -109,10 +109,13 @@ namespace tgui
             if (!scaledOrRotated)
                 return mousePos + origin;
 
+            const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+            const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+
             sf::Transform transform;
             transform.translate(widget->getPosition() - origin);
-            transform.rotate(widget->getRotation(), origin);
-            transform.scale(widget->getScale(), origin);
+            transform.rotate(widget->getRotation(), rotOrigin);
+            transform.scale(widget->getScale(), scaleOrigin);
             mousePos = transform.getInverse().transformPoint(mousePos);
             return mousePos + widget->getPosition();
         }
@@ -1002,9 +1005,15 @@ namespace tgui
             sf::RenderStates widgetStates = states;
             widgetStates.transform.translate(widget->getPosition() - origin);
             if (widget->getRotation() != 0)
-                widgetStates.transform.rotate(widget->getRotation(), origin);
+            {
+                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+                widgetStates.transform.rotate(widget->getRotation(), rotOrigin);
+            }
             if ((widget->getScale().x != 1) || (widget->getScale().y != 1))
-                widgetStates.transform.scale(widget->getScale(), origin);
+            {
+                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+                widgetStates.transform.scale(widget->getScale(), scaleOrigin);
+            }
 
             widget->draw(target, widgetStates);
         }

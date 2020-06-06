@@ -164,6 +164,8 @@ namespace tgui
         m_size                         {other.m_size},
         m_textSize                     {other.m_textSize},
         m_origin                       {other.m_origin},
+        m_rotationOrigin               {other.m_rotationOrigin},
+        m_scaleOrigin                  {other.m_scaleOrigin},
         m_scaleFactors                 {other.m_scaleFactors},
         m_rotationDeg                  {other.m_rotationDeg},
         m_boundPositionLayouts         {},
@@ -203,6 +205,8 @@ namespace tgui
         m_size                         {std::move(other.m_size)},
         m_textSize                     {std::move(other.m_textSize)},
         m_origin                       {std::move(other.m_origin)},
+        m_rotationOrigin               {std::move(other.m_rotationOrigin)},
+        m_scaleOrigin                  {std::move(other.m_scaleOrigin)},
         m_scaleFactors                 {std::move(other.m_scaleFactors)},
         m_rotationDeg                  {std::move(other.m_rotationDeg)},
         m_boundPositionLayouts         {std::move(other.m_boundPositionLayouts)},
@@ -259,6 +263,8 @@ namespace tgui
             m_size                 = other.m_size;
             m_textSize             = other.m_textSize;
             m_origin               = other.m_origin;
+            m_rotationOrigin       = other.m_rotationOrigin;
+            m_scaleOrigin          = other.m_scaleOrigin;
             m_scaleFactors         = other.m_scaleFactors;
             m_rotationDeg          = other.m_rotationDeg;
             m_boundPositionLayouts = {};
@@ -317,6 +323,8 @@ namespace tgui
             m_size                 = std::move(other.m_size);
             m_textSize             = std::move(other.m_textSize);
             m_origin               = std::move(other.m_origin);
+            m_rotationOrigin       = std::move(other.m_rotationOrigin);
+            m_scaleOrigin          = std::move(other.m_scaleOrigin);
             m_scaleFactors         = std::move(other.m_scaleFactors);
             m_rotationDeg          = std::move(other.m_rotationDeg);
             m_boundPositionLayouts = std::move(other.m_boundPositionLayouts);
@@ -512,10 +520,13 @@ namespace tgui
         if (!scaledOrRotated)
             return pos - origin;
 
+        const Vector2f rotOrigin{getRotationOrigin().x * getSize().x, getRotationOrigin().y * getSize().y};
+        const Vector2f scaleOrigin{getScaleOrigin().x * getSize().x, getScaleOrigin().y * getSize().y};
+
         sf::Transform transform;
         transform.translate(-origin);
-        transform.rotate(getRotation(), origin);
-        transform.scale(getScale(), origin);
+        transform.rotate(getRotation(), rotOrigin);
+        transform.scale(getScale(), scaleOrigin);
         return Vector2f(transform.transformPoint({0, 0})) + pos;
     }
 
@@ -538,6 +549,25 @@ namespace tgui
     void Widget::setScale(Vector2f scaleFactors)
     {
         m_scaleFactors = scaleFactors;
+        m_scaleOrigin.reset();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setScale(Vector2f scaleFactors, Vector2f origin)
+    {
+        m_scaleFactors = scaleFactors;
+        m_scaleOrigin = origin;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Widget::getScaleOrigin() const
+    {
+        if (m_scaleOrigin)
+            return *m_scaleOrigin;
+        else
+            return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -545,6 +575,25 @@ namespace tgui
     void Widget::setRotation(float angle)
     {
         m_rotationDeg = angle;
+        m_rotationOrigin.reset();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setRotation(float angle, Vector2f origin)
+    {
+        m_rotationDeg = angle;
+        m_rotationOrigin = origin;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Widget::getRotationOrigin() const
+    {
+        if (m_rotationOrigin)
+            return *m_rotationOrigin;
+        else
+            return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,6 +632,7 @@ namespace tgui
             }
             case ShowAnimationType::Scale:
             {
+                // TODO: Use setScale instead of setSize
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
                 m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, getSize(), duration,
                                                                                    TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
@@ -668,6 +718,7 @@ namespace tgui
             }
             case ShowAnimationType::Scale:
             {
+                // TODO: Use setScale instead of setSize
                 const auto size = getSize();
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration));
                 m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
@@ -1161,9 +1212,17 @@ namespace tgui
         if (getOrigin() != Vector2f{})
             node->propertyValuePairs["Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
         if (getScale() != Vector2f{})
+        {
             node->propertyValuePairs["Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
+            if (m_scaleOrigin)
+                node->propertyValuePairs["ScaleOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleOrigin->x) + "," + String::fromNumber(m_scaleOrigin->y) + ")");
+        }
         if (getRotation() != 0)
+        {
             node->propertyValuePairs["Rotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_rotationDeg));
+            if (m_rotationOrigin)
+                node->propertyValuePairs["RotationOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
+        }
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
         {
@@ -1239,10 +1298,19 @@ namespace tgui
         if (node->propertyValuePairs["Origin"])
             setOrigin(parseVector2f(node->propertyValuePairs["Origin"]->value));
         if (node->propertyValuePairs["Scale"])
-            setScale(parseVector2f(node->propertyValuePairs["Scale"]->value));
+        {
+            if (node->propertyValuePairs["ScaleOrigin"])
+                setScale(parseVector2f(node->propertyValuePairs["Scale"]->value), parseVector2f(node->propertyValuePairs["ScaleOrigin"]->value));
+            else
+                setScale(parseVector2f(node->propertyValuePairs["Scale"]->value));
+        }
         if (node->propertyValuePairs["Rotation"])
-            setRotation(node->propertyValuePairs["Rotation"]->value.toFloat());
-
+        {
+            if (node->propertyValuePairs["RotationOrigin"])
+                setRotation(node->propertyValuePairs["Rotation"]->value.toFloat(), parseVector2f(node->propertyValuePairs["RotationOrigin"]->value));
+            else
+                setRotation(node->propertyValuePairs["Rotation"]->value.toFloat());
+        }
         if (node->propertyValuePairs["UserData"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
