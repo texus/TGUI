@@ -39,6 +39,7 @@ namespace tgui
 {
     class Gui;
     class Widget;
+    class Container;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Class to store the left, top, width or height of a widget
@@ -426,6 +427,12 @@ namespace tgui
         /// @brief Bind to the height of the widget
         TGUI_API Layout bindHeight(std::shared_ptr<Widget> widget);
 
+        /// @brief Bind to the inner width of the container widget
+        TGUI_API Layout bindInnerWidth(std::shared_ptr<Container> container);
+
+        /// @brief Bind to the inner height of the container widget
+        TGUI_API Layout bindInnerHeight(std::shared_ptr<Container> container);
+
         /// @brief Bind to the right position of the widget
         TGUI_API Layout bindRight(std::shared_ptr<Widget> widget);
 
@@ -437,6 +444,9 @@ namespace tgui
 
         /// @brief Bind to the size of the widget
         TGUI_API Layout2d bindSize(std::shared_ptr<Widget> widget);
+
+        /// @brief Bind to the inner size of the container widget
+        TGUI_API Layout2d bindInnerSize(std::shared_ptr<Container> container);
 
         /// @brief Bind to the width of the gui view
         TGUI_API Layout bindWidth(Gui& gui);
