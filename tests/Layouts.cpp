@@ -139,63 +139,85 @@ TEST_CASE("[Layouts]")
 
         SECTION("bind functions")
         {
-            auto button1 = std::make_shared<tgui::Button>();
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
+            SECTION("Widgets")
+            {
+                auto button1 = std::make_shared<tgui::Button>();
+                button1->setSize(300, 50);
+                button1->setPosition(40, 60);
 
-            REQUIRE(!bindLeft(button1).isConstant());
+                REQUIRE(!bindLeft(button1).isConstant());
 
-            auto button2 = std::make_shared<tgui::Button>();
-            button2->setPosition(bindLeft(button1), bindTop(button1));
-            button2->setSize(bindWidth(button1), bindHeight(button1));
-            REQUIRE(button2->getSize() == tgui::Vector2f(300, 50));
-            REQUIRE(button2->getPosition() == tgui::Vector2f(40, 60));
+                auto button2 = std::make_shared<tgui::Button>();
+                button2->setPosition(bindLeft(button1), bindTop(button1));
+                button2->setSize(bindWidth(button1), bindHeight(button1));
+                REQUIRE(button2->getSize() == tgui::Vector2f(300, 50));
+                REQUIRE(button2->getPosition() == tgui::Vector2f(40, 60));
 
-            button2->setPosition(bindRight(button1), bindBottom(button1));
-            REQUIRE(button2->getPosition() == tgui::Vector2f(340, 110));
+                button2->setPosition(bindRight(button1), bindBottom(button1));
+                REQUIRE(button2->getPosition() == tgui::Vector2f(340, 110));
 
-            button2->setPosition(bindPosition(button1));
-            button2->setSize(bindSize(button1));
-            REQUIRE(button2->getSize() == tgui::Vector2f(300, 50));
-            REQUIRE(button2->getPosition() == tgui::Vector2f(40, 60));
+                button2->setPosition(bindPosition(button1));
+                button2->setSize(bindSize(button1));
+                REQUIRE(button2->getSize() == tgui::Vector2f(300, 50));
+                REQUIRE(button2->getPosition() == tgui::Vector2f(40, 60));
 
-            button1->setSize(400, 40);
-            button1->setPosition(60, 75);
-            REQUIRE(button2->getSize() == tgui::Vector2f(400, 40));
-            REQUIRE(button2->getPosition() == tgui::Vector2f(60, 75));
+                button1->setSize(400, 40);
+                button1->setPosition(60, 75);
+                REQUIRE(button2->getSize() == tgui::Vector2f(400, 40));
+                REQUIRE(button2->getPosition() == tgui::Vector2f(60, 75));
 
-            button1->setSize(bindSize(button2)); // Binding each other only works when value is cached
-            REQUIRE(button1->getSize() == tgui::Vector2f(400, 40));
-            REQUIRE(button2->getSize() == tgui::Vector2f(400, 40));
+                button1->setSize(bindSize(button2)); // Binding each other only works when value is cached
+                REQUIRE(button1->getSize() == tgui::Vector2f(400, 40));
+                REQUIRE(button2->getSize() == tgui::Vector2f(400, 40));
 
-            auto button3 = std::make_shared<tgui::Button>();
-            auto panel = std::make_shared<tgui::Panel>();
-            panel->setSize(200, 180);
-            panel->setPosition(10, 25);
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
-            button2->setSize(400, 40);
-            button2->setPosition(60, 75);
-            panel->add(button1);
-            panel->add(button2);
-            panel->add(button3);
+                auto button3 = std::make_shared<tgui::Button>();
+                auto panel = std::make_shared<tgui::Panel>();
+                panel->setSize(200, 180);
+                panel->setPosition(10, 25);
+                button1->setSize(300, 50);
+                button1->setPosition(40, 60);
+                button2->setSize(400, 40);
+                button2->setPosition(60, 75);
+                panel->add(button1);
+                panel->add(button2);
+                panel->add(button3);
 
-            button3->setSize(2.5 * bindPosition(button1) + bindSize(button2) / 4 + tgui::Vector2f(100, 50));
-            REQUIRE(button3->getSize() == tgui::Vector2f(300, 210));
+                button3->setSize(2.5 * bindPosition(button1) + bindSize(button2) / 4 + tgui::Vector2f(100, 50));
+                REQUIRE(button3->getSize() == tgui::Vector2f(300, 210));
 
-            button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1), 50 - bindBottom(button2) + 75 * bindTop(button2));
-            REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
-            REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
+                button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1), 50 - bindBottom(button2) + 75 * bindTop(button2));
+                REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
+                REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
 
-            auto button4 = std::make_shared<tgui::Button>();
-            button4->setSize(200, 50);
+                auto button4 = std::make_shared<tgui::Button>();
+                button4->setSize(200, 50);
 
-            auto button5 = std::make_shared<tgui::Button>();
-            button5->setSize(bindMax(bindWidth(button4), bindHeight(button4)), bindMin(bindWidth(button4), bindHeight(button4)));
-            REQUIRE(button5->getSize() == tgui::Vector2f(200, 50));
+                auto button5 = std::make_shared<tgui::Button>();
+                button5->setSize(bindMax(bindWidth(button4), bindHeight(button4)), bindMin(bindWidth(button4), bindHeight(button4)));
+                REQUIRE(button5->getSize() == tgui::Vector2f(200, 50));
 
-            button4->setSize(80, 120);
-            REQUIRE(button5->getSize() == tgui::Vector2f(120, 80));
+                button4->setSize(80, 120);
+                REQUIRE(button5->getSize() == tgui::Vector2f(120, 80));
+            }
+
+            SECTION("Container inner size")
+            {
+                auto panel = tgui::Panel::create({400, 300});
+
+                auto width = bindInnerWidth(panel);
+                auto height = bindInnerHeight(panel);
+                auto size = bindInnerSize(panel);
+
+                REQUIRE(width.getValue() == 400);
+                REQUIRE(height.getValue() == 300);
+                REQUIRE(size.getValue() == tgui::Vector2f(400, 300));
+
+                panel->getRenderer()->setBorders({10, 20, 15, 25});
+
+                REQUIRE(width.getValue() == 375);
+                REQUIRE(height.getValue() == 255);
+                REQUIRE(size.getValue() == tgui::Vector2f(375, 255));
+            }
 
             SECTION("Gui")
             {
