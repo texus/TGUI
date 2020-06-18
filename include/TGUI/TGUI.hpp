@@ -32,6 +32,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <TGUI/Loading/Deserializer.hpp>

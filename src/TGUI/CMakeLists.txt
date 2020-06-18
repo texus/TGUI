@@ -15,6 +15,7 @@ set(TGUI_SRC
     Signal.cpp
     String.cpp
     SignalManager.cpp
+    SubwidgetContainer.cpp
     SvgImage.cpp
     TextStyle.cpp
     Text.cpp
