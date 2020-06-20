@@ -25,7 +25,7 @@ if(NOT SFML_DIR AND NOT CMAKE_MODULE_PATH)
 endif()
 
 # Project name and version
-project(TGUI VERSION 0.8.7)
+project(TGUI VERSION 0.8.8)
 
 # TGUI uses the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
 include(GNUInstallDirs)
