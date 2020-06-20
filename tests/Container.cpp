@@ -199,35 +199,74 @@ TEST_CASE("[Container]")
         container->add(editBox2);
         container->add(editBox3);
 
-        editBox2->setFocused(true);
-        REQUIRE(!editBox1->isFocused());
-        REQUIRE(editBox2->isFocused());
-        REQUIRE(!editBox3->isFocused());
+        SECTION("Changing focus")
+        {
+            editBox2->setFocused(true);
+            REQUIRE(!editBox1->isFocused());
+            REQUIRE(editBox2->isFocused());
+            REQUIRE(!editBox3->isFocused());
 
-        container->focusNextWidget();
-        REQUIRE(!editBox1->isFocused());
-        REQUIRE(!editBox2->isFocused());
-        REQUIRE(editBox3->isFocused());
+            container->focusNextWidget();
+            REQUIRE(!editBox1->isFocused());
+            REQUIRE(!editBox2->isFocused());
+            REQUIRE(editBox3->isFocused());
 
-        container->focusNextWidget();
-        REQUIRE(editBox1->isFocused());
-        REQUIRE(!editBox2->isFocused());
-        REQUIRE(!editBox3->isFocused());
+            container->focusNextWidget();
+            REQUIRE(editBox1->isFocused());
+            REQUIRE(!editBox2->isFocused());
+            REQUIRE(!editBox3->isFocused());
 
-        container->focusPreviousWidget();
-        REQUIRE(!editBox1->isFocused());
-        REQUIRE(!editBox2->isFocused());
-        REQUIRE(editBox3->isFocused());
+            container->focusPreviousWidget();
+            REQUIRE(!editBox1->isFocused());
+            REQUIRE(!editBox2->isFocused());
+            REQUIRE(editBox3->isFocused());
 
-        container->focusPreviousWidget();
-        REQUIRE(!editBox1->isFocused());
-        REQUIRE(editBox2->isFocused());
-        REQUIRE(!editBox3->isFocused());
+            container->focusPreviousWidget();
+            REQUIRE(!editBox1->isFocused());
+            REQUIRE(editBox2->isFocused());
+            REQUIRE(!editBox3->isFocused());
 
-        container->unfocusAllWidgets();
-        REQUIRE(!editBox1->isFocused());
-        REQUIRE(!editBox2->isFocused());
-        REQUIRE(!editBox3->isFocused());
+            container->unfocusAllWidgets();
+            REQUIRE(!editBox1->isFocused());
+            REQUIRE(!editBox2->isFocused());
+            REQUIRE(!editBox3->isFocused());
+        }
+
+        SECTION("getFocusedChild / getFocusedLeaf")
+        {
+            auto childContainer = tgui::Group::create();
+            container->add(childContainer);
+
+            auto grandChildContainer = tgui::Group::create();
+            childContainer->add(grandChildContainer);
+
+            auto editBox4 = tgui::EditBox::create();
+            grandChildContainer->add(editBox4);
+
+            // No widgets focused by default
+            REQUIRE(container->getFocusedChild() == nullptr);
+            REQUIRE(container->getFocusedLeaf() == nullptr);
+
+            // Direct non-container child focused
+            editBox2->setFocused(true);
+            REQUIRE(container->getFocusedChild() == editBox2);
+            REQUIRE(container->getFocusedLeaf() == editBox2);
+
+            // Direct container child focused
+            childContainer->setFocused(true);
+            REQUIRE(container->getFocusedChild() == childContainer);
+            REQUIRE(container->getFocusedLeaf() == childContainer);
+
+            // Focused leaf is a container
+            grandChildContainer->setFocused(true);
+            REQUIRE(container->getFocusedChild() == childContainer);
+            REQUIRE(container->getFocusedLeaf() == grandChildContainer);
+
+            // Focused leaf is not a container
+            editBox4->setFocused(true);
+            REQUIRE(container->getFocusedChild() == childContainer);
+            REQUIRE(container->getFocusedLeaf() == editBox4);
+        }
     }
 
     SECTION("setOpacity")
