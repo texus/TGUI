@@ -58,7 +58,7 @@ namespace tgui
         bool is() const
         {
             typedef StorageType<U> T;
-            return dynamic_cast<Derived<T>*>(ptr);
+            return (dynamic_cast<Derived<T>*>(ptr) != nullptr);
         }
 
         template<class U>
