@@ -101,7 +101,6 @@ if(TGUI_OPTIMIZE_SINGLE_BUILD)
     endif()
 
     if(${threads} LESS ${fileCount})
-        math(EXPR threads "(${threads} / 2) + 1")
         math(EXPR fileCountMinusOne "${fileCount} - 1")
         math(EXPR threadsMinusOne "${threads} - 1")
 
