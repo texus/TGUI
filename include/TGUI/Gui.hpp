@@ -291,6 +291,29 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllWidgets();
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the child widget that is focused inside this container
+        ///
+        /// @return Focused child widget or nullptr if none of the widgets are currently focused
+        ///
+        /// If the focused widget is a container then a pointer to that container is returned. If you want to know which widget
+        /// is focused inside that container (recursively) then you should use the getFocusedLeaf() function.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getFocusedChild() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget that is focused inside this container
+        ///
+        /// @return Focused leaf child widget or nullptr if none of the widgets are currently focused
+        ///
+        /// If the focused widget is a container then the getFocusedLeaf() is recursively called on that container. If you want
+        /// to limit the search to only direct children of this container then you should use the getFocusedChild() function.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getFocusedLeaf() const;
+
+
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the name of a widget

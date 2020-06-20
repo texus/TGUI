@@ -525,6 +525,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Widget::Ptr Container::getFocusedChild() const
+    {
+        return m_focusedWidget;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Container::getFocusedLeaf() const
+    {
+        if (!m_focusedWidget || !m_focusedWidget->isContainer())
+            return m_focusedWidget;
+
+        const auto leafWidget = std::static_pointer_cast<Container>(m_focusedWidget)->getFocusedLeaf();
+
+        // If the container has no focused child then the container itself is the leaf
+        if (!leafWidget)
+            return m_focusedWidget;
+
+        return leafWidget;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Container::focusNextWidget()
     {
         // If the focused widget is a container then try to focus the next widget inside it
