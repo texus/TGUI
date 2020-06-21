@@ -7,6 +7,19 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 8
+      date: 20 June 2020
+      changes: |
+        Added RightClicked signal to TreeView ([PR #125](https://github.com/texus/TGUI/pull/125))
+        Changed the keyboard shortcuts in EditBox and TextBox for macOS
+        Added getIndexById and getIdByIndex to ListBox
+        Added global setEditCursorBlinkRate function
+        Added renderer properties in ComboBox for disabled state
+        Added bind functions to layouts to bind to inner size
+        Added getFocusedChild() and getFocusedLeaf() to Container and Gui
+        Made updateTime() in Gui public and let it return whether something changed
+        Picture had wrong size when loading from file with a relative size
+        String to float conversion could fail since 0.8.6 when C locale was changed
     - version: 7
       date: 8 February 2020
       changes: |

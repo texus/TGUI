@@ -14,9 +14,11 @@ var searchData=
   ['addtext_11',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
   ['addwidget_12',['addWidget',['../classtgui_1_1Grid.html#a6779dc6f09c327282ed93815eca3c6f5',1,'tgui::Grid']]],
   ['alignment_13',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
-  ['all_14',['All',['../structtgui_1_1EditBox_1_1Validator.html#afc22105edff0398674251d7aabdf5b81',1,'tgui::EditBox::Validator']]],
+  ['all_14',['All',['../structtgui_1_1EditBox_1_1Validator.html#a54d5192d032a1f03adc0ecd16bafc9d9',1,'tgui::EditBox::Validator']]],
   ['always_15',['Always',['../classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da68eec46437c384d8dad18d5464ebc35c',1,'tgui::Scrollbar']]],
   ['animationfinished_16',['AnimationFinished',['../structtgui_1_1Signals_1_1Widget.html#a4cc02ccf21e285035fb65e28dd52c0d3',1,'tgui::Signals::Widget']]],
   ['any_17',['Any',['../structtgui_1_1Any.html',1,'tgui']]],
-  ['automatic_18',['Automatic',['../classtgui_1_1ComboBox.html#a4fe26aaccdc327630e5f1034bee16fc8a086247a9b57fde6eefee2a0c4752242d',1,'tgui::ComboBox::Automatic()'],['../classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da086247a9b57fde6eefee2a0c4752242d',1,'tgui::Scrollbar::Automatic()']]]
+  ['asnativestring_18',['asNativeString',['../classtgui_1_1Filesystem_1_1Path.html#a1b7fad802480599dd8832acc89f1fcac',1,'tgui::Filesystem::Path']]],
+  ['asstring_19',['asString',['../classtgui_1_1Filesystem_1_1Path.html#a425bea01b4cb980c0c97f6914b798ca2',1,'tgui::Filesystem::Path']]],
+  ['automatic_20',['Automatic',['../classtgui_1_1ComboBox.html#a4fe26aaccdc327630e5f1034bee16fc8a086247a9b57fde6eefee2a0c4752242d',1,'tgui::ComboBox::Automatic()'],['../classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da086247a9b57fde6eefee2a0c4752242d',1,'tgui::Scrollbar::Automatic()']]]
 ];
