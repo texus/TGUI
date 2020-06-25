@@ -277,6 +277,7 @@ namespace tgui
 
         // New hovered tab depends on several factors, we keep it simple and just remove the hover state
         m_hoveringTab = -1;
+        recalculateTabsWidth();
         return true;
     }
 
