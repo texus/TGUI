@@ -302,6 +302,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether widgets that are located outside the visible view of the ScrollablePanel still get drawn
+        ///
+        /// @brief skipDrawing  Should the Widget::draw() call be skipped when it lies outside the view?
+        ///
+        /// This is disabled by default for backwards compatibility. Call this function with 'true' as parameter to enable the
+        /// optimalization.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void enableSkipDrawingWidgetsOutsideView(bool skipDrawing = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void leftMousePressed(Vector2f pos) override;
@@ -423,6 +434,8 @@ namespace tgui
 
         unsigned int m_verticalScrollAmount = 0;
         unsigned int m_horizontalScrollAmount = 0;
+
+        bool m_skipDrawingWidgetsOutsideView = false;
 
         std::map<Widget::Ptr, unsigned int> m_connectedCallbacks;
 

@@ -456,6 +456,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ScrollablePanel::enableSkipDrawingWidgetsOutsideView(bool skipDrawing)
+    {
+        m_skipDrawingWidgetsOutsideView = skipDrawing;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
@@ -633,7 +640,17 @@ namespace tgui
             states.transform.translate(-static_cast<float>(m_horizontalScrollbar->getValue()),
                                        -static_cast<float>(m_verticalScrollbar->getValue()));
 
-            drawWidgetContainer(&target, states);
+            if (m_skipDrawingWidgetsOutsideView)
+            {
+                const sf::FloatRect view{static_cast<float>(m_horizontalScrollbar->getValue()), static_cast<float>(m_verticalScrollbar->getValue()), contentSize.x, contentSize.y};
+                for (const auto& widget : m_widgets)
+                {
+                    if (widget->isVisible() && view.intersects(sf::FloatRect{widget->getPosition() + widget->getWidgetOffset(), widget->getFullSize()}))
+                        widget->draw(target, states);
+                }
+            }
+            else
+                drawWidgetContainer(&target, states);
         }
 
         if (m_verticalScrollbar->isVisible())

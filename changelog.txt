@@ -1,6 +1,12 @@
 TGUI 0.8.8  (20 June 2020)
 --------------------------
 
+- Added enableSkipDrawingWidgetsOutsideView() to ScrollablePanel to enable optimization
+
+
+TGUI 0.8.8  (20 June 2020)
+--------------------------
+
 - Added RightClicked signal to TreeView ([PR #125](https://github.com/texus/TGUI/pull/125))
 - Changed the keyboard shortcuts in EditBox and TextBox for macOS
 - Added getIndexById and getIdByIndex to ListBox
