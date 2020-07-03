@@ -941,7 +941,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
+        virtual void draw(sf::RenderTarget& target, RenderStates states) const = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1018,7 +1018,7 @@ namespace tgui
         // Draw a rectangle shape with the right opacity
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawRectangleShape(sf::RenderTarget& target,
-                                const sf::RenderStates& states,
+                                const RenderStates& states,
                                 Vector2f size,
                                 Color color) const;
 
@@ -1027,7 +1027,7 @@ namespace tgui
         // Draw the borders around the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawBorders(sf::RenderTarget& target,
-                         const sf::RenderStates& states,
+                         const RenderStates& states,
                          const Borders& borders,
                          Vector2f size,
                          Color color) const;

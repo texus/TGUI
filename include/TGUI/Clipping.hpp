@@ -28,6 +28,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Vector2.hpp>
+#include <TGUI/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/View.hpp>
 
@@ -49,7 +50,7 @@ namespace tgui
         /// @param topLeft Position of the top left corner of the clipping area relative to the view
         /// @param size    Size of the clipping area relative to the view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Clipping(sf::RenderTarget& target, const sf::RenderStates& states, Vector2f topLeft, Vector2f size);
+        Clipping(sf::RenderTarget& target, const RenderStates& states, Vector2f topLeft, Vector2f size);
 
 
         // The clipping object cannot be copied

@@ -234,7 +234,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Picture::draw(sf::RenderTarget& target, RenderStates states) const
     {
         m_sprite.draw(target, states);
     }

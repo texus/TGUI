@@ -123,6 +123,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Sprite::setPosition(Vector2f position)
+    {
+        m_position = position;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Sprite::getPosition() const
+    {
+        return m_position;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Sprite::setRotation(float angle)
+    {
+        m_rotation = angle;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Sprite::getRotation() const
+    {
+        return m_rotation;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Sprite::isTransparentPixel(Vector2f pos) const
     {
         if (!isSet() || (m_size.x == 0) || (m_size.y == 0))
@@ -132,10 +160,10 @@ namespace tgui
 
         if (getRotation() != 0)
         {
-            Vector2f offset = {getTransform().transformRect(sf::FloatRect{FloatRect{{}, getSize()}}).left,
-                               getTransform().transformRect(sf::FloatRect{FloatRect{{}, getSize()}}).top};
-
-            pos = Vector2f{getInverseTransform().transformPoint(sf::Vector2f{pos}) + getInverseTransform().transformPoint(sf::Vector2f{offset})};
+            const Transform transform = Transform().rotate(getRotation()).translate(getPosition());
+            const Transform inverseTransform = transform.getInverse();
+            const FloatRect transformedRect = transform.transformRect({{}, getSize()});
+            pos = inverseTransform.transformPoint(pos) + inverseTransform.transformPoint(transformedRect.getPosition());
 
             // Watch out for rounding errors
             const float epsilon = 0.00001f;
@@ -149,7 +177,7 @@ namespace tgui
                 pos.y = getSize().y;
         }
         else // There is no rotation
-            pos -= Vector2f(getPosition());
+            pos -= getPosition();
 
         if ((pos.x < 0) || (pos.y < 0) || (pos.x >= getSize().x) || (pos.y >= getSize().y))
             return true;
@@ -410,34 +438,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Sprite::draw(sf::RenderTarget& target, RenderStates states) const
     {
         if (!isSet())
             return;
 
-        // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
         if (getRotation() != 0)
         {
-            sf::Vector2f pos = {getTransform().transformRect(sf::FloatRect(FloatRect({}, getSize()))).left,
-                                getTransform().transformRect(sf::FloatRect(FloatRect({}, getSize()))).top};
-
-            states.transform.translate(sf::Vector2f(getPosition()) - pos);
+            // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
+            states.transform.translate(-Transform().rotate(getRotation()).transformRect({{}, getSize()}).getPosition());
+            states.transform.rotate(getRotation());
         }
 
-        states.transform *= getTransform();
+        states.transform.translate(m_position);
 
         // Apply clipping when needed
         Optional<Clipping> clipping;
         if (m_visibleRect != FloatRect{})
             clipping.emplace(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
 
+        sf::RenderStates sfStates = states;
         if (m_texture.getData()->svgImage)
-            states.texture = m_svgTexture.get();
+            sfStates.texture = m_svgTexture.get();
         else
-            states.texture = &m_texture.getData()->texture.value();
+            sfStates.texture = &m_texture.getData()->texture.value();
 
-        states.shader = m_shader;
-        target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
+        sfStates.shader = m_shader;
+        target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, sfStates);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

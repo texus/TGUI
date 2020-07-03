@@ -636,7 +636,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void RangeSlider::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})
@@ -666,7 +666,7 @@ namespace tgui
 
             if (m_selectedTrackColorCached.isSet())
             {
-                sf::RenderStates selectedTrackStates = states;
+                RenderStates selectedTrackStates = states;
                 Vector2f size;
 
                 if (m_verticalScroll)

@@ -438,7 +438,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void SpinButton::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

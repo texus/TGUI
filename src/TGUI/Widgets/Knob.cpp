@@ -559,7 +559,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Knob::draw(sf::RenderTarget& target, RenderStates states) const
     {
         const float size = std::min(getInnerSize().x, getInnerSize().y);
 

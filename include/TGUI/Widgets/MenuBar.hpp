@@ -488,7 +488,7 @@ namespace tgui
         /// @param states Current render states
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        void draw(sf::RenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,11 +599,11 @@ namespace tgui
 
         /// @internal
         /// Draw the backgrounds and text of the menu names on top of the bar itself
-        void drawMenusOnBar(sf::RenderTarget& target, sf::RenderStates states) const;
+        void drawMenusOnBar(sf::RenderTarget& target, RenderStates states) const;
 
         /// @internal
         /// Draw an open menu and recusively draw submenus when open
-        void drawMenu(sf::RenderTarget& target, sf::RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
+        void drawMenu(sf::RenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -633,7 +633,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawOpenMenu(sf::RenderTarget& target, sf::RenderStates states) const;
+        void drawOpenMenu(sf::RenderTarget& target, RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,7 +709,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        void draw(sf::RenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

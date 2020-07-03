@@ -523,7 +523,7 @@ namespace tgui
         const Vector2f rotOrigin{getRotationOrigin().x * getSize().x, getRotationOrigin().y * getSize().y};
         const Vector2f scaleOrigin{getScaleOrigin().x * getSize().x, getScaleOrigin().y * getSize().y};
 
-        sf::Transform transform;
+        Transform transform;
         transform.translate(-origin);
         transform.rotate(getRotation(), rotOrigin);
         transform.scale(getScale(), scaleOrigin);
@@ -1399,7 +1399,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::drawRectangleShape(sf::RenderTarget& target,
-                                    const sf::RenderStates& states,
+                                    const RenderStates& states,
                                     Vector2f size,
                                     Color color) const
     {
@@ -1416,7 +1416,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::drawBorders(sf::RenderTarget& target,
-                             const sf::RenderStates& states,
+                             const RenderStates& states,
                              const Borders& borders,
                              Vector2f size,
                              Color borderColor) const

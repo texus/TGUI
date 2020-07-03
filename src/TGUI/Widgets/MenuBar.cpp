@@ -831,7 +831,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void MenuBar::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the background
         if (m_spriteBackground.isSet())
@@ -847,7 +847,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawOpenMenu(sf::RenderTarget& target, sf::RenderStates states) const
+    void MenuBar::drawOpenMenu(sf::RenderTarget& target, RenderStates states) const
     {
         assert(m_visibleMenu >= 0);
 
@@ -1277,9 +1277,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenusOnBar(sf::RenderTarget& target, sf::RenderStates states) const
+    void MenuBar::drawMenusOnBar(sf::RenderTarget& target, RenderStates states) const
     {
-        sf::Transform oldTransform = states.transform;
+        Transform oldTransform = states.transform;
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
@@ -1326,12 +1326,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenu(sf::RenderTarget& target, sf::RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
+    void MenuBar::drawMenu(sf::RenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
     {
         if (menu.menuItems.empty())
             return;
 
-        sf::Transform oldTransform = states.transform;
+        Transform oldTransform = states.transform;
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
@@ -1381,7 +1381,7 @@ namespace tgui
             // Draw an arrow next to the text if there is a submenu
             if (!menu.menuItems[j].menuItems.empty())
             {
-                sf::Transform textTransform = states.transform;
+                Transform textTransform = states.transform;
                 const float arrowHeight = getSize().y / 2.f;
                 const float arrowWidth = arrowHeight / 2.f;
                 states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once
@@ -1509,7 +1509,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarMenuPlaceholder::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void MenuBarMenuPlaceholder::draw(sf::RenderTarget& target, RenderStates states) const
     {
         m_menuBar->drawOpenMenu(target, states);
     }

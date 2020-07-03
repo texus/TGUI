@@ -1937,7 +1937,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawHeaderText(sf::RenderTarget& target, sf::RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
+    void ListView::drawHeaderText(sf::RenderTarget& target, RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
     {
         if (column >= m_columns.size())
             return;
@@ -1961,7 +1961,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawColumn(sf::RenderTarget& target, sf::RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
+    void ListView::drawColumn(sf::RenderTarget& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
     {
         if (firstItem == lastItem)
             return;
@@ -1976,7 +1976,7 @@ namespace tgui
         // If at least one icon is set then all items in the first column have to be shifted to make room for the icon.
         if ((column == 0) && (m_iconCount > 0))
         {
-            const sf::Transform transformBeforeIcons = states.transform;
+            const Transform transformBeforeIcons = states.transform;
             const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
 
             states.transform.translate({0, (requiredItemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
@@ -2045,9 +2045,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ListView::draw(sf::RenderTarget& target, RenderStates states) const
     {
-        const sf::RenderStates statesForScrollbar = states;
+        const RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -2100,7 +2100,7 @@ namespace tgui
             // Draw the separator line between the header and the contents
             if (m_headerSeparatorHeight > 0)
             {
-                sf::RenderStates headerStates = states;
+                RenderStates headerStates = states;
                 headerStates.transform.translate({0, static_cast<float>(headerHeight)});
 
                 const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
@@ -2116,7 +2116,7 @@ namespace tgui
             // Draw the horizontal grid lines
             if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
             {
-                sf::Transform transformBeforeGridLines = states.transform;
+                Transform transformBeforeGridLines = states.transform;
 
                 states.transform.translate({0, (totalItemHeight * firstItem) + m_itemHeight - static_cast<float>(m_verticalScrollbar->getValue())});
 
@@ -2169,7 +2169,7 @@ namespace tgui
         {
             const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
 
-            sf::RenderStates headerStates = states;
+            RenderStates headerStates = states;
             float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {

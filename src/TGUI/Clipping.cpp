@@ -34,7 +34,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Clipping::Clipping(sf::RenderTarget& target, const sf::RenderStates& states, Vector2f topLeft, Vector2f size) :
+    Clipping::Clipping(sf::RenderTarget& target, const RenderStates& states, Vector2f topLeft, Vector2f size) :
         m_target {target},
         m_oldView{target.getView()}
     {

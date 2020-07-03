@@ -712,7 +712,7 @@ namespace tgui
                 const float lineSpacing = m_fontCached.getLineSpacing(m_textSize);
                 for (auto& line : m_lines)
                 {
-                    line.setPosition(pos.x, pos.y);
+                    line.setPosition(pos);
                     pos.y += lineSpacing;
                 }
             }
@@ -729,9 +729,9 @@ namespace tgui
                     const float textWidth = line.findCharacterPos(lastChar).x;
 
                     if (m_horizontalAlignment == HorizontalAlignment::Center)
-                        line.setPosition(pos.x + ((totalWidth - textWidth) / 2.f), pos.y);
+                        line.setPosition({pos.x + ((totalWidth - textWidth) / 2.f), pos.y});
                     else // if (m_horizontalAlignment == HorizontalAlignment::Right)
-                        line.setPosition(pos.x + totalWidth - textWidth, pos.y);
+                        line.setPosition({pos.x + totalWidth - textWidth, pos.y});
 
                     pos.y += m_fontCached.getLineSpacing(m_textSize);
                 }
@@ -741,9 +741,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Label::draw(sf::RenderTarget& target, RenderStates states) const
     {
-        const sf::RenderStates statesForScrollbar = states;
+        const RenderStates statesForScrollbar = states;
 
         Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                               getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

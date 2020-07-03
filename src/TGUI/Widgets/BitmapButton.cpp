@@ -135,7 +135,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void BitmapButton::draw(sf::RenderTarget& target, RenderStates states) const
     {
         if (!m_glyphSprite.isSet())
         {

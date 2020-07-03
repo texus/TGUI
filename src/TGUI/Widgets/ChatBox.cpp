@@ -618,9 +618,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ChatBox::draw(sf::RenderTarget& target, RenderStates states) const
     {
-        const sf::RenderStates scrollbarStates = states;
+        const RenderStates scrollbarStates = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -648,12 +648,12 @@ namespace tgui
 
         // Put the lines at the bottom of the chat box if needed
         if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSize) < getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()))
-            states.transform.translate(0, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSize));
+            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSize)});
 
         for (const auto& line : m_lines)
         {
             line.text.draw(target, states);
-            states.transform.translate(0, line.text.getSize().y);
+            states.transform.translate({0, line.text.getSize().y});
         }
     }
 

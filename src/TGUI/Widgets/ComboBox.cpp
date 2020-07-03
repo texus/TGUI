@@ -979,7 +979,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ComboBox::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -988,7 +988,7 @@ namespace tgui
             states.transform.translate(m_bordersCached.getOffset());
         }
 
-        sf::RenderStates statesForText = states;
+        RenderStates statesForText = states;
 
         // Draw the background
         if (m_spriteBackground.isSet())
@@ -1053,8 +1053,8 @@ namespace tgui
         {
             const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
-            statesForText.transform.translate(m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
-                                              m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f));
+            statesForText.transform.translate({m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
+                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f)});
 
             if (selectedItemIndex >= 0)
                 m_text.draw(target, statesForText);

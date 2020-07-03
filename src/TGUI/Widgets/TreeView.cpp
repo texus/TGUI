@@ -1105,8 +1105,8 @@ namespace tgui
 
             const float iconPadding = (m_iconBounds.x / 4.f);
             const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * node->depth);
-            node->text.setPosition(iconOffset + m_iconBounds.x + iconPadding + textPadding,
-                                   (pos * m_itemHeight) + ((m_itemHeight - node->text.getSize().y) / 2.f));
+            node->text.setPosition({iconOffset + m_iconBounds.x + iconPadding + textPadding,
+                                    (pos * m_itemHeight) + ((m_itemHeight - node->text.getSize().y) / 2.f)});
 
             const float right = node->text.getPosition().x + node->text.getSize().x + m_paddingCached.getRight();
             if (right > m_maxRight)
@@ -1180,9 +1180,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void TreeView::draw(sf::RenderTarget& target, RenderStates states) const
     {
-        sf::RenderStates statesForScrollbars = states;
+        RenderStates statesForScrollbars = states;
 
         if (m_bordersCached != Borders{0})
         {
@@ -1246,7 +1246,7 @@ namespace tgui
                 auto statesForIcon = states;
                 const float iconPadding = (m_iconBounds.x / 4.f);
                 const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[i]->depth);
-                statesForIcon.transform.translate(std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f)));
+                statesForIcon.transform.translate({std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f))});
 
                 // Draw an icon for the leaf node if a texture is set
                 if (m_visibleNodes[i]->nodes.empty())
@@ -1300,15 +1300,15 @@ namespace tgui
                         if (m_visibleNodes[i]->expanded)
                         {
                             // Draw "-"
-                            statesForIcon.transform.translate(0, (m_iconBounds.y - thickness) / 2.f);
+                            statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
                             drawRectangleShape(target, statesForIcon, {m_iconBounds.x, thickness}, iconColor);
                         }
                         else // Collapsed node
                         {
                             // Draw "+"
-                            statesForIcon.transform.translate(0, (m_iconBounds.y - thickness) / 2.f);
+                            statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
                             drawRectangleShape(target, statesForIcon, {m_iconBounds.x, thickness}, iconColor);
-                            statesForIcon.transform.translate((m_iconBounds.x - thickness) / 2.f, -(m_iconBounds.y - thickness) / 2.f);
+                            statesForIcon.transform.translate({(m_iconBounds.x - thickness) / 2.f, -(m_iconBounds.y - thickness) / 2.f});
                             drawRectangleShape(target, statesForIcon, {thickness, m_iconBounds.y}, iconColor);
                         }
                     }

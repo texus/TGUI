@@ -1889,9 +1889,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void TextBox::draw(sf::RenderTarget& target, RenderStates states) const
     {
-        const sf::RenderStates statesForScrollbar = states;
+        const RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})

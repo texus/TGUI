@@ -486,7 +486,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Button::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

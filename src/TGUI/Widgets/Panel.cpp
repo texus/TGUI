@@ -232,7 +232,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Panel::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -249,7 +249,7 @@ namespace tgui
         else
             drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
-        states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
+        states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                       innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 

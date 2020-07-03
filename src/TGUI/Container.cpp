@@ -112,7 +112,7 @@ namespace tgui
             const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
             const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
 
-            sf::Transform transform;
+            Transform transform;
             transform.translate(widget->getPosition() - origin);
             transform.rotate(widget->getRotation(), rotOrigin);
             transform.scale(widget->getScale(), scaleOrigin);
@@ -1016,7 +1016,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Container::draw(sf::RenderTarget& target, RenderStates states) const
     {
         for (const auto& widget : m_widgets)
         {
@@ -1025,7 +1025,7 @@ namespace tgui
 
             const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
 
-            sf::RenderStates widgetStates = states;
+            RenderStates widgetStates = states;
             widgetStates.transform.translate(widget->getPosition() - origin);
             if (widget->getRotation() != 0)
             {

@@ -792,7 +792,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Tabs::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders around the tabs
         if (m_bordersCached != Borders{0})
@@ -807,7 +807,7 @@ namespace tgui
             if (!m_tabs[i].visible)
                 continue;
 
-            sf::RenderStates textStates = states;
+            RenderStates textStates = states;
 
             // Draw the background of the tab
             if (m_spriteTab.isSet() && m_spriteSelectedTab.isSet())

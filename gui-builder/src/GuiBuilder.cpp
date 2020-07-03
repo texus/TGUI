@@ -1889,7 +1889,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             }
 
             tgui::Sprite sprite{*texture};
-            sprite.setScale({scaling.getValue(), scaling.getValue()});
+            sprite.setSize({imageSize.x * scaling.getValue(), imageSize.y * scaling.getValue()});
 
             previewCanvas->clear(tgui::Color::Transparent);
             previewCanvas->draw(sprite);

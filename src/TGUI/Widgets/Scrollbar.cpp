@@ -936,7 +936,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Scrollbar::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Don't draw the scrollbar when it is not needed
         if (m_autoHide && (m_maximum <= m_viewportSize))
@@ -1075,7 +1075,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarChildWidget::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ScrollbarChildWidget::draw(sf::RenderTarget& target, RenderStates states) const
     {
         states.transform.translate(getPosition());
         Scrollbar::draw(target, states);

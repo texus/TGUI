@@ -23,6 +23,7 @@ set(TGUI_SRC
     TextureManager.cpp
     Timer.cpp
     ToolTip.cpp
+    Transform.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp

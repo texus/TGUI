@@ -151,18 +151,17 @@ namespace tgui
 
         if (m_titleAlignment == TitleAlignment::Left)
         {
-            m_titleText.setPosition(m_distanceToSideCached,
-                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition({m_distanceToSideCached, (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
         else if (m_titleAlignment == TitleAlignment::Center)
         {
-            m_titleText.setPosition(m_distanceToSideCached + ((getClientSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
-                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition({m_distanceToSideCached + ((getClientSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                                     (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
         else // if (m_titleAlignment == TitleAlignment::Right)
         {
-            m_titleText.setPosition(getClientSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
-                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition({getClientSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
+                                     (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
 
         buttonOffsetX = m_distanceToSideCached;
@@ -1026,7 +1025,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ChildWindow::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -1072,7 +1071,7 @@ namespace tgui
             if (!button->isVisible())
                 continue;
 
-            sf::RenderStates buttonStates = states;
+            RenderStates buttonStates = states;
             buttonStates.transform.translate(button->getPosition());
             button->draw(target, buttonStates);
         }

@@ -673,7 +673,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Slider::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})

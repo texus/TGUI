@@ -1091,8 +1091,8 @@ namespace tgui
         float caretLeft = textX;
 
         // Set the text before the selection on the correct position
-        m_textBeforeSelection.setPosition(textX, textY);
-        m_defaultText.setPosition(textX, textY);
+        m_textBeforeSelection.setPosition({textX, textY});
+        m_defaultText.setPosition({textX, textY});
 
         // Check if there is a selection
         if (m_selChars != 0)
@@ -1110,7 +1110,7 @@ namespace tgui
             m_selectedTextBackground.setPosition({textX, m_paddingCached.getTop()});
 
             // Set the text selected text on the correct position
-            m_textSelection.setPosition(textX, textY);
+            m_textSelection.setPosition({textX, textY});
 
             // Watch out for kerning
             if (m_displayedText.length() > charsBeforeSelection + m_selChars)
@@ -1120,7 +1120,7 @@ namespace tgui
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_selChars).x;
-            m_textAfterSelection.setPosition(textX, textY);
+            m_textAfterSelection.setPosition({textX, textY});
         }
 
         // Set the position of the caret
@@ -1501,7 +1501,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void EditBox::draw(sf::RenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

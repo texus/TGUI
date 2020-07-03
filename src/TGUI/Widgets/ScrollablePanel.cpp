@@ -588,7 +588,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ScrollablePanel::draw(sf::RenderTarget& target, RenderStates states) const
     {
         const auto oldStates = states;
 
@@ -604,7 +604,7 @@ namespace tgui
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
-        states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
+        states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                 innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
@@ -623,8 +623,8 @@ namespace tgui
         {
             const Clipping clipping{target, states, {}, contentSize};
 
-            states.transform.translate(-static_cast<float>(m_horizontalScrollbar->getValue()),
-                                       -static_cast<float>(m_verticalScrollbar->getValue()));
+            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()),
+                                        -static_cast<float>(m_verticalScrollbar->getValue())});
 
             Container::draw(target, states);
         }

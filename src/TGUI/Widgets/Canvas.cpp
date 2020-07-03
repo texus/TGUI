@@ -172,7 +172,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(const tgui::Sprite& sprite, const sf::RenderStates& states)
+    void Canvas::draw(const tgui::Sprite& sprite, const RenderStates& states)
     {
         sprite.draw(m_renderTexture, states);
     }
@@ -196,7 +196,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Canvas::draw(sf::RenderTarget& target, RenderStates states) const
     {
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;
