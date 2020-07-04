@@ -46,9 +46,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SubwidgetContainer::setPosition(const Layout2d& position)
+    {
+        m_container->setPosition(position);
+        Widget::setPosition(position);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SubwidgetContainer::leftMousePressed(Vector2f pos)
     {
-        m_container->leftMousePressed(pos - getPosition());
+        m_container->leftMousePressed(pos);
         Widget::leftMousePressed(pos);
     }
 
@@ -56,7 +64,7 @@ namespace tgui
 
     void SubwidgetContainer::leftMouseReleased(Vector2f pos)
     {
-        m_container->leftMouseReleased(pos - getPosition());
+        m_container->leftMouseReleased(pos);
         Widget::leftMouseReleased(pos);
     }
 
@@ -64,7 +72,7 @@ namespace tgui
 
     void SubwidgetContainer::rightMousePressed(Vector2f pos)
     {
-        m_container->rightMousePressed(pos - getPosition());
+        m_container->rightMousePressed(pos);
         Widget::rightMousePressed(pos);
     }
 
@@ -72,7 +80,7 @@ namespace tgui
 
     void SubwidgetContainer::rightMouseReleased(Vector2f pos)
     {
-        m_container->rightMouseReleased(pos - getPosition());
+        m_container->rightMouseReleased(pos);
         Widget::rightMouseReleased(pos);
     }
 
@@ -80,7 +88,7 @@ namespace tgui
 
     void SubwidgetContainer::mouseMoved(Vector2f pos)
     {
-        m_container->mouseMoved(pos - getPosition());
+        m_container->mouseMoved(pos);
         Widget::mouseMoved(pos);
     }
 
@@ -104,7 +112,7 @@ namespace tgui
 
     bool SubwidgetContainer::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        m_container->mouseWheelScrolled(delta, pos - getPosition());
+        m_container->mouseWheelScrolled(delta, pos);
         return Widget::mouseWheelScrolled(delta, pos);
     }
 
@@ -136,7 +144,7 @@ namespace tgui
 
     Widget::Ptr SubwidgetContainer::askToolTip(Vector2f mousePos)
     {
-        return m_container->askToolTip(mousePos - getPosition());
+        return m_container->askToolTip(mousePos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,9 +170,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool SubwidgetContainer::isMouseOnWidget(Vector2f pos) const
+    {
+        return m_container->isMouseOnWidget(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SubwidgetContainer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(sf::Vector2f(getPosition()));
         m_container->draw(target, states);
     }
 
