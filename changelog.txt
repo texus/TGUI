@@ -1,7 +1,10 @@
 TGUI 0.8.8  (20 June 2020)
 --------------------------
 
+- Added parameter to focusNextWidget/focusPreviousWidget in Container to not look recursively
 - Added enableSkipDrawingWidgetsOutsideView() to ScrollablePanel to enable optimization
+- Tabs::remove didn't recalculate the tabs width
+- SubwidgetContainer wasn't being compiled into the library
 
 
 TGUI 0.8.8  (20 June 2020)

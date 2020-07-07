@@ -224,9 +224,9 @@ namespace tgui
             if (isTabKeyUsageEnabled() && (event.key.code == sf::Keyboard::Tab))
             {
                 if (event.key.shift)
-                    focusPreviousWidget();
+                    focusPreviousWidget(true);
                 else
-                    focusNextWidget();
+                    focusNextWidget(true);
 
                 return true;
             }
@@ -424,16 +424,16 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::focusNextWidget()
+    bool Gui::focusNextWidget(bool recursive)
     {
-        return m_container->focusNextWidget();
+        return m_container->focusNextWidget(recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::focusPreviousWidget()
+    bool Gui::focusPreviousWidget(bool recursive)
     {
-        return m_container->focusPreviousWidget();
+        return m_container->focusPreviousWidget(recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
