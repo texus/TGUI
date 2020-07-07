@@ -537,13 +537,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::focusNextWidget()
+    bool Container::focusNextWidget(bool recursive)
     {
         // If the focused widget is a container then try to focus the next widget inside it
-        if (m_focusedWidget && m_focusedWidget->isContainer())
+        if (recursive && m_focusedWidget && m_focusedWidget->isContainer())
         {
             auto focusedContainer = std::static_pointer_cast<Container>(m_focusedWidget);
-            if (focusedContainer->focusNextWidget())
+            if (focusedContainer->focusNextWidget(true))
                 return true;
         }
 
@@ -551,12 +551,12 @@ namespace tgui
         const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
         for (std::size_t i = focusedWidgetIndex; i < m_widgets.size(); ++i)
         {
-            if (tryFocusWidget(m_widgets[i], false))
+            if (tryFocusWidget(m_widgets[i], false, recursive))
                 return true;
         }
 
         // If we are not an isolated focus group then the focus will be given to the group behind us
-        if (!m_isolatedFocus)
+        if (recursive && !m_isolatedFocus)
             return false;
 
         // None of the widgets behind the focused one could be focused, so loop the ones before it
@@ -566,7 +566,7 @@ namespace tgui
         // Also include the focused widget since it may be a container that didn't have its first widget focused
         for (std::size_t i = 0; i < focusedWidgetIndex; ++i)
         {
-            if (tryFocusWidget(m_widgets[i], false))
+            if (tryFocusWidget(m_widgets[i], false, recursive))
                 return true;
         }
 
@@ -576,10 +576,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::focusPreviousWidget()
+    bool Container::focusPreviousWidget(bool recursive)
     {
         // If the focused widget is a container then try to focus the previous widget inside it
-        if (m_focusedWidget && m_focusedWidget->isContainer())
+        if (recursive && m_focusedWidget && m_focusedWidget->isContainer())
         {
             auto focusedContainer = std::static_pointer_cast<Container>(m_focusedWidget);
             if (focusedContainer->focusPreviousWidget())
@@ -592,26 +592,26 @@ namespace tgui
         {
             for (std::size_t i = focusedWidgetIndex - 1; i > 0; --i)
             {
-                if (tryFocusWidget(m_widgets[i-1], true))
+                if (tryFocusWidget(m_widgets[i-1], true, recursive))
                     return true;
             }
 
             // If we are not an isolated focus group then the focus will be given to the group before us
-            if (!m_isolatedFocus)
+            if (recursive && !m_isolatedFocus)
                 return false;
         }
 
         // None of the widgets before the focused one could be focused, so loop the ones after it.
         for (std::size_t i = m_widgets.size(); i > focusedWidgetIndex; --i)
         {
-            if (tryFocusWidget(m_widgets[i-1], true))
+            if (tryFocusWidget(m_widgets[i-1], true, recursive))
                 return true;
         }
 
         // Also include the focused widget since it may be a container that didn't have its last widget focused.
         if (focusedWidgetIndex > 0)
         {
-            if (tryFocusWidget(m_widgets[focusedWidgetIndex-1], true))
+            if (tryFocusWidget(m_widgets[focusedWidgetIndex-1], true, recursive))
                 return true;
         }
 
@@ -1057,13 +1057,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::tryFocusWidget(const tgui::Widget::Ptr &widget, bool reverseWidgetOrder)
+    bool Container::tryFocusWidget(const tgui::Widget::Ptr &widget, bool reverseWidgetOrder, bool recursive)
     {
         // If you are not allowed to focus the widget, then skip it
         if (!widget->canGainFocus() || !widget->isVisible() || !widget->isEnabled())
             return false;
 
-        if (widget->isContainer())
+        if (recursive && widget->isContainer())
         {
             auto container = std::static_pointer_cast<Container>(widget);
 
@@ -1074,7 +1074,7 @@ namespace tgui
             // Try to focus the first focusable widget in the container
             auto oldUnfocusedWidget = container->m_focusedWidget;
             container->m_focusedWidget = nullptr;
-            bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget() : container->focusNextWidget();
+            bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget(true) : container->focusNextWidget(true);
 
             if (oldUnfocusedWidget && (oldUnfocusedWidget != container->m_focusedWidget))
                 oldUnfocusedWidget->setFocused(false);
