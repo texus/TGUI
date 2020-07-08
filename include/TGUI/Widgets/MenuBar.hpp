@@ -488,7 +488,7 @@ namespace tgui
         /// @param states Current render states
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, RenderStates states) const override;
+        void draw(RenderTargetBase& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,11 +599,11 @@ namespace tgui
 
         /// @internal
         /// Draw the backgrounds and text of the menu names on top of the bar itself
-        void drawMenusOnBar(sf::RenderTarget& target, RenderStates states) const;
+        void drawMenusOnBar(RenderTargetBase& target, RenderStates states) const;
 
         /// @internal
         /// Draw an open menu and recusively draw submenus when open
-        void drawMenu(sf::RenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
+        void drawMenu(RenderTargetBase& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -633,7 +633,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawOpenMenu(sf::RenderTarget& target, RenderStates states) const;
+        void drawOpenMenu(RenderTargetBase& target, RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -697,6 +697,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the entire size that the widget is using
+        ///
+        /// @return Full size of the widget
+        ///
+        /// This MenuBarMenuPlaceholder widget will try to fit the entire screen to absorb all mouse events.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getFullSize() const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
+        ///
+        /// @return Offset of the widget
+        ///
+        /// The offset equals -getPosition() for MenuBarMenuPlaceholder because it tries to fill the entire screen.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getWidgetOffset() const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of an open menu
         /// @return Is the mouse on top of an open menu from the menu bar?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,7 +729,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, RenderStates states) const override;
+        void draw(RenderTargetBase& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

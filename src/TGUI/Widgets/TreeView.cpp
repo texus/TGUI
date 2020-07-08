@@ -25,7 +25,6 @@
 
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <TGUI/Clipping.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1180,29 +1179,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::draw(sf::RenderTarget& target, RenderStates states) const
+    void TreeView::draw(RenderTargetBase& target, RenderStates states) const
     {
         RenderStates statesForScrollbars = states;
 
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
-        drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+        target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         {
             float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
-            const Clipping clipping
-            {
-                target, states,
-                {m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}
-            };
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             int firstNode = 0;
             int lastNode = static_cast<int>(m_visibleNodes.size());
@@ -1225,9 +1220,9 @@ namespace tgui
 
                 const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
-                    drawRectangleShape(target, states, size, m_selectedBackgroundColorHoverCached);
+                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                 else
-                    drawRectangleShape(target, states, size, m_selectedBackgroundColorCached);
+                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
 
                 states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_selectedItem * static_cast<float>(m_itemHeight)});
             }
@@ -1236,7 +1231,7 @@ namespace tgui
             if ((m_hoveredItem >= firstNode) && (m_hoveredItem < lastNode) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
-                drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
+                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
             }
 
@@ -1252,7 +1247,7 @@ namespace tgui
                 if (m_visibleNodes[i]->nodes.empty())
                 {
                     if (m_spriteLeaf.isSet())
-                        m_spriteLeaf.draw(target, statesForIcon);
+                        target.drawSprite(statesForIcon, m_spriteLeaf);
                 }
                 else // Branch node
                 {
@@ -1278,7 +1273,7 @@ namespace tgui
                                 iconSprite = &m_spriteLeaf;
                         }
 
-                        iconSprite->draw(target, statesForIcon);
+                        target.drawSprite(statesForIcon, *iconSprite);
                     }
                     else // No textures are used
                     {
@@ -1301,15 +1296,15 @@ namespace tgui
                         {
                             // Draw "-"
                             statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
-                            drawRectangleShape(target, statesForIcon, {m_iconBounds.x, thickness}, iconColor);
+                            target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
                         }
                         else // Collapsed node
                         {
                             // Draw "+"
                             statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
-                            drawRectangleShape(target, statesForIcon, {m_iconBounds.x, thickness}, iconColor);
+                            target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
                             statesForIcon.transform.translate({(m_iconBounds.x - thickness) / 2.f, -(m_iconBounds.y - thickness) / 2.f});
-                            drawRectangleShape(target, statesForIcon, {thickness, m_iconBounds.y}, iconColor);
+                            target.drawFilledRect(statesForIcon, {thickness, m_iconBounds.y}, Color::applyOpacity(iconColor, m_opacityCached));
                         }
                     }
                 }
@@ -1317,7 +1312,9 @@ namespace tgui
 
             // Draw the texts
             for (int i = firstNode; i < lastNode; ++i)
-                m_visibleNodes[i]->text.draw(target, states);
+                target.drawText(states, m_visibleNodes[i]->text);
+
+            target.removeClippingLayer();
         }
 
         m_horizontalScrollbar->draw(target, statesForScrollbars);

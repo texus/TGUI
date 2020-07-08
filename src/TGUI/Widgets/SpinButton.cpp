@@ -438,12 +438,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::draw(sf::RenderTarget& target, RenderStates states) const
+    void SpinButton::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
@@ -453,44 +453,44 @@ namespace tgui
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
             if (m_mouseHover && m_mouseHoverOnTopArrow && m_spriteArrowUpHover.isSet())
-                m_spriteArrowUpHover.draw(target, states);
+                target.drawSprite(states, m_spriteArrowUpHover);
             else
-                m_spriteArrowUp.draw(target, states);
+                target.drawSprite(states, m_spriteArrowUp);
         }
         else
         {
-            sf::ConvexShape arrow{3};
-            sf::RectangleShape arrowBack;
+            Color arrowBackColor;
+            if (m_mouseHover && m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
+                arrowBackColor = Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached);
+            else
+                arrowBackColor = Color::applyOpacity(m_backgroundColorCached, m_opacityCached);
+
+            Vertex::Color arrowVertexColor;
+            if (m_mouseHover && m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
+            else
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {
-                arrowBack.setSize(arrowSize);
+                target.drawFilledRect(states, arrowSize, arrowBackColor);
 
-                arrow.setPoint(0, {arrowBack.getSize().x / 5, arrowBack.getSize().y * 4/5});
-                arrow.setPoint(1, {arrowBack.getSize().x / 2, arrowBack.getSize().y / 5});
-                arrow.setPoint(2, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y * 4/5});
+                target.drawTriangles(states, {
+                    {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor},
+                    {{arrowSize.x / 2, arrowSize.y / 5}, arrowVertexColor},
+                    {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
+                });
             }
             else // Spin button lies horizontal
             {
-                arrowBack.setSize({arrowSize.y, arrowSize.x});
+                target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
-                arrow.setPoint(0, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y / 5});
-                arrow.setPoint(1, {arrowBack.getSize().x / 5, arrowBack.getSize().y / 2});
-                arrow.setPoint(2, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y * 4/5});
+                target.drawTriangles(states, {
+                    {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor},
+                    {{arrowSize.x / 5, arrowSize.y / 2}, arrowVertexColor},
+                    {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
+                });
             }
-
-            if (m_mouseHover && m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
-                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-            else
-                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
-
-            if (m_mouseHover && m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
-            else
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
-
-            target.draw(arrowBack, states);
-            target.draw(arrow, states);
         }
 
         // Draw the space between the arrows (if there is space)
@@ -500,7 +500,7 @@ namespace tgui
 
             if (m_borderBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {arrowSize.x, m_borderBetweenArrowsCached}, m_borderColorCached);
+                target.drawFilledRect(states, {arrowSize.x, m_borderBetweenArrowsCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
                 states.transform.translate({0, m_borderBetweenArrowsCached});
             }
         }
@@ -510,7 +510,7 @@ namespace tgui
 
             if (m_borderBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {m_borderBetweenArrowsCached, arrowSize.x}, m_borderColorCached);
+                target.drawFilledRect(states, {m_borderBetweenArrowsCached, arrowSize.x}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
                 states.transform.translate({m_borderBetweenArrowsCached, 0});
             }
         }
@@ -519,44 +519,44 @@ namespace tgui
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
             if (m_mouseHover && !m_mouseHoverOnTopArrow && m_spriteArrowDownHover.isSet())
-                m_spriteArrowDownHover.draw(target, states);
+                target.drawSprite(states, m_spriteArrowDownHover);
             else
-                m_spriteArrowDown.draw(target, states);
+                target.drawSprite(states, m_spriteArrowDown);
         }
         else // There are no images
         {
-            sf::ConvexShape arrow{3};
-            sf::RectangleShape arrowBack;
+            Color arrowBackColor;
+            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
+                arrowBackColor = Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached);
+            else
+                arrowBackColor = Color::applyOpacity(m_backgroundColorCached, m_opacityCached);
+
+            Vertex::Color arrowVertexColor;
+            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
+            else
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {
-                arrowBack.setSize(arrowSize);
+                target.drawFilledRect(states, arrowSize, arrowBackColor);
 
-                arrow.setPoint(0, {arrowBack.getSize().x / 5, arrowBack.getSize().y / 5});
-                arrow.setPoint(1, {arrowBack.getSize().x / 2, arrowBack.getSize().y * 4/5});
-                arrow.setPoint(2, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y / 5});
+                target.drawTriangles(states, {
+                    {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
+                    {{arrowSize.x / 2, arrowSize.y * 4/5}, arrowVertexColor},
+                    {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor}
+                });
             }
             else // Spin button lies horizontal
             {
-                arrowBack.setSize({arrowSize.y, arrowSize.x});
+                target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
-                arrow.setPoint(0, {arrowBack.getSize().x / 5, arrowBack.getSize().y / 5});
-                arrow.setPoint(1, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y / 2});
-                arrow.setPoint(2, {arrowBack.getSize().x / 5, arrowBack.getSize().y * 4/5});
+                target.drawTriangles(states, {
+                    {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
+                    {{arrowSize.x * 4/5, arrowSize.y / 2}, arrowVertexColor},
+                    {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor}
+                });
             }
-
-            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
-                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-            else
-                arrowBack.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
-
-            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
-            else
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
-
-            target.draw(arrowBack, states);
-            target.draw(arrow, states);
         }
     }
 

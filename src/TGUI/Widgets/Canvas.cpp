@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/Canvas.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,11 +112,9 @@ namespace tgui
             if ((m_renderTexture.getSize().x < static_cast<unsigned int>(newSize.x)) || (m_renderTexture.getSize().y < static_cast<unsigned int>(newSize.y)))
                 m_renderTexture.create(static_cast<unsigned int>(newSize.x), static_cast<unsigned int>(newSize.y));
 
-            m_sprite.setTexture(m_renderTexture.getTexture());
-            m_sprite.setTextureRect(sf::IntRect{0, 0, static_cast<int>(newSize.x), static_cast<int>(newSize.y)});
-
-            m_renderTexture.clear();
-            m_renderTexture.display();
+            m_sprite.setSize(newSize);
+            clear();
+            display();
         }
 
         Widget::setSize(size);
@@ -174,7 +173,15 @@ namespace tgui
 
     void Canvas::draw(const tgui::Sprite& sprite, const RenderStates& states)
     {
-        sprite.draw(m_renderTexture, states);
+        const std::vector<Vertex>& vertices = sprite.getVertices();
+        const std::vector<int>& indices = sprite.getIndices();
+        std::vector<Vertex> triangleVertices(indices.size());
+        for (unsigned int i = 0; i < indices.size(); ++i)
+            triangleVertices[i] = vertices[indices[i]];
+
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
+        m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +189,10 @@ namespace tgui
     void Canvas::display()
     {
         m_renderTexture.display();
+
+        const Vector2f& size = getSize();
+        const sf::Texture& texture = m_renderTexture.getTexture();
+        m_sprite.setTexture({texture, {0, 0, static_cast<unsigned int>(std::max(0.f, size.x)), static_cast<unsigned int>(std::max(0.f, size.y))}});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,17 +202,17 @@ namespace tgui
         Widget::rendererChanged(property);
 
         if ((property == "Opacity") || (property == "OpacityDisabled"))
-            m_sprite.setColor(Color::applyOpacity(Color::White, m_opacityCached));
+            m_sprite.setOpacity(m_opacityCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(sf::RenderTarget& target, RenderStates states) const
+    void Canvas::draw(RenderTargetBase& target, RenderStates states) const
     {
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;
 
-        target.draw(m_sprite, states);
+        target.drawSprite(states, m_sprite);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

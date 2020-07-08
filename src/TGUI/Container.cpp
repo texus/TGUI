@@ -1016,7 +1016,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::draw(sf::RenderTarget& target, RenderStates states) const
+    void Container::draw(RenderTargetBase& target, RenderStates states) const
     {
         for (const auto& widget : m_widgets)
         {
@@ -1038,7 +1038,7 @@ namespace tgui
                 widgetStates.transform.scale(widget->getScale(), scaleOrigin);
             }
 
-            widget->draw(target, widgetStates);
+            target.drawWidget(widgetStates, widget);
         }
     }
 
@@ -1106,8 +1106,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RootContainer::setSize(const Layout2d&)
+    void RootContainer::setSize(const Layout2d& size)
     {
+        if (m_size.getValue() == size.getValue())
+            return;
+
+        m_size = size;
+        onSizeChange.emit(this, size.getValue());
+        for (auto& layout : m_boundSizeLayouts)
+            layout->recalculateValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1123,6 +1130,14 @@ namespace tgui
     bool RootContainer::isMouseOnWidget(Vector2f) const
     {
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RootContainer::draw(RenderTargetBase& target, RenderStates states) const
+    {
+        // The only reason to override this function was to change the access specifier, so just call the code from the base class
+        Container::draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

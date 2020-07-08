@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -507,24 +506,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::draw(sf::RenderTarget& target, RenderStates states) const
+    void ProgressBar::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
         {
             Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
-            drawRectangleShape(target, states, {m_backRect.width, m_backRect.height}, m_backgroundColorCached);
+            target.drawFilledRect(states, {m_backRect.width, m_backRect.height}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
             states.transform.translate(-positionOffset);
         }
 
@@ -537,18 +536,18 @@ namespace tgui
                 imageShift = (m_spriteBackground.getSize() - m_spriteFill.getSize()) / 2.f;
 
                 states.transform.translate(imageShift);
-                m_spriteFill.draw(target, states);
+                target.drawSprite(states, m_spriteFill);
                 states.transform.translate(-imageShift);
             }
             else
-                m_spriteFill.draw(target, states);
+                target.drawSprite(states, m_spriteFill);
         }
         else // Using colors instead of a texture
         {
             Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
 
             states.transform.translate(positionOffset);
-            drawRectangleShape(target, states, {m_frontRect.width, m_frontRect.height}, m_fillColorCached);
+            target.drawFilledRect(states, {m_frontRect.width, m_frontRect.height}, Color::applyOpacity(m_fillColorCached, m_opacityCached));
             states.transform.translate(-positionOffset);
         }
 
@@ -560,27 +559,31 @@ namespace tgui
             if (m_textBack.getColor() == m_textFront.getColor())
             {
                 states.transform.translate(textTranslation);
-                m_textBack.draw(target, states);
+                target.drawText(states, m_textBack);
                 states.transform.translate(-textTranslation);
             }
             else
             {
                 // Draw the text on top of the unfilled part
                 {
-                    Clipping clipping{target, states, imageShift + Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}};
+                    target.addClippingLayer(states, {imageShift + Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}});
 
                     states.transform.translate(textTranslation);
-                    m_textBack.draw(target, states);
+                    target.drawText(states, m_textBack);
                     states.transform.translate(-textTranslation);
+
+                    target.removeClippingLayer();
                 }
 
                 // Draw the text on top of the filled part
                 {
-                    Clipping clipping{target, states, imageShift + Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}};
+                    target.addClippingLayer(states, {imageShift + Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}});
 
                     states.transform.translate(textTranslation);
-                    m_textFront.draw(target, states);
+                    target.drawText(states, m_textFront);
                     states.transform.translate(-textTranslation);
+
+                    target.removeClippingLayer();
                 }
             }
         }

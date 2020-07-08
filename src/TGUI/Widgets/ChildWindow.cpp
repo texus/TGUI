@@ -25,7 +25,6 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1025,24 +1024,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::draw(sf::RenderTarget& target, RenderStates states) const
+    void ChildWindow::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
             if (m_focused && m_borderColorFocusedCached.isSet())
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorFocusedCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
             else
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the title bar
         if (m_spriteTitleBar.isSet())
-            m_spriteTitleBar.draw(target, states);
+            target.drawSprite(states, m_spriteTitleBar);
         else
-            drawRectangleShape(target, states, {getClientSize().x, m_titleBarHeightCached}, m_titleBarColorCached);
+            target.drawFilledRect(states, {getClientSize().x, m_titleBarHeightCached}, Color::applyOpacity(m_titleBarColorCached, m_opacityCached));
 
         // Draw the text in the title bar (after setting the clipping area)
         {
@@ -1058,10 +1057,9 @@ namespace tgui
 
             const float clippingLeft = m_distanceToSideCached;
             const float clippingRight = getClientSize().x - m_distanceToSideCached - buttonOffsetX;
-
-            const Clipping clipping{target, states, {clippingLeft, 0}, {clippingRight - clippingLeft, m_titleBarHeightCached}};
-
-            m_titleText.draw(target, states);
+            target.addClippingLayer(states, {{clippingLeft, 0}, {clippingRight - clippingLeft, m_titleBarHeightCached}});
+            target.drawText(states, m_titleText);
+            target.removeClippingLayer();
         }
 
         // Draw the buttons
@@ -1081,22 +1079,23 @@ namespace tgui
         if (m_borderBelowTitleBarCached > 0)
         {
             if (m_focused && m_borderColorFocusedCached.isSet())
-                drawRectangleShape(target, states, {getClientSize().x, m_borderBelowTitleBarCached}, m_borderColorFocusedCached);
+                target.drawFilledRect(states, {getClientSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {getClientSize().x, m_borderBelowTitleBarCached}, m_borderColorCached);
+                target.drawFilledRect(states, {getClientSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({0, m_borderBelowTitleBarCached});
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else if (m_backgroundColorCached != Color::Transparent)
-            drawRectangleShape(target, states, getClientSize(), m_backgroundColorCached);
+            target.drawFilledRect(states, getClientSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the widgets in the child window
-        const Clipping clipping{target, states, {}, {getClientSize()}};
+        target.addClippingLayer(states, {{}, {getClientSize()}});
         Container::draw(target, states);
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

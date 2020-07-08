@@ -84,7 +84,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButtonGroup::draw(sf::RenderTarget& target, RenderStates states) const
+    void RadioButtonGroup::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Note that it calls the function from Container, not Group!
         Container::draw(target, states);

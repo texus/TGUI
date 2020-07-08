@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -618,31 +617,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void ChatBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         const RenderStates scrollbarStates = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
-            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the scrollbar
         m_scroll->draw(target, scrollbarStates);
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-
-        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        const Clipping clipping{target, states, {}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - m_scroll->getSize().x,
-                                                     getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - m_scroll->getSize().x,
+                                              getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
         states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSize), -static_cast<float>(m_scroll->getValue())});
 
@@ -652,9 +649,11 @@ namespace tgui
 
         for (const auto& line : m_lines)
         {
-            line.text.draw(target, states);
+            target.drawText(states, line.text);
             states.transform.translate({0, line.text.getSize().y});
         }
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

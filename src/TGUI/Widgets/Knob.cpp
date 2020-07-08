@@ -111,9 +111,9 @@ namespace tgui
 
         if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
         {
-            m_spriteBackground.setSize(getInnerSize());
-            m_spriteForeground.setSize({m_spriteForeground.getTexture().getImageSize().x / m_spriteBackground.getTexture().getImageSize().x * getInnerSize().x,
-                                        m_spriteForeground.getTexture().getImageSize().y / m_spriteBackground.getTexture().getImageSize().y * getInnerSize().y});
+            m_spriteBackground.setSize(getSize());
+            m_spriteForeground.setSize({(m_spriteForeground.getTexture().getImageSize().x / m_spriteBackground.getTexture().getImageSize().x) * getSize().x,
+                                        (m_spriteForeground.getTexture().getImageSize().y / m_spriteBackground.getTexture().getImageSize().y) * getSize().y});
         }
     }
 
@@ -559,31 +559,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::draw(sf::RenderTarget& target, RenderStates states) const
+    void Knob::draw(RenderTargetBase& target, RenderStates states) const
     {
-        const float size = std::min(getInnerSize().x, getInnerSize().y);
+        const float innerSize = std::min(getInnerSize().x, getInnerSize().y);
 
-        // Draw the borders
-        const float borderThickness = std::min({m_bordersCached.getLeft(), m_bordersCached.getTop(), m_bordersCached.getRight(), m_bordersCached.getBottom()});
-        if (borderThickness > 0)
-        {
-            states.transform.translate({borderThickness, borderThickness});
-
-            sf::CircleShape bordersShape{size / 2};
-            bordersShape.setFillColor(Color::Transparent);
-            bordersShape.setOutlineColor(Color::applyOpacity(m_borderColorCached, m_opacityCached));
-            bordersShape.setOutlineThickness(borderThickness);
-            target.draw(bordersShape, states);
-        }
-
-        // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
         {
-            sf::CircleShape background{size / 2};
-            background.setFillColor(Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
-            target.draw(background, states);
+            const float borderThickness = std::min({m_bordersCached.getLeft(), m_bordersCached.getTop(), m_bordersCached.getRight(), m_bordersCached.getBottom()});
+            if (borderThickness > 0)
+            {
+                states.transform.translate({borderThickness, borderThickness});
+                target.drawCircle(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached), borderThickness, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            }
+            else
+                target.drawCircle(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
 
         // Draw the foreground
@@ -597,15 +588,14 @@ namespace tgui
             else
                 states.transform.rotate(360 - m_angle + m_imageRotationCached, (m_spriteForeground.getSize() / 2.f));
 
-            m_spriteForeground.draw(target, states);
+            target.drawSprite(states, m_spriteForeground);
         }
         else
         {
-            sf::CircleShape thumb{size / 10.0f};
-            thumb.setFillColor(Color::applyOpacity(m_thumbColorCached, m_opacityCached));
-            thumb.setPosition({(size / 2.0f) - thumb.getRadius() + (std::cos(m_angle / 180 * pi) * (size / 2) * 3/5),
-                               (size / 2.0f) - thumb.getRadius() + (-std::sin(m_angle / 180 * pi) * (size / 2) * 3/5)});
-            target.draw(thumb, states);
+            const float radius = innerSize / 10.0f;
+            states.transform.translate({(innerSize / 2.0f) - radius + (std::cos(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f),
+                                        (innerSize / 2.0f) - radius + (-std::sin(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f)});
+            target.drawCircle(states, radius * 2.0f, Color::applyOpacity(m_thumbColorCached, m_opacityCached));
         }
     }
 

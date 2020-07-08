@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -741,7 +740,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::draw(sf::RenderTarget& target, RenderStates states) const
+    void Label::draw(RenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 
@@ -751,15 +750,15 @@ namespace tgui
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != Color::Transparent))
-            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+            target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the scrollbar
         if (m_scrollbar->isVisible())
@@ -769,20 +768,22 @@ namespace tgui
         if (m_autoSize)
         {
             for (const auto& line : m_lines)
-                line.draw(target, states);
+                target.drawText(states, line);
         }
         else
         {
             innerSize.x -= m_paddingCached.getLeft() + m_paddingCached.getRight();
             innerSize.y -= m_paddingCached.getTop() + m_paddingCached.getBottom();
 
-            const Clipping clipping{target, states, Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize};
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});
 
             if (m_scrollbar->isShown())
                 states.transform.translate({0, -static_cast<float>(m_scrollbar->getValue())});
 
             for (const auto& line : m_lines)
-                line.draw(target, states);
+                target.drawText(states, line);
+
+            target.removeClippingLayer();
         }
     }
 

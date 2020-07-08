@@ -936,7 +936,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::draw(sf::RenderTarget& target, RenderStates states) const
+    void Scrollbar::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Don't draw the scrollbar when it is not needed
         if (m_autoHide && (m_maximum <= m_viewportSize))
@@ -950,37 +950,39 @@ namespace tgui
         if (textured)
         {
             if (m_mouseHover && m_spriteArrowUpHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp))
-                m_spriteArrowUpHover.draw(target, states);
+                target.drawSprite(states, m_spriteArrowUpHover);
             else
-                m_spriteArrowUp.draw(target, states);
+                target.drawSprite(states, m_spriteArrowUp);
         }
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowBackgroundColorHoverCached.isSet())
-                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, m_arrowBackgroundColorHoverCached);
+                target.drawFilledRect(states, {m_arrowUp.width, m_arrowUp.height}, Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, m_arrowBackgroundColorCached);
+                target.drawFilledRect(states, {m_arrowUp.width, m_arrowUp.height}, Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
 
-            sf::ConvexShape arrow{3};
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
+            Vertex::Color arrowVertexColor;
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowBackgroundColorHoverCached.isSet())
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {
-                arrow.setPoint(0, {m_arrowUp.width / 5, m_arrowUp.height * 4/5});
-                arrow.setPoint(1, {m_arrowUp.width / 2, m_arrowUp.height / 5});
-                arrow.setPoint(2, {m_arrowUp.width * 4/5, m_arrowUp.height * 4/5});
+                target.drawTriangles(states, {
+                    {{m_arrowUp.width / 5, m_arrowUp.height * 4/5}, arrowVertexColor},
+                    {{m_arrowUp.width / 2, m_arrowUp.height / 5}, arrowVertexColor},
+                    {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
+                });
             }
-            else
+            else // Spin button lies horizontal
             {
-                arrow.setPoint(0, {m_arrowUp.width * 4/5, m_arrowUp.height / 5});
-                arrow.setPoint(1, {m_arrowUp.width / 5, m_arrowUp.height / 2});
-                arrow.setPoint(2, {m_arrowUp.width * 4/5, m_arrowUp.height * 4/5});
+                target.drawTriangles(states, {
+                    {{m_arrowUp.width * 4/5, m_arrowUp.height / 5}, arrowVertexColor},
+                    {{m_arrowUp.width / 5, m_arrowUp.height / 2}, arrowVertexColor},
+                    {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
+                });
             }
-
-            target.draw(arrow, states);
         }
 
         // Draw the track
@@ -988,16 +990,16 @@ namespace tgui
         if (textured)
         {
             if (m_mouseHover && m_spriteTrackHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Track))
-                m_spriteTrackHover.draw(target, states);
+                target.drawSprite(states, m_spriteTrackHover);
             else
-                m_spriteTrack.draw(target, states);
+                target.drawSprite(states, m_spriteTrack);
         }
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Track) && m_trackColorHoverCached.isSet())
-                drawRectangleShape(target, states, {m_track.width, m_track.height}, m_trackColorHoverCached);
+                target.drawFilledRect(states, {m_track.width, m_track.height}, Color::applyOpacity(m_trackColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {m_track.width, m_track.height}, m_trackColorCached);
+                target.drawFilledRect(states, {m_track.width, m_track.height}, Color::applyOpacity(m_trackColorCached, m_opacityCached));
         }
         states.transform.translate(-m_track.getPosition());
 
@@ -1006,16 +1008,16 @@ namespace tgui
         if (textured)
         {
             if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb))
-                m_spriteThumbHover.draw(target, states);
+                target.drawSprite(states, m_spriteThumbHover);
             else
-                m_spriteThumb.draw(target, states);
+                target.drawSprite(states, m_spriteThumb);
         }
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb) && m_thumbColorHoverCached.isSet())
-                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, m_thumbColorHoverCached);
+                target.drawFilledRect(states, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, m_thumbColorCached);
+                target.drawFilledRect(states, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_thumbColorCached, m_opacityCached));
         }
         states.transform.translate(-m_thumb.getPosition());
 
@@ -1024,37 +1026,39 @@ namespace tgui
         if (textured)
         {
             if (m_mouseHover && m_spriteArrowDownHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))
-                m_spriteArrowDownHover.draw(target, states);
+                target.drawSprite(states, m_spriteArrowDownHover);
             else
-                m_spriteArrowDown.draw(target, states);
+                target.drawSprite(states, m_spriteArrowDown);
         }
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowBackgroundColorHoverCached.isSet())
-                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, m_arrowBackgroundColorHoverCached);
+                target.drawFilledRect(states, {m_arrowDown.width, m_arrowDown.height}, Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, m_arrowBackgroundColorCached);
+                target.drawFilledRect(states, {m_arrowDown.width, m_arrowDown.height}, Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
 
-            sf::ConvexShape arrow{3};
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
+            Vertex::Color arrowVertexColor;
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowBackgroundColorHoverCached.isSet())
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
+                arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {
-                arrow.setPoint(0, {m_arrowDown.width / 5, m_arrowDown.height / 5});
-                arrow.setPoint(1, {m_arrowDown.width / 2, m_arrowDown.height * 4/5});
-                arrow.setPoint(2, {m_arrowDown.width * 4/5, m_arrowDown.height / 5});
+                target.drawTriangles(states, {
+                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
+                    {{m_arrowDown.width / 2, m_arrowDown.height * 4/5}, arrowVertexColor},
+                    {{m_arrowDown.width * 4/5, m_arrowDown.height / 5}, arrowVertexColor}
+                });
             }
             else // Spin button lies horizontal
             {
-                arrow.setPoint(0, {m_arrowDown.width / 5, m_arrowDown.height / 5});
-                arrow.setPoint(1, {m_arrowDown.width * 4/5, m_arrowDown.height / 2});
-                arrow.setPoint(2, {m_arrowDown.width / 5, m_arrowDown.height * 4/5});
+                target.drawTriangles(states, {
+                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
+                    {{m_arrowDown.width * 4/5, m_arrowDown.height / 2}, arrowVertexColor},
+                    {{m_arrowDown.width / 5, m_arrowDown.height * 4/5}, arrowVertexColor}
+                });
             }
-
-            target.draw(arrow, states);
         }
     }
 
@@ -1075,7 +1079,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarChildWidget::draw(sf::RenderTarget& target, RenderStates states) const
+    void ScrollbarChildWidget::draw(RenderTargetBase& target, RenderStates states) const
     {
         states.transform.translate(getPosition());
         Scrollbar::draw(target, states);

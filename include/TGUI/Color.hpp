@@ -27,6 +27,7 @@
 #define TGUI_COLOR_HPP
 
 #include <TGUI/String.hpp>
+#include <TGUI/Vertex.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <cstdint>
 #include <string>
@@ -146,6 +147,17 @@ namespace tgui
         operator sf::Color() const
         {
             return sf::Color(m_red, m_green, m_blue, m_alpha);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts this object into a Vertex::Color object
+        ///
+        /// @return The color stored in this object, or the default color if no color was set
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        explicit operator Vertex::Color() const
+        {
+            return Vertex::Color{m_red, m_green, m_blue, m_alpha};
         }
 
 

@@ -29,6 +29,8 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/RelFloatRect.hpp>
+#include <TGUI/RenderTarget.hpp>
+#include <TGUI/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <chrono>
 #include <queue>
@@ -39,7 +41,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Gui class
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Gui
     {
@@ -174,15 +175,33 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Passes the event to the widgets
         ///
-        /// @param event  The event that was polled from the gui
+        /// @param event  The event that was polled from the window
         ///
         /// @return Has the event been consumed?
         ///         When this function returns false, then the event was ignored by all widgets.
         ///
         /// You should call this function in your event loop.
-        ///
+        /// @code
+        /// sf::Event event;
+        /// while (window.pollEvent(event) {
+        ///     gui.handleEvent(event);
+        /// }
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool handleEvent(sf::Event event);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Passes the event to the widgets
+        ///
+        /// @param event  The event that was polled from the window
+        ///
+        /// @return Has the event been consumed?
+        ///         When this function returns false, then the event was ignored by all widgets.
+        ///
+        /// @see handleEvent(sf::Event)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool handleEvent(Event event);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -506,6 +525,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Converts the pixel coordinate to a position within the view
+        /// @param x  X coordinate on the window
+        /// @param y  Y coordinate on the window
+        /// @return Transformed coordinate within the coordinate system that is used by the widgets
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f mapPixelToView(int x, int y) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
 
@@ -519,12 +548,9 @@ namespace tgui
     protected:
 
         std::chrono::steady_clock::time_point m_lastUpdateTime;
-
-        // The sfml render target to draw on
-        sf::RenderTarget* m_target = nullptr;
         bool m_windowFocused = true;
 
-        // Internal container to store all widgets
+        std::unique_ptr<RenderTarget> m_renderTarget = std::make_unique<RenderTarget>();
         RootContainer::Ptr m_container = std::make_shared<RootContainer>();
 
         Widget::Ptr m_visibleToolTip = nullptr;
@@ -534,7 +560,6 @@ namespace tgui
 
         RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
         RelFloatRect m_view{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
-        sf::View m_viewSFML;
 
         bool m_drawUpdatesTime = true;
         bool m_tabKeyUsageEnabled = true;

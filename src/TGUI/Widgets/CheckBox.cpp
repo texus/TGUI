@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/CheckBox.hpp>
-#include <TGUI/Clipping.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <cmath>
 
@@ -216,11 +215,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void CheckBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
-            drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
 
         states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
@@ -243,32 +242,32 @@ namespace tgui
                     float diff = getInnerSize().y - checkedSprite->getSize().y;
 
                     states.transform.translate({0, diff});
-                    checkedSprite->draw(target, states);
+                    target.drawSprite(states, *checkedSprite);
                     states.transform.translate({0, -diff});
                 }
                 else // Draw the checked texture normally
-                    checkedSprite->draw(target, states);
+                    target.drawSprite(states, *checkedSprite);
             }
             else
             {
                 if (!m_enabled && m_spriteUncheckedDisabled.isSet())
-                    m_spriteUncheckedDisabled.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedDisabled);
                 else if (m_mouseHover && m_spriteUncheckedHover.isSet())
-                    m_spriteUncheckedHover.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedHover);
                 else if (m_focused && m_spriteUncheckedFocused.isSet())
-                    m_spriteUncheckedFocused.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedFocused);
                 else
-                    m_spriteUnchecked.draw(target, states);
+                    target.drawSprite(states, m_spriteUnchecked);
             }
         }
         else // There are no images
         {
-            drawRectangleShape(target, states, getInnerSize(), getCurrentBackgroundColor());
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
 
             if (m_checked)
             {
                 const float pi = 3.14159265358979f;
-                const Color& checkColor = getCurrentCheckColor();
+                const Vertex::Color checkColor = Vertex::Color(getCurrentCheckColor());
                 const Vector2f size = getInnerSize();
                 const float lineThickness = std::min(size.x, size.y) / 5;
                 const Vector2f leftPoint = {0.14f * size.x, 0.4f * size.y};
@@ -276,16 +275,22 @@ namespace tgui
                 const Vector2f rightPoint = {0.86f * size.x, 0.28f * size.y};
                 const float x = (lineThickness / 2.f) * std::cos(pi / 4.f);
                 const float y = (lineThickness / 2.f) * std::sin(pi / 4.f);
-                const std::vector<sf::Vertex> vertices = {
-                    {{leftPoint.x - x, leftPoint.y + y}, checkColor},
-                    {{leftPoint.x + x, leftPoint.y - y}, checkColor},
-                    {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
-                    {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
-                    {{rightPoint.x + x, rightPoint.y + y}, checkColor},
-                    {{rightPoint.x - x, rightPoint.y - y}, checkColor}
-                };
-
-                target.draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
+                target.drawTriangles(states,
+                    {
+                        {{leftPoint.x - x, leftPoint.y + y}, checkColor},
+                        {{leftPoint.x + x, leftPoint.y - y}, checkColor},
+                        {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
+                        {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
+                        {{rightPoint.x + x, rightPoint.y + y}, checkColor},
+                        {{rightPoint.x - x, rightPoint.y - y}, checkColor}
+                    },
+                    {
+                        0, 1, 2,
+                        1, 2, 3,
+                        2, 3, 4,
+                        3, 4, 5
+                    }
+                );
             }
         }
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
@@ -293,7 +298,7 @@ namespace tgui
         if (!getText().empty())
         {
             states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            m_text.draw(target, states);
+            target.drawText(states, m_text);
         }
     }
 

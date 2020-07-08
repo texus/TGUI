@@ -1,7 +1,6 @@
 set(TGUI_SRC
     Animation.cpp
     Clipboard.cpp
-    Clipping.cpp
     Color.cpp
     Container.cpp
     CustomWidgetForBindings.cpp
@@ -11,6 +10,7 @@ set(TGUI_SRC
     Gui.cpp
     Layout.cpp
     ObjectConverter.cpp
+    RenderTarget.cpp
     Sprite.cpp
     Signal.cpp
     String.cpp

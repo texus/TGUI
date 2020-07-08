@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Tabs.hpp>
-#include <TGUI/Clipping.hpp>
 #include <TGUI/Optional.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -792,12 +791,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::draw(sf::RenderTarget& target, RenderStates states) const
+    void Tabs::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders around the tabs
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
@@ -828,42 +827,45 @@ namespace tgui
                     spriteTab = m_spriteTab;
 
                 spriteTab.setSize({m_tabs[i].width, usableHeight});
-                spriteTab.draw(target, states);
+                target.drawSprite(states, spriteTab);
             }
             else // No texture was loaded
             {
                 if ((!m_enabled || !m_tabs[i].enabled) && m_backgroundColorDisabledCached.isSet())
-                    drawRectangleShape(target, states, {m_tabs[i].width, usableHeight}, m_backgroundColorDisabledCached);
+                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorDisabledCached, m_opacityCached));
                 else if (m_selectedTab == static_cast<int>(i))
                 {
                     if ((m_hoveringTab == static_cast<int>(i)) && m_selectedBackgroundColorHoverCached.isSet())
-                        drawRectangleShape(target, states, {m_tabs[i].width, usableHeight}, m_selectedBackgroundColorHoverCached);
+                        target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                     else
-                        drawRectangleShape(target, states, {m_tabs[i].width, usableHeight}, m_selectedBackgroundColorCached);
+                        target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
                 }
                 else if ((m_hoveringTab == static_cast<int>(i)) && m_backgroundColorHoverCached.isSet())
-                    drawRectangleShape(target, states, {m_tabs[i].width, usableHeight}, m_backgroundColorHoverCached);
+                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 else
-                    drawRectangleShape(target, states, {m_tabs[i].width, usableHeight}, m_backgroundColorCached);
+                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
             }
 
             // Draw the borders between the tabs
             states.transform.translate({m_tabs[i].width, 0});
             if ((m_bordersCached != Borders{0}) && (i < m_tabs.size() - 1))
             {
-                drawRectangleShape(target, states, {(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, usableHeight}, m_borderColorCached);
+                target.drawFilledRect(states, {(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
                 states.transform.translate({(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, 0});
             }
 
             // Apply clipping if required for the text in this tab
             const float usableWidth = m_tabs[i].width - (2 * m_distanceToSideCached);
-            Optional<Clipping> clipping;
-            if (m_tabs[i].text.getSize().x > usableWidth)
-                clipping.emplace(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
+            const bool clippingRequired = (m_tabs[i].text.getSize().x > usableWidth);
+            if (clippingRequired)
+                target.addClippingLayer(textStates, {{m_distanceToSideCached, 0}, {usableWidth, usableHeight}});
 
             // Draw the text
             textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
-            m_tabs[i].text.draw(target, textStates);
+            target.drawText(textStates, m_tabs[i].text);
+
+            if (clippingRequired)
+                target.removeClippingLayer();
         }
     }
 

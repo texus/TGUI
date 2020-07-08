@@ -25,7 +25,6 @@
 
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
-#include <TGUI/Clipping.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -831,13 +830,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::draw(sf::RenderTarget& target, RenderStates states) const
+    void MenuBar::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
-            drawRectangleShape(target, states, getSize(), m_backgroundColorCached);
+            target.drawFilledRect(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         if (m_menus.empty())
             return;
@@ -847,7 +846,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawOpenMenu(sf::RenderTarget& target, RenderStates states) const
+    void MenuBar::drawOpenMenu(RenderTargetBase& target, RenderStates states) const
     {
         assert(m_visibleMenu >= 0);
 
@@ -1277,7 +1276,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenusOnBar(sf::RenderTarget& target, RenderStates states) const
+    void MenuBar::drawMenusOnBar(RenderTargetBase& target, RenderStates states) const
     {
         Transform oldTransform = states.transform;
 
@@ -1293,18 +1292,18 @@ namespace tgui
                 {
                     Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
                     selectedBackgroundSprite.setSize({width, getSize().y});
-                    selectedBackgroundSprite.draw(target, states);
+                    target.drawSprite(states, selectedBackgroundSprite);
                 }
                 else // Not selected or no different texture for selected menu
                 {
                     backgroundSprite.setSize({width, getSize().y});
-                    backgroundSprite.draw(target, states);
+                    target.drawSprite(states, backgroundSprite);
                 }
             }
             else // No textures where loaded
             {
                 if (isMenuOpen && m_selectedBackgroundColorCached.isSet())
-                    drawRectangleShape(target, states, {width, getSize().y}, m_selectedBackgroundColorCached);
+                    target.drawFilledRect(states, {width, getSize().y}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
             }
 
             states.transform.translate({width, 0});
@@ -1317,7 +1316,7 @@ namespace tgui
         states.transform.translate({m_distanceToSideCached, (getSize().y - textHeight) / 2.f});
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            m_menus[i].text.draw(target, states);
+            target.drawText(states, m_menus[i].text);
 
             const float width = m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
             states.transform.translate({width, 0});
@@ -1326,7 +1325,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenu(sf::RenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
+    void MenuBar::drawMenu(RenderTargetBase& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
     {
         if (menu.menuItems.empty())
             return;
@@ -1337,7 +1336,7 @@ namespace tgui
         Sprite backgroundSprite = m_spriteItemBackground;
         if ((menu.selectedMenuItem == -1) && !backgroundSprite.isSet() && !m_selectedBackgroundColorCached.isSet())
         {
-            drawRectangleShape(target, states, {menuWidth, getSize().y * menu.menuItems.size()}, m_backgroundColorCached);
+            target.drawFilledRect(states, {menuWidth, getSize().y * menu.menuItems.size()}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
         else // We can't draw the entire menu with a singe draw call
         {
@@ -1350,20 +1349,20 @@ namespace tgui
                     {
                         Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
                         selectedBackgroundSprite.setSize({menuWidth, getSize().y});
-                        selectedBackgroundSprite.draw(target, states);
+                        target.drawSprite(states, selectedBackgroundSprite);
                     }
                     else // Not selected or no different texture for selected menu
                     {
                         backgroundSprite.setSize({menuWidth, getSize().y});
-                        backgroundSprite.draw(target, states);
+                        target.drawSprite(states, backgroundSprite);
                     }
                 }
                 else // No textures where loaded
                 {
                     if (isMenuItemSelected && m_selectedBackgroundColorCached.isSet())
-                        drawRectangleShape(target, states, {menuWidth, getSize().y}, m_selectedBackgroundColorCached);
+                        target.drawFilledRect(states, {menuWidth, getSize().y}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
                     else
-                        drawRectangleShape(target, states, {menuWidth, getSize().y}, m_backgroundColorCached);
+                        target.drawFilledRect(states, {menuWidth, getSize().y}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
                 }
 
                 states.transform.translate({0, getSize().y});
@@ -1376,7 +1375,7 @@ namespace tgui
         states.transform.translate({m_distanceToSideCached, (getSize().y - menu.text.getSize().y) / 2.f});
         for (std::size_t j = 0; j < menu.menuItems.size(); ++j)
         {
-            menu.menuItems[j].text.draw(target, states);
+            target.drawText(states, menu.menuItems[j].text);
 
             // Draw an arrow next to the text if there is a submenu
             if (!menu.menuItems[j].menuItems.empty())
@@ -1387,19 +1386,20 @@ namespace tgui
                 states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once
                                             (menu.menuItems[j].text.getSize().y - arrowHeight) / 2.f});
 
-                sf::ConvexShape arrow{3};
-                arrow.setPoint(0, {0, 0});
-                arrow.setPoint(1, {arrowWidth, arrowHeight / 2.f});
-                arrow.setPoint(2, {0, arrowHeight});
-
+                Vertex::Color arrowVertexColor;
                 if ((!m_enabled || !menu.menuItems[j].enabled) && m_textColorDisabledCached.isSet())
-                    arrow.setFillColor(Color::applyOpacity(m_textColorDisabledCached, m_opacityCached));
+                    arrowVertexColor = Vertex::Color(Color::applyOpacity(m_textColorDisabledCached, m_opacityCached));
                 else if ((menu.selectedMenuItem == static_cast<int>(j)) && m_selectedTextColorCached.isSet())
-                    arrow.setFillColor(Color::applyOpacity(m_selectedTextColorCached, m_opacityCached));
+                    arrowVertexColor = Vertex::Color(Color::applyOpacity(m_selectedTextColorCached, m_opacityCached));
                 else
-                    arrow.setFillColor(Color::applyOpacity(m_textColorCached, m_opacityCached));
+                    arrowVertexColor = Vertex::Color(Color::applyOpacity(m_textColorCached, m_opacityCached));
 
-                target.draw(arrow, states);
+                target.drawTriangles(states, {
+                    {{0, 0}, arrowVertexColor},
+                    {{arrowWidth, arrowHeight / 2.f}, arrowVertexColor},
+                    {{0, arrowHeight}, arrowVertexColor}
+                });
+
                 states.transform = textTransform;
             }
 
@@ -1457,6 +1457,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f MenuBarMenuPlaceholder::getFullSize() const
+    {
+        if (m_parent)
+            return m_parent->getInnerSize() - getPosition();
+        else
+            return {0, 0};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f MenuBarMenuPlaceholder::getWidgetOffset() const
+    {
+        return -getPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool MenuBarMenuPlaceholder::isMouseOnWidget(Vector2f) const
     {
         return true; // Absorb all mouse events until the menu is closed
@@ -1509,7 +1526,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarMenuPlaceholder::draw(sf::RenderTarget& target, RenderStates states) const
+    void MenuBarMenuPlaceholder::draw(RenderTargetBase& target, RenderStates states) const
     {
         m_menuBar->drawOpenMenu(target, states);
     }

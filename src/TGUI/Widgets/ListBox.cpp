@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1035,30 +1034,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void ListBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
-            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the items and their selected/hover backgrounds
         {
-            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
             float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
             if (m_scroll->isShown())
                 maxItemWidth -= m_scroll->getSize().x;
-            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             // Find out which items are visible
             std::size_t firstItem = 0;
@@ -1082,9 +1081,9 @@ namespace tgui
 
                 const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
-                    drawRectangleShape(target, states, size, m_selectedBackgroundColorHoverCached);
+                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                 else
-                    drawRectangleShape(target, states, size, m_selectedBackgroundColorCached);
+                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
 
                 states.transform.translate({0, -m_selectedItem * static_cast<float>(m_itemHeight)});
             }
@@ -1093,14 +1092,16 @@ namespace tgui
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveringItem * static_cast<float>(m_itemHeight)});
-                drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
+                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 states.transform.translate({0, -m_hoveringItem * static_cast<float>(m_itemHeight)});
             }
 
             // Draw the items
             states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSize, m_textStyleCached), 0});
             for (std::size_t i = firstItem; i < lastItem; ++i)
-                m_items[i].text.draw(target, states);
+                target.drawText(states, m_items[i].text);
+
+            target.removeClippingLayer();
         }
 
         // Draw the scrollbar

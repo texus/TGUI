@@ -783,7 +783,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::draw(sf::RenderTarget& target, RenderStates states) const
+    void Grid::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw all widgets
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)

@@ -225,7 +225,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::draw(sf::RenderTarget& target, RenderStates states) const
+    void CustomWidgetForBindings::draw(RenderTargetBase& target, RenderStates states) const
     {
         implDrawFunction(target, states);
     }

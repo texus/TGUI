@@ -26,7 +26,6 @@
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -588,21 +587,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::draw(sf::RenderTarget& target, RenderStates states) const
+    void ScrollablePanel::draw(RenderTargetBase& target, RenderStates states) const
     {
         const auto oldStates = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
-        drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+        target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
@@ -621,12 +620,13 @@ namespace tgui
 
         // Draw the child widgets
         {
-            const Clipping clipping{target, states, {}, contentSize};
+            target.addClippingLayer(states, {{}, contentSize});
 
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()),
                                         -static_cast<float>(m_verticalScrollbar->getValue())});
 
             Container::draw(target, states);
+            target.removeClippingLayer();
         }
 
         if (m_verticalScrollbar->isVisible())

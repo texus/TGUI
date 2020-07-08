@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Group.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,17 +155,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::draw(sf::RenderTarget& target, RenderStates states) const
+    void Group::draw(RenderTargetBase& target, RenderStates states) const
     {
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         const Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                        getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
-        const Clipping clipping{target, states, {}, innerSize};
+                                    getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
-        // Draw the child widgets
+        target.addClippingLayer(states, {{}, innerSize});
+
         Container::draw(target, states);
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

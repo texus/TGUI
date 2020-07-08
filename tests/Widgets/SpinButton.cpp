@@ -307,7 +307,7 @@ TEST_CASE("[SpinButton]")
 
         spinButton->setEnabled(true);
         spinButton->setPosition(10, 5);
-        spinButton->setSize(49, 25);
+        spinButton->setSize(49, 26);
         spinButton->setMinimum(7);
         spinButton->setMaximum(12);
         spinButton->setValue(11);

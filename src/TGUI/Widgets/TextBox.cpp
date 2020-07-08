@@ -27,7 +27,6 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -1889,22 +1888,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void TextBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
-            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the contents of the text box
         {
@@ -1918,8 +1917,7 @@ namespace tgui
             if (m_horizontalScrollbar->isShown())
                 clipHeight -= m_horizontalScrollbar->getSize().y;
 
-            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-            const Clipping clipping{target, states, {}, {clipWidth, clipHeight}};
+            target.addClippingLayer(states, {{}, {clipWidth, clipHeight}});
 
             // Move the text according to the scrollars
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -static_cast<float>(m_verticalScrollbar->getValue())});
@@ -1928,22 +1926,22 @@ namespace tgui
             for (const auto& selectionRect : m_selectionRects)
             {
                 states.transform.translate({selectionRect.left, selectionRect.top});
-                drawRectangleShape(target, states, {selectionRect.width, selectionRect.height + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)}, m_selectedTextBackgroundColorCached);
+                target.drawFilledRect(states, {selectionRect.width, selectionRect.height + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)}, Color::applyOpacity(m_selectedTextBackgroundColorCached, m_opacityCached));
                 states.transform.translate({-selectionRect.left, -selectionRect.top});
             }
 
             // Draw the text
             if (m_text.empty())
-                m_defaultText.draw(target, states);
+                target.drawText(states, m_defaultText);
             else
             {
-                m_textBeforeSelection.draw(target, states);
+                target.drawText(states, m_textBeforeSelection);
                 if (m_selStart != m_selEnd)
                 {
-                    m_textSelection1.draw(target, states);
-                    m_textSelection2.draw(target, states);
-                    m_textAfterSelection1.draw(target, states);
-                    m_textAfterSelection2.draw(target, states);
+                    target.drawText(states, m_textSelection1);
+                    target.drawText(states, m_textSelection2);
+                    target.drawText(states, m_textAfterSelection1);
+                    target.drawText(states, m_textAfterSelection2);
                 }
             }
 
@@ -1952,8 +1950,10 @@ namespace tgui
             {
                 const float caretHeight = m_lineHeight + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize);
                 states.transform.translate({std::ceil(m_caretPosition.x - (m_caretWidthCached / 2.f)), m_caretPosition.y});
-                drawRectangleShape(target, states, {m_caretWidthCached, caretHeight}, m_caretColorCached);
+                target.drawFilledRect(states, {m_caretWidthCached, caretHeight}, Color::applyOpacity(m_caretColorCached, m_opacityCached));
             }
+
+            target.removeClippingLayer();
         }
 
         // Draw the scrollbars if needed

@@ -194,6 +194,8 @@ namespace tgui
         ///
         /// @param sprite  Sprite to draw
         /// @param states  Render states to use for drawing
+        ///
+        /// @warning Only simple sprites can be drawn. There is currently no support for SVGs, shaders, clipping or rotation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(const tgui::Sprite& sprite, const RenderStates& states = {});
 
@@ -216,7 +218,7 @@ namespace tgui
         /// @param states Current render states
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, RenderStates states) const override;
+        void draw(RenderTargetBase& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +268,7 @@ namespace tgui
     protected:
 
         sf::RenderTexture m_renderTexture;
-        sf::Sprite        m_sprite;
+        Sprite m_sprite;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

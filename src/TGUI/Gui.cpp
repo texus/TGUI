@@ -25,8 +25,6 @@
 #include <TGUI/Gui.hpp>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/ToolTip.hpp>
-#include <TGUI/Clipping.hpp>
-#include <TGUI/Event.hpp>
 #include <TGUI/Timer.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -292,9 +290,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui(sf::RenderTarget& target) :
-        m_target{&target}
+    Gui::Gui(sf::RenderTarget& target)
     {
+        m_renderTarget->setTarget(target);
         updateContainerSize();
     }
 
@@ -302,7 +300,7 @@ namespace tgui
 
     void Gui::setTarget(sf::RenderTarget& target)
     {
-        m_target = &target;
+        m_renderTarget->setTarget(target);
         updateContainerSize();
     }
 
@@ -310,7 +308,7 @@ namespace tgui
 
     sf::RenderTarget* Gui::getTarget() const
     {
-        return m_target;
+        return m_renderTarget->getTarget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,12 +361,28 @@ namespace tgui
 
     bool Gui::handleEvent(sf::Event sfmlEvent)
     {
-        assert(m_target != nullptr);
-
         Event event;
         if (!convertEventSFML(sfmlEvent, event))
             return false; // We don't process this type of event
 
+        if ((event.type == Event::Type::MouseButtonPressed) && (sfmlEvent.type == sf::Event::TouchBegan))
+        {
+            // For touches, always send a mouse move event before the mouse press,
+            // because widgets may assume that the mouse had to move to the clicked location first
+            Event mouseMoveEvent;
+            mouseMoveEvent.type = Event::Type::MouseMoved;
+            mouseMoveEvent.mouseMove.x = event.mouseButton.x;
+            mouseMoveEvent.mouseMove.y = event.mouseButton.y;
+            handleEvent(mouseMoveEvent);
+        }
+
+        return handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::handleEvent(Event event)
+    {
         switch (event.type)
         {
             case Event::Type::MouseMoved:
@@ -378,11 +392,11 @@ namespace tgui
             {
                 Vector2f mouseCoords;
                 if (event.type == Event::Type::MouseMoved)
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseMove.x, sfmlEvent.mouseMove.y}, m_viewSFML)};
+                    mouseCoords = mapPixelToView(event.mouseMove.x, event.mouseMove.y);
                 else if (event.type == Event::Type::MouseWheelScrolled)
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseWheelScroll.x, sfmlEvent.mouseWheelScroll.y}, m_viewSFML)};
+                    mouseCoords = mapPixelToView(event.mouseWheel.x, event.mouseWheel.y);
                 else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
-                    mouseCoords = Vector2f{m_target->mapPixelToCoords({sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y}, m_viewSFML)};
+                    mouseCoords = mapPixelToView(event.mouseButton.x, event.mouseButton.y);
 
                 // If a tooltip is visible then hide it now
                 if (m_visibleToolTip != nullptr)
@@ -404,14 +418,7 @@ namespace tgui
                 else if (event.type == Event::Type::MouseWheelScrolled)
                     return m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords);
                 else if (event.type == Event::Type::MouseButtonPressed)
-                {
-                    // For touches, always send a mouse move event before the mouse press,
-                    // because widgets may assume that the mouse had to move to the clicked location first
-                    if (sfmlEvent.type == sf::Event::TouchBegan)
-                        m_container->processMouseMoveEvent(mouseCoords);
-
                     return m_container->processMousePressEvent(Event::MouseButton::Left, mouseCoords);
-                }
                 else // if (event.type == Event::Type::MouseButtonReleased)
                 {
                     const bool eventHandled = m_container->processMouseReleaseEvent(Event::MouseButton::Left, mouseCoords);
@@ -479,21 +486,10 @@ namespace tgui
 
     void Gui::draw()
     {
-        assert(m_target != nullptr);
-
         if (m_drawUpdatesTime)
             updateTime();
 
-        // Change the view
-        const sf::View oldView = m_target->getView();
-        m_target->setView(m_viewSFML);
-        Clipping::setGuiView(m_viewSFML);
-
-        // Draw the widgets
-        m_container->draw(*m_target, {});
-
-        // Restore the old view
-        m_target->setView(oldView);
+        m_renderTarget->drawGui(m_container);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,7 +667,7 @@ namespace tgui
 
     void Gui::mainLoop()
     {
-        sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(m_target);
+        sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(getTarget());
         if (!window)
             return;
 
@@ -766,7 +762,6 @@ namespace tgui
         if (!m_windowFocused)
             return screenRefreshRequired;
 
-        m_container->m_animationTimeElapsed = elapsedTime;
         screenRefreshRequired |= m_container->updateTime(elapsedTime);
 
         if (m_tooltipPossible)
@@ -794,24 +789,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f Gui::mapPixelToView(int x, int y) const
+    {
+        return {((x - m_viewport.getLeft()) * (m_view.getWidth() / m_viewport.getWidth())) + m_view.getLeft(),
+                ((y - m_viewport.getTop()) * (m_view.getHeight() / m_viewport.getHeight())) + m_view.getTop()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Gui::updateContainerSize()
     {
-        m_viewport.updateParentSize({static_cast<float>(m_target->getSize().x), static_cast<float>(m_target->getSize().y)});
+        const auto& target = getTarget();
+        m_viewport.updateParentSize({static_cast<float>(target->getSize().x), static_cast<float>(target->getSize().y)});
         m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});
-
-        m_viewSFML.setViewport({m_viewport.getLeft() / m_target->getSize().x, m_viewport.getTop() / m_target->getSize().y,
-                                m_viewport.getWidth() / m_target->getSize().x, m_viewport.getHeight() / m_target->getSize().y});
-        m_viewSFML.setSize(m_view.getWidth(), m_view.getHeight());
-        m_viewSFML.setCenter(m_view.getLeft() + (m_view.getWidth() / 2.f), m_view.getTop() + (m_view.getHeight() / 2.f));
-
-        const Vector2f viewSize = Vector2f{m_view.getWidth(), m_view.getHeight()};
-        if (viewSize == m_container->m_size.getValue())
-            return;
-
-        m_container->m_size = viewSize;
-        m_container->onSizeChange.emit(m_container.get(), viewSize);
-        for (auto& layout : m_container->m_boundSizeLayouts)
-            layout->recalculateValue();
+        m_renderTarget->setView(m_view.getRect(), m_viewport.getRect());
+        m_container->setSize(Vector2f{m_view.getWidth(), m_view.getHeight()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

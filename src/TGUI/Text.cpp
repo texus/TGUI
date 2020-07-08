@@ -238,23 +238,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Text::draw(sf::RenderTarget& target, RenderStates states) const
-    {
-        states.transform.translate(m_position);
-
-        // Round the position to avoid blurry text
-        const float* matrix = states.transform.getMatrix();
-
-        sf::RenderStates sfStates;
-        sfStates.transform = sf::Transform{matrix[0], matrix[4], std::round(matrix[12]),
-                                           matrix[1], matrix[5], std::floor(matrix[13]),
-                                           matrix[3], matrix[7], matrix[15]};
-
-        target.draw(m_text, sfStates);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Text::recalculateSize()
     {
         if (m_font == nullptr)

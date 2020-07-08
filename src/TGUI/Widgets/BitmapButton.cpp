@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/BitmapButton.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,7 +134,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::draw(sf::RenderTarget& target, RenderStates states) const
+    void BitmapButton::draw(RenderTargetBase& target, RenderStates states) const
     {
         if (!m_glyphSprite.isSet())
         {
@@ -146,7 +145,7 @@ namespace tgui
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
@@ -154,43 +153,44 @@ namespace tgui
         if (m_sprite.isSet())
         {
             if (!m_enabled && m_spriteDisabled.isSet())
-                m_spriteDisabled.draw(target, states);
+                target.drawSprite(states, m_spriteDisabled);
             else if (m_mouseHover)
             {
                 if (m_mouseDown && m_spriteDown.isSet())
-                    m_spriteDown.draw(target, states);
+                    target.drawSprite(states, m_spriteDown);
                 else if (m_spriteHover.isSet())
-                    m_spriteHover.draw(target, states);
+                    target.drawSprite(states, m_spriteHover);
                 else
-                    m_sprite.draw(target, states);
+                    target.drawSprite(states, m_sprite);
             }
             else
-                m_sprite.draw(target, states);
+                target.drawSprite(states, m_sprite);
 
             // When the button is focused then draw an extra image
             if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
+                target.drawSprite(states, m_spriteFocused);
         }
         else // There is no background texture
         {
-            drawRectangleShape(target, states, getInnerSize(), getCurrentBackgroundColor());
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
         }
 
-        Clipping clipping(target, states, {}, getInnerSize());
+        target.addClippingLayer(states, {{}, getInnerSize()});
         if (m_text.getString().empty())
         {
             states.transform.translate({(getInnerSize().x - m_glyphSprite.getSize().x) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
-            m_glyphSprite.draw(target, states);
+            target.drawSprite(states, m_glyphSprite);
         }
         else // There is some text next to the glyph
         {
             const float distanceBetweenTextAndImage = m_text.getSize().y / 5.f;
             const float width = m_glyphSprite.getSize().x + distanceBetweenTextAndImage + m_text.getSize().x;
             states.transform.translate({(getInnerSize().x - width) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
-            m_glyphSprite.draw(target, states);
+            target.drawSprite(states, m_glyphSprite);
             states.transform.translate({m_glyphSprite.getSize().x + distanceBetweenTextAndImage, (m_glyphSprite.getSize().y - m_text.getSize().y) / 2.f});
-            m_text.draw(target, states);
+            target.drawText(states, m_text);
         }
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

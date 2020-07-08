@@ -25,7 +25,6 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Clipping.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -979,12 +978,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void ComboBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
@@ -994,16 +993,16 @@ namespace tgui
         if (m_spriteBackground.isSet())
         {
             if (!m_enabled && m_spriteBackgroundDisabled.isSet())
-                m_spriteBackgroundDisabled.draw(target, states);
+                target.drawSprite(states, m_spriteBackgroundDisabled);
             else
-                m_spriteBackground.draw(target, states);
+                target.drawSprite(states, m_spriteBackground);
         }
         else
         {
             if (!m_enabled && m_backgroundColorDisabledCached.isSet())
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorDisabledCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorDisabledCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
 
         // Check if we have a texture for the arrow
@@ -1014,11 +1013,11 @@ namespace tgui
             states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
             if (!m_enabled && m_spriteArrowDisabled.isSet())
-                m_spriteArrowDisabled.draw(target, states);
+                target.drawSprite(states, m_spriteArrowDisabled);
             else if (m_mouseHover && m_spriteArrowHover.isSet())
-                m_spriteArrowHover.draw(target, states);
+                target.drawSprite(states, m_spriteArrowHover);
             else
-                m_spriteArrow.draw(target, states);
+                target.drawSprite(states, m_spriteArrow);
         }
         else // There are no textures for the arrow
         {
@@ -1026,40 +1025,43 @@ namespace tgui
             states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
             if (!m_enabled && m_arrowBackgroundColorDisabledCached.isSet())
-                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorDisabledCached);
+                target.drawFilledRect(states, {arrowSize, arrowSize}, Color::applyOpacity(m_arrowBackgroundColorDisabledCached, m_opacityCached));
             else if (m_mouseHover && m_arrowBackgroundColorHoverCached.isSet())
-                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorHoverCached);
+                target.drawFilledRect(states, {arrowSize, arrowSize}, Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorCached);
+                target.drawFilledRect(states, {arrowSize, arrowSize}, Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
 
-            sf::ConvexShape arrow{3};
-            arrow.setPoint(0, {arrowSize / 5, arrowSize / 5});
-            arrow.setPoint(1, {arrowSize / 2, arrowSize * 4/5});
-            arrow.setPoint(2, {arrowSize * 4/5, arrowSize / 5});
-
+            Vertex::Color arrowVertexColor;
             if (!m_enabled && m_arrowColorDisabledCached.isSet())
-                arrow.setFillColor(m_arrowColorDisabledCached);
+                arrowVertexColor = Vertex::Color(m_arrowColorDisabledCached);
             else if (m_mouseHover && m_arrowColorHoverCached.isSet())
-                arrow.setFillColor(m_arrowColorHoverCached);
+                arrowVertexColor = Vertex::Color(m_arrowColorHoverCached);
             else
-                arrow.setFillColor(m_arrowColorCached);
+                arrowVertexColor = Vertex::Color(m_arrowColorCached);
 
-            target.draw(arrow, states);
+            target.drawTriangles(states, {
+                {{arrowSize / 5, arrowSize / 5}, arrowVertexColor},
+                {{arrowSize / 2, arrowSize * 4/5}, arrowVertexColor},
+                {{arrowSize * 4/5, arrowSize / 5}, arrowVertexColor}
+            });
         }
 
         // Draw the selected item
         const int selectedItemIndex = getSelectedItemIndex();
         if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex == -1) && !m_defaultText.getString().empty()))
         {
-            const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+            target.addClippingLayer(statesForText, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             statesForText.transform.translate({m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
                                                m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f)});
 
             if (selectedItemIndex >= 0)
-                m_text.draw(target, statesForText);
+                target.drawText(statesForText, m_text);
             else
-                m_defaultText.draw(target, statesForText);
+                target.drawText(statesForText, m_defaultText);
+
+            target.removeClippingLayer();
         }
     }
 

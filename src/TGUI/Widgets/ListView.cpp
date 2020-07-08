@@ -25,7 +25,6 @@
 
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <TGUI/Clipping.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1937,7 +1936,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawHeaderText(sf::RenderTarget& target, RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
+    void ListView::drawHeaderText(RenderTargetBase& target, RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
     {
         if (column >= m_columns.size())
             return;
@@ -1945,7 +1944,7 @@ namespace tgui
         const unsigned int headerTextSize = getHeaderTextSize();
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, headerTextSize);
 
-        const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), headerHeight}};
+        target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), headerHeight}});
 
         float translateX;
         if ((m_columns[column].alignment == ColumnAlignment::Left) || (column >= m_columns.size()))
@@ -1956,12 +1955,14 @@ namespace tgui
             translateX = columnWidth - textPadding - m_columns[column].text.getSize().x;
 
         states.transform.translate({translateX, (headerHeight - Text::getLineHeight(m_fontCached, headerTextSize)) / 2.0f});
-        m_columns[column].text.draw(target, states);
+        target.drawText(states, m_columns[column].text);
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawColumn(sf::RenderTarget& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
+    void ListView::drawColumn(RenderTargetBase& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
     {
         if (firstItem == lastItem)
             return;
@@ -1977,7 +1978,7 @@ namespace tgui
         if ((column == 0) && (m_iconCount > 0))
         {
             const Transform transformBeforeIcons = states.transform;
-            const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
+            target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}});
 
             states.transform.translate({0, (requiredItemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
 
@@ -1992,7 +1993,7 @@ namespace tgui
                 const float verticalIconOffset = (m_itemHeight - m_items[i].icon.getSize().y) / 2.f;
 
                 states.transform.translate({textPadding, verticalIconOffset});
-                m_items[i].icon.draw(target, states);
+                target.drawSprite(states, m_items[i].icon);
                 states.transform.translate({-textPadding, static_cast<float>(requiredItemHeight) - verticalIconOffset});
             }
 
@@ -2001,9 +2002,11 @@ namespace tgui
             const float extraIconSpace = m_maxIconWidth + textPadding;
             columnWidth -= extraIconSpace;
             states.transform.translate({extraIconSpace, 0});
+
+            target.removeClippingLayer();
         }
 
-        const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
+        target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}});
 
         states.transform.translate({0, (requiredItemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
         for (std::size_t i = firstItem; i < lastItem; ++i)
@@ -2023,9 +2026,11 @@ namespace tgui
                 translateX = columnWidth - textPadding - m_items[i].texts[column].getSize().x;
 
             states.transform.translate({translateX, verticalTextOffset});
-            m_items[i].texts[column].draw(target, states);
+            target.drawText(states, m_items[i].texts[column]);
             states.transform.translate({-translateX, static_cast<float>(requiredItemHeight) - verticalTextOffset});
         }
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2045,19 +2050,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::draw(sf::RenderTarget& target, RenderStates states) const
+    void ListView::draw(RenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background
-        drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+        target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         const unsigned int totalItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
 
@@ -2095,7 +2100,7 @@ namespace tgui
             // We deliberately draw behind the header separator to make sure it has the same color as
             // the column separator when the color is semi-transparent.
             if (m_headerBackgroundColorCached.isSet())
-                drawRectangleShape(target, states, {availableWidth, totalHeaderHeight}, m_headerBackgroundColorCached);
+                target.drawFilledRect(states, {availableWidth, totalHeaderHeight}, Color::applyOpacity(m_headerBackgroundColorCached, m_opacityCached));
 
             // Draw the separator line between the header and the contents
             if (m_headerSeparatorHeight > 0)
@@ -2103,15 +2108,15 @@ namespace tgui
                 RenderStates headerStates = states;
                 headerStates.transform.translate({0, static_cast<float>(headerHeight)});
 
-                const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
-                drawRectangleShape(target, headerStates, {availableWidth, static_cast<float>(m_headerSeparatorHeight)}, separatorColor);
+                const Color& separatorColor = Color::applyOpacity(m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached, m_opacityCached);
+                target.drawFilledRect(headerStates, {availableWidth, static_cast<float>(m_headerSeparatorHeight)}, separatorColor);
             }
         }
 
         if (m_showHorizontalGridLines || !m_selectedItems.empty() || (m_hoveredItem >= 0))
         {
             states.transform.translate({0, totalHeaderHeight});
-            const Clipping clipping{target, states, {}, {availableWidth, innerHeight - totalHeaderHeight}};
+            target.addClippingLayer(states, {{}, {availableWidth, innerHeight - totalHeaderHeight}});
 
             // Draw the horizontal grid lines
             if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
@@ -2123,7 +2128,7 @@ namespace tgui
                 const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
                 for (std::size_t i = firstItem; i <= lastItem; ++i)
                 {
-                    drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_gridLinesWidth)}, gridLineColor);
+                    target.drawFilledRect(states, {availableWidth, static_cast<float>(m_gridLinesWidth)}, Color::applyOpacity(gridLineColor, m_opacityCached));
                     states.transform.translate({0, static_cast<float>(totalItemHeight)});
                 }
 
@@ -2138,9 +2143,9 @@ namespace tgui
                     states.transform.translate({0, selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
 
                     if ((static_cast<int>(selectedItem) == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
-                        drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorHoverCached);
+                        target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                     else
-                        drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorCached);
+                        target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
 
                     states.transform.translate({0, -static_cast<int>(selectedItem) * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
                 }
@@ -2150,15 +2155,17 @@ namespace tgui
             if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveredItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
-                drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
+                target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 states.transform.translate({0, -m_hoveredItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
             }
 
             // We haven't drawn the header yet, so move back up
             states.transform.translate({0, -totalHeaderHeight});
+
+            target.removeClippingLayer();
         }
 
-        const Clipping clipping{target, states, {}, {availableWidth, innerHeight}};
+        target.addClippingLayer(states, {{}, {availableWidth, innerHeight}});
         if (m_horizontalScrollbar->isShown())
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), 0});
 
@@ -2167,7 +2174,7 @@ namespace tgui
         // Draw the header texts
         if (totalHeaderHeight > 0)
         {
-            const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
+            const Color& separatorColor = Color::applyOpacity(m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached, m_opacityCached);
 
             RenderStates headerStates = states;
             float columnLeftPos = 0;
@@ -2183,12 +2190,12 @@ namespace tgui
                     if (m_separatorWidth)
                     {
                         if (m_separatorWidth == separatorWidth)
-                            drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                            target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
                         else
                         {
                             const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
                             headerStates.transform.translate({separatorOffset, 0});
-                            drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                            target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
                             headerStates.transform.translate({-separatorOffset, 0});
                         }
                     }
@@ -2222,12 +2229,12 @@ namespace tgui
                         {
                             const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
                             if (m_gridLinesWidth == separatorWidth)
-                                drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                                target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
                             else
                             {
                                 const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
                                 states.transform.translate({gridLineOffset, 0});
-                                drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                                target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
                                 states.transform.translate({-gridLineOffset, 0});
                             }
                         }
@@ -2239,6 +2246,8 @@ namespace tgui
                 }
             }
         }
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

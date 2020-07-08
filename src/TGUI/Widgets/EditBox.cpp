@@ -27,7 +27,6 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1501,19 +1500,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::draw(sf::RenderTarget& target, RenderStates states) const
+    void EditBox::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
             if (!m_enabled && m_borderColorDisabledCached.isSet())
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorDisabledCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorDisabledCached, m_opacityCached));
             else if (m_mouseHover && m_borderColorHoverCached.isSet())
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorHoverCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
             else if (m_focused && m_borderColorFocusedCached.isSet())
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorFocusedCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
             else
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate(m_bordersCached.getOffset());
         }
@@ -1522,65 +1521,71 @@ namespace tgui
         if (m_sprite.isSet())
         {
             if (!m_enabled && m_spriteDisabled.isSet())
-                m_spriteDisabled.draw(target, states);
+                target.drawSprite(states, m_spriteDisabled);
             else if (m_mouseHover && m_spriteHover.isSet())
-                m_spriteHover.draw(target, states);
+                target.drawSprite(states, m_spriteHover);
             else if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
+                target.drawSprite(states, m_spriteFocused);
             else
-                m_sprite.draw(target, states);
+                target.drawSprite(states, m_sprite);
         }
         else // There is no background texture
         {
             if (!m_enabled && m_backgroundColorDisabledCached.isSet())
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorDisabledCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorDisabledCached, m_opacityCached));
             else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorHoverCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
             else if (m_focused && m_backgroundColorFocusedCached.isSet())
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorFocusedCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorFocusedCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
 
         // Draw the suffix
         float suffixSpace = 0;
         if (!m_textSuffix.getString().empty())
         {
-            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             const float textOffset = m_textFull.getExtraHorizontalPadding();
             Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
                             m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_textSuffix.getSize().y) / 2.f)};
 
             states.transform.translate(offset);
-            m_textSuffix.draw(target, states);
+            target.drawText(states, m_textSuffix);
             states.transform.translate(-offset);
+
+            target.removeClippingLayer();
 
             suffixSpace = m_textSuffix.getSize().x + textOffset;
         }
 
         // Draw the text
         {
-            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             if (!m_textBeforeSelection.getString().empty() || !m_textSelection.getString().empty())
             {
-                m_textBeforeSelection.draw(target, states);
+                target.drawText(states, m_textBeforeSelection);
 
                 if (!m_textSelection.getString().empty())
                 {
                     states.transform.translate(m_selectedTextBackground.getPosition());
-                    drawRectangleShape(target, states, m_selectedTextBackground.getSize(), m_selectedTextBackgroundColorCached);
+                    target.drawFilledRect(states, m_selectedTextBackground.getSize(), Color::applyOpacity(m_selectedTextBackgroundColorCached, m_opacityCached));
                     states.transform.translate(-m_selectedTextBackground.getPosition());
 
-                    m_textSelection.draw(target, states);
-                    m_textAfterSelection.draw(target, states);
+                    target.drawText(states, m_textSelection);
+                    target.drawText(states, m_textAfterSelection);
                 }
             }
             else if (!m_defaultText.getString().empty())
             {
-                m_defaultText.draw(target, states);
+                target.drawText(states, m_defaultText);
             }
+
+            target.removeClippingLayer();
         }
 
         // Draw the caret
@@ -1588,11 +1593,11 @@ namespace tgui
         if (m_enabled && m_focused && m_caretVisible)
         {
             if (m_mouseHover && m_caretColorHoverCached.isSet())
-                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorHoverCached);
+                target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorHoverCached, m_opacityCached));
             else if (m_focused && m_caretColorFocusedCached.isSet())
-                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorFocusedCached);
+                target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorFocusedCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorCached);
+                target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorCached, m_opacityCached));
         }
     }
 

@@ -673,15 +673,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::draw(sf::RenderTarget& target, RenderStates states) const
+    void Slider::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})
         {
             if (m_mouseHover && m_borderColorHoverCached.isSet())
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorHoverCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
             else
-                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
@@ -690,16 +690,16 @@ namespace tgui
         if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
         {
             if (m_mouseHover && m_spriteTrackHover.isSet())
-                m_spriteTrackHover.draw(target, states);
+                target.drawSprite(states, m_spriteTrackHover);
             else
-                m_spriteTrack.draw(target, states);
+                target.drawSprite(states, m_spriteTrack);
         }
         else // There are no textures
         {
             if (m_mouseHover && m_trackColorHoverCached.isSet())
-                drawRectangleShape(target, states, getInnerSize(), m_trackColorHoverCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_trackColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, getInnerSize(), m_trackColorCached);
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_trackColorCached, m_opacityCached));
         }
 
         states.transform.translate({-m_bordersCached.getLeft() + m_thumb.left, -m_bordersCached.getTop() + m_thumb.top});
@@ -708,9 +708,9 @@ namespace tgui
         if ((m_bordersCached != Borders{0}) && !(m_spriteTrack.isSet() && m_spriteThumb.isSet()))
         {
             if (m_mouseHover && m_borderColorHoverCached.isSet())
-                drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorHoverCached);
+                target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
             else
-                drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorCached);
+                target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
@@ -719,9 +719,9 @@ namespace tgui
         if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
         {
             if (m_mouseHover && m_spriteThumbHover.isSet())
-                m_spriteThumbHover.draw(target, states);
+                target.drawSprite(states, m_spriteThumbHover);
             else
-                m_spriteThumb.draw(target, states);
+                target.drawSprite(states, m_spriteThumb);
         }
         else // There are no textures
         {
@@ -729,9 +729,9 @@ namespace tgui
                                              m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
             if (m_mouseHover && m_thumbColorHoverCached.isSet())
-                drawRectangleShape(target, states, thumbInnerSize, m_thumbColorHoverCached);
+                target.drawFilledRect(states, thumbInnerSize, Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
             else
-                drawRectangleShape(target, states, thumbInnerSize, m_thumbColorCached);
+                target.drawFilledRect(states, thumbInnerSize, Color::applyOpacity(m_thumbColorCached, m_opacityCached));
         }
     }
 

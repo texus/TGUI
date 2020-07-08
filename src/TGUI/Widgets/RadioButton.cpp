@@ -605,14 +605,15 @@ namespace tgui
 
     void RadioButton::updateTextureSizes()
     {
-        m_spriteUnchecked.setSize(getInnerSize());
-        m_spriteChecked.setSize(getInnerSize());
-        m_spriteUncheckedHover.setSize(getInnerSize());
-        m_spriteCheckedHover.setSize(getInnerSize());
-        m_spriteUncheckedDisabled.setSize(getInnerSize());
-        m_spriteCheckedDisabled.setSize(getInnerSize());
-        m_spriteUncheckedFocused.setSize(getInnerSize());
-        m_spriteCheckedFocused.setSize(getInnerSize());
+        const Vector2f& size = getSize();
+        m_spriteUnchecked.setSize(size);
+        m_spriteChecked.setSize(size);
+        m_spriteUncheckedHover.setSize(size);
+        m_spriteCheckedHover.setSize(size);
+        m_spriteUncheckedDisabled.setSize(size);
+        m_spriteCheckedDisabled.setSize(size);
+        m_spriteUncheckedFocused.setSize(size);
+        m_spriteCheckedFocused.setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -657,67 +658,64 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::draw(sf::RenderTarget& target, RenderStates states) const
+    void RadioButton::draw(RenderTargetBase& target, RenderStates states) const
     {
-        // Draw the borders
-        const float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
-        if (m_bordersCached != Borders{0})
-        {
-            sf::CircleShape circle{innerRadius + m_bordersCached.getLeft()};
-            circle.setOutlineThickness(-m_bordersCached.getLeft());
-            circle.setFillColor(Color::Transparent);
-            circle.setOutlineColor(Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
-            target.draw(circle, states);
-        }
-
-        // Draw the box
-        states.transform.translate(m_bordersCached.getOffset());
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
             {
                 if (!m_enabled && m_spriteCheckedDisabled.isSet())
-                    m_spriteCheckedDisabled.draw(target, states);
+                    target.drawSprite(states, m_spriteCheckedDisabled);
                 else if (m_mouseHover && m_spriteCheckedHover.isSet())
-                    m_spriteCheckedHover.draw(target, states);
+                    target.drawSprite(states, m_spriteCheckedHover);
                 else if (m_focused && m_spriteCheckedFocused.isSet())
-                    m_spriteCheckedFocused.draw(target, states);
+                    target.drawSprite(states, m_spriteCheckedFocused);
                 else
-                    m_spriteChecked.draw(target, states);
+                    target.drawSprite(states, m_spriteChecked);
             }
             else
             {
                 if (!m_enabled && m_spriteUncheckedDisabled.isSet())
-                    m_spriteUncheckedDisabled.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedDisabled);
                 else if (m_mouseHover && m_spriteUncheckedHover.isSet())
-                    m_spriteUncheckedHover.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedHover);
                 else if (m_focused && m_spriteUncheckedFocused.isSet())
-                    m_spriteUncheckedFocused.draw(target, states);
+                    target.drawSprite(states, m_spriteUncheckedFocused);
                 else
-                    m_spriteUnchecked.draw(target, states);
+                    target.drawSprite(states, m_spriteUnchecked);
             }
         }
         else // There are no images
         {
-            sf::CircleShape circle{innerRadius};
-            circle.setFillColor(Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
-            target.draw(circle, states);
+            const float borderThickness = m_bordersCached.getLeft();
+            const float innerSize = std::min(getInnerSize().x, getInnerSize().y);
+            if (borderThickness != 0)
+            {
+                states.transform.translate({borderThickness, borderThickness});
+                target.drawCircle(states, innerSize, Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached),
+                    borderThickness, Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
+            }
+            else
+                target.drawCircle(states, innerSize, Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
 
             // Draw the check if the radio button is checked
             if (m_checked)
             {
-                sf::CircleShape checkShape{innerRadius * 0.4f};
-                checkShape.setFillColor(Color::applyOpacity(getCurrentCheckColor(), m_opacityCached));
-                checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
-                target.draw(checkShape, states);
+                const float checkSize = innerSize * 0.4f;
+                const float checkOffset = (innerSize - checkSize) / 2.f;
+                states.transform.translate({checkOffset, checkOffset});
+                target.drawCircle(states, checkSize, Color::applyOpacity(getCurrentCheckColor(), m_opacityCached));
+                states.transform.translate({-checkOffset, -checkOffset});
             }
+
+            if (borderThickness != 0)
+                states.transform.translate({-borderThickness, -borderThickness});
         }
-        states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getLeft()});
 
         if (!getText().empty())
         {
             states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            m_text.draw(target, states);
+            target.drawText(states, m_text);
         }
     }
 

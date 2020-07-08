@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -232,12 +231,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::draw(sf::RenderTarget& target, RenderStates states) const
+    void Panel::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
@@ -245,17 +244,18 @@ namespace tgui
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         if (m_spriteBackground.isSet())
-            m_spriteBackground.draw(target, states);
+            target.drawSprite(states, m_spriteBackground);
         else
-            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+            target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                       innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         // Draw the child widgets
-        const Clipping clipping{target, states, {}, contentSize};
+        target.addClippingLayer(states, {{}, contentSize});
         Container::draw(target, states);
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -486,12 +486,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::draw(sf::RenderTarget& target, RenderStates states) const
+    void Button::draw(RenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
+            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
 
@@ -499,24 +499,24 @@ namespace tgui
         if (m_sprite.isSet())
         {
             if (!m_enabled && m_spriteDisabled.isSet())
-                m_spriteDisabled.draw(target, states);
+                target.drawSprite(states, m_spriteDisabled);
             else if (m_mouseHover && m_mouseDown && m_spriteDown.isSet())
-                m_spriteDown.draw(target, states);
+                target.drawSprite(states, m_spriteDown);
             else if (m_mouseHover && m_spriteHover.isSet())
-                m_spriteHover.draw(target, states);
+                target.drawSprite(states, m_spriteHover);
             else if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
+                target.drawSprite(states, m_spriteFocused);
             else
-                m_sprite.draw(target, states);
+                target.drawSprite(states, m_sprite);
         }
         else // There is no background texture
         {
-            drawRectangleShape(target, states, getInnerSize(), getCurrentBackgroundColor());
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
         }
 
         // If the button has a text then also draw the text
         states.transform.translate({(getInnerSize().x - m_text.getSize().x) / 2.f, (getInnerSize().y - m_text.getSize().y) / 2.f});
-        m_text.draw(target, states);
+        target.drawText(states, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
