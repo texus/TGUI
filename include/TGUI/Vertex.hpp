@@ -27,6 +27,7 @@
 #define TGUI_VERTEX_HPP
 
 #include <TGUI/Vector2.hpp>
+#include <cstdint>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +37,14 @@ namespace tgui
     {
         struct Color
         {
+            Color(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0, std::uint8_t a = 255) :
+                m_red(r),
+                m_green(g),
+                m_blue(b),
+                m_alpha(a)
+            {
+            }
+
             std::uint8_t m_red;
             std::uint8_t m_green;
             std::uint8_t m_blue;
