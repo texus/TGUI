@@ -88,6 +88,7 @@ set(TGUI_SRC
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
+    Widgets/SpinControl.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
     Widgets/TreeView.cpp
