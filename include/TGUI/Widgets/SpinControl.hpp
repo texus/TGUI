@@ -249,9 +249,6 @@ namespace tgui
         void setString(const tgui::String& str);
 
 
-        float toFloat(const tgui::String& str, float defaultValue) const;
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
@@ -266,8 +263,6 @@ namespace tgui
     private:
         tgui::SpinButton::Ptr m_spinButton;
         tgui::EditBox::Ptr m_spinText;
-
-        bool m_skipped;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,20 +33,19 @@ namespace tgui
     SpinControl::SpinControl(float min, float max, float value, unsigned decimal, float step)
     {
         m_decimalPlaces = decimal;
-        m_skipped = true;
 
         m_type = "SpinControl";
 
         m_spinButton = SpinButton::create();
         m_spinText = EditBox::create();
+        m_spinText->setInputValidator(EditBox::Validator::Float);
         setString(String(value));
 
         m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
-        m_spinButton->onValueChange([this](const auto value)
+        m_spinButton->onValueChange([this](const float n)
             {
-                m_skipped = true;
-                setString(String(value));
-                onValueChange.emit(this, value);
+                setString(String(n));
+                onValueChange.emit(this, n);
             });
 
         m_spinButton->setMinimum(min);
@@ -55,28 +54,21 @@ namespace tgui
         m_spinButton->setStep(step);
 
         m_spinText->setSize(m_spinText->getSize().x, m_spinButton->getSize().y);
-        m_spinText->onTextChange([this](const String& text)
+        m_spinText->onReturnOrUnfocus([this](const String& text)
             {
-                if (m_skipped)
-                {
-                    m_skipped = false;
-                    return;
-                }
+                const float curValue = m_spinButton->getValue();
+                const float defValue = m_spinButton->getMaximum() + 1;
 
-                const auto curValue = m_spinButton->getValue();
-                const auto defValue = m_spinButton->getMaximum() + 1;
-
-                float value = toFloat(text, defValue);
-                m_skipped = true;
+                float value = text.toFloat(defValue);
                 if (value == defValue || !inRange(value))
                 {
                     setString(String(curValue));
                 }
                 else if (curValue != value)
                 {
-                    setString(text);
                     m_spinButton->setValue(value);
-                    onValueChange.emit(this, value);
+                    //display actual value because SpinButton can round entered number
+                    setString(String(m_spinButton->getValue()));
                 }
                 else
                 {
@@ -90,7 +82,6 @@ namespace tgui
         auto butSize = m_spinButton->getSize();
         auto txtSize = m_spinText->getSize();
         setSize({ butSize.x + txtSize.x, butSize.y });
-        m_skipped = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,11 +207,9 @@ namespace tgui
 
     bool SpinControl::setValue(float value)
     {
-        const auto curValue = m_spinButton->getValue();
-        if (curValue != value && inRange(value))
+        if (m_spinButton->getValue() != value && inRange(value))
         {
             m_spinButton->setValue(value);
-            m_skipped = false;
             setString(String(value));
             return true;
         }
@@ -301,24 +290,6 @@ namespace tgui
         {
             m_spinText->setText(integerPart + floatPart.substr(pos, m_decimalPlaces + 1));
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float SpinControl::toFloat(const String& str, float defaultValue) const
-    {
-        const std::string ansiStr = str.toAnsiString();
-
-        // We can't use std::stof because it always depends on the global locale
-        std::istringstream iss(ansiStr);
-        iss.imbue(std::locale::classic());
-
-        float result = 0;
-        iss >> result;
-
-        if (iss.fail() || !iss.eof())
-            result = defaultValue;
-        return result;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
