@@ -338,7 +338,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTargetSFML::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, unsigned int borderThickness, const Color& borderColor)
+    void RenderTargetSFML::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
     {
         sf::CircleShape bordersShape{size / 2};
         bordersShape.setFillColor(sf::Color(backgroundColor));

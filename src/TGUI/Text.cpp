@@ -30,10 +30,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 4)
-    #pragma message("Text class is being compiled without support for outlines (requires SFML >= 2.4)")
-#endif
-
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,12 +89,7 @@ namespace tgui
     void Text::setColor(Color color)
     {
         m_color = color;
-
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(sf::Color{Color::applyOpacity(color, m_opacity)});
-#else
-        m_text.setColor(sf::Color{Color::applyOpacity(color, m_opacity)});
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,12 +105,8 @@ namespace tgui
     {
         m_opacity = opacity;
 
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(sf::Color{Color::applyOpacity(m_color, opacity)});
         m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, opacity)});
-#else
-        m_text.setColor(Color::applyOpacity(m_color, opacity));
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,13 +138,9 @@ namespace tgui
                 m_text.setCharacterSize(characterSize);
                 m_text.setStyle(style);
 
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
                 m_text.setFillColor(sf::Color{Color::applyOpacity(getColor(), getOpacity())});
                 m_text.setOutlineColor(sf::Color{Color::applyOpacity(getOutlineColor(), getOpacity())});
                 m_text.setOutlineThickness(getOutlineThickness());
-#else
-                m_text.setColor(Color::applyOpacity(getColor(), getOpacity()));
-#endif
             }
         }
 
@@ -194,10 +177,7 @@ namespace tgui
     void Text::setOutlineColor(Color color)
     {
         m_outlineColor = color;
-
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, m_opacity)});
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,22 +191,14 @@ namespace tgui
 
     void Text::setOutlineThickness(float thickness)
     {
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setOutlineThickness(thickness);
-#else
-        (void)thickness;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float Text::getOutlineThickness() const
     {
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         return m_text.getOutlineThickness();
-#else
-        return 0;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

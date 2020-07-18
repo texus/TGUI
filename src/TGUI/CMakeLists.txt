@@ -180,14 +180,7 @@ endif()
 # Altough we could use PUBLIC here instead of PRIVATE, it causes the files in lib/cmake/TGUI to
 # hardcode the SFML directories, making it harder to distribute them with the precompiled libs.
 # You will thus have to link to SFML yourself, but you were likely to already do this anyway.
-if(DEFINED SFML_LIBRARIES)
-    # SFML found via FindSFML.cmake
-    target_include_directories(tgui PRIVATE ${SFML_INCLUDE_DIR})
-    target_link_libraries(tgui PRIVATE ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
-else()
-    # SFML found via SFMLConfig.cmake
-    target_link_libraries(tgui PRIVATE sfml-graphics)
-endif()
+target_link_libraries(tgui PRIVATE sfml-graphics)
 
 # On Linux and BSD we also need to link to X11
 if(TGUI_OS_LINUX OR TGUI_OS_BSD)

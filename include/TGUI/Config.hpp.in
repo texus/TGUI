@@ -28,8 +28,8 @@
 // Include the SFML config header to check the SFML version
 #include <SFML/Config.hpp>
 
-#if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 3) || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR == 3 && SFML_VERSION_PATCH < 2)
-    #error TGUI requires SFML >= 2.3.2
+#if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5)
+    #error TGUI requires at least SFML >= 2.5.0
 #endif
 
 // Detect the platform, to enable platform-specific code

@@ -176,7 +176,7 @@ namespace tgui
         /// @param borderThickness  Thickness of the border to draw around the circle (outside given size if thickness is positive)
         /// @param borderColor      Color of the border, if borderThickness differs from 0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, unsigned int borderThickness = 0, const Color& borderColor = {}) = 0;
+        virtual void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {}) = 0;
     };
 
 
@@ -277,7 +277,7 @@ namespace tgui
         /// @param borderThickness  Thickness of the border to draw around the circle (outside given size if thickness is positive)
         /// @param borderColor      Color of the border, if borderThickness differs from 0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, unsigned int borderThickness = 0, const Color& borderColor = {}) override;
+        void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {}) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -297,7 +297,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        sf::RenderTarget* m_target;
+        sf::RenderTarget* m_target = nullptr;
         sf::View m_view;
         FloatRect m_viewRect;
         std::vector<std::pair<FloatRect, sf::View>> m_clippingLayers;

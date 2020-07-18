@@ -174,40 +174,6 @@ if(NOT DEFINED SFML_STATIC_LIBRARIES)
   endif()
 endif()
 
-# Attempt to find the SFML dependencies when linking statically
-# TODO: SFML_ROOT isn't used anymore, can we remove this once we remove support for SFML < 2.5?
-if(NOT TGUI_SHARED_LIBS)
-    if(SFML_ROOT)
-        if(TGUI_OS_WINDOWS)
-            set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
-            if(ARCH_32BITS)
-                if(TGUI_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x86")
-                elseif(TGUI_COMPILER_MSVC) # VC++14 or newer
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x86")
-                else() # gcc
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x86")
-                endif()
-            elseif(ARCH_64BITS)
-                if(TGUI_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x64")
-                elseif(TGUI_COMPILER_MSVC) # VC++14 or newer
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x64")
-                else() # gcc
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x64")
-                endif()
-            endif()
-        elseif(TGUI_OS_MACOSX)
-            set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
-            set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-osx/lib/")
-        elseif(TGUI_OS_ANDROID)
-            set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/extlibs/lib/${CMAKE_ANDROID_ARCH_ABI}/")
-        elseif(TGUI_OS_IOS)
-            set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-ios/")
-        endif()
-    endif()
-endif()
-
 # Find sfml if not build in same project
 if(NOT TARGET sfml-graphics)
     if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio

@@ -133,56 +133,7 @@ namespace tgui
         if (!m_guis[gui].window)
             return;
 
-#ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-         || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-         || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
-         || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
-        {
-            if (!m_mouseCursors[type]) // Only bypass SFML when system cursors are used
-            {
-                ::Display* displayX11 = XOpenDisplay(nullptr);
-                if (displayX11)
-                {
-                    unsigned int shapeX11;
-                    if (type == Cursor::Type::SizeLeft)
-                        shapeX11 = XC_left_side;
-                    else if (type == Cursor::Type::SizeRight)
-                        shapeX11 = XC_right_side;
-                    else if (type == Cursor::Type::SizeTop)
-                        shapeX11 = XC_top_side;
-                    else if (type == Cursor::Type::SizeBottom)
-                        shapeX11 = XC_bottom_side;
-                    else if (type == Cursor::Type::SizeBottomRight)
-                        shapeX11 = XC_bottom_right_corner;
-                    else if (type == Cursor::Type::SizeTopLeft)
-                        shapeX11 = XC_top_left_corner;
-                    else if (type == Cursor::Type::SizeBottomLeft)
-                        shapeX11 = XC_bottom_left_corner;
-                    else // if (type == Cursor::Type::SizeTopRight)
-                        shapeX11 = XC_top_right_corner;
-
-                    ::Cursor cursorX11 = XCreateFontCursor(displayX11, shapeX11);
-                    if (cursorX11 != None)
-                    {
-                        XDefineCursor(displayX11, m_guis[gui].window->getSystemHandle(), cursorX11);
-                        XFreeCursor(displayX11, cursorX11);
-                    }
-                    XFlush(displayX11);
-                    XCloseDisplay(displayX11);
-                }
-                return;
-            }
-        }
-#endif
-
-        // If the cursor doesn't exist yet then create it now
-        if (!m_mouseCursors[type])
-            m_mouseCursors[type] = createSystemCursor(type);
-
-        // Pass the cursor to SFML to set it while the mouse is on top of the window
-        m_guis[gui].window->setMouseCursor(*m_mouseCursors[type]);
+        updateMouseCursor(m_guis[gui].window, type);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,8 +218,67 @@ namespace tgui
         for (auto& pair : m_guis)
         {
             if (pair.second.mouseCursor == type)
-                setMouseCursor(pair.first, type);
+            {
+                if (pair.second.window)
+                    updateMouseCursor(pair.second.window, type);
+            }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendSFML::updateMouseCursor(sf::Window* window, Cursor::Type type)
+    {
+#ifdef TGUI_SYSTEM_LINUX
+        // On Linux we use directional resize arrows, but SFML has no support for them
+        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
+            || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
+            || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
+            || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
+        {
+            if (!m_mouseCursors[type]) // Only bypass SFML when system cursors are used
+            {
+                ::Display* displayX11 = XOpenDisplay(nullptr);
+                if (displayX11)
+                {
+                    unsigned int shapeX11;
+                    if (type == Cursor::Type::SizeLeft)
+                        shapeX11 = XC_left_side;
+                    else if (type == Cursor::Type::SizeRight)
+                        shapeX11 = XC_right_side;
+                    else if (type == Cursor::Type::SizeTop)
+                        shapeX11 = XC_top_side;
+                    else if (type == Cursor::Type::SizeBottom)
+                        shapeX11 = XC_bottom_side;
+                    else if (type == Cursor::Type::SizeBottomRight)
+                        shapeX11 = XC_bottom_right_corner;
+                    else if (type == Cursor::Type::SizeTopLeft)
+                        shapeX11 = XC_top_left_corner;
+                    else if (type == Cursor::Type::SizeBottomLeft)
+                        shapeX11 = XC_bottom_left_corner;
+                    else // if (type == Cursor::Type::SizeTopRight)
+                        shapeX11 = XC_top_right_corner;
+
+                    ::Cursor cursorX11 = XCreateFontCursor(displayX11, shapeX11);
+                    if (cursorX11 != None)
+                    {
+                        XDefineCursor(displayX11, window->getSystemHandle(), cursorX11);
+                        XFreeCursor(displayX11, cursorX11);
+                    }
+                    XFlush(displayX11);
+                    XCloseDisplay(displayX11);
+                }
+                return;
+            }
+        }
+#endif
+
+        // If the cursor doesn't exist yet then create it now
+        if (!m_mouseCursors[type])
+            m_mouseCursors[type] = createSystemCursor(type);
+
+        // Pass the cursor to SFML to set it while the mouse is on top of the window
+        window->setMouseCursor(*m_mouseCursors[type]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

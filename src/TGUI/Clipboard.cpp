@@ -25,41 +25,24 @@
 
 
 #include <TGUI/Clipboard.hpp>
-
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-    #include <SFML/Window/Clipboard.hpp>
-#else
-    #pragma message("Clipboard class is being compiled without support for using system clipboard (requires SFML >= 2.5)")
-#endif
+#include <SFML/Window/Clipboard.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-    String Clipboard::m_contents;
-#endif
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String Clipboard::get()
     {
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
         return String(sf::Clipboard::getString());
-#else
-        return m_contents;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Clipboard::set(const String& contents)
     {
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
         sf::Clipboard::setString(sf::String(contents));
-#else
-        m_contents = contents;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

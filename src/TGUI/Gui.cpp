@@ -89,46 +89,25 @@ namespace tgui
         case sf::Keyboard::Key::Menu:       return Event::KeyboardKey::Menu;
         case sf::Keyboard::Key::LBracket:   return Event::KeyboardKey::LBracket;
         case sf::Keyboard::Key::RBracket:   return Event::KeyboardKey::RBracket;
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        case sf::Keyboard::Key::SemiColon:  return Event::KeyboardKey::Semicolon;
-#else
         case sf::Keyboard::Key::Semicolon:  return Event::KeyboardKey::Semicolon;
-#endif
         case sf::Keyboard::Key::Comma:      return Event::KeyboardKey::Comma;
         case sf::Keyboard::Key::Period:     return Event::KeyboardKey::Period;
         case sf::Keyboard::Key::Quote:      return Event::KeyboardKey::Quote;
         case sf::Keyboard::Key::Slash:      return Event::KeyboardKey::Slash;
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        case sf::Keyboard::Key::BackSlash:  return Event::KeyboardKey::Backslash;
-#else
         case sf::Keyboard::Key::Backslash:  return Event::KeyboardKey::Backslash;
-#endif
         case sf::Keyboard::Key::Tilde:      return Event::KeyboardKey::Tilde;
         case sf::Keyboard::Key::Equal:      return Event::KeyboardKey::Equal;
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        case sf::Keyboard::Key::Dash:       return Event::KeyboardKey::Hyphen;
-#else
         case sf::Keyboard::Key::Hyphen:     return Event::KeyboardKey::Hyphen;
-#endif
         case sf::Keyboard::Key::Space:      return Event::KeyboardKey::Space;
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        case sf::Keyboard::Key::Return:     return Event::KeyboardKey::Enter;
-        case sf::Keyboard::Key::BackSpace:  return Event::KeyboardKey::Backspace;
-#else
         case sf::Keyboard::Key::Enter:      return Event::KeyboardKey::Enter;
         case sf::Keyboard::Key::Backspace:  return Event::KeyboardKey::Backspace;
-#endif
         case sf::Keyboard::Key::Tab:        return Event::KeyboardKey::Tab;
         case sf::Keyboard::Key::PageUp:     return Event::KeyboardKey::PageUp;
         case sf::Keyboard::Key::PageDown:   return Event::KeyboardKey::PageDown;
         case sf::Keyboard::Key::End:        return Event::KeyboardKey::End;
         case sf::Keyboard::Key::Home:       return Event::KeyboardKey::Home;
         case sf::Keyboard::Key::Insert:     return Event::KeyboardKey::Insert;
-#if defined(TGUI_SYSTEM_ANDROID) && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        case sf::Keyboard::Key::Delete:     return Event::KeyboardKey::Backspace; // SFML versions prior to 2.5 sent Delete instead of BackSpace on Android
-#else
         case sf::Keyboard::Key::Delete:     return Event::KeyboardKey::Delete;
-#endif
         case sf::Keyboard::Key::Add:        return Event::KeyboardKey::Add;
         case sf::Keyboard::Key::Subtract:   return Event::KeyboardKey::Subtract;
         case sf::Keyboard::Key::Multiply:   return Event::KeyboardKey::Multiply;

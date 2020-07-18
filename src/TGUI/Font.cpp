@@ -198,13 +198,7 @@ namespace tgui
     const sf::Glyph& Font::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
     {
         assert(m_font != nullptr);
-
-#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         return m_font->getGlyph(codePoint, characterSize, bold, outlineThickness);
-#else
-        (void)outlineThickness;
-        return m_font->getGlyph(codePoint, characterSize, bold);
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

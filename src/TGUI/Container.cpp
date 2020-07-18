@@ -143,7 +143,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container::Container(Container&& other) :
+    Container::Container(Container&& other) noexcept :
         Widget                    {std::move(other)},
         m_widgets                 {std::move(other.m_widgets)},
         m_widgetBelowMouse        {std::move(other.m_widgetBelowMouse)},
@@ -198,7 +198,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container& Container::operator= (Container&& right)
+    Container& Container::operator= (Container&& right) noexcept
     {
         // Make sure it is not the same widget
         if (this != &right)
