@@ -29,6 +29,7 @@
 
 #include <TGUI/Renderers/SpinButtonRenderer.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Timer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +96,7 @@ namespace tgui
         ///
         /// @param size  The new size of the spin button
         ///
-        /// Note that the VerticalScroll propery is changed by this function based on the given width and height.
+        /// Note that the VerticalScroll property is changed by this function based on the given width and height.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -280,6 +281,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        void CallMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clicked);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
         SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the spin button changed. Optional parameter: new value
@@ -290,6 +297,7 @@ namespace tgui
 
         // Is the spin button draw vertically (arrows on top of each other)?
         bool m_verticalScroll = true;
+        std::chrono::time_point<std::chrono::steady_clock> m_PressedAt;
 
         float m_minimum = 0;
         float m_maximum = 10;
