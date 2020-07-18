@@ -25,6 +25,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/ToolTip.hpp>
+#include <TGUI/Gui.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/Filesystem.hpp>
@@ -295,6 +296,9 @@ namespace tgui
             if (m_widgets[i] != widget)
                 continue;
 
+            if (widget == m_widgetBelowMouse && m_parentGui && (widget->getMouseCursor() != m_mouseCursor))
+                m_parentGui->requestMouseCursor(m_mouseCursor);
+
             if (m_widgetBelowMouse == widget)
                 m_widgetBelowMouse = nullptr;
             if (m_widgetWithLeftMouseDown == widget)
@@ -321,6 +325,9 @@ namespace tgui
 
     void Container::removeAllWidgets()
     {
+        if (m_mouseHover && m_parentGui && (m_mouseCursor != Cursor::Type::Arrow))
+            m_parentGui->requestMouseCursor(m_mouseCursor);
+
         for (const auto& widget : m_widgets)
             widget->setParent(nullptr);
 
@@ -988,6 +995,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::setParent(Container* parent)
+    {
+        const Gui* oldParentGui = m_parentGui;
+
+        Widget::setParent(parent);
+
+        // If our parent was added to a gui then we need to inform the child widgets that they have been added as well
+        if (oldParentGui != m_parentGui)
+        {
+            for (auto& widget : m_widgets)
+                widget->setParent(this);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr Container::mouseOnWhichWidget(Vector2f mousePos)
     {
         Widget::Ptr widgetBelowMouse = nullptr;
@@ -1138,6 +1161,17 @@ namespace tgui
     {
         // The only reason to override this function was to change the access specifier, so just call the code from the base class
         Container::draw(target, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RootContainer::setParentGui(Gui* gui)
+    {
+        m_parentGui = gui;
+
+        // If widgets were already added then inform them about the gui
+        for (auto& widget : m_widgets)
+            widget->setParent(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

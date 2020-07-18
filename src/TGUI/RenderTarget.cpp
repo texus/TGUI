@@ -106,21 +106,21 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::setTarget(sf::RenderTarget& target)
+    void RenderTargetSFML::setTarget(sf::RenderTarget& target)
     {
         m_target = &target;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::RenderTarget* RenderTarget::getTarget() const
+    sf::RenderTarget* RenderTargetSFML::getTarget() const
     {
         return m_target;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::setView(FloatRect view, FloatRect viewport)
+    void RenderTargetSFML::setView(FloatRect view, FloatRect viewport)
     {
         assert(m_clippingLayers.empty()); // You can't change the view of the render target during drawing
 
@@ -133,7 +133,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawGui(const std::shared_ptr<RootContainer>& root)
+    void RenderTargetSFML::drawGui(const std::shared_ptr<RootContainer>& root)
     {
         if (!m_target)
             return;
@@ -151,7 +151,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget)
+    void RenderTargetSFML::drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget)
     {
         // If the widget lies outside of the clip rect then we can skip drawing it
         const FloatRect& clipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
@@ -166,7 +166,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::addClippingLayer(const RenderStates& states, FloatRect rect)
+    void RenderTargetSFML::addClippingLayer(const RenderStates& states, FloatRect rect)
     {
         const FloatRect& oldClipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
         const sf::View& oldView = m_clippingLayers.empty() ? m_view : m_clippingLayers.back().second;
@@ -239,7 +239,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::removeClippingLayer()
+    void RenderTargetSFML::removeClippingLayer()
     {
         assert(!m_clippingLayers.empty());
 
@@ -252,7 +252,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawSprite(const RenderStates& states, const Sprite& sprite)
+    void RenderTargetSFML::drawSprite(const RenderStates& states, const Sprite& sprite)
     {
         if (!sprite.isSet())
             return;
@@ -297,7 +297,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawText(const RenderStates& states, const Text& text)
+    void RenderTargetSFML::drawText(const RenderStates& states, const Text& text)
     {
         RenderStates movedStates = states;
         movedStates.transform.translate(text.getPosition());
@@ -316,7 +316,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawTriangles(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices, std::size_t indexCount)
+    void RenderTargetSFML::drawTriangles(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices, std::size_t indexCount)
     {
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
@@ -338,7 +338,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RenderTarget::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, unsigned int borderThickness, const Color& borderColor)
+    void RenderTargetSFML::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, unsigned int borderThickness, const Color& borderColor)
     {
         sf::CircleShape bordersShape{size / 2};
         bordersShape.setFillColor(sf::Color(backgroundColor));

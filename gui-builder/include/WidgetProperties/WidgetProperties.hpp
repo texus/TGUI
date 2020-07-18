@@ -56,6 +56,8 @@ struct WidgetProperties
             widget->setEnabled(parseBoolean(value, true));
         else if (property == "UserData")
             widget->setUserData(value);
+        else if (property == "MouseCursor")
+            widget->setMouseCursor(deserializeMouseCursor(value));
         else // Renderer property
             widget->getRenderer()->setProperty(property, value);
     }
@@ -69,6 +71,7 @@ struct WidgetProperties
         pairs["Height"] = {"String", widget->getSizeLayout().y.toString()};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
+        pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed}", serializeMouseCursor(widget->getMouseCursor())};
         try
         {
             pairs["UserData"] = {"String", widget->getUserData<tgui::String>()};
@@ -156,6 +159,60 @@ struct WidgetProperties
             return "Never";
         else
             return "Automatic";
+    }
+
+    static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
+    {
+        value = value.trim().toLower();
+        if (value == "text")
+            return tgui::Cursor::Type::Text;
+        else if (value == "hand")
+            return tgui::Cursor::Type::Hand;
+        else if (value == "sizeleft")
+            return tgui::Cursor::Type::SizeLeft;
+        else if (value == "sizeright")
+            return tgui::Cursor::Type::SizeRight;
+        else if (value == "sizetop")
+            return tgui::Cursor::Type::SizeTop;
+        else if (value == "sizebottom")
+            return tgui::Cursor::Type::SizeBottom;
+        else if (value == "sizebottomright")
+            return tgui::Cursor::Type::SizeBottomRight;
+        else if (value == "sizetopleft")
+            return tgui::Cursor::Type::SizeTopLeft;
+        else if (value == "sizebottomleft")
+            return tgui::Cursor::Type::SizeBottomLeft;
+        else if (value == "sizetopright")
+            return tgui::Cursor::Type::SizeTopRight;
+        else if (value == "cross")
+            return tgui::Cursor::Type::Cross;
+        else if (value == "help")
+            return tgui::Cursor::Type::Help;
+        else if (value == "notallowed")
+            return tgui::Cursor::Type::NotAllowed;
+        else
+            return tgui::Cursor::Type::Arrow;
+    }
+
+    static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
+    {
+        switch (cursor)
+        {
+            case tgui::Cursor::Type::Text:            return "Text";
+            case tgui::Cursor::Type::Hand:            return "Hand";
+            case tgui::Cursor::Type::SizeLeft:        return "SizeLeft";
+            case tgui::Cursor::Type::SizeRight:       return "SizeRight";
+            case tgui::Cursor::Type::SizeTop:         return "SizeTop";
+            case tgui::Cursor::Type::SizeBottom:      return "SizeBottom";
+            case tgui::Cursor::Type::SizeBottomRight: return "SizeBottomRight";
+            case tgui::Cursor::Type::SizeTopLeft:     return "SizeTopLeft";
+            case tgui::Cursor::Type::SizeBottomLeft:  return "SizeBottomLeft";
+            case tgui::Cursor::Type::SizeTopRight:    return "SizeTopRight";
+            case tgui::Cursor::Type::Cross:           return "Cross";
+            case tgui::Cursor::Type::Help:            return "Help";
+            case tgui::Cursor::Type::NotAllowed:      return "NotAllowed";
+            default:                                  return "Arrow";
+        }
     }
 };
 

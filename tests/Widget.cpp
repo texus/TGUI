@@ -84,6 +84,34 @@ TEST_CASE("[Widget]")
         REQUIRE(panel1->getWidgets().size() == 0);
     }
 
+    SECTION("ParentGui")
+    {
+        auto gui = std::make_unique<tgui::Gui>();
+        auto panel = tgui::Panel::create();
+        panel->add(widget);
+
+        // Before the widgets are added to the gui, they don't have a ParentGui
+        REQUIRE(widget->getParentGui() == nullptr);
+        REQUIRE(panel->getParentGui() == nullptr);
+
+        // The pointer is set for all children when the container is added to the gui
+        gui->add(panel);
+        REQUIRE(widget->getParentGui() == gui.get());
+        REQUIRE(panel->getParentGui() == gui.get());
+
+        // When the gui is destroyed, the pointer is reset
+        gui = nullptr;
+        REQUIRE(widget->getParentGui() == nullptr);
+        REQUIRE(panel->getParentGui() == nullptr);
+    }
+
+    SECTION("MouseCursor")
+    {
+        REQUIRE(widget->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        widget->setMouseCursor(tgui::Cursor::Type::Text);
+        REQUIRE(widget->getMouseCursor() == tgui::Cursor::Type::Text);
+    }
+
     SECTION("Move to front/back")
     {
         auto widget1 = tgui::ClickableWidget::create();
@@ -376,6 +404,7 @@ TEST_CASE("[Widget]")
 
         widget->setVisible(false);
         widget->setEnabled(false);
+        widget->setMouseCursor(tgui::Cursor::Type::Hand);
         widget->setPosition(50, "15%");
         widget->setSize("min(20% - (10 * 5), 100)", "70");
 

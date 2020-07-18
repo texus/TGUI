@@ -1,6 +1,7 @@
 TGUI 0.9-dev
 ------------
 
+- Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget
 - Added ThumbWithinTrack to Slider renderer to have thumb align with track on sides

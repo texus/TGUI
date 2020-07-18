@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
+#include <TGUI/Gui.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -699,6 +700,9 @@ namespace tgui
                     }
                 }
             }
+
+            if (m_resizable && !m_widgetWithLeftMouseDown)
+                updateResizeMouseCursor(pos);
         }
     }
 
@@ -767,6 +771,50 @@ namespace tgui
 
         // Reposition the images and text
         setPosition(m_position);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::updateResizeMouseCursor(Vector2f mousePos)
+    {
+        if (!m_parentGui)
+            return;
+
+        Cursor::Type requestedCursor;
+        if (mousePos.x >= getChildWidgetsOffset().x + getClientSize().x)
+        {
+            if (mousePos.y >= getChildWidgetsOffset().y + getClientSize().y)
+                requestedCursor = Cursor::Type::SizeBottomRight;
+            else if (mousePos.y < m_bordersCached.getTop())
+                requestedCursor = Cursor::Type::SizeTopRight;
+            else
+                requestedCursor = Cursor::Type::SizeRight;
+        }
+        else if (mousePos.x < m_bordersCached.getLeft())
+        {
+            if (mousePos.y >= getChildWidgetsOffset().y + getClientSize().y)
+                requestedCursor = Cursor::Type::SizeBottomLeft;
+            else if (mousePos.y < m_bordersCached.getTop())
+                requestedCursor = Cursor::Type::SizeTopLeft;
+            else
+                requestedCursor = Cursor::Type::SizeLeft;
+        }
+        else if (mousePos.y < m_bordersCached.getTop())
+        {
+            requestedCursor = Cursor::Type::SizeTop;
+        }
+        else if (mousePos.y >= getChildWidgetsOffset().y + getClientSize().y)
+        {
+            requestedCursor = Cursor::Type::SizeBottom;
+        }
+        else
+            requestedCursor = m_mouseCursor;
+
+        if (m_currentChildWindowMouseCursor == requestedCursor)
+            return;
+
+        m_currentChildWindowMouseCursor = requestedCursor;
+        m_parentGui->requestMouseCursor(requestedCursor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,6 +1068,45 @@ namespace tgui
 
         if (node->propertyValuePairs["MaximumSize"])
             setMaximumSize(Vector2f{node->propertyValuePairs["MaximumSize"]->value});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseEnteredWidget()
+    {
+        if (m_resizable && (m_mouseCursor != Cursor::Type::Arrow))
+        {
+            // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML 2.5.1.
+            // Calling the function from the base class would set the mouse cursor that was requested. If the mouse is on top
+            // of the borders then we need to replace it with a resize cursor afterwards. These cursor changes would occus out
+            // of order though, causing the wrong cursor to show up when the mouse enters a border from the outside.
+            m_mouseHover = true;
+            onMouseEnter.emit(this);
+            m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
+            return;
+        }
+
+        Container::mouseEnteredWidget();
+
+        // If the child window has a custom mouse cursor then the Container::mouseEnteredWidget() would have switched to it.
+        // We should recheck whether the mouse is on top of the borders to change it back into a resize arrow if needed.
+        // The check would be called after mouseEnteredWidget() anyway, so we just make sure that the code realizes that
+        // the mouse cursor has been changed by resetting the state.
+        m_currentChildWindowMouseCursor = m_mouseCursor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseLeftWidget()
+    {
+        if (m_currentChildWindowMouseCursor != Cursor::Type::Arrow)
+        {
+            m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
+            if (m_parentGui)
+                m_parentGui->requestMouseCursor(Cursor::Type::Arrow);
+        }
+
+        Widget::mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

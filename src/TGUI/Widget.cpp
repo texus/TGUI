@@ -27,6 +27,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Vector2.hpp>
+#include <TGUI/Gui.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
 #include <SFML/System/Err.hpp>
@@ -173,13 +174,15 @@ namespace tgui
         m_enabled                      {other.m_enabled},
         m_visible                      {other.m_visible},
         m_parent                       {nullptr},
+        m_parentGui                    {nullptr},
         m_draggableWidget              {other.m_draggableWidget},
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
         m_renderer                     {other.m_renderer},
         m_showAnimations               {other.m_showAnimations},
         m_fontCached                   {other.m_fontCached},
-        m_opacityCached                {other.m_opacityCached}
+        m_opacityCached                {other.m_opacityCached},
+        m_mouseCursor                  {other.m_mouseCursor}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
         m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -214,6 +217,7 @@ namespace tgui
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
         m_parent                       {nullptr},
+        m_parentGui                    {nullptr},
         m_mouseHover                   {std::move(other.m_mouseHover)},
         m_mouseDown                    {std::move(other.m_mouseDown)},
         m_focused                      {std::move(other.m_focused)},
@@ -224,7 +228,8 @@ namespace tgui
         m_renderer                     {other.m_renderer},
         m_showAnimations               {std::move(other.m_showAnimations)},
         m_fontCached                   {std::move(other.m_fontCached)},
-        m_opacityCached                {std::move(other.m_opacityCached)}
+        m_opacityCached                {std::move(other.m_opacityCached)},
+        m_mouseCursor                  {std::move(other.m_mouseCursor)}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
         m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -237,7 +242,7 @@ namespace tgui
         other.m_renderer = nullptr;
 
         if (other.m_parent)
-            m_parent->remove(other.shared_from_this());
+            other.m_parent->remove(other.shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,6 +276,8 @@ namespace tgui
             m_boundSizeLayouts     = {};
             m_enabled              = other.m_enabled;
             m_visible              = other.m_visible;
+            m_parent               = nullptr;
+            m_parentGui            = nullptr;
             m_mouseHover           = false;
             m_mouseDown            = false;
             m_focused              = false;
@@ -282,6 +289,7 @@ namespace tgui
             m_showAnimations       = {};
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
+            m_mouseCursor          = other.m_mouseCursor;
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
             m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -289,12 +297,6 @@ namespace tgui
             m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
             m_renderer->subscribe(this, m_rendererChangedCallback);
-
-            if (m_parent)
-            {
-                SignalManager::getSignalManager()->remove(this);
-                SignalManager::getSignalManager()->add(shared_from_this());
-            }
         }
 
         return *this;
@@ -331,6 +333,8 @@ namespace tgui
             m_boundSizeLayouts     = std::move(other.m_boundSizeLayouts);
             m_enabled              = std::move(other.m_enabled);
             m_visible              = std::move(other.m_visible);
+            m_parent               = nullptr;
+            m_parentGui            = nullptr;
             m_mouseHover           = std::move(other.m_mouseHover);
             m_mouseDown            = std::move(other.m_mouseDown);
             m_focused              = std::move(other.m_focused);
@@ -342,6 +346,7 @@ namespace tgui
             m_showAnimations       = std::move(other.m_showAnimations);
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
+            m_mouseCursor          = std::move(other.m_mouseCursor);
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
             m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -352,11 +357,8 @@ namespace tgui
 
             other.m_renderer = nullptr;
 
-            if (m_parent)
-            {
+            if (other.m_parent)
                 SignalManager::getSignalManager()->remove(&other);
-                SignalManager::getSignalManager()->add(shared_from_this());
-            }
         }
 
         return *this;
@@ -935,6 +937,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setMouseCursor(Cursor::Type cursor)
+    {
+        m_mouseCursor = cursor;
+
+        if (m_mouseHover)
+            m_parentGui->requestMouseCursor(cursor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Cursor::Type Widget::getMouseCursor() const
+    {
+        return m_mouseCursor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::setFocusable(bool focusable)
     {
         m_focusable = focusable;
@@ -979,6 +998,10 @@ namespace tgui
 
     void Widget::setParent(Container* parent)
     {
+        m_parentGui = parent ? parent->getParentGui() : nullptr;
+        if (m_parent == parent)
+            return;
+
         if (!parent)
             SignalManager::getSignalManager()->remove(this);
         else if (!m_parent)
@@ -1260,6 +1283,27 @@ namespace tgui
         }
 #endif
 
+        String mouseCursorStr;
+        switch (m_mouseCursor)
+        {
+            case Cursor::Type::Text:            mouseCursorStr = "Text"; break;
+            case Cursor::Type::Hand:            mouseCursorStr = "Hand"; break;
+            case Cursor::Type::SizeLeft:        mouseCursorStr = "SizeLeft"; break;
+            case Cursor::Type::SizeRight:       mouseCursorStr = "SizeRight"; break;
+            case Cursor::Type::SizeTop:         mouseCursorStr = "SizeTop"; break;
+            case Cursor::Type::SizeBottom:      mouseCursorStr = "SizeBottom"; break;
+            case Cursor::Type::SizeBottomRight: mouseCursorStr = "SizeBottomRight"; break;
+            case Cursor::Type::SizeTopLeft:     mouseCursorStr = "SizeTopLeft"; break;
+            case Cursor::Type::SizeBottomLeft:  mouseCursorStr = "SizeBottomLeft"; break;
+            case Cursor::Type::SizeTopRight:    mouseCursorStr = "SizeTopRight"; break;
+            case Cursor::Type::Cross:           mouseCursorStr = "Cross"; break;
+            case Cursor::Type::Help:            mouseCursorStr = "Help"; break;
+            case Cursor::Type::NotAllowed:      mouseCursorStr = "NotAllowed"; break;
+            case Cursor::Type::Arrow:           break; // We don't save the cursor if it has the default value
+        }
+        if (!mouseCursorStr.empty())
+            node->propertyValuePairs["MouseCursor"] = std::make_unique<DataIO::ValueNode>(mouseCursorStr);
+
         if (getToolTip() != nullptr)
         {
             auto toolTipWidgetNode = getToolTip()->save(renderers);
@@ -1320,6 +1364,41 @@ namespace tgui
 #endif
         }
 
+        if (node->propertyValuePairs["MouseCursor"])
+        {
+            String cursorStr = node->propertyValuePairs["MouseCursor"]->value.trim();
+            if (cursorStr == "Text")
+                m_mouseCursor = Cursor::Type::Text;
+            else if (cursorStr == "Hand")
+                m_mouseCursor = Cursor::Type::Hand;
+            else if (cursorStr == "SizeLeft")
+                m_mouseCursor = Cursor::Type::SizeLeft;
+            else if (cursorStr == "SizeRight")
+                m_mouseCursor = Cursor::Type::SizeRight;
+            else if (cursorStr == "SizeTop")
+                m_mouseCursor = Cursor::Type::SizeTop;
+            else if (cursorStr == "SizeBottom")
+                m_mouseCursor = Cursor::Type::SizeBottom;
+            else if (cursorStr == "SizeBottomRight")
+                m_mouseCursor = Cursor::Type::SizeBottomRight;
+            else if (cursorStr == "SizeTopLeft")
+                m_mouseCursor = Cursor::Type::SizeTopLeft;
+            else if (cursorStr == "SizeBottomLeft")
+                m_mouseCursor = Cursor::Type::SizeBottomLeft;
+            else if (cursorStr == "SizeTopRight")
+                m_mouseCursor = Cursor::Type::SizeTopRight;
+            else if (cursorStr == "Cross")
+                m_mouseCursor = Cursor::Type::Cross;
+            else if (cursorStr == "Help")
+                m_mouseCursor = Cursor::Type::Help;
+            else if (cursorStr == "NotAllowed")
+                m_mouseCursor = Cursor::Type::NotAllowed;
+            else if (cursorStr == "Arrow")
+                m_mouseCursor = Cursor::Type::Arrow;
+            else
+                throw Exception{"Failed to parse 'MouseCursor' property. Invalid cursor '" + cursorStr + "'."};
+        }
+
         if (node->propertyValuePairs["Renderer"])
         {
             const String value = node->propertyValuePairs["Renderer"]->value;
@@ -1377,6 +1456,9 @@ namespace tgui
 
     void Widget::mouseEnteredWidget()
     {
+        if (m_parentGui && (m_mouseCursor != Cursor::Type::Arrow))
+            m_parentGui->requestMouseCursor(m_mouseCursor);
+
         m_mouseHover = true;
         onMouseEnter.emit(this);
     }
@@ -1385,6 +1467,9 @@ namespace tgui
 
     void Widget::mouseLeftWidget()
     {
+        if (m_parentGui && (m_mouseCursor != Cursor::Type::Arrow))
+            m_parentGui->requestMouseCursor(Cursor::Type::Arrow);
+
         m_mouseHover = false;
         onMouseLeave.emit(this);
     }

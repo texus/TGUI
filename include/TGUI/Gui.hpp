@@ -31,9 +31,11 @@
 #include <TGUI/RelFloatRect.hpp>
 #include <TGUI/RenderTarget.hpp>
 #include <TGUI/Event.hpp>
+#include <TGUI/Cursor.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <chrono>
 #include <queue>
+#include <stack>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +53,7 @@ namespace tgui
         ///
         /// If you use this constructor then you will still have to call the setTarget yourself.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Gui() = default;
+        Gui();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +65,12 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui(sf::RenderTarget& target);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ~Gui();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,6 +513,42 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Overrides which cursor gets shown
+        ///
+        /// @param type  Which cursor to show
+        ///
+        /// @warning You must call restoreOverrideCursor() for every call to setOverrideCursor.
+        ///
+        /// Until restoreOverrideCursor is called, the cursor will no longer be changed by widgets.
+        /// If setOverrideCursor is called multiple times, the cursors are stacked and calling restoreOverrideCursor will only
+        /// pop the last added cursor from the stack.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOverrideMouseCursor(Cursor::Type type);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Undoes the effect of the last call to setOverrideCursor
+        ///
+        /// This function has to be called for each call to setOverrideCursor. If the stack of overriden cursors becomes empty
+        /// then widgets will be able to change the cursor again.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void restoreOverrideMouseCursor();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Function that is used by widgets to change the mouse cursor
+        ///
+        /// @param type  The requested cursor
+        ///
+        /// This function is used to change the mouse cursor when the mouse enters or leaves a widget.
+        /// If you want to choose a cursor that doesn't get changed when moving the mouse then use setOverrideMouseCursor.
+        /// If an override cursor is already set then this function won't be able to change the cursor. When all overrides are
+        /// removed with restoreOverrideMouseCursor then the mouse cursor will be changed to what was last requested here.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void requestMouseCursor(Cursor::Type type);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether drawing the gui will automatically update the internal clock or whether the user does it manually
         ///
         /// @param drawUpdatesTime  True if gui.draw() updates the clock (default), false if gui.updateTime() has to be called
@@ -545,6 +589,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Executes the code that is common between all constructors.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void init();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the view and changes the size of the root container when needed
@@ -558,7 +607,7 @@ namespace tgui
         std::chrono::steady_clock::time_point m_lastUpdateTime;
         bool m_windowFocused = true;
 
-        std::unique_ptr<RenderTarget> m_renderTarget = std::make_unique<RenderTarget>();
+        std::shared_ptr<RenderTargetSFML> m_renderTarget = nullptr;
         RootContainer::Ptr m_container = std::make_shared<RootContainer>();
 
         Widget::Ptr m_visibleToolTip = nullptr;
@@ -571,6 +620,9 @@ namespace tgui
 
         bool m_drawUpdatesTime = true;
         bool m_tabKeyUsageEnabled = true;
+
+        Cursor::Type m_requestedMouseCursor = Cursor::Type::Arrow;
+        std::stack<Cursor::Type> m_overrideMouseCursors;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

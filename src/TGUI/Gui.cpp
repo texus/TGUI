@@ -24,6 +24,7 @@
 
 #include <TGUI/Gui.hpp>
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/Backend.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
 
@@ -290,17 +291,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Gui::Gui()
+    {
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Gui::Gui(sf::RenderTarget& target)
     {
-        m_renderTarget->setTarget(target);
-        updateContainerSize();
+        init();
+        setTarget(target);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Gui::~Gui()
+    {
+        m_container->setParentGui(nullptr);
+        getBackend()->detatchGui(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::setTarget(sf::RenderTarget& target)
     {
-        m_renderTarget->setTarget(target);
+        std::shared_ptr<BackendSFML> backend = std::dynamic_pointer_cast<BackendSFML>(getBackend());
+        assert(backend != nullptr);
+        m_renderTarget = backend->setGuiTarget(this, target);
+
         updateContainerSize();
     }
 
@@ -308,7 +327,10 @@ namespace tgui
 
     sf::RenderTarget* Gui::getTarget() const
     {
-        return m_renderTarget->getTarget();
+        if (m_renderTarget)
+            return m_renderTarget->getTarget();
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,6 +511,7 @@ namespace tgui
         if (m_drawUpdatesTime)
             updateTime();
 
+        assert(m_renderTarget != nullptr);
         m_renderTarget->drawGui(m_container);
     }
 
@@ -734,6 +757,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Gui::setOverrideMouseCursor(Cursor::Type type)
+    {
+        m_overrideMouseCursors.push(type);
+        getBackend()->setMouseCursor(this, type);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::restoreOverrideMouseCursor()
+    {
+        if (m_overrideMouseCursors.empty())
+            return;
+
+        m_overrideMouseCursors.pop();
+
+        const Cursor::Type newCursor = m_overrideMouseCursors.empty() ? m_requestedMouseCursor : m_overrideMouseCursors.top();
+        getBackend()->setMouseCursor(this, newCursor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::requestMouseCursor(Cursor::Type type)
+    {
+        if (type == m_requestedMouseCursor)
+            return;
+
+        m_requestedMouseCursor = type;
+        if (m_overrideMouseCursors.empty())
+            getBackend()->setMouseCursor(this, type);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Gui::setDrawingUpdatesTime(bool drawUpdatesTime)
     {
         m_drawUpdatesTime = drawUpdatesTime;
@@ -797,8 +853,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Gui::init()
+    {
+        if (getBackend() == nullptr)
+            setBackend(std::make_shared<BackendSFML>());
+
+        getBackend()->attachGui(this);
+        getBackend()->setDestroyOnLastGuiDetatch(true);
+
+        m_container->setParentGui(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Gui::updateContainerSize()
     {
+        assert(m_renderTarget != nullptr);
+
         const auto& target = getTarget();
         m_viewport.updateParentSize({static_cast<float>(target->getSize().x), static_cast<float>(target->getSize().y)});
         m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});

@@ -75,6 +75,17 @@ if (EXISTS "${targets_config_file}")
     # Set TGUI_FOUND to TRUE by default, may be overwritten by one of the includes below
     set(TGUI_FOUND TRUE)
     include("${targets_config_file}")
+
+    # Search for X11 on Linux and BSD
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR CMAKE_SYSTEM_NAME MATCHES "^k?FreeBSD$" OR CMAKE_SYSTEM_NAME MATCHES "^OpenBSD$")
+        find_library(TGUI_X11_LIB NAMES X11 PATHS ${FIND_TGUI_PATHS} PATH_SUFFIXES lib NO_SYSTEM_ENVIRONMENT_PATH)
+        mark_as_advanced(TGUI_X11_LIB)
+        if(TGUI_X11_LIB)
+            set_property(TARGET TGUI_X11 APPEND PROPERTY INTERFACE_LINK_LIBRARIES "${TGUI_X11_LIB}")
+        else()
+            set(FIND_TGUI_DEPENDENCIES_NOTFOUND "${FIND_TGUI_DEPENDENCIES_NOTFOUND} X11" PARENT_SCOPE)
+        endif()
+    endif()
 else()
     set(FIND_TGUI_ERROR "Requested TGUI configuration (${config_name}) was not found")
     set(TGUI_FOUND FALSE)

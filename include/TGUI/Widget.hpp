@@ -34,6 +34,7 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Duration.hpp>
+#include <TGUI/Cursor.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Any.hpp>
 #include <TGUI/RenderTarget.hpp>
@@ -595,6 +596,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a pointer to the gui to which this widget belongs
+        ///
+        /// @return Pointer to the gui
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Gui* getParentGui() const
+        {
+            return m_parentGui;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether there is an active animation (started with showWithEffect or hideWithEffect)
         ///
         /// @return Is an animation that shows or hides the widget playing?
@@ -725,6 +737,24 @@ namespace tgui
         /// @return Name of the widget or an empty string when wasn't given a name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         String getWidgetName() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes which mouse cursor is shown when hovering over the widget
+        ///
+        /// @param cursor  The cursor to show when the mouse is on top of the widget
+        ///
+        /// By default, the arrow cursor is shown.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMouseCursor(Cursor::Type cursor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns which mouse cursor is shown when hovering over the widget
+        ///
+        /// @return The cursor to show when the mouse is on top of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Cursor::Type getMouseCursor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1069,6 +1099,7 @@ namespace tgui
 
         // This will point to our parent widget. If there is no parent then this will be nullptr.
         Container* m_parent = nullptr;
+        Gui* m_parentGui = nullptr;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
         bool m_mouseHover = false;
@@ -1108,6 +1139,7 @@ namespace tgui
         bool m_transparentTextureCached = false;
 
         Any m_userData;
+        Cursor::Type m_mouseCursor = Cursor::Type::Arrow;
 
         std::function<void(const String& property)> m_rendererChangedCallback = [this](const String& property){ rendererChangedCallback(property); };
 

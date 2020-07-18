@@ -1,8 +1,10 @@
 set(TGUI_SRC
     Animation.cpp
+    Backend.cpp
     Clipboard.cpp
     Color.cpp
     Container.cpp
+    Cursor.cpp
     CustomWidgetForBindings.cpp
     Filesystem.cpp
     Font.cpp
@@ -185,6 +187,16 @@ if(DEFINED SFML_LIBRARIES)
 else()
     # SFML found via SFMLConfig.cmake
     target_link_libraries(tgui PRIVATE sfml-graphics)
+endif()
+
+# On Linux and BSD we also need to link to X11
+if(TGUI_OS_LINUX OR TGUI_OS_BSD)
+    find_package(X11 REQUIRED)
+    add_library(TGUI_X11 INTERFACE)
+    target_include_directories(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_INCLUDE_DIR}>")
+    target_link_libraries(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_X11_LIB}>")
+    install(TARGETS TGUI_X11 EXPORT TGUIConfigExport)
+    target_link_libraries(tgui PRIVATE TGUI_X11)
 endif()
 
 # define TGUI_USE_CPP17 if requested
