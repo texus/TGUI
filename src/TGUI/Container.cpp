@@ -531,6 +531,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::size_t Container::moveWidgetForward(const Widget::Ptr& widget)
+    {
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        {
+            if (m_widgets[i] != widget)
+                continue;
+
+            // If the widget is already at the front then we can't move it further forward
+            if (i == m_widgets.size() - 1)
+                return m_widgets.size() - 1;
+
+            std::swap(m_widgets[i], m_widgets[i+1]);
+            return i + 1;
+        }
+
+        // The widget wasn't found in this container
+        return m_widgets.size();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t Container::moveWidgetBackward(const Widget::Ptr& widget)
+    {
+        for (std::size_t i = m_widgets.size(); i > 0; --i)
+        {
+            if (m_widgets[i-1] != widget)
+                continue;
+
+            // If the widget is already at the back then we can't move it further backward
+            if (i-1 == 0)
+                return 0;
+
+            std::swap(m_widgets[i-2], m_widgets[i-1]);
+            return i-2;
+        }
+
+        // The widget wasn't found in this container
+        return m_widgets.size();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr Container::getFocusedChild() const
     {
         return m_focusedWidget;

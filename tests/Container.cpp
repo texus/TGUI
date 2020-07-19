@@ -173,6 +173,48 @@ TEST_CASE("[Container]")
         }
     }
 
+    SECTION("Change z-order")
+    {
+        container->removeAllWidgets();
+
+        // moveWidgetForward and moveWidgetBackward will return list size when widget hasn't been added yet
+        REQUIRE(container->moveWidgetForward(widget3) == 0);
+        container->add(widget1);
+        container->add(widget2);
+        REQUIRE(container->moveWidgetBackward(widget3) == 2);
+        container->add(widget3);
+
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget1);
+        REQUIRE(container->getWidgets()[1] == widget2);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        container->moveWidgetToFront(widget1);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget3);
+        REQUIRE(container->getWidgets()[2] == widget1);
+
+        container->moveWidgetToBack(widget1);
+        REQUIRE(container->getWidgets()[0] == widget1);
+        REQUIRE(container->getWidgets()[1] == widget2);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        REQUIRE(container->moveWidgetForward(widget1) == 1);
+        REQUIRE(container->moveWidgetForward(widget3) == 2);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget1);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        REQUIRE(container->moveWidgetBackward(widget3) == 1);
+        REQUIRE(container->moveWidgetBackward(widget2) == 0);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget3);
+        REQUIRE(container->getWidgets()[2] == widget1);
+
+        // No widgets were added or removed while changing z-order
+        REQUIRE(container->getWidgets().size() == 3);
+    }
+
     SECTION("widget name")
     {
         REQUIRE(container->getWidgets().size() == 3);
