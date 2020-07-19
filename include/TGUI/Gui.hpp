@@ -367,7 +367,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places a widget before all other widgets
+        /// @brief Places a widget before all other widgets, to the front of the z-order
         ///
         /// @param widget  The widget that should be moved to the front
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,11 +375,37 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places a widget behind all other widgets
+        /// @brief Places a widget behind all other widgets, to the back of the z-order
         ///
         /// @param widget  The widget that should be moved to the back
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void moveWidgetToBack(const Widget::Ptr& widget);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Places a widget one step forward in the z-order
+        ///
+        /// @param widget  The widget that should be moved one step forward
+        ///
+        /// @return New index in the widgets list (one higher than the old index or the same if the widget was already in front),
+        ///         or getWidgets().size() if the widget was never added to this container.
+        ///
+        /// @see moveWidgetToFront
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t moveWidgetForward(const Widget::Ptr& widget);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Places a widget one step backward in the z-order
+        ///
+        /// @param widget  The widget that should be moved one step backward
+        ///
+        /// @return New index in the widgets list (one lower than the old index or the same if the widget was already at back),
+        ///         or getWidgets().size() if the widget was never added to this container.
+        ///
+        /// @see moveWidgetToBack
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t moveWidgetBackward(const Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
