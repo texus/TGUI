@@ -284,11 +284,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-// Undefine some annoying generic defines from X.h so that we don't get errors in unity builds
-#undef None
-#undef Bool
-#undef KeyPress
-#undef KeyRelease
-#undef Status
+#ifdef TGUI_SYSTEM_LINUX
+    // Undefine some annoying generic defines from X.h so that we don't get errors in unity builds
+    #undef None
+    #undef Bool
+    #undef KeyPress
+    #undef KeyRelease
+    #undef Status
+    #undef Always
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
