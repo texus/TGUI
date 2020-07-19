@@ -30,10 +30,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl::SpinControl(float min, float max, float value, unsigned decimal, float step)
+    SpinControl::SpinControl(float min, float max, float value, unsigned decimal, float step) :
+        m_decimalPlaces(decimal)
     {
-        m_decimalPlaces = decimal;
-
         m_type = "SpinControl";
 
         m_spinButton = SpinButton::create();
@@ -42,10 +41,10 @@ namespace tgui
         setString(String(value));
 
         m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
-        m_spinButton->onValueChange([this](const float n)
+        m_spinButton->onValueChange([this](const float val)
             {
-                setString(String(n));
-                onValueChange.emit(this, n);
+                setString(String(val));
+                onValueChange.emit(this, val);
             });
 
         m_spinButton->setMinimum(min);
@@ -59,14 +58,14 @@ namespace tgui
                 const float curValue = m_spinButton->getValue();
                 const float defValue = m_spinButton->getMaximum() + 1;
 
-                float value = text.toFloat(defValue);
-                if (value == defValue || !inRange(value))
+                const float val = text.toFloat(defValue);
+                if (val == defValue || !inRange(val))
                 {
                     setString(String(curValue));
                 }
-                else if (curValue != value)
+                else if (curValue != val)
                 {
-                    m_spinButton->setValue(value);
+                    m_spinButton->setValue(val);
                     //display actual value because SpinButton can round entered number
                     setString(String(m_spinButton->getValue()));
                 }
@@ -79,8 +78,8 @@ namespace tgui
         m_container->add(m_spinText);
         m_container->add(m_spinButton);
 
-        auto butSize = m_spinButton->getSize();
-        auto txtSize = m_spinText->getSize();
+        const auto butSize = m_spinButton->getSize();
+        const auto txtSize = m_spinText->getSize();
         setSize({ butSize.x + txtSize.x, butSize.y });
     }
 
@@ -93,10 +92,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl::Ptr SpinControl::copy(SpinControl::ConstPtr SpinCtrl)
+    SpinControl::Ptr SpinControl::copy(SpinControl::ConstPtr spinCtrl)
     {
-        if (SpinCtrl)
-            return std::static_pointer_cast<SpinControl>(SpinCtrl->clone());
+        if (spinCtrl)
+            return std::static_pointer_cast<SpinControl>(spinCtrl->clone());
         else
             return nullptr;
     }
@@ -263,8 +262,8 @@ namespace tgui
 
     void SpinControl::setString(const String& str)
     {
-        auto pos = str.find('.');
-        auto integerPart = str.substr(0, pos);
+        const auto pos = str.find('.');
+        const auto integerPart = str.substr(0, pos);
         if (m_decimalPlaces == 0)
         {
             m_spinText->setText(integerPart);
@@ -276,7 +275,7 @@ namespace tgui
         {
             floatPart = str.substr(pos);
         }
-        auto len = floatPart.size() - 1;
+        const auto len = floatPart.size() - 1;
 
         if (len < m_decimalPlaces)
         {
