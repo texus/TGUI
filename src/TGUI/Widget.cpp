@@ -1234,7 +1234,7 @@ namespace tgui
             node->propertyValuePairs["Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
         if (getOrigin() != Vector2f{})
             node->propertyValuePairs["Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
-        if (getScale() != Vector2f{})
+        if (getScale() != Vector2f{1, 1})
         {
             node->propertyValuePairs["Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
             if (m_scaleOrigin)

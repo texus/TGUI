@@ -27,6 +27,7 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Gui.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/Filesystem.hpp>
 
@@ -55,6 +56,15 @@ namespace tgui
                 Container* childContainer = dynamic_cast<Container*>(child.get());
                 if (childContainer)
                     getAllRenderers(renderers, childContainer);
+                else
+                {
+                    SubwidgetContainer* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
+                    if (subWidgetContainer)
+                    {
+                        renderers[subWidgetContainer->getContainer()->getSharedRenderer()->getData().get()].push_back(subWidgetContainer->getContainer());
+                        getAllRenderers(renderers, subWidgetContainer->getContainer());
+                    }
+                }
             }
         }
 

@@ -1,6 +1,8 @@
 TGUI 0.9-dev
 ------------
 
+- Added new SpinControl widget (combination of EditBox and SpinButton) ([PR #135](https://github.com/texus/TGUI/pull/135))
+- Holding down arrow on SpinButton will now keep chaning the value ([PR #137](https://github.com/texus/TGUI/pull/137))
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget

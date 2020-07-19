@@ -112,8 +112,9 @@ TEST_CASE("[spinControl]")
         REQUIRE(spinControl->setValue(26.5f));
         REQUIRE(spinControl->getValue() == 26.5f);
 
-        REQUIRE(spinControl->setValue(25.5f));
-        REQUIRE(spinControl->getValue() == 26.5f);//round to nearest
+        // If a value is set between two steps then it will be rounded to the nearest allowed value
+        REQUIRE(spinControl->setValue(25.8f));
+        REQUIRE(spinControl->getValue() == 26.5f);
     }
 
     SECTION("DecimalPlaces")
@@ -165,5 +166,15 @@ TEST_CASE("[spinControl]")
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinControl->getValue() == 10);
         }
+    }
+
+    SECTION("Saving and loading from file")
+    {
+        spinControl->setMinimum(10);
+        spinControl->setMaximum(50);
+        spinControl->setValue(20);
+        spinControl->setStep(5);
+
+        testSavingWidget("SpinControl", spinControl, false);
     }
 }

@@ -40,47 +40,17 @@ namespace tgui
         m_spinText->setInputValidator(EditBox::Validator::Float);
         setString(String(value));
 
-        m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
-        m_spinButton->onValueChange([this](const float val)
-            {
-                setString(String(val));
-                onValueChange.emit(this, val);
-            });
-
         m_spinButton->setMinimum(min);
         m_spinButton->setMaximum(max);
         m_spinButton->setValue(value);
         m_spinButton->setStep(step);
 
         m_spinText->setSize(m_spinText->getSize().x, m_spinButton->getSize().y);
-        m_spinText->onReturnOrUnfocus([this](const String& text)
-            {
-                const float curValue = m_spinButton->getValue();
-                const float defValue = m_spinButton->getMaximum() + 1;
 
-                const float val = text.toFloat(defValue);
-                if (val == defValue || !inRange(val))
-                {
-                    setString(String(curValue));
-                }
-                else if (curValue != val)
-                {
-                    m_spinButton->setValue(val);
-                    //display actual value because SpinButton can round entered number
-                    setString(String(m_spinButton->getValue()));
-                }
-                else
-                {
-                    setString(text);
-                }
-            });
+        m_container->add(m_spinText, "SpinText");
+        m_container->add(m_spinButton, "SpinButton");
 
-        m_container->add(m_spinText);
-        m_container->add(m_spinButton);
-
-        const auto butSize = m_spinButton->getSize();
-        const auto txtSize = m_spinText->getSize();
-        setSize({ butSize.x + txtSize.x, butSize.y });
+        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,13 +134,13 @@ namespace tgui
 
         if (getSize().x > getSize().y)
         {
-            m_spinButton->setSize({ size.y / 2, size.y });
-            m_spinText->setSize({ size.x - size.y / 2, size.y });
+            m_spinButton->setSize({getSize().y / 2, getSize().y});
+            m_spinText->setSize({getSize().x - getSize().y / 2, getSize().y});
         }
         else
         {
-            m_spinButton->setSize({ size.x, size.y });
-            m_spinText->setSize({ 0, 0 });
+            m_spinButton->setSize({getSize().x, getSize().y});
+            m_spinText->setSize({0, 0});
         }
     }
 
@@ -249,6 +219,53 @@ namespace tgui
     unsigned SpinControl::getDecimalPlaces() const
     {
         return m_decimalPlaces;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinControl::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        SubwidgetContainer::load(node, renderers);
+
+        m_spinText = m_container->get<tgui::EditBox>("SpinText");
+        m_spinButton = m_container->get<tgui::SpinButton>("SpinButton");
+
+        init();
+        setString(String(m_spinButton->getValue()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinControl::init()
+    {
+        m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
+        m_spinButton->onValueChange([this](const float val) {
+            setString(String(val));
+            onValueChange.emit(this, val);
+        });
+
+        m_spinText->onReturnOrUnfocus([this](const String& text) {
+            const float curValue = m_spinButton->getValue();
+            const float defValue = m_spinButton->getMaximum() + 1;
+            const float val = text.toFloat(defValue);
+            if (val == defValue || !inRange(val))
+            {
+                setString(String(curValue));
+            }
+            else if (curValue != val)
+            {
+                m_spinButton->setValue(val);
+
+                // Display actual value because SpinButton can round entered number
+                setString(String(m_spinButton->getValue()));
+            }
+            else
+                setString(text);
+        });
+
+        const auto buttonSize = m_spinButton->getSize();
+        const auto txtSize = m_spinText->getSize();
+        SubwidgetContainer::setSize({buttonSize.x + txtSize.x, buttonSize.y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

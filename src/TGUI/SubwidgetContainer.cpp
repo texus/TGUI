@@ -46,14 +46,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::setPosition(const Layout2d& position)
-    {
-        m_container->setPosition(position);
-        Widget::setPosition(position);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void SubwidgetContainer::setFocused(bool focused)
     {
         m_container->setFocused(focused);
@@ -62,9 +54,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Container* SubwidgetContainer::getContainer()
+    {
+        return m_container.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Container* SubwidgetContainer::getContainer() const
+    {
+        return m_container.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SubwidgetContainer::leftMousePressed(Vector2f pos)
     {
-        m_container->leftMousePressed(pos);
+        m_container->leftMousePressed(pos - getPosition());
         Widget::leftMousePressed(pos);
     }
 
@@ -72,7 +78,7 @@ namespace tgui
 
     void SubwidgetContainer::leftMouseReleased(Vector2f pos)
     {
-        m_container->leftMouseReleased(pos);
+        m_container->leftMouseReleased(pos - getPosition());
         Widget::leftMouseReleased(pos);
     }
 
@@ -80,7 +86,7 @@ namespace tgui
 
     void SubwidgetContainer::rightMousePressed(Vector2f pos)
     {
-        m_container->rightMousePressed(pos);
+        m_container->rightMousePressed(pos - getPosition());
         Widget::rightMousePressed(pos);
     }
 
@@ -88,7 +94,7 @@ namespace tgui
 
     void SubwidgetContainer::rightMouseReleased(Vector2f pos)
     {
-        m_container->rightMouseReleased(pos);
+        m_container->rightMouseReleased(pos - getPosition());
         Widget::rightMouseReleased(pos);
     }
 
@@ -96,7 +102,7 @@ namespace tgui
 
     void SubwidgetContainer::mouseMoved(Vector2f pos)
     {
-        m_container->mouseMoved(pos);
+        m_container->mouseMoved(pos - getPosition());
         Widget::mouseMoved(pos);
     }
 
@@ -120,7 +126,7 @@ namespace tgui
 
     bool SubwidgetContainer::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        m_container->mouseWheelScrolled(delta, pos);
+        m_container->mouseWheelScrolled(delta, pos - getPosition());
         return Widget::mouseWheelScrolled(delta, pos);
     }
 
@@ -159,14 +165,20 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> SubwidgetContainer::save(SavingRenderersMap& renderers) const
     {
-        return m_container->save(renderers);
+        auto node = Widget::save(renderers);
+        node->children.emplace_back(m_container->save(renderers));
+        return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SubwidgetContainer::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
-        m_container->load(node, renderers);
+        m_container->removeAllWidgets();
+
+        Widget::load(node, renderers);
+        if (node->children.size() == 1)
+            m_container->load(node->children[0], renderers);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +192,7 @@ namespace tgui
 
     bool SubwidgetContainer::isMouseOnWidget(Vector2f pos) const
     {
-        return m_container->isMouseOnWidget(pos);
+        return m_container->isMouseOnWidget(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
