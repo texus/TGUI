@@ -239,20 +239,36 @@ namespace tgui
     {
         ClickableWidget::leftMousePressed(pos);
 
-        // Check if the mouse is on top of the upper/right arrow
-        if (m_verticalScroll)
+        m_PressedAt = std::chrono::steady_clock::now();
+        // Check if the mouse went down on the spin button
+        if (m_mouseDown)
         {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
-                m_mouseDownOnTopArrow = true;
+            // Check if the mouse is on top of the upper/right arrow
+            if (m_verticalScroll)
+            {
+                if (FloatRect{ getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f }.contains(pos))
+                    m_mouseDownOnTopArrow = true;
+                else
+                    m_mouseDownOnTopArrow = false;
+            }
             else
-                m_mouseDownOnTopArrow = false;
-        }
-        else
-        {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
-                m_mouseDownOnTopArrow = false;
-            else
-                m_mouseDownOnTopArrow = true;
+            {
+                if (FloatRect{ getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y }.contains(pos))
+                    m_mouseDownOnTopArrow = false;
+                else
+                    m_mouseDownOnTopArrow = true;
+            }
+
+            if (m_mouseDownOnTopArrow && m_value < m_maximum)
+            {
+                setValue(m_value + m_step);
+                callMousePressPeriodically(m_PressedAt);
+            }
+            else if (!m_mouseDownOnTopArrow && m_value > m_minimum)
+            {
+                setValue(m_value - m_step);
+                callMousePressPeriodically(m_PressedAt);
+            }
         }
     }
 
@@ -260,42 +276,6 @@ namespace tgui
 
     void SpinButton::leftMouseReleased(Vector2f pos)
     {
-        // Check if the mouse went down on the spin button
-        if (m_mouseDown)
-        {
-            // Check if the arrow went down on the top/right arrow
-            if (m_mouseDownOnTopArrow)
-            {
-                // Check if the mouse went up on the same arrow
-                if ((m_verticalScroll && (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(pos)))
-                 || (!m_verticalScroll && (!FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(pos))))
-                {
-                    // Increment the value
-                    if (m_value < m_maximum)
-                        setValue(m_value + m_step);
-                    else
-                        return;
-                }
-                else
-                    return;
-            }
-            else // The mouse went down on the bottom/left arrow
-            {
-                // Check if the mouse went up on the same arrow
-                if ((m_verticalScroll && (!FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(pos)))
-                 || (!m_verticalScroll && (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(pos))))
-                {
-                    // Decrement the value
-                    if (m_value > m_minimum)
-                        setValue(m_value - m_step);
-                    else
-                        return;
-                }
-                else
-                    return;
-            }
-        }
-
         ClickableWidget::leftMouseReleased(pos);
     }
 
@@ -558,6 +538,37 @@ namespace tgui
                 });
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clicked)
+    {
+        Timer::scheduleCallback([widget = shared_from_this(), clicked]()
+        {
+            SpinButton::Ptr spinButton = std::static_pointer_cast<SpinButton>(widget);
+            if (spinButton)
+            {
+                // Mouse still over and the mouse press is current
+                if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_PressedAt != clicked)
+                {
+                    return;
+                }
+
+                if (spinButton->m_value < spinButton->m_maximum &&
+                    spinButton->m_mouseDownOnTopArrow && spinButton->m_mouseHoverOnTopArrow)
+                {
+                    spinButton->setValue(spinButton->m_value + spinButton->m_step);
+                    spinButton->callMousePressPeriodically(clicked);
+                }
+                else if (spinButton->m_value > spinButton->m_minimum &&
+                    !spinButton->m_mouseDownOnTopArrow && !spinButton->m_mouseHoverOnTopArrow)
+                {
+                    spinButton->setValue(spinButton->m_value - spinButton->m_step);
+                    spinButton->callMousePressPeriodically(clicked);
+                }
+            }
+        }, std::chrono::milliseconds(300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
