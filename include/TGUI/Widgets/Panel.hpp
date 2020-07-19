@@ -188,6 +188,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called every frame with the time passed since the last frame.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool updateTime(Duration elapsedTime) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr clone() const override
@@ -202,6 +208,7 @@ namespace tgui
         SignalVector2f onMousePress   = {"MousePressed"};   //!< The mouse went down on the panel. Optional parameter: mouse position relative to panel
         SignalVector2f onMouseRelease = {"MouseReleased"};  //!< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
         SignalVector2f onClick        = {"Clicked"};        //!< The panel was clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onDoubleClick  = {"DoubleClicked"};  //!< The panel was double clicked. Optional parameter: mouse position relative to panel
 
         SignalVector2f onRightMousePress   = {"RightMousePressed"};   //!< The right mouse button went down on the panel. Optional parameter: mouse position relative to panel
         SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  //!< The right mouse button was released on top of the panel. Optional parameter: mouse position relative to panel
@@ -218,6 +225,9 @@ namespace tgui
         Sprite  m_spriteBackground;
 
         bool    m_rightMouseDown = false;
+
+        // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
+        bool m_possibleDoubleClick = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

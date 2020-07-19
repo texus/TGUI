@@ -987,8 +987,9 @@ namespace tgui
 
     void ListView::leftMousePressed(Vector2f pos)
     {
+        Widget::leftMousePressed(pos);
+
         pos -= getPosition();
-        m_mouseDown = true;
 
         if (m_verticalScrollbar->isMouseOnWidget(pos))
         {

@@ -452,10 +452,9 @@ namespace tgui
 
     void TextBox::leftMousePressed(Vector2f pos)
     {
-        pos -= getPosition();
+        Widget::leftMousePressed(pos);
 
-        // Set the mouse down flag
-        m_mouseDown = true;
+        pos -= getPosition();
 
         // If there is a scrollbar then pass the event
         if ((m_verticalScrollbar->isShown()) && (m_verticalScrollbar->isMouseOnWidget(pos)))

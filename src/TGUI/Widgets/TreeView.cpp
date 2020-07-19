@@ -658,9 +658,9 @@ namespace tgui
 
     void TreeView::leftMousePressed(Vector2f pos)
     {
-        pos -= getPosition();
+        Widget::leftMousePressed(pos);
 
-        m_mouseDown = true;
+        pos -= getPosition();
 
         if (m_verticalScrollbar->isMouseOnWidget(pos))
             m_verticalScrollbar->leftMousePressed(pos);
@@ -765,8 +765,6 @@ namespace tgui
     void TreeView::rightMousePressed(Vector2f pos)
     {
         pos -= getPosition();
-
-        m_mouseDown = true;
 
         float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
         if (m_verticalScrollbar->isShown())

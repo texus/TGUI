@@ -66,7 +66,7 @@ namespace tgui
 
     void ClickableWidget::leftMousePressed(Vector2f pos)
     {
-        m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
+        Widget::leftMousePressed(pos);
         onMousePress.emit(this, pos - getPosition());
     }
 
@@ -79,7 +79,7 @@ namespace tgui
         if (m_mouseDown)
             onClick.emit(this, pos - getPosition());
 
-        m_mouseDown = false; /// TODO: Is there any widget for which this can't be in Widget base class?
+        Widget::leftMouseReleased(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

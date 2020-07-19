@@ -7,6 +7,7 @@ TGUI 0.9-dev
 - Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget
 - Added ThumbWithinTrack to Slider renderer to have thumb align with track on sides
+- Added DoubleClick signal to Panel
 - ListBox and ListView can now store user data in their items
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Replaced all std::string and sf::String by tgui::String

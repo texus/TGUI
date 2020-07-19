@@ -443,6 +443,8 @@ namespace tgui
 
     void EditBox::leftMousePressed(Vector2f pos)
     {
+        Widget::leftMousePressed(pos);
+
         pos -= getPosition();
 
         // Find the caret position
@@ -482,8 +484,6 @@ namespace tgui
             m_possibleDoubleClick = true;
         }
 
-        // Set the mouse down flag
-        m_mouseDown = true;
         onMousePress.emit(this, pos);
 
         // The caret should be visible

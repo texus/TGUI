@@ -376,7 +376,7 @@ namespace tgui
 
     void Slider::leftMousePressed(Vector2f pos)
     {
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         const Vector2f localPos = pos - getPosition();
         if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(localPos))

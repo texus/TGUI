@@ -347,8 +347,7 @@ namespace tgui
 
     void ChatBox::leftMousePressed(Vector2f pos)
     {
-        // Set the mouse down flag to true
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         // Pass the event to the scrollbar
         if (m_scroll->isMouseOnWidget(pos - getPosition()))

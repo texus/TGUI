@@ -573,9 +573,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMousePressed(Vector2f)
+    void ComboBox::leftMousePressed(Vector2f pos)
     {
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         // If the list wasn't visible then open it
         if (!m_listBox->isVisible())

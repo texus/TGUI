@@ -551,7 +551,7 @@ namespace tgui
     {
         pos -= getPosition();
 
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         if (m_scroll->isMouseOnWidget(pos))
         {

@@ -43,6 +43,9 @@ TEST_CASE("[Panel]")
         panel->onClick([](){});
         panel->onClick([](tgui::Vector2f){});
 
+        panel->onDoubleClick([](){});
+        panel->onDoubleClick([](tgui::Vector2f){});
+
         panel->onRightMousePress([](){});
         panel->onRightMousePress([](tgui::Vector2f){});
 

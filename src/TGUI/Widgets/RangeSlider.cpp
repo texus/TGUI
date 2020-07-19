@@ -371,7 +371,7 @@ namespace tgui
 
     void RangeSlider::leftMousePressed(Vector2f pos)
     {
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         // Refresh the value
         mouseMoved(pos);

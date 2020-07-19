@@ -666,6 +666,7 @@ namespace tgui
 
     void Container::leftMousePressed(Vector2f pos)
     {
+        Widget::leftMousePressed(pos);
         processMousePressEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
     }
 
@@ -673,6 +674,7 @@ namespace tgui
 
     void Container::rightMousePressed(Vector2f pos)
     {
+        Widget::rightMousePressed(pos);
         processMousePressEvent(Event::MouseButton::Right, pos - getPosition() - getChildWidgetsOffset());
     }
 
@@ -680,6 +682,7 @@ namespace tgui
 
     void Container::leftMouseReleased(Vector2f pos)
     {
+        Widget::leftMouseReleased(pos);
         processMouseReleaseEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
     }
 
@@ -687,6 +690,7 @@ namespace tgui
 
     void Container::rightMouseReleased(Vector2f pos)
     {
+        Widget::rightMouseReleased(pos);
         processMouseReleaseEvent(Event::MouseButton::Right, pos - getPosition() - getChildWidgetsOffset());
     }
 

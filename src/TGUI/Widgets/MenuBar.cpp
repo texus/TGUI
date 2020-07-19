@@ -618,7 +618,8 @@ namespace tgui
 
     void MenuBar::leftMousePressed(Vector2f pos)
     {
-        // Check if a menu should be opened or closed
+        Widget::leftMousePressed(pos);
+
         pos -= getPosition();
 
         // Loop through the menus to check if the mouse is on top of them
@@ -639,8 +640,6 @@ namespace tgui
 
             break;
         }
-
-        m_mouseDown = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

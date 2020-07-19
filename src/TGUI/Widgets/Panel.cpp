@@ -126,8 +126,6 @@ namespace tgui
 
     void Panel::leftMousePressed(Vector2f pos)
     {
-        m_mouseDown = true;
-
         onMousePress.emit(this, pos - getPosition());
 
         Container::leftMousePressed(pos);
@@ -137,14 +135,29 @@ namespace tgui
 
     void Panel::leftMouseReleased(Vector2f pos)
     {
+        const bool mouseDown = m_mouseDown;
+
         onMouseRelease.emit(this, pos - getPosition());
 
         if (m_mouseDown)
             onClick.emit(this, pos - getPosition());
 
-        m_mouseDown = false;
-
         Container::leftMouseReleased(pos);
+
+        if (mouseDown)
+        {
+            // Check if you double-clicked
+            if (m_possibleDoubleClick)
+            {
+                m_possibleDoubleClick = false;
+                onDoubleClick.emit(this, pos - getPosition());
+            }
+            else // This is the first click
+            {
+                m_animationTimeElapsed = {};
+                m_possibleDoubleClick = true;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +202,8 @@ namespace tgui
             return onMouseRelease;
         else if (signalName == onClick.getName())
             return onClick;
+        else if (signalName == onDoubleClick.getName())
+            return onDoubleClick;
         else if (signalName == onRightMousePress.getName())
             return onRightMousePress;
         else if (signalName == onRightMouseRelease.getName())
@@ -227,6 +242,21 @@ namespace tgui
         }
         else
             Group::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Panel::updateTime(Duration elapsedTime)
+    {
+        const bool screenRefreshRequired = Widget::updateTime(elapsedTime);
+
+        if (m_animationTimeElapsed >= getDoubleClickTime())
+        {
+            m_animationTimeElapsed = {};
+            m_possibleDoubleClick = false;
+        }
+
+        return screenRefreshRequired;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

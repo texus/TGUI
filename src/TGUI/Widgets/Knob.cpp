@@ -296,18 +296,10 @@ namespace tgui
 
     void Knob::leftMousePressed(Vector2f pos)
     {
-        // Set the mouse down flag
-        m_mouseDown = true;
+        Widget::leftMousePressed(pos);
 
         // Change the value of the knob depending on where you clicked
         mouseMoved(pos);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Knob::leftMouseReleased(Vector2f)
-    {
-        m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
