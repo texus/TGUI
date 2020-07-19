@@ -544,25 +544,31 @@ namespace tgui
 
     void SpinButton::CallMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clicked)
     {
-        tgui::Timer::scheduleCallback([this, clicked]()
+        Timer::scheduleCallback([widget = shared_from_this(), clicked]()
+        {
+            SpinButton::Ptr spinButton = std::static_pointer_cast<SpinButton>(widget);
+            if (spinButton)
             {
                 // Mouse still over and the mouse press is current
-                if (!m_mouseHover || !m_mouseDown || m_PressedAt != clicked)
+                if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_PressedAt != clicked)
                 {
                     return;
                 }
 
-                if (m_value < m_maximum && m_mouseDownOnTopArrow && m_mouseHoverOnTopArrow)
+                if (spinButton->m_value < spinButton->m_maximum &&
+                    spinButton->m_mouseDownOnTopArrow && spinButton->m_mouseHoverOnTopArrow)
                 {
-                    setValue(m_value + m_step);
-                    CallMousePressPeriodically(clicked);
+                    spinButton->setValue(spinButton->m_value + spinButton->m_step);
+                    spinButton->CallMousePressPeriodically(clicked);
                 }
-                else if (m_value > m_minimum && !m_mouseDownOnTopArrow && !m_mouseHoverOnTopArrow)
+                else if (spinButton->m_value > spinButton->m_minimum &&
+                    !spinButton->m_mouseDownOnTopArrow && !spinButton->m_mouseHoverOnTopArrow)
                 {
-                    setValue(m_value - m_step);
-                    CallMousePressPeriodically(clicked);
+                    spinButton->setValue(spinButton->m_value - spinButton->m_step);
+                    spinButton->CallMousePressPeriodically(clicked);
                 }
-            }, std::chrono::milliseconds(300));
+            }
+        }, std::chrono::milliseconds(300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
