@@ -174,16 +174,10 @@ namespace tgui
         /// @param id        Optional unique id given to this item for the purpose to later identifying this item
         ///
         /// @return
-        ///         - true when the item when it was successfully added
-        ///         - false when the combo box wasn't loaded correctly
-        ///         - false when the list is full (you have set a maximum item limit and you are trying to add more items)
-        ///         - false when there is no scrollbar and you try to have more items than the number of items to display
-        ///
-        /// @see setMaximumItems
-        /// @see setItemsToDisplay
-        ///
+        ///   - Index of inserted item if no maximum items are set or when index is still less than getMaximumItems()
+        ///   - Value of getMaximumItems() when adding item failed because there are too many items
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addItem(const String& itemName, const String& id = "");
+        std::size_t addItem(const String& itemName, const String& id = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

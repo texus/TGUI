@@ -277,11 +277,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::addItem(const String& item, const String& id)
+    std::size_t ComboBox::addItem(const String& item, const String& id)
     {
-        const bool ret = m_listBox->addItem(item, id);
+        const std::size_t itemIndex = m_listBox->addItem(item, id);
         updateListBoxHeight();
-        return ret;
+        return itemIndex;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
