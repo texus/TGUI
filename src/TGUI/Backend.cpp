@@ -25,6 +25,7 @@
 
 #include <TGUI/Backend.hpp>
 #include <TGUI/RenderTarget.hpp>
+#include <TGUI/Timer.hpp>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -51,6 +52,13 @@ namespace tgui
     void setBackend(std::shared_ptr<BackendBase> backend)
     {
         globalBackend = backend;
+
+        if (backend == nullptr)
+        {
+            // If the backend is being destroyed then stop all timers (as they could contain resources that have to be destroyed
+            // before the main function exits)
+            Timer::clearTimers();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
