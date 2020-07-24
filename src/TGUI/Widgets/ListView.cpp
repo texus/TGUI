@@ -335,6 +335,60 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::insertItem(std::size_t index, const String& text)
+    {
+        TGUI_EMPLACE(item, m_items, index)
+        item.texts.push_back(createText(text));
+        item.icon.setOpacity(m_opacityCached);
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::insertItem(std::size_t index, const std::vector<String>& itemTexts)
+    {
+        TGUI_EMPLACE(item, m_items, index)
+        item.texts.reserve(itemTexts.size());
+        for (const auto& text : itemTexts)
+            item.texts.push_back(createText(text));
+
+        item.icon.setOpacity(m_opacityCached);
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::insertMultipleItems(std::size_t index, const std::vector<std::vector<String>>& items)
+    {
+        for (unsigned int i = 0; i < items.size(); ++i)
+        {
+            TGUI_EMPLACE(item, m_items, index + i)
+            item.texts.reserve(items[i].size());
+            for (const auto& text : items[i])
+                item.texts.push_back(createText(text));
+
+            item.icon.setOpacity(m_opacityCached);
+        }
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListView::changeItem(std::size_t index, const std::vector<String>& itemTexts)
     {
         if (index >= m_items.size())
