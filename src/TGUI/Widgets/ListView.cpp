@@ -343,7 +343,7 @@ namespace tgui
             return;
         }
 
-        TGUI_EMPLACE(item, m_items, index)
+        auto& item = *m_items.emplace(m_items.begin() + index);
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
@@ -364,7 +364,7 @@ namespace tgui
             return;
         }
 
-        TGUI_EMPLACE(item, m_items, index)
+        auto& item = *m_items.emplace(m_items.begin() + index);
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
@@ -390,7 +390,7 @@ namespace tgui
 
         for (unsigned int i = 0; i < items.size(); ++i)
         {
-            TGUI_EMPLACE(item, m_items, index + i)
+        auto& item = *m_items.emplace(m_items.begin() + index + i);
             item.texts.reserve(items[i].size());
             for (const auto& text : items[i])
                 item.texts.push_back(createText(text));
