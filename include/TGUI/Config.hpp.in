@@ -105,11 +105,11 @@
 
 #if __cplusplus >= 201703L
     #define TGUI_EMPLACE_BACK(object, vector) auto& object = vector.emplace_back();
-    #define TGUI_EMPLACE(object, vector, index) auto& object = vector.emplace(vector.begin() + index);
 #else
     #define TGUI_EMPLACE_BACK(object, vector) vector.emplace_back(); auto& object = vector.back();
-    #define TGUI_EMPLACE(object, vector, index) vector.emplace(vector.begin() + index); auto& object = vector.at(index);
 #endif
+
+    #define TGUI_EMPLACE(object, vector, index) auto& object = *vector.emplace(vector.begin() + index);
 
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
     #define TGUI_DEPRECATED(msg) [[deprecated(msg)]]
