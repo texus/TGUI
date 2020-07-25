@@ -92,6 +92,7 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp
     Widgets/Tabs.cpp
+    Widgets/TabContainer.cpp
     Widgets/TextBox.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp

@@ -73,6 +73,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/SpinControl.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
+#include <TGUI/Widgets/TabContainer.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Widgets/VerticalLayout.hpp>
