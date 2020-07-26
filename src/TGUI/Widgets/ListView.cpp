@@ -335,6 +335,78 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::insertItem(std::size_t index, const String& text)
+    {
+        if (index >= m_items.size())
+        {
+            addItem(text);
+            return;
+        }
+
+        auto& item = *m_items.emplace(m_items.begin() + index);
+        item.texts.push_back(createText(text));
+        item.icon.setOpacity(m_opacityCached);
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll to the item when auto-scrolling is enabled
+        if (m_autoScroll)
+            m_verticalScrollbar->setValue(static_cast<unsigned int>(m_itemHeight * index));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::insertItem(std::size_t index, const std::vector<String>& itemTexts)
+    {
+        if (index >= m_items.size())
+        {
+            addItem(itemTexts);
+            return;
+        }
+
+        auto& item = *m_items.emplace(m_items.begin() + index);
+        item.texts.reserve(itemTexts.size());
+        for (const auto& text : itemTexts)
+            item.texts.push_back(createText(text));
+
+        item.icon.setOpacity(m_opacityCached);
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll to the item when auto-scrolling is enabled
+        if (m_autoScroll)
+            m_verticalScrollbar->setValue(static_cast<unsigned int>(m_itemHeight * index));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::insertMultipleItems(std::size_t index, const std::vector<std::vector<String>>& items)
+    {
+        if (index >= m_items.size())
+        {
+            addMultipleItems(items);
+            return;
+        }
+
+        for (unsigned int i = 0; i < items.size(); ++i)
+        {
+        auto& item = *m_items.emplace(m_items.begin() + index + i);
+            item.texts.reserve(items[i].size());
+            for (const auto& text : items[i])
+                item.texts.push_back(createText(text));
+
+            item.icon.setOpacity(m_opacityCached);
+        }
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll to the item when auto-scrolling is enabled
+        if (m_autoScroll)
+            m_verticalScrollbar->setValue(static_cast<unsigned int>(m_itemHeight * index));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListView::changeItem(std::size_t index, const std::vector<String>& itemTexts)
     {
         if (index >= m_items.size())
