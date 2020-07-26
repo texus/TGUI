@@ -883,14 +883,28 @@ namespace tgui
 
                 if (highlightColor.isSet())
                 {
-                    // This code should be improved as there are many edge cases where this doesn't look good.
-                    // This was added for a use case with only a bottom border, so issues with left and right borders are ignored for now.
+                    float leftBorderWidth = borderWidth;
+                    float rightBorderWidth = borderWidth;
+                    if (i == 0)
+                        leftBorderWidth = m_bordersCached.getLeft();
+                    if (i == m_tabs.size() - 1)
+                        rightBorderWidth = m_bordersCached.getRight();
+
+                    if ((m_selectedTab >= 0) && (m_hoveringTab >= 0) && (m_borderColorHoverCached.isSet()
+                        && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
+                    {
+                        if ((m_selectedTab == static_cast<int>(i - 1)) || (m_hoveringTab == static_cast<int>(i - 1)))
+                            leftBorderWidth /= 2;
+                        else if ((m_selectedTab == static_cast<int>(i + 1)) || (m_hoveringTab == static_cast<int>(i + 1)))
+                            rightBorderWidth /= 2;
+                    }
+
                     RenderStates highlightStates = states;
                     if (i < m_tabs.size() - 1)
                         highlightStates.transform.translate({-borderWidth, 0});
-                    highlightStates.transform.translate({-m_tabs[i].width - borderWidth, -m_bordersCached.getTop()});
-                    target.drawBorders(highlightStates, {borderWidth, m_bordersCached.getTop(), borderWidth, m_bordersCached.getBottom()},
-                                       {m_tabs[i].width + 2*borderWidth, getSize().y}, highlightColor);
+                    highlightStates.transform.translate({-m_tabs[i].width - leftBorderWidth, -m_bordersCached.getTop()});
+                    target.drawBorders(highlightStates, {leftBorderWidth, m_bordersCached.getTop(), rightBorderWidth, m_bordersCached.getBottom()},
+                                       {m_tabs[i].width + leftBorderWidth + rightBorderWidth, getSize().y}, highlightColor);
                 }
             }
 
