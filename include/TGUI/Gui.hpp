@@ -29,10 +29,8 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/RelFloatRect.hpp>
-#include <TGUI/RenderTarget.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Cursor.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <chrono>
 #include <queue>
 #include <stack>
@@ -41,6 +39,9 @@
 
 namespace tgui
 {
+    class BackendRenderTargetSFML;
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Gui class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,12 +256,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the global font
+        /// @brief Returns the global font for this gui
         ///
-        /// @return global font
-        ///
+        /// @return Font for widgets in the gui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<sf::Font> getFont() const;
+        Font getFont() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -633,8 +633,8 @@ namespace tgui
         std::chrono::steady_clock::time_point m_lastUpdateTime;
         bool m_windowFocused = true;
 
-        std::shared_ptr<RenderTargetSFML> m_renderTarget = nullptr;
-        RootContainer::Ptr m_container = std::make_shared<RootContainer>();
+        std::shared_ptr<BackendRenderTargetSFML> m_renderTarget = nullptr;
+        RootContainer::Ptr m_container = nullptr;
 
         Widget::Ptr m_visibleToolTip = nullptr;
         Duration m_tooltipTime;

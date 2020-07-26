@@ -1,6 +1,9 @@
 set(TGUI_SRC
     Animation.cpp
     Backend.cpp
+    BackendFont.cpp
+    BackendText.cpp
+    BackendRenderTarget.cpp
     Clipboard.cpp
     Color.cpp
     Container.cpp
@@ -12,7 +15,6 @@ set(TGUI_SRC
     Gui.cpp
     Layout.cpp
     ObjectConverter.cpp
-    RenderTarget.cpp
     Sprite.cpp
     Signal.cpp
     String.cpp

@@ -27,8 +27,10 @@
 #include <TGUI/Backend.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/BackendRenderTarget.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include <cassert>
 #include <thread>
@@ -510,12 +512,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<sf::Font> Gui::getFont() const
+    Font Gui::getFont() const
     {
        if (m_container->getInheritedFont())
           return m_container->getInheritedFont();
         else
-            return getGlobalFont();
+            return Font::getGlobalFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -848,12 +850,15 @@ namespace tgui
 
     void Gui::init()
     {
-        if (getBackend() == nullptr)
+        if (!isBackendSet())
+        {
             setBackend(std::make_shared<BackendSFML>());
+            getBackend()->setDestroyOnLastGuiDetatch(true);
+        }
 
         getBackend()->attachGui(this);
-        getBackend()->setDestroyOnLastGuiDetatch(true);
 
+        m_container = std::make_shared<RootContainer>();
         m_container->setParentGui(this);
     }
 

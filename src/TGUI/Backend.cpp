@@ -24,7 +24,10 @@
 
 
 #include <TGUI/Backend.hpp>
-#include <TGUI/RenderTarget.hpp>
+#include <TGUI/BackendFont.hpp>
+#include <TGUI/BackendText.hpp>
+#include <TGUI/BackendRenderTarget.hpp>
+#include <TGUI/DefaultFont.hpp>
 #include <TGUI/Timer.hpp>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -49,15 +52,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool isBackendSet()
+    {
+        return (globalBackend != nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void setBackend(std::shared_ptr<BackendBase> backend)
     {
         globalBackend = backend;
 
-        if (backend == nullptr)
+        if (backend)
         {
-            // If the backend is being destroyed then stop all timers (as they could contain resources that have to be destroyed
-            // before the main function exits)
+            Font::setGlobalFont(backend->createDefaultFont());
+        }
+        else // We are destroying the backend
+        {
+            // Stop all timers (as they could contain resources that have to be destroyed before the main function exits)
             Timer::clearTimers();
+
+            // Destroy the global font
+            Font::setGlobalFont(nullptr);
         }
     }
 
@@ -65,6 +81,7 @@ namespace tgui
 
     std::shared_ptr<BackendBase> getBackend()
     {
+        assert(globalBackend != nullptr); // getBackend() was called while there is no backend (yet or anymore)
         return globalBackend;
     }
 
@@ -93,6 +110,29 @@ namespace tgui
 
         if (m_destroyOnLastGuiDetatch && m_guis.empty())
             setBackend(nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Font BackendSFML::createDefaultFont()
+    {
+        auto font = std::make_shared<BackendFontSFML>();
+        font->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes));
+        return Font(font, "");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<BackendFontBase> BackendSFML::createFont()
+    {
+        return std::make_shared<BackendFontSFML>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<BackendTextBase> BackendSFML::createText()
+    {
+        return std::make_shared<BackendTextSFML>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,12 +186,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<RenderTargetSFML> BackendSFML::setGuiTarget(Gui* gui, sf::RenderTarget& target)
+    std::shared_ptr<BackendRenderTargetSFML> BackendSFML::setGuiTarget(Gui* gui, sf::RenderTarget& target)
     {
         assert(m_guis.find(gui) != m_guis.end());
         m_guis[gui].window = dynamic_cast<sf::Window*>(&target);
 
-        auto renderTarget = std::make_shared<RenderTargetSFML>();
+        auto renderTarget = std::make_shared<BackendRenderTargetSFML>();
         renderTarget->setTarget(target);
         return renderTarget;
     }

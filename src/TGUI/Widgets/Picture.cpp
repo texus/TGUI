@@ -234,7 +234,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::draw(RenderTargetBase& target, RenderStates states) const
+    void Picture::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         target.drawSprite(states, m_sprite);
     }

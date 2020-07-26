@@ -616,7 +616,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::draw(RenderTargetBase& target, RenderStates states) const
+    void ChatBox::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const RenderStates scrollbarStates = states;
 

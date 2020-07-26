@@ -23,87 +23,64 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Global.hpp>
-#include <TGUI/Clipboard.hpp>
-#include <TGUI/Duration.hpp>
-#include <functional>
-#include <sstream>
-#include <locale>
-#include <cctype> // isspace
-#include <cmath> // abs
+#include <TGUI/BackendFont.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    namespace
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BackendFontSFML::loadFromFile(const String& filename)
     {
-        unsigned int globalTextSize = 13;
-        Duration globalDoubleClickTime = std::chrono::milliseconds(500);
-        Duration globalEditBlinkRate = std::chrono::milliseconds(500);
-        String globalResourcePath = "";
+        return m_font.loadFromFile(filename.toAnsiString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void setGlobalTextSize(unsigned int textSize)
+    bool BackendFontSFML::loadFromMemory(const void* data, std::size_t sizeInBytes)
     {
-        globalTextSize = textSize;
+        return m_font.loadFromMemory(data, sizeInBytes);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int getGlobalTextSize()
+    FontGlyph BackendFontSFML::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
-        return globalTextSize;
+        const sf::Glyph& glyphSFML = m_font.getGlyph(codePoint, characterSize, bold, outlineThickness);
+
+        FontGlyph glyph;
+        glyph.advance = glyphSFML.advance;
+        glyph.bounds = {glyphSFML.bounds.left, glyphSFML.bounds.top, glyphSFML.bounds.width, glyphSFML.bounds.height};
+        return glyph;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void setDoubleClickTime(Duration duration)
+    float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize) const
     {
-        globalDoubleClickTime = duration;
+        return m_font.getKerning(first, second, characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Duration getDoubleClickTime()
+    float BackendFontSFML::getLineSpacing(unsigned int characterSize) const
     {
-        return globalDoubleClickTime;
+        return m_font.getLineSpacing(characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void setResourcePath(const String& path)
+    sf::Font& BackendFontSFML::getInternalFont()
     {
-        globalResourcePath = path;
-
-        if (!globalResourcePath.empty())
-        {
-            if (globalResourcePath[globalResourcePath.length()-1] != '/')
-                globalResourcePath.push_back('/');
-        }
+        return m_font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const String& getResourcePath()
+    const sf::Font& BackendFontSFML::getInternalFont() const
     {
-        return globalResourcePath;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void setEditCursorBlinkRate(Duration blinkRate)
-    {
-        globalEditBlinkRate = blinkRate;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Duration getEditCursorBlinkRate()
-    {
-        return globalEditBlinkRate;
+        return m_font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

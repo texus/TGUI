@@ -26,7 +26,7 @@
 #ifndef TGUI_VECTOR2_HPP
 #define TGUI_VECTOR2_HPP
 
-#include <TGUI/Global.hpp>
+#include <TGUI/Config.hpp>
 #include <TGUI/String.hpp>
 
 #include <SFML/System/Err.hpp>

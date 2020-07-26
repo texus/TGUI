@@ -240,8 +240,12 @@ namespace tgui
 
             for (const auto& button : m_buttons)
             {
-                /// TODO: Don't use sf::Text for this?
-                const float width = sf::Text(sf::String(button->getText()), *m_fontCached.getFont(), m_textSize).getLocalBounds().width;
+                /// TODO: Implement a way to calculate text size without creating a text object?
+                Text tempText;
+                tempText.setFont(m_fontCached);
+                tempText.setCharacterSize(m_textSize);
+                tempText.setString(button->getText());
+                const float width = tempText.getSize().x;
                 if (buttonWidth < width * 10.0f / 9.0f)
                     buttonWidth = width * 10.0f / 9.0f;
             }

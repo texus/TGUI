@@ -26,6 +26,8 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/Backend.hpp>
+#include <TGUI/BackendFont.hpp>
 #include <TGUI/Global.hpp>
 #include <cstdint>
 #include <cassert>
@@ -120,19 +122,19 @@ namespace tgui
                 return Font{};
 
             // Load the font but insert the resource path into the filename unless the filename is an absolute path
-            auto font = std::make_shared<sf::Font>();
+            auto font = getBackend()->createFont();
 #ifdef TGUI_SYSTEM_WINDOWS
             if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.length() <= 1) || (filename[1] != ':')))
 #else
             if (filename[0] != '/')
 #endif
-                font->loadFromFile((getResourcePath() + filename).toAnsiString());
+                font->loadFromFile((getResourcePath() + filename));
             else
-                font->loadFromFile(filename.toAnsiString());
+                font->loadFromFile(filename);
 
-            // We create the SFML font manually first, as passing the string to the Font constructor would cause
+            // We create the backend font manually first, as passing the string to the Font constructor would cause
             // an endless recursive call to this function.
-            return Font{font};
+            return Font{font, filename};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

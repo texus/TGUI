@@ -197,7 +197,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::draw(RenderTargetBase& target, RenderStates states) const
+    void SubwidgetContainer::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         m_container->draw(target, states);
     }

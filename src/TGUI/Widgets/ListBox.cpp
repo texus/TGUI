@@ -1034,7 +1034,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::draw(RenderTargetBase& target, RenderStates states) const
+    void ListBox::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 

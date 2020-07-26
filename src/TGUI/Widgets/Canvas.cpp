@@ -207,7 +207,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(RenderTargetBase& target, RenderStates states) const
+    void Canvas::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;

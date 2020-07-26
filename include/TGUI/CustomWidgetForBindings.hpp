@@ -235,7 +235,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(RenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,7 +303,7 @@ namespace tgui
         std::function<void()>                           implMouseEnteredWidget;
         std::function<void()>                           implMouseLeftWidget;
         std::function<bool(const String&)>              implRendererChanged;
-        std::function<void(RenderTargetBase&, RenderStates)> implDrawFunction;
+        std::function<void(BackendRenderTargetBase&, RenderStates)> implDrawFunction;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -829,7 +829,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::draw(RenderTargetBase& target, RenderStates states) const
+    void MenuBar::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the background
         if (m_spriteBackground.isSet())
@@ -845,7 +845,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawOpenMenu(RenderTargetBase& target, RenderStates states) const
+    void MenuBar::drawOpenMenu(BackendRenderTargetBase& target, RenderStates states) const
     {
         assert(m_visibleMenu >= 0);
 
@@ -1275,7 +1275,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenusOnBar(RenderTargetBase& target, RenderStates states) const
+    void MenuBar::drawMenusOnBar(BackendRenderTargetBase& target, RenderStates states) const
     {
         Transform oldTransform = states.transform;
 
@@ -1324,7 +1324,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::drawMenu(RenderTargetBase& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
+    void MenuBar::drawMenu(BackendRenderTargetBase& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const
     {
         if (menu.menuItems.empty())
             return;
@@ -1525,7 +1525,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarMenuPlaceholder::draw(RenderTargetBase& target, RenderStates states) const
+    void MenuBarMenuPlaceholder::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         m_menuBar->drawOpenMenu(target, states);
     }

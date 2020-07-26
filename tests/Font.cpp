@@ -27,12 +27,7 @@
 
 TEST_CASE("[Font]")
 {
-    sf::Font font1;
-    auto font2 = std::make_shared<sf::Font>();
-
-    REQUIRE(tgui::Font().getFont() == nullptr);
-    REQUIRE(tgui::Font(nullptr).getFont() == nullptr);
-    REQUIRE(tgui::Font(font1).getFont() != nullptr);
-    REQUIRE(tgui::Font(font2).getFont() == font2);
-    REQUIRE(tgui::Font("resources/DejaVuSans.ttf").getFont() != nullptr);
+    REQUIRE(tgui::Font() == nullptr);
+    REQUIRE(tgui::Font(nullptr) == nullptr);
+    REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
 }

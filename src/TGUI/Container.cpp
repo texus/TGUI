@@ -263,7 +263,7 @@ namespace tgui
         m_widgets.push_back(widgetPtr);
         widgetPtr->setWidgetName(widgetName);
 
-        if (m_fontCached != getGlobalFont())
+        if (m_fontCached != Font::getGlobalFont())
             widgetPtr->setInheritedFont(m_fontCached);
 
         if (m_opacityCached < 1)
@@ -847,7 +847,7 @@ namespace tgui
         {
             for (const auto& widget : m_widgets)
             {
-                if (m_fontCached != getGlobalFont())
+                if (m_fontCached != Font::getGlobalFont())
                     widget->setInheritedFont(m_fontCached);
             }
         }
@@ -1106,7 +1106,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::draw(RenderTargetBase& target, RenderStates states) const
+    void Container::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         for (const auto& widget : m_widgets)
         {
@@ -1224,7 +1224,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RootContainer::draw(RenderTargetBase& target, RenderStates states) const
+    void RootContainer::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // The only reason to override this function was to change the access specifier, so just call the code from the base class
         Container::draw(target, states);

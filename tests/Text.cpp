@@ -57,11 +57,12 @@ TEST_CASE("[Text]")
 
     SECTION("Font")
     {
-        std::shared_ptr<sf::Font> font = std::make_shared<sf::Font>();
+        tgui::Font font("resources/DejaVuSans.ttf");
 
         REQUIRE(text.getFont() == nullptr);
         text.setFont(font);
-        REQUIRE(text.getFont().getFont() == font);
+        REQUIRE(text.getFont() != nullptr);
+        REQUIRE(text.getFont() == font);
         text.setFont(nullptr);
         REQUIRE(text.getFont() == nullptr);
     }
@@ -83,11 +84,11 @@ TEST_CASE("[Text]")
             text.setString("a\nb\nc");
             float width = text.getSize().x;
 
-            std::shared_ptr<sf::Font> font = text.getFont();
-            REQUIRE(text.getSize().y == 3 * font->getLineSpacing(40) + tgui::Text::calculateExtraVerticalSpace(font, 40));
+            const tgui::Font& font = text.getFont();
+            REQUIRE(text.getSize().y == 3 * font.getLineSpacing(40) + tgui::Text::calculateExtraVerticalSpace(font, 40));
 
             text.setString("xy");
-            REQUIRE(text.getSize().y == 1 * font->getLineSpacing(40) + tgui::Text::calculateExtraVerticalSpace(font, 40));
+            REQUIRE(text.getSize().y == 1 * font.getLineSpacing(40) + tgui::Text::calculateExtraVerticalSpace(font, 40));
             REQUIRE(text.getSize().x > width);
         }
 

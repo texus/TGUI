@@ -791,7 +791,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::draw(RenderTargetBase& target, RenderStates states) const
+    void Tabs::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders around the tabs
         if (m_bordersCached != Borders{0})

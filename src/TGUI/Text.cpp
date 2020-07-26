@@ -24,14 +24,19 @@
 
 
 #include <TGUI/Text.hpp>
-#include <TGUI/Global.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
+#include <TGUI/Backend.hpp>
+#include <TGUI/BackendText.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    Text::Text() :
+        m_backendText(getBackend()->createText())
+    {
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Text::setPosition(Vector2f position)
@@ -50,7 +55,7 @@ namespace tgui
 
     Vector2f Text::getSize() const
     {
-        return m_size;
+        return m_backendText->getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +63,7 @@ namespace tgui
     void Text::setString(const String& string)
     {
         m_string = string;
-        m_text.setString(sf::String(string));
-        recalculateSize();
+        m_backendText->setString(string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,15 +77,15 @@ namespace tgui
 
     void Text::setCharacterSize(unsigned int size)
     {
-        m_text.setCharacterSize(size);
-        recalculateSize();
+        m_characterSize = size;
+        m_backendText->setCharacterSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int Text::getCharacterSize() const
     {
-        return m_text.getCharacterSize();
+        return m_characterSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +93,7 @@ namespace tgui
     void Text::setColor(Color color)
     {
         m_color = color;
-        m_text.setFillColor(sf::Color{Color::applyOpacity(color, m_opacity)});
+        m_backendText->setFillColor(Color::applyOpacity(color, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +109,8 @@ namespace tgui
     {
         m_opacity = opacity;
 
-        m_text.setFillColor(sf::Color{Color::applyOpacity(m_color, opacity)});
-        m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, opacity)});
+        m_backendText->setFillColor(Color::applyOpacity(m_color, opacity));
+        m_backendText->setOutlineColor(Color::applyOpacity(m_outlineColor, opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,30 +125,7 @@ namespace tgui
     void Text::setFont(Font font)
     {
         m_font = font;
-
-        if (font)
-            m_text.setFont(*font.getFont());
-        else
-        {
-            // We can't keep using a pointer to the old font (it might be destroyed), but sf::Text has no function to pass an empty font
-            if (m_text.getFont())
-            {
-                const String& string = getString();
-                const unsigned int characterSize = getCharacterSize();
-                const TextStyle style = getStyle();
-
-                m_text = sf::Text();
-                m_text.setString(sf::String(string));
-                m_text.setCharacterSize(characterSize);
-                m_text.setStyle(style);
-
-                m_text.setFillColor(sf::Color{Color::applyOpacity(getColor(), getOpacity())});
-                m_text.setOutlineColor(sf::Color{Color::applyOpacity(getOutlineColor(), getOpacity())});
-                m_text.setOutlineThickness(getOutlineThickness());
-            }
-        }
-
-        recalculateSize();
+        m_backendText->setFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,18 +139,18 @@ namespace tgui
 
     void Text::setStyle(TextStyle style)
     {
-        if (style != m_text.getStyle())
-        {
-            m_text.setStyle(style);
-            recalculateSize();
-        }
+        if (style == m_textStyle)
+            return;
+
+        m_textStyle = style;
+        m_backendText->setStyle(style);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextStyle Text::getStyle() const
     {
-        return m_text.getStyle();
+        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +158,7 @@ namespace tgui
     void Text::setOutlineColor(Color color)
     {
         m_outlineColor = color;
-        m_text.setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, m_opacity)});
+        m_backendText->setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, m_opacity)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,60 +172,22 @@ namespace tgui
 
     void Text::setOutlineThickness(float thickness)
     {
-        m_text.setOutlineThickness(thickness);
+        m_outlineThickness = thickness;
+        m_backendText->setOutlineThickness(thickness);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float Text::getOutlineThickness() const
     {
-        return m_text.getOutlineThickness();
+        return m_outlineThickness;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Text::findCharacterPos(std::size_t index) const
     {
-        return Vector2f{m_text.findCharacterPos(index)};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Text::recalculateSize()
-    {
-        if (m_font == nullptr)
-        {
-            m_size = {0, 0};
-            return;
-        }
-
-        float width = 0;
-        float maxWidth = 0;
-        unsigned int lines = 1;
-        char32_t prevChar = 0;
-        const sf::String& string = m_text.getString();
-        const bool bold = (m_text.getStyle() & TextStyle::Bold) != 0;
-        const unsigned int textSize = m_text.getCharacterSize();
-        for (std::size_t i = 0; i < string.getSize(); ++i)
-        {
-            const float kerning = m_font.getKerning(prevChar, string[i], textSize);
-            if (string[i] == '\n')
-            {
-                maxWidth = std::max(maxWidth, width);
-                width = 0;
-                lines++;
-            }
-            else if (string[i] == '\t')
-                width += (static_cast<float>(m_font.getGlyph(' ', textSize, bold).advance) * 4) + kerning;
-            else
-                width += static_cast<float>(m_font.getGlyph(string[i], textSize, bold).advance) + kerning;
-
-            prevChar = string[i];
-        }
-
-        const float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
-        const float height = lines * m_font.getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace;
-        m_size = {std::max(maxWidth, width), height};
+        return m_backendText->findCharacterPos(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -476,10 +419,17 @@ namespace tgui
 
             result += text.substr(oldIndex, index - oldIndex);
             if ((index < text.length()) && (text[index-1] != U'\n'))
-                result += U"\n";
+                result += U'\n';
         }
 
         return result;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<BackendTextBase> Text::getBackendText() const
+    {
+        return m_backendText;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

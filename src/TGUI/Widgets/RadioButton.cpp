@@ -658,7 +658,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::draw(RenderTargetBase& target, RenderStates states) const
+    void RadioButton::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {

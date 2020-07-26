@@ -551,7 +551,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::draw(RenderTargetBase& target, RenderStates states) const
+    void Knob::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const float innerSize = std::min(getInnerSize().x, getInnerSize().y);
 

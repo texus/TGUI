@@ -1485,16 +1485,18 @@ namespace tgui
 
         // Position the caret
         {
-            /// TODO: We should be able to do this without creating sf::Text object
-
+            /// TODO: Implement a way to calculate text size without creating a text object?
             const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
-            sf::Text tempText{sf::String(m_lines[m_selEnd.y].substr(0, m_selEnd.x)), *m_fontCached.getFont(), getTextSize()};
+            Text tempText;
+            tempText.setFont(m_fontCached);
+            tempText.setCharacterSize(getTextSize());
+            tempText.setString(m_lines[m_selEnd.y].substr(0, m_selEnd.x));
 
             float kerning = 0;
             if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].length()))
                 kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
 
-            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
+            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
         }
 
         if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
@@ -1626,9 +1628,10 @@ namespace tgui
                         m_selectionRects.back().width += kerningSelectionEnd;
                 }
 
-                /// TODO: We should be able to do this without creating sf::Text object
-
-                sf::Text tempText{"", *m_fontCached.getFont(), getTextSize()};
+                /// TODO: Implement a way to calculate text size without creating a text object?
+                Text tempText;
+                tempText.setFont(m_fontCached);
+                tempText.setCharacterSize(getTextSize());
                 for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                 {
                     m_selectionRects.back().width += textOffset;
@@ -1636,8 +1639,8 @@ namespace tgui
 
                     if (!m_lines[i].empty())
                     {
-                        tempText.setString(sf::String(m_lines[i]));
-                        m_selectionRects.back().width += tempText.findCharacterPos(tempText.getString().getSize()).x;
+                        tempText.setString(m_lines[i]);
+                        m_selectionRects.back().width += tempText.findCharacterPos(tempText.getString().length()).x;
                     }
                 }
 
@@ -1647,9 +1650,9 @@ namespace tgui
 
                     if (m_textSelection2.getString() != U"")
                     {
-                        tempText.setString(sf::String(m_lines[selectionEnd.y].substr(0, selectionEnd.x)));
+                        tempText.setString(m_lines[selectionEnd.y].substr(0, selectionEnd.x));
                         m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y * m_lineHeight),
-                                                    textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerningSelectionEnd, static_cast<float>(m_lineHeight)});
+                                                    textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, static_cast<float>(m_lineHeight)});
                     }
                     else
                         m_selectionRects.push_back({0, static_cast<float>(selectionEnd.y * m_lineHeight), textOffset, static_cast<float>(m_lineHeight)});
@@ -1887,7 +1890,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::draw(RenderTargetBase& target, RenderStates states) const
+    void TextBox::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 

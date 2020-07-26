@@ -587,7 +587,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::draw(RenderTargetBase& target, RenderStates states) const
+    void ScrollablePanel::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const auto oldStates = states;
 

@@ -1074,9 +1074,10 @@ namespace tgui
 
     void ChildWindow::mouseEnteredWidget()
     {
+#if (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
         if (m_resizable && (m_mouseCursor != Cursor::Type::Arrow))
         {
-            // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML 2.5.1.
+            // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML < 2.6.
             // Calling the function from the base class would set the mouse cursor that was requested. If the mouse is on top
             // of the borders then we need to replace it with a resize cursor afterwards. These cursor changes would occus out
             // of order though, causing the wrong cursor to show up when the mouse enters a border from the outside.
@@ -1085,6 +1086,7 @@ namespace tgui
             m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
             return;
         }
+#endif
 
         Container::mouseEnteredWidget();
 
@@ -1111,7 +1113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::draw(RenderTargetBase& target, RenderStates states) const
+    void ChildWindow::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

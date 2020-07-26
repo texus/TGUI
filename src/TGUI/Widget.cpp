@@ -1206,7 +1206,7 @@ namespace tgui
             else if (m_inheritedFont)
                 m_fontCached = m_inheritedFont;
             else
-                m_fontCached = getGlobalFont();
+                m_fontCached = Font::getGlobalFont();
         }
         else if (property == "TransparentTexture")
         {

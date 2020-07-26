@@ -506,7 +506,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::draw(RenderTargetBase& target, RenderStates states) const
+    void ProgressBar::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

@@ -486,7 +486,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::draw(RenderTargetBase& target, RenderStates states) const
+    void Button::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

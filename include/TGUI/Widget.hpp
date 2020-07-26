@@ -29,6 +29,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Signal.hpp>
+#include <TGUI/Font.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Layout.hpp>
 #include <TGUI/String.hpp>
@@ -37,7 +38,7 @@
 #include <TGUI/Cursor.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Any.hpp>
-#include <TGUI/RenderTarget.hpp>
+#include <TGUI/BackendRenderTarget.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
@@ -972,7 +973,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(RenderTargetBase& target, RenderStates states) const = 0;
+        virtual void draw(BackendRenderTargetBase& target, RenderStates states) const = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1134,7 +1135,7 @@ namespace tgui
         float m_inheritedOpacity = 1;
 
         // Cached renderer properties
-        Font  m_fontCached = getGlobalFont();
+        Font  m_fontCached = Font::getGlobalFont();
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
 

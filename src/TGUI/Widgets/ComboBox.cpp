@@ -978,7 +978,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::draw(RenderTargetBase& target, RenderStates states) const
+    void ComboBox::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})
