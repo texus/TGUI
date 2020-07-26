@@ -88,10 +88,13 @@ TEST_CASE("[tabContainer]")
         auto p1 = tgui::Panel::create();
 
         tabContainer->addPanel(p1, "panel 1");
+        tabContainer->addPanel(tgui::Panel::create(), "panel 2");
+        tabContainer->addPanel(tgui::Panel::create(), "panel 3", false);
         tabContainer->removePanel(tgui::Panel::create());
-        REQUIRE(tabContainer->getPanelCount() == 1);
+        REQUIRE(tabContainer->getPanelCount() == 3);
         tabContainer->removePanel(p1);
-        REQUIRE(tabContainer->getPanelCount() == 0);
+        REQUIRE(tabContainer->getPanelCount() == 2);
+        REQUIRE(tabContainer->getSelectedIndex() == 0);
     }
 
     SECTION("Indexing")
@@ -213,6 +216,6 @@ TEST_CASE("[tabContainer]")
 
     SECTION("Saving and loading from file")
     {
-        //testSavingWidget("TabContainer", tabContainer, false);
+        testSavingWidget("TabContainer", tabContainer, false);
     }
 }

@@ -36,15 +36,8 @@ namespace tgui
         setSize(size);
         m_tabs = tgui::Tabs::create();
         m_tabs->setSize({ size.x, m_tabs->getSize().y });
-        m_tabs->onTabSelect([this]()
-            {
-                auto cur = m_tabs->getSelectedIndex();
-                select(cur);
-                if (m_tabs->getSelectedIndex() != m_index)
-                    m_tabs->select(m_index);
-            });
-
         m_container->add(m_tabs, "Tabs");
+        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,10 +110,14 @@ namespace tgui
         auto size = getSizeLayout();
         ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
         ptr->setPosition({ tgui::bindLeft(m_tabs), tgui::bindBottom(m_tabs) });
+
         m_panels.push_back(ptr);
         m_tabs->add(name, select);
+        m_container->add(ptr);
         if (select)
             this->select(m_panels.size() - 1, false);
+        else
+            ptr->setVisible(false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,10 +150,7 @@ namespace tgui
                 m_tabs->remove(idx);
                 m_container->remove(m_panels[idx]);
                 m_panels.erase(m_panels.begin() + idx);
-                if (idx == 0)
-                    select(m_panels.size() - 1);
-                else
-                    select(idx - 1);
+                select(m_tabs->getSelectedIndex());
             }
         }
     }
@@ -176,12 +170,12 @@ namespace tgui
                 return;
         }
 
-        if (m_container->getWidgets().size() == 2)
-            m_container->remove(m_panels[m_index]);
+        if (m_index != -1)
+            m_panels[m_index]->setVisible(false);
 
-        m_container->add(m_panels[index]);
         m_index = index;
         m_tabs->select(index);
+        m_panels[index]->setVisible(true);
         if (genEvents)
             onSelectionChanged.emit(this, m_index);
     }
@@ -249,6 +243,42 @@ namespace tgui
     bool TabContainer::changeTabText(std::size_t index, const tgui::String& text)
     {
         return m_tabs->changeText(index, text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabContainer::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        SubwidgetContainer::load(node, renderers);
+
+        m_index = -1;
+        m_tabs = m_container->get<tgui::Tabs>("Tabs");
+
+        auto widgets = m_container->getWidgets();
+        m_panels.resize(widgets.size() - 1);
+        auto size = getSizeLayout();
+        for (std::size_t i = 1; i < widgets.size(); i++)
+        {
+            m_panels[i - 1] = std::static_pointer_cast<Panel>(widgets[i]);
+            m_panels[i - 1]->setSize({ size.x , size.y - m_tabs->getSize().y });
+            m_panels[i - 1]->setPosition({ tgui::bindLeft(m_tabs), tgui::bindBottom(m_tabs) });
+        }
+
+        select(m_tabs->getSelectedIndex());
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabContainer::init()
+    {
+        m_tabs->onTabSelect([this]()
+            {
+                auto cur = m_tabs->getSelectedIndex();
+                select(cur);
+                if (m_tabs->getSelectedIndex() != m_index)
+                    m_tabs->select(m_index);
+            });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
