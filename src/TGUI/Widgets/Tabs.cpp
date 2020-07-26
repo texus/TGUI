@@ -630,6 +630,18 @@ namespace tgui
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
+        else if (property == "BorderColorHover")
+        {
+            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
+        }
+        else if (property == "SelectedBorderColor")
+        {
+            m_selectedBorderColorCached = getSharedRenderer()->getSelectedBorderColor();
+        }
+        else if (property == "SelectedBorderColorHover")
+        {
+            m_selectedBorderColorHoverCached = getSharedRenderer()->getSelectedBorderColorHover();
+        }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
@@ -800,6 +812,7 @@ namespace tgui
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
+        const float borderWidth = (m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f;
         const float usableHeight = getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom();
         for (unsigned int i = 0; i < m_tabs.size(); ++i)
         {
@@ -848,10 +861,37 @@ namespace tgui
 
             // Draw the borders between the tabs
             states.transform.translate({m_tabs[i].width, 0});
-            if ((m_bordersCached != Borders{0}) && (i < m_tabs.size() - 1))
+            if ((borderWidth != 0) && (i < m_tabs.size() - 1))
             {
-                target.drawFilledRect(states, {(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, 0});
+                target.drawFilledRect(states, {borderWidth, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({borderWidth, 0});
+            }
+
+            // Highlight the borders of the selected and hovered tab when requested
+            if (m_bordersCached != Borders{0})
+            {
+                Color highlightColor;
+                if ((m_hoveringTab == static_cast<int>(i)) && m_borderColorHoverCached.isSet())
+                    highlightColor = m_borderColorHoverCached;
+                if (m_selectedTab == static_cast<int>(i))
+                {
+                    if ((m_hoveringTab == static_cast<int>(i)) && m_selectedBorderColorHoverCached.isSet())
+                        highlightColor = m_selectedBorderColorHoverCached;
+                    else if (m_selectedBorderColorCached.isSet())
+                        highlightColor = m_selectedBorderColorCached;
+                }
+
+                if (highlightColor.isSet())
+                {
+                    // This code should be improved as there are many edge cases where this doesn't look good.
+                    // This was added for a use case with only a bottom border, so issues with left and right borders are ignored for now.
+                    RenderStates highlightStates = states;
+                    if (i < m_tabs.size() - 1)
+                        highlightStates.transform.translate({-borderWidth, 0});
+                    highlightStates.transform.translate({-m_tabs[i].width - borderWidth, -m_bordersCached.getTop()});
+                    target.drawBorders(highlightStates, {borderWidth, m_bordersCached.getTop(), borderWidth, m_bordersCached.getBottom()},
+                                       {m_tabs[i].width + 2*borderWidth, getSize().y}, highlightColor);
+                }
             }
 
             // Apply clipping if required for the text in this tab

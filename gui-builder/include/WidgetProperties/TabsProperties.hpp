@@ -87,6 +87,9 @@ struct TabsProperties : WidgetProperties
         pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
         pair.second["SelectedTextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColorHover())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
+        pair.second["SelectedBorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBorderColor())};
+        pair.second["SelectedBorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBorderColorHover())};
         pair.second["TextureTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTab())};
         pair.second["TextureTabHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTabHover())};
         pair.second["TextureSelectedTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTab())};

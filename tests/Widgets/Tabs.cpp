@@ -297,6 +297,9 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(130, 140, 150)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(140, 150, 160)"));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColor", "rgb(150, 160, 170)"));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColorHover", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
             }
@@ -308,6 +311,9 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{140, 150, 160}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColor", tgui::Color{150, 160, 170}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColorHover", tgui::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
             }
@@ -319,6 +325,9 @@ TEST_CASE("[Tabs]")
                 renderer->setTextColor({70, 80, 90});
                 renderer->setSelectedTextColor({100, 110, 120});
                 renderer->setBorderColor({130, 140, 150});
+                renderer->setBorderColorHover({140, 150, 160});
+                renderer->setSelectedBorderColor({150, 160, 170});
+                renderer->setSelectedBorderColorHover({160, 170, 180});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setDistanceToSide(2);
             }
@@ -328,6 +337,9 @@ TEST_CASE("[Tabs]")
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getProperty("SelectedBorderColor").getColor() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getProperty("SelectedBorderColorHover").getColor() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
         }
@@ -408,7 +420,10 @@ TEST_CASE("[Tabs]")
         renderer.setSelectedBackgroundColor(tgui::Color::Black);
         renderer.setTextColor(tgui::Color::Red);
         renderer.setSelectedTextColor(tgui::Color::White);
-        renderer.setBorderColor({235, 125, 0});
+        renderer.setBorderColor({tgui::Color::White});
+        renderer.setBorderColorHover({tgui::Color::Red});
+        renderer.setSelectedBorderColor({tgui::Color::Yellow});
+        renderer.setSelectedBorderColorHover({tgui::Color::Magenta});
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         tabs->setRenderer(renderer.getData());
