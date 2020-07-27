@@ -23,15 +23,13 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/ThemeLoader.hpp>
-#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Global.hpp>
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
-#include <set>
 
 #ifdef TGUI_SYSTEM_ANDROID
     #include <SFML/System/NativeActivity.hpp>
@@ -56,90 +54,85 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    namespace
-    {
-        // Turns texture and font filenames into paths relative to the theme file
-        void injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const String& path)
-        {
-            for (const auto& pair : node->propertyValuePairs)
-            {
-                if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
-                {
-                    if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
-                        continue;
-
-                    // Insert the path into the filename unless the filename is already an absolute path
-                    if (pair.second->value[0] != '"')
-                    {
-                    #ifdef TGUI_SYSTEM_WINDOWS
-                        if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
-                    #else
-                        if (pair.second->value[0] != '/')
-                    #endif
-                            pair.second->value = path + pair.second->value;
-                    }
-                    else // The filename is between quotes
-                    {
-                        if (pair.second->value.size() <= 1)
-                            continue;
-
-                    #ifdef TGUI_SYSTEM_WINDOWS
-                        if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
-                    #else
-                        if (pair.second->value[1] != '/')
-                    #endif
-                            pair.second->value = '"' + path + pair.second->value.substr(1);
-                    }
-                }
-            }
-
-            for (const auto& child : node->children)
-            {
-                if (handledSections.find(child.get()) == handledSections.end())
-                {
-                    handledSections.insert(child.get());
-                    injectThemePath(handledSections, child, path);
-                }
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node)
-        {
-            for (const auto& pair : node->propertyValuePairs)
-            {
-                // Check if this property is a reference to another section
-                if (!pair.second->value.empty() && (pair.second->value[0] == '&'))
-                {
-                    const String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString();
-                    const auto sectionsIt = sections.find(name);
-                    if (sectionsIt == sections.end())
-                        throw Exception{"Undefined reference to '" + name + "' encountered."};
-
-                    // Resolve references recursively
-                    resolveReferences(sections, sectionsIt->second);
-
-                    // Make a copy of the section
-                    std::stringstream ss;
-                    DataIO::emit(sectionsIt->second, ss);
-                    pair.second->value = "{\n" + ss.str() + "}";
-                }
-            }
-
-            for (const auto& child : node->children)
-                resolveReferences(sections, child);
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BaseThemeLoader::preload(const String&)
     {
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BaseThemeLoader::injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const String& path) const
+    {
+        for (const auto& pair : node->propertyValuePairs)
+        {
+            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
+            {
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                    continue;
+
+                // Insert the path into the filename unless the filename is already an absolute path
+                if (pair.second->value[0] != '"')
+                {
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
+                #else
+                    if (pair.second->value[0] != '/')
+                #endif
+                        pair.second->value = path + pair.second->value;
+                }
+                else // The filename is between quotes
+                {
+                    if (pair.second->value.size() <= 1)
+                        continue;
+
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+                #else
+                    if (pair.second->value[1] != '/')
+                #endif
+                        pair.second->value = '"' + path + pair.second->value.substr(1);
+                }
+            }
+        }
+
+        for (const auto& child : node->children)
+        {
+            if (handledSections.find(child.get()) == handledSections.end())
+            {
+                handledSections.insert(child.get());
+                injectThemePath(handledSections, child, path);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BaseThemeLoader::resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node) const
+    {
+        for (const auto& pair : node->propertyValuePairs)
+        {
+            // Check if this property is a reference to another section
+            if (!pair.second->value.empty() && (pair.second->value[0] == '&'))
+            {
+                const String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString();
+                const auto sectionsIt = sections.find(name);
+                if (sectionsIt == sections.end())
+                    throw Exception{"Undefined reference to '" + name + "' encountered."};
+
+                // Resolve references recursively
+                resolveReferences(sections, sectionsIt->second);
+
+                // Make a copy of the section
+                std::stringstream ss;
+                DataIO::emit(sectionsIt->second, ss);
+                pair.second->value = "{\n" + ss.str() + "}";
+            }
+        }
+
+        for (const auto& child : node->children)
+            resolveReferences(sections, child);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void DefaultThemeLoader::flushCache(const String& filename)
@@ -166,25 +159,12 @@ namespace tgui
         // Load the file when not already in cache
         if (m_propertiesCache.find(filename) == m_propertiesCache.end())
         {
-            String resourcePath;
-            auto slashPos = filename.find_last_of("/\\");
-            if (slashPos != String::npos)
-                resourcePath = filename.substr(0, slashPos+1);
-
-            std::stringstream fileContents;
-            readFile(filename, fileContents);
-
-            std::unique_ptr<DataIO::Node> root = DataIO::parse(fileContents);
+            std::unique_ptr<DataIO::Node> root = readFile(filename);
+            if (!root)
+                throw Exception{"DefaultThemeLoader::preload failed to load file, readFile returned nullptr."};
 
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
-
-            // Turn texture and font filenames into paths relative to the theme file
-            if (!resourcePath.empty())
-            {
-                std::set<const DataIO::Node*> handledSections;
-                injectThemePath(handledSections, root, resourcePath);
-            }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
             std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
@@ -243,22 +223,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void DefaultThemeLoader::readFile(const String& filename, std::stringstream& contents) const
+    std::unique_ptr<DataIO::Node> DefaultThemeLoader::readFile(const String& filename) const
     {
         if (filename.empty())
-            return;
+            return nullptr;
 
         String fullFilename;
-    #ifdef TGUI_SYSTEM_WINDOWS
+#ifdef TGUI_SYSTEM_WINDOWS
         if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
-    #else
+#else
         if (filename[0] != '/')
-    #endif
+#endif
             fullFilename = getResourcePath() + filename;
         else
             fullFilename = filename;
 
-    #ifdef TGUI_SYSTEM_ANDROID
+        std::stringstream contents;
+
+#ifdef TGUI_SYSTEM_ANDROID
         // If the file does not start with a slash then load it from the assets
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {
@@ -292,7 +274,7 @@ namespace tgui
             activity->vm->DetachCurrentThread();
         }
         else
-    #endif
+#endif
         {
             std::ifstream file{fullFilename.toAnsiString()};
             if (!file.is_open())
@@ -301,6 +283,22 @@ namespace tgui
             contents << file.rdbuf();
             file.close();
         }
+
+        std::unique_ptr<DataIO::Node> root = DataIO::parse(contents);
+
+        String resourcePath;
+        auto slashPos = filename.find_last_of("/\\");
+        if (slashPos != String::npos)
+            resourcePath = filename.substr(0, slashPos+1);
+
+        // Turn texture and font filenames into paths relative to the theme file
+        if (!resourcePath.empty())
+        {
+            std::set<const DataIO::Node*> handledSections;
+            injectThemePath(handledSections, root, resourcePath);
+        }
+
+        return root;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
