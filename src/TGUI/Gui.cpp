@@ -421,10 +421,10 @@ namespace tgui
                 else if (event.type == Event::Type::MouseWheelScrolled)
                     return m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords);
                 else if (event.type == Event::Type::MouseButtonPressed)
-                    return m_container->processMousePressEvent(Event::MouseButton::Left, mouseCoords);
+                    return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
                 else // if (event.type == Event::Type::MouseButtonReleased)
                 {
-                    const bool eventHandled = m_container->processMouseReleaseEvent(Event::MouseButton::Left, mouseCoords);
+                    const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
                     if (event.mouseButton.button == Event::MouseButton::Left)
                         m_container->leftMouseButtonNoLongerDown();
                     else if (event.mouseButton.button == Event::MouseButton::Right)
