@@ -1,5 +1,5 @@
-TGUI 0.8.8  (20 June 2020)
---------------------------
+TGUI 0.8.9  (TBD)
+-----------------
 
 - Added moveWidgetForward/moveWidgetBackward to Container to move widget one step in z-order
 - Added parameter to focusNextWidget/focusPreviousWidget in Container to not look recursively
