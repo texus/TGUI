@@ -35,12 +35,12 @@ The visibility property determines if a widget is drawn. A hidden widget also no
 Every widget is visible and enabled by default.
 
 ```c++
-widget->hide();
-widget->show();
+widget->setVisible(false);
+widget->setVisible(true);
 widget->isVisible();
 
-widget->enable();
-widget->disable();
+widget->setEnabled(true);
+widget->setEnabled(false);
 widget->isEnabled();
 ```
 
