@@ -26,6 +26,7 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Backends/SFML.hpp>
 #include <SFML/System/Err.hpp>
 
 TEST_CASE("[Texture]")
@@ -63,7 +64,7 @@ TEST_CASE("[Texture]")
                 tgui::Texture texture{"resources/image.png"};
                 REQUIRE(texture.getId() == "resources/image.png");
                 REQUIRE(texture.getData() != nullptr);
-                REQUIRE(texture.getData()->image != nullptr);
+                REQUIRE(texture.getData()->backendTexture != nullptr);
                 REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(texture.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
@@ -76,7 +77,7 @@ TEST_CASE("[Texture]")
                 texture.load("resources/image.png", {10, 5, 40, 30}, {6, 5, 28, 20});
                 REQUIRE(texture.getId() == "resources/image.png");
                 REQUIRE(texture.getData() != nullptr);
-                REQUIRE(texture.getData()->image != nullptr);
+                REQUIRE(texture.getData()->backendTexture != nullptr);
                 REQUIRE(texture.getPartRect() == tgui::UIntRect(10, 5, 40, 30));
                 REQUIRE(texture.getImageSize() == tgui::Vector2u(40, 30));
                 REQUIRE(texture.getMiddleRect() == tgui::UIntRect(6, 5, 28, 20));
@@ -106,7 +107,7 @@ TEST_CASE("[Texture]")
 
             REQUIRE(texture.getId() == "resources/image.png");
             REQUIRE(texture.getData() != nullptr);
-            REQUIRE(texture.getData()->image != nullptr);
+            REQUIRE(texture.getData()->backendTexture != nullptr);
             REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
             REQUIRE(texture.getImageSize() == tgui::Vector2u(50, 50));
             REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
@@ -118,7 +119,7 @@ TEST_CASE("[Texture]")
                 tgui::Texture textureCopy{texture};
                 REQUIRE(textureCopy.getId() == "resources/image.png");
                 REQUIRE(textureCopy.getData() != nullptr);
-                REQUIRE(textureCopy.getData()->image != nullptr);
+                REQUIRE(textureCopy.getData()->backendTexture != nullptr);
                 REQUIRE(textureCopy.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(textureCopy.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(textureCopy.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
@@ -136,7 +137,7 @@ TEST_CASE("[Texture]")
                 textureCopy = texture;
                 REQUIRE(textureCopy.getId() == "resources/image.png");
                 REQUIRE(textureCopy.getData() != nullptr);
-                REQUIRE(textureCopy.getData()->image != nullptr);
+                REQUIRE(textureCopy.getData()->backendTexture != nullptr);
                 REQUIRE(textureCopy.getPartRect() == tgui::UIntRect(0, 0, 50, 50));
                 REQUIRE(textureCopy.getImageSize() == tgui::Vector2u(50, 50));
                 REQUIRE(textureCopy.getMiddleRect() == tgui::UIntRect(10, 0, 30, 50));
@@ -183,23 +184,22 @@ TEST_CASE("[Texture]")
         REQUIRE(!texture.getShader());
     }
 
-    SECTION("ImageLoader")
+    SECTION("BackendTextureLoader")
     {
         unsigned int count = 0;
-        auto oldImageLoader = tgui::Texture::getImageLoader();
+        auto oldBackendTextureLoader = tgui::Texture::getBackendTextureLoader();
 
-        auto func = [&](const tgui::String&) {
-            auto image = std::make_shared<sf::Image>();
-            image->create(1,1);
+        auto func = [&](tgui::BackendTextureBase&, const tgui::String& filename) {
+            REQUIRE(filename == "resources/image.png");
             count++;
-            return image;
+            return true;
         };
 
-        tgui::Texture::setImageLoader(func);
+        tgui::Texture::setBackendTextureLoader(func);
         REQUIRE_NOTHROW(tgui::Texture{"resources/image.png"});
         REQUIRE(count == 1);
 
-        tgui::Texture::setImageLoader(oldImageLoader);
+        tgui::Texture::setBackendTextureLoader(oldBackendTextureLoader);
     }
 
     SECTION("TextureLoader")
@@ -207,10 +207,12 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldTextureLoader = tgui::Texture::getTextureLoader();
 
-        auto func = [&](tgui::Texture&, const tgui::String&, const tgui::UIntRect&, bool) {
-            count++;
+        auto func = [&](tgui::Texture& texture, const tgui::String& filename, const tgui::UIntRect&, bool) {
+            REQUIRE(filename == "resources/image.png");
             auto data = std::make_shared<tgui::TextureData>();
-            data->texture.emplace();
+            data->backendTexture = std::make_shared<tgui::BackendTextureSFML>();
+            texture.getBackendTextureLoader()(*data->backendTexture, filename);
+            count++;
             return data;
         };
 

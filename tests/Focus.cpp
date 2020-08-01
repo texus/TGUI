@@ -136,7 +136,7 @@ static bool widgetFocused(tgui::Widget::Ptr widget)
 
 TEST_CASE("[Focussing widgets]")
 {
-    tgui::Gui gui;
+    tgui::GuiSFML gui;
     rootContainer = gui.getContainer();
 
     auto button = tgui::Button::create("Click me");

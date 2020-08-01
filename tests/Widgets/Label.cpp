@@ -25,7 +25,6 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Gui.hpp>
 
 TEST_CASE("[Label]")
 {
@@ -162,7 +161,7 @@ TEST_CASE("[Label]")
             label->leftMousePressed({115, 80});
             label->leftMouseReleased({115, 80});
 
-            tgui::Gui gui;
+            tgui::GuiSFML gui;
             gui.add(label);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 

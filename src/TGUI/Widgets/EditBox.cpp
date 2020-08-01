@@ -25,7 +25,6 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Clipboard.hpp>
 #include <TGUI/Keyboard.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1377,14 +1376,14 @@ namespace tgui
 
     void EditBox::copySelectedTextToClipboard()
     {
-        Clipboard::set(m_textSelection.getString());
+        getBackend()->setClipboard(m_textSelection.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::cutSelectedTextToClipboard()
     {
-        Clipboard::set(m_textSelection.getString());
+        getBackend()->setClipboard(m_textSelection.getString());
 
         if (m_readOnly)
             return;
@@ -1402,7 +1401,7 @@ namespace tgui
             return;
 
         // Only continue pasting if you actually have to do something
-        const auto clipboardContents = Clipboard::get();
+        const auto clipboardContents = getBackend()->getClipboard();
         if ((m_selChars > 0) || (clipboardContents.length() > 0))
         {
             deleteSelectedCharacters();
@@ -1410,7 +1409,7 @@ namespace tgui
             const std::size_t oldCaretPos = m_selEnd;
 
             if (m_text.length() > m_selEnd)
-                setText(m_text.substr(0, m_selEnd) + Clipboard::get() + m_text.substr(m_selEnd, m_text.length() - m_selEnd));
+                setText(m_text.substr(0, m_selEnd) + clipboardContents + m_text.substr(m_selEnd, m_text.length() - m_selEnd));
             else
                 setText(m_text + clipboardContents);
 

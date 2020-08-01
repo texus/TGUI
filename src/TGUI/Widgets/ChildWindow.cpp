@@ -25,7 +25,11 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/GuiBase.hpp>
+
+#if TGUI_BUILD_WITH_SFML
+    #include <SFML/Config.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1074,7 +1078,7 @@ namespace tgui
 
     void ChildWindow::mouseEnteredWidget()
     {
-#if (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
+#if TGUI_BUILD_WITH_SFML && (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
         if (m_resizable && (m_mouseCursor != Cursor::Type::Arrow))
         {
             // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML < 2.6.

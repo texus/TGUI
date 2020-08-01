@@ -23,8 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Texture.hpp>
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Texture.hpp>
+#include <TGUI/Backend.hpp>
 #include <TGUI/Exception.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +79,7 @@ namespace tgui
                 {
                     // If only smooth is different then we can still share the image data
                     dataHolder.data = std::make_shared<TextureData>(*matchOnPartRect->data);
-                    dataHolder.data->texture->setSmooth(smooth);
+                    dataHolder.data->backendTexture->setSmooth(smooth);
                     return dataHolder.data;
                 }
 
@@ -114,15 +115,11 @@ namespace tgui
         }
         else // Not an svg
         {
-            data->image = texture.getImageLoader()(filename);
-            if (data->image)
+            data->backendTexture = getBackend()->createTexture();
+            if (texture.getBackendTextureLoader()(*data->backendTexture, filename))
             {
-                data->texture.emplace();
-                if (data->texture->loadFromImage(*data->image))
-                {
-                    data->texture->setSmooth(smooth);
-                    return data;
-                }
+                data->backendTexture->setSmooth(smooth);
+                return data;
             }
         }
 

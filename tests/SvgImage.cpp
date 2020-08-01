@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/SvgImage.hpp>
+#include <TGUI/Backend.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 
 TEST_CASE("[SvgImage]")
@@ -35,9 +36,9 @@ TEST_CASE("[SvgImage]")
         REQUIRE(!svgImage.isSet());
         REQUIRE(svgImage.getSize() == tgui::Vector2f{0, 0});
 
-        sf::Texture texture;
-        svgImage.rasterize(texture, tgui::Vector2u{100, 100});
-        REQUIRE(tgui::Vector2u{texture.getSize()} == tgui::Vector2u{0, 0});
+        auto texture = tgui::getBackend()->createTexture();
+        svgImage.rasterize(*texture, tgui::Vector2u{100, 100});
+        REQUIRE(tgui::Vector2u{texture->getSize()} == tgui::Vector2u{0, 0});
     }
 
     SECTION("Loading svg")
@@ -47,9 +48,9 @@ TEST_CASE("[SvgImage]")
         REQUIRE(svgImage.isSet());
         REQUIRE(svgImage.getSize() == tgui::Vector2f{130, 130});
 
-        sf::Texture texture;
-        svgImage.rasterize(texture, tgui::Vector2u{100, 100});
-        REQUIRE(tgui::Vector2u{texture.getSize()} == tgui::Vector2u{100, 100});
+        auto texture = tgui::getBackend()->createTexture();
+        svgImage.rasterize(*texture, tgui::Vector2u{100, 100});
+        REQUIRE(tgui::Vector2u{texture->getSize()} == tgui::Vector2u{100, 100});
     }
 
     SECTION("Drawing svg")

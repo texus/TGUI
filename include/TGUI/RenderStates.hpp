@@ -27,7 +27,6 @@
 #define TGUI_RENDER_STATES_HPP
 
 #include <TGUI/Transform.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,18 +38,6 @@ namespace tgui
     struct TGUI_API RenderStates
     {
         Transform transform;
-
-        operator sf::RenderStates() const
-        {
-            sf::RenderStates states;
-            const float *transformMatrix = transform.getMatrix();
-            states.transform = sf::Transform(
-                transformMatrix[0], transformMatrix[4], transformMatrix[12],
-                transformMatrix[1], transformMatrix[5], transformMatrix[13],
-                transformMatrix[3], transformMatrix[7], transformMatrix[15]);
-
-            return states;
-        }
     };
 }
 

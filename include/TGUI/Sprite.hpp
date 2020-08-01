@@ -32,9 +32,11 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/RenderStates.hpp>
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/Vertex.hpp>
+#include <vector>
+
+#if TGUI_BUILD_WITH_SFML
+    #include <SFML/Graphics/Shader.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -221,7 +223,7 @@ namespace tgui
         /// @internal
         /// Returns the internal SVG texture for drawing.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const aurora::CopiedPtr<sf::Texture>& getSvgTexture() const
+        const std::shared_ptr<BackendTextureBase>& getSvgTexture() const
         {
             return m_svgTexture;
         }
@@ -261,19 +263,22 @@ namespace tgui
 
         Vector2f    m_size;
         Texture     m_texture;
-        aurora::CopiedPtr<sf::Texture> m_svgTexture;
+        std::shared_ptr<BackendTextureBase> m_svgTexture;       /// TODO: Requires copy/move operations on Sprite
         std::vector<Vertex> m_vertices;
         std::vector<int> m_indices;
 
         FloatRect   m_visibleRect;
 
-        sf::Shader* m_shader = nullptr;
         Color       m_vertexColor = Color::White;
         float       m_opacity = 1;
         float       m_rotation = 0;
         Vector2f    m_position;
 
         ScalingType m_scalingType = ScalingType::Normal;
+
+#if TGUI_BUILD_WITH_SFML
+        sf::Shader* m_shader = nullptr;
+#endif
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

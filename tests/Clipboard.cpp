@@ -23,12 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Clipboard.hpp>
+#include <TGUI/Backend.hpp>
 
 TEST_CASE("[Clipboard]")
 {
-    tgui::Clipboard::set("Some text");
-    REQUIRE(tgui::Clipboard::get() == "Some text");
-    tgui::Clipboard::set("");
-    REQUIRE(tgui::Clipboard::get() == "");
+    tgui::getBackend()->setClipboard("Some text");
+    REQUIRE(tgui::getBackend()->getClipboard() == "Some text");
+    tgui::getBackend()->setClipboard("");
+    REQUIRE(tgui::getBackend()->getClipboard() == "");
 }

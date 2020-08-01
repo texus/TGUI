@@ -25,7 +25,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/ToolTip.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/GuiBase.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
@@ -1053,7 +1053,7 @@ namespace tgui
 
     void Container::setParent(Container* parent)
     {
-        const Gui* oldParentGui = m_parentGui;
+        const GuiBase* oldParentGui = m_parentGui;
 
         Widget::setParent(parent);
 
@@ -1067,7 +1067,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setParentGui(Gui* gui)
+    void Container::setParentGui(GuiBase* gui)
     {
         m_parentGui = gui;
 

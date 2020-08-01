@@ -30,7 +30,7 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Event.hpp>
-#include <SFML/Window/Keyboard.hpp>
+#include <TGUI/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ namespace tgui
 
         inline bool isShiftPressed()
         {
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
+            return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Shift);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,9 @@ namespace tgui
         inline bool isMultiselectModifierPressed()
         {
 #ifdef TGUI_SYSTEM_MACOS
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LSystem) || sf::Keyboard::isKeyPressed(sf::Keyboard::RSystem);
+            return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::System);
 #else
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl);
+            return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Control);
 #endif
         }
 

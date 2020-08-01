@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Clipboard.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Keyboard.hpp>
@@ -1167,9 +1166,9 @@ namespace tgui
         const std::size_t selStart = getSelectionStart();
         const std::size_t selEnd = getSelectionEnd();
         if (selStart <= selEnd)
-            Clipboard::set(m_text.substr(selStart, selEnd - selStart));
+            getBackend()->setClipboard(m_text.substr(selStart, selEnd - selStart));
         else
-            Clipboard::set(m_text.substr(selEnd, selStart - selEnd));
+            getBackend()->setClipboard(m_text.substr(selEnd, selStart - selEnd));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1179,9 +1178,9 @@ namespace tgui
         const std::size_t selStart = getSelectionStart();
         const std::size_t selEnd = getSelectionEnd();
         if (selStart <= selEnd)
-            Clipboard::set(m_text.substr(selStart, selEnd - selStart));
+            getBackend()->setClipboard(m_text.substr(selStart, selEnd - selStart));
         else
-            Clipboard::set(m_text.substr(selEnd, selStart - selEnd));
+            getBackend()->setClipboard(m_text.substr(selEnd, selStart - selEnd));
 
         deleteSelectedCharacters();
     }
@@ -1190,7 +1189,7 @@ namespace tgui
 
     void TextBox::pasteTextFromClipboard()
     {
-        const String& clipboardContents = Clipboard::get();
+        const String& clipboardContents = getBackend()->getClipboard();
 
         // Only continue pasting if you actually have to do something
         if ((m_selStart != m_selEnd) || (clipboardContents != ""))

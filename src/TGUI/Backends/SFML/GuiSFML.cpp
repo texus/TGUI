@@ -22,18 +22,17 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Gui.hpp>
-#include <TGUI/Clipboard.hpp>
+#include <TGUI/Backends/SFML/GuiSFML.hpp>
 #include <TGUI/Backend.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
-#include <TGUI/BackendRenderTarget.hpp>
+#include <thread>
+
+#include <TGUI/Backends/SFML/BackendSFML.hpp>
+#include <TGUI/Backends/SFML/BackendRenderTargetSFML.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-
-#include <cassert>
-#include <thread>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -272,14 +271,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui()
+    GuiSFML::GuiSFML()
     {
         init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui(sf::RenderTarget& target)
+    GuiSFML::GuiSFML(sf::RenderTarget& target)
     {
         init();
         setTarget(target);
@@ -287,18 +286,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::~Gui()
-    {
-        m_container->setParentGui(nullptr);
-        getBackend()->detatchGui(this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setTarget(sf::RenderTarget& target)
+    void GuiSFML::setTarget(sf::RenderTarget& target)
     {
         std::shared_ptr<BackendSFML> backend = std::dynamic_pointer_cast<BackendSFML>(getBackend());
-        assert(backend != nullptr);
         m_renderTarget = backend->setGuiTarget(this, target);
 
         updateContainerSize();
@@ -306,7 +296,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::RenderTarget* Gui::getTarget() const
+    sf::RenderTarget* GuiSFML::getTarget() const
     {
         if (m_renderTarget)
             return m_renderTarget->getTarget();
@@ -316,53 +306,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setAbsoluteViewport(const FloatRect& viewport)
-    {
-        m_viewport = {viewport.left, viewport.top, viewport.width, viewport.height};
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setRelativeViewport(const FloatRect& viewport)
-    {
-        m_viewport = {RelativeValue(viewport.left), RelativeValue(viewport.top), RelativeValue(viewport.width), RelativeValue(viewport.height)};
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    RelFloatRect Gui::getViewport() const
-    {
-        return m_viewport;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setAbsoluteView(const FloatRect& view)
-    {
-        m_view = {view.left, view.top, view.width, view.height};
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setRelativeView(const FloatRect& view)
-    {
-        m_view = {RelativeValue(view.left), RelativeValue(view.top), RelativeValue(view.width), RelativeValue(view.height)};
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    RelFloatRect Gui::getView() const
-    {
-        return m_view;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::handleEvent(sf::Event sfmlEvent)
+    bool GuiSFML::handleEvent(sf::Event sfmlEvent)
     {
         Event event;
         if (!convertEventSFML(sfmlEvent, event))
@@ -384,306 +328,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::handleEvent(Event event)
-    {
-        switch (event.type)
-        {
-            case Event::Type::MouseMoved:
-            case Event::Type::MouseButtonPressed:
-            case Event::Type::MouseButtonReleased:
-            case Event::Type::MouseWheelScrolled:
-            {
-                Vector2f mouseCoords;
-                if (event.type == Event::Type::MouseMoved)
-                    mouseCoords = mapPixelToView(event.mouseMove.x, event.mouseMove.y);
-                else if (event.type == Event::Type::MouseWheelScrolled)
-                    mouseCoords = mapPixelToView(event.mouseWheel.x, event.mouseWheel.y);
-                else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
-                    mouseCoords = mapPixelToView(event.mouseButton.x, event.mouseButton.y);
-
-                // If a tooltip is visible then hide it now
-                if (m_visibleToolTip != nullptr)
-                {
-                    // Correct the position of the tool tip so that it is relative again
-                    m_visibleToolTip->setPosition(m_visibleToolTip->getPosition() - ToolTip::getDistanceToMouse() - m_lastMousePos);
-
-                    remove(m_visibleToolTip);
-                    m_visibleToolTip = nullptr;
-                }
-
-                // Reset the data for the tooltip since the mouse has moved
-                m_tooltipTime = {};
-                m_tooltipPossible = true;
-                m_lastMousePos = mouseCoords;
-
-                if (event.type == Event::Type::MouseMoved)
-                    return m_container->processMouseMoveEvent(mouseCoords);
-                else if (event.type == Event::Type::MouseWheelScrolled)
-                    return m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords);
-                else if (event.type == Event::Type::MouseButtonPressed)
-                    return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
-                else // if (event.type == Event::Type::MouseButtonReleased)
-                {
-                    const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
-                    if (event.mouseButton.button == Event::MouseButton::Left)
-                        m_container->leftMouseButtonNoLongerDown();
-                    else if (event.mouseButton.button == Event::MouseButton::Right)
-                        m_container->rightMouseButtonNoLongerDown();
-                    return eventHandled;
-                }
-            }
-            case Event::Type::KeyPressed:
-            {
-                if (isTabKeyUsageEnabled() && (event.key.code == Event::KeyboardKey::Tab))
-                {
-                    if (event.key.shift)
-                        focusPreviousWidget(true);
-                    else
-                        focusNextWidget(true);
-
-                    return true;
-                }
-                else
-                    return m_container->processKeyPressEvent(event.key);
-            }
-            case Event::Type::TextEntered:
-            {
-                return m_container->processTextEnteredEvent(event.text.unicode);
-            }
-            case Event::Type::LostFocus:
-            {
-                m_windowFocused = false;
-                break;
-            }
-            case Event::Type::GainedFocus:
-            {
-                m_windowFocused = true;
-                break;
-            }
-            case Event::Type::Resized:
-            {
-                updateContainerSize();
-                break;
-            }
-        }
-
-        // The event wasn't absorbed by the gui
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setTabKeyUsageEnabled(bool enabled)
-    {
-        m_tabKeyUsageEnabled = enabled;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::isTabKeyUsageEnabled() const
-    {
-        return m_tabKeyUsageEnabled;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::draw()
-    {
-        if (m_drawUpdatesTime)
-            updateTime();
-
-        assert(m_renderTarget != nullptr);
-        m_renderTarget->drawGui(m_container);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    RootContainer::Ptr Gui::getContainer() const
-    {
-        return m_container;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setFont(const Font& font)
-    {
-        m_container->setInheritedFont(font);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Font Gui::getFont() const
-    {
-       if (m_container->getInheritedFont())
-          return m_container->getInheritedFont();
-        else
-            return Font::getGlobalFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const std::vector<Widget::Ptr>& Gui::getWidgets() const
-    {
-        return m_container->getWidgets();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::add(const Widget::Ptr& widgetPtr, const String& widgetName)
-    {
-        m_container->add(widgetPtr, widgetName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Gui::get(const String& widgetName) const
-    {
-        return m_container->get(widgetName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::remove(const Widget::Ptr& widget)
-    {
-        return m_container->remove(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::removeAllWidgets()
-    {
-        m_container->removeAllWidgets();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Gui::getFocusedChild() const
-    {
-        return m_container->getFocusedChild();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Gui::getFocusedLeaf() const
-    {
-        return m_container->getFocusedLeaf();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::focusNextWidget(bool recursive)
-    {
-        return m_container->focusNextWidget(recursive);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::focusPreviousWidget(bool recursive)
-    {
-        return m_container->focusPreviousWidget(recursive);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::unfocusAllWidgets()
-    {
-        m_container->setFocused(false);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::moveWidgetToFront(const Widget::Ptr& widget)
-    {
-        m_container->moveWidgetToFront(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::moveWidgetToBack(const Widget::Ptr& widget)
-    {
-        m_container->moveWidgetToBack(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::size_t Gui::moveWidgetForward(const Widget::Ptr& widget)
-    {
-        return m_container->moveWidgetForward(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::size_t Gui::moveWidgetBackward(const Widget::Ptr& widget)
-    {
-        return m_container->moveWidgetBackward(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setOpacity(float opacity)
-    {
-        m_container->setInheritedOpacity(opacity);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float Gui::getOpacity() const
-    {
-        return m_container->getInheritedOpacity();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setTextSize(unsigned int size)
-    {
-        m_container->setTextSize(size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Gui::getTextSize() const
-    {
-        return m_container->getTextSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::loadWidgetsFromFile(const String& filename, bool replaceExisting)
-    {
-        m_container->loadWidgetsFromFile(filename, replaceExisting);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::saveWidgetsToFile(const String& filename)
-    {
-        m_container->saveWidgetsToFile(filename);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
-    {
-        m_container->loadWidgetsFromStream(stream, replaceExisting);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting)
-    {
-        loadWidgetsFromStream(stream, replaceExisting);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::saveWidgetsToStream(std::stringstream& stream) const
-    {
-        m_container->saveWidgetsToStream(stream);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::mainLoop()
+    void GuiSFML::mainLoop()
     {
         sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(getTarget());
         if (!window)
@@ -752,103 +397,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setOverrideMouseCursor(Cursor::Type type)
+    void GuiSFML::draw()
     {
-        m_overrideMouseCursors.push(type);
-        getBackend()->setMouseCursor(this, type);
+        if (m_drawUpdatesTime)
+            updateTime();
+
+        TGUI_ASSERT(m_renderTarget != nullptr, "GuiSFML must be given an sf::RenderTarget (either at construction or via setTarget function) before calling draw()");
+        m_renderTarget->drawGui(m_container);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::restoreOverrideMouseCursor()
-    {
-        if (m_overrideMouseCursors.empty())
-            return;
-
-        m_overrideMouseCursors.pop();
-
-        const Cursor::Type newCursor = m_overrideMouseCursors.empty() ? m_requestedMouseCursor : m_overrideMouseCursors.top();
-        getBackend()->setMouseCursor(this, newCursor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::requestMouseCursor(Cursor::Type type)
-    {
-        if (type == m_requestedMouseCursor)
-            return;
-
-        m_requestedMouseCursor = type;
-        if (m_overrideMouseCursors.empty())
-            getBackend()->setMouseCursor(this, type);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::setDrawingUpdatesTime(bool drawUpdatesTime)
-    {
-        m_drawUpdatesTime = drawUpdatesTime;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::updateTime()
-    {
-        const auto timePointNow = std::chrono::steady_clock::now();
-
-        bool screenRefreshRequired = false;
-        if (m_lastUpdateTime > decltype(m_lastUpdateTime){})
-            screenRefreshRequired = updateTime(timePointNow - m_lastUpdateTime);
-
-        m_lastUpdateTime = timePointNow;
-        return screenRefreshRequired;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Gui::updateTime(Duration elapsedTime)
-    {
-        bool screenRefreshRequired = Timer::updateTime(elapsedTime);
-
-        if (!m_windowFocused)
-            return screenRefreshRequired;
-
-        screenRefreshRequired |= m_container->updateTime(elapsedTime);
-
-        if (m_tooltipPossible)
-        {
-            m_tooltipTime += elapsedTime;
-            if (m_tooltipTime >= ToolTip::getInitialDelay())
-            {
-                Widget::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
-                if (tooltip)
-                {
-                    m_visibleToolTip = tooltip;
-                    add(tooltip, "#TGUI_INTERNAL$ToolTip#");
-
-                    // Change the relative tool tip position in an absolute one
-                    tooltip->setPosition(m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition());
-                    screenRefreshRequired = true;
-                }
-
-                m_tooltipPossible = false;
-            }
-        }
-
-        return screenRefreshRequired;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Gui::mapPixelToView(int x, int y) const
-    {
-        return {((x - m_viewport.getLeft()) * (m_view.getWidth() / m_viewport.getWidth())) + m_view.getLeft(),
-                ((y - m_viewport.getTop()) * (m_view.getHeight() / m_viewport.getHeight())) + m_view.getTop()};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::init()
+    void GuiSFML::init()
     {
         if (!isBackendSet())
         {
@@ -856,17 +416,14 @@ namespace tgui
             getBackend()->setDestroyOnLastGuiDetatch(true);
         }
 
-        getBackend()->attachGui(this);
-
-        m_container = std::make_shared<RootContainer>();
-        m_container->setParentGui(this);
+        GuiBase::init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::updateContainerSize()
+    void GuiSFML::updateContainerSize()
     {
-        assert(m_renderTarget != nullptr);
+        TGUI_ASSERT(m_renderTarget != nullptr, "GuiSFML must be given an sf::RenderTarget (either at construction or via setTarget function) before updateContainerSize() is called");
 
         const auto& target = getTarget();
         m_viewport.updateParentSize({static_cast<float>(target->getSize().x), static_cast<float>(target->getSize().y)});

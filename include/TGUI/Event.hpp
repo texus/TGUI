@@ -151,6 +151,14 @@ namespace tgui
             Middle  //!< The middle (wheel) mouse button
         };
 
+        /// Modifiers keys
+        enum class KeyModifier
+        {
+            System,
+            Control,
+            Shift,
+            Alt
+        };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief KeyPressed event parameters

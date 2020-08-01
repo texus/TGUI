@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Clipboard.hpp>
 #include <TGUI/Duration.hpp>
 #include <functional>
 #include <sstream>

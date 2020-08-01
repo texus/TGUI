@@ -24,6 +24,7 @@
 
 
 #include <TGUI/SvgImage.hpp>
+#include <TGUI/BackendTexture.hpp>
 
 #define NANOSVG_IMPLEMENTATION
 #include "TGUI/nanosvg/nanosvg.h"
@@ -73,7 +74,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SvgImage::rasterize(sf::Texture& texture, Vector2u size)
+    void SvgImage::rasterize(BackendTextureBase& texture, Vector2u size)
     {
         if (!m_svg)
             return;
@@ -81,19 +82,13 @@ namespace tgui
         if (!m_rasterizer)
             m_rasterizer = nsvgCreateRasterizer();
 
-        if (Vector2u{texture.getSize()} != size)
-        {
-            if (!texture.create(size.x, size.y))
-                return;
-        }
-
         const float scaleX = size.x / static_cast<float>(m_svg->width);
         const float scaleY = size.y / static_cast<float>(m_svg->height);
 
         auto pixels = std::make_unique<unsigned char[]>(size.x * size.y * 4);
         nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY), pixels.get(), size.x, size.y, size.x * 4);
 
-        texture.update(pixels.get(), size.x, size.y, 0, 0);
+        texture.loadFromPixelData(size, pixels.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

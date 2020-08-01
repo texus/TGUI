@@ -37,7 +37,7 @@
 
 namespace tgui
 {
-    class Gui;
+    class GuiBase;
     class Widget;
     class Container;
 
@@ -437,13 +437,13 @@ namespace tgui
         TGUI_API Layout2d bindInnerSize(std::shared_ptr<Container> container);
 
         /// @brief Bind to the width of the gui view
-        TGUI_API Layout bindWidth(Gui& gui);
+        TGUI_API Layout bindWidth(GuiBase& gui);
 
         /// @brief Bind to the height of the gui view
-        TGUI_API Layout bindHeight(Gui& gui);
+        TGUI_API Layout bindHeight(GuiBase& gui);
 
         /// @brief Bind to the size of the gui view
-        TGUI_API Layout2d bindSize(Gui& gui);
+        TGUI_API Layout2d bindSize(GuiBase& gui);
 
         /// @brief Bind to the minimum value of two layouts
         TGUI_API Layout bindMin(const Layout& value1, const Layout& value2);

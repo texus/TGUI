@@ -32,9 +32,7 @@
 #include <TGUI/Optional.hpp>
 #include <TGUI/SvgImage.hpp>
 
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Shader.hpp>
+#include <TGUI/BackendTexture.hpp>
 
 #include <memory>
 #include <string>
@@ -48,10 +46,9 @@ namespace tgui
     // Used by the Texture class
     struct TGUI_API TextureData
     {
-        // Either svgImage or texture MUST have a value. The image field can only exist in combination with the texture field
-        std::shared_ptr<sf::Image> image;
+        // Either svgImage or backendTexture MUST have a value
         Optional<SvgImage> svgImage;
-        Optional<sf::Texture> texture;
+        std::shared_ptr<BackendTextureBase> backendTexture;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

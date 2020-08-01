@@ -24,6 +24,8 @@
 
 
 #include <TGUI/Widgets/Canvas.hpp>
+
+#if TGUI_BUILD_WITH_SFML
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,9 +181,16 @@ namespace tgui
         for (unsigned int i = 0; i < indices.size(); ++i)
             triangleVertices[i] = vertices[indices[i]];
 
+        sf::RenderStates statesSFML;
+        const float *transformMatrix = states.transform.getMatrix();
+        statesSFML.transform = sf::Transform(
+            transformMatrix[0], transformMatrix[4], transformMatrix[12],
+            transformMatrix[1], transformMatrix[5], transformMatrix[13],
+            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
-        m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, states);
+        m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, statesSFML);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,5 +233,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+
+#endif // TGUI_BUILD_WITH_SFML
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

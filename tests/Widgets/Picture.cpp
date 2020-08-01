@@ -25,7 +25,6 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Gui.hpp>
 
 TEST_CASE("[Picture]")
 {
@@ -101,7 +100,7 @@ TEST_CASE("[Picture]")
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});
 
-            tgui::Gui gui;
+            tgui::GuiSFML gui;
             gui.add(picture);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 

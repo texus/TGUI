@@ -24,22 +24,8 @@
 
 
 #include <TGUI/Backend.hpp>
-#include <TGUI/BackendFont.hpp>
-#include <TGUI/BackendText.hpp>
-#include <TGUI/BackendRenderTarget.hpp>
-#include <TGUI/DefaultFont.hpp>
 #include <TGUI/Timer.hpp>
-#include <SFML/Window/Window.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
-#endif
-
-#ifdef TGUI_SYSTEM_LINUX
-    #include <X11/Xlib.h>
-    #include <X11/cursorfont.h>
-#endif
+#include <TGUI/Font.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +47,8 @@ namespace tgui
 
     void setBackend(std::shared_ptr<BackendBase> backend)
     {
+        TGUI_ASSERT(!backend || !globalBackend, "setBackend() was called with a backend while there already was a backend");
+
         globalBackend = backend;
 
         if (backend)
@@ -81,7 +69,7 @@ namespace tgui
 
     std::shared_ptr<BackendBase> getBackend()
     {
-        assert(globalBackend != nullptr); // getBackend() was called while there is no backend (yet or anymore)
+        TGUI_ASSERT(globalBackend != nullptr, "getBackend() was called while there is no backend");
         return globalBackend;
     }
 
@@ -94,256 +82,20 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::attachGui(Gui* gui)
+    void BackendBase::setClipboard(const String& contents)
     {
-        m_guis[gui] = {};
+        m_clipboardContents = contents;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::detatchGui(Gui* gui)
+    String BackendBase::getClipboard() const
     {
-        assert(m_guis.find(gui) != m_guis.end());
-        m_guis.erase(gui);
-
-        if (m_destroyOnLastGuiDetatch && m_guis.empty())
-            setBackend(nullptr);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Font BackendSFML::createDefaultFont()
-    {
-        auto font = std::make_shared<BackendFontSFML>();
-        font->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes));
-        return Font(font, "");
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<BackendFontBase> BackendSFML::createFont()
-    {
-        return std::make_shared<BackendFontSFML>();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<BackendTextBase> BackendSFML::createText()
-    {
-        return std::make_shared<BackendTextSFML>();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
-    {
-        // Replace the cursor resource
-        auto newCursor = std::make_unique<sf::Cursor>();
-        newCursor->loadFromPixels(pixels, size, hotspot);
-        updateMouseCursor(type, std::move(newCursor));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::resetMouseCursorStyle(Cursor::Type type)
-    {
-#ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-         || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-         || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
-         || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
-        {
-            // If the cursor was previously set to a bitmap then release its resources
-            m_mouseCursors.erase(type);
-
-            updateMouseCursor(type, nullptr);
-            return;
-        }
-#endif
-
-        updateMouseCursor(type, createSystemCursor(type));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::setMouseCursor(Gui* gui, Cursor::Type type)
-    {
-        assert(m_guis.find(gui) != m_guis.end());
-        if (type == m_guis[gui].mouseCursor)
-            return;
-
-        m_guis[gui].mouseCursor = type;
-
-        // If the gui has no access to the window then we can't change the mouse cursor
-        if (!m_guis[gui].window)
-            return;
-
-        updateMouseCursor(m_guis[gui].window, type);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<BackendRenderTargetSFML> BackendSFML::setGuiTarget(Gui* gui, sf::RenderTarget& target)
-    {
-        assert(m_guis.find(gui) != m_guis.end());
-        m_guis[gui].window = dynamic_cast<sf::Window*>(&target);
-
-        auto renderTarget = std::make_shared<BackendRenderTargetSFML>();
-        renderTarget->setTarget(target);
-        return renderTarget;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::unique_ptr<sf::Cursor> BackendSFML::createSystemCursor(Cursor::Type type)
-    {
-        sf::Cursor::Type typeSFML = sf::Cursor::Type::Arrow;
-        switch (type)
-        {
-        case Cursor::Type::Arrow:
-            typeSFML = sf::Cursor::Type::Arrow;
-            break;
-        case Cursor::Type::Text:
-            typeSFML = sf::Cursor::Type::Text;
-            break;
-        case Cursor::Type::Hand:
-            typeSFML = sf::Cursor::Type::Hand;
-            break;
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-            typeSFML = sf::Cursor::Type::SizeHorizontal;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-            typeSFML = sf::Cursor::Type::SizeVertical;
-            break;
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-            typeSFML = sf::Cursor::Type::SizeTopLeftBottomRight;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-            typeSFML = sf::Cursor::Type::SizeBottomLeftTopRight;
-            break;
-        case Cursor::Type::Cross:
-            typeSFML = sf::Cursor::Type::Cross;
-            break;
-        case Cursor::Type::Help:
-            typeSFML = sf::Cursor::Type::Help;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeSFML = sf::Cursor::Type::NotAllowed;
-            break;
-        }
-
-        auto cursor = std::make_unique<sf::Cursor>();
-        cursor->loadFromSystem(typeSFML);
-        return cursor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::updateMouseCursor(Cursor::Type type, std::unique_ptr<sf::Cursor> cursor)
-    {
-#ifdef TGUI_SYSTEM_WINDOWS
-        // Make sure the old cursor isn't still being used before we destroy it
-        bool cursorInUse = false;
-        for (auto& pair : m_guis)
-        {
-            if (pair.second.mouseCursor == type)
-                cursorInUse = true;
-        }
-        if (cursorInUse)
-            SetCursor(static_cast<HCURSOR>(LoadImage(NULL, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
-#endif
-
-        m_mouseCursors[type] = std::move(cursor);
-
-        // Update the cursor on the screen if the cursor was in use
-        for (auto& pair : m_guis)
-        {
-            if (pair.second.mouseCursor == type)
-            {
-                if (pair.second.window)
-                    updateMouseCursor(pair.second.window, type);
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::updateMouseCursor(sf::Window* window, Cursor::Type type)
-    {
-#ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-            || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-            || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
-            || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
-        {
-            if (!m_mouseCursors[type]) // Only bypass SFML when system cursors are used
-            {
-                ::Display* displayX11 = XOpenDisplay(nullptr);
-                if (displayX11)
-                {
-                    unsigned int shapeX11;
-                    if (type == Cursor::Type::SizeLeft)
-                        shapeX11 = XC_left_side;
-                    else if (type == Cursor::Type::SizeRight)
-                        shapeX11 = XC_right_side;
-                    else if (type == Cursor::Type::SizeTop)
-                        shapeX11 = XC_top_side;
-                    else if (type == Cursor::Type::SizeBottom)
-                        shapeX11 = XC_bottom_side;
-                    else if (type == Cursor::Type::SizeBottomRight)
-                        shapeX11 = XC_bottom_right_corner;
-                    else if (type == Cursor::Type::SizeTopLeft)
-                        shapeX11 = XC_top_left_corner;
-                    else if (type == Cursor::Type::SizeBottomLeft)
-                        shapeX11 = XC_bottom_left_corner;
-                    else // if (type == Cursor::Type::SizeTopRight)
-                        shapeX11 = XC_top_right_corner;
-
-                    ::Cursor cursorX11 = XCreateFontCursor(displayX11, shapeX11);
-                    if (cursorX11 != None)
-                    {
-                        XDefineCursor(displayX11, window->getSystemHandle(), cursorX11);
-                        XFreeCursor(displayX11, cursorX11);
-                    }
-                    XFlush(displayX11);
-                    XCloseDisplay(displayX11);
-                }
-                return;
-            }
-        }
-#endif
-
-        // If the cursor doesn't exist yet then create it now
-        if (!m_mouseCursors[type])
-            m_mouseCursors[type] = createSystemCursor(type);
-
-        // Pass the cursor to SFML to set it while the mouse is on top of the window
-        window->setMouseCursor(*m_mouseCursors[type]);
+        return m_clipboardContents;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-#ifdef TGUI_SYSTEM_LINUX
-    // Undefine some annoying generic defines from X.h so that we don't get errors in unity builds
-    #undef None
-    #undef Bool
-    #undef KeyPress
-    #undef KeyRelease
-    #undef Status
-    #undef Always
-    #undef Window
-    #undef Drawable
-    #undef Font
-    #undef Cursor
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

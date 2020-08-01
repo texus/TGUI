@@ -25,6 +25,7 @@
 
 #include <TGUI/String.hpp>
 
+#include <algorithm>
 #include <cctype> // tolower, toupper, isspace
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17

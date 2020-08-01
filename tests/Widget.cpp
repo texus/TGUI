@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Gui.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Label.hpp>
@@ -86,7 +85,7 @@ TEST_CASE("[Widget]")
 
     SECTION("ParentGui")
     {
-        auto gui = std::make_unique<tgui::Gui>();
+        auto gui = std::make_unique<tgui::GuiSFML>();
         auto panel = tgui::Panel::create();
         panel->add(widget);
 
@@ -366,7 +365,7 @@ TEST_CASE("[Widget]")
             REQUIRE(renderer->getFont() == nullptr);
 
             // Inheriting the font does not change the renderer (but the widget will have a usable font)
-            tgui::Gui gui;
+            tgui::GuiSFML gui;
             gui.add(widget);
             REQUIRE(renderer->getFont() == nullptr);
         }

@@ -174,10 +174,10 @@ namespace tgui
                 return "None";
 
             String result = "\"" + texture.getId() + "\"";
-            if (texture.getData()->texture)
+            if (texture.getData()->backendTexture)
             {
                 const UIntRect& partRect = texture.getPartRect();
-                if ((partRect != UIntRect{}) && (partRect != UIntRect{{0, 0}, Vector2u{texture.getData()->texture->getSize()}}))
+                if ((partRect != UIntRect{}) && (partRect != UIntRect{{0, 0}, texture.getData()->backendTexture->getSize()}))
                 {
                     result += " Part(" + String::fromNumber(partRect.left) + ", " + String::fromNumber(partRect.top)
                                 + ", " + String::fromNumber(partRect.width) + ", " + String::fromNumber(partRect.height) + ")";

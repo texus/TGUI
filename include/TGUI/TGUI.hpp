@@ -27,7 +27,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Clipboard.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Cursor.hpp>
 #include <TGUI/Timer.hpp>
@@ -35,7 +34,8 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend.hpp>
 
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/Serializer.hpp>
@@ -78,12 +78,10 @@
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Widgets/VerticalLayout.hpp>
 
-#include <SFML/Graphics.hpp>
-#ifdef TGUI_SYSTEM_IOS
-  #include <SFML/Main.hpp>
+#if TGUI_BUILD_WITH_SFML
+    #include <TGUI/Backends/SFML.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_TGUI_HPP
-

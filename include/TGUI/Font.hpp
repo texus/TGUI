@@ -28,7 +28,6 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
-#include <SFML/Graphics/Font.hpp>
 #include <cstdint>
 #include <string>
 #include <cstddef>

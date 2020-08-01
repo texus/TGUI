@@ -47,16 +47,13 @@
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <TGUI/Aurora/Tools/Downcast.hpp>
 
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-
 #include <unordered_set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    class GuiBase;
     class Container;
 
     enum class ShowAnimationType;
@@ -601,7 +598,7 @@ namespace tgui
         ///
         /// @return Pointer to the gui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Gui* getParentGui() const
+        GuiBase* getParentGui() const
         {
             return m_parentGui;
         }
@@ -1100,7 +1097,7 @@ namespace tgui
 
         // This will point to our parent widget. If there is no parent then this will be nullptr.
         Container* m_parent = nullptr;
-        Gui* m_parentGui = nullptr;
+        GuiBase* m_parentGui = nullptr;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
         bool m_mouseHover = false;

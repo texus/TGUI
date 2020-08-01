@@ -28,10 +28,13 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Vertex.hpp>
-#include <SFML/Graphics/Color.hpp>
 #include <cstdint>
 #include <string>
 #include <map>
+
+#if TGUI_BUILD_WITH_SFML
+    #include <SFML/Graphics/Color.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +77,7 @@ namespace tgui
         {
         }
 
-
+#if TGUI_BUILD_WITH_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from an sf::Color
         ///
@@ -88,7 +91,7 @@ namespace tgui
             m_alpha{color.a}
         {
         }
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from an the RGB or RGBA values
@@ -138,7 +141,7 @@ namespace tgui
             return m_isSet;
         }
 
-
+#if TGUI_BUILD_WITH_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts this object into an sf::Color object
         ///
@@ -148,7 +151,7 @@ namespace tgui
         {
             return sf::Color(m_red, m_green, m_blue, m_alpha);
         }
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts this object into a Vertex::Color object

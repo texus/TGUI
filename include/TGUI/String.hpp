@@ -34,7 +34,9 @@
 #include <ostream>
 #include <sstream>
 
-#include <SFML/System/String.hpp>
+#if TGUI_BUILD_WITH_SFML
+    #include <SFML/System/String.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -244,6 +246,7 @@ namespace tgui
         String(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
+#if TGUI_BUILD_WITH_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
         explicit String(const sf::String& str)
             : m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}
@@ -254,6 +257,7 @@ namespace tgui
         {
             return sf::String::fromUtf32(m_string.begin(), m_string.end());
         }
+#endif
 
         explicit operator std::string() const;
         explicit operator std::wstring() const;

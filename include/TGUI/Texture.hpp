@@ -35,6 +35,11 @@
 #include <TGUI/Rect.hpp>
 #include <functional>
 
+#if TGUI_BUILD_WITH_SFML
+    #include <SFML/Graphics/Texture.hpp>
+    #include <SFML/Graphics/Shader.hpp>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -44,7 +49,7 @@ namespace tgui
     public:
 
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
-        using ImageLoaderFunc = std::function<std::shared_ptr<sf::Image>(const String&)>;
+        using BackendTextureLoaderFunc = std::function<bool(BackendTextureBase&, const String&)>;
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const String&, const UIntRect&, bool smooth)>;
 
 
@@ -89,7 +94,7 @@ namespace tgui
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
                 bool smooth = true);
 
-
+#if TGUI_BUILD_WITH_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture from an existing sf::Texture
         ///
@@ -100,12 +105,11 @@ namespace tgui
         /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
         ///
         /// This constructor just calls the corresponding load function.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const sf::Texture& texture,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0));
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -147,7 +151,7 @@ namespace tgui
                   const UIntRect& middleRect = {},
                   bool smooth = true);
 
-
+#if TGUI_BUILD_WITH_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture from an existing sf::Texture
         ///
@@ -161,7 +165,7 @@ namespace tgui
         void load(const sf::Texture& texture,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {});
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the id that was used to load the texture (for the default loader, the id is the filename)
@@ -232,7 +236,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getColor() const;
 
-
+#if TGUI_BUILD_WITH_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the shader used to draw the texture
         /// @param shader  New shader to use
@@ -245,7 +249,7 @@ namespace tgui
         /// @return Shader currently being use to draw the texture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Shader* getShader() const;
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the middle rect of the texture which is used for 9-slice scaling
@@ -302,27 +306,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets a different image loader
+        /// @brief Sets a different backend texture loader
         ///
-        /// @param func  New image loader function
+        /// @param func  New backend texture loader function
         ///
-        /// The image loader will be called inside the texture loader to create the sf::Image.
+        /// The backend texture loader will be called inside the texture loader to create the backend texture.
         ///
         /// The default loader will simply load the image from a file.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setImageLoader(const ImageLoaderFunc& func);
+        static void setBackendTextureLoader(const BackendTextureLoaderFunc& func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the used image loader
+        /// @brief Returns the used backend texture loader
         ///
-        /// @return Image loader that is currently being used
+        /// @return Backend texture loader that is currently being used
         ///
-        /// @see setImageLoader
-        ///
+        /// @see setBackendTextureLoader
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static const ImageLoaderFunc& getImageLoader();
+        static const BackendTextureLoaderFunc& getBackendTextureLoader();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,9 +368,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
+#if TGUI_BUILD_WITH_SFML
+        sf::Shader* m_shader = nullptr;
+#endif
+
         std::shared_ptr<TextureData> m_data = nullptr;
         Color m_color = Color::White;
-        sf::Shader* m_shader = nullptr;
+
         UIntRect m_partRect;
         UIntRect m_middleRect;
         String  m_id;
@@ -377,7 +383,7 @@ namespace tgui
         CallbackFunc m_destructCallback;
 
         static TextureLoaderFunc m_textureLoader;
-        static ImageLoaderFunc m_imageLoader;
+        static BackendTextureLoaderFunc m_backendTextureLoader;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

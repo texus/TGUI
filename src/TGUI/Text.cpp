@@ -26,6 +26,8 @@
 #include <TGUI/Text.hpp>
 #include <TGUI/Backend.hpp>
 #include <TGUI/BackendText.hpp>
+#include <algorithm>
+#include <vector>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +160,7 @@ namespace tgui
     void Text::setOutlineColor(Color color)
     {
         m_outlineColor = color;
-        m_backendText->setOutlineColor(sf::Color{Color::applyOpacity(m_outlineColor, m_opacity)});
+        m_backendText->setOutlineColor(Color::applyOpacity(m_outlineColor, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,11 +27,9 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/GuiBase.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
-#include <SFML/System/Err.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

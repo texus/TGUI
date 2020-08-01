@@ -1,10 +1,7 @@
 set(TGUI_SRC
     Animation.cpp
     Backend.cpp
-    BackendFont.cpp
-    BackendText.cpp
     BackendRenderTarget.cpp
-    Clipboard.cpp
     Color.cpp
     Container.cpp
     Cursor.cpp
@@ -12,7 +9,7 @@ set(TGUI_SRC
     Filesystem.cpp
     Font.cpp
     Global.cpp
-    Gui.cpp
+    GuiBase.cpp
     Layout.cpp
     ObjectConverter.cpp
     Sprite.cpp
@@ -29,6 +26,12 @@ set(TGUI_SRC
     ToolTip.cpp
     Transform.cpp
     Widget.cpp
+    Backends/SFML/BackendFontSFML.cpp
+    Backends/SFML/BackendRenderTargetSFML.cpp
+    Backends/SFML/BackendSFML.cpp
+    Backends/SFML/BackendTextSFML.cpp
+    Backends/SFML/BackendTextureSFML.cpp
+    Backends/SFML/GuiSFML.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
     Loading/Serializer.cpp

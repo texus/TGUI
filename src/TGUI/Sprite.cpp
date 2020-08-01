@@ -26,6 +26,7 @@
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Optional.hpp>
+#include <TGUI/Backend.hpp>
 
 #include <cassert>
 #include <cmath>
@@ -45,7 +46,9 @@ namespace tgui
     {
         m_texture = texture;
         m_vertexColor = m_texture.getColor();
+#if TGUI_BUILD_WITH_SFML
         m_shader = m_texture.getShader();
+#endif
 
         if (isSet())
         {
@@ -154,7 +157,7 @@ namespace tgui
     {
         if (!isSet() || (m_size.x == 0) || (m_size.y == 0))
             return true;
-        if (!m_texture.getData()->image || !m_texture.getData()->texture)
+        if (!m_texture.getData()->backendTexture)
             return false;
 
         if (getRotation() != 0)
@@ -280,7 +283,7 @@ namespace tgui
         if (m_texture.getData()->svgImage)
         {
             if (!m_svgTexture)
-                m_svgTexture = aurora::makeCopied<sf::Texture>();
+                m_svgTexture = getBackend()->createTexture();
 
             const Vector2u svgTextureSize{
                 static_cast<unsigned int>(std::round(getSize().x)),

@@ -37,7 +37,7 @@
 
 #include "catch.hpp"
 #include <SFML/Graphics/RenderTexture.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/Backends/SFML/GuiSFML.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/Panel.hpp>
@@ -47,7 +47,7 @@
 #define TEST_DRAW_INIT(width, height, widget) \
             sf::RenderTexture target; \
             target.create(width, height); \
-            tgui::Gui gui{target}; \
+            tgui::GuiSFML gui{target}; \
             gui.add(widget);
 
 #ifdef TGUI_SKIP_DRAW_TESTS

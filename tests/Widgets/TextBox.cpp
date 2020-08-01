@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
+#include <TGUI/Backend.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Clipboard.hpp>
 
 TEST_CASE("[TextBox]")
 {
@@ -366,24 +366,24 @@ TEST_CASE("[TextBox]")
                     textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
 
                 textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::C, true, false));
-                REQUIRE(tgui::Clipboard::get() == "XYZ");
+                REQUIRE(tgui::getBackend()->getClipboard() == "XYZ");
 
                 textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false)); // Deselect text
                 textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::V, true, false));
                 REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZXYZ");
-                REQUIRE(tgui::Clipboard::get() == "XYZ");
+                REQUIRE(tgui::getBackend()->getClipboard() == "XYZ");
 
                 for (unsigned int i = 0; i < 4; ++i)
                     textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
 
                 textBox->keyPressed(keyEvent(tgui::Event::KeyboardKey::X, true, false));
                 REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVXYZ");
-                REQUIRE(tgui::Clipboard::get() == "WXYZ");
+                REQUIRE(tgui::getBackend()->getClipboard() == "WXYZ");
             }
 
             SECTION("Pressing tab")
             {
-                auto sendTabEventToGui = [&keyEvent](tgui::Gui& gui) {
+                auto sendTabEventToGui = [&keyEvent](tgui::GuiSFML& gui) {
                     sf::Event event;
                     event.key = sf::Event::KeyEvent();
                     event.key.control = false;
@@ -398,7 +398,7 @@ TEST_CASE("[TextBox]")
                 };
 
                 sf::RenderTexture tempRenderTexture;
-                tgui::Gui gui{tempRenderTexture};
+                tgui::GuiSFML gui{tempRenderTexture};
                 gui.add(textBox);
 
                 textBox->setText("");

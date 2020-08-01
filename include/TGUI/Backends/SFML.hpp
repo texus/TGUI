@@ -2,7 +2,6 @@
 //
 // TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2020 Bruno Van de Velde (vdv_b@tgui.eu)
-//                         Koushtav Chakrabarty (koushtav@fleptic.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,30 +22,26 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_BACKEND_SFML_INCLUDE_HPP
+#define TGUI_BACKEND_SFML_INCLUDE_HPP
 
-#include <TGUI/Clipboard.hpp>
-#include <SFML/Window/Clipboard.hpp>
+#include <TGUI/Backends/SFML/BackendSFML.hpp>
+#include <TGUI/Backends/SFML/BackendFontSFML.hpp>
+#include <TGUI/Backends/SFML/BackendTextSFML.hpp>
+#include <TGUI/Backends/SFML/BackendTextureSFML.hpp>
+#include <TGUI/Backends/SFML/BackendRenderTargetSFML.hpp>
+#include <TGUI/Backends/SFML/GuiSFML.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include <SFML/Graphics.hpp>
+#ifdef TGUI_SYSTEM_IOS
+  #include <SFML/Main.hpp>
+#endif
 
+#ifndef TGUI_BACKEND_SKIP_GUI_ALIAS
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    String Clipboard::get()
-    {
-        return String(sf::Clipboard::getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Clipboard::set(const String& contents)
-    {
-        sf::Clipboard::setString(sf::String(contents));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    using Gui = GuiSFML;
 }
+#endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#endif // TGUI_BACKEND_SFML_INCLUDE_HPP

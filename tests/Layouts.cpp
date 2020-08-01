@@ -25,7 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/Backends/SFML/GuiSFML.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 
 using namespace tgui::bind_functions;
@@ -223,7 +223,7 @@ TEST_CASE("[Layouts]")
             {
                 sf::RenderTexture texture;
                 texture.create(20, 15);
-                tgui::Gui gui{texture};
+                tgui::GuiSFML gui{texture};
 
                 auto width = bindWidth(gui);
                 auto height = bindHeight(gui);

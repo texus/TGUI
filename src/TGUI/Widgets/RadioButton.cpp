@@ -25,7 +25,6 @@
 
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Container.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
 
 namespace tgui
 {

@@ -67,7 +67,9 @@ namespace tgui
     {
         {"BitmapButton", std::make_shared<BitmapButton>},
         {"Button", std::make_shared<Button>},
+#if TGUI_BUILD_WITH_SFML
         {"Canvas", std::make_shared<Canvas>},
+#endif
         {"ChatBox", std::make_shared<ChatBox>},
         {"CheckBox", std::make_shared<CheckBox>},
         {"ChildWindow", std::make_shared<ChildWindow>},
