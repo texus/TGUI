@@ -365,6 +365,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget that is located at the given position
+        ///
+        /// @param pos  The location where the widget will be searched, relative to the container
+        ///
+        /// @return Widget at the queried position, or nullptr when there is no widget at that location
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Widget::Ptr getWidgetAtPosition(sf::Vector2f pos) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focuses the next widget in this container
         ///
         /// @param recursive  If the focused widget is a container, should the next widget inside it be focused instead of

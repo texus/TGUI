@@ -314,6 +314,30 @@ namespace tgui
         Widget::Ptr getFocusedLeaf() const;
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget that is located at the given position
+        ///
+        /// @param pos  The location where the widget will be searched, relative to the gui view
+        ///
+        /// @return Widget at the queried position, or nullptr when there is no widget at that location
+        ///
+        /// @see getWidgetBelowMouseCursor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getWidgetAtPosition(sf::Vector2f pos) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget below the mouse
+        ///
+        /// @param mousePos  Position of the mouse, in pixel coordinates, relative the the window
+        ///
+        /// @return Widget below the mouse, or nullptr when the mouse isn't on top of any widgets
+        ///
+        /// @see getWidgetAtPosition
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getWidgetBelowMouseCursor(sf::Vector2i mousePos) const;
+
+
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the name of a widget

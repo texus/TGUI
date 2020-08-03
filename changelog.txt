@@ -1,6 +1,7 @@
 TGUI 0.8.9  (TBD)
 -----------------
 
+- Added getWidgetBelowMouseCursor to Gui and getWidgetAtPosition to Container/Gui
 - Added moveWidgetForward/moveWidgetBackward to Container to move widget one step in z-order
 - Added parameter to focusNextWidget/focusPreviousWidget in Container to not look recursively
 - Added enableSkipDrawingWidgetsOutsideView() to ScrollablePanel to enable optimization

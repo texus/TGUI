@@ -463,6 +463,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Widget::Ptr ScrollablePanel::getWidgetAtPosition(sf::Vector2f pos) const
+    {
+        pos.x += static_cast<float>(m_horizontalScrollbar->getValue());
+        pos.y += static_cast<float>(m_verticalScrollbar->getValue());
+        return Panel::getWidgetAtPosition(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
