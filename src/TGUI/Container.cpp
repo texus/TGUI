@@ -710,8 +710,8 @@ namespace tgui
 
     void Container::setFocused(bool focused)
     {
-        if (!focused && m_focused && m_focusedWidget)
-            m_focusedWidget->setFocused(false);
+        if (m_focusedWidget && (focused != m_focusedWidget->isFocused()))
+            m_focusedWidget->setFocused(focused);
 
         Widget::setFocused(focused);
     }
