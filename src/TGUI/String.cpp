@@ -64,7 +64,7 @@ namespace tgui
     {
         const std::string ansiStr = toAnsiString();
 
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         int value;
         const char* cstr = ansiStr.c_str();
         if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
@@ -89,7 +89,7 @@ namespace tgui
     {
         const std::string ansiStr = toAnsiString();
 
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         unsigned int value;
         const char* cstr = ansiStr.c_str();
         if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
@@ -114,7 +114,7 @@ namespace tgui
     {
         const std::string ansiStr = toAnsiString();
 
-#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         float value;
         const char* cstr = ansiStr.c_str();
         if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
@@ -212,6 +212,29 @@ namespace tgui
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<String> String::split(char32_t delimiter) const
+    {
+        std::vector<String> substrings;
+
+        std::size_t start = 0;
+        std::size_t end = find(delimiter);
+        while (end != npos)
+        {
+            substrings.push_back(substr(start, end - start));
+            start = end + 1;
+            end = find(delimiter, start);
+        }
+
+        if (start == 0)
+            substrings.push_back(*this);
+        else
+            substrings.push_back(substr(start, length() - start));
+
+        return substrings;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
