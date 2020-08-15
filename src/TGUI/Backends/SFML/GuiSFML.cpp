@@ -96,9 +96,8 @@ namespace tgui
         case sf::Keyboard::Key::Quote:      return Event::KeyboardKey::Quote;
         case sf::Keyboard::Key::Slash:      return Event::KeyboardKey::Slash;
         case sf::Keyboard::Key::Backslash:  return Event::KeyboardKey::Backslash;
-        case sf::Keyboard::Key::Tilde:      return Event::KeyboardKey::Tilde;
         case sf::Keyboard::Key::Equal:      return Event::KeyboardKey::Equal;
-        case sf::Keyboard::Key::Hyphen:     return Event::KeyboardKey::Hyphen;
+        case sf::Keyboard::Key::Hyphen:     return Event::KeyboardKey::Minus;
         case sf::Keyboard::Key::Space:      return Event::KeyboardKey::Space;
         case sf::Keyboard::Key::Enter:      return Event::KeyboardKey::Enter;
         case sf::Keyboard::Key::Backspace:  return Event::KeyboardKey::Backspace;
@@ -289,7 +288,7 @@ namespace tgui
     void GuiSFML::setTarget(sf::RenderTarget& target)
     {
         std::shared_ptr<BackendSFML> backend = std::dynamic_pointer_cast<BackendSFML>(getBackend());
-        m_renderTarget = backend->setGuiTarget(this, target);
+        m_renderTarget = backend->createGuiRenderTarget(this, target);
 
         updateContainerSize();
     }
@@ -347,7 +346,7 @@ namespace tgui
 
         sf::Event event;
         bool refreshRequired = true;
-        std::chrono::steady_clock::time_point m_lastRenderTime;
+        std::chrono::steady_clock::time_point lastRenderTime;
         while (window->isOpen())
         {
             bool eventProcessed = false;
@@ -355,8 +354,9 @@ namespace tgui
             {
                 while (window->pollEvent(event))
                 {
-                    eventProcessed = true;
-                    handleEvent(event);
+                    if (handleEvent(event))
+                        eventProcessed = true;
+
                     if (event.type == sf::Event::Closed)
                         window->close();
                 }
@@ -374,7 +374,7 @@ namespace tgui
 
             // Don't try to render too often, even when the screen is changing (e.g. during animation)
             const auto timePointNow = std::chrono::steady_clock::now();
-            const auto timePointNextAllowed = m_lastRenderTime + std::chrono::milliseconds(35);
+            const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(35);
             if (timePointNextAllowed > timePointNow)
             {
                 const auto timerWakeUpTime = getTimerWakeUpTime();
@@ -391,7 +391,7 @@ namespace tgui
             window->display();
 
             refreshRequired = false;
-            m_lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
+            lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
         }
     }
 

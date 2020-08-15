@@ -672,6 +672,9 @@ namespace tgui
         {
             if (m_widgetWithLeftMouseDown || FloatRect{getChildWidgetsOffset(), getClientSize()}.contains(pos))
             {
+                if (m_resizable && !m_widgetWithLeftMouseDown)
+                    updateResizeMouseCursor(pos);
+
                 // Propagate the event to the child widgets
                 Container::mouseMoved(pos + getPosition());
             }
@@ -703,10 +706,10 @@ namespace tgui
                             button->mouseNoLongerOnWidget();
                     }
                 }
-            }
 
-            if (m_resizable && !m_widgetWithLeftMouseDown)
-                updateResizeMouseCursor(pos);
+                if (m_resizable)
+                    updateResizeMouseCursor(pos);
+            }
         }
     }
 

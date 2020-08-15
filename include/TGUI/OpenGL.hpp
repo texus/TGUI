@@ -23,47 +23,24 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_VERTEX_HPP
-#define TGUI_VERTEX_HPP
+#ifndef TGUI_OPEN_GL_HPP
+#define TGUI_OPEN_GL_HPP
 
-#include <TGUI/Vector2.hpp>
-#include <cstdint>
+#include <TGUI/Config.hpp>
+#include <TGUI/extlibs/glad/gl.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    struct TGUI_API Vertex
+    #define TGUI_GL_CHECK(expr) do { expr; priv::checkAndLogOpenGlError(__FILE__, __LINE__, #expr); } while (false)
+
+    namespace priv
     {
-        struct Color
-        {
-            Color(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0, std::uint8_t a = 255) :
-                red(r),
-                green(g),
-                blue(b),
-                alpha(a)
-            {
-            }
-
-            std::uint8_t red;
-            std::uint8_t green;
-            std::uint8_t blue;
-            std::uint8_t alpha;
-        };
-
-        Vertex(Vector2f vertexPos = {}, Color vertexColor = {}, Vector2f vertexTexCoord = {}) :
-            position {vertexPos},
-            color    {vertexColor},
-            texCoords{vertexTexCoord}
-        {
-        }
-
-        Vector2f position;
-        Color color;
-        Vector2f texCoords;
-    };
+        void checkAndLogOpenGlError(const char* file, unsigned int line, const char* expression);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_VERTEX_HPP
+#endif // TGUI_COLOR_HPP

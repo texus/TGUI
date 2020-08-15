@@ -33,16 +33,16 @@ namespace tgui
 
     bool BackendTextureSFML::loadFromFile(const String& filename)
     {
-        image = std::make_unique<sf::Image>();
-        if (!image->loadFromFile(filename.toAnsiString()))
+        m_image = std::make_unique<sf::Image>();
+        if (!m_image->loadFromFile(filename.toAnsiString()))
         {
-            image = nullptr;
+            m_image = nullptr;
             return false;
         }
 
-        if (!texture.loadFromImage(*image))
+        if (!m_texture.loadFromImage(*m_image))
         {
-            image = nullptr;
+            m_image = nullptr;
             return false;
         }
 
@@ -53,15 +53,15 @@ namespace tgui
 
     bool BackendTextureSFML::loadFromPixelData(Vector2u size, const std::uint8_t* pixels)
     {
-        if (Vector2u{texture.getSize()} != size)
+        if (Vector2u{m_texture.getSize()} != size)
         {
-            if (!texture.create(size.x, size.y))
+            if (!m_texture.create(size.x, size.y))
                 return false;
 
-            image = nullptr;
+            m_image = nullptr;
         }
 
-        texture.update(pixels);
+        m_texture.update(pixels);
         return true;
     }
 
@@ -69,45 +69,45 @@ namespace tgui
 
     Vector2u BackendTextureSFML::getSize() const
     {
-        return Vector2u{texture.getSize()};
+        return Vector2u{m_texture.getSize()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendTextureSFML::setSmooth(bool smooth)
     {
-        texture.setSmooth(smooth);
+        m_texture.setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendTextureSFML::isSmooth() const
     {
-        return texture.isSmooth();
+        return m_texture.isSmooth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendTextureSFML::isTransparentPixel(Vector2u pixel) const
     {
-        if (!image)
+        if (!m_image)
             return false;
 
-        return (image->getPixel(pixel.x, pixel.y).a == 0);
+        return (m_image->getPixel(pixel.x, pixel.y).a == 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Texture& BackendTextureSFML::getInternalTexture()
     {
-        return texture;
+        return m_texture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Texture& BackendTextureSFML::getInternalTexture() const
     {
-        return texture;
+        return m_texture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

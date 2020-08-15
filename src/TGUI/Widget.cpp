@@ -1296,7 +1296,7 @@ namespace tgui
             case Cursor::Type::SizeTopLeft:     mouseCursorStr = "SizeTopLeft"; break;
             case Cursor::Type::SizeBottomLeft:  mouseCursorStr = "SizeBottomLeft"; break;
             case Cursor::Type::SizeTopRight:    mouseCursorStr = "SizeTopRight"; break;
-            case Cursor::Type::Cross:           mouseCursorStr = "Cross"; break;
+            case Cursor::Type::Crosshair:       mouseCursorStr = "Crosshair"; break;
             case Cursor::Type::Help:            mouseCursorStr = "Help"; break;
             case Cursor::Type::NotAllowed:      mouseCursorStr = "NotAllowed"; break;
             case Cursor::Type::Arrow:           break; // We don't save the cursor if it has the default value
@@ -1387,8 +1387,8 @@ namespace tgui
                 m_mouseCursor = Cursor::Type::SizeBottomLeft;
             else if (cursorStr == "SizeTopRight")
                 m_mouseCursor = Cursor::Type::SizeTopRight;
-            else if (cursorStr == "Cross")
-                m_mouseCursor = Cursor::Type::Cross;
+            else if (cursorStr == "Crosshair")
+                m_mouseCursor = Cursor::Type::Crosshair;
             else if (cursorStr == "Help")
                 m_mouseCursor = Cursor::Type::Help;
             else if (cursorStr == "NotAllowed")
@@ -1467,8 +1467,8 @@ namespace tgui
 
     void Widget::mouseLeftWidget()
     {
-        if (m_parentGui && (m_mouseCursor != Cursor::Type::Arrow))
-            m_parentGui->requestMouseCursor(Cursor::Type::Arrow);
+        if (m_parentGui && m_parent && (m_parent->getMouseCursor() != m_mouseCursor))
+            m_parentGui->requestMouseCursor(m_parent->getMouseCursor());
 
         m_mouseHover = false;
         onMouseLeave.emit(this);

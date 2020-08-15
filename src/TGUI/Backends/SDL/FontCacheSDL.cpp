@@ -23,72 +23,60 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/SvgImage.hpp>
-#include <TGUI/BackendTexture.hpp>
-
-#define NANOSVG_IMPLEMENTATION
-#include "TGUI/extlibs/nanosvg/nanosvg.h"
-
-#define NANOSVGRAST_IMPLEMENTATION
-#include "TGUI/extlibs/nanosvg/nanosvgrast.h"
+#include <TGUI/Backends/SDL/FontCacheSDL.hpp>
+#include <TGUI/Backends/SDL/BackendFontSDL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    std::map<const BackendFontSDL*, std::map<unsigned int, std::pair<unsigned int, TTF_Font*>>> FontCacheSDL::m_fonts;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SvgImage::SvgImage(const String& filename)
+    void FontCacheSDL::removeFont(const BackendFontSDL* fontId)
     {
-        m_svg = nsvgParseFromFile(filename.toAnsiString().c_str(), "px", 96);
-        if (!m_svg)
-            TGUI_PRINT_WARNING("Failed to load svg: " << filename);
+        TGUI_ASSERT(m_fonts[fontId].size() == 0, "FontCacheSDL::removeFont for a font that still had registered users");
+        m_fonts.erase(fontId);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SvgImage::~SvgImage()
+    void FontCacheSDL::registerFontSize(const BackendFontSDL* fontId, unsigned int characterSize)
     {
-        if (m_rasterizer)
-            nsvgDeleteRasterizer(m_rasterizer);
-        if (m_svg)
-            nsvgDelete(m_svg);
+        m_fonts[fontId][characterSize].first++;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SvgImage::isSet() const
+    void FontCacheSDL::unregisterFontSize(const BackendFontSDL* fontId, unsigned int characterSize)
     {
-        return (m_svg != nullptr);
+        unsigned int& users = m_fonts[fontId][characterSize].first;
+        TGUI_ASSERT(users > 0, "FontCacheSDL::unregisterFontSize can't be called more often than registerFontSize");
+        users--;
+        if (users == 0)
+        {
+            if (m_fonts[fontId][characterSize].second)
+                TTF_CloseFont(m_fonts[fontId][characterSize].second);
+
+            m_fonts[fontId].erase(characterSize);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f SvgImage::getSize() const
+    TTF_Font* FontCacheSDL::getFont(const BackendFontSDL* fontId, unsigned int characterSize)
     {
-        if (m_svg)
-            return {static_cast<float>(m_svg->width), static_cast<float>(m_svg->height)};
+        TGUI_ASSERT(m_fonts[fontId][characterSize].first > 0, "FontCacheSDL::getFont can't be called before registerFontSize is called");
+
+        if (m_fonts[fontId][characterSize].second)
+            return m_fonts[fontId][characterSize].second;
         else
-            return {0, 0};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SvgImage::rasterize(BackendTextureBase& texture, Vector2u size)
-    {
-        if (!m_svg)
-            return;
-
-        if (!m_rasterizer)
-            m_rasterizer = nsvgCreateRasterizer();
-
-        const float scaleX = size.x / static_cast<float>(m_svg->width);
-        const float scaleY = size.y / static_cast<float>(m_svg->height);
-
-        auto pixels = std::make_unique<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY), pixels.get(), size.x, size.y, size.x * 4);
-
-        texture.loadFromPixelData(size, pixels.get());
+        {
+            TTF_Font* font = fontId->loadInternalFont(characterSize);
+            m_fonts[fontId][characterSize].second = font;
+            return font;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

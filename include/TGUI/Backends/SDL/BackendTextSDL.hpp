@@ -23,177 +23,161 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_TRANSFORM_HPP
-#define TGUI_TRANSFORM_HPP
+#ifndef TGUI_BACKEND_TEXT_SDL_HPP
+#define TGUI_BACKEND_TEXT_SDL_HPP
+
+#include <TGUI/BackendText.hpp>
+#include <vector>
+
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Config.hpp>
-#include <TGUI/Rect.hpp>
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef unsigned int GLuint;
 
 namespace tgui
 {
+    class BackendFontSDL;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Defines a transform matrix
-    // Based on sf::Transform from SFML
+    /// @brief Text implementation that makes use of SDL
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Transform
+    class TGUI_API BackendTextSDL : public BackendTextBase
     {
     public:
 
+        /// Internal texture per line of text
+        struct LineTexture
+        {
+            SDL_Rect bounding;
+            GLuint textureId;
+        };
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
-        ///
-        /// Creates an identity transform (a transform that does nothing).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform();
+        BackendTextSDL();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Construct a transform from a 3x3 matrix
-        ///
-        /// @param a00  Element (0, 0) of the 3x3 matrix
-        /// @param a01  Element (0, 1) of the 3x3 matrix
-        /// @param a02  Element (0, 2) of the 3x3 matrix
-        /// @param a10  Element (1, 0) of the 3x3 matrix
-        /// @param a11  Element (1, 1) of the 3x3 matrix
-        /// @param a12  Element (1, 2) of the 3x3 matrix
-        /// @param a20  Element (2, 0) of the 3x3 matrix
-        /// @param a21  Element (2, 1) of the 3x3 matrix
-        /// @param a22  Element (2, 2) of the 3x3 matrix
+        /// @brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform(float a00, float a01, float a02,
-                  float a10, float a11, float a12,
-                  float a20, float a21, float a22);
+        ~BackendTextSDL();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructs a transform from a 4x4 matrix
-        ///
-        /// @param matrix  Pointer to a 4x4 matrix, similar to what getMatrix returns
+        /// @brief Returns the size of the text
+        /// @return Size of the bounding box around the text
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform(const float matrix[16]);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the transform as a 4x4 matrix
-        ///
-        /// This function returns a pointer to an array of 16 floats containing the transform elements as a 4x4 matrix, which is
-        /// directly compatible with OpenGL functions.
-        ///
-        /// @code
-        /// glLoadMatrixf(transform.getMatrix());
-        /// @endcode
-        ///
-        /// @return Pointer to a 4x4 matrix
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const float* getMatrix() const;
+        Vector2f getSize() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the inverse of the transform
-        ///
-        /// @return A new transform which is the inverse of this transform
-        ///
-        /// If the inverse cannot be computed, an identity transform is returned.
+        /// @brief Changes the text
+        /// @param string  Text that should be displayed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform getInverse() const;
+        void setString(const String& string) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Transform a 2D point
-        ///
-        /// @param point  Point to transform
-        ///
-        /// @return Transformed point
+        /// @brief Sets the size of the characters
+        /// @param characterSize  Maximum size available for characters above the baseline
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f transformPoint(const Vector2f& point) const;
+        void setCharacterSize(unsigned int characterSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Transform a rectangle
-        ///
-        /// If the transform contains a rotation, the bounding rectangle of the transformed rectangle is returned.
-        ///
-        /// @param rectangle Rectangle to transform
-        ///
-        /// @return Transformed rectangle
+        /// @brief Changes the color of the text
+        /// @param color  Text color
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        FloatRect transformRect(const FloatRect& rectangle) const;
+        void setFillColor(const Color& color) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Combine the current transform with another one
-        ///
-        /// The result is a transform that is equivalent to applying the other transform followed by this transform.
-        /// Mathematically, it is equivalent to a matrix multiplication (*this) * other.
-        ///
-        /// @param transform Transform to combine with this transform
-        ///
-        /// @return Reference to *this
+        /// @brief Changes the color of the text outline
+        /// @param color  Outline color
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform& combine(const Transform& other);
+        void setOutlineColor(const Color& color) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Combine the current transform with a translation
-        ///
-        /// @param offset  Translation offset to apply
-        ///
-        /// @return Reference to *this
+        /// @brief Changes the thickness of the text outline
+        /// @param thickness  Outline thickness
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform& translate(const Vector2f& offset);
+        void setOutlineThickness(float thickness) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Combine the current transform with a rotation
-        ///
-        /// The center of rotation is provided for convenience as a second argument, so that you can build rotations around
-        /// arbitrary points more easily (and efficiently) than the usual translate(-center).rotate(angle).translate(center).
-        ///
-        /// @param angle  Rotation angle, in degrees
-        /// @param center Center of rotation
-        ///
-        /// @return Reference to *this
+        /// @brief Changes the text style
+        /// @param style  New text style
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform& rotate(float angle, const Vector2f& center = {0, 0});
+        void setStyle(TextStyle style) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Combine the current transform with a scaling
-        ///
-        /// The center of scaling is provided for convenience as a second argument, so that you can build scaling around
-        /// arbitrary points more easily (and efficiently) than the usual translate(-center).scale(factors).translate(center).
-        ///
-        /// @param factors Scaling factors
-        /// @param center Center of scaling
-        ///
-        /// @return Reference to *this
+        /// @brief Changes the font used by the text
+        /// @param font  New text font
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform& scale(const Vector2f& factors, const Vector2f& center = {0, 0});
+        void setFont(const Font& font) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Overload of binary operator * to combine two transforms
-        ///
-        /// @param right  Transform to combine with a copy of this transform
-        ///
-        /// @see combine
+        /// @brief Returns the top-left position of the character at the provided index
+        /// @param index  Index of the character for which the position should be returned
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform operator *(const Transform& right) const;
-        Transform& operator *=(const Transform& right);
-        Vector2f operator *(const Vector2f& right) const;
+        Vector2f findCharacterPos(std::size_t index) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+        /// @brief Returns a reference to the internal SDL textures
+        /// @return Reference to internal texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::vector<LineTexture>& getInternalTextures();
 
-        float m_matrix[16]; //!< 4x4 matrix defining the transformation
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a reference to the internal SDL outline textures
+        /// @return Reference to internal outline texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::vector<LineTexture>& getInternalOutlineTextures();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the internal surfaces and textures.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool updateTextures();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Create a texture for a single line of text
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        LineTexture createLineTexture(TTF_Font* font, int verticalOffset, const std::string& line, const SDL_Color& color, int outline);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        std::vector<LineTexture> m_textures;
+        std::vector<LineTexture> m_outlineTextures;
+
+        std::shared_ptr<BackendFontSDL> m_font = nullptr;
+        unsigned int m_characterSize = 0;
+        int m_fontOutline = 0;
+        int m_fontStyle = TTF_STYLE_NORMAL;
+        SDL_Color m_textColor;
+        SDL_Color m_outlineColor;
+        std::vector<std::string> m_linesUtf8;
+
+        Vector2f m_size;
+        bool m_texturesValid = false;
     };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TRANSFORM_HPP
+#endif // TGUI_BACKEND_TEXT_SDL_HPP

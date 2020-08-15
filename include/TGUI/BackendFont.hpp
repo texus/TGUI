@@ -97,7 +97,7 @@ namespace tgui
         ///
         /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize) const = 0;
+        virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace tgui
         ///
         /// @return Line spacing, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual float getLineSpacing(unsigned int characterSize) const = 0;
+        virtual float getLineSpacing(unsigned int characterSize) = 0;
     };
 }
 

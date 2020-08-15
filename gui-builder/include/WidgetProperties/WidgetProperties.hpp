@@ -184,8 +184,8 @@ struct WidgetProperties
             return tgui::Cursor::Type::SizeBottomLeft;
         else if (value == "sizetopright")
             return tgui::Cursor::Type::SizeTopRight;
-        else if (value == "cross")
-            return tgui::Cursor::Type::Cross;
+        else if (value == "crosshair")
+            return tgui::Cursor::Type::Crosshair;
         else if (value == "help")
             return tgui::Cursor::Type::Help;
         else if (value == "notallowed")
@@ -208,7 +208,7 @@ struct WidgetProperties
             case tgui::Cursor::Type::SizeTopLeft:     return "SizeTopLeft";
             case tgui::Cursor::Type::SizeBottomLeft:  return "SizeBottomLeft";
             case tgui::Cursor::Type::SizeTopRight:    return "SizeTopRight";
-            case tgui::Cursor::Type::Cross:           return "Cross";
+            case tgui::Cursor::Type::Crosshair:       return "Crosshair";
             case tgui::Cursor::Type::Help:            return "Help";
             case tgui::Cursor::Type::NotAllowed:      return "NotAllowed";
             default:                                  return "Arrow";

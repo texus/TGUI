@@ -23,23 +23,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Backends/SFML/BackendSFML.hpp>
-#include <TGUI/Backends/SFML/BackendFontSFML.hpp>
-#include <TGUI/Backends/SFML/BackendTextSFML.hpp>
-#include <TGUI/Backends/SFML/BackendTextureSFML.hpp>
-#include <TGUI/Backends/SFML/BackendRenderTargetSFML.hpp>
-#include <TGUI/Backends/SFML/GuiSFML.hpp>
+#include <TGUI/Backends/SDL/BackendSDL.hpp>
+#include <TGUI/Backends/SDL/BackendFontSDL.hpp>
+#include <TGUI/Backends/SDL/BackendTextSDL.hpp>
+#include <TGUI/Backends/SDL/BackendTextureSDL.hpp>
+#include <TGUI/Backends/SDL/BackendRenderTargetSDL.hpp>
+#include <TGUI/Backends/SDL/GuiSDL.hpp>
 #include <TGUI/DefaultFont.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/OpenGL.hpp>
 
-#if !TGUI_BUILD_WITH_SFML
-    #error BackendSFML requires TGUI to be build with SFML integration
-#endif
-
-#include <SFML/Window/Window.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Clipboard.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
+#include <SDL.h>
+#include <SDL_syswm.h>
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/WindowsInclude.hpp>
@@ -50,26 +45,42 @@
     #include <X11/cursorfont.h>
 #endif
 
-#include <SFML/Config.hpp>
-
-#if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5)
-    #error BackendSFML requires at least SFML >= 2.5.0
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::attachGui(GuiBase* gui)
+    BackendSDL::BackendSDL()
     {
+        const int version = tgui_gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
+        if ((GLAD_VERSION_MAJOR(version) < 4) || ((GLAD_VERSION_MAJOR(version) == 4) && GLAD_VERSION_MINOR(version) < 3))
+            throw Exception{"BackendSDL expects at least OpenGL 4.3"};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendSDL::~BackendSDL()
+    {
+        for (auto& cursor : m_mouseCursors)
+        {
+            if (cursor.second)
+                SDL_FreeCursor(cursor.second);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendSDL::attachGui(GuiBase* gui)
+    {
+        TGUI_ASSERT(m_guis.empty(), "BackendSDL currently only supports a single window and thus also a single Gui object");
+
         m_guis[gui] = {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::detatchGui(GuiBase* gui)
+    void BackendSDL::detatchGui(GuiBase* gui)
     {
         assert(m_guis.find(gui) != m_guis.end());
         m_guis.erase(gui);
@@ -80,69 +91,82 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font BackendSFML::createDefaultFont()
+    Font BackendSDL::createDefaultFont()
     {
-        auto font = std::make_shared<BackendFontSFML>();
+        auto font = std::make_shared<BackendFontSDL>();
         font->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes));
         return Font(font, "");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendFontBase> BackendSFML::createFont()
+    std::shared_ptr<BackendFontBase> BackendSDL::createFont()
     {
-        return std::make_shared<BackendFontSFML>();
+        return std::make_shared<BackendFontSDL>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTextBase> BackendSFML::createText()
+    std::shared_ptr<BackendTextBase> BackendSDL::createText()
     {
-        return std::make_shared<BackendTextSFML>();
+        return std::make_shared<BackendTextSDL>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTextureBase> BackendSFML::createTexture()
+    std::shared_ptr<BackendTextureBase> BackendSDL::createTexture()
     {
-        return std::make_shared<BackendTextureSFML>();
+        return std::make_shared<BackendTextureSDL>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
+    void BackendSDL::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
     {
-        // Replace the cursor resource
-        auto newCursor = std::make_unique<sf::Cursor>();
-        newCursor->loadFromPixels(pixels, size, hotspot);
-        updateMouseCursor(type, std::move(newCursor));
+        SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(const_cast<std::uint8_t*>(pixels)), static_cast<int>(size.x), static_cast<int>(size.y),
+            32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        if (!surface)
+            return;
+
+        SDL_Cursor* bitmapCursor = SDL_CreateColorCursor(surface, static_cast<int>(hotspot.x), static_cast<int>(hotspot.y));
+        SDL_FreeSurface(surface);
+
+        if (!bitmapCursor)
+            return;
+
+        updateMouseCursorStyle(type, bitmapCursor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::resetMouseCursorStyle(Cursor::Type type)
+    void BackendSDL::resetMouseCursorStyle(Cursor::Type type)
     {
 #ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
+        // On Linux we use directional resize arrows, but SDL has no support for them
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
          || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
          || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
          || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             // If the cursor was previously set to a bitmap then release its resources
-            m_mouseCursors.erase(type);
+            auto it = m_mouseCursors.find(type);
+            if ((it != m_mouseCursors.end()) && it->second)
+            {
+                SDL_FreeCursor(it->second);
+                m_mouseCursors.erase(it);
+            }
 
-            updateMouseCursor(type, nullptr);
+            updateMouseCursorStyle(type, nullptr);
             return;
         }
 #endif
 
-        updateMouseCursor(type, createSystemCursor(type));
+        updateMouseCursorStyle(type, createSystemCursor(type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::setMouseCursor(GuiBase* gui, Cursor::Type type)
+    void BackendSDL::setMouseCursor(GuiBase* gui, Cursor::Type type)
     {
         assert(m_guis.find(gui) != m_guis.end());
         if (type == m_guis[gui].mouseCursor)
@@ -154,23 +178,24 @@ namespace tgui
         if (!m_guis[gui].window)
             return;
 
-        updateMouseCursor(m_guis[gui].window, type);
+        updateShownMouseCursor(m_guis[gui].window, type);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendSFML::isKeyboardModifierPressed(Event::KeyModifier modifierKey)
+    bool BackendSDL::isKeyboardModifierPressed(Event::KeyModifier modifierKey)
     {
+        const SDL_Keymod pressedModifiers = SDL_GetModState();
         switch (modifierKey)
         {
         case Event::KeyModifier::System:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LSystem) || sf::Keyboard::isKeyPressed(sf::Keyboard::RSystem);
+            return (pressedModifiers & KMOD_GUI) != 0;
         case Event::KeyModifier::Control:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl);
+            return (pressedModifiers & KMOD_CTRL) != 0;
         case Event::KeyModifier::Shift:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
+            return (pressedModifiers & KMOD_SHIFT) != 0;
         case Event::KeyModifier::Alt:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt);
+            return (pressedModifiers & KMOD_ALT) != 0;
         }
 
         assert(false);
@@ -179,78 +204,80 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::setClipboard(const String& contents)
+    void BackendSDL::setClipboard(const String& contents)
     {
-        sf::Clipboard::setString(sf::String(contents));
+        SDL_SetClipboardText(contents.toAnsiString().c_str());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String BackendSFML::getClipboard() const
+    String BackendSDL::getClipboard() const
     {
-        return String(sf::Clipboard::getString());
+        const char* text = SDL_GetClipboardText();
+        if (text)
+            return text;
+        else
+            return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendRenderTargetSFML> BackendSFML::createGuiRenderTarget(GuiSFML* gui, sf::RenderTarget& target)
+    std::shared_ptr<BackendRenderTargetSDL> BackendSDL::createGuiRenderTarget(GuiSDL* gui, SDL_Window* window)
     {
         assert(m_guis.find(gui) != m_guis.end());
-        m_guis[gui].window = dynamic_cast<sf::Window*>(&target);
-        return std::make_shared<BackendRenderTargetSFML>(target);
+        m_guis[gui].window = window;
+        return std::make_shared<BackendRenderTargetSDL>(window);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::unique_ptr<sf::Cursor> BackendSFML::createSystemCursor(Cursor::Type type)
+    SDL_Cursor* BackendSDL::createSystemCursor(Cursor::Type type)
     {
-        sf::Cursor::Type typeSFML = sf::Cursor::Type::Arrow;
+        SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_ARROW;
         switch (type)
         {
         case Cursor::Type::Arrow:
-            typeSFML = sf::Cursor::Type::Arrow;
+            typeSDL = SDL_SYSTEM_CURSOR_ARROW;
             break;
         case Cursor::Type::Text:
-            typeSFML = sf::Cursor::Type::Text;
+            typeSDL = SDL_SYSTEM_CURSOR_IBEAM;
             break;
         case Cursor::Type::Hand:
-            typeSFML = sf::Cursor::Type::Hand;
+            typeSDL = SDL_SYSTEM_CURSOR_HAND;
             break;
         case Cursor::Type::SizeLeft:
         case Cursor::Type::SizeRight:
-            typeSFML = sf::Cursor::Type::SizeHorizontal;
+            typeSDL = SDL_SYSTEM_CURSOR_SIZEWE;
             break;
         case Cursor::Type::SizeTop:
         case Cursor::Type::SizeBottom:
-            typeSFML = sf::Cursor::Type::SizeVertical;
+            typeSDL = SDL_SYSTEM_CURSOR_SIZENS;
             break;
         case Cursor::Type::SizeBottomRight:
         case Cursor::Type::SizeTopLeft:
-            typeSFML = sf::Cursor::Type::SizeTopLeftBottomRight;
+            typeSDL = SDL_SYSTEM_CURSOR_SIZENWSE;
             break;
         case Cursor::Type::SizeBottomLeft:
         case Cursor::Type::SizeTopRight:
-            typeSFML = sf::Cursor::Type::SizeBottomLeftTopRight;
+            typeSDL = SDL_SYSTEM_CURSOR_SIZENESW;
             break;
         case Cursor::Type::Crosshair:
-            typeSFML = sf::Cursor::Type::Cross;
+            typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
             break;
         case Cursor::Type::Help:
-            typeSFML = sf::Cursor::Type::Help;
+            TGUI_PRINT_WARNING("BackendSDL doesn't support Cursor::Type::Help");
             break;
         case Cursor::Type::NotAllowed:
-            typeSFML = sf::Cursor::Type::NotAllowed;
+            typeSDL = SDL_SYSTEM_CURSOR_NO;
             break;
         }
 
-        auto cursor = std::make_unique<sf::Cursor>();
-        cursor->loadFromSystem(typeSFML);
-        return cursor;
+        return SDL_CreateSystemCursor(typeSDL);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::updateMouseCursor(Cursor::Type type, std::unique_ptr<sf::Cursor> cursor)
+    void BackendSDL::updateMouseCursorStyle(Cursor::Type type, SDL_Cursor* cursor)
     {
 #ifdef TGUI_SYSTEM_WINDOWS
         // Make sure the old cursor isn't still being used before we destroy it
@@ -264,7 +291,10 @@ namespace tgui
             SetCursor(static_cast<HCURSOR>(LoadImage(NULL, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
 #endif
 
-        m_mouseCursors[type] = std::move(cursor);
+        if (m_mouseCursors[type])
+            SDL_FreeCursor(m_mouseCursors[type]);
+
+        m_mouseCursors[type] = cursor;
 
         // Update the cursor on the screen if the cursor was in use
         for (auto& pair : m_guis)
@@ -272,27 +302,32 @@ namespace tgui
             if (pair.second.mouseCursor == type)
             {
                 if (pair.second.window)
-                    updateMouseCursor(pair.second.window, type);
+                    updateShownMouseCursor(pair.second.window, type);
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSFML::updateMouseCursor(sf::Window* window, Cursor::Type type)
+    void BackendSDL::updateShownMouseCursor(SDL_Window* window, Cursor::Type type)
     {
 #ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
+        // On Linux we use directional resize arrows, but SDL has no support for them
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
             || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
-            if (!m_mouseCursors[type]) // Only bypass SFML when system cursors are used
+            if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
-                ::Display* displayX11 = XOpenDisplay(nullptr);
-                if (displayX11)
+                SDL_SysWMinfo sysInfo;
+                SDL_VERSION(&sysInfo.version);
+                if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11))
                 {
+                    auto* displayX11 = sysInfo.info.x11.display;
+                    if (!displayX11)
+                        return;
+
                     unsigned int shapeX11;
                     if (type == Cursor::Type::SizeLeft)
                         shapeX11 = XC_left_side;
@@ -311,15 +346,16 @@ namespace tgui
                     else // if (type == Cursor::Type::SizeTopRight)
                         shapeX11 = XC_top_right_corner;
 
-                    ::Cursor cursorX11 = XCreateFontCursor(displayX11, shapeX11);
+                    auto cursorX11 = XCreateFontCursor(displayX11, shapeX11);
                     if (cursorX11 != None)
                     {
-                        XDefineCursor(displayX11, window->getSystemHandle(), cursorX11);
+                        XDefineCursor(displayX11, sysInfo.info.x11.window, cursorX11);
                         XFreeCursor(displayX11, cursorX11);
                     }
+
                     XFlush(displayX11);
-                    XCloseDisplay(displayX11);
                 }
+
                 return;
             }
         }
@@ -327,15 +363,22 @@ namespace tgui
 
         // If the cursor doesn't exist yet then create it now
         if (!m_mouseCursors[type])
-            m_mouseCursors[type] = createSystemCursor(type);
+        {
+            SDL_Cursor* cursor = createSystemCursor(type);
+            if (!cursor)
+                return;
 
-        // Pass the cursor to SFML to set it while the mouse is on top of the window
-        window->setMouseCursor(*m_mouseCursors[type]);
+            m_mouseCursors[type] = cursor;
+        }
+
+        // Pass the cursor to SDL to set it while the mouse is on top of the window
+        SDL_SetCursor(m_mouseCursors[type]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
+/// TODO: Disable unity build for backend files and remove this part
 #ifdef TGUI_SYSTEM_LINUX
     // Undefine some annoying generic defines from X.h so that we don't get errors in unity builds
     #undef None

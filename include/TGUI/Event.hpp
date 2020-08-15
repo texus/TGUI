@@ -96,7 +96,7 @@ namespace tgui
             Backslash,    //!< The \ key
             Tilde,        //!< The ~ key
             Equal,        //!< The = key
-            Hyphen,       //!< The - key (hyphen)
+            Minus,        //!< The - key (hyphen)
             Space,        //!< The Space key
             Enter,        //!< The Enter/Return keys
             Backspace,    //!< The Backspace key
@@ -108,7 +108,7 @@ namespace tgui
             Insert,       //!< The Insert key
             Delete,       //!< The Delete key
             Add,          //!< The + key
-            Subtract,     //!< The - key (minus, usually from numpad)
+            Subtract,     //!< The - key (minus from numpad)
             Multiply,     //!< The * key
             Divide,       //!< The / key
             Left,         //!< Left arrow

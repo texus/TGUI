@@ -23,123 +23,121 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_BACKEND_TEXT_SFML_HPP
-#define TGUI_BACKEND_TEXT_SFML_HPP
+#ifndef TGUI_BACKEND_FONT_SDL_HPP
+#define TGUI_BACKEND_FONT_SDL_HPP
 
-#include <TGUI/BackendText.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include <TGUI/BackendFont.hpp>
+
+#include <SDL_ttf.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Text implementation that makes use of SFML
+    /// @brief Font implementation that makes use of SDL
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BackendTextSFML : public BackendTextBase
+    class TGUI_API BackendFontSDL : public BackendFontBase
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the text
-        /// @return Size of the bounding box around the text
+        /// @brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f getSize() override;
+        ~BackendFontSDL();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text
-        /// @param string  Text that should be displayed
+        /// @brief Loads a font from a file
+        ///
+        /// @param filename  Filename of the font to load
+        ///
+        /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setString(const String& string) override;
+        bool loadFromFile(const String& filename) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the size of the characters
-        /// @param characterSize  Maximum size available for characters above the baseline
+        /// @brief Loads a font from memory
+        ///
+        /// @param data         Pointer to the file data in memory
+        /// @param sizeInBytes  Size of the data to load, in bytes
+        ///
+        /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCharacterSize(unsigned int characterSize) override;
+        bool loadFromMemory(const void* data, std::size_t sizeInBytes) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text
-        /// @param color  Text color
+        /// @brief Retrieve a glyph of the font
+        ///
+        /// If the font is a bitmap font, not all character sizes might be available. If the glyph is not available at the
+        /// requested size, an empty glyph is returned.
+        ///
+        /// @param codePoint        Unicode code point of the character to get
+        /// @param characterSize    Reference character size
+        /// @param bold             Retrieve the bold version or the regular one?
+        /// @param outlineThickness Thickness of outline (when != 0 the glyph will not be filled)
+        ///
+        /// @return The glyph corresponding to codePoint and characterSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFillColor(const Color& color) override;
+        FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text outline
-        /// @param color  Outline color
+        /// @brief Returns the kerning offset of two glyphs
+        ///
+        /// The kerning is an extra offset (negative) to apply between two glyphs when rendering them, to make the pair look
+        /// more "natural". For example, the pair "AV" have a special kerning to make them closer than other characters.
+        /// Most of the glyphs pairs have a kerning offset of zero, though.
+        ///
+        /// @param first         Unicode code point of the first character
+        /// @param second        Unicode code point of the second character
+        /// @param characterSize Size of the characters
+        ///
+        /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setOutlineColor(const Color& color) override;
+        float getKerning(char32_t first, char32_t second, unsigned int characterSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the thickness of the text outline
-        /// @param thickness  Outline thickness
+        /// @brief Returns the line spacing
+        ///
+        /// Line spacing is the vertical offset to apply between two consecutive lines of text.
+        ///
+        /// @param characterSize Size of the characters
+        ///
+        /// @return Line spacing, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setOutlineThickness(float thickness) override;
+        float getLineSpacing(unsigned int characterSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text style
-        /// @param style  New text style
+        /// @brief Returns a pointer to the internal SDL font
+        /// @param characterSize  Font size of the font that should be returned
+        /// @return Reference to internal font
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setStyle(TextStyle style) override;
+        TTF_Font* getInternalFont(unsigned int characterSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font used by the text
-        /// @param font  New text font
+        /// @internal
+        /// Constructs the internal font object. Called indirectly by getInternalFont when the font didn't exist in the cache.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFont(const Font& font) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the top-left position of the character at the provided index
-        /// @param index  Index of the character for which the position should be returned
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f findCharacterPos(std::size_t index) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a reference to the internal SFML text
-        /// @return Reference to internal text
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Text& getInternalText();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a const reference to the internal SFML text
-        /// @return Const reference to internal text
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Text& getInternalText() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Updates the caches text dimensions
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void recalculateSize();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Calculates the extra vertical space that should be included between each line of text
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float calculateExtraLineSpace(const sf::Font* font, unsigned int characterSize, unsigned int style);
+        TTF_Font* loadInternalFont(unsigned int characterSize) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::Text m_text;
-        Vector2f m_size;
+        String m_filename;
+        const void* m_memoryAddress = nullptr;
+        std::size_t m_memorySizeInBytes = 0;
+        unsigned int m_lastCharacterSize = 0;
+        TTF_Font* m_cachedFont = nullptr;
     };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_BACKEND_TEXT_SFML_HPP
+#endif // TGUI_BACKEND_FONT_SDL_HPP

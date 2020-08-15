@@ -57,14 +57,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize) const
+    float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize)
     {
         return m_font.getKerning(first, second, characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontSFML::getLineSpacing(unsigned int characterSize) const
+    float BackendFontSFML::getLineSpacing(unsigned int characterSize)
     {
         return m_font.getLineSpacing(characterSize);
     }
@@ -72,13 +72,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Font& BackendFontSFML::getInternalFont()
-    {
-        return m_font;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font& BackendFontSFML::getInternalFont() const
     {
         return m_font;
     }

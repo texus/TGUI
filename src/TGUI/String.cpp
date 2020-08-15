@@ -2234,6 +2234,7 @@ namespace tgui
     }
 
 // Code didn't compile with AppleClang 9.1 (Xcode 9.4). Android build also failed, so libc++ issue?
+/// TODO: There was a related include missing when this code was last tested. Does it still fail?
 /*
     std::basic_ostream<char16_t>& operator<<(std::basic_ostream<char16_t>& os, const String& str)
     {

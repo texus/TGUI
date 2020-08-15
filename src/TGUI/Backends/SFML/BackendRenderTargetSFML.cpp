@@ -38,9 +38,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSFML::setTarget(sf::RenderTarget& target)
+    BackendRenderTargetSFML::BackendRenderTargetSFML(sf::RenderTarget& target) :
+        m_target(&target)
     {
-        m_target = &target;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,9 +206,13 @@ namespace tgui
 
         sf::RenderStates sfStates = convertRenderStates(transformedStates);
         if (sprite.getTexture().getData()->svgImage)
+        {
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getSvgTexture()), "BackendRenderTargetSFML::drawSprite requires SVG texture of type BackendTextureSFML");
             sfStates.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getSvgTexture())->getInternalTexture();
+        }
         else
         {
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture), "BackendRenderTargetSFML::drawSprite requires backend texture of type BackendTextureSFML");
             sfStates.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
             sfStates.shader = sprite.getTexture().getShader();
         }
@@ -243,6 +247,7 @@ namespace tgui
                                            matrix[1], matrix[5], std::floor(matrix[13] + 0.1f),
                                            matrix[3], matrix[7], matrix[15]};
 
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextSFML>(text.getBackendText()), "BackendRenderTargetSFML::drawText requires backend text of type BackendTextSFML");
         m_target->draw(std::static_pointer_cast<BackendTextSFML>(text.getBackendText())->getInternalText(), sfStates);
     }
 

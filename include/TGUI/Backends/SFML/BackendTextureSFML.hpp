@@ -108,10 +108,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
-        std::unique_ptr<sf::Image> image;
-        sf::Texture texture;
+        std::unique_ptr<sf::Image> m_image;
+        sf::Texture m_texture;
     };
 }
 

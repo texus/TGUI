@@ -45,8 +45,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API FontGlyph
     {
-        float     advance;  //!< Offset to move horizontally to the next character
-        FloatRect bounds;   //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
+        float     advance = 0;  //!< Offset to move horizontally to the next character
+        FloatRect bounds;       //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
     };
 
 

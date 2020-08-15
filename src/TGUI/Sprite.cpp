@@ -42,6 +42,100 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Sprite::Sprite(const Sprite& other) :
+#if TGUI_BUILD_WITH_SFML
+        m_shader     (other.m_shader),
+#endif
+        m_size       (other.m_size),
+        m_texture    (other.m_texture),
+        m_svgTexture (nullptr),
+        m_vertices   (other.m_vertices),
+        m_indices    (other.m_indices),
+        m_visibleRect(other.m_visibleRect),
+        m_vertexColor(other.m_vertexColor),
+        m_opacity    (other.m_opacity),
+        m_rotation   (other.m_rotation),
+        m_position   (other.m_position),
+        m_scalingType(other.m_scalingType)
+    {
+        if (m_texture.getData() && m_texture.getData()->svgImage)
+            updateVertices();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Sprite::Sprite(Sprite&& other) noexcept :
+#if TGUI_BUILD_WITH_SFML
+        m_shader     (std::move(other.m_shader)),
+#endif
+        m_size       (std::move(other.m_size)),
+        m_texture    (std::move(other.m_texture)),
+        m_svgTexture (std::move(other.m_svgTexture)),
+        m_vertices   (std::move(other.m_vertices)),
+        m_indices    (std::move(other.m_indices)),
+        m_visibleRect(std::move(other.m_visibleRect)),
+        m_vertexColor(std::move(other.m_vertexColor)),
+        m_opacity    (std::move(other.m_opacity)),
+        m_rotation   (std::move(other.m_rotation)),
+        m_position   (std::move(other.m_position)),
+        m_scalingType(std::move(other.m_scalingType))
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Sprite& Sprite::operator= (const Sprite& other)
+    {
+        if (this != &other)
+        {
+            Sprite temp(other);
+
+#if TGUI_BUILD_WITH_SFML
+            std::swap(m_shader,      temp.m_shader);
+#endif
+            std::swap(m_size,        temp.m_size);
+            std::swap(m_texture,     temp.m_texture);
+            std::swap(m_svgTexture,  temp.m_svgTexture);
+            std::swap(m_vertices,    temp.m_vertices);
+            std::swap(m_indices,     temp.m_indices);
+            std::swap(m_visibleRect, temp.m_visibleRect);
+            std::swap(m_vertexColor, temp.m_vertexColor);
+            std::swap(m_opacity,     temp.m_opacity);
+            std::swap(m_rotation,    temp.m_rotation);
+            std::swap(m_position,    temp.m_position);
+            std::swap(m_scalingType, temp.m_scalingType);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Sprite& Sprite::operator= (Sprite&& other) noexcept
+    {
+        if (this != &other)
+        {
+#if TGUI_BUILD_WITH_SFML
+            m_shader      = std::move(other.m_shader);
+#endif
+            m_size        = std::move(other.m_size);
+            m_texture     = std::move(other.m_texture);
+            m_svgTexture  = std::move(other.m_svgTexture);
+            m_vertices    = std::move(other.m_vertices);
+            m_indices     = std::move(other.m_indices);
+            m_visibleRect = std::move(other.m_visibleRect);
+            m_vertexColor = std::move(other.m_vertexColor);
+            m_opacity     = std::move(other.m_opacity);
+            m_rotation    = std::move(other.m_rotation);
+            m_position    = std::move(other.m_position);
+            m_scalingType = std::move(other.m_scalingType);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Sprite::setTexture(const Texture& texture)
     {
         m_texture = texture;

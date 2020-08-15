@@ -25,7 +25,6 @@
 
 #include <TGUI/Backends/SFML/BackendTextSFML.hpp>
 #include <TGUI/Backends/SFML/BackendFontSFML.hpp>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +85,10 @@ namespace tgui
     void BackendTextSFML::setFont(const Font& font)
     {
         if (font)
+        {
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendFontSFML>(font.getBackendFont()), "BackendTextSFML::setFont requires font of type BackendFontSFML");
             m_text.setFont(std::static_pointer_cast<BackendFontSFML>(font.getBackendFont())->getInternalFont());
+        }
         else
         {
             // If an empty font is replaced by an empty font then no work needs to be done
@@ -173,7 +175,7 @@ namespace tgui
 
     float BackendTextSFML::calculateExtraLineSpace(const sf::Font* font, unsigned int characterSize, unsigned int style)
     {
-        assert(font != nullptr);
+        TGUI_ASSERT(font != nullptr, "BackendTextSFML::calculateExtraLineSpace can't be called with nullptr");
 
         const bool bold = (style & sf::Text::Style::Bold) != 0;
 

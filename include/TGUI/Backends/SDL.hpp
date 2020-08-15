@@ -22,48 +22,21 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_BACKEND_SDL_INCLUDE_HPP
+#define TGUI_BACKEND_SDL_INCLUDE_HPP
 
-#ifndef TGUI_VERTEX_HPP
-#define TGUI_VERTEX_HPP
+#include <TGUI/Backends/SDL/BackendSDL.hpp>
+#include <TGUI/Backends/SDL/BackendFontSDL.hpp>
+#include <TGUI/Backends/SDL/BackendTextSDL.hpp>
+#include <TGUI/Backends/SDL/BackendTextureSDL.hpp>
+#include <TGUI/Backends/SDL/BackendRenderTargetSDL.hpp>
+#include <TGUI/Backends/SDL/GuiSDL.hpp>
 
-#include <TGUI/Vector2.hpp>
-#include <cstdint>
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_BACKEND_SKIP_GUI_ALIAS
 namespace tgui
 {
-    struct TGUI_API Vertex
-    {
-        struct Color
-        {
-            Color(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0, std::uint8_t a = 255) :
-                red(r),
-                green(g),
-                blue(b),
-                alpha(a)
-            {
-            }
-
-            std::uint8_t red;
-            std::uint8_t green;
-            std::uint8_t blue;
-            std::uint8_t alpha;
-        };
-
-        Vertex(Vector2f vertexPos = {}, Color vertexColor = {}, Vector2f vertexTexCoord = {}) :
-            position {vertexPos},
-            color    {vertexColor},
-            texCoords{vertexTexCoord}
-        {
-        }
-
-        Vector2f position;
-        Color color;
-        Vector2f texCoords;
-    };
+    using Gui = GuiSDL;
 }
+#endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif // TGUI_VERTEX_HPP
+#endif // TGUI_BACKEND_SDL_INCLUDE_HPP
