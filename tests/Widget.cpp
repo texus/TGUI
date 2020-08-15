@@ -376,10 +376,8 @@ TEST_CASE("[Widget]")
 
             REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", "Text"), tgui::Exception);
 
-            // It might be unexpected, but the property is still set when an exception is thrown in setProperty.
-            // This is because the property is set before alerting the widget about the property change.
-            REQUIRE(renderer->getProperty("NonexistentProperty").getType() == tgui::ObjectConverter::Type::String);
-            REQUIRE(renderer->getProperty("NonexistentProperty").getString() == "Text");
+            // Calling setProperty with a nonexistent property will not create that property
+            REQUIRE(renderer->getProperty("NonexistentProperty").getType() == tgui::ObjectConverter::Type::None);
         }
 
         SECTION("Clone")

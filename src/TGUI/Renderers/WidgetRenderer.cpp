@@ -75,12 +75,21 @@ namespace tgui
 
     void WidgetRenderer::setProperty(const String& property, ObjectConverter&& value)
     {
-        if (m_data->propertyValuePairs[property] != value)
-        {
-            m_data->propertyValuePairs[property] = value;
+        if (m_data->propertyValuePairs[property] == value)
+            return;
 
+        const ObjectConverter oldValue = m_data->propertyValuePairs[property];
+        m_data->propertyValuePairs[property] = value;
+
+        try
+        {
             for (const auto& observer : m_data->observers)
                 observer.second(property);
+        }
+        catch (const Exception&)
+        {
+            m_data->propertyValuePairs[property] = oldValue;
+            throw;
         }
     }
 
