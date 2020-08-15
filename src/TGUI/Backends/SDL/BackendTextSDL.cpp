@@ -127,7 +127,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendTextSDL::setStyle(TextStyle style)
+    void BackendTextSDL::setStyle(TextStyles style)
     {
         m_fontStyle = static_cast<int>(static_cast<unsigned int>(style));
         m_texturesValid = false;
@@ -229,7 +229,7 @@ namespace tgui
         m_size.x = 0;
         m_size.y = m_linesUtf8.size() * lineSpacing;
 
-        if (m_fontStyle != TextStyle::Style::Regular)
+        if (m_fontStyle != TextStyle::Regular)
             TTF_SetFontStyle(font, m_fontStyle);
 
         std::vector<LineTexture> textures;
@@ -250,7 +250,7 @@ namespace tgui
         }
 
         // Restore the font style so that we can always assume that a font from the cache has no special style
-        if (m_fontStyle != TextStyle::Style::Regular)
+        if (m_fontStyle != TextStyle::Regular)
             TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 
         // Set the new texture

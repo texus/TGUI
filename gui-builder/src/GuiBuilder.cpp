@@ -1618,7 +1618,7 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
             newStyle |= (checkBoxItalic->isChecked() ? tgui::TextStyle::Italic : 0);
             newStyle |= (checkBoxUnderlined->isChecked() ? tgui::TextStyle::Underlined : 0);
             newStyle |= (checkBoxStrikeThrough->isChecked() ? tgui::TextStyle::StrikeThrough : 0);
-            onChange(tgui::Serializer::serialize(tgui::TextStyle{newStyle}));
+            onChange(tgui::Serializer::serialize(tgui::TextStyles{newStyle}));
         };
         checkBoxBold->onChange(updateTextStyleProperty);
         checkBoxItalic->onChange(updateTextStyleProperty);

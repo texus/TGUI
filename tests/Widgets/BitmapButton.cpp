@@ -173,7 +173,7 @@ TEST_CASE("[BitmapButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", tgui::TextStyle::Underlined));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }

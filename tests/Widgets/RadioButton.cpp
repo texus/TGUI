@@ -449,7 +449,7 @@ TEST_CASE("[RadioButton]")
         renderer.setBorderColor(tgui::Color::Blue);
         renderer.setBorderColorChecked({0, 0, 128});
         renderer.setTextStyle(tgui::TextStyle::Italic);
-        renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
+        renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough});
         renderer.setOpacity(0.7f);
         radioButton->setRenderer(renderer.getData());
 
@@ -475,7 +475,7 @@ TEST_CASE("[RadioButton]")
                                             renderer.setTextColorCheckedHover({192, 64, 0});
                                             renderer.setBackgroundColorCheckedHover({0, 192, 64});
                                             renderer.setBorderColorCheckedHover({64, 0, 192});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
+                                            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
                                             if (textured)
                                                 renderer.setTextureCheckedHover("resources/Texture4.png");
                                          };
@@ -484,7 +484,7 @@ TEST_CASE("[RadioButton]")
                                             renderer.setTextColorCheckedDisabled({64, 192, 0});
                                             renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
                                             renderer.setBorderColorCheckedDisabled({192, 0, 64});
-                                            renderer.setTextStyleChecked(tgui::TextStyle{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
+                                            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
                                             if (textured)
                                                 renderer.setTextureCheckedDisabled("resources/Texture6.png");
                                         };

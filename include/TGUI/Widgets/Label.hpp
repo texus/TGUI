@@ -427,7 +427,7 @@ namespace tgui
         // Cached renderer properties
         Borders   m_bordersCached;
         Padding   m_paddingCached;
-        TextStyle m_textStyleCached;
+        TextStyles m_textStyleCached;
         Color     m_textColorCached;
         Color     m_borderColorCached;
         Color     m_backgroundColorCached;

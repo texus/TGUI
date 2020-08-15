@@ -64,7 +64,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define TGUI_RENDERER_PROPERTY_TEXT_STYLE(CLASS, NAME, DEFAULT) \
-    TextStyle CLASS::get##NAME() const \
+    TextStyles CLASS::get##NAME() const \
     { \
         const auto it = m_data->propertyValuePairs.find(String(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
@@ -72,7 +72,7 @@
         else \
             return DEFAULT; \
     } \
-    void CLASS::set##NAME(TextStyle style) \
+    void CLASS::set##NAME(TextStyles style) \
     { \
         setProperty(String(#NAME), ObjectConverter{style}); \
     }

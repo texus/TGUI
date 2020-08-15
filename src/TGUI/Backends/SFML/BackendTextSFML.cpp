@@ -74,7 +74,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendTextSFML::setStyle(TextStyle style)
+    void BackendTextSFML::setStyle(TextStyles style)
     {
         m_text.setStyle(style);
         recalculateSize();

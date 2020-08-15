@@ -400,7 +400,7 @@ namespace tgui
                     decodedStyle |= TextStyle::StrikeThrough;
             }
 
-            return TextStyle(decodedStyle);
+            return TextStyles(decodedStyle);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

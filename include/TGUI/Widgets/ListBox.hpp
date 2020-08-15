@@ -706,8 +706,8 @@ namespace tgui
         Color     m_textColorHoverCached;
         Color     m_selectedTextColorCached;
         Color     m_selectedTextColorHoverCached;
-        TextStyle m_textStyleCached;
-        TextStyle m_selectedTextStyleCached;
+        TextStyles m_textStyleCached;
+        TextStyles m_selectedTextStyleCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

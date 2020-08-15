@@ -180,9 +180,9 @@ namespace tgui
         ///
         /// @param style  Text style to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(TextStyle::Style style) :
+        ObjectConverter(TextStyle style) :
             m_type {Type::TextStyle},
-            m_value{TextStyle(style)}
+            m_value{TextStyles(style)}
         {
         }
 
@@ -192,7 +192,7 @@ namespace tgui
         ///
         /// @param style  Text style to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(TextStyle style) :
+        ObjectConverter(TextStyles style) :
             m_type {Type::TextStyle},
             m_value{style}
         {
@@ -294,7 +294,7 @@ namespace tgui
         /// This function will assert when something other than a text style was saved
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const TextStyle& getTextStyle();
+        const TextStyles& getTextStyle();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,7 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-        Variant<String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
+        Variant<String, Font, Color, Outline, bool, float, Texture, TextStyles, std::shared_ptr<RendererData>> m_value;
 
         bool m_serialized = false;
         String m_string;

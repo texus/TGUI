@@ -163,7 +163,7 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", tgui::TextStyle::Underlined));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }

@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const TextStyle& ObjectConverter::getTextStyle()
+    const TextStyles& ObjectConverter::getTextStyle()
     {
         assert(m_type != Type::None);
         assert(m_type == Type::TextStyle || m_type == Type::String);
@@ -155,7 +155,7 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
-        return m_value.get<TextStyle>();
+        return m_value.get<TextStyles>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ namespace tgui
         case Type::Texture:
             return m_value.get<Texture>() == right.m_value.get<Texture>();
         case Type::TextStyle:
-            return m_value.get<TextStyle>() == right.m_value.get<TextStyle>();
+            return m_value.get<TextStyles>() == right.m_value.get<TextStyles>();
         case Type::RendererData:
             return m_value.get<std::shared_ptr<RendererData>>() == right.m_value.get<std::shared_ptr<RendererData>>();
         default: // This case should never occur, but prevents a warning that control reaches end of non-void function

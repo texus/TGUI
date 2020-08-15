@@ -506,7 +506,7 @@ namespace tgui
         Color     m_selectedBackgroundColorCached;
         Color     m_selectedBackgroundColorHoverCached;
         Color     m_backgroundColorHoverCached;
-        TextStyle m_textStyleCached;
+        TextStyles m_textStyleCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

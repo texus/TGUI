@@ -126,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const String& text, Color color, TextStyle style)
+    void ChatBox::addLine(const String& text, Color color, TextStyles style)
     {
         // Remove the oldest line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
@@ -182,7 +182,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextStyle ChatBox::getLineTextStyle(std::size_t lineIndex) const
+    TextStyles ChatBox::getLineTextStyle(std::size_t lineIndex) const
     {
         if (lineIndex < m_lines.size())
             return m_lines[lineIndex].text.getStyle();
@@ -275,14 +275,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTextStyle(TextStyle style)
+    void ChatBox::setTextStyle(TextStyles style)
     {
         m_textStyle = style;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextStyle ChatBox::getTextStyle() const
+    TextStyles ChatBox::getTextStyle() const
     {
         return m_textStyle;
     }
@@ -554,7 +554,7 @@ namespace tgui
             if (lineTextColor != m_textColor)
                 lineNode->propertyValuePairs["Color"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
-            const TextStyle lineTextStyle = getLineTextStyle(i);
+            const TextStyles lineTextStyle = getLineTextStyle(i);
             if (lineTextStyle != m_textStyle)
                 lineNode->propertyValuePairs["Style"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextStyle));
 
@@ -587,7 +587,7 @@ namespace tgui
                 if (childNode->propertyValuePairs["Color"])
                     lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["Color"]->value).getColor();
 
-                TextStyle lineTextStyle = getTextStyle();
+                TextStyles lineTextStyle = getTextStyle();
                 if (childNode->propertyValuePairs["Style"])
                     lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs["Style"]->value).getTextStyle();
 

@@ -111,13 +111,13 @@ TEST_CASE("[Serializer]")
 
     SECTION("serialize text style")
     {
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Regular}) == "Regular");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Bold}) == "Bold");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{tgui::TextStyle::Italic | tgui::TextStyle::Underlined}) == "Italic | Underlined");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"bold"}) == "Bold");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"italic | underlined"}) == "Italic | Underlined");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Regular}) == "Regular");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Bold}) == "Bold");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::Underlined}) == "Italic | Underlined");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{"bold"}) == "Bold");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{"italic | underlined"}) == "Italic | Underlined");
 
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{256}) == "Regular");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{256}) == "Regular");
     }
 
     SECTION("serialize renderer")

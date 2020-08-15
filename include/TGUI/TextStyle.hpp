@@ -33,37 +33,37 @@
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Enumeration of the text drawing styles
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    enum TextStyle
+    {
+        Regular       = 0,      //!< Regular characters, no style
+        Bold          = 1 << 0, //!< Bold characters
+        Italic        = 1 << 1, //!< Italic characters
+        Underlined    = 1 << 2, //!< Underlined characters
+        StrikeThrough = 1 << 3  //!< Strike through characters
+    };
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Wrapper for text styles
     ///
     /// The class is used for 2 purposes:
-    /// - Implicit converter for parameters. A function taking a TextStyle as parameter can be given either a
-    ///   tgui::TextStyle::Style (or multiple combined with | operator) or a string representation as argument.
+    /// - Implicit converter for parameters. A function taking a TextStyles as parameter can be given either a
+    ///   tgui::TextStyle (or multiple combined with | operator) or a string representation as argument.
     /// - Storing no style at all. Some style settings may be optionally set and can thus remain unspecified.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API TextStyle
+    class TGUI_API TextStyles
     {
     public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Enumeration of the string drawing styles
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum Style
-        {
-            Regular       = 0,      //!< Regular characters, no style
-            Bold          = 1 << 0, //!< Bold characters
-            Italic        = 1 << 1, //!< Italic characters
-            Underlined    = 1 << 2, //!< Underlined characters
-            StrikeThrough = 1 << 3  //!< Strike through characters
-        };
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object without a text style
         ///
         /// The isSet function will return false when the object was created using this constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TextStyle() :
+        TGUI_CONSTEXPR TextStyles() :
             m_isSet{false},
             m_style{Regular}
         {
@@ -76,10 +76,10 @@ namespace tgui
         /// @param style  Text style to set
         ///
         /// @code
-        /// TextStyle style{tgui::TextStyle::Italic | tgui::TextStyle::Bold};
+        /// TextStyles style{tgui::TextStyle::Italic | tgui::TextStyle::Bold};
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TextStyle(unsigned int style) :
+        TGUI_CONSTEXPR TextStyles(unsigned int style) :
             m_isSet{true},
             m_style{style}
         {
@@ -91,7 +91,7 @@ namespace tgui
         ///
         /// @param string  String to be deserialized as text styles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TextStyle(const String& string);
+        TextStyles(const String& string);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,10 +100,10 @@ namespace tgui
         /// @param string  String to be deserialized as text styles
         ///
         /// @code
-        /// TextStyle style{"Italic | Bold"};
+        /// TextStyles style{"Italic | Bold"};
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TextStyle(const char* string);
+        TextStyles(const char* string);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextStyle::TextStyle(const String& string) :
+    TextStyles::TextStyles(const String& string) :
         m_isSet{true},
         m_style{Deserializer::deserialize(ObjectConverter::Type::TextStyle, string).getTextStyle()}
     {
@@ -39,8 +39,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextStyle::TextStyle(const char* string) :
-        TextStyle(String{string})
+    TextStyles::TextStyles(const char* string) :
+        TextStyles(String{string})
     {
     }
 

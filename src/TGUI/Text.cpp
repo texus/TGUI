@@ -139,7 +139,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Text::setStyle(TextStyle style)
+    void Text::setStyle(TextStyles style)
     {
         if (style == m_textStyle)
             return;
@@ -150,7 +150,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextStyle Text::getStyle() const
+    TextStyles Text::getStyle() const
     {
         return m_textStyle;
     }
@@ -201,7 +201,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize, TextStyle textStyle)
+    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize, TextStyles textStyle)
     {
         return getLineHeight(font, characterSize, textStyle) / 10.f;
     }
@@ -215,7 +215,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalOffset(Font font, unsigned int characterSize, TextStyle textStyle)
+    float Text::getExtraHorizontalOffset(Font font, unsigned int characterSize, TextStyles textStyle)
     {
         return getLineHeight(font, characterSize, textStyle) / 6.f;
     }
@@ -236,7 +236,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineHeight(Font font, unsigned int characterSize, TextStyle textStyle)
+    float Text::getLineHeight(Font font, unsigned int characterSize, TextStyles textStyle)
     {
         const float extraVerticalSpace = Text::calculateExtraVerticalSpace(font, characterSize, textStyle);
         return font.getLineSpacing(characterSize) + extraVerticalSpace;
@@ -251,7 +251,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineWidth(const String &text, Font font, unsigned int characterSize, TextStyle textStyle)
+    float Text::getLineWidth(const String &text, Font font, unsigned int characterSize, TextStyles textStyle)
     {
         if (font == nullptr)
             return 0.0f;
@@ -321,7 +321,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyle style)
+    float Text::calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyles style)
     {
         if (font == nullptr)
             return 0;

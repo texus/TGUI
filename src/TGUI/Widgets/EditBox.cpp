@@ -752,7 +752,7 @@ namespace tgui
         }
         else if (property == "TextStyle")
         {
-            const TextStyle style = getSharedRenderer()->getTextStyle();
+            const TextStyles style = getSharedRenderer()->getTextStyle();
             m_textBeforeSelection.setStyle(style);
             m_textAfterSelection.setStyle(style);
             m_textSelection.setStyle(style);
