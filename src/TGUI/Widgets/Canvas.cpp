@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/Canvas.hpp>
 
 #if TGUI_BUILD_WITH_SFML
+#include <TGUI/Backends/SFML/BackendTextureSFML.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,6 +188,10 @@ namespace tgui
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
+                    "Canvas::draw requires sprite to have a backend texture of type BackendTextureSFML");
+        statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
