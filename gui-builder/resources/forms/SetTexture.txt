@@ -35,7 +35,7 @@ Renderer.3 {
 }
 
 Canvas.ImagePreview {
-    Position = ((&.w - w) / 2, 10);
+    Position = ((&.iw - w) / 2, 10);
     Size = (100, 100);
 
     Renderer {
@@ -43,7 +43,7 @@ Canvas.ImagePreview {
 }
 
 Button.BtnSelectFile {
-    Position = ((&.w - w) / 2, &.h - 115);
+    Position = ((&.iw - w) / 2, &.ih - 115);
     Size = (100, 22);
     Text = "Select file";
     TextSize = 13;
@@ -73,7 +73,7 @@ Button.BtnSelectFile {
 
 Label.Widget3 {
     AutoSize = true;
-    Position = ((&.w - 215) / 2, (&.h - 75) + 2);
+    Position = ((&.iw - 215) / 2, (&.ih - 75) + 2);
     ScrollbarPolicy = Never;
     Size = (34.2, 18);
     Text = "Part:";
@@ -82,14 +82,14 @@ Label.Widget3 {
 }
 
 EditBox.EditPartRect {
-    Position = (((&.w - 215) / 2) + 52, &.h - 75);
+    Position = (((&.iw - 215) / 2) + 52, &.ih - 75);
     Size = (138, 22);
     TextSize = 13;
     Renderer = &1;
 }
 
 EditBox.EditMiddleRect {
-    Position = (((&.w - 215) / 2) + 52, &.h - 40);
+    Position = (((&.iw - 215) / 2) + 52, &.ih - 40);
     Size = (138, 22);
     TextSize = 13;
     Renderer = &1;
@@ -97,7 +97,7 @@ EditBox.EditMiddleRect {
 
 Label.Widget6 {
     AutoSize = true;
-    Position = ((&.w - 215) / 2, (&.h - 40) + 2);
+    Position = ((&.iw - 215) / 2, (&.ih - 40) + 2);
     ScrollbarPolicy = Never;
     Size = (48.2, 18);
     Text = "Middle:";
@@ -106,7 +106,7 @@ Label.Widget6 {
 }
 
 Picture.InfoPartRect {
-    Position = (((&.w - 215) / 2) + 198, (&.h - 75) + 3);
+    Position = (((&.iw - 215) / 2) + 198, (&.ih - 75) + 3);
     Size = (16, 16);
 
     ToolTip {
@@ -130,7 +130,7 @@ Picture.InfoPartRect {
 }
 
 Picture.InfoMiddleRect {
-    Position = (((&.w - 215) / 2) + 198, (&.h - 40) + 3);
+    Position = (((&.iw - 215) / 2) + 198, (&.ih - 40) + 3);
     Size = (16, 16);
 
     ToolTip {
