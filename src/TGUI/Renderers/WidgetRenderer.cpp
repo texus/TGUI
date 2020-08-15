@@ -75,14 +75,23 @@ namespace tgui
 
     void WidgetRenderer::setProperty(const std::string& property, ObjectConverter&& value)
     {
-        std::string lowercaseProperty = toLower(property);
+        const std::string lowercaseProperty = toLower(property);
 
-        if (m_data->propertyValuePairs[lowercaseProperty] != value)
+        if (m_data->propertyValuePairs[lowercaseProperty] == value)
+            return;
+
+        const ObjectConverter oldValue = m_data->propertyValuePairs[lowercaseProperty];
+        m_data->propertyValuePairs[lowercaseProperty] = value;
+
+        try
         {
-            m_data->propertyValuePairs[lowercaseProperty] = value;
-
             for (const auto& observer : m_data->observers)
                 observer.second(lowercaseProperty);
+        }
+        catch (const Exception&)
+        {
+            m_data->propertyValuePairs[lowercaseProperty] = oldValue;
+            throw;
         }
     }
 
