@@ -27,7 +27,7 @@
 
 TEST_CASE("[Container]")
 {
-    auto container = std::make_shared<tgui::Gui>();
+    auto container = std::make_shared<tgui::GuiSFML>();
 
     auto widget1 = tgui::Label::create();
     auto widget2 = tgui::Panel::create();
@@ -43,7 +43,7 @@ TEST_CASE("[Container]")
     SECTION("default font")
     {
         REQUIRE(tgui::Font::getGlobalFont() != nullptr);
-        REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
+        REQUIRE(std::make_shared<tgui::GuiSFML>()->getFont() != nullptr);
         REQUIRE(tgui::Panel::create()->getRenderer()->getFont() == nullptr);
     }
 
@@ -322,6 +322,42 @@ TEST_CASE("[Container]")
         REQUIRE(widget3->getInheritedOpacity() == 0.7f);
         REQUIRE(widget4->getInheritedOpacity() == 0.7f);
         REQUIRE(widget5->getInheritedOpacity() == 0.7f);
+    }
+
+    SECTION("getWidgetAtPosition / getWidgetBelowMouseCursor")
+    {
+        sf::RenderTexture renderTexture;
+        renderTexture.create(200, 200);
+        container->setTarget(renderTexture);
+        container->setAbsoluteView({-5, 40, 100, 400});
+
+        container->removeAllWidgets();
+        auto w1 = tgui::ClickableWidget::create();
+        w1->setPosition({50, 100});
+        w1->setSize({40, 80});
+        container->add(w1);
+
+        auto w2 = tgui::Panel::create();
+        w2->setPosition({10, 40});
+        w2->setSize({60, 100});
+        container->add(w2);
+
+        auto w3 = tgui::ClickableWidget::create();
+        w3->setPosition({20, 40});
+        w3->setSize({20, 40});
+        w2->add(w3);
+
+        REQUIRE(container->getWidgetAtPosition({70, 99}) == nullptr);
+        REQUIRE(container->getWidgetAtPosition({70, 100}) == w1);
+        REQUIRE(container->getWidgetAtPosition({69, 99}) == w2);
+        REQUIRE(container->getWidgetAtPosition({41, 120}) == w2);
+        REQUIRE(container->getWidgetAtPosition({41, 119}) == w3);
+
+        REQUIRE(container->getWidgetBelowMouseCursor({150, 29}) == nullptr);
+        REQUIRE(container->getWidgetBelowMouseCursor({150, 30}) == w1);
+        REQUIRE(container->getWidgetBelowMouseCursor({149, 29}) == w2);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 40}) == w2);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 39}) == w3);
     }
 
     // TODO: Events

@@ -300,6 +300,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget that is located at the given position
+        ///
+        /// @param pos  The location where the widget will be searched, relative to the gui view
+        ///
+        /// @return Widget at the queried position, or nullptr when there is no widget at that location
+        ///
+        /// @see getWidgetBelowMouseCursor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the leaf child widget below the mouse
+        ///
+        /// @param mousePos  Position of the mouse, in pixel coordinates, relative the the window
+        ///
+        /// @return Widget below the mouse, or nullptr when the mouse isn't on top of any widgets
+        ///
+        /// @see getWidgetAtPosition
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focuses the next widget in the gui
         ///
         /// @param recursive  If the focused widget is a container, should the next widget inside it be focused instead of

@@ -659,6 +659,9 @@ namespace tgui
         /// @brief Sets the font of the widget that is used when no font is set in the renderer
         ///
         /// @param font  New font for the widget
+        ///
+        /// This function is called by the parent widget and is not supposed to be directly. To set the font of this widget,
+        /// the Font property in the renderer should be changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setInheritedFont(const Font& font);
 
@@ -675,6 +678,9 @@ namespace tgui
         /// @brief Sets the opacity of the widget that will be multiplied with the opacity set in the renderer
         ///
         /// @param opacity  Opacity of the widget
+        ///
+        /// This function is called by the parent widget and is not supposed to be directly.To set the opacity of this widget,
+        /// the Opacity property in the renderer should be changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setInheritedOpacity(float opacity);
 

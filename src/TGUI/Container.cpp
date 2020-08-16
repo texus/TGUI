@@ -596,6 +596,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Widget::Ptr Container::getWidgetAtPosition(Vector2f pos) const
+    {
+        pos.x -= (getPosition().x + getChildWidgetsOffset().x);
+        pos.y -= (getPosition().y + getChildWidgetsOffset().y);
+
+        for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
+        {
+            auto& widget = *it;
+
+            // Look for a visible widget below the mouse
+            if (!widget->isVisible())
+                continue;
+            if (!widget->isMouseOnWidget(pos))
+                continue;
+
+            // If the widget is a container then look inside it
+            if (widget->isContainer())
+            {
+                Container::Ptr container = std::static_pointer_cast<Container>(widget);
+                auto childWidget = container->getWidgetAtPosition(pos);
+                if (childWidget)
+                    return childWidget;
+            }
+
+            // If the widget isn't a container, or there were no child widgets inside it, then return this widget
+            return widget;
+        }
+
+        // No visible widgets were found at the queried position
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Container::focusNextWidget(bool recursive)
     {
         // If the focused widget is a container then try to focus the next widget inside it

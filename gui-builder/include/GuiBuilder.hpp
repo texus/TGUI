@@ -119,7 +119,7 @@ private:
     std::vector<tgui::String> m_recentFiles;
 
     sf::RenderWindow m_window;
-    tgui::Gui m_gui;
+    tgui::GuiSFML m_gui;
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
