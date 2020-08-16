@@ -154,21 +154,14 @@ namespace tgui
         {
             if (!m_enabled && m_spriteDisabled.isSet())
                 target.drawSprite(states, m_spriteDisabled);
-            else if (m_mouseHover)
-            {
-                if (m_mouseDown && m_spriteDown.isSet())
-                    target.drawSprite(states, m_spriteDown);
-                else if (m_spriteHover.isSet())
-                    target.drawSprite(states, m_spriteHover);
-                else
-                    target.drawSprite(states, m_sprite);
-            }
+            else if (m_mouseHover && m_mouseDown && m_spriteDown.isSet())
+                target.drawSprite(states, m_spriteDown);
+            else if (m_mouseHover && m_spriteHover.isSet())
+                target.drawSprite(states, m_spriteHover);
+            else if (m_focused && m_spriteFocused.isSet())
+                target.drawSprite(states, m_spriteFocused);
             else
                 target.drawSprite(states, m_sprite);
-
-            // When the button is focused then draw an extra image
-            if (m_focused && m_spriteFocused.isSet())
-                target.drawSprite(states, m_spriteFocused);
         }
         else // There is no background texture
         {
