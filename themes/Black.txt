@@ -182,7 +182,7 @@ Tabs {
     DistanceToSide     = 8;
 }
 
-TextBox {
+TextArea {
     TextureBackground           = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
     TextColor                   = rgb(190, 190, 190);
     SelectedTextColor           = White;

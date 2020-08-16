@@ -23,33 +23,33 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_GUI_BUILDER_TEXT_BOX_PROPERTIES_HPP
-#define TGUI_GUI_BUILDER_TEXT_BOX_PROPERTIES_HPP
+#ifndef TGUI_GUI_BUILDER_TEXT_AREA_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_TEXT_AREA_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextArea.hpp>
 
-struct TextBoxProperties : WidgetProperties
+struct TextAreaProperties : WidgetProperties
 {
     // TODO: Scrollbar renderer
 
     void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto textBox = widget->cast<tgui::TextBox>();
+        auto textArea = widget->cast<tgui::TextArea>();
         if (property == "Text")
-            textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+            textArea->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "DefaultText")
-            textBox->setDefaultText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+            textArea->setDefaultText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
-            textBox->setTextSize(value.toUInt());
+            textArea->setTextSize(value.toUInt());
         else if (property == "MaximumCharacters")
-            textBox->setMaximumCharacters(value.toUInt());
+            textArea->setMaximumCharacters(value.toUInt());
         else if (property == "ReadOnly")
-            textBox->setReadOnly(parseBoolean(value, false));
+            textArea->setReadOnly(parseBoolean(value, false));
         else if (property == "VerticalScrollbarPolicy")
-            textBox->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
+            textArea->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "HorizontalScrollbarPolicy")
-            textBox->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
+            textArea->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -57,16 +57,16 @@ struct TextBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto textBox = widget->cast<tgui::TextBox>();
-        pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(textBox->getText())};
-        pair.first["DefaultText"] = {"MultilineString", tgui::Serializer::serialize(textBox->getDefaultText())};
-        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(textBox->getTextSize())};
-        pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(textBox->getMaximumCharacters())};
-        pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getVerticalScrollbarPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getHorizontalScrollbarPolicy())};
+        auto textArea = widget->cast<tgui::TextArea>();
+        pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(textArea->getText())};
+        pair.first["DefaultText"] = {"MultilineString", tgui::Serializer::serialize(textArea->getDefaultText())};
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(textArea->getTextSize())};
+        pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(textArea->getMaximumCharacters())};
+        pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textArea->isReadOnly())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getVerticalScrollbarPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getHorizontalScrollbarPolicy())};
 
-        const auto renderer = textBox->getSharedRenderer();
+        const auto renderer = textArea->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
@@ -105,4 +105,4 @@ private:
     }
 };
 
-#endif // TGUI_GUI_BUILDER_TEXT_BOX_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_TEXT_AREA_PROPERTIES_HPP

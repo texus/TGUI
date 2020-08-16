@@ -43,7 +43,7 @@
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
 #include "WidgetProperties/TabsProperties.hpp"
-#include "WidgetProperties/TextBoxProperties.hpp"
+#include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include "GuiBuilder.hpp"
 
@@ -323,7 +323,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
-    m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
+    m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     sf::Image icon;
@@ -951,7 +951,7 @@ void GuiBuilder::loadToolbox()
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
         {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
-        {"TextBox", []{ return tgui::TextBox::create(); }},
+        {"TextArea", []{ return tgui::TextArea::create(); }},
         {"TreeView", []{ return tgui::TreeView::create(); }},
     };
 
@@ -1680,10 +1680,10 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
         multilineStringWindow->setClientSize({470, 220});
         multilineStringWindow->loadWidgetsFromFile("resources/forms/SetMultilineString.txt");
 
-        auto textBox = multilineStringWindow->get<tgui::TextBox>("TextBox");
-        textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
-        textBox->onTextChange([=]{ onChange(tgui::Serializer::serialize(textBox->getText())); });
-        textBox->setFocused(true);
+        auto textArea = multilineStringWindow->get<tgui::TextArea>("TextArea");
+        textArea->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+        textArea->onTextChange([=]{ onChange(tgui::Serializer::serialize(textArea->getText())); });
+        textArea->setFocused(true);
 
         m_gui.setTabKeyUsageEnabled(false);
     });

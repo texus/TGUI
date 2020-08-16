@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Keyboard.hpp>
 
 #include <cmath>
@@ -35,9 +35,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox::TextBox()
+    TextArea::TextArea()
     {
-        m_type = "TextBox";
+        m_type = "TextArea";
         m_draggableWidget = true;
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection1.setFont(m_fontCached);
@@ -49,7 +49,7 @@ namespace tgui
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
         m_horizontalScrollbar->setVisible(false);
 
-        m_renderer = aurora::makeCopied<TextBoxRenderer>();
+        m_renderer = aurora::makeCopied<TextAreaRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTextSize(getGlobalTextSize());
@@ -60,52 +60,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox::Ptr TextBox::create()
+    TextArea::Ptr TextArea::create()
     {
-        return std::make_shared<TextBox>();
+        return std::make_shared<TextArea>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox::Ptr TextBox::copy(TextBox::ConstPtr textBox)
+    TextArea::Ptr TextArea::copy(TextArea::ConstPtr textArea)
     {
-        if (textBox)
-            return std::static_pointer_cast<TextBox>(textBox->clone());
+        if (textArea)
+            return std::static_pointer_cast<TextArea>(textArea->clone());
         else
             return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBoxRenderer* TextBox::getSharedRenderer()
+    TextAreaRenderer* TextArea::getSharedRenderer()
     {
-        return aurora::downcast<TextBoxRenderer*>(Widget::getSharedRenderer());
+        return aurora::downcast<TextAreaRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const TextBoxRenderer* TextBox::getSharedRenderer() const
+    const TextAreaRenderer* TextArea::getSharedRenderer() const
     {
-        return aurora::downcast<const TextBoxRenderer*>(Widget::getSharedRenderer());
+        return aurora::downcast<const TextAreaRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBoxRenderer* TextBox::getRenderer()
+    TextAreaRenderer* TextArea::getRenderer()
     {
-        return aurora::downcast<TextBoxRenderer*>(Widget::getRenderer());
+        return aurora::downcast<TextAreaRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const TextBoxRenderer* TextBox::getRenderer() const
+    const TextAreaRenderer* TextArea::getRenderer() const
     {
-        return aurora::downcast<const TextBoxRenderer*>(Widget::getRenderer());
+        return aurora::downcast<const TextAreaRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSize(const Layout2d& size)
+    void TextArea::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -120,13 +120,13 @@ namespace tgui
 
         updateScrollbars();
 
-        // The size of the text box has changed, update the text
+        // The size of the text area has changed, update the text
         rearrangeText(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setText(const String& text)
+    void TextArea::setText(const String& text)
     {
         // Remove all the excess characters when a character limit is set
         if ((m_maxChars > 0) && (text.length() > m_maxChars))
@@ -141,35 +141,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::addText(const String& text)
+    void TextArea::addText(const String& text)
     {
         setText(m_text + text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String TextBox::getText() const
+    String TextArea::getText() const
     {
         return m_text;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setDefaultText(const String& text)
+    void TextArea::setDefaultText(const String& text)
     {
         m_defaultText.setString(text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const String& TextBox::getDefaultText() const
+    const String& TextArea::getDefaultText() const
     {
         return m_defaultText.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
+    void TextArea::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
     {
         setCaretPosition(selectionEndIndex);
         auto selEnd = m_selEnd;
@@ -180,7 +180,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String TextBox::getSelectedText() const
+    String TextArea::getSelectedText() const
     {
         const std::size_t selStart = getSelectionStart();
         const std::size_t selEnd = getSelectionEnd();
@@ -192,21 +192,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getSelectionStart() const
+    std::size_t TextArea::getSelectionStart() const
     {
         return getIndexOfSelectionPos(m_selStart);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getSelectionEnd() const
+    std::size_t TextArea::getSelectionEnd() const
     {
         return getIndexOfSelectionPos(m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setTextSize(unsigned int size)
+    void TextArea::setTextSize(unsigned int size)
     {
         // Store the new text size
         m_textSize = size;
@@ -232,7 +232,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setMaximumCharacters(std::size_t maxChars)
+    void TextArea::setMaximumCharacters(std::size_t maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_maxChars = maxChars;
@@ -248,14 +248,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getMaximumCharacters() const
+    std::size_t TextArea::getMaximumCharacters() const
     {
         return m_maxChars;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
+    void TextArea::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_verticalScrollbarPolicy = policy;
 
@@ -279,14 +279,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Policy TextBox::getVerticalScrollbarPolicy() const
+    Scrollbar::Policy TextArea::getVerticalScrollbarPolicy() const
     {
         return m_verticalScrollbarPolicy;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
+    void TextArea::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_horizontalScrollbarPolicy = policy;
 
@@ -310,14 +310,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Policy TextBox::getHorizontalScrollbarPolicy() const
+    Scrollbar::Policy TextArea::getHorizontalScrollbarPolicy() const
     {
         return m_horizontalScrollbarPolicy;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setCaretPosition(std::size_t charactersBeforeCaret)
+    void TextArea::setCaretPosition(std::size_t charactersBeforeCaret)
     {
         // The caret position has to stay inside the string
         if (charactersBeforeCaret > m_text.length())
@@ -347,35 +347,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getCaretPosition() const
+    std::size_t TextArea::getCaretPosition() const
     {
         return getSelectionEnd();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setReadOnly(bool readOnly)
+    void TextArea::setReadOnly(bool readOnly)
     {
         m_readOnly = readOnly;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::isReadOnly() const
+    bool TextArea::isReadOnly() const
     {
         return m_readOnly;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getLinesCount() const
+    std::size_t TextArea::getLinesCount() const
     {
         return m_lines.size();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setFocused(bool focused)
+    void TextArea::setFocused(bool focused)
     {
         if (focused)
         {
@@ -401,42 +401,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::enableMonospacedFontOptimization(bool enable)
+    void TextArea::enableMonospacedFontOptimization(bool enable)
     {
         m_monospacedFontOptimizationEnabled = enable;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setVerticalScrollbarValue(unsigned int value)
+    void TextArea::setVerticalScrollbarValue(unsigned int value)
     {
         m_verticalScrollbar->setValue(value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getVerticalScrollbarValue() const
+    unsigned int TextArea::getVerticalScrollbarValue() const
     {
         return m_verticalScrollbar->getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setHorizontalScrollbarValue(unsigned int value)
+    void TextArea::setHorizontalScrollbarValue(unsigned int value)
     {
         m_horizontalScrollbar->setValue(value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getHorizontalScrollbarValue() const
+    unsigned int TextArea::getHorizontalScrollbarValue() const
     {
         return m_horizontalScrollbar->getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::isMouseOnWidget(Vector2f pos) const
+    bool TextArea::isMouseOnWidget(Vector2f pos) const
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
@@ -449,7 +449,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMousePressed(Vector2f pos)
+    void TextArea::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
@@ -465,7 +465,7 @@ namespace tgui
         {
             m_horizontalScrollbar->leftMousePressed(pos);
         }
-        else // The click occurred on the text box
+        else // The click occurred on the text area
         {
             // Don't continue when line height is 0
             if (m_lineHeight == 0)
@@ -538,7 +538,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMouseReleased(Vector2f pos)
+    void TextArea::leftMouseReleased(Vector2f pos)
     {
         // If there is a scrollbar then pass it the event
         if (m_verticalScrollbar->isShown())
@@ -560,7 +560,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseMoved(Vector2f pos)
+    void TextArea::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -615,7 +615,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseNoLongerOnWidget()
+    void TextArea::mouseNoLongerOnWidget()
     {
         if (m_mouseHover)
             mouseLeftWidget();
@@ -629,7 +629,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMouseButtonNoLongerDown()
+    void TextArea::leftMouseButtonNoLongerDown()
     {
         Widget::leftMouseButtonNoLongerDown();
 
@@ -642,7 +642,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::keyPressed(const Event::KeyEvent& event)
+    void TextArea::keyPressed(const Event::KeyEvent& event)
     {
         if (event.code == tgui::Event::KeyboardKey::Tab)
             textEntered('\t');
@@ -706,7 +706,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::textEntered(char32_t key)
+    void TextArea::textEntered(char32_t key)
     {
         if (m_readOnly)
             return;
@@ -769,7 +769,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::mouseWheelScrolled(float delta, Vector2f pos)
+    bool TextArea::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
@@ -790,7 +790,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2<std::size_t> TextBox::findCaretPosition(Vector2f position) const
+    Vector2<std::size_t> TextArea::findCaretPosition(Vector2f position) const
     {
         position.x -= m_bordersCached.getLeft() + m_paddingCached.getLeft();
         position.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
@@ -828,7 +828,7 @@ namespace tgui
             float charWidth;
             const char32_t curChar = m_lines[lineNumber][i];
             //if (curChar == U'\n')
-            //    return Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
+            //    return Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextArea strips newlines but this code is kept for when this function is generalized
             //else
             if (curChar == U'\t')
                 charWidth = static_cast<float>(m_fontCached.getGlyph(' ', getTextSize(), false).advance) * 4;
@@ -855,7 +855,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t TextBox::getIndexOfSelectionPos(Vector2<std::size_t> selectionPos) const
+    std::size_t TextArea::getIndexOfSelectionPos(Vector2<std::size_t> selectionPos) const
     {
         auto findIndex = [this](std::size_t line)
         {
@@ -875,7 +875,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::deleteSelectedCharacters()
+    void TextArea::deleteSelectedCharacters()
     {
         if (m_selStart != m_selEnd)
         {
@@ -898,7 +898,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretLeft(bool shiftPressed)
+    void TextArea::moveCaretLeft(bool shiftPressed)
     {
         if ((m_selStart != m_selEnd) && !shiftPressed)
         {
@@ -925,7 +925,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretRight(bool shiftPressed)
+    void TextArea::moveCaretRight(bool shiftPressed)
     {
         if ((m_selStart != m_selEnd) && !shiftPressed)
         {
@@ -950,7 +950,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretWordBegin()
+    void TextArea::moveCaretWordBegin()
     {
         // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
         bool skippedWhitespace = false;
@@ -998,7 +998,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretWordEnd()
+    void TextArea::moveCaretWordEnd()
     {
         // Move to the end of the word (or to the end of the next word when already at the end)
         bool skippedWhitespace = false;
@@ -1046,7 +1046,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretPageUp()
+    void TextArea::moveCaretPageUp()
     {
         // Move to the top line when not there already
         if (m_selEnd.y != m_topLine)
@@ -1066,7 +1066,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::moveCaretPageDown()
+    void TextArea::moveCaretPageDown()
     {
         // Move to the bottom line when not there already
         if (m_topLine + m_visibleLines > m_lines.size())
@@ -1088,7 +1088,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::backspaceKeyPressed()
+    void TextArea::backspaceKeyPressed()
     {
         if (m_readOnly)
             return;
@@ -1142,7 +1142,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::deleteKeyPressed()
+    void TextArea::deleteKeyPressed()
     {
         if (m_readOnly)
             return;
@@ -1161,7 +1161,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::copySelectedTextToClipboard()
+    void TextArea::copySelectedTextToClipboard()
     {
         const std::size_t selStart = getSelectionStart();
         const std::size_t selEnd = getSelectionEnd();
@@ -1173,7 +1173,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::cutSelectedTextToClipboard()
+    void TextArea::cutSelectedTextToClipboard()
     {
         const std::size_t selStart = getSelectionStart();
         const std::size_t selEnd = getSelectionEnd();
@@ -1187,7 +1187,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::pasteTextFromClipboard()
+    void TextArea::pasteTextFromClipboard()
     {
         const String& clipboardContents = getBackend()->getClipboard();
 
@@ -1209,7 +1209,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::selectAllText()
+    void TextArea::selectAllText()
     {
         m_selStart = {0, 0};
         m_selEnd = Vector2<std::size_t>(m_lines[m_lines.size()-1].length(), m_lines.size()-1);
@@ -1218,7 +1218,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::rearrangeText(bool keepSelection)
+    void TextArea::rearrangeText(bool keepSelection)
     {
         // Don't continue when line height is 0 or when there is no font yet
         if ((m_lineHeight == 0) || (m_fontCached == nullptr))
@@ -1376,7 +1376,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::updateScrollbars()
+    void TextArea::updateScrollbars()
     {
         if (m_horizontalScrollbar->isShown())
         {
@@ -1403,7 +1403,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::updateSelectionTexts()
+    void TextArea::updateSelectionTexts()
     {
         // If there is no selection then just put the whole text in m_textBeforeSelection
         if (m_selStart == m_selEnd)
@@ -1533,7 +1533,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f TextBox::getInnerSize() const
+    Vector2f TextArea::getInnerSize() const
     {
         return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
                 std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
@@ -1541,7 +1541,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::updateTime(Duration elapsedTime)
+    bool TextArea::updateTime(Duration elapsedTime)
     {
         bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
@@ -1565,7 +1565,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::recalculatePositions()
+    void TextArea::recalculatePositions()
     {
         if (!m_fontCached)
             return;
@@ -1664,7 +1664,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::recalculateVisibleLines()
+    void TextArea::recalculateVisibleLines()
     {
         if (m_lineHeight == 0)
             return;
@@ -1698,7 +1698,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& TextBox::getSignal(String signalName)
+    Signal& TextArea::getSignal(String signalName)
     {
         if (signalName == onTextChange.getName())
             return onTextChange;
@@ -1710,7 +1710,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::rendererChanged(const String& property)
+    void TextArea::rendererChanged(const String& property)
     {
         if (property == "Borders")
         {
@@ -1813,7 +1813,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::unique_ptr<DataIO::Node> TextBox::save(SavingRenderersMap& renderers) const
+    std::unique_ptr<DataIO::Node> TextArea::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
         node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_text));
@@ -1845,7 +1845,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    void TextArea::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         Widget::load(node, renderers);
 
@@ -1889,7 +1889,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void TextArea::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 
@@ -1906,7 +1906,7 @@ namespace tgui
         else
             target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
-        // Draw the contents of the text box
+        // Draw the contents of the text area
         {
             states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 

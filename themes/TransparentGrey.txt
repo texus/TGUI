@@ -166,7 +166,7 @@ Tabs {
     Borders = (1, 1, 1, 1);
 }
 
-TextBox {
+TextArea {
     BackgroundColor = rgba(180, 180, 180, 215);
     BorderColor = rgba(240, 240, 240, 215);
     TextColor = rgba(255, 255, 255, 215);

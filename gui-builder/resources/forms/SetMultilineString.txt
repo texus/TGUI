@@ -1,4 +1,4 @@
-TextBox.TextBox {
+TextArea.TextArea {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
     Position = (10, 10);

@@ -62,7 +62,7 @@ set(TEST_SOURCES
     Widgets/SpinControl.cpp
     Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
-    Widgets/TextBox.cpp
+    Widgets/TextArea.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
 )

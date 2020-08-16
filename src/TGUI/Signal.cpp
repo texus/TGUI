@@ -86,8 +86,8 @@ namespace tgui
         constexpr const char* const Slider::ValueChanged;
         constexpr const char* const SpinButton::ValueChanged;
         constexpr const char* const Tabs::TabSelected;
-        constexpr const char* const TextBox::TextChanged;
-        constexpr const char* const TextBox::SelectionChanged;
+        constexpr const char* const TextArea::TextChanged;
+        constexpr const char* const TextArea::SelectionChanged;
         constexpr const char* const TreeView::ItemSelected;
         constexpr const char* const TreeView::DoubleClicked;
         constexpr const char* const TreeView::Expanded;

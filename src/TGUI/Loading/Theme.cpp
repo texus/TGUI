@@ -241,7 +241,7 @@ namespace tgui
                                                    {"BackgroundColorDisabled", Color{230, 230, 230}},
                                                    {"SelectedBackgroundColor", Color{0, 110, 255}},
                                                    {"SelectedBackgroundColorHover", Color{30, 150, 255}}})},
-                    {"TextBox", RendererData::create({{"Borders", Borders{1}},
+                    {"TextArea", RendererData::create({{"Borders", Borders{1}},
                                                       {"Padding", Padding{0}},
                                                       {"CaretWidth", 1.f},
                                                       {"CaretColor", Color::Black},

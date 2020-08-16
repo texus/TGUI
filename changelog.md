@@ -31,6 +31,7 @@ TGUI 0.9-dev
 - Changed default value of ChangeItemOnScroll in ComboBox to false
 - Changed default value of ExpandDirection in ComboBox to Automatic
 - Changed default value of ScrollbarPolicy in Label to Automatic
+- Renamed TextBox to TextArea
 - Renamed getMenuList in MenuBar to getMenus
 - Renamed mouseOnWidget to isMouseOnWidget
 - Renamed TextStyle class to TextStyles and TextStyles::Style enum to TextStyle

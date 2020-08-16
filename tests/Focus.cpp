@@ -27,7 +27,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Group.hpp>
@@ -121,7 +121,7 @@ static bool widgetFocused(tgui::Widget::Ptr widget)
 //                 RadioButton
 //                 RadioButton
 //         EditBox
-//     TextBox
+//     TextArea
 //     CheckBox
 // Panel
 //     EditBox
@@ -184,11 +184,11 @@ TEST_CASE("[Focussing widgets]")
     editBox->setText("Some text");
     panel->add(editBox);
 
-    auto textBox = tgui::TextBox::create();
-    textBox->setSize({160, 60});
-    textBox->setPosition({10, 180});
-    textBox->setText("TextBox\nFilled with text");
-    outerGroup->add(textBox);
+    auto textArea = tgui::TextArea::create();
+    textArea->setSize({160, 60});
+    textArea->setPosition({10, 180});
+    textArea->setText("TextArea\nFilled with text");
+    outerGroup->add(textArea);
 
     auto checkBox2 = tgui::CheckBox::create("Check 2");
     checkBox2->setPosition({10, 250});
@@ -290,7 +290,7 @@ TEST_CASE("[Focussing widgets]")
         REQUIRE(widgetFocused(checkBox1));
 
         rootContainer->focusNextWidget();
-        REQUIRE(widgetFocused(textBox));
+        REQUIRE(widgetFocused(textArea));
 
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(checkBox2));
@@ -345,7 +345,7 @@ TEST_CASE("[Focussing widgets]")
         REQUIRE(widgetFocused(checkBox2));
 
         rootContainer->focusPreviousWidget();
-        REQUIRE(widgetFocused(textBox));
+        REQUIRE(widgetFocused(textArea));
 
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(checkBox1));

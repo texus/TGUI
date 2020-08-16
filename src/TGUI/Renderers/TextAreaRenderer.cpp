@@ -23,30 +23,30 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Renderers/TextBoxRenderer.hpp>
+#include <TGUI/Renderers/TextAreaRenderer.hpp>
 #include <TGUI/RendererDefines.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_OUTLINE(TextBoxRenderer, Borders)
-    TGUI_RENDERER_PROPERTY_OUTLINE(TextBoxRenderer, Padding)
+    TGUI_RENDERER_PROPERTY_OUTLINE(TextAreaRenderer, Borders)
+    TGUI_RENDERER_PROPERTY_OUTLINE(TextAreaRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BackgroundColor, Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, TextColor, Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, DefaultTextColor, Color(160, 160, 160))
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, SelectedTextColor, Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, SelectedTextBackgroundColor, Color(0, 110, 255))
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BorderColor, Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, CaretColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, TextColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, DefaultTextColor, Color(160, 160, 160))
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, SelectedTextColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, SelectedTextBackgroundColor, Color(0, 110, 255))
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, BorderColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextAreaRenderer, CaretColor, Color::Black)
 
-    TGUI_RENDERER_PROPERTY_TEXTURE(TextBoxRenderer, TextureBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(TextAreaRenderer, TextureBackground)
 
-    TGUI_RENDERER_PROPERTY_NUMBER(TextBoxRenderer, CaretWidth, 1)
+    TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, CaretWidth, 1)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(TextBoxRenderer, Scrollbar, "Scrollbar")
-    TGUI_RENDERER_PROPERTY_NUMBER(TextBoxRenderer, ScrollbarWidth, 0)
+    TGUI_RENDERER_PROPERTY_RENDERER(TextAreaRenderer, Scrollbar, "Scrollbar")
+    TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, ScrollbarWidth, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

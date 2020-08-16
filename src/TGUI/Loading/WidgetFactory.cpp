@@ -55,7 +55,7 @@
 #include <TGUI/Widgets/SpinControl.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TabContainer.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Widgets/VerticalLayout.hpp>
 
@@ -99,7 +99,7 @@ namespace tgui
         {"SpinControl", std::make_shared<SpinControl>},
         {"Tabs", std::make_shared<Tabs>},
         {"TabContainer", std::make_shared<TabContainer>},
-        {"TextBox", std::make_shared<TextBox>},
+        {"TextArea", std::make_shared<TextArea>},
         {"TreeView", std::make_shared<TreeView>},
         {"VerticalLayout", std::make_shared<VerticalLayout>}
     };

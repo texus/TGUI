@@ -192,7 +192,7 @@ namespace tgui
             static constexpr const char* const TabSelected = "TabSelected";   //!< A tab that was selected. Optional parameter: selected item
         };
 
-        struct TextBox : public Widget
+        struct TextArea : public Widget
         {
             static constexpr const char* const TextChanged = "TextChanged";             //!< The text was changed. Optional parameter: new text
             static constexpr const char* const SelectionChanged = "SelectionChanged";   //!< Selected text changed
