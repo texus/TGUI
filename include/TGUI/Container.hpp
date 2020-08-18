@@ -108,6 +108,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sorts a list of all the widgets in this container
+        ///
+        /// @param function Comparison function object (i.e. an object that satisfies the requirements of Compare) which
+        ///                 returns true if the first argument is less than (i.e. is ordered before) the second.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Function>
+        void sortWidgets(Function&& function)
+        {
+            std::sort(m_widgets.begin(), m_widgets.end(), std::forward<Function>(function));
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget to the container
         ///
         /// @param widgetPtr   Pointer to the widget you would like to add

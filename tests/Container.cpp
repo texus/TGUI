@@ -230,6 +230,22 @@ TEST_CASE("[Container]")
         REQUIRE(widget3->getWidgetName() == "w003");
     }
 
+    SECTION("sortWidgets")
+    {
+        REQUIRE(container->getWidgets().size() == 3);
+        widget1->setWidgetName("1");
+        widget2->setWidgetName("2");
+        widget3->setWidgetName("3");
+
+        container->getContainer()->sortWidgets([](const tgui::Widget::Ptr& p, const tgui::Widget::Ptr& p2){
+            return p->getWidgetName()[0] < p2->getWidgetName()[0];
+        });
+
+        REQUIRE(container->getWidgets()[0] == widget1);
+        REQUIRE(container->getWidgets()[1] == widget2);
+        REQUIRE(container->getWidgets()[2] == widget3);
+    }
+
     SECTION("focus")
     {
         auto editBox1 = tgui::EditBox::create();
