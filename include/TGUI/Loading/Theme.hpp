@@ -54,14 +54,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Destructor
-        ///
-        /// When a pointer to this theme was passed to setDefault, the default theme will be reset.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~Theme();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs a new theme, with an optional theme file to load
         ///
         /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
@@ -157,11 +149,28 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the theme class that widgets use by default
         ///
-        /// @param theme  Theme to use as default
+        /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ///
-        /// The default theme will automatically be reset to nullptr when the theme that is pointed to is destructed.
+        /// Calling this function is equivalent to the following:
+        /// @code
+        /// setDefault(tgui::Theme::create(primary))
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setDefault(Theme* theme);
+        static void setDefault(const String& primary = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the theme class that widgets use by default
+        ///
+        /// @param theme  Theme to use as default
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setDefault(std::shared_ptr<Theme> theme);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Resets the theme that widgets use by default
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setDefault(std::nullptr_t);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,17 +178,16 @@ namespace tgui
         ///
         /// @return Default theme
         ///
-        /// @warning When setDefault was not called or was given a nullptr as parameter, getDefault will return the default
-        ///          theme. If you set textures in this theme then you MUST call setDefault(nullptr) before the end of the
-        ///          program to prevent a potential crash due to undefined order of destruction.
+        /// When setDefault was not called or was given a nullptr as parameter, getDefault will create and return the default
+        /// "White" theme.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Theme* getDefault();
+        static std::shared_ptr<Theme> getDefault();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        static Theme* m_defaultTheme;
+        static std::shared_ptr<Theme> m_defaultTheme;
         static std::shared_ptr<BaseThemeLoader> m_themeLoader;  //!< Theme loader which will do the actual loading
         std::map<String, std::shared_ptr<RendererData>> m_renderers; //!< Maps ids to renderer datas
         String m_primary;

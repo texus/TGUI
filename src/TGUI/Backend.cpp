@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Backend.hpp>
+#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Timer.hpp>
 #include <TGUI/Font.hpp>
 
@@ -62,6 +63,9 @@ namespace tgui
 
             // Destroy the global font
             Font::setGlobalFont(nullptr);
+
+            // Destroy the global theme
+            Theme::setDefault(nullptr);
         }
     }
 

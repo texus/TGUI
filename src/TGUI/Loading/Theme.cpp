@@ -35,7 +35,7 @@ namespace tgui
     {
         struct DefaultTheme : public Theme
         {
-            void reset()
+            DefaultTheme()
             {
                 m_renderers = {
                     {"BitmapButton", RendererData::create({{"Borders", Borders{1}},
@@ -269,7 +269,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme* Theme::m_defaultTheme = nullptr;
+    std::shared_ptr<Theme> Theme::m_defaultTheme = nullptr;
     std::shared_ptr<BaseThemeLoader> Theme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,14 +279,6 @@ namespace tgui
     {
         if (!primary.empty())
             m_themeLoader->preload(primary);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Theme::~Theme()
-    {
-        if (m_defaultTheme == this)
-            setDefault(nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,21 +438,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Theme::setDefault(Theme* theme)
+    void Theme::setDefault(const String& primary)
     {
-        m_defaultTheme = theme;
+        setDefault(tgui::Theme::create(primary));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme* Theme::getDefault()
+    void Theme::setDefault(std::shared_ptr<Theme> theme)
+    {
+        m_defaultTheme = std::move(theme);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::setDefault(std::nullptr_t)
+    {
+        m_defaultTheme = nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<Theme> Theme::getDefault()
     {
         if (!m_defaultTheme)
-        {
-            static DefaultTheme defaultTheme;
-            defaultTheme.reset();
-            m_defaultTheme = &defaultTheme;
-        }
+            m_defaultTheme = std::make_shared<DefaultTheme>();
 
         return m_defaultTheme;
     }

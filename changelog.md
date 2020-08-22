@@ -27,6 +27,7 @@ TGUI 0.9-dev
 - Menus of menu bar are now always on top of all other widgets
 - Swapped padding and alignment parameters of addWidget in Grid
 - Moved uncheckRadioButtons from Container to RadioButtonGroup
+- Theme::setDefault now takes a shared_ptr or a filename as parameter
 - Changed return type of addItem in ListBox/ComboBox to return index of the item
 - Changed Knob value type from int to float
 - Changed default value of ChangeItemOnScroll in ComboBox to false
