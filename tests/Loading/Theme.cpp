@@ -41,6 +41,10 @@ TEST_CASE("[Theme]")
             REQUIRE_NOTHROW(theme.load("resources/Black.txt"));
             REQUIRE(theme.getPrimary() == "resources/Black.txt");
             REQUIRE_NOTHROW(theme.getRenderer("EditBox"));
+
+            auto theme2 = tgui::Theme::create("resources/Black.txt");
+            REQUIRE(theme2->getPrimary() == "resources/Black.txt");
+            REQUIRE_NOTHROW(theme2->getRenderer("CheckBox"));
         }
 
         SECTION("nonexistent file")

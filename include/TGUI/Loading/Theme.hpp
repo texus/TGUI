@@ -41,6 +41,10 @@ namespace tgui
     {
     public:
 
+        typedef std::shared_ptr<Theme> Ptr; //!< Shared widget pointer
+        typedef std::shared_ptr<const Theme> ConstPtr; //!< Shared constant widget pointer
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the theme class, with an optional theme file to load
         ///
@@ -55,6 +59,19 @@ namespace tgui
         /// When a pointer to this theme was passed to setDefault, the default theme will be reset.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ~Theme();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructs a new theme, with an optional theme file to load
+        ///
+        /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
+        ///
+        /// @return The new theme
+        ///
+        /// Unlike with widgets, it is not required to use a smart pointer for the theme. You do not have to use this function
+        /// to create a theme.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static Theme::Ptr create(const String& primary = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
