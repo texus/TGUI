@@ -285,18 +285,19 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Try to close the window
         ///
-        /// This will trigger the Closed signal. If no callback is requested then the window will be closed.
+        /// This will trigger the onClosing signal. If a callback function for this signal sets the abort parameter to true then
+        /// the window will remain open. Otherwise the onClose signal is triggered and the window is removed from its parent.
+        ///
+        /// If you want to close the window without those callbacks being triggered then you need to use the destroy() function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void close();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Destroys the window
+        /// @brief Closes the window
         ///
-        /// When no callback is requested when closing the window, this function will be called automatically.
-        ///
-        /// When you requested a callback on close then you get the opportunity to cancel the closing of the window.
-        /// If you want to keep it open then don't do anything, if you want to close it then just call this function.
+        /// This function is equivalent to removing the window from its parent. If you want to be receive a callback and have
+        /// the ability to abort the operation then you should use the close() function instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void destroy();
 
@@ -509,6 +510,12 @@ namespace tgui
         SignalChildWindow onMinimize   = {"Minimized"};     //!< The window was minimized. Optional parameter: pointer to the window
         SignalChildWindow onMaximize   = {"Maximized"};     //!< The window was maximized. Optional parameter: pointer to the window
         SignalChildWindow onEscapeKeyPress = {"EscapeKeyPressed"}; //!< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+
+        /// The window is about to be closed, unless the "abort" parameter is set to true.
+        /// @code
+        /// window->onClosing([](bool* abort) { *abort = true; });
+        /// @endcode
+        SignalTyped<bool*> onClosing = {"Closing"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

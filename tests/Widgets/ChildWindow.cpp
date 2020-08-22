@@ -39,6 +39,9 @@ TEST_CASE("[ChildWindow]")
         childWindow->onClose([](){});
         childWindow->onClose([](tgui::ChildWindow::Ptr){});
 
+        childWindow->onClosing([](){});
+        childWindow->onClosing([](bool*){});
+
         childWindow->onMaximize([](){});
         childWindow->onMaximize([](tgui::ChildWindow::Ptr){});
 

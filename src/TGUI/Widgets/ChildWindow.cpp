@@ -374,8 +374,13 @@ namespace tgui
 
     void ChildWindow::close()
     {
-        if (!onClose.emit(this))
-            destroy();
+        bool abort = false;
+        onClosing.emit(this, &abort);
+        if (abort)
+            return;
+
+        onClose.emit(this);
+        destroy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -832,6 +837,8 @@ namespace tgui
             return onMousePress;
         else if (signalName == onClose.getName())
             return onClose;
+        else if (signalName == onClosing.getName())
+            return onClosing;
         else if (signalName == onMinimize.getName())
             return onMinimize;
         else if (signalName == onMaximize.getName())

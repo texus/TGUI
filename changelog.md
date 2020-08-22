@@ -17,6 +17,7 @@ TGUI 0.9-dev
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle
 - Replaced setView in Gui by view/viewport setters with absolute or relative values
+- Added onClosing signal to ChildWindow to have a better way to abort closing it
 - Signal names, renderer names and widget/renderer properties are now case-sensitive
 - Added setWidth and setHeight helper functions
 - Added getCheckedRadioButton to RadioButtonGroup
