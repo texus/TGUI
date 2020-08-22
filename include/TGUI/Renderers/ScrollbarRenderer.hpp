@@ -45,8 +45,7 @@ namespace tgui
         ///
         /// @param color  The new track color
         ///
-        /// Note that this color is ignored when all normal images have been set.
-        ///
+        /// Note that this color is ignored when the track texture is set.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTrackColor(Color color);
 
@@ -83,8 +82,7 @@ namespace tgui
         ///
         /// @param color  The new thumb color
         ///
-        /// Note that this color is ignored when all normal images have been set.
-        ///
+        /// Note that this color is ignored when the thumb texture is set.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setThumbColor(Color color);
 
@@ -121,8 +119,7 @@ namespace tgui
         ///
         /// @param color  The new arrow background color
         ///
-        /// Note that this color is ignored when all normal images have been set.
-        ///
+        /// Note that this color is ignored when the arrow up and down textures are set.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setArrowBackgroundColor(Color color);
 
@@ -159,8 +156,7 @@ namespace tgui
         ///
         /// @param color  The new arrow color
         ///
-        /// Note that this color is ignored when all normal images have been set.
-        ///
+        /// Note that this color is ignored when the arrow up and down textures are set.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setArrowColor(Color color);
 
@@ -197,8 +193,7 @@ namespace tgui
         ///
         /// @param texture  The new track texture
         ///
-        /// When all textures are set, then the alternative color properties will be ignored.
-        ///
+        /// When this texture is set then the track color will be ignored.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureTrack(const Texture& texture);
 
@@ -235,8 +230,7 @@ namespace tgui
         ///
         /// @param texture  The new thumb texture
         ///
-        /// When all textures are set, then the alternative color properties will be ignored.
-        ///
+        /// When this texture is set then the thumb color will be ignored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureThumb(const Texture& texture);
 
@@ -273,8 +267,7 @@ namespace tgui
         ///
         /// @param texture  The new up arrow texture
         ///
-        /// When all textures are set, then the alternative color properties will be ignored.
-        ///
+        /// When this texture is set then the arrow background color and arrow color will be ignored for the up arrow
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureArrowUp(const Texture& texture);
 
@@ -311,8 +304,7 @@ namespace tgui
         ///
         /// @param texture  The new down arrow texture
         ///
-        /// When all textures are set, then the alternative color properties will be ignored.
-        ///
+        /// When this texture is set then the arrow background color and arrow color will be ignored for the down arrow
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureArrowDown(const Texture& texture);
 

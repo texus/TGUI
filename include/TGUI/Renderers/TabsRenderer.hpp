@@ -303,8 +303,7 @@ namespace tgui
         ///
         /// @param texture  The new tab texture
         ///
-        /// When this image and the selected tab image are set then the background color properties will be ignored.
-        ///
+        /// When this image is set then the background color properties will be ignored for non-selected tabs.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureTab(const Texture& texture);
 
@@ -337,8 +336,7 @@ namespace tgui
         ///
         /// @param texture  The new selected tab texture
         ///
-        /// When this image and the tab image are set then the background color properties will be ignored.
-        ///
+        /// When this image is set then the background color properties will be ignored for selected tabs.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureSelectedTab(const Texture& texture);
 

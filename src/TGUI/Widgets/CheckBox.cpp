@@ -193,21 +193,28 @@ namespace tgui
 
     void CheckBox::updateTextureSizes()
     {
-        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
+        if (m_spriteUnchecked.isSet())
         {
             m_spriteUnchecked.setSize(getInnerSize());
-            m_spriteChecked.setSize(
-                {getInnerSize().x + ((m_textureCheckedCached.getImageSize().x - m_textureUncheckedCached.getImageSize().x) * (getInnerSize().x / m_textureUncheckedCached.getImageSize().x)),
-                 getInnerSize().y + ((m_textureCheckedCached.getImageSize().y - m_textureUncheckedCached.getImageSize().y) * (getInnerSize().y / m_textureUncheckedCached.getImageSize().y))}
-            );
-
             m_spriteUncheckedHover.setSize(m_spriteUnchecked.getSize());
-            m_spriteCheckedHover.setSize(m_spriteChecked.getSize());
-
             m_spriteUncheckedDisabled.setSize(m_spriteUnchecked.getSize());
-            m_spriteCheckedDisabled.setSize(m_spriteChecked.getSize());
-
             m_spriteUncheckedFocused.setSize(m_spriteUnchecked.getSize());
+        }
+
+        if (m_spriteChecked.isSet())
+        {
+            if (m_spriteUnchecked.isSet())
+            {
+                m_spriteChecked.setSize(
+                    {getInnerSize().x + ((m_textureCheckedCached.getImageSize().x - m_textureUncheckedCached.getImageSize().x) * (getInnerSize().x / m_textureUncheckedCached.getImageSize().x)),
+                     getInnerSize().y + ((m_textureCheckedCached.getImageSize().y - m_textureUncheckedCached.getImageSize().y) * (getInnerSize().y / m_textureUncheckedCached.getImageSize().y))}
+                );
+            }
+            else
+                m_spriteChecked.setSize(getInnerSize());
+
+            m_spriteCheckedHover.setSize(m_spriteChecked.getSize());
+            m_spriteCheckedDisabled.setSize(m_spriteChecked.getSize());
             m_spriteCheckedFocused.setSize(m_spriteChecked.getSize());
         }
     }
@@ -221,43 +228,40 @@ namespace tgui
             target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
 
         states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
+        if (!m_checked && m_spriteUnchecked.isSet())
         {
-            if (m_checked)
-            {
-                const Sprite* checkedSprite;
-                if (!m_enabled && m_spriteCheckedDisabled.isSet())
-                    checkedSprite = &m_spriteCheckedDisabled;
-                else if (m_mouseHover && m_spriteCheckedHover.isSet())
-                    checkedSprite = &m_spriteCheckedHover;
-                else if (m_focused && m_spriteCheckedFocused.isSet())
-                    checkedSprite = &m_spriteCheckedFocused;
-                else
-                    checkedSprite = &m_spriteChecked;
-
-                // The image may need to be shifted when the check leaves the box
-                if (getInnerSize().y != checkedSprite->getSize().y)
-                {
-                    float diff = getInnerSize().y - checkedSprite->getSize().y;
-
-                    states.transform.translate({0, diff});
-                    target.drawSprite(states, *checkedSprite);
-                    states.transform.translate({0, -diff});
-                }
-                else // Draw the checked texture normally
-                    target.drawSprite(states, *checkedSprite);
-            }
+            if (!m_enabled && m_spriteUncheckedDisabled.isSet())
+                target.drawSprite(states, m_spriteUncheckedDisabled);
+            else if (m_mouseHover && m_spriteUncheckedHover.isSet())
+                target.drawSprite(states, m_spriteUncheckedHover);
+            else if (m_focused && m_spriteUncheckedFocused.isSet())
+                target.drawSprite(states, m_spriteUncheckedFocused);
             else
+                target.drawSprite(states, m_spriteUnchecked);
+        }
+        else if (m_checked && m_spriteChecked.isSet())
+        {
+            const Sprite* checkedSprite;
+            if (!m_enabled && m_spriteCheckedDisabled.isSet())
+                checkedSprite = &m_spriteCheckedDisabled;
+            else if (m_mouseHover && m_spriteCheckedHover.isSet())
+                checkedSprite = &m_spriteCheckedHover;
+            else if (m_focused && m_spriteCheckedFocused.isSet())
+                checkedSprite = &m_spriteCheckedFocused;
+            else
+                checkedSprite = &m_spriteChecked;
+
+            // The image may need to be shifted when the check leaves the box
+            if (getInnerSize().y != checkedSprite->getSize().y)
             {
-                if (!m_enabled && m_spriteUncheckedDisabled.isSet())
-                    target.drawSprite(states, m_spriteUncheckedDisabled);
-                else if (m_mouseHover && m_spriteUncheckedHover.isSet())
-                    target.drawSprite(states, m_spriteUncheckedHover);
-                else if (m_focused && m_spriteUncheckedFocused.isSet())
-                    target.drawSprite(states, m_spriteUncheckedFocused);
-                else
-                    target.drawSprite(states, m_spriteUnchecked);
+                float diff = getInnerSize().y - checkedSprite->getSize().y;
+
+                states.transform.translate({0, diff});
+                target.drawSprite(states, *checkedSprite);
+                states.transform.translate({0, -diff});
             }
+            else // Draw the checked texture normally
+                target.drawSprite(states, *checkedSprite);
         }
         else // There are no images
         {

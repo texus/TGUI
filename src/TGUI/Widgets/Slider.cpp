@@ -107,28 +107,43 @@ namespace tgui
         else if (getSize().x > getSize().y)
             m_verticalScroll = false;
 
-        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
+        if (m_spriteTrack.isSet())
         {
-            float scaleFactor;
             if (m_verticalImage == m_verticalScroll)
             {
                 m_spriteTrack.setSize(getInnerSize());
                 m_spriteTrackHover.setSize(getInnerSize());
-
-                if (m_verticalScroll)
-                    scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().x;
-                else
-                    scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().y;
+                m_spriteTrack.setRotation(0);
+                m_spriteTrackHover.setRotation(0);
             }
             else // The image is rotated
             {
                 m_spriteTrack.setSize({getInnerSize().y, getInnerSize().x});
                 m_spriteTrackHover.setSize({getInnerSize().y, getInnerSize().x});
+                m_spriteTrack.setRotation(-90);
+                m_spriteTrackHover.setRotation(-90);
+            }
+        }
 
-                if (m_verticalScroll)
-                    scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().y;
-                else
-                    scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().x;
+        if (m_spriteThumb.isSet())
+        {
+            float scaleFactor = 1;
+            if (m_spriteTrack.isSet())
+            {
+                if (m_verticalImage == m_verticalScroll)
+                {
+                    if (m_verticalScroll)
+                        scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().x;
+                    else
+                        scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().y;
+                }
+                else // The image is rotated
+                {
+                    if (m_verticalScroll)
+                        scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().y;
+                    else
+                        scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().x;
+                }
             }
 
             m_thumb.width = scaleFactor * m_spriteThumb.getTexture().getImageSize().x;
@@ -140,20 +155,16 @@ namespace tgui
             // Apply the rotation now that the size has been set
             if (m_verticalScroll != m_verticalImage)
             {
-                m_spriteTrack.setRotation(-90);
-                m_spriteTrackHover.setRotation(-90);
                 m_spriteThumb.setRotation(-90);
                 m_spriteThumbHover.setRotation(-90);
             }
             else
             {
-                m_spriteTrack.setRotation(0);
-                m_spriteTrackHover.setRotation(0);
                 m_spriteThumb.setRotation(0);
                 m_spriteThumbHover.setRotation(0);
             }
         }
-        else // There are no textures
+        else // There is no thumb texture
         {
             if (m_verticalScroll)
             {
@@ -687,7 +698,7 @@ namespace tgui
         }
 
         // Draw the track
-        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
+        if (m_spriteTrack.isSet())
         {
             if (m_mouseHover && m_spriteTrackHover.isSet())
                 target.drawSprite(states, m_spriteTrackHover);
@@ -704,19 +715,8 @@ namespace tgui
 
         states.transform.translate({-m_bordersCached.getLeft() + m_thumb.left, -m_bordersCached.getTop() + m_thumb.top});
 
-        // Draw the borders around the thumb when using colors
-        if ((m_bordersCached != Borders{0}) && !(m_spriteTrack.isSet() && m_spriteThumb.isSet()))
-        {
-            if (m_mouseHover && m_borderColorHoverCached.isSet())
-                target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
-            else
-                target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        }
-
         // Draw the thumb
-        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
+        if (m_spriteThumb.isSet())
         {
             if (m_mouseHover && m_spriteThumbHover.isSet())
                 target.drawSprite(states, m_spriteThumbHover);
@@ -725,6 +725,17 @@ namespace tgui
         }
         else // There are no textures
         {
+            if (m_bordersCached != Borders{0})
+            {
+                // Draw the borders around the thumb
+                if (m_mouseHover && m_borderColorHoverCached.isSet())
+                    target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
+                else
+                    target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+
+                states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            }
+
             const Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                              m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 

@@ -171,7 +171,7 @@ namespace tgui
         ///
         /// @param texture  The new track texture
         ///
-        /// When this image and the thumb image are set, then the track and thumb color property will be ignored.
+        /// When this image is set, the track color property will be ignored.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureTrack(const Texture& texture);
@@ -209,7 +209,7 @@ namespace tgui
         ///
         /// @param texture  The new thumb texture
         ///
-        /// When this image and the track image are set, then the track and thumb color property will be ignored.
+        /// When this image is set, the thumb color property will be ignored.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureThumb(const Texture& texture);

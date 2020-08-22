@@ -822,25 +822,26 @@ namespace tgui
             RenderStates textStates = states;
 
             // Draw the background of the tab
-            if (m_spriteTab.isSet() && m_spriteSelectedTab.isSet())
+            const Sprite* spriteTab = nullptr;
+            if ((!m_enabled || !m_tabs[i].enabled) && m_spriteDisabledTab.isSet())
+                spriteTab = &m_spriteDisabledTab;
+            else if ((m_selectedTab == static_cast<int>(i)) && m_spriteSelectedTab.isSet())
             {
-                Sprite spriteTab;
-                if ((!m_enabled || !m_tabs[i].enabled) && m_spriteDisabledTab.isSet())
-                    spriteTab = m_spriteDisabledTab;
-                else if (m_selectedTab == static_cast<int>(i))
-                {
-                    if ((m_hoveringTab == static_cast<int>(i)) && m_spriteSelectedTabHover.isSet())
-                        spriteTab = m_spriteSelectedTabHover;
-                    else
-                        spriteTab = m_spriteSelectedTab;
-                }
-                else if ((m_hoveringTab == static_cast<int>(i)) && m_spriteTabHover.isSet())
-                    spriteTab = m_spriteTabHover;
+                if ((m_hoveringTab == static_cast<int>(i)) && m_spriteSelectedTabHover.isSet())
+                    spriteTab = &m_spriteSelectedTabHover;
                 else
-                    spriteTab = m_spriteTab;
+                    spriteTab = &m_spriteSelectedTab;
+            }
+            else if ((m_hoveringTab == static_cast<int>(i)) && m_spriteTabHover.isSet())
+                spriteTab = &m_spriteTabHover;
+            else if (m_spriteTab.isSet())
+                spriteTab = &m_spriteTab;
 
-                spriteTab.setSize({m_tabs[i].width, usableHeight});
-                target.drawSprite(states, spriteTab);
+            if (spriteTab)
+            {
+                Sprite spriteTabCopy = *spriteTab;
+                spriteTabCopy.setSize({m_tabs[i].width, usableHeight});
+                target.drawSprite(states, spriteTabCopy);
             }
             else // No texture was loaded
             {

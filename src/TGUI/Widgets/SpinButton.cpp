@@ -428,7 +428,7 @@ namespace tgui
         const Vector2f arrowSize = getArrowSize();
 
         // Draw the top/left arrow
-        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
+        if (m_spriteArrowUp.isSet())
         {
             if (m_mouseHover && m_mouseHoverOnTopArrow && m_spriteArrowUpHover.isSet())
                 target.drawSprite(states, m_spriteArrowUpHover);
@@ -494,7 +494,7 @@ namespace tgui
         }
 
         // Draw the bottom/right arrow
-        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
+        if (m_spriteArrowDown.isSet())
         {
             if (m_mouseHover && !m_mouseHoverOnTopArrow && m_spriteArrowDownHover.isSet())
                 target.drawSprite(states, m_spriteArrowDownHover);
@@ -549,9 +549,7 @@ namespace tgui
             {
                 // Mouse still over and the mouse press is current
                 if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_PressedAt != clicked)
-                {
                     return;
-                }
 
                 if (spinButton->m_value < spinButton->m_maximum &&
                     spinButton->m_mouseDownOnTopArrow && spinButton->m_mouseHoverOnTopArrow)

@@ -232,7 +232,7 @@ namespace tgui
             // Check if the mouse is on top of the image
             if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             {
-                if (!m_transparentTextureCached || !m_spriteUnchecked.isSet() || !m_spriteChecked.isSet()
+                if (!m_transparentTextureCached || !m_spriteUnchecked.isSet()
                  || !m_spriteUnchecked.isTransparentPixel(pos - m_bordersCached.getOffset()))
                     return true;
             }
@@ -659,30 +659,27 @@ namespace tgui
 
     void RadioButton::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
-        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
+        if (!m_checked && m_spriteUnchecked.isSet())
         {
-            if (m_checked)
-            {
-                if (!m_enabled && m_spriteCheckedDisabled.isSet())
-                    target.drawSprite(states, m_spriteCheckedDisabled);
-                else if (m_mouseHover && m_spriteCheckedHover.isSet())
-                    target.drawSprite(states, m_spriteCheckedHover);
-                else if (m_focused && m_spriteCheckedFocused.isSet())
-                    target.drawSprite(states, m_spriteCheckedFocused);
-                else
-                    target.drawSprite(states, m_spriteChecked);
-            }
+            if (!m_enabled && m_spriteUncheckedDisabled.isSet())
+                target.drawSprite(states, m_spriteUncheckedDisabled);
+            else if (m_mouseHover && m_spriteUncheckedHover.isSet())
+                target.drawSprite(states, m_spriteUncheckedHover);
+            else if (m_focused && m_spriteUncheckedFocused.isSet())
+                target.drawSprite(states, m_spriteUncheckedFocused);
             else
-            {
-                if (!m_enabled && m_spriteUncheckedDisabled.isSet())
-                    target.drawSprite(states, m_spriteUncheckedDisabled);
-                else if (m_mouseHover && m_spriteUncheckedHover.isSet())
-                    target.drawSprite(states, m_spriteUncheckedHover);
-                else if (m_focused && m_spriteUncheckedFocused.isSet())
-                    target.drawSprite(states, m_spriteUncheckedFocused);
-                else
-                    target.drawSprite(states, m_spriteUnchecked);
-            }
+                target.drawSprite(states, m_spriteUnchecked);
+        }
+        else if (m_checked && m_spriteChecked.isSet())
+        {
+            if (!m_enabled && m_spriteCheckedDisabled.isSet())
+                target.drawSprite(states, m_spriteCheckedDisabled);
+            else if (m_mouseHover && m_spriteCheckedHover.isSet())
+                target.drawSprite(states, m_spriteCheckedHover);
+            else if (m_focused && m_spriteCheckedFocused.isSet())
+                target.drawSprite(states, m_spriteCheckedFocused);
+            else
+                target.drawSprite(states, m_spriteChecked);
         }
         else // There are no images
         {

@@ -132,7 +132,7 @@ namespace tgui
         // Check if the mouse is on top of the picture
         if (!m_ignoringMouseEvents && (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos)))
         {
-            if (!m_transparentTextureCached || !m_sprite.isTransparentPixel(pos))
+            if (!m_transparentTextureCached || !m_sprite.isSet() || !m_sprite.isTransparentPixel(pos))
                 return true;
         }
 
