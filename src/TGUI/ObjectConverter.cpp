@@ -26,7 +26,6 @@
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +35,7 @@ namespace tgui
 
     const String& ObjectConverter::getString()
     {
-        assert(m_type != Type::None);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
 
         if (m_serialized)
             return m_string;
@@ -50,8 +49,8 @@ namespace tgui
 
     const Font& ObjectConverter::getFont()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Font || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Font || m_type == Type::String, "ObjectConverter must contain font or serialized object to retrieve its font");
 
         if (m_type == Type::String)
         {
@@ -66,8 +65,8 @@ namespace tgui
 
     const Color& ObjectConverter::getColor()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Color || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Color || m_type == Type::String, "ObjectConverter must contain color or serialized object to retrieve its color");
 
         if (m_type == Type::String)
         {
@@ -82,8 +81,8 @@ namespace tgui
 
     bool ObjectConverter::getBool()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Bool || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Bool || m_type == Type::String, "ObjectConverter must contain bool or serialized object to retrieve its bool value");
 
         if (m_type == Type::String)
         {
@@ -98,8 +97,8 @@ namespace tgui
 
     float ObjectConverter::getNumber()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Number || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Number || m_type == Type::String, "ObjectConverter must contain number or serialized object to retrieve its numeric value");
 
         if (m_type == Type::String)
         {
@@ -114,8 +113,8 @@ namespace tgui
 
     const Outline& ObjectConverter::getOutline()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Outline || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Outline || m_type == Type::String, "ObjectConverter must contain outline or serialized object to retrieve its outline");
 
         if (m_type == Type::String)
         {
@@ -130,8 +129,8 @@ namespace tgui
 
     const Texture& ObjectConverter::getTexture()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::Texture || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::Texture || m_type == Type::String, "ObjectConverter must contain texture or serialized object to retrieve its texture");
 
         if (m_type == Type::String)
         {
@@ -146,8 +145,8 @@ namespace tgui
 
     const TextStyles& ObjectConverter::getTextStyle()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::TextStyle || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::TextStyle || m_type == Type::String, "ObjectConverter must contain text style or serialized object to retrieve its text style");
 
         if (m_type == Type::String)
         {
@@ -162,8 +161,8 @@ namespace tgui
 
     const std::shared_ptr<RendererData>& ObjectConverter::getRenderer()
     {
-        assert(m_type != Type::None);
-        assert(m_type == Type::RendererData || m_type == Type::String);
+        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
+        TGUI_ASSERT(m_type == Type::RendererData || m_type == Type::String, "ObjectConverter must contain renderer data or serialized object to retrieve its renderer data");
 
         if (m_type == Type::String)
         {

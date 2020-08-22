@@ -90,8 +90,8 @@ namespace tgui
                                   const std::vector<std::shared_ptr<TreeView::Node>>& oldList,
                                   std::vector<std::shared_ptr<TreeView::Node>>& newList)
         {
-            assert(oldNodes.size() == newNodes.size());
-            assert(oldList.size() == newList.size());
+            TGUI_ASSERT(oldNodes.size() == newNodes.size(), "Nodes must have been allocated before calling cloneVisibleNodeList");
+            TGUI_ASSERT(oldList.size() == newList.size(), "Nodes must have been allocated before calling cloneVisibleNodeList");
 
             for (unsigned int i = 0; i < oldNodes.size(); ++i)
             {
@@ -292,7 +292,7 @@ namespace tgui
         m_visibleNodes.resize(other.m_visibleNodes.size(), nullptr);
         cloneVisibleNodeList(other.m_nodes, m_nodes, other.m_visibleNodes, m_visibleNodes);
 
-        assert(std::count(m_visibleNodes.begin(), m_visibleNodes.end(), nullptr) == 0);
+        TGUI_ASSERT(std::count(m_visibleNodes.begin(), m_visibleNodes.end(), nullptr) == 0, "Cloned nodes can't contain a nullptr");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -71,7 +71,7 @@ namespace tgui
 
     void BackendSFML::detatchGui(GuiBase* gui)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSFML::detatchGui called with a gui that wasn't attached");
         m_guis.erase(gui);
 
         if (m_destroyOnLastGuiDetatch && m_guis.empty())
@@ -144,7 +144,7 @@ namespace tgui
 
     void BackendSFML::setMouseCursor(GuiBase* gui, Cursor::Type type)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSFML::setMouseCursor called with a gui that wasn't attached");
         if (type == m_guis[gui].mouseCursor)
             return;
 
@@ -173,7 +173,7 @@ namespace tgui
             return sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt);
         }
 
-        assert(false);
+        TGUI_ASSERT(false, "BackendSFML::isKeyboardModifierPressed called with an invalid value");
         return false;
     }
 
@@ -195,7 +195,7 @@ namespace tgui
 
     std::shared_ptr<BackendRenderTargetSFML> BackendSFML::createGuiRenderTarget(GuiSFML* gui, sf::RenderTarget& target)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSFML::createGuiRenderTarget called with a gui that wasn't attached");
         m_guis[gui].window = dynamic_cast<sf::Window*>(&target);
         return std::make_shared<BackendRenderTargetSFML>(target);
     }

@@ -95,7 +95,7 @@ namespace tgui
             drawTriangles(states, vertices.begin(), vertices.size());
         else
         {
-            assert(indices.size() % 3 == 0);
+            TGUI_ASSERT(indices.size() % 3 == 0, "BackendRenderTargetBase::drawTriangles requires that the number of indices is divisible by 3");
             drawTriangles(states, vertices.begin(), vertices.size(), indices.begin(), indices.size());
         }
     }

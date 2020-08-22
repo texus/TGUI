@@ -28,7 +28,6 @@
 #include <TGUI/String.hpp>
 
 #include <cctype>
-#include <cassert>
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +118,8 @@ namespace tgui
                             stream.read(&c, 1);
                             if (c == '\n')
                             {
-                                assert(!word.empty()); // No known case in which you can pass here with an empty word
+                                TGUI_ASSERT(!word.empty(), "There is no known case in which you can pass here with an empty word "
+                                                           "(comment would have been skipped earlier)");
                                 return word;
                             }
                         }

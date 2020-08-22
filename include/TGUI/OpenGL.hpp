@@ -33,7 +33,11 @@
 
 namespace tgui
 {
+#if !defined(NDEBUG)
     #define TGUI_GL_CHECK(expr) do { expr; priv::checkAndLogOpenGlError(__FILE__, __LINE__, #expr); } while (false)
+#else
+    #define TGUI_GL_CHECK(expr) expr
+#endif
 
     namespace priv
     {

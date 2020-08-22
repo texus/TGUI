@@ -30,7 +30,6 @@
 #include <TGUI/BackendFont.hpp>
 #include <TGUI/Global.hpp>
 #include <cstdint>
-#include <cassert>
 
 namespace tgui
 {
@@ -38,7 +37,7 @@ namespace tgui
     {
         unsigned char hexToDec(char32_t c)
         {
-            assert((c >= U'0' && c <= U'9') || (c >= U'a' && c <= U'f'));
+            TGUI_ASSERT((c >= U'0' && c <= U'9') || (c >= U'a' && c <= U'f'), "hexToDec must be called with digit or lowercase hex character");
 
             if (c == U'a')
                 return 10;
@@ -450,7 +449,7 @@ namespace tgui
 
     ObjectConverter Deserializer::deserialize(ObjectConverter::Type type, const String& serializedString)
     {
-        assert(m_deserializers.find(type) != m_deserializers.end());
+        TGUI_ASSERT(m_deserializers.find(type) != m_deserializers.end(), "Type passed to deserializer must be valid");
         return m_deserializers[type](serializedString);
     }
 

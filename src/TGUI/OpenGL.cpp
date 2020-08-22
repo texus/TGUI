@@ -36,6 +36,7 @@ namespace tgui
 
     namespace priv
     {
+#if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
         void checkAndLogOpenGlError(const char* file, unsigned int line, const char* expression)
         {
             GLenum errorCode = glGetError();
@@ -60,6 +61,11 @@ namespace tgui
                                + "(" + String(line).toAnsiString() + ")."
                                + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
         }
+#else
+        void checkAndLogOpenGlError(const char*, unsigned int, const char*)
+        {
+        }
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

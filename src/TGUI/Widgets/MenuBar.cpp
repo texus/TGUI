@@ -846,7 +846,7 @@ namespace tgui
 
     void MenuBar::drawOpenMenu(BackendRenderTargetBase& target, RenderStates states) const
     {
-        assert(m_visibleMenu >= 0);
+        TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::drawOpenMenu can only be called when a menu is open");
 
         // Find the position of the menu
         float leftOffset = 0;
@@ -1002,7 +1002,7 @@ namespace tgui
 
     void MenuBar::deselectBottomItem()
     {
-        assert(m_visibleMenu >= 0);
+        TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::deselectBottomItem can only be called when a menu is open");
 
         auto* menu = &m_menus[m_visibleMenu];
         while (menu->selectedMenuItem != -1)
@@ -1177,7 +1177,7 @@ namespace tgui
 
     void MenuBar::leftMouseReleasedOnMenu()
     {
-        assert(m_visibleMenu >= 0);
+        TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::leftMouseReleasedOnMenu can only be called when a menu is open");
 
         auto* menu = &m_menus[m_visibleMenu];
         std::vector<String> hierarchy;

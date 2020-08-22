@@ -26,7 +26,6 @@
 #include <TGUI/Timer.hpp>
 
 #include <algorithm>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -112,8 +111,8 @@ namespace tgui
             else
             {
                 const auto it = std::find(m_activeTimers.begin(), m_activeTimers.end(), shared_from_this());
-                assert(it != m_activeTimers.end());
-                m_activeTimers.erase(it);
+                if (it != m_activeTimers.end())
+                    m_activeTimers.erase(it);
             }
         }
 

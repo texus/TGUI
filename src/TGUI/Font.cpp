@@ -28,8 +28,6 @@
 #include <TGUI/BackendFont.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 
-#include <cassert>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -138,7 +136,7 @@ namespace tgui
 
     FontGlyph Font::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
     {
-        assert(m_backendFont != nullptr);
+        TGUI_ASSERT(m_backendFont != nullptr, "Font::getGlyph called on font that wasn't initialized");
         return m_backendFont->getGlyph(codePoint, characterSize, bold, outlineThickness);
     }
 

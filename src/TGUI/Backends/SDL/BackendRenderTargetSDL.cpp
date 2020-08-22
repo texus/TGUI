@@ -314,7 +314,7 @@ namespace tgui
 
     void BackendRenderTargetSDL::removeClippingLayer()
     {
-        assert(!m_clippingLayers.empty());
+        TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSDL::removeClippingLayer was called when there were no clipping layers");
         m_clippingLayers.pop_back();
 
         const std::array<int, 4>& clipRectGL = m_clippingLayers.empty() ? m_viewportGL : m_clippingLayers.back().second;

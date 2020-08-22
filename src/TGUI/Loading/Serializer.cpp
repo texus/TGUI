@@ -27,7 +27,6 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Exception.hpp>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +38,7 @@ namespace tgui
 
         char decToSingleHex(unsigned char c)
         {
-            assert(c < 16);
+            TGUI_ASSERT(c < 16, "Value to decode to hex can't be larger than 16");
 
             if (c == 10)
                 return 'A';

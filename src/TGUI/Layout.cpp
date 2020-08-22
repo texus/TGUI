@@ -26,7 +26,6 @@
 #include <TGUI/Layout.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/GuiBase.hpp>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -253,12 +252,12 @@ namespace tgui
         {
             if ((operators[i] == Operation::Plus) || (operators[i] == Operation::Minus))
             {
-                assert(operandIt != operands.end());
+                TGUI_ASSERT(operandIt != operands.end(), "First operand not found in plus or minus operation");
 
                 auto nextOperandIt = operandIt;
                 std::advance(nextOperandIt, 1);
 
-                assert(nextOperandIt != operands.end());
+                TGUI_ASSERT(nextOperandIt != operands.end(), "Second operand not found in plus or minus operation");
 
                 // Handle unary plus or minus
                 if ((operandIt->m_operation == Operation::Value) && (nextOperandIt->m_operation == Operation::Value) && (operandIt->m_value == 0))
@@ -279,7 +278,7 @@ namespace tgui
             }
         }
 
-        assert(operands.size() == 1);
+        TGUI_ASSERT(operands.size() == 1, "Layout constructor should reduce expression to single result");
         *this = operands.front();
     }
 
@@ -289,10 +288,12 @@ namespace tgui
         m_operation  {operation},
         m_boundWidget{boundWidget}
     {
-        assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+        TGUI_ASSERT(m_boundWidget != nullptr, "Bound widget passed to Layout constructor can't be a nullptr");
+        TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-               || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
-        assert(m_boundWidget != nullptr);
+               || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+            "Layout constructor with bound widget must be called with an operation that involves the widget"
+        );
 
         if (m_operation == Operation::BindingLeft)
             m_value = m_boundWidget->getPosition().x;
@@ -326,8 +327,9 @@ namespace tgui
         m_leftOperand {std::move(leftOperand)},
         m_rightOperand{std::move(rightOperand)}
     {
-        assert(m_leftOperand != nullptr);
-        assert(m_rightOperand != nullptr);
+        TGUI_ASSERT(m_leftOperand != nullptr, "Left operand in layout constructor can't be a nullptr");
+        TGUI_ASSERT(m_rightOperand != nullptr, "Right operand in layout constructor can't be a nullptr");
+
         resetPointers();
         recalculateValue();
     }
@@ -491,9 +493,11 @@ namespace tgui
     {
         if (m_boundWidget)
         {
-            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+            TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+                "Layout with bound widget should have an operation that involves the widget"
+            );
 
             if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->unbindPositionLayout(this);
@@ -508,7 +512,7 @@ namespace tgui
     {
         if (m_leftOperand != nullptr)
         {
-            assert(m_rightOperand != nullptr);
+            TGUI_ASSERT(m_rightOperand != nullptr, "If a left operand exists then there should also be a right operand");
 
             m_leftOperand->m_parent = this;
             m_rightOperand->m_parent = this;
@@ -516,9 +520,11 @@ namespace tgui
 
         if (m_boundWidget)
         {
-            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+            TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+                "Layout with bound widget should have an operation that involves the widget"
+            );
 
             if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->bindPositionLayout(this);
@@ -647,7 +653,7 @@ namespace tgui
     {
         if (m_leftOperand)
         {
-            assert(m_rightOperand != nullptr);
+            TGUI_ASSERT(m_rightOperand != nullptr, "If a left operand exists then there should also be a right operand");
 
             m_leftOperand->parseBindingStringRecursive(widget, xAxis);
             m_rightOperand->parseBindingStringRecursive(widget, xAxis);

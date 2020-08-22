@@ -27,7 +27,6 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Global.hpp>
 
-#include <cassert>
 #include <sstream>
 #include <fstream>
 
@@ -254,7 +253,8 @@ namespace tgui
             jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
             jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
             AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
-            assert(assetManager);
+            if (!assetManager)
+                throw Exception{"Failed to open theme file '" + fullFilename + "' because AAssetManager_fromJava returned a nullptr."};
 
             AAsset* asset = AAssetManager_open(assetManager, fullFilename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
             if (!asset)

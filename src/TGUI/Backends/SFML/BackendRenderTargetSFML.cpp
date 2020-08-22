@@ -54,7 +54,7 @@ namespace tgui
 
     void BackendRenderTargetSFML::setView(FloatRect view, FloatRect viewport)
     {
-        assert(m_clippingLayers.empty()); // You can't change the view of the render target during drawing
+        TGUI_ASSERT(m_clippingLayers.empty(), "You can't change the view of the render target during drawing");
 
         m_view.setViewport({viewport.left / m_target->getSize().x, viewport.top / m_target->getSize().y,
                             viewport.width / m_target->getSize().x, viewport.height / m_target->getSize().y});
@@ -173,7 +173,7 @@ namespace tgui
 
     void BackendRenderTargetSFML::removeClippingLayer()
     {
-        assert(!m_clippingLayers.empty());
+        TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSFML::removeClippingLayer can't remove layer if there are none left");
 
         m_clippingLayers.pop_back();
         if (m_clippingLayers.empty())

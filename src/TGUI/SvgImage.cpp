@@ -42,7 +42,9 @@ namespace tgui
     {
         m_svg = nsvgParseFromFile(filename.toAnsiString().c_str(), "px", 96);
         if (!m_svg)
+        {
             TGUI_PRINT_WARNING("Failed to load svg: " << filename);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

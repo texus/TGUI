@@ -31,7 +31,6 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/Filesystem.hpp>
 
-#include <cassert>
 #include <fstream>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +253,7 @@ namespace tgui
 
     void Container::add(const Widget::Ptr& widgetPtr, const String& widgetName)
     {
-        assert(widgetPtr != nullptr);
+        TGUI_ASSERT(widgetPtr != nullptr, "Can't add nullptr to container");
 
         if (widgetPtr->getParent())
             widgetPtr->getParent()->remove(widgetPtr);

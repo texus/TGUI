@@ -82,7 +82,7 @@ namespace tgui
 
     void BackendSDL::detatchGui(GuiBase* gui)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSDL::detatchGui called with a gui that wasn't attached");
         m_guis.erase(gui);
 
         if (m_destroyOnLastGuiDetatch && m_guis.empty())
@@ -168,7 +168,7 @@ namespace tgui
 
     void BackendSDL::setMouseCursor(GuiBase* gui, Cursor::Type type)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSDL::setMouseCursor called with a gui that wasn't attached");
         if (type == m_guis[gui].mouseCursor)
             return;
 
@@ -198,7 +198,7 @@ namespace tgui
             return (pressedModifiers & KMOD_ALT) != 0;
         }
 
-        assert(false);
+        TGUI_ASSERT(false, "BackendSDL::isKeyboardModifierPressed called with an invalid value");
         return false;
     }
 
@@ -224,7 +224,7 @@ namespace tgui
 
     std::shared_ptr<BackendRenderTargetSDL> BackendSDL::createGuiRenderTarget(GuiSDL* gui, SDL_Window* window)
     {
-        assert(m_guis.find(gui) != m_guis.end());
+        TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSDL::createGuiRenderTarget called with a gui that wasn't attached");
         m_guis[gui].window = window;
         return std::make_shared<BackendRenderTargetSDL>(window);
     }
