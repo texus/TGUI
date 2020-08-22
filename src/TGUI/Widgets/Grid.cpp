@@ -782,24 +782,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Grid::draw(BackendRenderTargetBase& target, RenderStates states) const
-    {
-        // Draw all widgets
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
-        {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col].get() != nullptr)
-                {
-                    if (m_gridWidgets[row][col]->isVisible())
-                        m_gridWidgets[row][col]->draw(target, states);
-                }
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
