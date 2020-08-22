@@ -190,7 +190,9 @@ namespace tgui
                 }
             }
 
-            if (!texture.isSmooth())
+            if (texture.isSmooth())
+                result += " Smooth";
+            else
                 result += " NoSmooth";
 
             return result;

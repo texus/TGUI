@@ -338,7 +338,13 @@ namespace tgui
                     word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
                 else
                 {
-                    if (value.substr(c - value.begin()).trim().equalIgnoreCase("nosmooth"))
+                    const String& smoothParam = value.substr(c - value.begin()).trim();
+                    if (smoothParam.equalIgnoreCase("smooth"))
+                    {
+                        smooth = true;
+                        break;
+                    }
+                    else if (smoothParam.equalIgnoreCase("nosmooth"))
                     {
                         smooth = false;
                         break;
