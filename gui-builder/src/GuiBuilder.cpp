@@ -42,6 +42,7 @@
 #include "WidgetProperties/ScrollbarProperties.hpp"
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
+#include "WidgetProperties/SpinControlProperties.hpp"
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
@@ -322,6 +323,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
     m_widgetProperties["Scrollbar"] = std::make_unique<ScrollbarProperties>();
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
+    m_widgetProperties["SpinControl"] = std::make_unique<SpinControlProperties>();
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
@@ -657,7 +659,7 @@ void GuiBuilder::reloadProperties()
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
                             // back to the widget, so that the string stored in the renderer is always a valid string.
-                            m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, m_propertyValuePairs.second[property.first].second);
+                            m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
                         }
                     });
             }
@@ -950,6 +952,7 @@ void GuiBuilder::loadToolbox()
         {"Scrollbar", []{ return tgui::Scrollbar::create(); }},
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
+        {"SpinControl", []{ return tgui::SpinControl::create(); }},
         {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
         {"TextArea", []{ return tgui::TextArea::create(); }},
         {"TreeView", []{ return tgui::TreeView::create(); }},
