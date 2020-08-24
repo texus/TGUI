@@ -659,10 +659,7 @@ void GuiBuilder::reloadProperties()
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
                             // back to the widget, so that the string stored in the renderer is always a valid string.
-                            auto widget = m_selectedForm->getSelectedWidget()->ptr;
-                            if (!std::static_pointer_cast<tgui::SubwidgetContainer>(widget))
-                                widget->getRenderer()->setProperty(property.first, m_propertyValuePairs.second[property.first].second);
-
+                            m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
                         }
                     });
             }
