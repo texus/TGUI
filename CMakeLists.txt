@@ -1,7 +1,7 @@
 if(CMAKE_SYSTEM_NAME MATCHES "Android")
     cmake_minimum_required(VERSION 3.7)  # CMake's built-in Android support requires 3.7
 else()
-    cmake_minimum_required(VERSION 3.5)  # Can be at most 3.5.1 as long as Ubuntu 16.04 is supported
+    cmake_minimum_required(VERSION 3.5)
 endif()
 
 # Use new RPATH behavior on macOS (CMake 3.9 and newer)
@@ -12,6 +12,11 @@ endif()
 # Don't warn about existence of SFML_ROOT variable (CMake 3.12 and newer)
 if(POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)
+endif()
+
+# Use target_sources with relative file paths when possible (CMake 3.13 and newer)
+if(POLICY CMP0076)
+    cmake_policy(SET CMP0076 NEW)
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -30,7 +35,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 
 # Add an option for choosing the build type (shared or static)
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
-    tgui_set_option(TGUI_SHARED_LIBS TRUE BOOL "TRUE to build TGUI as a shared library, FALSE to build it as a static library")
+    if(DEFINED BUILD_SHARED_LIBS)
+        tgui_set_option(TGUI_SHARED_LIBS ${BUILD_SHARED_LIBS} BOOL "TRUE to build TGUI as a shared library, FALSE to build it as a static library")
+    else()
+        tgui_set_option(TGUI_SHARED_LIBS TRUE BOOL "TRUE to build TGUI as a shared library, FALSE to build it as a static library")
+    endif()
 else()
     if(TGUI_OS_IOS)
         set(TGUI_SHARED_LIBS FALSE)
@@ -52,7 +61,7 @@ tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentatio
 tgui_set_option(TGUI_CXX_STANDARD "14" STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
 
 # At least c++14 has to be used
-if (TGUI_CXX_STANDARD LESS "14")
+if(TGUI_CXX_STANDARD LESS "14")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
 endif()
 
@@ -88,7 +97,7 @@ endif()
 
 # Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)
-    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
+    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from SFML.")
 
     # The following combination of flags is not valid
     if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_STD_LIBS)
@@ -163,34 +172,6 @@ if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
             string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
         endif()
     endforeach()
-endif()
-
-# Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
-if(NOT DEFINED SFML_STATIC_LIBRARIES)
-  if(TGUI_SHARED_LIBS)
-    set(SFML_STATIC_LIBRARIES FALSE)
-  else()
-    set(SFML_STATIC_LIBRARIES TRUE)
-  endif()
-endif()
-
-# Find sfml if not build in same project
-if(NOT TARGET sfml-graphics)
-    if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio
-        find_package(SFML 2 COMPONENTS main graphics window system)
-    elseif(TGUI_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
-        find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-    elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-        find_host_package(SFML 2 COMPONENTS main graphics window system)
-    else()
-        find_package(SFML 2 COMPONENTS graphics window system)
-    endif()
-
-    # find_package couldn't find SFML
-    if(NOT SFML_FOUND)
-        set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
-        message(FATAL_ERROR "CMake couldn't find SFML.\nSet SFML_DIR to the directory containing SFMLConfig.cmake.")
-    endif()
 endif()
 
 # Set the path for the libraries

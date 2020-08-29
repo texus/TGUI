@@ -70,7 +70,7 @@
 #endif
 
 // Enables code that uses SFML
-#define TGUI_BUILD_WITH_SFML 1
+#cmakedefine01 TGUI_BUILD_WITH_SFML
 
 // Define that specifies the mininmum c++ support in both the TGUI code and user code.
 // This constant can be lower than the actual c++ standard version used to compile with,

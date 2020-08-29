@@ -26,12 +26,6 @@ set(TGUI_SRC
     ToolTip.cpp
     Transform.cpp
     Widget.cpp
-    Backends/SFML/BackendFontSFML.cpp
-    Backends/SFML/BackendRenderTargetSFML.cpp
-    Backends/SFML/BackendSFML.cpp
-    Backends/SFML/BackendTextSFML.cpp
-    Backends/SFML/BackendTextureSFML.cpp
-    Backends/SFML/GuiSFML.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
     Loading/Serializer.cpp
@@ -160,6 +154,11 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
+# Add the backend files to the library.
+# Without the ability to call target_link_libraries in a subdirectory (which was only added in CMake 3.13 in policy CMP0079),
+# the code would be more complicated when using add_subdirectory. So we just avoid creating a new scope by using include.
+include(Backends/CMakeLists.txt)
+
 # Define either TGUI_STATIC or TGUI_DYNAMIC
 if(TGUI_SHARED_LIBS)
     target_compile_definitions(tgui PUBLIC TGUI_DYNAMIC)
@@ -181,12 +180,6 @@ if (TGUI_BUILD_FRAMEWORK)
 else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
 endif()
-
-# Link to SFML
-# Altough we could use PUBLIC here instead of PRIVATE, it causes the files in lib/cmake/TGUI to
-# hardcode the SFML directories, making it harder to distribute them with the precompiled libs.
-# You will thus have to link to SFML yourself, but you were likely to already do this anyway.
-target_link_libraries(tgui PRIVATE sfml-graphics)
 
 # On Linux and BSD we also need to link to X11
 if(TGUI_OS_LINUX OR TGUI_OS_BSD)

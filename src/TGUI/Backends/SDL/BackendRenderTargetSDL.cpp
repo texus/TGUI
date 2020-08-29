@@ -130,9 +130,9 @@ namespace tgui
         // Texture coordinate is stored as u,v in the last 2 floats
         TGUI_GL_CHECK(glGenBuffers(1, &vertexBuffer));
         TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
-        TGUI_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), (GLvoid*)0));
-        TGUI_GL_CHECK(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat))));
-        TGUI_GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat))));
+        TGUI_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(0)));
+        TGUI_GL_CHECK(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(2 * sizeof(GLfloat))));
+        TGUI_GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat))));
 
         // Create the index buffer
         TGUI_GL_CHECK(glGenBuffers(1, &indexBuffer));
@@ -249,7 +249,7 @@ namespace tgui
         // Restore the old state
         TGUI_GL_CHECK(glBindVertexArray(0));
         TGUI_GL_CHECK(glUseProgram(0));
-        TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], (GLsizei)oldViewport[2], (GLsizei)oldViewport[3]));
+        TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
 
         if (oldScissorEnabled)
             TGUI_GL_CHECK(glScissor(oldClipRect[0], oldClipRect[1], oldClipRect[2], oldClipRect[3]));
@@ -558,7 +558,8 @@ namespace tgui
         std::vector<Vertex> vertices(nrPoints, {{}, Vertex::Color(color), {0, 0}});
         vertices[0].position = center;
 
-        const float twoPi = 2.f * M_PI;
+        const float pi = 3.14159265358979f;
+        const float twoPi = 2.f * pi;
         const int nrTriangles = nrPoints - 2;
         for (int i = 0; i <= nrTriangles; ++i)
         {

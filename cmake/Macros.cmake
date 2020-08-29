@@ -57,6 +57,29 @@ function(tgui_set_stdlib target)
     endif()
 endfunction()
 
+# Helper function to call target_sources using relative file paths
+function(tgui_target_sources target)
+  if(POLICY CMP0076)
+    # In CMake 3.13 or newer the target_sources supports relative paths and we don't need to do anything
+    target_sources(${target} ${ARGN})
+  else()
+    # With CMake < 3.13 we need to convert the relative paths to absolute paths ourselves
+    unset(_srcList)
+    get_target_property(_targetSourceDir ${target} SOURCE_DIR)
+
+    foreach(src ${ARGN})
+      if(NOT src STREQUAL "PRIVATE" AND
+         NOT src STREQUAL "PUBLIC" AND
+         NOT src STREQUAL "INTERFACE" AND
+         NOT IS_ABSOLUTE "${src}")
+        file(RELATIVE_PATH src "${_targetSourceDir}" "${CMAKE_CURRENT_LIST_DIR}/${src}")
+      endif()
+      list(APPEND _srcList ${src})
+    endforeach()
+    target_sources(${target} ${_srcList})
+  endif()
+endfunction()
+
 # Generate a TGUIConfig.cmake file (and associated files)
 function(tgui_export_target export_name)
     include(CMakePackageConfigHelpers)

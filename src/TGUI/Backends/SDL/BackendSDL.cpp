@@ -53,7 +53,7 @@ namespace tgui
 
     BackendSDL::BackendSDL()
     {
-        const int version = tgui_gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
+        const int version = tgui_gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
         if ((GLAD_VERSION_MAJOR(version) < 4) || ((GLAD_VERSION_MAJOR(version) == 4) && GLAD_VERSION_MINOR(version) < 3))
             throw Exception{"BackendSDL expects at least OpenGL 4.3"};
     }
