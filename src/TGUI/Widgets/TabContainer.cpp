@@ -133,7 +133,7 @@ namespace tgui
         {
             std::swap(m_panels[index], m_panels[size - 1]);
             if (!select)
-                m_index = size - 1;
+                m_index = static_cast<int>(size - 1);
         }
         return true;
     }
@@ -165,7 +165,7 @@ namespace tgui
         if (genEvents)
         {
             bool isVetoed = false;
-            onSelectionChanging.emit(this, index, &isVetoed);
+            onSelectionChanging.emit(this, static_cast<int>(index), &isVetoed);
             if (isVetoed)
                 return;
         }
@@ -173,7 +173,7 @@ namespace tgui
         if (m_index != -1)
             m_panels[m_index]->setVisible(false);
 
-        m_index = index;
+        m_index = static_cast<int>(index);
         m_tabs->select(index);
         m_panels[index]->setVisible(true);
         if (genEvents)

@@ -692,7 +692,7 @@ namespace tgui
         }
 
         // Set the texture sizes and rotation
-        const float trackRotation = (m_verticalScroll == m_verticalImage) ? 0 : -90;
+        const float trackRotation = (m_verticalScroll == m_verticalImage) ? 0.f : -90.f;
         if (m_spriteTrack.isSet())
         {
             if (m_verticalScroll == m_verticalImage)
@@ -726,7 +726,7 @@ namespace tgui
             m_spriteThumbHover.setRotation(trackRotation);
         }
 
-        const float arrowRotation = m_verticalScroll ? 0 : -90;
+        const float arrowRotation = m_verticalScroll ? 0.f : -90.f;
         if (m_spriteArrowUp.isSet())
         {
             m_spriteArrowUp.setSize({m_arrowUp.width, m_arrowUp.height});

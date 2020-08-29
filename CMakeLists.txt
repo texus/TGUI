@@ -65,9 +65,6 @@ if(TGUI_CXX_STANDARD LESS "14")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
 endif()
 
-# Generate the Config.hpp header
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
-
 # Define the install directory for miscellaneous files
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
     set(DEFAULT_INSTALL_MISC_DIR .)
@@ -179,6 +176,9 @@ set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
+
+# Generate the Config.hpp header
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
 # Build the documentation when requested
 if(TGUI_BUILD_DOC)
