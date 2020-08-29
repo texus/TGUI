@@ -8,7 +8,7 @@ find_package(SDL2_ttf REQUIRED)
 target_link_libraries(tgui PRIVATE SDL2::Core SDL2::Image SDL2::TTF)
 
 # Add the backend source files to the library
-tgui_target_sources(tgui PRIVATE
+target_sources(tgui PRIVATE
     Backends/SDL/BackendFontSDL.cpp
     Backends/SDL/BackendRenderTargetSDL.cpp
     Backends/SDL/BackendSDL.cpp

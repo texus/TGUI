@@ -30,7 +30,7 @@ endif()
 target_link_libraries(tgui PRIVATE sfml-graphics)
 
 # Add the backend source files to the library
-tgui_target_sources(tgui PRIVATE
+target_sources(tgui PRIVATE
     Backends/SFML/BackendFontSFML.cpp
     Backends/SFML/BackendRenderTargetSFML.cpp
     Backends/SFML/BackendSFML.cpp
@@ -44,5 +44,5 @@ target_link_libraries(tgui-sfml-interface INTERFACE sfml-graphics)
 
 add_library(tgui-sfml-main-interface INTERFACE)
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
-    target_link_libraries(tgui-sfml-main-interface PRIVATE sfml-main)
+    target_link_libraries(tgui-sfml-main-interface INTERFACE sfml-main)
 endif()
