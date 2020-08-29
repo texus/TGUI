@@ -393,7 +393,10 @@ namespace tgui
         }
 
 #if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(focused);
+        if (focused)
+            Keyboard::openVirtualKeyboard({getAbsolutePosition(), getFullSize()});
+        else
+            Keyboard::closeVirtualKeyboard();
 #endif
 
         Widget::setFocused(focused);

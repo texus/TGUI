@@ -220,19 +220,19 @@ namespace tgui
     {
         std::vector<String> substrings;
 
-        std::size_t start = 0;
-        std::size_t end = find(delimiter);
-        while (end != npos)
+        std::size_t startPos = 0;
+        std::size_t endPos = find(delimiter);
+        while (endPos != npos)
         {
-            substrings.push_back(substr(start, end - start));
-            start = end + 1;
-            end = find(delimiter, start);
+            substrings.push_back(substr(startPos, endPos - startPos));
+            startPos = endPos + 1;
+            endPos = find(delimiter, startPos);
         }
 
-        if (start == 0)
+        if (startPos == 0)
             substrings.push_back(*this);
         else
-            substrings.push_back(substr(start, length() - start));
+            substrings.push_back(substr(startPos, length() - startPos));
 
         return substrings;
     }
