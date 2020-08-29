@@ -223,9 +223,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> SpinControl::save(SavingRenderersMap& renderers) const
+    {
+        auto node = SubwidgetContainer::save(renderers);
+        node->propertyValuePairs["DecimalPlaces"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_decimalPlaces));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinControl::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         SubwidgetContainer::load(node, renderers);
+
+        if (node->propertyValuePairs["DecimalPlaces"])
+            setDecimalPlaces(node->propertyValuePairs["DecimalPlaces"]->value.toUInt());
 
         m_spinText = m_container->get<tgui::EditBox>("SpinText");
         m_spinButton = m_container->get<tgui::SpinButton>("SpinButton");
