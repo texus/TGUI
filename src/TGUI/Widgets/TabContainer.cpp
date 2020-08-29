@@ -105,34 +105,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::addPanel(Panel::Ptr ptr, const tgui::String& name, bool select)
+    void TabContainer::addPanel(Panel::Ptr ptr, const tgui::String& name, bool selectPanel)
     {
         auto size = getSizeLayout();
         ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
         ptr->setPosition({ tgui::bindLeft(m_tabs), tgui::bindBottom(m_tabs) });
 
         m_panels.push_back(ptr);
-        m_tabs->add(name, select);
+        m_tabs->add(name, selectPanel);
         m_container->add(ptr);
-        if (select)
-            this->select(m_panels.size() - 1, false);
+        if (selectPanel)
+            select(m_panels.size() - 1, false);
         else
             ptr->setVisible(false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TabContainer::insertPanel(tgui::Panel::Ptr ptr, const tgui::String& name, std::size_t index, bool select)
+    bool TabContainer::insertPanel(tgui::Panel::Ptr ptr, const tgui::String& name, std::size_t index, bool selectPanel)
     {
         if (index > m_panels.size())
             return false;
 
-        addPanel(ptr, name, select);
+        addPanel(ptr, name, selectPanel);
         auto size = m_panels.size();
         if (index != size)
         {
             std::swap(m_panels[index], m_panels[size - 1]);
-            if (!select)
+            if (!selectPanel)
                 m_index = static_cast<int>(size - 1);
         }
         return true;

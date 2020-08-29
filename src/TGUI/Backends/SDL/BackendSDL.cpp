@@ -392,19 +392,4 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-/// TODO: Disable unity build for backend files and remove this part
-#ifdef TGUI_SYSTEM_LINUX
-    // Undefine some annoying generic defines from X.h so that we don't get errors in unity builds
-    #undef None
-    #undef Bool
-    #undef KeyPress
-    #undef KeyRelease
-    #undef Status
-    #undef Always
-    #undef Window
-    #undef Drawable
-    #undef Font
-    #undef Cursor
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

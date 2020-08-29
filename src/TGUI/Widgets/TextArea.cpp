@@ -394,9 +394,9 @@ namespace tgui
 
 #if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
         if (focused)
-            Keyboard::openVirtualKeyboard({getAbsolutePosition(), getFullSize()});
+            keyboard::openVirtualKeyboard({getAbsolutePosition(), getFullSize()});
         else
-            Keyboard::closeVirtualKeyboard();
+            keyboard::closeVirtualKeyboard();
 #endif
 
         Widget::setFocused(focused);
