@@ -31,6 +31,7 @@
 #include <TGUI/Global.hpp>
 #include <TGUI/Vector2f.hpp>
 #include <TGUI/Animation.hpp>
+#include <TGUI/Color.hpp>
 #include <SFML/System/String.hpp>
 #include <type_traits>
 #include <functional>
@@ -91,6 +92,12 @@ namespace tgui
             static constexpr const char* const Minimized = "Minimized";                 ///< The window was minimized. Optional parameter: pointer to the window
             static constexpr const char* const Maximized = "Maximized";                 ///< The window was maximized. Optional parameter: pointer to the window
             static constexpr const char* const EscapeKeyPressed = "EscapeKeyPressed";   ///< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+        };
+
+        struct ColorPicker : public ChildWindow
+        {
+            static constexpr const char* const ColorChange = "ColorChanged";            ///< The color was changed. Optional parameter: color chosen
+            static constexpr const char* const OkPressed = "OkPressed";           ///< The ok key was pressed. Optional parameter: color chosen
         };
 
         struct ComboBox : public Widget
@@ -458,6 +465,7 @@ namespace tgui
     TGUI_SIGNAL_VALUE_DECLARATION(Float, float)
     TGUI_SIGNAL_VALUE_DECLARATION(String, const sf::String&)
     TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, Vector2f)
+    TGUI_SIGNAL_VALUE_DECLARATION(Color, Color)
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
