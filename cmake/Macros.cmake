@@ -24,14 +24,14 @@ function(tgui_set_global_compile_flags target)
                                -Wpedantic
                                -Wdouble-promotion
                                -Wformat=2)
+    endif()
 
-        set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
-        if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
-            set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON)
-            set_target_properties(${target} PROPERTIES CXX_STANDARD ${TGUI_CXX_STANDARD})
-        else() # CMake 3.8 or newer
-            target_compile_features(${target} PUBLIC cxx_std_${TGUI_CXX_STANDARD})
-        endif()
+    set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
+    if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
+        set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON)
+        set_target_properties(${target} PROPERTIES CXX_STANDARD ${TGUI_CXX_STANDARD})
+    else() # CMake 3.8 or newer
+        target_compile_features(${target} PUBLIC cxx_std_${TGUI_CXX_STANDARD})
     endif()
 endfunction()
 
