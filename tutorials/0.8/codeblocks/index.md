@@ -54,7 +54,7 @@ In the "Search directories" of the "Linker" add the path to the lib directory (o
 [![CodeBlocks Linker Search Directories](/resources/CodeBlocks-0.7/LinkerSearchDirectories.jpg){:width="738" height="536"}](/resources/CodeBlocks-0.7/LinkerSearchDirectories.jpg)
 
 In "Linker settings" under "Other linker options" add '-ltgui' in the 'Release' settings and/or add '-ltgui-d' in the 'Debug' settings. When linking statically, you have to use '-ltgui-s' and '-ltgui-s-d' instead of course. Also note that the order has to be correct: first tgui, then the libraries from sfml.  
-[![CodeBlocks Linker Settings](/resources/CodeBlocks-0.7/LinkerOptions.jpg){:width="738" height="536"}](/resources/CodeBlocks-0.7/.jpg)
+[![CodeBlocks Linker Settings](/resources/CodeBlocks-0.7/LinkerOptions.jpg){:width="738" height="536"}](/resources/CodeBlocks-0.7/LinkerOptions.jpg)
 
 When using shared libraries, don't forget to copy tgui.dll to your project's folder.
 
