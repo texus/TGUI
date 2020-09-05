@@ -55,6 +55,8 @@ namespace tgui
                 return static_cast<std::string>(*static_cast<const sf::String*>(obj));
             else if constexpr (std::is_same_v<Type, sf::Vector2f>) // Signal handlers are allowed to have sf::Vector2f parameters while the signal sends tgui::Vector2f
                 return static_cast<sf::Vector2f>(*static_cast<const Vector2f*>(obj));
+            else if constexpr (std::is_same_v<Type, sf::Color>) // Signal handlers are allowed to have sf::Color parameters while the signal sends tgui::Color
+                return static_cast<sf::Color>(*static_cast<const Color*>(obj));
             else
                 return *static_cast<const std::decay_t<Type>*>(obj);
         }
@@ -73,7 +75,14 @@ namespace tgui
             return static_cast<sf::Vector2f>(*static_cast<const Vector2f*>(obj));
         }
 
-        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value && !std::is_same<Type, sf::Vector2f>::value>::type* = nullptr>
+        template <typename Type, typename std::enable_if<std::is_same<Type, sf::Color>::value>::type* = nullptr>
+        decltype(auto) dereference(const void* obj)
+        {
+            // Signal handlers are allowed to have sf::Vector2f parameters while the signal sends tgui::Vector2f
+            return static_cast<sf::Color>(*static_cast<const Color*>(obj));
+        }
+
+        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value && !std::is_same<Type, sf::Vector2f>::value && !std::is_same<Type, sf::Color>::value>::type* = nullptr>
         decltype(auto) dereference(const void* obj)
         {
             return *static_cast<const typename std::decay<Type>::type*>(obj);

@@ -82,6 +82,8 @@ namespace tgui
         constexpr const char* const ChildWindow::Minimized;
         constexpr const char* const ChildWindow::Maximized;
         constexpr const char* const ChildWindow::EscapeKeyPressed;
+        constexpr const char* const ColorPicker::ColorChange;
+        constexpr const char* const ColorPicker::OkPressed;
         constexpr const char* const ComboBox::ItemSelected;
         constexpr const char* const EditBox::TextChanged;
         constexpr const char* const EditBox::ReturnKeyPressed;
@@ -218,6 +220,7 @@ namespace tgui
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, const sf::String&)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, Vector2f)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Color, Color)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -274,6 +277,16 @@ namespace tgui
     unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
         if ((unboundParameters.size() == 1) && (checkParamType<Vector2f>(unboundParameters.begin()) || checkParamType<sf::Vector2f>(unboundParameters.begin())))
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalColor::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
+    {
+        if ((unboundParameters.size() == 1) && (checkParamType<Color>(unboundParameters.begin()) || checkParamType<sf::Color>(unboundParameters.begin())))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
