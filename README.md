@@ -1,7 +1,8 @@
 TGUI - Texus' Graphical User Interface
 =======================================
 
-In one line: TGUI is a cross-platform modern c++ GUI for [SFML](https://www.sfml-dev.org).
+TGUI is a cross-platform modern c++ GUI library.  
+Although mostly a library for [SFML](https://www.sfml-dev.org), custom backends can be used and an experimental backend is provided that uses SDL and OpenGL 4.3.
 
 For more information, take a look at the [website](https://tgui.eu).
 
@@ -22,9 +23,9 @@ You can download the source code of the current development version from the [gi
 Learn
 -----
 
-* Tutorials: TODO. Mostly the same as [0.8 tutorials](https://tgui.eu/tutorials/0.8)
+* [Tutorials](https://tgui.eu/tutorials/0.9)
 * [Documentation](https://tgui.eu/documentation/0.9)
-* Examples: TODO. Mostly the same as [0.8 examples](https://tgui.eu/examples/0.8)
+* [Examples](https://tgui.eu/examples/0.9)
 * [Forum](https://forum.tgui.eu)
 
 
@@ -36,3 +37,5 @@ Name: Bruno Van de Velde
 E-mail: vdv_b@tgui.eu
 
 [![Discord](https://img.shields.io/badge/chat-on_discord-7389D8.svg?logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/Msf4vyx)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/texusius)
