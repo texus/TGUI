@@ -349,7 +349,10 @@ namespace tgui
                         eventProcessed = true;
 
                     if (event.type == SDL_QUIT)
+                    {
                         quit = true;
+                        eventProcessed = true;
+                    }
                 }
 
                 if (updateTime())

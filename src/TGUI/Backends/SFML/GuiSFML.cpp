@@ -358,7 +358,10 @@ namespace tgui
                         eventProcessed = true;
 
                     if (event.type == sf::Event::Closed)
+                    {
                         window->close();
+                        eventProcessed = true;
+                    }
                 }
 
                 if (updateTime())
