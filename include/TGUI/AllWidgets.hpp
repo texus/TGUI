@@ -22,23 +22,48 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_TGUI_HPP
-#define TGUI_TGUI_HPP
+#ifndef TGUI_ALL_WIDGETS_HPP
+#define TGUI_ALL_WIDGETS_HPP
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Core.hpp>
-#include <TGUI/AllWidgets.hpp>
-
-#include <TGUI/GuiBase.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Loading/Serializer.hpp>
-
-#if TGUI_BUILD_WITH_SFML
-    #include <TGUI/Backends/SFML.hpp>
-#endif
+#include <TGUI/Widgets/BitmapButton.hpp>
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Canvas.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Group.hpp>
+#include <TGUI/Widgets/Grid.hpp>
+#include <TGUI/Widgets/HorizontalLayout.hpp>
+#include <TGUI/Widgets/HorizontalWrap.hpp>
+#include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/ListView.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/RadioButtonGroup.hpp>
+#include <TGUI/Widgets/RangeSlider.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/SpinControl.hpp>
+#include <TGUI/Widgets/Tabs.hpp>
+#include <TGUI/Widgets/TabContainer.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextArea.hpp>
+#include <TGUI/Widgets/TreeView.hpp>
+#include <TGUI/Widgets/VerticalLayout.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TGUI_HPP
+#endif // TGUI_ALL_WIDGETS_HPP

@@ -22,23 +22,22 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_TGUI_HPP
-#define TGUI_TGUI_HPP
+#ifndef TGUI_CORE_HPP
+#define TGUI_CORE_HPP
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Core.hpp>
-#include <TGUI/AllWidgets.hpp>
+#include <TGUI/Animation.hpp>
+#include <TGUI/Cursor.hpp>
+#include <TGUI/Timer.hpp>
+#include <TGUI/Widget.hpp>
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/SubwidgetContainer.hpp>
 
-#include <TGUI/GuiBase.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Loading/Serializer.hpp>
-
-#if TGUI_BUILD_WITH_SFML
-    #include <TGUI/Backends/SFML.hpp>
-#endif
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TGUI_HPP
+#endif // TGUI_CORE_HPP
