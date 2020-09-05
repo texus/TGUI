@@ -169,8 +169,8 @@ namespace tgui
         unsigned int m_characterSize = 0;
         int m_fontOutline = 0;
         int m_fontStyle = TTF_STYLE_NORMAL;
-        SDL_Color m_textColor;
-        SDL_Color m_outlineColor;
+        SDL_Color m_textColor = {0, 0, 0, 255};
+        SDL_Color m_outlineColor = {0, 0, 0, 255};
         std::vector<std::string> m_linesUtf8;
 
         Vector2f m_size;

@@ -115,7 +115,7 @@ namespace tgui
         if (!font)
             return 0;
 
-        return TTF_FontLineSkip(font);
+        return static_cast<float>(TTF_FontLineSkip(font));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

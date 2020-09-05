@@ -168,20 +168,20 @@ namespace tgui
 
         const bool bold = ((m_fontStyle & TTF_STYLE_BOLD) == TTF_STYLE_BOLD);
 
-        int x = 0;
+        float x = 0;
         char32_t prevChar = U'\0';
         for (std::size_t i = 0; i < index; ++i)
         {
             const char32_t currentChar = m_linesUtf8[lineNumber][i];
-            x += m_font->getGlyph(currentChar, m_characterSize, bold, m_fontOutline).advance;
+            x += m_font->getGlyph(currentChar, m_characterSize, bold, static_cast<float>(m_fontOutline)).advance;
             x += m_font->getKerning(prevChar, currentChar, m_characterSize);
             prevChar = currentChar;
         }
 
         if (lineNumber == 0)
-            return {static_cast<float>(x), 0};
+            return {x, 0};
         else
-            return {static_cast<float>(x), static_cast<float>(lineNumber * m_font->getLineSpacing(m_characterSize))};
+            return {x, static_cast<float>(lineNumber * m_font->getLineSpacing(m_characterSize))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ namespace tgui
         if (!font)
             return false;
 
-        const int lineSpacing = m_font->getLineSpacing(m_characterSize);
+        const float lineSpacing = m_font->getLineSpacing(m_characterSize);
 
         // If textures already existed then delete them first
         for (const auto& lineTexture : m_textures)

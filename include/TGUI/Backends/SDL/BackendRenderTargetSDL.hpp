@@ -30,8 +30,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class SDL_Window;
-class SDL_Rect;
+struct SDL_Window;
+struct SDL_Rect;
 typedef unsigned int GLuint;
 
 namespace tgui
@@ -211,7 +211,7 @@ namespace tgui
         int m_windowHeight = 0;
         FloatRect m_viewRect;
         IntRect m_viewport;
-        std::array<int, 4> m_viewportGL;
+        std::array<int, 4> m_viewportGL = {};
         std::vector<std::pair<FloatRect, std::array<int, 4>>> m_clippingLayers;
 
         Transform m_projectionTransform;

@@ -373,6 +373,8 @@ namespace tgui
                 return;
             }
         }
+#else
+        (void)window;
 #endif
 
         // If the cursor doesn't exist yet then create it now

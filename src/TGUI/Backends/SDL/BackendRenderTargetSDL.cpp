@@ -208,8 +208,8 @@ namespace tgui
 
         // Get some values from the current state so that we can restore them when we are done drawing
         const GLboolean oldBlendEnabled = glIsEnabled(GL_BLEND);
-        GLint oldBlendSrc;
-        GLint oldBlendDst;
+        GLint oldBlendSrc = GL_SRC_ALPHA;
+        GLint oldBlendDst = GL_ONE_MINUS_SRC_ALPHA;
         if (oldBlendEnabled)
         {
             TGUI_GL_CHECK(glGetIntegerv(GL_BLEND_SRC_ALPHA, &oldBlendSrc));
@@ -360,7 +360,7 @@ namespace tgui
         prepareVerticesAndIndices(sprite);
         updateTransformation(transformedStates.transform);
 
-        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, sprite.getIndices().size(), GL_UNSIGNED_INT, NULL));
+        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(sprite.getIndices().size()), GL_UNSIGNED_INT, NULL));
 
         if (clippingRequired)
             removeClippingLayer();
@@ -396,7 +396,7 @@ namespace tgui
         prepareVerticesAndIndices(vertices, vertexCount, indices, indexCount);
         updateTransformation(states.transform);
 
-        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, NULL));
+        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, NULL));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,10 +448,10 @@ namespace tgui
             const auto& vertex = vertices[i];
             vertexData.push_back(vertex.position.x);
             vertexData.push_back(vertex.position.y);
-            vertexData.push_back(vertex.color.red / 255.0);
-            vertexData.push_back(vertex.color.green / 255.0);
-            vertexData.push_back(vertex.color.blue / 255.0);
-            vertexData.push_back(vertex.color.alpha / 255.0);
+            vertexData.push_back(vertex.color.red / 255.f);
+            vertexData.push_back(vertex.color.green / 255.f);
+            vertexData.push_back(vertex.color.blue / 255.f);
+            vertexData.push_back(vertex.color.alpha / 255.f);
             vertexData.push_back(vertex.texCoords.x / textureSize.x);
             vertexData.push_back(vertex.texCoords.y / textureSize.y);
         }
@@ -536,7 +536,7 @@ namespace tgui
         prepareVerticesAndIndices(vertices.data(), vertices.size(), indices.data(), indices.size(),
                                   {static_cast<unsigned int>(bounding.w), static_cast<unsigned int>(bounding.h)});
 
-        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL));
+        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, NULL));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

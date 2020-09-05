@@ -204,9 +204,9 @@ namespace tgui
                 eventTGUI.type = Event::Type::MouseWheelScrolled;
 
                 if (eventSDL.wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
-                    eventTGUI.mouseWheel.delta =  -eventSDL.wheel.y;
+                    eventTGUI.mouseWheel.delta =  -static_cast<float>(eventSDL.wheel.y);
                 else
-                    eventTGUI.mouseWheel.delta =  eventSDL.wheel.y;
+                    eventTGUI.mouseWheel.delta = static_cast<float>(eventSDL.wheel.y);
 
                 return true;
             }
@@ -285,8 +285,8 @@ namespace tgui
         // SDL doesn't include the mouse position in mouse wheel events, so we add the last known position ourself
         if (event.type == Event::Type::MouseWheelScrolled)
         {
-            event.mouseWheel.x = m_lastMousePos.x;
-            event.mouseWheel.x = m_lastMousePos.y;
+            event.mouseWheel.x = static_cast<int>(m_lastMousePos.x);
+            event.mouseWheel.x = static_cast<int>(m_lastMousePos.y);
         }
 
         if ((sdlEvent.type == SDL_MOUSEBUTTONDOWN) && (sdlEvent.button.which == SDL_TOUCH_MOUSEID))

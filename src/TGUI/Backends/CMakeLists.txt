@@ -35,6 +35,11 @@ else()
     endif()
 endif()
 
+# If we aren't building SFML then we don't need to keep the SFML_DIR variable (but don't erase its value if it had one)
+if(NOT TGUI_BUILD_WITH_SFML AND SFML_DIR STREQUAL "SFML_DIR-NOTFOUND")
+    unset(SFML_DIR CACHE)
+endif()
+
 if(TGUI_BACKEND_SFML)
     include(Backends/SFML/CMakeLists.txt)
 endif()
