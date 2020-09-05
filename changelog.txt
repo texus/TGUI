@@ -1,6 +1,8 @@
 TGUI 0.8.9  (TBD)
 -----------------
 
+- ColorPicker widget added ([PR #145](https://github.com/texus/TGUI/pull/145))
+- Added sortWidgets to Container to update the z-order of all widgets ([PR #141](https://github.com/texus/TGUI/pull/141))
 - Added getWidgetBelowMouseCursor to Gui and getWidgetAtPosition to Container/Gui
 - Added moveWidgetForward/moveWidgetBackward to Container to move widget one step in z-order
 - Added parameter to focusNextWidget/focusPreviousWidget in Container to not look recursively
