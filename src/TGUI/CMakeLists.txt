@@ -36,6 +36,7 @@ set(TGUI_SRC
     Renderers/ButtonRenderer.cpp
     Renderers/ChatBoxRenderer.cpp
     Renderers/ChildWindowRenderer.cpp
+    Renderers/ColorPickerRenderer.cpp
     Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
     Renderers/GroupRenderer.cpp
@@ -67,6 +68,7 @@ set(TGUI_SRC
     Widgets/CheckBox.cpp
     Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
+    Widgets/ColorPicker.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     Widgets/Group.cpp

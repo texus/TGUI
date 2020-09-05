@@ -30,6 +30,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/String.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Animation.hpp>
 #include <type_traits>
@@ -85,6 +86,12 @@ namespace tgui
             static constexpr const char* const Minimized = "Minimized";                 //!< The window was minimized. Optional parameter: pointer to the window
             static constexpr const char* const Maximized = "Maximized";                 //!< The window was maximized. Optional parameter: pointer to the window
             static constexpr const char* const EscapeKeyPressed = "EscapeKeyPressed";   //!< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+        };
+
+        struct ColorPicker : public ChildWindow
+        {
+            static constexpr const char* const ColorChange = "ColorChanged";    //!< The color was changed. Optional parameter: color chosen
+            static constexpr const char* const OkPressed = "OkPressed";         //!< The ok key was pressed. Optional parameter: color chosen
         };
 
         struct ComboBox : public Widget
@@ -609,6 +616,7 @@ namespace tgui
     using SignalUInt = SignalTyped<unsigned int>; //!< Signal with one "unsigned int" as optional unbound parameter
     using SignalBool = SignalTyped<bool>; //!< Signal with one "bool" as optional unbound parameter
     using SignalFloat = SignalTyped<float>; //!< Signal with one "float" as optional unbound parameter
+    using SignalColor = SignalTyped<Color>; //!< Signal with one "Color" as optional unbound parameter
     using SignalString = SignalTyped<const String&>; //!< Signal with one "String" as optional unbound parameter
     using SignalVector2f = SignalTyped<Vector2f>; //!< Signal with one "Vector2f" as optional unbound parameter
     using SignalRange = SignalTyped2<float, float>; //!< Signal with two floats as optional unbound parameters
