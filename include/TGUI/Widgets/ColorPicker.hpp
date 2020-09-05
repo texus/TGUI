@@ -32,6 +32,8 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Renderers/ColorPickerRenderer.hpp>
 
+#if TGUI_BUILD_WITH_SFML
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -103,25 +105,22 @@ namespace tgui
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ColorPickerRenderer *getSharedRenderer();
-
-        const ColorPickerRenderer *getSharedRenderer() const;
+        ColorPickerRenderer* getSharedRenderer();
+        const ColorPickerRenderer* getSharedRenderer() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ColorPickerRenderer *getRenderer();
-
-        const ColorPickerRenderer *getRenderer() const;
+        ColorPickerRenderer* getRenderer();
+        const ColorPickerRenderer* getRenderer() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of Color Picker
         ///
         /// @param color    The color picked by Color Picker
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setColor(const Color &color);
 
@@ -130,7 +129,6 @@ namespace tgui
         /// @brief Returns the picked color
         ///
         /// @return Color that is picked inside Color Picker
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color getColor() const;
 
@@ -215,7 +213,7 @@ namespace tgui
     public:
 
         SignalColor onColorChange = {"ColorChanged"}; ///< Color was changed
-        SignalColor onOkPressed = {"OkPressed"}; ///< Ok was pressed
+        SignalColor onOkPress = {"OkPress"}; ///< Ok button was pressed
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,6 +237,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+
+#endif // TGUI_BUILD_WITH_SFML
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif //TGUI_COLOR_PICKER_HPP

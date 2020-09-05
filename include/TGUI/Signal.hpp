@@ -90,8 +90,8 @@ namespace tgui
 
         struct ColorPicker : public ChildWindow
         {
-            static constexpr const char* const ColorChange = "ColorChanged";    //!< The color was changed. Optional parameter: color chosen
-            static constexpr const char* const OkPressed = "OkPressed";         //!< The ok key was pressed. Optional parameter: color chosen
+            static constexpr const char* const ColorChange = "ColorChanged";    //!< The color was changed. Optional parameter: chosen color
+            static constexpr const char* const OkPress = "OkPressed";           //!< The ok button was pressed. Optional parameter: chosen color
         };
 
         struct ComboBox : public Widget

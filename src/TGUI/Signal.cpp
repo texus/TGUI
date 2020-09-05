@@ -55,7 +55,7 @@ namespace tgui
         constexpr const char* const ChildWindow::Maximized;
         constexpr const char* const ChildWindow::EscapeKeyPressed;
         constexpr const char* const ColorPicker::ColorChange;
-        constexpr const char* const ColorPicker::OkPressed;
+        constexpr const char* const ColorPicker::OkPress;
         constexpr const char* const ComboBox::ItemSelected;
         constexpr const char* const EditBox::TextChanged;
         constexpr const char* const EditBox::ReturnKeyPressed;

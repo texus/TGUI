@@ -28,6 +28,8 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <cmath>
 
+#if TGUI_BUILD_WITH_SFML
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -75,7 +77,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color calculateColor(sf::Vector2f position, float V, int A)
+    sf::Color calculateColor(Vector2f position, float V, int A)
     {
         /**
              * vec2 position = ( gl_FragCoord.xy / resolution.xy );
@@ -95,7 +97,7 @@ namespace tgui
              * gl_FragColor.a = 1.0;
              */
 
-        auto length = [](sf::Vector2f x) {
+        auto length = [](Vector2f x) {
             return std::sqrt(x.x * x.x + x.y * x.y);
         };
 
@@ -210,7 +212,7 @@ namespace tgui
         m_current->getRenderer()->setBackgroundColor(Color::Black);
         m_last->getRenderer()->setBackgroundColor(Color::Black);
 
-        Container::add(Button::create("Reset"), "#TGUI_INTERNAL$ColorPickerBack#");
+        Container::add(Button::create("Reset"), "#TGUI_INTERNAL$ColorPickerReset#");
         Container::add(Button::create("OK"), "#TGUI_INTERNAL$ColorPickerOK#");
         Container::add(Button::create("Cancel"), "#TGUI_INTERNAL$ColorPickerCancel#");
 
@@ -225,7 +227,7 @@ namespace tgui
     ColorPicker::ColorPicker(const ColorPicker &other) :
             ChildWindow{other},
             onColorChange{other.onColorChange},
-            onOkPressed{other.onOkPressed},
+            onOkPress{other.onOkPress},
             m_HSV{other.m_HSV}
     {
         identifyButtonsAndConnect();
@@ -236,7 +238,7 @@ namespace tgui
     ColorPicker::ColorPicker(ColorPicker &&other) :
             ChildWindow{std::move(other)},
             onColorChange{std::move(other.onColorChange)},
-            onOkPressed{std::move(other.onOkPressed)},
+            onOkPress{std::move(other.onOkPress)},
             m_HSV{std::move(other.m_HSV)}
     {
         identifyButtonsAndConnect();
@@ -252,7 +254,7 @@ namespace tgui
             ChildWindow::operator=(temp);
 
             std::swap(onColorChange, temp.onColorChange);
-            std::swap(onOkPressed, temp.onOkPressed);
+            std::swap(onOkPress, temp.onOkPress);
             std::swap(m_HSV, temp.m_HSV);
 
             identifyButtonsAndConnect();
@@ -268,7 +270,7 @@ namespace tgui
         if (this != &other)
         {
             onColorChange = std::move(other.onColorChange);
-            onOkPressed = std::move(other.onOkPressed);
+            onOkPress = std::move(other.onOkPress);
             m_canvas = std::move(other.m_canvas);
             m_red = std::move(other.m_red);
             m_green = std::move(other.m_green);
@@ -374,12 +376,12 @@ namespace tgui
         {
             m_colorRead = true;
 
-            auto length = [](sf::Vector2f x) {
+            auto length = [](Vector2f x) {
                 return std::sqrt(x.x * x.x + x.y * x.y);
             };
 
-            sf::Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
-                                     (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
+            Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
+                                 (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
 
             position -= {0.5f, 0.5f};
             position *= 2.0f;
@@ -431,8 +433,8 @@ namespace tgui
         if (m_colorRead)
         {
 
-            sf::Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
-                                     (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
+            Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
+                                 (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
 
             position -= {0.5f, 0.5f};
             position *= 2.0f;
@@ -500,15 +502,15 @@ namespace tgui
                                "#TGUI_INTERNAL$ColorPickerLast#.bottom");
 
 #ifdef TGUI_SYSTEM_WINDOWS
-        get<Button>("#TGUI_INTERNAL$ColorPickerBack#")->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10",
-                                                                    "#TGUI_INTERNAL$ColorPickerCancel#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10",
+                                                                     "#TGUI_INTERNAL$ColorPickerCancel#.top");
         get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10",
                                                                   "#TGUI_INTERNAL$ColorPickerCancel#.top");
         get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setPosition("&.iw - w - 10",
                                                                       "&.ih - h - 10");
 #else
-        get<Button>("#TGUI_INTERNAL$ColorPickerBack#")->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10",
-                                                                    "#TGUI_INTERNAL$ColorPickerOK#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10",
+                                                                     "#TGUI_INTERNAL$ColorPickerOK#.top");
         get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10",
                                                                       "#TGUI_INTERNAL$ColorPickerOK#.top");
         get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setPosition("&.iw - w - 10",
@@ -523,8 +525,8 @@ namespace tgui
     {
         if (signalName == onColorChange.getName())
             return onColorChange;
-        else if (signalName == onOkPressed.getName())
-            return onOkPressed;
+        else if (signalName == onOkPress.getName())
+            return onOkPress;
         else
             return ChildWindow::getSignal(std::move(signalName));
     }
@@ -537,7 +539,7 @@ namespace tgui
         {
             const auto &renderer = getSharedRenderer()->getButton();
 
-            get<Button>("#TGUI_INTERNAL$ColorPickerBack#")->setRenderer(renderer);
+            get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setRenderer(renderer);
             get<Button>("#TGUI_INTERNAL$ColorPickerOk#")->setRenderer(renderer);
             get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setRenderer(renderer);
         }
@@ -659,9 +661,9 @@ namespace tgui
                              reCalculateColor();
                          });
 
-        auto back = get<Button>("#TGUI_INTERNAL$ColorPickerBack#");
-        back->onPress.disconnectAll();
-        back->onPress([=]() {
+        auto reset = get<Button>("#TGUI_INTERNAL$ColorPickerReset#");
+        reset->onPress.disconnectAll();
+        reset->onPress([=]() {
             auto color = m_last->getRenderer()->getBackgroundColor();
             m_red->setValue(color.getRed());
             m_green->setValue(color.getGreen());
@@ -673,21 +675,21 @@ namespace tgui
         ok->onPress([=]() {
             auto color = m_current->getRenderer()->getBackgroundColor();
             m_last->getRenderer()->setBackgroundColor(color);
-            onOkPressed.emit(this, color);
+            onOkPress.emit(this, color);
 
             ChildWindow::close();
         });
+
         auto close = get<Button>("#TGUI_INTERNAL$ColorPickerCancel#");
         close->onPress.disconnectAll();
-        close->onPress([=]() {
+        close->onPress([=]{
             auto color = m_last->getRenderer()->getBackgroundColor();
             setColor(color);
 
             ChildWindow::close();
         });
 
-        m_value->onValueChange.disconnectAll();
-        m_value->onValueChange([=](float v) {
+        auto valueChangeFunc = [=](float value){
             auto size = m_canvas->getView().getSize();
             sf::Vertex array[4];
             array[0].position = {0, 0};
@@ -702,16 +704,21 @@ namespace tgui
             m_HSV->setParameter("resolution", size);
             m_canvas->draw(array, 4, sf::TrianglesStrip, m_HSV.get());
 #else
-            m_HSV->setUniform("V", logInvCurve(v / m_value->getMaximum()));
+            m_HSV->setUniform("V", logInvCurve(value / m_value->getMaximum()));
             m_HSV->setUniform("resolution", size);
             m_canvas->draw(array, 4, sf::TriangleStrip, m_HSV.get());
 #endif
             m_canvas->display();
-        });
-        m_value->onValueChange.emit(m_value.get(), m_value->getValue()); //< Emit signal to redraw canvas
+        };
+
+        m_value->onValueChange.disconnectAll();
+        m_value->onValueChange(valueChangeFunc);
+        valueChangeFunc(m_value->getValue()); // Redraw the canvas now
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+
+#endif // TGUI_BUILD_WITH_SFML
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
