@@ -1347,13 +1347,12 @@ bool GuiBuilder::loadForm(const tgui::String& filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
+tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr window)
 {
     auto panel = tgui::Panel::create({"100%", "100%"});
     panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
     m_gui.add(panel);
 
-    auto window = tgui::ChildWindow::create();
     window->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
     m_gui.add(window);
 
@@ -1589,6 +1588,16 @@ void GuiBuilder::addPropertyValueColor(const tgui::String& property, const tgui:
         colorPreviewPanel->getRenderer()->setBackgroundColor(value);
     else
         colorPreviewPanel->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+
+    colorPreviewPanel->onClick.disconnectAll();
+    colorPreviewPanel->onClick([=]{
+        const tgui::Color color = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor();
+        auto colorPicker = tgui::ColorPicker::create("Select color", color);
+        openWindowWithFocus(colorPicker);
+        colorPicker->onOkPress([=](tgui::Color newColor){
+            onChange(tgui::Serializer::serialize(newColor));
+        });
+    });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -73,7 +73,7 @@ private:
     void removePopupMenu();
     void createNewForm(const tgui::String& filename);
     bool loadForm(const tgui::String& filename);
-    tgui::ChildWindow::Ptr openWindowWithFocus();
+    tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
