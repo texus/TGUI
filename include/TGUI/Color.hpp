@@ -73,7 +73,7 @@ namespace tgui
             m_red  {0},
             m_green{0},
             m_blue {0},
-            m_alpha{255}
+            m_alpha{0}
         {
         }
 
