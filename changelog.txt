@@ -9,6 +9,7 @@ TGUI 0.8.9  (TBD)
 - Added enableSkipDrawingWidgetsOutsideView() to ScrollablePanel to enable optimization
 - Tabs::remove didn't recalculate the tabs width
 - SubwidgetContainer wasn't being compiled into the library
+- Text orientation in Button wasn't updated when size changed
 
 
 TGUI 0.8.8  (20 June 2020)
