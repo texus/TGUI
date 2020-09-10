@@ -121,7 +121,9 @@ namespace tgui
         if (m_textSize != 0)
         {
             m_text.setCharacterSize(m_textSize);
+            m_updatingSizeWhileSettingText = true;
             updateSize();
+            m_updatingSizeWhileSettingText = false;
         }
 
         // Draw the text normally unless the height is more than double of the width
@@ -479,8 +481,8 @@ namespace tgui
         m_spriteDisabled.setSize(getInnerSize());
         m_spriteFocused.setSize(getInnerSize());
 
-        // Recalculate the text size when auto sizing
-        if (m_textSize == 0)
+        // Recalculate the text size (needed when auto-sizing or to update whether letters are placed horizontally or vertically)
+        if (!m_updatingSizeWhileSettingText)
             setText(getText());
     }
 

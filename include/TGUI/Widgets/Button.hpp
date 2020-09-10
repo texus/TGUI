@@ -280,6 +280,7 @@ namespace tgui
         Text m_text;
 
         bool   m_autoSize = true;
+        bool   m_updatingSizeWhileSettingText = false; // Internal variable so that updateSize knows that it is called from setText
 
         Sprite m_sprite;
         Sprite m_spriteHover;
