@@ -1068,6 +1068,14 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
+        // If the edit box is resized then it might happen that text which previously didn't fit will now fit inside it
+        if (m_textCropPosition != 0)
+        {
+            const float textWidth = getFullTextWidth();
+            const float maxTextCropPosition = textWidth - getVisibleEditBoxWidth();
+            m_textCropPosition = std::min(m_textCropPosition, static_cast<unsigned int>(std::max(0.f, maxTextCropPosition)));
+        }
+
         const float textOffset = m_textFull.getExtraHorizontalPadding();
         float textX = m_paddingCached.getLeft() - m_textCropPosition + textOffset;
         const float textY = m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) - m_textFull.getSize().y) / 2.f);
