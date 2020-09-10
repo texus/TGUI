@@ -77,7 +77,11 @@ namespace tgui
         m_text.setCharacterSize(m_textSize);
 
         if (m_autoSize && (m_textSize != 0))
+        {
+            m_updatingSizeWhileSettingText = true;
             updateSize();
+            m_updatingSizeWhileSettingText = false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
