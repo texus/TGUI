@@ -175,7 +175,7 @@ endif()
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 
 # Jump to the CMakeLists.txt file in the source folder
-add_subdirectory(src/TGUI)
+add_subdirectory(src)
 
 # Generate the Config.hpp header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
