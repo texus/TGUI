@@ -102,11 +102,11 @@ if(TGUI_OS_WINDOWS)
     endif()
 endif()
 
-# Mac OS X specific options
+# macOS specific options
 if(TGUI_OS_MACOSX)
 
     # Add an option to build framework instead of dylib (release only)
-    tgui_set_option(TGUI_BUILD_FRAMEWORK FALSE BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
+    tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
 
     # Only the default architecture (i.e. 64-bit) is supported
     if(CMAKE_OSX_ARCHITECTURES AND NOT "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "x86_64")
