@@ -245,15 +245,17 @@ namespace tgui
         String(const char16_t* str, std::size_t count);
         String(const char32_t* str, std::size_t count);
 
-        String(std::initializer_list<char> chars);
-        String(std::initializer_list<wchar_t> chars);
-        String(std::initializer_list<char16_t> chars);
-        String(std::initializer_list<char32_t> chars);
+        explicit String(std::initializer_list<char> chars);
+        explicit String(std::initializer_list<wchar_t> chars);
+        explicit String(std::initializer_list<char16_t> chars);
+        explicit String(std::initializer_list<char32_t> chars);
 
-        String(std::string::const_iterator first, std::string::const_iterator last);
-        String(std::wstring::const_iterator first, std::wstring::const_iterator last);
-        String(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        String(std::u32string::const_iterator first, std::u32string::const_iterator last);
+        // Constructors using iterators have to be explicit to prevent {"1", "2"} to be ambiguous between String and std::vector<String>.
+        // The reason these constructors were considered a candicate to clang is due to a private constructor in the iterator class.
+        explicit String(std::string::const_iterator first, std::string::const_iterator last);
+        explicit String(std::wstring::const_iterator first, std::wstring::const_iterator last);
+        explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
+        explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
 #if TGUI_BUILD_WITH_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
@@ -835,7 +837,7 @@ namespace tgui
         std::size_t find_last_not_of(const char8_t* s, std::size_t pos = npos) const;
         std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        friend std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str);
+        //friend std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str);
 #endif
     };
 
@@ -1296,11 +1298,12 @@ namespace tgui
         return m_string.find_last_not_of(static_cast<char8_t>(ch), pos);
     }
 
-    inline std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str)
-    {
-        os << std::u8string(str);
-        return os;
-    }
+    // Doesn't compile with libc++
+    //inline std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str)
+    //{
+    //    os << std::u8string(str);
+    //    return os;
+    //}
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

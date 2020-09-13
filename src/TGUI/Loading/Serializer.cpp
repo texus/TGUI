@@ -60,7 +60,7 @@ namespace tgui
 
         String decToHex(unsigned char c)
         {
-            return {decToSingleHex(c / 16), decToSingleHex(c % 16)};
+            return String({decToSingleHex(c / 16), decToSingleHex(c % 16)});
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

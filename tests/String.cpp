@@ -488,11 +488,6 @@ TEST_CASE("[String]")
         str = "@"; REQUIRE((str += u'\x20AC') == u"@\u20AC");
         str = "@"; REQUIRE((str += U'\x10348') == U"@\U00010348");
 
-        str = "@"; REQUIRE((str += {'a', 'b', 'c'}) == "@abc");
-        str = "@"; REQUIRE((str += {L'\x03b1', L'\x03b2', L'\x03b3'}) == L"@\u03b1\u03b2\u03b3");
-        str = "@"; REQUIRE((str += {u'\x03b1', u'\x03b2', u'\x03b3'}) == u"@\u03b1\u03b2\u03b3");
-        str = "@"; REQUIRE((str += {U'\x03b1', U'\x03b2', U'\x03b3'}) == U"@\u03b1\u03b2\u03b3");
-
         str = "@"; REQUIRE((str += tgui::String("xyz")) == "@xyz");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
@@ -1231,29 +1226,31 @@ TEST_CASE("[String]")
     {
         std::stringbuf streambuf;
         std::ostream ostream(&streambuf);
-        ostream << "abc";
+        ostream << tgui::String("abc");
         REQUIRE(streambuf.str() == "abc");
 
         std::wstringbuf wstreambuf;
         std::wostream wostream(&wstreambuf);
-        wostream << L"\u03b1\u03b2\u03b3";
+        wostream << tgui::String(L"\u03b1\u03b2\u03b3");
         REQUIRE(wstreambuf.str() == L"\u03b1\u03b2\u03b3");
 
-        std::basic_stringbuf<char16_t> u16streambuf;
-        std::basic_ostream<char16_t> u16ostream(&u16streambuf);
-        u16ostream << u"\u03b1\u03b2\u03b3";
-        REQUIRE(u16streambuf.str() == u"\u03b1\u03b2\u03b3");
+        // The other << operators don't work with libc++
 
-        std::basic_stringbuf<char32_t> u32streambuf;
-        std::basic_ostream<char32_t> u32ostream(&u32streambuf);
-        u32ostream << U"\u03b1\u03b2\u03b3";
-        REQUIRE(u32streambuf.str() == U"\u03b1\u03b2\u03b3");
+        //std::basic_stringbuf<char16_t> u16streambuf;
+        //std::basic_ostream<char16_t> u16ostream(&u16streambuf);
+        //u16ostream << tgui::String(u"\u03b1\u03b2\u03b3");
+        //REQUIRE(u16streambuf.str() == u"\u03b1\u03b2\u03b3");
+
+        //std::basic_stringbuf<char32_t> u32streambuf;
+        //std::basic_ostream<char32_t> u32ostream(&u32streambuf);
+        //u32ostream << tgui::String(U"\u03b1\u03b2\u03b3";
+        //REQUIRE(u32streambuf.str() == U"\u03b1\u03b2\u03b3");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-        std::basic_stringbuf<char8_t> u8streambuf;
-        std::basic_ostream<char8_t> u8ostream(&u8streambuf);
-        u8ostream << u8"\u03b1\u03b2\u03b3";
-        REQUIRE(u8streambuf.str() == u8"\u03b1\u03b2\u03b3");
+        //std::basic_stringbuf<char8_t> u8streambuf;
+        //std::basic_ostream<char8_t> u8ostream(&u8streambuf);
+        //u8ostream << tgui::String(u8"\u03b1\u03b2\u03b3");
+        //REQUIRE(u8streambuf.str() == u8"\u03b1\u03b2\u03b3");
 #endif
     }
 

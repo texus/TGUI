@@ -383,7 +383,7 @@ TEST_CASE("[TextArea]")
 
             SECTION("Pressing tab")
             {
-                auto sendTabEventToGui = [&keyEvent](tgui::GuiSFML& gui) {
+                auto sendTabEventToGui = [](tgui::GuiSFML& gui) {
                     sf::Event event;
                     event.key = sf::Event::KeyEvent();
                     event.key.control = false;

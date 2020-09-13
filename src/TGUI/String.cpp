@@ -145,7 +145,7 @@ namespace tgui
             return {};
 
         const auto lastIt = std::find_if(m_string.rbegin(), m_string.rend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); }).base();
-        return {firstIt, lastIt};
+        return String(firstIt, lastIt);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,17 +599,17 @@ namespace tgui
 
     String& String::assign(std::initializer_list<char> chars)
     {
-        return *this = chars;
+        return *this = String(chars);
     }
 
     String& String::assign(std::initializer_list<wchar_t> chars)
     {
-        return *this = chars;
+        return *this = String(chars);
     }
 
     String& String::assign(std::initializer_list<char16_t> chars)
     {
-        return *this = chars;
+        return *this = String(chars);
     }
 
     String& String::assign(std::initializer_list<char32_t> chars)
@@ -620,17 +620,17 @@ namespace tgui
 
     String& String::assign(std::string::const_iterator first, std::string::const_iterator last)
     {
-        return *this = {first, last};
+        return *this = String(first, last);
     }
 
     String& String::assign(std::wstring::const_iterator first, std::wstring::const_iterator last)
     {
-        return *this = {first, last};
+        return *this = String(first, last);
     }
 
     String& String::assign(std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
-        return *this = {first, last};
+        return *this = String(first, last);
     }
 
     String& String::assign(std::u32string::const_iterator first, std::u32string::const_iterator last)
@@ -641,7 +641,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String::reference       String::at(std::size_t pos)
+    String::reference String::at(std::size_t pos)
     {
         return m_string.at(pos);
     }
@@ -2233,21 +2233,18 @@ namespace tgui
         return os;
     }
 
-// Code didn't compile with AppleClang 9.1 (Xcode 9.4). Android build also failed, so libc++ issue?
-/// TODO: There was a related include missing when this code was last tested. Does it still fail?
-/*
-    std::basic_ostream<char16_t>& operator<<(std::basic_ostream<char16_t>& os, const String& str)
-    {
-        os << std::u16string(str);
-        return os;
-    }
+    // Doesn't compile with libc++
+    //std::basic_ostream<char16_t>& operator<<(std::basic_ostream<char16_t>& os, const String& str)
+    //{
+    //    os << std::u16string(str);
+    //    return os;
+    //}
 
-    std::basic_ostream<char32_t>& operator<<(std::basic_ostream<char32_t>& os, const String& str)
-    {
-        os << std::u32string(str);
-        return os;
-    }
-*/
+    //std::basic_ostream<char32_t>& operator<<(std::basic_ostream<char32_t>& os, const String& str)
+    //{
+    //    os << std::u32string(str);
+    //    return os;
+    //}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
