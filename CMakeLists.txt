@@ -55,8 +55,12 @@ else()
     set(TGUI_BUILD_EXAMPLES FALSE)
 endif()
 
-tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
-tgui_set_option(TGUI_BUILD_GUI_BUILDER TRUE BOOL "TRUE to compile the GUI Builder")
+# Add options to build the Gui Builder and tests
+if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
+    tgui_set_option(TGUI_BUILD_GUI_BUILDER TRUE BOOL "TRUE to compile the GUI Builder")
+    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
+endif()
+
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option(TGUI_CXX_STANDARD "14" STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
 
