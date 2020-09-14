@@ -103,7 +103,7 @@ if(TGUI_OS_WINDOWS)
 endif()
 
 # macOS specific options
-if(TGUI_OS_MACOSX)
+if(TGUI_OS_MACOS)
 
     # Add an option to build framework instead of dylib (release only)
     tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")

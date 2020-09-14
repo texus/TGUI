@@ -38,7 +38,7 @@ endfunction()
 # Set the appropriate standard library on each platform for the given target
 function(tgui_set_stdlib target)
     # Use libc++ on macOS
-    if(TGUI_OS_MACOSX)
+    if(TGUI_OS_MACOS)
         if(${CMAKE_GENERATOR} MATCHES "Xcode")
             set_property(TARGET ${target} PROPERTY XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
         else()

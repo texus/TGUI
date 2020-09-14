@@ -236,7 +236,7 @@ if(TGUI_GENERATE_PDB)
 endif()
 
 # Build frameworks or dylibs
-if(TGUI_OS_MACOSX AND TGUI_SHARED_LIBS)
+if(TGUI_OS_MACOS AND TGUI_SHARED_LIBS)
     if(TGUI_BUILD_FRAMEWORK)
         # Adapt target to build frameworks instead of dylibs
         set_target_properties(tgui PROPERTIES
