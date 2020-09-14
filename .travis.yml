@@ -18,6 +18,7 @@ jobs:
         - g++-8
         - libudev-dev
         - libxrandr-dev
+        - libxcursor-dev
         - libgl1-mesa-dev
     cache:
       directories:
@@ -38,6 +39,7 @@ jobs:
         - g++-5
         - libudev-dev
         - libxrandr-dev
+        - libxcursor-dev
         - libgl1-mesa-dev
     cache:
       ccache: true
