@@ -7,25 +7,22 @@ breadcrumb: 0.9
 Have a look at the [tutorials for TGUI 0.8](../0.8) for tutorials that haven't been rewritten yet (most of the code is the compatible).
 
 ### Installation tutorials
+
+[Windows (Visual Studio)](visual-studio)
+
+[Windows (CodeBlocks)](windows-codeblocks)
+
+[macOS (Xcode)](macos-xcode)
+
+[Linux (also BSD and Raspberry Pi)](linux)
+
+[Android](android)
+
+[iOS](ios)
+
 [Building TGUI from source code with CMake](cmake)
 
-[Selecting which backend to build in CMake](backends)
-
-Coming soon
-
-<!--
-Windows (Visual Studio)
-
-Windows (CodeBlocks)
-
-macOS (Xcode)
-
-Linux (also BSD and Raspberry Pi)
-
-Android
-
-iOS
--->
+[Selecting backend in CMake](backends)
 
 
 ### Getting started

@@ -17,21 +17,23 @@ You can change the platform to "Win32" or "x64" if you want to change the defaul
 Press "Finish" in this child window to continue.  
 [![CMake Select Generator](/resources/Tutorials/0.9/CMakeGenerator.png){:width="781" height="568"}](/resources/Tutorials/0.9/CMakeGenerator.png)
 
-At this point, CMake may complain that it can't find SFML. If this is the case then you must set SFML_DIR to tell CMake where to find it or change the TGUI\_BACKEND property if you do not wish to use SFML. Both of these things are explained in more detail in the ['selecting the backend' tutorial](../backends). This guide will continue with the assumption that SFML has been found.
+At this point, CMake may complain that it can't find SFML. If this is the case then you must set SFML_DIR to tell CMake where to find it or change the TGUI\_BACKEND property if you do not wish to use SFML. Both of these things are explained in more detail in the ['Selecting backend in CMake' tutorial](../backends). This guide will continue with the assumption that SFML has been found.
 
 CMake displays all new properties in red to indicate which properties already existed before pressing Configure and which are new. You do not have to worry about all properties being displayed in red or if later only some are red.  
 [![CMake Select Generator](/resources/Tutorials/0.9/CMakeConfigureValues.png){:width="781" height="568"}](/resources/Tutorials/0.9/CMakeConfigureValues.png)
 
 Now it is time to change some settings for TGUI. Below is a list of the most important settings that you can change with an explanation of what they do.
 
+<hr>
+
 **CMAKE\_BUILD\_TYPE**:  
-Sets whether you want to build "Release" or "Debug" libraries. On Windows you need to use Debug libraries when your project is in Debug mode and Release libraries when your project is in Release mode. On other operating systems you only need the Debug libraries if you actually want to be able to debug inside the TGUI libraries.
+Sets whether you want to build "Release" or "Debug" libraries. On Windows you need to use Debug libraries when your project is in Debug mode and Release libraries when your project is in Release mode. On other operating systems you only need the Debug libraries if you actually want to be able to debug inside the TGUI libraries, so you can usually leave it at Release if you aren't using Windows.
 
 **TGUI\_BACKEND**:  
-Sets the backend to use for rendering and OS interaction. More information on this can be found in the ['selecting the backend' tutorial](../backends).
+Sets the backend to use for rendering and OS interaction. More information on this can be found in the ['Selecting backend in CMake' tutorial](../backends).
 
 **TGUI\_SHARED\_LIBS**:  
-Sets whether you want to build shared or static libraries. Static libraries are included inside your executable while dynamic libraries will require you to include the library as a separate file when distributing your executable (the .dll file on Windows). Static TGUI libraries will have "-s" at the end of their name.  
+Sets whether you want to build shared or static libraries. Static libraries are included inside your executable while shared/dynamic libraries will require you to include the library as a separate file when distributing your executable (the .dll file on Windows). Static TGUI libraries will have "-s" at the end of their name.  
 Although it is possible to link SFML and TGUI in separate ways (by specifying a value for SFML\_STATIC\_LIBRARIES), you would typically link either everything dynamically or everything statically.
 
 **TGUI\_CXX\_STANDARD**:  
@@ -52,10 +54,12 @@ Sets whether .pdb files should be generated with the debug library. PDB files pr
 **TGUI\_BUILD\_FRAMEWORK** (macOS only):  
 Sets whether you want to build a .framework or a .dylib library.
 
+<hr class="sectionEnd">
+
 Once you are done changing settings, press the "Configure" button to apply the settings and press "Generate" to create the project that will build the TGUI libraries.  
 [![CMake Select Generator](/resources/Tutorials/0.9/CMakeGenerate.png){:width="781" height="568"}](/resources/Tutorials/0.9/CMakeGenerate.png)
 
-CMake doesn't actually build libraries, it just generates the required files to compile TGUI with the compiler of your choice. So the last step is to actually build TGUI. The prodecure is explained below, depening on which 
+CMake doesn't actually build libraries, it just generates the required files to compile TGUI with the compiler of your choice. So the last step is to actually build TGUI. The prodecure is explained below, depening on which generator you selected.
 
 ### Visual Studio
 
@@ -78,6 +82,5 @@ Once this is done, you will find the TGUI library inside the `lib` subdirectory 
 
 ### Makefiles
 
-Open the build folder in a terminal and execute "make". To speed up the build you can also type e.g. "make -j4", which would use 4 threads to compile the library.  
-Once building is done, you can use "sudo make install" on unix systems to install the TGUI libraries. This would make it easier to use them.
+Open the build folder in a terminal and execute "make". To speed up the build you can also type e.g. "make -j4", which would use 4 threads to compile the library.
 

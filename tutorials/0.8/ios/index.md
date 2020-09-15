@@ -33,4 +33,4 @@ Just drag the tgui-s.a (or tgui-s-d.a) file into your project.
 [![XCode drag framework](/resources/iOS/XCodeDragFramework.jpg){:width="306" height="218"}](/resources/iOS/XCodeDragFramework.jpg)
 
 A screen like below will appear asking you what to do. Make sure that "Copy items if needed", "Create folder references" and your target are all checked.  
-[![XCode add framework](/resources/iOS/XCodeAddFramework.jpg){:width="732" height="432"}](/resources/iOS/XCodeAddFramework.jpg)
+[![XCode add framework](/resources/iOS/XCodeAddFramework.jpg){:width="730" height="430"}](/resources/iOS/XCodeAddFramework.jpg)
