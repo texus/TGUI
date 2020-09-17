@@ -396,7 +396,7 @@ namespace tgui
             m_middleRect = middleRect;
 
             // If the middle rect was only partially provided then we need to calculate the width and height ourselves
-            if ((middleRect.left > 0) && (middleRect.top > 0) && (middleRect.width == 0) && (middleRect.height == 0))
+            if (((middleRect.left > 0) || (middleRect.top > 0)) && (middleRect.width == 0) && (middleRect.height == 0))
             {
                 if (m_partRect.width > 2 * middleRect.left)
                     m_middleRect.width = m_partRect.width - (2 * middleRect.left);
