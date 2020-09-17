@@ -37,11 +37,9 @@
   #include <SFML/Main.hpp>
 #endif
 
-#ifndef TGUI_BACKEND_SKIP_GUI_ALIAS
 namespace tgui
 {
     using Gui = GuiSFML;
 }
-#endif
 
 #endif // TGUI_BACKEND_SFML_INCLUDE_HPP

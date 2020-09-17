@@ -32,11 +32,4 @@
 #include <TGUI/Backends/SDL/BackendRenderTargetSDL.hpp>
 #include <TGUI/Backends/SDL/GuiSDL.hpp>
 
-#ifndef TGUI_BACKEND_SKIP_GUI_ALIAS
-namespace tgui
-{
-    using Gui = GuiSDL;
-}
-#endif
-
 #endif // TGUI_BACKEND_SDL_INCLUDE_HPP
