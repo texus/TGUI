@@ -41,6 +41,44 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Text::Text(const Text& other) :
+        m_backendText(getBackend()->createText())
+    {
+        setString(other.m_string);
+        setPosition(other.m_position);
+        setFont(other.m_font);
+        setColor(other.m_color);
+        setOutlineColor(other.m_outlineColor);
+        setStyle(other.m_textStyle);
+        setCharacterSize(other.m_characterSize);
+        setOutlineThickness(other.m_outlineThickness);
+        setOpacity(other.m_opacity);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Text& Text::operator=(const Text& other)
+    {
+        if (this != &other)
+        {
+            Text temp{other};
+            std::swap(m_backendText, temp.m_backendText);
+            std::swap(m_string, temp.m_string);
+            std::swap(m_position, temp.m_position);
+            std::swap(m_font, temp.m_font);
+            std::swap(m_color, temp.m_color);
+            std::swap(m_outlineColor, temp.m_outlineColor);
+            std::swap(m_textStyle, temp.m_textStyle);
+            std::swap(m_characterSize, temp.m_characterSize);
+            std::swap(m_outlineThickness, temp.m_outlineThickness);
+            std::swap(m_opacity, temp.m_opacity);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Text::setPosition(Vector2f position)
     {
         m_position = position;
