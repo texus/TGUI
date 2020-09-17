@@ -561,7 +561,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the view and changes the size of the root container when needed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void updateContainerSize() = 0;
+        virtual void updateContainerSize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalFloatRect onViewChange = {"ViewChanged"}; //!< The view was changed. Optional parameter: new view rectangle
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -579,6 +585,7 @@ namespace tgui
 
         RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
         RelFloatRect m_view{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
+        FloatRect m_lastView;
 
         bool m_drawUpdatesTime = true;
         bool m_tabKeyUsageEnabled = true;

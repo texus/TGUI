@@ -450,6 +450,7 @@ namespace tgui
     using SignalColor = SignalTyped<Color>; //!< Signal with one "Color" as optional unbound parameter
     using SignalString = SignalTyped<const String&>; //!< Signal with one "String" as optional unbound parameter
     using SignalVector2f = SignalTyped<Vector2f>; //!< Signal with one "Vector2f" as optional unbound parameter
+    using SignalFloatRect = SignalTyped<FloatRect>; //!< Signal with one "FloatRect" as optional unbound parameter
     using SignalRange = SignalTyped2<float, float>; //!< Signal with two floats as optional unbound parameters
 
 

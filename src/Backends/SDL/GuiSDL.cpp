@@ -415,6 +415,8 @@ namespace tgui
         m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});
         m_renderTarget->setView(m_view.getRect(), m_viewport.getRect());
         m_container->setSize(Vector2f{m_view.getWidth(), m_view.getHeight()});
+
+        GuiBase::updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
