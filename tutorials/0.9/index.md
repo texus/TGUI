@@ -58,6 +58,8 @@ breadcrumb: 0.9
 
 [Creating your own themes](custom-themes)
 
+[Loading from zip file](loading-from-zip)
+
 
 <br>
 Make sure to also look at the <a href="/documentation/0.9/">documentation</a> and <a href="/examples/0.9/">examples</a>.
