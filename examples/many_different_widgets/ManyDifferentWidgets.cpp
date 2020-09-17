@@ -27,13 +27,8 @@
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 
-int main()
+bool runExample(tgui::GuiBase& gui)
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
-    window.setFramerateLimit(60);
-
-    tgui::Gui gui(window);
-
     try
     {
         tgui::Theme theme{"../../themes/Black.txt"};
@@ -51,7 +46,7 @@ int main()
 
         auto menu = tgui::MenuBar::create();
         menu->setRenderer(theme.getRenderer("MenuBar"));
-        menu->setSize(static_cast<float>(window.getSize().x), 22.f);
+        menu->setHeight(22.f);
         menu->addMenu("File");
         menu->addMenuItem("Load");
         menu->addMenuItem("Save");
@@ -178,7 +173,7 @@ int main()
 
         auto child = tgui::ChildWindow::create();
         child->setRenderer(theme.getRenderer("ChildWindow"));
-        child->setSize(250, 120);
+        child->setClientSize({250, 120});
         child->setPosition(420, 80);
         child->setTitle("Child window");
         gui.add(child);
@@ -195,7 +190,7 @@ int main()
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->onPress([=](){ child->setVisible(false); });
+        button->onPress([=]{ child->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();
@@ -246,34 +241,30 @@ int main()
 
         button = tgui::Button::create();
         button->setRenderer(theme.getRenderer("Button"));
-        button->setPosition(window.getSize().x - 115.f, window.getSize().y - 50.f);
+        button->setPosition(gui.getView().getSize().x - 115.f, gui.getView().getSize().y - 50.f);
         button->setText("Exit");
         button->setSize(100, 40);
-        button->onPress([&](){ window.close(); });
         gui.add(button);
     }
     catch (const tgui::Exception& e)
     {
         std::cerr << "TGUI Exception: " << e.what() << std::endl;
-        return EXIT_FAILURE;
+        return false;
     }
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
+    return true;
+}
 
-            gui.handleEvent(event);
-        }
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
+    window.setFramerateLimit(60);
 
-        window.clear();
-        gui.draw();
-        window.display();
-    }
+    tgui::Gui gui(window);
+    if (!runExample(gui))
+        return -1;
 
+    gui.mainLoop();
     return EXIT_SUCCESS;
 }
 

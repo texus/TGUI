@@ -32,10 +32,23 @@ void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
     std::cout << "Password: " << password->getText() << std::endl;
 }
 
-void loadWidgets( tgui::Gui& gui )
+void updateTextSize(tgui::GuiBase& gui)
 {
+    // Update the text size of all widgets in the gui, based on the current window height
+    const float windowHeight = gui.getView().getRect().height;
+    gui.setTextSize(static_cast<unsigned int>(0.07f * windowHeight)); // 7% of height
+}
+
+void loadWidgets(tgui::GuiBase& gui)
+{
+    // Specify an initial text size instead of using the default value
+    updateTextSize(gui);
+
+    // We want the text size to be updated when the window is resized
+    gui.onViewChange([&gui]{ updateTextSize(gui); });
+
     // Create the background image
-    // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<Picture>
+    // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<tgui::Picture>
     // The picture will fit the entire window and will scale with it
     auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
     picture->setSize({"100%", "100%"});
@@ -69,43 +82,29 @@ void loadWidgets( tgui::Gui& gui )
     button->onPress(&login, editBoxUsername, editBoxPassword);
 }
 
-int main()
+bool runExample(tgui::GuiBase& gui)
 {
-    // Create the window
-    sf::RenderWindow window(sf::VideoMode(400, 300), "TGUI window");
-    tgui::Gui gui(window);
-
     try
     {
         loadWidgets(gui);
+        return true;
     }
     catch (const tgui::Exception& e)
     {
         std::cerr << "Failed to load TGUI widgets: " << e.what() << std::endl;
-        return 1;
+        return false;
     }
+}
 
-    // Main loop
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Pass the event to all the widgets
-            gui.handleEvent(event);
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(400, 300), "TGUI window");
+    window.setFramerateLimit(60);
 
-            // When the window is closed, the application ends
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+    tgui::GuiSFML gui(window);
+    if (!runExample(gui))
+        return -1;
 
-        window.clear();
-
-        // Draw all created widgets
-        gui.draw();
-
-        window.display();
-    }
-
+    gui.mainLoop();
     return EXIT_SUCCESS;
 }
