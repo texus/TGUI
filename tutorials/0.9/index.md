@@ -55,7 +55,8 @@ breadcrumb: 0.9
 
 
 ### Advanced tutorials
-Coming soon
+
+[Creating your own themes](custom-themes)
 
 
 <br>
