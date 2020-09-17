@@ -2,7 +2,6 @@
 layout: page
 title: Layouts
 breadcrumb: layouts
-redirect_from: "/tutorials/v07/layouts/index.html"
 ---
 
 ### Relative to parent

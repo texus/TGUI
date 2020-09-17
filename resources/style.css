@@ -311,7 +311,7 @@ p + p {
 }
 
 p + h3, a + h3, li + h3, ul + h3, div + h3, figure + h3 {
-  margin-top: 2.2em;
+  margin-top: 2.0em;
 }
 
 div.highlighter-rouge + p {

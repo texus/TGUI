@@ -4,8 +4,6 @@ title: 0.9 Tutorials
 breadcrumb: 0.9
 ---
 
-Have a look at the [tutorials for TGUI 0.8](../0.8) for tutorials that haven't been rewritten yet (most of the code is the compatible).
-
 ### Installation tutorials
 
 [Windows (Visual Studio)](visual-studio)
@@ -33,11 +31,27 @@ Have a look at the [tutorials for TGUI 0.8](../0.8) for tutorials that haven't b
 
 
 ### Introduction tutorials
-Coming soon
+
+[Creating, copying and removing widgets](creating-widgets)
+
+[Basic widget functions](basic-widget-functions)
+
+[Signals (event callbacks)](signals)
 
 
 ### Intermediate tutorials
-Coming soon
+
+[Layouts](layouts)
+
+[Renderers](renderers)
+
+[Using themes/skins](using-themes)
+
+[Show/Hide animations](show-hide-animations)
+
+[Tool Tips](tool-tips)
+
+[HorizontalLayout and VerticalLayout](box-layouts)
 
 
 ### Advanced tutorials
