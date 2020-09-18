@@ -121,6 +121,7 @@ namespace tgui
         ///
         /// @param ptr Pointer to panel that added
         /// @param name Text for the tab
+        /// @param index Index where the panel should be inserted
         /// @param select Should the panel be selected. Optional parameter, default value is true
         /// @return Was the panel inserted
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

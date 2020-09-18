@@ -58,7 +58,7 @@ namespace tgui
         ///xyzw
         ///rgba
         ///vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-        float K[] = {1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0};
+        float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
         ///vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
         float p[] = {std::abs(fract(c.x + K[0]) * 6.0f - K[3]),
@@ -111,7 +111,7 @@ namespace tgui
         H += 0.5f;
 
         auto c = hsv2rgb({H, S, V});
-        c.a = A;
+        c.a = static_cast<sf::Uint8>(A);
         return c;
     }
 
@@ -125,7 +125,7 @@ namespace tgui
          * +    - bigger curve
          */
         const double a = std::exp(1.0) - 1.0;
-        return (std::exp(std::log(a + 1.0) * static_cast<double>(x)) - 1.0) / a;
+        return static_cast<float>((std::exp(std::log(a + 1.0) * x) - 1.0) / a);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,14 +395,14 @@ namespace tgui
             float V = m_value->getValue() / m_value->getMaximum();
             V = logInvCurve(V);
 
-            auto c = calculateColor(position, V, m_alpha->getValue());
+            const auto c = calculateColor(position, V, static_cast<int>(m_alpha->getValue()));
 
             m_current->getRenderer()->setBackgroundColor(c);
             onColorChange.setEnabled(false);
-            m_red->setValue(c.r);
-            m_green->setValue(c.g);
-            m_blue->setValue(c.b);
-            m_alpha->setValue(c.a);
+            m_red->setValue(static_cast<float>(c.r));
+            m_green->setValue(static_cast<float>(c.g));
+            m_blue->setValue(static_cast<float>(c.b));
+            m_alpha->setValue(static_cast<float>(c.a));
             onColorChange.setEnabled(true);
 
             onColorChange.emit(this, c);
@@ -442,14 +442,14 @@ namespace tgui
             float V = m_value->getValue() / m_value->getMaximum();
             V = logInvCurve(V);
 
-            auto c = calculateColor(position, V, m_alpha->getValue());
+            const auto c = calculateColor(position, V, static_cast<int>(m_alpha->getValue()));
 
             m_current->getRenderer()->setBackgroundColor(c);
             onColorChange.setEnabled(false);
-            m_red->setValue(c.r);
-            m_green->setValue(c.g);
-            m_blue->setValue(c.b);
-            m_alpha->setValue(c.a);
+            m_red->setValue(static_cast<float>(c.r));
+            m_green->setValue(static_cast<float>(c.g));
+            m_blue->setValue(static_cast<float>(c.b));
+            m_alpha->setValue(static_cast<float>(c.a));
             onColorChange.setEnabled(true);
 
             onColorChange.emit(this, c);
@@ -677,16 +677,16 @@ namespace tgui
             m_last->getRenderer()->setBackgroundColor(color);
             onOkPress.emit(this, color);
 
-            ChildWindow::close();
+            close();
         });
 
-        auto close = get<Button>("#TGUI_INTERNAL$ColorPickerCancel#");
-        close->onPress.disconnectAll();
-        close->onPress([=]{
+        auto closeButton = get<Button>("#TGUI_INTERNAL$ColorPickerCancel#");
+        closeButton->onPress.disconnectAll();
+        closeButton->onPress([=]{
             auto color = m_last->getRenderer()->getBackgroundColor();
             setColor(color);
 
-            ChildWindow::close();
+            close();
         });
 
         auto valueChangeFunc = [=](float value){

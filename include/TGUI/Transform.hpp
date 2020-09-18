@@ -130,7 +130,7 @@ namespace tgui
         /// The result is a transform that is equivalent to applying the other transform followed by this transform.
         /// Mathematically, it is equivalent to a matrix multiplication (*this) * other.
         ///
-        /// @param transform Transform to combine with this transform
+        /// @param other  Transform to combine with this transform
         ///
         /// @return Reference to *this
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

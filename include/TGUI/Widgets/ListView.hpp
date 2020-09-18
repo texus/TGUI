@@ -393,6 +393,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Store some user data with the item
         ///
+        /// @param index Index of the item
         /// @param data  User data to store
         ///
         /// Examples:

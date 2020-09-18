@@ -185,7 +185,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Check the intersection between two rectangles
         ///
-        /// @param rectangle  Rectangle to test
+        /// @param rect  Rectangle to test
         ///
         /// @return True if rectangles overlap, false otherwise
         ///

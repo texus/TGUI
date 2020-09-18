@@ -145,6 +145,7 @@ namespace tgui
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
         /// @param func  Callback function that is given a pointer to the widget and the name of the signal as arguments
+        /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

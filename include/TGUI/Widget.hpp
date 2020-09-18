@@ -330,7 +330,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the scaling to be applied to the widget
         ///
-        /// @param scaleFactor How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
+        /// @param scaleFactors How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
         ///
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
         /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
@@ -346,8 +346,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the scaling to be applied to the widget
         ///
-        /// @param scaleFactor How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
-        /// @param origin      The origin from where to scale the widget. The widget origin will be used if no value is provided.
+        /// @param scaleFactors How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
+        /// @param origin       The origin from where to scale the widget. The widget origin will be used if no value is provided.
         ///
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
         /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
