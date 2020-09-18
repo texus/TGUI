@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['green_2012',['Green',['../classtgui_1_1Color.html#acfab047392dc353bb8d55fbb43667ea3',1,'tgui::Color']]]
+  ['height_2404',['height',['../structtgui_1_1Event_1_1SizeEvent.html#a4766bf0b51a5eea70a31f1eeb2cc4eb4',1,'tgui::Event::SizeEvent::height()'],['../classtgui_1_1Rect.html#a609ba0a2a45fbe46b8c4176cdb68a23e',1,'tgui::Rect::height()']]]
 ];

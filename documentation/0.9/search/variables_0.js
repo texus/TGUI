@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['all_1995',['All',['../structtgui_1_1EditBox_1_1Validator.html#aaedd5f539d882ae10f9e3e9cc5d05eef',1,'tgui::EditBox::Validator']]],
-  ['animationfinished_1996',['AnimationFinished',['../structtgui_1_1Signals_1_1Widget.html#a4cc02ccf21e285035fb65e28dd52c0d3',1,'tgui::Signals::Widget']]]
+  ['advance_2391',['advance',['../structtgui_1_1FontGlyph.html#aaefb9ed81cff3bf66636540b4dbc27e3',1,'tgui::FontGlyph']]],
+  ['all_2392',['All',['../structtgui_1_1EditBox_1_1Validator.html#a04d3aadf5dfaca18e2fb3c9d4ca05b55',1,'tgui::EditBox::Validator']]],
+  ['alt_2393',['alt',['../structtgui_1_1Event_1_1KeyEvent.html#aa2a8c0df9e37e24724e28f20fdb778d4',1,'tgui::Event::KeyEvent']]]
 ];

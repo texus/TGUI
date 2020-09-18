@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['uint_2079',['UInt',['../structtgui_1_1EditBox_1_1Validator.html#aad505233329cbc7161e52946babb5557',1,'tgui::EditBox::Validator']]],
-  ['unchecked_2080',['Unchecked',['../structtgui_1_1Signals_1_1RadioButton.html#a1afe386595940bd2915c0cb56e691702',1,'tgui::Signals::RadioButton']]],
-  ['unfocused_2081',['Unfocused',['../structtgui_1_1Signals_1_1Widget.html#a1848d357b428c01d39fcec625b37de1c',1,'tgui::Signals::Widget']]]
+  ['white_2464',['White',['../classtgui_1_1Color.html#a1f8bef341f706e54a5e698e19c012078',1,'tgui::Color']]],
+  ['width_2465',['width',['../structtgui_1_1Event_1_1SizeEvent.html#a328b6ea4d20ebdb89bb38658d3995564',1,'tgui::Event::SizeEvent::width()'],['../classtgui_1_1Rect.html#a4d5ccd7cdd807d5527dcec5520ba61be',1,'tgui::Rect::width()']]]
 ];

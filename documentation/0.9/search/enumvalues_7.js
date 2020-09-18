@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['left_2123',['Left',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8a945d5e233cf7d6240f6b783b36a374ff',1,'tgui::ChildWindow::Left()'],['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393a945d5e233cf7d6240f6b783b36a374ff',1,'tgui::EditBox::Left()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a945d5e233cf7d6240f6b783b36a374ff',1,'tgui::Grid::Left()'],['../classtgui_1_1Label.html#afcabdb6aa458f5883f6831ccc731cb3ba945d5e233cf7d6240f6b783b36a374ff',1,'tgui::Label::Left()'],['../classtgui_1_1ListView.html#a878032fb53fdccdd0538d73a3038b41ca945d5e233cf7d6240f6b783b36a374ff',1,'tgui::ListView::Left()']]],
-  ['lefttoright_2124',['LeftToRight',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85ead1e80c506f4c89e3c4fb1c1b4867a03c',1,'tgui::ProgressBar']]]
+  ['h_2543',['H',['../structtgui_1_1Event.html#a647c4342d425d6f03185126fc6eb5cd9ac1d9f50f86825a1a2302ec2449c17196',1,'tgui::Event']]],
+  ['hand_2544',['Hand',['../classtgui_1_1Cursor.html#a4e9a3c57acd4bf2b261aa2fe77f4d2f5aa78b1ac16c0cd02168097fc9a9bd7604',1,'tgui::Cursor']]],
+  ['help_2545',['Help',['../classtgui_1_1Cursor.html#a4e9a3c57acd4bf2b261aa2fe77f4d2f5a6a26f548831e6a8c26bfbbd9f6ec61e0',1,'tgui::Cursor']]],
+  ['home_2546',['Home',['../structtgui_1_1Event.html#a647c4342d425d6f03185126fc6eb5cd9a8cf04a9734132302f96da8e113e80ce5',1,'tgui::Event']]],
+  ['horizontal_2547',['Horizontal',['../classtgui_1_1Sprite.html#a3ebf7132d60f5c6f4ca0c3ebd60ea9f8ac1b5fa03ecdb95d4a45dd1c40b02527f',1,'tgui::Sprite']]]
 ];

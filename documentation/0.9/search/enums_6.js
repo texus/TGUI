@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['policy_2103',['Policy',['../classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d',1,'tgui::Scrollbar']]]
+  ['mousebutton_2487',['MouseButton',['../structtgui_1_1Event.html#a369666e9b529309b223263eb0297ac9b',1,'tgui::Event']]]
 ];

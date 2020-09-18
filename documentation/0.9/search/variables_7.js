@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['headerclicked_2013',['HeaderClicked',['../structtgui_1_1Signals_1_1ListView.html#ac6ee1829ecbaf8dd9fc5dfe681f41e0f',1,'tgui::Signals::ListView']]],
-  ['height_2014',['height',['../classtgui_1_1Rect.html#a609ba0a2a45fbe46b8c4176cdb68a23e',1,'tgui::Rect']]]
+  ['int_2405',['Int',['../structtgui_1_1EditBox_1_1Validator.html#a71d9b641f968a9a65b81d4c80494bf45',1,'tgui::EditBox::Validator']]]
 ];

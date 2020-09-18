@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['operation_2102',['Operation',['../classtgui_1_1Layout.html#a35bfb195a1f1e6fd4ed82b0568feb81b',1,'tgui::Layout']]]
+  ['keyboardkey_2485',['KeyboardKey',['../structtgui_1_1Event.html#a647c4342d425d6f03185126fc6eb5cd9',1,'tgui::Event']]],
+  ['keymodifier_2486',['KeyModifier',['../structtgui_1_1Event.html#a37932d1570a768aafff139c38e9734c5',1,'tgui::Event']]]
 ];
