@@ -125,7 +125,7 @@ namespace tgui
          * +    - bigger curve
          */
         const double a = std::exp(1.0) - 1.0;
-        return static_cast<float>((std::exp(std::log(a + 1.0) * x) - 1.0) / a);
+        return static_cast<float>((std::exp(std::log(a + 1.0) * static_cast<double>(x)) - 1.0) / a);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
