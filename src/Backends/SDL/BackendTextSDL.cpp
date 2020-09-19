@@ -35,7 +35,7 @@ namespace tgui
     BackendTextSDL::BackendTextSDL()
     {
         // There must always be a single line of text, even when the text is empty
-        m_linesUtf8.emplace_back();
+        m_lines.emplace_back();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,13 +68,7 @@ namespace tgui
 
     void BackendTextSDL::setString(const String& string)
     {
-        const std::vector<String>& lines = string.split('\n');
-
-        m_linesUtf8.clear();
-        m_linesUtf8.reserve(lines.size());
-        for (const auto& line : lines)
-            m_linesUtf8.push_back(line.toAnsiString());
-
+        m_lines = string.split('\n');
         m_texturesValid = false;
     }
 
@@ -156,14 +150,14 @@ namespace tgui
         if (!m_font)
             return {0, 0};
 
-        TGUI_ASSERT(!m_linesUtf8.empty(), "BackendTextSDL::m_linesUtf8 can never be empty");
+        TGUI_ASSERT(!m_lines.empty(), "BackendTextSDL::m_lines can never be empty");
 
         std::size_t lineNumber = 0;
-        while (index > m_linesUtf8[lineNumber].length())
+        while (index > m_lines[lineNumber].length())
         {
-            index -= m_linesUtf8[lineNumber].length() - 1;
+            index -= m_lines[lineNumber].length() - 1;
             ++lineNumber;
-            TGUI_ASSERT(lineNumber < m_linesUtf8.size(), "Index out-of-range in BackendTextSDL::findCharacterPos");
+            TGUI_ASSERT(lineNumber < m_lines.size(), "Index out-of-range in BackendTextSDL::findCharacterPos");
         }
 
         const bool bold = ((m_fontStyle & TTF_STYLE_BOLD) == TTF_STYLE_BOLD);
@@ -172,7 +166,7 @@ namespace tgui
         char32_t prevChar = U'\0';
         for (std::size_t i = 0; i < index; ++i)
         {
-            const char32_t currentChar = m_linesUtf8[lineNumber][i];
+            const char32_t currentChar = m_lines[lineNumber][i];
             x += m_font->getGlyph(currentChar, m_characterSize, bold, static_cast<float>(m_fontOutline)).advance;
             x += m_font->getKerning(prevChar, currentChar, m_characterSize);
             prevChar = currentChar;
@@ -227,14 +221,14 @@ namespace tgui
         m_outlineTextures.clear();
 
         m_size.x = 0;
-        m_size.y = m_linesUtf8.size() * lineSpacing;
+        m_size.y = m_lines.size() * lineSpacing;
 
         if (m_fontStyle != TextStyle::Regular)
             TTF_SetFontStyle(font, m_fontStyle);
 
         std::vector<LineTexture> textures;
-        for (std::size_t i = 0; i < m_linesUtf8.size(); ++i)
-            textures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_linesUtf8[i], m_textColor, 0));
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+            textures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toAnsiString(), m_textColor, 0));
 
         // If an outline exists then create textures for it as well
         std::vector<LineTexture> outlineTextures;
@@ -242,8 +236,8 @@ namespace tgui
         {
             TTF_SetFontOutline(font, m_fontOutline);
 
-            for (std::size_t i = 0; i < m_linesUtf8.size(); ++i)
-                outlineTextures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_linesUtf8[i], m_outlineColor, m_fontOutline));
+            for (std::size_t i = 0; i < m_lines.size(); ++i)
+                outlineTextures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toAnsiString(), m_outlineColor, m_fontOutline));
 
             // Reset the outline again so that we can always assume that it is set to 0 everywhere
             TTF_SetFontOutline(font, 0);

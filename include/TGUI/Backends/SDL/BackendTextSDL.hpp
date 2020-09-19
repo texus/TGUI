@@ -171,7 +171,7 @@ namespace tgui
         int m_fontStyle = TTF_STYLE_NORMAL;
         SDL_Color m_textColor = {0, 0, 0, 255};
         SDL_Color m_outlineColor = {0, 0, 0, 255};
-        std::vector<std::string> m_linesUtf8;
+        std::vector<String> m_lines;
 
         Vector2f m_size;
         bool m_texturesValid = false;
