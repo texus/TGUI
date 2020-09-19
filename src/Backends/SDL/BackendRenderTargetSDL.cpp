@@ -32,6 +32,7 @@
 #include <SDL.h>
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <cmath>
 
@@ -392,6 +393,9 @@ namespace tgui
 
     void BackendRenderTargetSDL::drawTriangles(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices, std::size_t indexCount)
     {
+        if (!indices)
+            indexCount = vertexCount;
+
         changeTexture(m_emptyTexture);
         prepareVerticesAndIndices(vertices, vertexCount, indices, indexCount);
         updateTransformation(states.transform);
@@ -457,10 +461,14 @@ namespace tgui
         }
 
         // Create the array of indices
-        std::vector<GLuint> indexData;
-        indexData.reserve(indexCount);
-        for (std::size_t i = 0; i < indexCount; ++i)
-            indexData.push_back(static_cast<GLuint>(indices[i]));
+        auto indexData = std::make_unique<GLuint[]>(indexCount);
+        if (indices)
+        {
+            for (std::size_t i = 0; i < indexCount; ++i)
+                indexData[i] = static_cast<GLuint>(indices[i]);
+        }
+        else // Generate index buffer with sequential values 0, 1, 2, 3, ...
+            std::iota(&indexData[0], &indexData[0] + indexCount, 0);
 
         // Load the data into the vertex buffer
         TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer));
@@ -474,13 +482,13 @@ namespace tgui
 
         // Load the data into the index buffer
         TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer));
-        if (indexData.size() > m_indexBufferSize)
+        if (indexCount > m_indexBufferSize)
         {
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(GLuint), indexData.data(), GL_STREAM_DRAW));
-            m_indexBufferSize = indexData.size();
+            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), indexData.get(), GL_STREAM_DRAW));
+            m_indexBufferSize = indexCount;
         }
         else
-            TGUI_GL_CHECK(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexData.size() * sizeof(GLuint), indexData.data()));
+            TGUI_GL_CHECK(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexCount * sizeof(GLuint), indexData.get()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
