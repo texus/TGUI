@@ -245,6 +245,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BackendSDL::changeTexture(GLuint textureId, bool force)
+    {
+        if ((m_currentTexture == textureId) && !force)
+            return;
+
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        m_currentTexture = textureId;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     SDL_Cursor* BackendSDL::createSystemCursor(Cursor::Type type)
     {
         SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_ARROW;

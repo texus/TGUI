@@ -26,6 +26,7 @@
 #include <TGUI/Backends/SDL/BackendRenderTargetSDL.hpp>
 #include <TGUI/Backends/SDL/BackendTextSDL.hpp>
 #include <TGUI/Backends/SDL/BackendTextureSDL.hpp>
+#include <TGUI/Backends/SDL/BackendSDL.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/OpenGL.hpp>
 
@@ -156,7 +157,7 @@ namespace tgui
         // Create a solid white 1x1 texture to pass to the shader when we aren't drawing a texture
         std::uint32_t pixelData = 0xFFFFFFFF;
         TGUI_GL_CHECK(glGenTextures(1, &m_emptyTexture));
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_emptyTexture));
+        changeTexture(m_emptyTexture, true);
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
     }
@@ -241,8 +242,7 @@ namespace tgui
         TGUI_GL_CHECK(glBindVertexArray(m_vertexArray));
 
         // Don't make any assumptions about the currently set texture
-        glBindTexture(GL_TEXTURE_2D, m_emptyTexture);
-        m_currentTexture = m_emptyTexture;
+        changeTexture(m_emptyTexture, true);
 
         // Draw the widgets
         root->draw(*this, {});
@@ -493,13 +493,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSDL::changeTexture(GLuint textureId)
+    void BackendRenderTargetSDL::changeTexture(GLuint textureId, bool force)
     {
-        if (m_currentTexture == textureId)
-            return;
-
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        m_currentTexture = textureId;
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendRenderTargetSDL::changeTexture requires backend texture of type BackendSDL");
+        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(textureId, force);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

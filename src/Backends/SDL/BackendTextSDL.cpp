@@ -26,6 +26,7 @@
 #include <TGUI/Backends/SDL/BackendTextSDL.hpp>
 #include <TGUI/Backends/SDL/BackendFontSDL.hpp>
 #include <TGUI/Backends/SDL/FontCacheSDL.hpp>
+#include <TGUI/Backends/SDL/BackendSDL.hpp>
 #include <TGUI/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +281,10 @@ namespace tgui
 
         GLuint textureId;
         TGUI_GL_CHECK(glGenTextures(1, &textureId));
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureId));
+
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextSDL::createLineTexture requires backend texture of type BackendSDL");
+        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(textureId, true);
+
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, surface->w, surface->h));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels));
 

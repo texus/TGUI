@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Backends/SDL/BackendTextureSDL.hpp>
+#include <TGUI/Backends/SDL/BackendSDL.hpp>
 #include <TGUI/OpenGL.hpp>
 
 #include <SDL.h>
@@ -76,7 +77,10 @@ namespace tgui
         releaseResources(); // Delete existing image and texture if one was previously loaded
 
         TGUI_GL_CHECK(glGenTextures(1, &m_textureId));
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_textureId));
+
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromFile requires backend texture of type BackendSDL");
+        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
+
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, textureFormat, image->w, image->h));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, imageFormat, GL_UNSIGNED_BYTE, image->pixels));
 
@@ -97,7 +101,10 @@ namespace tgui
         releaseResources(); // Delete existing image and texture if one was previously loaded
 
         TGUI_GL_CHECK(glGenTextures(1, &m_textureId));
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_textureId));
+
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromPixelData requires backend texture of type BackendSDL");
+        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
+
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, image->w, image->h));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
 

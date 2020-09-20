@@ -33,6 +33,7 @@
 
 struct SDL_Window;
 struct SDL_Cursor;
+typedef unsigned int GLuint;
 
 namespace tgui
 {
@@ -180,6 +181,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the bound texture if another texture was currently set
+        ///
+        /// @param textureId  Texture to pass to glBindTexture
+        /// @param force      Call glBindTexture even if the id was still the same. This is required when calling this function
+        ///                   after creating a new texture, as it could be reusing the id that was previously cached.
+        ///
+        /// This function has to be used instead of glBindTexture so that the backend knows the last used texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void changeTexture(GLuint textureId, bool force);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +224,8 @@ namespace tgui
 
         std::map<GuiBase*, GuiResources> m_guis;
         std::map<Cursor::Type, SDL_Cursor*> m_mouseCursors;
+
+        GLuint m_currentTexture = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
