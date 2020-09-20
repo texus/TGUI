@@ -589,6 +589,14 @@ namespace tgui
         float calculateMenuWidth(const Menu& menu) const;
 
         /// @internal
+        /// Returns the height of the menu item or the separator
+        float getMenuItemHeight(const Menu& menuItem) const;
+
+        /// @internal
+        /// Calculates the height of all menu items and separators in a menu
+        float calculateOpenMenuHeight(const std::vector<Menu>& menuItems) const;
+
+        /// @internal
         Vector2f calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
 
         /// @internal
@@ -668,6 +676,10 @@ namespace tgui
         Color m_textColorCached;
         Color m_selectedTextColorCached;
         Color m_textColorDisabledCached;
+        Color m_separatorColorCached = Color::Black;
+        float m_separatorThicknessCached = 1;
+        float m_separatorVerticalPaddingCached = 0;
+        float m_separatorSidePaddingCached = 0;
         float m_distanceToSideCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

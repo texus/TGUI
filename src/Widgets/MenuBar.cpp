@@ -32,6 +32,13 @@ namespace tgui
 {
     namespace
     {
+        bool isSeparator(const MenuBar::Menu& menuItem)
+        {
+            return menuItem.text.getString() == "-";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         bool removeMenuImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
         {
             for (auto it = menus.begin(); it != menus.end(); ++it)
@@ -772,6 +779,22 @@ namespace tgui
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
         }
+        else if (property == "SeparatorColor")
+        {
+            m_separatorColorCached = getSharedRenderer()->getSeparatorColor();
+        }
+        else if (property == "SeparatorThickness")
+        {
+            m_separatorThicknessCached = getSharedRenderer()->getSeparatorThickness();
+        }
+        else if (property == "SeparatorVerticalPadding")
+        {
+            m_separatorVerticalPaddingCached = getSharedRenderer()->getSeparatorVerticalPadding();
+        }
+        else if (property == "SeparatorSidePadding")
+        {
+            m_separatorSidePaddingCached = getSharedRenderer()->getSeparatorSidePadding();
+        }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
             Widget::rendererChanged(property);
@@ -863,7 +886,7 @@ namespace tgui
         }
 
         if (m_invertedMenuDirection)
-            states.transform.translate({leftOffset, -getSize().y * m_menus[m_visibleMenu].menuItems.size()});
+            states.transform.translate({leftOffset, -calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems)});
         else
             states.transform.translate({leftOffset, getSize().y});
 
@@ -1085,6 +1108,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    float MenuBar::getMenuItemHeight(const Menu& menuItem) const
+    {
+        if (isSeparator(menuItem))
+            return m_separatorThicknessCached + 2*m_separatorVerticalPaddingCached;
+        else
+            return getSize().y;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float MenuBar::calculateOpenMenuHeight(const std::vector<Menu>& menuItems) const
+    {
+        float height = 0;
+        for (const auto& item : menuItems)
+            height += getMenuItemHeight(item);
+
+        return height;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Vector2f MenuBar::calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const
     {
         float leftOffset;
@@ -1113,9 +1157,12 @@ namespace tgui
             }
         }
 
-        float topOffset = getSize().y * menu.selectedMenuItem;
+        float topOffset = 0;
+        for (int i = 0; i < menu.selectedMenuItem; ++i)
+            topOffset += getMenuItemHeight(menu.menuItems[i]);
+
         if (m_invertedMenuDirection)
-            topOffset -= getSize().y * (menu.menuItems[menu.selectedMenuItem].menuItems.size() - 1);
+            topOffset -= calculateOpenMenuHeight(menu.menuItems[menu.selectedMenuItem].menuItems) - getSize().y;
 
         return {leftOffset, topOffset};
     }
@@ -1125,7 +1172,7 @@ namespace tgui
     bool MenuBar::isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const Menu& menu, float menuWidth) const
     {
         // Check if the mouse is on top of the menu
-        if (FloatRect{menuPos.x, menuPos.y, menuWidth, menu.menuItems.size() * getSize().y}.contains(mousePos))
+        if (FloatRect{menuPos.x, menuPos.y, menuWidth, calculateOpenMenuHeight(menu.menuItems)}.contains(mousePos))
             return true;
 
         // Check if the mouse is on one of the submenus
@@ -1157,7 +1204,7 @@ namespace tgui
             menuPos.x += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
 
         if (m_invertedMenuDirection)
-            menuPos.y -= getSize().y * m_menus[m_visibleMenu].menuItems.size();
+            menuPos.y -= calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems);
         else
             menuPos.y += getSize().y;
 
@@ -1207,7 +1254,7 @@ namespace tgui
             menuPos.x += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
 
         if (m_invertedMenuDirection)
-            menuPos.y -= getSize().y * m_menus[m_visibleMenu].menuItems.size();
+            menuPos.y -= calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems);
         else
             menuPos.y += getSize().y;
 
@@ -1233,7 +1280,8 @@ namespace tgui
                     closeSubMenus(menu.menuItems, menu.selectedMenuItem);
 
                 // Mark the item below the mouse as selected
-                if (menu.menuItems[menuItemIndexBelowMouse].enabled)
+                auto& menuItem = menu.menuItems[menuItemIndexBelowMouse];
+                if (menuItem.enabled && !isSeparator(menuItem))
                 {
                     updateMenuTextColor(menu.menuItems[menuItemIndexBelowMouse], true);
                     menu.selectedMenuItem = menuItemIndexBelowMouse;
@@ -1262,10 +1310,22 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the menu
-        if (FloatRect{menuPos.x, menuPos.y, menuWidth, menu.menuItems.size() * getSize().y}.contains(mousePos))
+        if (FloatRect{menuPos.x, menuPos.y, menuWidth, calculateOpenMenuHeight(menu.menuItems)}.contains(mousePos))
         {
+            int selectedItem = static_cast<int>(menu.menuItems.size()) - 1;
+            float topPos = menuPos.y;
+            for (std::size_t i = 0; i < menu.menuItems.size(); ++i)
+            {
+                topPos += getMenuItemHeight(menu.menuItems[i]);
+                if (topPos > mousePos.y)
+                {
+                    selectedItem = static_cast<int>(i);
+                    break;
+                }
+            }
+
             *resultMenu = &menu;
-            *resultSelectedMenuItem = static_cast<int>((mousePos.y - menuPos.y) / getSize().y);
+            *resultSelectedMenuItem = selectedItem;
             return true;
         }
 
@@ -1334,45 +1394,54 @@ namespace tgui
         Sprite backgroundSprite = m_spriteItemBackground;
         if ((menu.selectedMenuItem == -1) && !backgroundSprite.isSet() && !m_selectedBackgroundColorCached.isSet())
         {
-            target.drawFilledRect(states, {menuWidth, getSize().y * menu.menuItems.size()}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+            target.drawFilledRect(states, {menuWidth, calculateOpenMenuHeight(menu.menuItems)}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
         else // We can't draw the entire menu with a singe draw call
         {
             for (std::size_t j = 0; j < menu.menuItems.size(); ++j)
             {
+                const float menuItemHeight = getMenuItemHeight(menu.menuItems[j]);
                 const bool isMenuItemSelected = (menu.selectedMenuItem == static_cast<int>(j));
                 if (backgroundSprite.isSet())
                 {
                     if (isMenuItemSelected && m_spriteSelectedItemBackground.isSet())
                     {
                         Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
-                        selectedBackgroundSprite.setSize({menuWidth, getSize().y});
+                        selectedBackgroundSprite.setSize({menuWidth, menuItemHeight});
                         target.drawSprite(states, selectedBackgroundSprite);
                     }
                     else // Not selected or no different texture for selected menu
                     {
-                        backgroundSprite.setSize({menuWidth, getSize().y});
+                        backgroundSprite.setSize({menuWidth, menuItemHeight});
                         target.drawSprite(states, backgroundSprite);
                     }
                 }
                 else // No textures where loaded
                 {
                     if (isMenuItemSelected && m_selectedBackgroundColorCached.isSet())
-                        target.drawFilledRect(states, {menuWidth, getSize().y}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
+                        target.drawFilledRect(states, {menuWidth, menuItemHeight}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
                     else
-                        target.drawFilledRect(states, {menuWidth, getSize().y}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+                        target.drawFilledRect(states, {menuWidth, menuItemHeight}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
                 }
 
-                states.transform.translate({0, getSize().y});
+                states.transform.translate({0, menuItemHeight});
             }
 
             states.transform = oldTransform;
         }
 
         // Draw the texts (and arrows when there are submenus)
+        bool menuContainsSeparators = false;
         states.transform.translate({m_distanceToSideCached, (getSize().y - menu.text.getSize().y) / 2.f});
         for (std::size_t j = 0; j < menu.menuItems.size(); ++j)
         {
+            if (isSeparator(menu.menuItems[j]))
+            {
+                menuContainsSeparators = true;
+                states.transform.translate({0, getMenuItemHeight(menu.menuItems[j])});
+                continue;
+            }
+
             target.drawText(states, menu.menuItems[j].text);
 
             // Draw an arrow next to the text if there is a submenu
@@ -1404,6 +1473,19 @@ namespace tgui
             states.transform.translate({0, getSize().y});
         }
 
+        if (menuContainsSeparators)
+        {
+            states.transform = oldTransform;
+            states.transform.translate({m_separatorSidePaddingCached, m_separatorVerticalPaddingCached});
+            for (std::size_t j = 0; j < menu.menuItems.size(); ++j)
+            {
+                if (isSeparator(menu.menuItems[j]))
+                    target.drawFilledRect(states, {menuWidth - 2*m_separatorSidePaddingCached, m_separatorThicknessCached}, m_separatorColorCached);
+
+                states.transform.translate({0, getMenuItemHeight(menu.menuItems[j])});
+            }
+        }
+
         // Draw the submenu if one is opened
         if ((menu.selectedMenuItem >= 0) && !menu.menuItems[menu.selectedMenuItem].menuItems.empty())
         {
@@ -1411,6 +1493,7 @@ namespace tgui
 
             // If there isn't enough room on the right side then open the menu to the left if it has more room
             const float subMenuWidth = calculateMenuWidth(menu.menuItems[menu.selectedMenuItem]);
+
             float leftOffset;
             if (openSubMenuToRight)
             {
@@ -1437,9 +1520,12 @@ namespace tgui
                 }
             }
 
-            float topOffset = getSize().y * menu.selectedMenuItem;
+            float topOffset = 0;
+            for (int i = 0; i < menu.selectedMenuItem; ++i)
+                topOffset += getMenuItemHeight(menu.menuItems[i]);
+
             if (m_invertedMenuDirection)
-                topOffset -= getSize().y * (menu.menuItems[menu.selectedMenuItem].menuItems.size() - 1);
+                topOffset -= calculateOpenMenuHeight(menu.menuItems[menu.selectedMenuItem].menuItems) - getSize().y;
 
             states.transform.translate({leftOffset, topOffset});
             drawMenu(target, states, menu.menuItems[menu.selectedMenuItem], subMenuWidth, globalLeftPos + leftOffset, openSubMenuToRight);

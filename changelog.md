@@ -5,6 +5,7 @@ TGUI 0.9-dev
 - Added new TabContainer widget (combination of Tabs with Panel below) ([PR #139](https://github.com/texus/TGUI/pull/139))
 - Holding down arrow on SpinButton will now keep chaning the value ([PR #137](https://github.com/texus/TGUI/pull/137))
 - Added insertItem function to ListView ([PR #138](https://github.com/texus/TGUI/pull/138))
+- Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget
@@ -12,8 +13,8 @@ TGUI 0.9-dev
 - Added DoubleClick signal to Panel
 - Added ViewChanged signal to GuiBase
 - Added hover and selected border colors for Tabs
+- Separators can be added to MenuBar by inserting menu items with "-" string
 - ListBox and ListView can now store user data in their items
-- Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Replaced all std::string and sf::String by tgui::String
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle

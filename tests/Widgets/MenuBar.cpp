@@ -315,7 +315,11 @@ TEST_CASE("[MenuBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", "rgb(130, 140, 150)"));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorThickness", "3"));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorVerticalPadding", "4"));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorSidePadding", "5"));
             }
 
             SECTION("set object property")
@@ -325,7 +329,11 @@ TEST_CASE("[MenuBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", tgui::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", tgui::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorThickness", 3));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorVerticalPadding", 4));
+                REQUIRE_NOTHROW(renderer->setProperty("SeparatorSidePadding", 5));
             }
 
             SECTION("functions")
@@ -335,7 +343,11 @@ TEST_CASE("[MenuBar]")
                 renderer->setTextColor({70, 80, 90});
                 renderer->setSelectedTextColor({100, 110, 120});
                 renderer->setTextColorDisabled({130, 140, 150});
+                renderer->setSeparatorColor({160, 170, 180});
                 renderer->setDistanceToSide(2);
+                renderer->setSeparatorThickness(3);
+                renderer->setSeparatorVerticalPadding(4);
+                renderer->setSeparatorSidePadding(5);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
@@ -343,7 +355,11 @@ TEST_CASE("[MenuBar]")
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("SeparatorColor").getColor() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
+            REQUIRE(renderer->getProperty("SeparatorThickness").getNumber() == 3);
+            REQUIRE(renderer->getProperty("SeparatorVerticalPadding").getNumber() == 4);
+            REQUIRE(renderer->getProperty("SeparatorSidePadding").getNumber() == 5);
         }
 
         SECTION("textured")

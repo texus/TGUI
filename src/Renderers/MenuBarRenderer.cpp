@@ -35,12 +35,16 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, TextColorDisabled, {})
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SeparatorColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureItemBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureSelectedItemBackground)
 
     TGUI_RENDERER_PROPERTY_NUMBER(MenuBarRenderer, DistanceToSide, 0)
+    TGUI_RENDERER_PROPERTY_NUMBER(MenuBarRenderer, SeparatorThickness, 1)
+    TGUI_RENDERER_PROPERTY_NUMBER(MenuBarRenderer, SeparatorVerticalPadding, 0)
+    TGUI_RENDERER_PROPERTY_NUMBER(MenuBarRenderer, SeparatorSidePadding, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
