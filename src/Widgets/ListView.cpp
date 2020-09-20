@@ -1306,13 +1306,13 @@ namespace tgui
         Widget::keyPressed(event);
         if (event.code == Event::KeyboardKey::Up && m_selectedItems.size() == 1)
         {
-            std::size_t index = *m_selectedItems.begin();
+            const std::size_t index = *m_selectedItems.begin();
             if (index != 0)
                 setSelectedItem(index - 1);
         }
         else if (event.code == Event::KeyboardKey::Down && m_selectedItems.size() == 1)
         {
-            std::size_t index = *m_selectedItems.begin();
+            const std::size_t index = *m_selectedItems.begin();
             if (index != m_items.size() - 1)
                 setSelectedItem(index + 1);
         }

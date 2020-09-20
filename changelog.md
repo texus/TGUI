@@ -5,6 +5,7 @@ TGUI 0.9-dev
 - Added new TabContainer widget (combination of Tabs with Panel below) ([PR #139](https://github.com/texus/TGUI/pull/139))
 - Holding down arrow on SpinButton will now keep chaning the value ([PR #137](https://github.com/texus/TGUI/pull/137))
 - Added insertItem function to ListView ([PR #138](https://github.com/texus/TGUI/pull/138))
+- Up and down arrows now change selected item in ListBox and ListView ([PR #146](https://github.com/texus/TGUI/pull/146))
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
