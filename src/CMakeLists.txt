@@ -53,6 +53,7 @@ set(TGUI_SRC
     Renderers/RangeSliderRenderer.cpp
     Renderers/ScrollablePanelRenderer.cpp
     Renderers/ScrollbarRenderer.cpp
+    Renderers/SeparatorLineRenderer.cpp
     Renderers/SliderRenderer.cpp
     Renderers/SpinButtonRenderer.cpp
     Renderers/TabsRenderer.cpp
@@ -89,6 +90,7 @@ set(TGUI_SRC
     Widgets/RangeSlider.cpp
     Widgets/ScrollablePanel.cpp
     Widgets/Scrollbar.cpp
+    Widgets/SeparatorLine.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp

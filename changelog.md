@@ -7,6 +7,7 @@ TGUI 0.9-dev
 - Added insertItem function to ListView ([PR #138](https://github.com/texus/TGUI/pull/138))
 - Up and down arrows now change selected item in ListBox and ListView ([PR #146](https://github.com/texus/TGUI/pull/146))
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
+- Added new SeparatorLine widget
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
 - Added experimental setOrigin, setScale and setRotation functions to Widget

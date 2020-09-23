@@ -230,6 +230,8 @@ namespace tgui
         /// menuBar->addMenu("Edit");
         /// menuBar->addMenuItem("Undo");
         /// @endcode
+        ///
+        /// If the "-" string is given as menu item then a separator will appear instead of an item.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const String& text);
 
@@ -249,6 +251,8 @@ namespace tgui
         /// menuBar->addMenuItem("File", "Save");
         /// menuBar->addMenuItem("Edit", "Undo");
         /// @endcode
+        ///
+        /// If the "-" string is given as menu item then a separator will appear instead of an item.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const String& menu, const String& text);
 
@@ -266,6 +270,8 @@ namespace tgui
         /// menuBar->addMenuItem({"File", "Save"});
         /// menuBar->addMenuItem({"View", "Messages", "Tags", "Important"});
         /// @endcode
+        ///
+        /// If the "-" string is given as menu item then a separator will appear instead of an item.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const std::vector<String>& hierarchy, bool createParents = true);
 
@@ -509,7 +515,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
-        /// @param property  Lowercase name of the property that was changed
+        /// @param property  Name of the property that was changed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;

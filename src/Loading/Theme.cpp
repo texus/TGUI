@@ -219,6 +219,7 @@ namespace tgui
                                                         {"ArrowBackgroundColorHover", Color{255, 255, 255}},
                                                         {"ArrowColor", Color{60, 60, 60}},
                                                         {"ArrowColorHover", Color{0, 0, 0}}})},
+                    {"SeparatorLine", RendererData::create({{"Color", Color::Black}})},
                     {"Slider", RendererData::create({{"Borders", Borders{1}},
                                                      {"BorderColor", Color{60, 60, 60}},
                                                      {"BorderColorHover", Color::Black},

@@ -57,6 +57,7 @@ set(TEST_SOURCES
     Widgets/RangeSlider.cpp
     Widgets/ScrollablePanel.cpp
     Widgets/Scrollbar.cpp
+    Widgets/SeparatorLine.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp

@@ -50,6 +50,7 @@
 #include <TGUI/Widgets/RangeSlider.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/SeparatorLine.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/SpinControl.hpp>
@@ -94,6 +95,7 @@ namespace tgui
         {"RangeSlider", std::make_shared<RangeSlider>},
         {"ScrollablePanel", std::make_shared<ScrollablePanel>},
         {"Scrollbar", std::make_shared<Scrollbar>},
+        {"SeparatorLine", std::make_shared<SeparatorLine>},
         {"Slider", std::make_shared<Slider>},
         {"SpinButton", std::make_shared<SpinButton>},
         {"SpinControl", std::make_shared<SpinControl>},
