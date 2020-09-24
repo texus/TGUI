@@ -70,6 +70,7 @@ namespace tgui
         {
             float width = 0;
             float designWidth = 0;
+            float maxItemWidth = 0;
             Text text;
             ColumnAlignment alignment = ColumnAlignment::Left;
         };
@@ -883,6 +884,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateSelectedItem(int item);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Update the maximum item width of every column.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateColumnsMaxItemWidths();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Add item to selected set
@@ -986,6 +991,7 @@ namespace tgui
         unsigned int m_gridLinesWidth = 1;
         unsigned int m_iconCount = 0;
         float m_maxIconWidth = 0;
+        float m_maxItemWidth = 0; // If there are no columns, this is the maximum width from all items
         bool m_headerVisible = true;
         bool m_showHorizontalGridLines = false;
         bool m_showVerticalGridLines = true;
