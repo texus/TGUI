@@ -300,15 +300,15 @@ namespace tgui
         const Vector2f topLeft = states.transform.transformPoint(rect.getPosition());
 
         const int clipLeft = std::max(static_cast<int>(topLeft.x), oldClipRectGL[0]);
-        const int clipRight = std::min(static_cast<int>(bottomRight.x), oldClipRectGL[0] + oldClipRectGL[2]);
+        const int clipRight = std::max(clipLeft, std::min(static_cast<int>(bottomRight.x), oldClipRectGL[0] + oldClipRectGL[2]));
         const int clipBottom = std::max(static_cast<int>(m_windowHeight - bottomRight.y), oldClipRectGL[1]);
-        const int clipTop = std::min(static_cast<int>(m_windowHeight - topLeft.y), oldClipRectGL[1] + oldClipRectGL[3]);
+        const int clipTop = std::max(clipBottom, std::min(static_cast<int>(m_windowHeight - topLeft.y), oldClipRectGL[1] + oldClipRectGL[3]));
 
         const FloatRect clipRect = {topLeft, bottomRight - topLeft};
         const std::array<int, 4> clipRectGL = {clipLeft, clipBottom, clipRight - clipLeft, clipTop - clipBottom};
         m_clippingLayers.push_back({clipRect, clipRectGL});
 
-        glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]);
+        TGUI_GL_CHECK(glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +319,7 @@ namespace tgui
         m_clippingLayers.pop_back();
 
         const std::array<int, 4>& clipRectGL = m_clippingLayers.empty() ? m_viewportGL : m_clippingLayers.back().second;
-        glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]);
+        TGUI_GL_CHECK(glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
