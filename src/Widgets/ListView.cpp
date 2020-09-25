@@ -199,6 +199,7 @@ namespace tgui
     void ListView::removeAllColumns()
     {
         m_columns.clear();
+        m_maxItemWidth = 0;
         updateHorizontalScrollbarMaximum();
     }
 
