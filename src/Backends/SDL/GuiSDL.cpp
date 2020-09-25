@@ -286,7 +286,7 @@ namespace tgui
         if (event.type == Event::Type::MouseWheelScrolled)
         {
             event.mouseWheel.x = static_cast<int>(m_lastMousePos.x);
-            event.mouseWheel.x = static_cast<int>(m_lastMousePos.y);
+            event.mouseWheel.y = static_cast<int>(m_lastMousePos.y);
         }
 
         if ((sdlEvent.type == SDL_MOUSEBUTTONDOWN) && (sdlEvent.button.which == SDL_TOUCH_MOUSEID))
