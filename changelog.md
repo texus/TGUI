@@ -6,6 +6,7 @@ TGUI 0.9-dev
 - Holding down arrow on SpinButton will now keep chaning the value ([PR #137](https://github.com/texus/TGUI/pull/137))
 - Added insertItem function to ListView ([PR #138](https://github.com/texus/TGUI/pull/138))
 - Up and down arrows now change selected item in ListBox and ListView ([PR #146](https://github.com/texus/TGUI/pull/146))
+- Horizontal scrollbar can now depend on item width in ListView ([PR #147](https://github.com/texus/TGUI/pull/147))
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Added new SeparatorLine widget
 - Added support for setting mouse cursor + use them on resizable child windows

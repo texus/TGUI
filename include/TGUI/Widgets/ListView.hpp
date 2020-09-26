@@ -660,8 +660,6 @@ namespace tgui
         /// @brief Changes whether the last column is expanded to fill the list view (if all columns fit inside the list view)
         ///
         /// @param expand  Make the last column larger to make it fill the list view when it isn't full yet?
-        ///
-        /// The last column is expanded by default.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setExpandLastColumn(bool expand);
 

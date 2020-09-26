@@ -862,6 +862,9 @@ TEST_CASE("[ListView]")
         SECTION("No columns")
         {
             TEST_DRAW("ListView_NoColumns.png")
+
+            listView->addItem("Item is too long to fit");
+            TEST_DRAW("ListView_NoColumns_WithHorizontalScrollbar.png")
         }
 
         listView->addColumn("C1", 40);
@@ -1085,7 +1088,7 @@ TEST_CASE("[ListView]")
                 TEST_DRAW("ListView_ExpandLastColumnFalse_NoScrollbar.png")
             }
 
-            SECTION("Horizontal scrollbar needed")
+            SECTION("Horizontal scrollbar needed for column")
             {
                 listView->addColumn("C1", 70);
                 listView->addColumn("C2", 90);
@@ -1095,6 +1098,18 @@ TEST_CASE("[ListView]")
 
                 listView->setExpandLastColumn(false);
                 TEST_DRAW("ListView_ExpandLastColumnFalse_WithScrollbar.png")
+            }
+
+            SECTION("Horizontal scrollbar needed for item")
+            {
+                listView->addColumn("C1", 70);
+                listView->addColumn("C2", 50);
+                listView->setExpandLastColumn(true);
+
+                TEST_DRAW("ListView_LongestItemAutoWidth_NoScrollbar.png")
+
+                listView->addItem({"+", "Item is too long"});
+                TEST_DRAW("ListView_LongestItemAutoWidth_WithScrollbar.png")
             }
         }
     }
