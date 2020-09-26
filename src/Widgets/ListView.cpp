@@ -125,6 +125,8 @@ namespace tgui
             column.width = calculateAutoColumnWidth(column.text);
 
         m_columns.push_back(std::move(column));
+
+        updateLastColumnMaxItemWidth();
         updateHorizontalScrollbarMaximum();
 
         return m_columns.size()-1;
@@ -197,6 +199,8 @@ namespace tgui
     void ListView::removeAllColumns()
     {
         m_columns.clear();
+
+        updateLastColumnMaxItemWidth();
         updateHorizontalScrollbarMaximum();
     }
 
@@ -283,6 +287,9 @@ namespace tgui
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -303,6 +310,9 @@ namespace tgui
 
         item.icon.setOpacity(m_opacityCached);
 
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -316,6 +326,8 @@ namespace tgui
 
     void ListView::addMultipleItems(const std::vector<std::vector<String>>& items)
     {
+        bool updatedLastColumnMaxItemWidth = false;
+
         for (unsigned int i = 0; i < items.size(); ++i)
         {
             TGUI_EMPLACE_BACK(item, m_items)
@@ -324,8 +336,12 @@ namespace tgui
                 item.texts.push_back(createText(text));
 
             item.icon.setOpacity(m_opacityCached);
+
+            updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidthWithNewItem(item);
         }
 
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -347,6 +363,9 @@ namespace tgui
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -371,6 +390,9 @@ namespace tgui
 
         item.icon.setOpacity(m_opacityCached);
 
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -388,16 +410,22 @@ namespace tgui
             return;
         }
 
+        bool updatedLastColumnMaxItemWidth = false;
+
         for (unsigned int i = 0; i < items.size(); ++i)
         {
-        auto& item = *m_items.emplace(m_items.begin() + index + i);
+            auto& item = *m_items.emplace(m_items.begin() + index + i);
             item.texts.reserve(items[i].size());
             for (const auto& text : items[i])
                 item.texts.push_back(createText(text));
 
             item.icon.setOpacity(m_opacityCached);
+
+            updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidthWithNewItem(item);
         }
 
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -412,11 +440,29 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
-        Item& item = m_items[index];
-        item.texts.clear();
-        item.texts.reserve(itemTexts.size());
-        for (const auto& text : itemTexts)
-            item.texts.push_back(createText(text));
+        if (m_columns.empty() || m_expandLastColumn)
+        {
+            Item& item = m_items[index];
+
+            const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
+
+            item.texts.clear();
+            item.texts.reserve(itemTexts.size());
+            for (const auto& text : itemTexts)
+                item.texts.push_back(createText(text));
+
+            bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithModifiedItem(item, oldDesiredWidthInLastColumn);
+            if (updatedLastColumnMaxItemWidth)
+                updateHorizontalScrollbarMaximum();
+        }
+        else
+        {
+            Item& item = m_items[index];
+            item.texts.clear();
+            item.texts.reserve(itemTexts.size());
+            for (const auto& text : itemTexts)
+                item.texts.push_back(createText(text));
+        }
 
         return true;
     }
@@ -428,11 +474,30 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
-        Item& item = m_items[index];
-        if (column >= item.texts.size())
-            item.texts.resize(column + 1);
+        if ((m_columns.empty() || column == m_columns.size() - 1) && (m_columns.empty() || m_expandLastColumn))
+        {
+            Item& item = m_items[index];
 
-        item.texts[column] = createText(itemText);
+            const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
+
+            if (column >= item.texts.size())
+                item.texts.resize(column + 1);
+
+            item.texts[column] = createText(itemText);
+
+            bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithModifiedItem(item, oldDesiredWidthInLastColumn);
+            if (updatedLastColumnMaxItemWidth)
+                updateHorizontalScrollbarMaximum();
+        }
+        else
+        {
+            Item& item = m_items[index];
+            if (column >= item.texts.size())
+                item.texts.resize(column + 1);
+
+            item.texts[column] = createText(itemText);
+        }
+
         return true;
     }
 
@@ -480,6 +545,8 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
+        const float oldDesiredWidthInLastColumn = getItemTotalWidth(m_items[index], m_columns.empty() ? 0 : m_columns.size() - 1);
+
         const bool wasIconSet = m_items[index].icon.isSet();
         m_items.erase(m_items.begin() + index);
 
@@ -504,7 +571,25 @@ namespace tgui
             }
         }
 
+        bool updatedLastColumnMaxItemWidth = false;
+
+        // Recalculate the last column's max item width if the old max was removed
+        const float epsilon = 0.00001f;
+        if (m_columns.empty())
+        {
+            if (std::abs(oldDesiredWidthInLastColumn - m_maxItemWidth) < epsilon)
+                updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+        }
+        else
+        {
+            if (std::abs(oldDesiredWidthInLastColumn - m_columns.back().maxItemWidth) < epsilon)
+                updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+        }
+
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
+
         return true;
     }
 
@@ -520,6 +605,9 @@ namespace tgui
         m_iconCount = 0;
         m_maxIconWidth = 0;
 
+       bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
+       if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
         updateVerticalScrollbarMaximum();
     }
 
@@ -657,6 +745,10 @@ namespace tgui
                 }
             }
         }
+
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(m_items[index]);
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -823,6 +915,10 @@ namespace tgui
         for (Column& column : m_columns)
             column.text.setCharacterSize(headerTextSize);
 
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
+        if (updatedLastColumnMaxItemWidth)
+            updateHorizontalScrollbarMaximum();
+        
         m_horizontalScrollbar->setScrollAmount(m_textSize);
     }
 
@@ -949,6 +1045,7 @@ namespace tgui
     void ListView::setExpandLastColumn(bool expand)
     {
         m_expandLastColumn = expand;
+        updateHorizontalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1850,6 +1947,120 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListView::updateLastColumnMaxItemWidth()
+    {
+        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
+
+        bool updatedLastColumnMaxItemWidth = false;
+
+        if (m_columns.empty())
+        {
+            m_maxItemWidth = 0;
+            for (const auto& item : m_items)
+            {
+                float iconWidth = item.icon.isSet() ? item.icon.getSize().x + textPadding : 0;
+                float itemWidth = item.texts[0].getSize().x + (textPadding * 2) + iconWidth;
+                if (itemWidth > m_maxItemWidth)
+                {
+                    m_maxItemWidth = itemWidth;
+                    updatedLastColumnMaxItemWidth = true;
+                }
+            }
+        }
+        else if (m_columns.size() == 1)
+        {
+            m_columns[0].maxItemWidth = 0;
+            for (const auto& item : m_items)
+            {
+                if (item.texts.size() >= m_columns.size())
+                {
+                    float iconWidth = item.icon.isSet() ? item.icon.getSize().x + textPadding : 0;
+                    float itemWidth = item.texts[0].getSize().x + (textPadding * 2) + iconWidth;
+                    if (itemWidth > m_columns[0].maxItemWidth)
+                    {
+                        m_columns[0].maxItemWidth = itemWidth;
+                        updatedLastColumnMaxItemWidth = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            std::size_t lastColumnIndex = m_columns.size() - 1;
+
+            m_columns[lastColumnIndex].maxItemWidth = 0;
+            for (const auto& item : m_items)
+            {
+                if (item.texts.size() >= m_columns.size())
+                {
+                    float itemWidth = item.texts[lastColumnIndex].getSize().x + (textPadding * 2);
+                    if (itemWidth > m_columns[lastColumnIndex].maxItemWidth)
+                    {
+                        m_columns[lastColumnIndex].maxItemWidth = itemWidth;
+                        updatedLastColumnMaxItemWidth = true;
+                    }
+                }
+            }
+        }
+
+        return updatedLastColumnMaxItemWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::updateLastColumnMaxItemWidthWithNewItem(const Item& item)
+    {
+        if (item.texts.size() >= m_columns.size() && (m_columns.empty() || m_expandLastColumn))
+        {
+            const float desiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
+            if (m_columns.empty())
+            {
+                if (desiredWidthInLastColumn > m_maxItemWidth)
+                {
+                    m_maxItemWidth = desiredWidthInLastColumn;
+                    return true;
+                }
+            }
+            else
+            {
+                if (desiredWidthInLastColumn > m_columns.back().maxItemWidth)
+                {
+                    m_columns.back().maxItemWidth = desiredWidthInLastColumn;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::updateLastColumnMaxItemWidthWithModifiedItem(const Item& modifiedItem, float oldDesiredWidthInLastColumn)
+    {
+        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(modifiedItem);
+        // If this item change didn't increase the last column's max item width and the old item's width
+        // was the last column's max item width, do a recalculation.
+        if (!updatedLastColumnMaxItemWidth)
+        {
+            const float epsilon = 0.00001f;
+            if (m_columns.empty())
+            {
+                if (std::abs(oldDesiredWidthInLastColumn - m_maxItemWidth) < epsilon)
+                    updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+            }
+            else
+            {
+                if (std::abs(oldDesiredWidthInLastColumn - m_columns.back().maxItemWidth) < epsilon)
+                    updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+            }
+        }
+
+        return updatedLastColumnMaxItemWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::addSelectedItem(int item)
     {
         if (!m_multiSelect)
@@ -1911,6 +2122,18 @@ namespace tgui
             return m_gridLinesWidth;
         else
             return m_separatorWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float ListView::getItemTotalWidth(const Item& item, std::size_t columnIndex) const
+    {
+        if (columnIndex >= item.texts.size())
+            return 0;
+
+        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
+        const float iconWidth = ((m_columns.empty() || m_columns.size() == 1) && columnIndex == 0 && item.icon.isSet()) ? item.icon.getSize().x + textPadding : 0;
+        return item.texts[columnIndex].getSize().x + (textPadding * 2) + iconWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2005,23 +2228,31 @@ namespace tgui
 
     void ListView::updateHorizontalScrollbarMaximum()
     {
+        unsigned int maxWidth = 0;
+
         if (!m_headerVisible || m_columns.empty())
-            m_horizontalScrollbar->setMaximum(0u);
-        else if (m_columns.size() == 1)
-            m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_columns[0].width));
+            maxWidth = m_maxItemWidth;
         else
         {
-            float width = 0;
+            float columnsWidth = 0;
             for (const auto& column : m_columns)
-                width += column.width;
+            {
+                columnsWidth += column.width;
+            }
 
             if (m_expandLastColumn)
-                width += (m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth());
+            {
+                maxWidth = static_cast<unsigned int>(columnsWidth - m_columns.back().width + ((m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth()))
+                    + std::max(m_columns.back().maxItemWidth, m_columns.back().width));
+            }
             else
-                width += m_columns.size() * static_cast<float>(getTotalSeparatorWidth());
-
-            m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width));
+            {
+                maxWidth = static_cast<unsigned int>(columnsWidth - m_columns.back().width + (m_columns.size() * static_cast<float>(getTotalSeparatorWidth()))
+                    + m_columns.back().width);
+            }
         }
+
+        m_horizontalScrollbar->setMaximum(maxWidth);
 
         updateScrollbars();
     }
@@ -2302,14 +2533,14 @@ namespace tgui
 
         // Draw the items and the separation lines
         if (m_columns.empty())
-            drawColumn(target, states, firstItem, lastItem, 0, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight());
+            drawColumn(target, states, firstItem, lastItem, 0, std::max(m_maxItemWidth, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
         else
         {
             float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawColumn(target, states, firstItem, lastItem, col, availableWidth - columnLeftPos);
+                    drawColumn(target, states, firstItem, lastItem, col, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos));
                 else
                 {
                     drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
