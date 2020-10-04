@@ -90,7 +90,7 @@ namespace tgui
 
         glyph.advance = static_cast<float>(advance);
         glyph.bounds.left = static_cast<float>(minX);
-        glyph.bounds.top = static_cast<float>(minY);
+        glyph.bounds.top = static_cast<float>(-maxY);
         glyph.bounds.width = static_cast<float>(maxX - minX);
         glyph.bounds.height = static_cast<float>(maxY - minY);
         return glyph;
