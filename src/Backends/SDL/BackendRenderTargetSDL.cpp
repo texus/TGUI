@@ -503,7 +503,11 @@ namespace tgui
 
     void BackendRenderTargetSDL::updateTransformation(const Transform& transform)
     {
-        glUniformMatrix4fv(0, 1, GL_FALSE, (m_projectionTransform * transform).getMatrix());
+        Transform finalTransform = transform;
+        finalTransform.roundPosition(); // Avoid blurry texts
+        finalTransform = m_projectionTransform * finalTransform;
+
+        glUniformMatrix4fv(0, 1, GL_FALSE, finalTransform.getMatrix());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
