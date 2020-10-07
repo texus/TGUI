@@ -1420,6 +1420,23 @@ namespace tgui
             if (index != m_items.size() - 1)
                 setSelectedItem(index + 1);
         }
+        else if (keyboard::isKeyPressCopy(event))
+        {
+            String buf;
+            for (const std::size_t index : m_selectedItems)
+            {
+                String temp;
+                for (const auto& text : m_items[index].texts)
+                    temp.append(text.getString() + '\t');
+
+                if (*temp.rbegin() == '\t')
+                    temp.pop_back();
+
+                temp.append('\n');
+                buf.append(temp);
+            }
+            getBackend()->setClipboard(buf);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2241,7 +2258,7 @@ namespace tgui
         unsigned int maxWidth = 0;
 
         if (!m_headerVisible || m_columns.empty())
-            maxWidth = m_maxItemWidth;
+            maxWidth = static_cast<unsigned int>(m_maxItemWidth);
         else
         {
             float columnsWidth = 0;

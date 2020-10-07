@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/Group.hpp>
+#include <TGUI/Backend.hpp>
 
 TEST_CASE("[ListView]")
 {
@@ -467,6 +468,27 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getMultiSelect());
         listView->setMultiSelect(false);
         REQUIRE(!listView->getMultiSelect());
+    }
+
+    SECTION("CopyToClipboard")
+    {
+        tgui::Event::KeyEvent event;
+        event.control = true;
+        event.alt = false;
+        event.shift = false;
+        event.system = false;
+        event.code = tgui::Event::KeyboardKey::C;
+
+        listView->addItem("1,1");
+        listView->addItem({ "2,1", "2,2", "2,3" });
+        listView->addItem({ "3,1", "3,2" });
+
+        listView->setMultiSelect(true);
+        listView->setSelectedItems({ 0,2 });
+
+        listView->keyPressed(event);
+        REQUIRE(tgui::getBackend()->getClipboard() == "1,1\n3,1\t3,2\n");
+        tgui::getBackend()->setClipboard("");
     }
 
     SECTION("Events / Signals")
