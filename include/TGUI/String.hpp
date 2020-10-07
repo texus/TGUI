@@ -32,6 +32,7 @@
 #include <vector>
 #include <cstring>
 #include <locale>
+#include <iomanip>
 #include <ostream>
 #include <sstream>
 
@@ -186,6 +187,25 @@ namespace tgui
         {
             std::ostringstream oss;
             oss.imbue(std::locale::classic());
+            oss << value;
+            return String(oss.str());
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Construct the string from a floating point number, keeping only a certain amount of decimals behind the comma
+        ///
+        /// @param value     Number to convert to string
+        /// @param decimals  Digits to keep behind the comma
+        ///
+        /// @return String representing given number, rounded to the given decimals
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        static String fromNumberRounded(T value, int decimals)
+        {
+            std::ostringstream oss;
+            oss.imbue(std::locale::classic());
+            oss << std::fixed << std::setprecision(decimals);
             oss << value;
             return String(oss.str());
         }
