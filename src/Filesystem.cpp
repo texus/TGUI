@@ -24,19 +24,27 @@
 
 
 #include <TGUI/Filesystem.hpp>
+
 #include <cstdlib> // getenv
+
 #if !defined(TGUI_SYSTEM_WINDOWS)
     #include <unistd.h> // getuid
     #include <pwd.h> // getpwuid
 #endif
 
-#if !defined(TGUI_USE_STD_FILESYSTEM)
+#if !defined(TGUI_USE_STD_FILESYSTEM) && !defined(TGUI_SYSTEM_WINDOWS)
+    #include <errno.h> // errno
+    #include <unistd.h> // getcwd
+#endif
+
+#if !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
     #if defined(TGUI_SYSTEM_WINDOWS)
         #include <TGUI/WindowsInclude.hpp>
     #else
-        #include <sys/types.h>
-        #include <sys/stat.h>
-        #include <errno.h>
+        #include <sys/types.h> // stat
+        #include <sys/stat.h> // stat
+        #include <unistd.h> // getcwd
+        #include <dirent.h> // opendir, readdir, closedir
     #endif
 #endif
 
@@ -44,6 +52,19 @@
 
 namespace tgui
 {
+#if defined(TGUI_SYSTEM_WINDOWS)
+    static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
+    {
+        const auto WINDOWS_TICK = 10000000ULL;
+        const auto SEC_TO_UNIX_EPOCH = 11644473600LL;
+
+        ULARGE_INTEGER DateTime;
+        DateTime.LowPart = FileTime.dwLowDateTime;
+        DateTime.HighPart = FileTime.dwHighDateTime;
+        return static_cast<std::time_t>(DateTime.QuadPart / 10000000ULL - 11644473600ULL);
+    }
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Filesystem::Path::Path(const String& path)
@@ -198,10 +219,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Filesystem::Path::operator==(const Path& other) const
+    {
+#ifdef TGUI_USE_STD_FILESYSTEM
+        return m_path == other.m_path;
+#else
+        return (m_parts == other.m_parts) && (m_root == other.m_root) && (m_absolute == other.m_absolute);
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Filesystem::Path::operator!=(const Path& other) const
+    {
+        return !(*this == other);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Filesystem::directoryExists(const Path& path)
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
-        return std::filesystem::is_directory(path);
+        std::error_code errorCode;
+        return std::filesystem::is_directory(path, errorCode);
 #elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD attrib = GetFileAttributesW(path.asNativeString().c_str());
         return ((attrib != INVALID_FILE_ATTRIBUTES) && (attrib & FILE_ATTRIBUTE_DIRECTORY));
@@ -216,7 +256,8 @@ namespace tgui
     bool Filesystem::fileExists(const Path& path)
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
-        return std::filesystem::exists(path);
+        std::error_code errorCode;
+        return std::filesystem::exists(path, errorCode);
 #elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD attrib = GetFileAttributesW(path.asNativeString().c_str());
         return attrib != INVALID_FILE_ATTRIBUTES;
@@ -231,13 +272,39 @@ namespace tgui
     bool Filesystem::createDirectory(const Path& path)
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
-        return std::filesystem::create_directory(path);
+        std::error_code errorCode;
+        return std::filesystem::create_directory(path, errorCode);
 #elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), NULL);
         return (status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
 #else
         const int status = mkdir(path.asNativeString().c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
         return (status == 0) || (errno == EEXIST);
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Filesystem::Path Filesystem::getCurrentWorkingDirectory()
+    {
+#ifdef TGUI_USE_STD_FILESYSTEM
+        std::error_code errorCode;
+        return Path{std::filesystem::current_path(errorCode)};
+#elif defined(TGUI_SYSTEM_WINDOWS)
+        const DWORD requiredBufferSize = GetCurrentDirectoryW(0, nullptr);
+        auto buffer = std::make_unique<wchar_t[]>(requiredBufferSize);
+        const DWORD pathLength = GetCurrentDirectoryW(requiredBufferSize, buffer.get());
+        if (pathLength + 1 == requiredBufferSize)
+            return Path(String(buffer.get(), pathLength));
+        else
+            return Path("");
+#else
+        const unsigned BUFFER_SIZE = 4096; // More than enough for any reasonable use and doesn't rely on PATH_MAX
+        char buffer[BUFFER_SIZE];
+        if (getcwd(buffer, BUFFER_SIZE))
+            return Path(buffer);
+        else
+            return Path("");
 #endif
     }
 
@@ -275,6 +342,83 @@ namespace tgui
 #endif
 
         return localDataDir;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<Filesystem::FileInfo> Filesystem::listFilesInDirectory(const Path& path)
+    {
+        std::vector<FileInfo> fileList;
+
+#ifdef TGUI_USE_STD_FILESYSTEM_FILE_TIME
+        std::error_code errorCode;
+        for (const auto& entry: std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied, errorCode))
+        {
+            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            fileInfo.filename = entry.path().filename().generic_u32string();
+            fileInfo.directory = entry.is_directory(errorCode);
+            fileInfo.modificationTime = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(entry.last_write_time(errorCode)));
+            if (!fileInfo.directory)
+                fileInfo.fileSize = entry.file_size(errorCode);
+        }
+#elif defined(TGUI_SYSTEM_WINDOWS)
+        WIN32_FIND_DATAW entry;
+        HANDLE FileHandle = FindFirstFileW((path.asNativeString() + L"\\*").c_str(), &entry);
+        if (FileHandle == INVALID_HANDLE_VALUE)
+            return fileList;
+
+        do
+        {
+            String filename = entry.cFileName;
+            if ((filename == U".") || (filename == U".."))
+                continue;
+
+            // Hide .lnk and .url extensions
+            if ((filename.length() > 4) && ((filename.compare(filename.length() - 4, 4, U".lnk", 4) == 0) || (filename.compare(filename.length() - 4, 4, U".url", 4) == 0)))
+                filename.erase(filename.length() - 4, 4);
+
+            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            fileInfo.filename = filename;
+            fileInfo.directory = (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+
+            fileInfo.modificationTime = FileTimeToUnixTime(entry.ftLastWriteTime);
+            if (!fileInfo.directory)
+                fileInfo.fileSize = (entry.nFileSizeHigh * (static_cast<decltype(fileInfo.fileSize)>(MAXDWORD) + 1)) + entry.nFileSizeLow;
+
+        } while (FindNextFileW(FileHandle, &entry) != 0);
+
+        FindClose(FileHandle);
+#else
+        DIR* dir = opendir(path.asNativeString().c_str());
+        if (!dir)
+            return fileList;
+
+        struct dirent* entry = nullptr;
+        while ((entry = readdir(dir)) != NULL)
+        {
+            const String filename(entry->d_name);
+            if ((filename == ".") || (filename == ".."))
+                continue;
+
+            struct stat statFileInfo;
+            if (stat((path / filename).asNativeString().c_str(), &statFileInfo) != 0)
+                continue;
+
+            if (statFileInfo.st_size < 0)
+                continue;
+
+            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            fileInfo.filename = filename;
+            fileInfo.directory = (statFileInfo.st_mode & S_IFDIR);
+            fileInfo.modificationTime = statFileInfo.st_mtime;
+            if (!fileInfo.directory)
+                fileInfo.fileSize = static_cast<decltype(fileInfo.fileSize)>(statFileInfo.st_size);
+        }
+
+        closedir(dir);
+#endif
+
+        return fileList;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
