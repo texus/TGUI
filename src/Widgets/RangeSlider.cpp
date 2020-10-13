@@ -674,28 +674,28 @@ namespace tgui
                 target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_trackColorHoverCached, m_opacityCached));
             else
                 target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_trackColorCached, m_opacityCached));
+        }
 
-            if (m_selectedTrackColorCached.isSet())
+        if (m_selectedTrackColorCached.isSet())
+        {
+            RenderStates selectedTrackStates = states;
+            Vector2f size;
+
+            if (m_verticalScroll)
             {
-                RenderStates selectedTrackStates = states;
-                Vector2f size;
-
-                if (m_verticalScroll)
-                {
-                    selectedTrackStates.transform.translate({0, m_thumbs.first.top + m_thumbs.first.height / 2.f});
-                    size = {getInnerSize().x, m_thumbs.second.top - m_thumbs.first.top};
-                }
-                else
-                {
-                    selectedTrackStates.transform.translate({m_thumbs.first.left + m_thumbs.first.width / 2.f, 0});
-                    size = {m_thumbs.second.left - m_thumbs.first.left, getInnerSize().y};
-                }
-
-                if (m_mouseHover && m_selectedTrackColorHoverCached.isSet())
-                    target.drawFilledRect(selectedTrackStates, size, Color::applyOpacity(m_selectedTrackColorHoverCached, m_opacityCached));
-                else
-                    target.drawFilledRect(selectedTrackStates, size, Color::applyOpacity(m_selectedTrackColorCached, m_opacityCached));
+                selectedTrackStates.transform.translate({0, m_thumbs.first.top + m_thumbs.first.height / 2.f});
+                size = {getInnerSize().x, m_thumbs.second.top - m_thumbs.first.top};
             }
+            else
+            {
+                selectedTrackStates.transform.translate({m_thumbs.first.left + m_thumbs.first.width / 2.f, 0});
+                size = {m_thumbs.second.left - m_thumbs.first.left, getInnerSize().y};
+            }
+
+            if (m_mouseHover && m_selectedTrackColorHoverCached.isSet())
+                target.drawFilledRect(selectedTrackStates, size, Color::applyOpacity(m_selectedTrackColorHoverCached, m_opacityCached));
+            else
+                target.drawFilledRect(selectedTrackStates, size, Color::applyOpacity(m_selectedTrackColorCached, m_opacityCached));
         }
 
         const auto oldStates = states;
