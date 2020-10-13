@@ -844,23 +844,28 @@ namespace tgui
 
     Widget::Ptr Container::askToolTip(Vector2f mousePos)
     {
-        if (isMouseOnWidget(mousePos))
+        if (!isMouseOnWidget(mousePos))
+            return nullptr;
+
+        // We shouldn't show tooltips when dragging something (dragging would be halted if mouseOnWhichWidget were called while
+        // the mouse is no longer on the widget itself.
+        if (m_widgetWithLeftMouseDown && (m_widgetWithLeftMouseDown->isDraggableWidget() || m_widgetWithLeftMouseDown->isContainer()))
+            return nullptr;
+
+        Widget::Ptr toolTip = nullptr;
+
+        mousePos -= getPosition() + getChildWidgetsOffset();
+
+        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+        if (widget)
         {
-            Widget::Ptr toolTip = nullptr;
-
-            mousePos -= getPosition() + getChildWidgetsOffset();
-
-            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
-            if (widget)
-            {
-                toolTip = widget->askToolTip(transformMousePos(widget, mousePos));
-                if (toolTip)
-                    return toolTip;
-            }
-
-            if (m_toolTip)
-                return getToolTip();
+            toolTip = widget->askToolTip(transformMousePos(widget, mousePos));
+            if (toolTip)
+                return toolTip;
         }
+
+        if (m_toolTip)
+            return getToolTip();
 
         return nullptr;
     }
@@ -1005,11 +1010,13 @@ namespace tgui
         {
             m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
             m_widgetWithLeftMouseDown = nullptr;
+            return true;
         }
         else if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
         {
             m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
             m_widgetWithRightMouseDown = nullptr;
+            return true;
         }
 
         return (widgetBelowMouse != nullptr);
