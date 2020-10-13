@@ -359,6 +359,8 @@ namespace tgui
         Sprite m_spriteTrackHover;
         Sprite m_spriteThumb;
         Sprite m_spriteThumbHover;
+        Sprite m_spriteSelectedTrack;
+        Sprite m_spriteSelectedTrackHover;
 
         // Cached renderer properties
         Borders m_bordersCached;

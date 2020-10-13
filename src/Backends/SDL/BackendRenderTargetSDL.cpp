@@ -288,9 +288,11 @@ namespace tgui
         const FloatRect& oldClipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
         const std::array<int, 4>& oldClipRectGL = m_clippingLayers.empty() ? m_viewportGL : m_clippingLayers.back().second;
 
-        /// TODO: We currently can't clip rotated objects
+        /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
         const float* transformMatrix = states.transform.getMatrix();
-        if ((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f))
+        if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
+         && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
+         && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
         {
             m_clippingLayers.push_back({oldClipRect, oldClipRectGL});
             return;

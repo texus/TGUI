@@ -125,6 +125,24 @@ namespace tgui
             }
         }
 
+        if (m_spriteSelectedTrack.isSet())
+        {
+            if (m_verticalImage == m_verticalScroll)
+            {
+                m_spriteSelectedTrack.setSize(getInnerSize());
+                m_spriteSelectedTrackHover.setSize(getInnerSize());
+                m_spriteSelectedTrack.setRotation(0);
+                m_spriteSelectedTrackHover.setRotation(0);
+            }
+            else // The image is rotated
+            {
+                m_spriteSelectedTrack.setSize({getInnerSize().y, getInnerSize().x});
+                m_spriteSelectedTrackHover.setSize({getInnerSize().y, getInnerSize().x});
+                m_spriteSelectedTrack.setRotation(-90);
+                m_spriteSelectedTrackHover.setRotation(-90);
+            }
+        }
+
         if (m_spriteThumb.isSet())
         {
             float scaleFactor = 1;
@@ -534,6 +552,17 @@ namespace tgui
         else if (property == "TextureThumbHover")
         {
             m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
+            setSize(m_size);
+        }
+        else if (property == "TextureSelectedTrack")
+        {
+            m_spriteSelectedTrack.setTexture(getSharedRenderer()->getTextureSelectedTrack());
+            setSize(m_size);
+        }
+        else if (property == "TextureSelectedTrackHover")
+        {
+            m_spriteSelectedTrackHover.setTexture(getSharedRenderer()->getTextureSelectedTrackHover());
+            setSize(m_size);
         }
         else if (property == "TrackColor")
         {
@@ -575,6 +604,8 @@ namespace tgui
             m_spriteTrackHover.setOpacity(m_opacityCached);
             m_spriteThumb.setOpacity(m_opacityCached);
             m_spriteThumbHover.setOpacity(m_opacityCached);
+            m_spriteSelectedTrack.setOpacity(m_opacityCached);
+            m_spriteSelectedTrackHover.setOpacity(m_opacityCached);
         }
         else
             Widget::rendererChanged(property);
@@ -643,6 +674,27 @@ namespace tgui
             m_thumbs.second.left = (innerSize.x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum)) - (m_thumbs.second.width / 2.0f);
             m_thumbs.second.top = m_bordersCached.getTop() + (innerSize.y - m_thumbs.second.height) / 2.0f;
         }
+
+        if (m_spriteSelectedTrack.isSet())
+        {
+            if (m_verticalImage == m_verticalScroll)
+            {
+                if (m_verticalScroll)
+                    m_spriteSelectedTrack.setVisibleRect({0, m_thumbs.second.top + (m_thumbs.first.height / 2.0f), innerSize.x, m_thumbs.first.top - m_thumbs.second.top});
+                else
+                    m_spriteSelectedTrack.setVisibleRect({m_thumbs.first.left + (m_thumbs.first.width / 2.0f), 0, m_thumbs.second.left - m_thumbs.first.left, innerSize.y});
+            }
+            else // Image is rotated
+            {
+                if (m_verticalScroll)
+                    m_spriteSelectedTrack.setVisibleRect({innerSize.y - m_thumbs.second.top - (m_thumbs.second.height / 2.0f), 0, m_thumbs.second.top - m_thumbs.first.top, innerSize.x});
+                else
+                    m_spriteSelectedTrack.setVisibleRect({innerSize.y, m_thumbs.first.left + (m_thumbs.first.width / 2.0f), -innerSize.y, m_thumbs.second.left - m_thumbs.first.left});
+            }
+
+            if (m_spriteSelectedTrackHover.isSet())
+                m_spriteSelectedTrackHover.setVisibleRect(m_spriteSelectedTrack.getVisibleRect());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -676,7 +728,15 @@ namespace tgui
                 target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_trackColorCached, m_opacityCached));
         }
 
-        if (m_selectedTrackColorCached.isSet())
+        // Draw the selected area of the track
+        if (m_spriteSelectedTrack.isSet())
+        {
+            if (m_mouseHover && m_spriteSelectedTrackHover.isSet())
+                target.drawSprite(states, m_spriteSelectedTrackHover);
+            else
+                target.drawSprite(states, m_spriteSelectedTrack);
+        }
+        else if (m_selectedTrackColorCached.isSet())
         {
             RenderStates selectedTrackStates = states;
             Vector2f size;

@@ -72,6 +72,8 @@ struct RangeSliderProperties : WidgetProperties
         pair.second["TextureTrackHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTrackHover())};
         pair.second["TextureThumb"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumb())};
         pair.second["TextureThumbHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumbHover())};
+        pair.second["TextureSelectedTrack"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTrack())};
+        pair.second["TextureSelectedTrackHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTrackHover())};
         return pair;
     }
 };

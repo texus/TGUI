@@ -262,6 +262,8 @@ TEST_CASE("[RangeSlider]")
             tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
             tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
             tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
+            tgui::Texture textureSelectedTrack("resources/Texture1.png");
+            tgui::Texture textureSelectedTrackHover("resources/Texture2.png");
 
             SECTION("set serialized property")
             {
@@ -269,6 +271,8 @@ TEST_CASE("[RangeSlider]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", tgui::Serializer::serialize(textureTrackHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", tgui::Serializer::serialize(textureThumb)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", tgui::Serializer::serialize(textureThumbHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrack", tgui::Serializer::serialize(textureSelectedTrack)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrackHover", tgui::Serializer::serialize(textureSelectedTrackHover)));
             }
 
             SECTION("set object property")
@@ -277,6 +281,8 @@ TEST_CASE("[RangeSlider]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", textureTrackHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", textureThumb));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", textureThumbHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrack", textureSelectedTrack));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrackHover", textureSelectedTrackHover));
             }
 
             SECTION("functions")
@@ -285,17 +291,23 @@ TEST_CASE("[RangeSlider]")
                 renderer->setTextureTrackHover(textureTrackHover);
                 renderer->setTextureThumb(textureThumb);
                 renderer->setTextureThumbHover(textureThumbHover);
+                renderer->setTextureSelectedTrack(textureSelectedTrack);
+                renderer->setTextureSelectedTrackHover(textureSelectedTrackHover);
             }
 
             REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureThumb").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureSelectedTrack").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureSelectedTrackHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() == textureTrack.getData());
             REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() == textureTrackHover.getData());
             REQUIRE(renderer->getProperty("TextureThumb").getTexture().getData() == textureThumb.getData());
             REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().getData() == textureThumbHover.getData());
+            REQUIRE(renderer->getProperty("TextureSelectedTrack").getTexture().getData() == textureSelectedTrack.getData());
+            REQUIRE(renderer->getProperty("TextureSelectedTrackHover").getTexture().getData() == textureSelectedTrackHover.getData());
         }
     }
 
@@ -340,6 +352,7 @@ TEST_CASE("[RangeSlider]")
                                         {
                                             renderer.setTextureTrackHover("resources/Texture3.png");
                                             renderer.setTextureThumbHover("resources/Texture4.png");
+                                            renderer.setTextureSelectedTrackHover("resources/Texture6.png");
                                         }
                                      };
 
@@ -376,6 +389,7 @@ TEST_CASE("[RangeSlider]")
         {
             renderer.setTextureTrack("resources/Texture1.png");
             renderer.setTextureThumb("resources/Texture2.png");
+            renderer.setTextureSelectedTrack("resources/Texture5.png");
 
             SECTION("NormalState")
             {

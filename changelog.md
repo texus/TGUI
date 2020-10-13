@@ -16,6 +16,7 @@ TGUI 0.9-dev
 - Added DoubleClick signal to Panel
 - Added ViewChanged signal to GuiBase
 - Added hover and selected border colors for Tabs
+- Added TextureSelectedTrack property to RangeSlider renderer
 - Separators can be added to MenuBar by inserting menu items with "-" string
 - ListBox and ListView can now store user data in their items
 - Replaced all std::string and sf::String by tgui::String
