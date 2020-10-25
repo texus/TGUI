@@ -15,10 +15,12 @@ button->setToolTip(toolTip);
 
 <img src="/resources/Tutorials/ToolTipLabel.jpg" alt="Tool Tip Label" width="181" height="77" />
 
+Note that unlike other widgets, the tool tip should NOT be added to the gui or any other container. The ownership of the tool tip will be automatically managed by calling setToolTip.
+
 
 ### Special tool tip
 
-But the tool tip does not has to be a label, it can be any widget. Here I used a Picture but you could also use a Panel and make the tool tip as complex as you want.
+The tool tip does not have to be a label, it can be any widget. Here I used a Picture but you could also use a Panel and make the tool tip as complex as you want.
 ```c++
 auto toolTip = tgui::Picture::create("image.png");
 button->setToolTip(toolTip);
