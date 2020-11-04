@@ -177,17 +177,18 @@ build_script:
 #---------------------------------#
 
 deploy:
-- provider: BinTray
-  username: texus
-  api_key:
-    secure: cSfvMUOUzComX+zv+OqpWsi4NUTZFdH/xq9hbfrqjPMyL6XFdo/Tg41IpleXdIFu
-  subject: texus
-  repo: generic
-  package: TGUI
-  version: 0.9-dev-latest
-  publish: true
-  override: true
-  explode: false
+- provider: GitHub
+  tag: nightly_build
+  release: 'Nightly build'
+  description: 'Latest nightly build binary'
+  draft: false
+  prerelease: true
+  force_update: true
+  auth_token:
+    secure: rVxk6OWc0JLdMi5VXVuWLAvlT1whbHHHNBPgcaJxZoYXJlwK0ixT1w1XdF5S7DBH
+  on:
+    branch: 0.9-dev
+    APPVEYOR_REPO_TAG: false
 
 
 #---------------------------------#
