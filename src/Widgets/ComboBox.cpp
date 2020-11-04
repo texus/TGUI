@@ -949,6 +949,7 @@ namespace tgui
 
         m_listBox->setVisible(false);
         m_listBox->mouseNoLongerOnWidget();
+        m_listBox->leftMouseButtonNoLongerDown();
 
         if (m_listBox->getParent())
             m_listBox->getParent()->remove(m_listBox);
@@ -1039,9 +1040,9 @@ namespace tgui
                 arrowVertexColor = Vertex::Color(m_arrowColorCached);
 
             target.drawTriangles(states, {
-                {{arrowSize / 5, arrowSize / 5}, arrowVertexColor},
-                {{arrowSize / 2, arrowSize * 4/5}, arrowVertexColor},
-                {{arrowSize * 4/5, arrowSize / 5}, arrowVertexColor}
+                {{arrowSize / 5, arrowSize / 4}, arrowVertexColor},
+                {{arrowSize / 2, arrowSize * 3/4}, arrowVertexColor},
+                {{arrowSize * 4/5, arrowSize / 4}, arrowVertexColor}
             });
         }
 
