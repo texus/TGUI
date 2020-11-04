@@ -585,8 +585,7 @@ namespace tgui
 
     Widget::Ptr Container::getWidgetAtPosition(Vector2f pos) const
     {
-        pos.x -= (getPosition().x + getChildWidgetsOffset().x);
-        pos.y -= (getPosition().y + getChildWidgetsOffset().y);
+        pos -= getPosition() + getChildWidgetsOffset();
 
         for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
@@ -595,14 +594,14 @@ namespace tgui
             // Look for a visible widget below the mouse
             if (!widget->isVisible())
                 continue;
-            if (!widget->isMouseOnWidget(pos))
+            if (!widget->isMouseOnWidget(transformMousePos(widget, pos)))
                 continue;
 
             // If the widget is a container then look inside it
             if (widget->isContainer())
             {
                 Container::Ptr container = std::static_pointer_cast<Container>(widget);
-                auto childWidget = container->getWidgetAtPosition(pos);
+                auto childWidget = container->getWidgetAtPosition(transformMousePos(widget, pos));
                 if (childWidget)
                     return childWidget;
             }
