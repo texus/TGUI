@@ -123,7 +123,7 @@ namespace tgui
             {
                 if (widget->isVisible())
                 {
-                    if (widget->isMouseOnWidget(pos - offset))
+                    if (widget->isMouseOnWidget(transformMousePos(widget, pos - offset)))
                         return true;
                 }
             }

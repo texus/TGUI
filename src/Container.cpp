@@ -107,30 +107,6 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        static Vector2f transformMousePos(const Widget::Ptr& widget, Vector2f mousePos)
-        {
-            const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
-            const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
-            if (defaultOrigin && !scaledOrRotated)
-                return mousePos;
-
-            const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
-            if (!scaledOrRotated)
-                return mousePos + origin;
-
-            const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
-            const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
-
-            Transform transform;
-            transform.translate(widget->getPosition() - origin);
-            transform.rotate(widget->getRotation(), rotOrigin);
-            transform.scale(widget->getScale(), scaleOrigin);
-            mousePos = transform.getInverse().transformPoint(mousePos);
-            return mousePos + widget->getPosition();
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,7 +385,7 @@ namespace tgui
 
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
-        auto rootNode = DataIO::parse(stream);
+        const auto rootNode = DataIO::parse(stream);
 
         // Replace the existing widgets by the ones that will be loaded if requested
         if (replaceExisting)
@@ -418,6 +394,7 @@ namespace tgui
         if (rootNode->propertyValuePairs.size() != 0)
             Widget::load(rootNode, {});
 
+        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
         std::map<String, std::shared_ptr<RendererData>> availableRenderers;
         for (const auto& node : rootNode->children)
         {
@@ -439,12 +416,23 @@ namespace tgui
                 if (constructor)
                 {
                     Widget::Ptr widget = constructor();
-                    widget->load(node, availableRenderers);
                     add(widget, objectName);
+
+                    // We delay loading of widgets until they have all been added to the container.
+                    // Otherwise there would be issues if their position and size layouts refer to
+                    // widgets that have not yet been loaded.
+                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
                 }
                 else
                     throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
             }
+        }
+
+        for (auto& pair : widgetsToLoad)
+        {
+            Widget::Ptr& widget = pair.first;
+            const auto& node = pair.second.get();
+            widget->load(node, availableRenderers);
         }
     }
 
@@ -909,6 +897,7 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
+        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
         for (const auto& childNode : node->children)
         {
             const auto nameSeparator = childNode->name.find('.');
@@ -922,11 +911,22 @@ namespace tgui
                     className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
                 Widget::Ptr childWidget = constructor();
-                childWidget->load(childNode, renderers);
                 add(childWidget, className);
+
+                // We delay loading of widgets until they have all been added to the container.
+                // Otherwise there would be issues if their position and size layouts refer to
+                // widgets that have not yet been loaded.
+                widgetsToLoad.push_back(std::make_pair(childWidget, std::cref(childNode)));
             }
             else
                 throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+        }
+
+        for (auto& pair : widgetsToLoad)
+        {
+            Widget::Ptr& childWidget = pair.first;
+            const auto& childNode = pair.second.get();
+            childWidget->load(childNode, renderers);
         }
     }
 
@@ -1222,6 +1222,30 @@ namespace tgui
         m_focusedWidget = widget;
         m_focusedWidget->setFocused(true);
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Container::transformMousePos(const Widget::Ptr& widget, Vector2f mousePos) const
+    {
+        const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
+        const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
+        if (defaultOrigin && !scaledOrRotated)
+            return mousePos;
+
+        const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+        if (!scaledOrRotated)
+            return mousePos + origin;
+
+        const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+        const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+
+        Transform transform;
+        transform.translate(widget->getPosition() - origin);
+        transform.rotate(widget->getRotation(), rotOrigin);
+        transform.scale(widget->getScale(), scaleOrigin);
+        mousePos = transform.getInverse().transformPoint(mousePos);
+        return mousePos + widget->getPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
