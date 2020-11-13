@@ -610,7 +610,7 @@ namespace tgui
         m_last = get<Panel>("#TGUI_INTERNAL$ColorPickerLast#");
         m_current = get<Panel>("#TGUI_INTERNAL$ColorPickerCurrent#");
 
-        auto reCalculateColor = [=]() {
+        auto recalculateColor = [this]() {
             m_current->getRenderer()->setBackgroundColor(
                     {static_cast<uint8_t>(m_red->getValue()), static_cast<uint8_t>(m_green->getValue()),
                      static_cast<uint8_t>(m_blue->getValue()), static_cast<uint8_t>(m_alpha->getValue())});
@@ -619,52 +619,52 @@ namespace tgui
 
         redBox->onTextChange.disconnectAll();
         redBox->setText(String(m_red->getValue()));
-        redBox->onTextChange([=](const String &s) { m_red->setValue(s.toFloat()); });
+        redBox->onTextChange([this](const String &s) { m_red->setValue(s.toFloat()); });
 
         greenBox->onTextChange.disconnectAll();
         greenBox->setText(String(m_green->getValue()));
-        greenBox->onTextChange([=](const String &s) { m_green->setValue(s.toFloat()); });
+        greenBox->onTextChange([this](const String &s) { m_green->setValue(s.toFloat()); });
 
         blueBox->onTextChange.disconnectAll();
         blueBox->setText(String(m_blue->getValue()));
-        blueBox->onTextChange([=](const String &s) { m_blue->setValue(s.toFloat()); });
+        blueBox->onTextChange([this](const String &s) { m_blue->setValue(s.toFloat()); });
 
         alphaBox->onTextChange.disconnectAll();
         alphaBox->setText(String(m_alpha->getValue()));
-        alphaBox->onTextChange([=](const String &s) { m_alpha->setValue(s.toFloat()); });
+        alphaBox->onTextChange([this](const String &s) { m_alpha->setValue(s.toFloat()); });
 
         m_red->onValueChange.disconnectAll();
         m_red->onValueChange(
                        [=](float v) {
                            redBox->setText(String(v));
-                           reCalculateColor();
+                           recalculateColor();
                        });
 
         m_green->onValueChange.disconnectAll();
         m_green->onValueChange(
                          [=](float v) {
                              greenBox->setText(String(v));
-                             reCalculateColor();
+                             recalculateColor();
                          });
 
         m_blue->onValueChange.disconnectAll();
         m_blue->onValueChange(
                         [=](float v) {
                             blueBox->setText(String(v));
-                            reCalculateColor();
+                            recalculateColor();
                         });
 
         m_alpha->onValueChange.disconnectAll();
         m_alpha->onValueChange(
                          [=](float v) {
                              alphaBox->setText(String(v));
-                             reCalculateColor();
+                             recalculateColor();
                          });
 
         auto reset = get<Button>("#TGUI_INTERNAL$ColorPickerReset#");
         reset->onPress.disconnectAll();
-        reset->onPress([=]() {
-            auto color = m_last->getRenderer()->getBackgroundColor();
+        reset->onPress([this]() {
+            const auto color = m_last->getRenderer()->getBackgroundColor();
             m_red->setValue(color.getRed());
             m_green->setValue(color.getGreen());
             m_blue->setValue(color.getBlue());
@@ -672,8 +672,8 @@ namespace tgui
         });
         auto ok = get<Button>("#TGUI_INTERNAL$ColorPickerOK#");
         ok->onPress.disconnectAll();
-        ok->onPress([=]() {
-            auto color = m_current->getRenderer()->getBackgroundColor();
+        ok->onPress([this]() {
+            const auto color = m_current->getRenderer()->getBackgroundColor();
             m_last->getRenderer()->setBackgroundColor(color);
             onOkPress.emit(this, color);
 
@@ -682,15 +682,15 @@ namespace tgui
 
         auto closeButton = get<Button>("#TGUI_INTERNAL$ColorPickerCancel#");
         closeButton->onPress.disconnectAll();
-        closeButton->onPress([=]{
-            auto color = m_last->getRenderer()->getBackgroundColor();
+        closeButton->onPress([this]{
+            const auto color = m_last->getRenderer()->getBackgroundColor();
             setColor(color);
 
             close();
         });
 
-        auto valueChangeFunc = [=](float value){
-            auto size = m_canvas->getView().getSize();
+        auto valueChangeFunc = [this](float value){
+            const auto size = m_canvas->getView().getSize();
             sf::Vertex array[4];
             array[0].position = {0, 0};
             array[1].position = {0, size.y};

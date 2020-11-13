@@ -6,6 +6,9 @@ set(TGUI_SRC
     Container.cpp
     Cursor.cpp
     CustomWidgetForBindings.cpp
+    FileDialogIconLoader.cpp
+    FileDialogIconLoaderLinux.cpp
+    FileDialogIconLoaderWindows.cpp
     Filesystem.cpp
     Font.cpp
     Global.cpp
@@ -39,6 +42,7 @@ set(TGUI_SRC
     Renderers/ColorPickerRenderer.cpp
     Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
+    Renderers/FileDialogRenderer.cpp
     Renderers/GroupRenderer.cpp
     Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
@@ -72,6 +76,7 @@ set(TGUI_SRC
     Widgets/ColorPicker.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/FileDialog.cpp
     Widgets/Group.cpp
     Widgets/Grid.cpp
     Widgets/HorizontalLayout.cpp
@@ -185,14 +190,20 @@ else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
 endif()
 
-# On Linux and BSD we also need to link to X11
 if(TGUI_OS_LINUX OR TGUI_OS_BSD)
+    # On Linux and BSD we also need to link to X11
     find_package(X11 REQUIRED)
     add_library(TGUI_X11 INTERFACE)
     target_include_directories(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_INCLUDE_DIR}>")
     target_link_libraries(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_X11_LIB}>")
     install(TARGETS TGUI_X11 EXPORT TGUIConfigExport)
     target_link_libraries(tgui PRIVATE TGUI_X11)
+
+    # For the FileDialog we need to link to pthreads and dl on Linux and BSD (to load system icons in the background)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    target_link_libraries(tgui PRIVATE Threads::Threads)
+    target_link_libraries(tgui PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
 # define TGUI_USE_CPP17 if requested

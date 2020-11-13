@@ -33,6 +33,7 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Animation.hpp>
+#include <TGUI/Filesystem.hpp>
 #include <type_traits>
 #include <functional>
 #include <typeindex>
@@ -450,6 +451,7 @@ namespace tgui
     using SignalFloat = SignalTyped<float>; //!< Signal with one "float" as optional unbound parameter
     using SignalColor = SignalTyped<Color>; //!< Signal with one "Color" as optional unbound parameter
     using SignalString = SignalTyped<const String&>; //!< Signal with one "String" as optional unbound parameter
+    using SignalPathList = SignalTyped<const std::vector<Filesystem::Path>&>; //!< Signal with a vector of Filesystem::Path as optional unbound parameter
     using SignalVector2f = SignalTyped<Vector2f>; //!< Signal with one "Vector2f" as optional unbound parameter
     using SignalFloatRect = SignalTyped<FloatRect>; //!< Signal with one "FloatRect" as optional unbound parameter
     using SignalRange = SignalTyped2<float, float>; //!< Signal with two floats as optional unbound parameters

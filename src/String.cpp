@@ -239,6 +239,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    String String::join(const std::vector<String>& segments, const String& separator)
+    {
+        String result;
+
+        auto it = segments.begin();
+        if (it != segments.end())
+        {
+            result += *it;
+            ++it;
+        }
+
+        for (; it != segments.end(); ++it)
+        {
+            result += separator;
+            result += *it;
+        }
+
+        return result;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     String::String(const std::string& str) :
         m_string(utf::convertUtf8toUtf32(str.begin(), str.end()))
     {

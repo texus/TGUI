@@ -362,6 +362,10 @@ namespace tgui
                         window->close();
                         eventProcessed = true;
                     }
+                    else if (event.type == sf::Event::Resized)
+                    {
+                        eventProcessed = true;
+                    }
                 }
 
                 if (updateTime())

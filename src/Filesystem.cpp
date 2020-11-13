@@ -52,6 +52,8 @@
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #if defined(TGUI_SYSTEM_WINDOWS)
     static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
     {
@@ -86,7 +88,7 @@ namespace tgui
                 if (m_parts.empty() && !m_absolute && m_root.empty())
                 {
     #if defined(TGUI_SYSTEM_WINDOWS)
-                    if ((part.empty()) || ((part.length() == 2) && (part[1] == U':')))
+                    if (part.empty() || ((part.length() == 2) && (part[1] == U':')))
                     {
                         m_root = part;
                         m_absolute = true;
@@ -111,7 +113,25 @@ namespace tgui
         }
 
         if (!part.empty())
+        {
+    #if defined(TGUI_SYSTEM_WINDOWS)
+            if (!m_absolute && m_root.empty() && (part.length() == 2) && (part[1] == U':'))
+            {
+                m_root = part;
+                m_absolute = true;
+            }
+            else
+                m_parts.push_back(part);
+    #else
             m_parts.push_back(part);
+    #endif
+        }
+        else // The was no filename
+        {
+            // If the last character was a slash then add an empty filename
+            if (!path.empty())
+                m_parts.push_back("");
+        }
 #endif
     }
 
@@ -164,6 +184,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    String Filesystem::Path::getFilename() const
+    {
+#ifdef TGUI_USE_STD_FILESYSTEM
+        return m_path.filename().generic_u32string();
+#else
+        if (!m_parts.empty())
+            return m_parts.back();
+        else
+            return "";
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef TGUI_SYSTEM_WINDOWS
     std::wstring Filesystem::Path::asNativeString() const
     {
@@ -210,7 +244,13 @@ namespace tgui
         m_path /= path.m_path;
 #else
         if (!path.m_absolute)
+        {
+            // If the path contained a directory then it might have an empty filename at the end. Remove it first.
+            if (!m_parts.empty() && m_parts.back().empty())
+                m_parts.pop_back();
+
             m_parts.insert(m_parts.end(), path.m_parts.begin(), path.m_parts.end());
+        }
         else // The path to append is absolute, so just replace the current path
             *this = path;
 #endif
@@ -285,6 +325,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Filesystem::Path Filesystem::getHomeDirectory()
+    {
+#ifdef TGUI_SYSTEM_WINDOWS
+    #if defined (_MSC_VER)
+        const DWORD requiredBufferSizeHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", nullptr, 0);
+        auto bufferHomeDrive = std::make_unique<wchar_t[]>(requiredBufferSizeHomeDrive);
+        const DWORD lengthHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", bufferHomeDrive.get(), requiredBufferSizeHomeDrive);
+
+        const DWORD requiredBufferSizeHomePath = GetEnvironmentVariableW(L"HOMEPATH", nullptr, 0);
+        auto bufferHomePath = std::make_unique<wchar_t[]>(requiredBufferSizeHomePath);
+        const DWORD lengthHomePath = GetEnvironmentVariableW(L"HOMEPATH", bufferHomePath.get(), requiredBufferSizeHomePath);
+
+        if ((lengthHomeDrive + 1 == requiredBufferSizeHomeDrive) && (lengthHomePath + 1 == requiredBufferSizeHomePath))
+            return Path(String(bufferHomeDrive.get(), lengthHomeDrive) + String(bufferHomePath.get(), lengthHomePath));
+    #else
+        const char* homeDrive = std::getenv("HOMEDRIVE");
+        const char* homePath = std::getenv("HOMEPATH");
+        if (homeDrive && homePath)
+            return Path(homeDrive) / Path(homePath);
+    #endif
+#else
+        const char* homeDir = std::getenv("HOME");
+        if (!homeDir)
+            homeDir = getpwuid(getuid())->pw_dir;
+
+        if (homeDir)
+            return Path(homeDir);
+#endif
+
+        return Path();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Filesystem::Path Filesystem::getCurrentWorkingDirectory()
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
@@ -296,36 +370,32 @@ namespace tgui
         const DWORD pathLength = GetCurrentDirectoryW(requiredBufferSize, buffer.get());
         if (pathLength + 1 == requiredBufferSize)
             return Path(String(buffer.get(), pathLength));
-        else
-            return Path("");
 #else
         const unsigned BUFFER_SIZE = 4096; // More than enough for any reasonable use and doesn't rely on PATH_MAX
         char buffer[BUFFER_SIZE];
         if (getcwd(buffer, BUFFER_SIZE))
             return Path(buffer);
-        else
-            return Path("");
 #endif
+
+        return Path();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Filesystem::Path Filesystem::getLocalDataDirectory()
     {
-        tgui::Filesystem::Path localDataDir;
+        Path localDataDir;
 #ifdef TGUI_SYSTEM_WINDOWS
     #if defined (_MSC_VER)
-        wchar_t* appDataDir;
-        size_t len;
-        if ((_wdupenv_s(&appDataDir, &len, L"LOCALAPPDATA") == 0) && appDataDir)
-        {
-            localDataDir = tgui::Filesystem::Path(std::wstring(appDataDir));
-            free(appDataDir);
-        }
+        const DWORD requiredBufferSize = GetEnvironmentVariableW(L"LOCALAPPDATA", nullptr, 0);
+        auto buffer = std::make_unique<wchar_t[]>(requiredBufferSize);
+        const DWORD length = GetEnvironmentVariableW(L"LOCALAPPDATA", buffer.get(), requiredBufferSize);
+        if (length + 1 == requiredBufferSize)
+            localDataDir = Path(String(buffer.get(), length));
     #else
         const char* appDataDir = std::getenv("LOCALAPPDATA");
         if (appDataDir)
-            localDataDir = tgui::Filesystem::Path(appDataDir);
+            localDataDir = Path(appDataDir);
     #endif
 #else
         const char* homeDir = std::getenv("HOME");
@@ -334,9 +404,9 @@ namespace tgui
         if (homeDir)
         {
     #ifdef TGUI_SYSTEM_MACOS
-            localDataDir = tgui::Filesystem::Path(homeDir) / U"Library" / U"Application Support";
+            localDataDir = Path(homeDir) / U"Library" / U"Application Support";
     #else
-            localDataDir = tgui::Filesystem::Path(homeDir) / U".local" / U"share";
+            localDataDir = Path(homeDir) / U".local" / U"share";
     #endif
         }
 #endif
@@ -356,6 +426,7 @@ namespace tgui
         {
             TGUI_EMPLACE_BACK(fileInfo, fileList)
             fileInfo.filename = entry.path().filename().generic_u32string();
+            fileInfo.path = Path(entry.path());
             fileInfo.directory = entry.is_directory(errorCode);
             fileInfo.modificationTime = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(entry.last_write_time(errorCode)));
             if (!fileInfo.directory)
@@ -373,12 +444,9 @@ namespace tgui
             if ((filename == U".") || (filename == U".."))
                 continue;
 
-            // Hide .lnk and .url extensions
-            if ((filename.length() > 4) && ((filename.compare(filename.length() - 4, 4, U".lnk", 4) == 0) || (filename.compare(filename.length() - 4, 4, U".url", 4) == 0)))
-                filename.erase(filename.length() - 4, 4);
-
             TGUI_EMPLACE_BACK(fileInfo, fileList)
             fileInfo.filename = filename;
+            fileInfo.path = path / filename;
             fileInfo.directory = (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
 
             fileInfo.modificationTime = FileTimeToUnixTime(entry.ftLastWriteTime);
@@ -400,8 +468,10 @@ namespace tgui
             if ((filename == ".") || (filename == ".."))
                 continue;
 
+            const Path filePath = path / filename;
+
             struct stat statFileInfo;
-            if (stat((path / filename).asNativeString().c_str(), &statFileInfo) != 0)
+            if (stat(filePath.asNativeString().c_str(), &statFileInfo) != 0)
                 continue;
 
             if (statFileInfo.st_size < 0)
@@ -409,6 +479,7 @@ namespace tgui
 
             TGUI_EMPLACE_BACK(fileInfo, fileList)
             fileInfo.filename = filename;
+            fileInfo.path = filePath;
             fileInfo.directory = (statFileInfo.st_mode & S_IFDIR);
             fileInfo.modificationTime = statFileInfo.st_mtime;
             if (!fileInfo.directory)

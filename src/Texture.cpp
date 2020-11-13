@@ -210,6 +210,20 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Texture::load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect, const UIntRect& middleRect)
+    {
+        auto data = std::make_shared<TextureData>();
+        data->backendTexture = getBackend()->createTexture();
+        if (!data->backendTexture->loadFromPixelData(size, pixels))
+            return false;
+
+        m_id = "";
+        setTextureData(data, partRect, middleRect);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const String& Texture::getId() const
     {
         return m_id;
@@ -382,7 +396,7 @@ namespace tgui
                 m_partRect = {0, 0, static_cast<unsigned int>(m_data->svgImage->getSize().x), static_cast<unsigned int>(m_data->svgImage->getSize().y)};
             else
             {
-                const Vector2u textureSize = data->backendTexture->getSize();
+                const Vector2u textureSize = m_data->backendTexture->getSize();
                 m_partRect = {0, 0, textureSize.x, textureSize.y};
             }
         }

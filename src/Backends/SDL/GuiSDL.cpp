@@ -353,6 +353,10 @@ namespace tgui
                         quit = true;
                         eventProcessed = true;
                     }
+                    else if ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+                    {
+                        eventProcessed = true;
+                    }
                 }
 
                 if (updateTime())

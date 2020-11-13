@@ -999,6 +999,9 @@ namespace tgui
         if (getTitle().length() > 0)
             node->propertyValuePairs["Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
 
+        if (m_titleTextSize != 0)
+            node->propertyValuePairs["TitleTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_titleTextSize));
+
         if (m_keepInParent)
             node->propertyValuePairs["KeepInParent"] = std::make_unique<DataIO::ValueNode>("true");
 
@@ -1068,6 +1071,9 @@ namespace tgui
 
         if (node->propertyValuePairs["Title"])
             setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Title"]->value).getString());
+
+        if (node->propertyValuePairs["TitleTextSize"])
+            setTitleTextSize(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TitleTextSize"]->value).getNumber());
 
         if (node->propertyValuePairs["KeepInParent"])
             setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["KeepInParent"]->value).getBool());

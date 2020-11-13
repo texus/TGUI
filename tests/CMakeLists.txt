@@ -39,6 +39,7 @@ set(TEST_SOURCES
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/FileDialog.cpp
     Widgets/Group.cpp
     Widgets/Grid.cpp
     Widgets/HorizontalLayout.cpp

@@ -136,7 +136,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \
+#define TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(CLASS, NAME, RENDERER, DEFAULT) \
     std::shared_ptr<RendererData> CLASS::get##NAME() const \
     { \
         const auto it = m_data->propertyValuePairs.find(String(#NAME)); \
@@ -145,7 +145,7 @@
         else \
         { \
             const auto& renderer = Theme::getDefault()->getRendererNoThrow(RENDERER); \
-            m_data->propertyValuePairs[String(#NAME)] = {renderer ? renderer : RendererData::create()}; \
+            m_data->propertyValuePairs[String(#NAME)] = {renderer ? renderer : DEFAULT}; \
             return renderer; \
         } \
     } \
@@ -153,6 +153,10 @@
     { \
         setProperty(String(#NAME), {renderer}); \
     }
+
+#define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \
+    TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(CLASS, NAME, RENDERER, RendererData::create()) \
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

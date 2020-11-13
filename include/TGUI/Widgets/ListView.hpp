@@ -501,8 +501,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sort items
         ///
-        /// @param cmp  The comparator
-        /// @param index  The index of the column for sorting
+        /// @param index The index of the column for sorting
+        /// @param cmp   The comparator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void sort(std::size_t index, const std::function<bool(const String&, const String&)>& cmp);
 
@@ -730,6 +730,27 @@ namespace tgui
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getHorizontalScrollbarValue() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a size to which all icons should be scaled
+        ///
+        /// @param iconSize  Wanted size for all icons
+        ///
+        /// By default the fixed icon size is set to (0,0) which doesn't scale the icons and lets each icon use the texture size.
+        /// By setting only the x or y component of the vector to 0, that dimension will be calculated to keep the icon ratio.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFixedIconSize(Vector2f iconSize);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns to which size all icons should be scaled
+        ///
+        /// @return Wanted size for all icons
+        ///
+        /// By default the fixed icon size is set to (0,0) which doesn't scale the icons and lets each icon use the texture size.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getFixedIconSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -987,7 +1008,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalInt onItemSelect  = {"ItemSelected"};   //!< An item was selected in the list view (only used when MultiSelect is false). Optional parameter: selected item index (-1 when deselecting)
+        /// An item was selected in the list view
+        /// Optional parameter: selected item index (-1 when deselecting)
+        ///
+        /// Note that when MultiSelect is true, this signal is triggered for every change to the selected items. The optional
+        /// parameter will contain the lowest index in the selected items or -1 when none of the items are selected.
+        SignalInt onItemSelect  = {"ItemSelected"};
+
         SignalInt onDoubleClick = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item index
         SignalInt onRightClick  = {"RightClicked"};   //!< Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item)
         SignalInt onHeaderClick = {"HeaderClicked"};  //!< The header was clicked. Optional parameter: column index
@@ -1018,6 +1045,7 @@ namespace tgui
         bool m_showVerticalGridLines = true;
         bool m_expandLastColumn = false;
         bool m_multiSelect = false;
+        Vector2f m_fixedIconSize;
 
         CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
         CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;

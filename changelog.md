@@ -8,6 +8,7 @@ TGUI 0.9-dev
 - Up and down arrows now change selected item in ListBox and ListView ([PR #146](https://github.com/texus/TGUI/pull/146))
 - Horizontal scrollbar can now depend on item width in ListView ([PR #147](https://github.com/texus/TGUI/pull/147))
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
+- Added new FileDialog widget
 - Added new SeparatorLine widget
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
@@ -19,6 +20,7 @@ TGUI 0.9-dev
 - Added TextureSelectedTrack property to RangeSlider renderer
 - Separators can be added to MenuBar by inserting menu items with "-" string
 - ListBox and ListView can now store user data in their items
+- ListView icons can be given a fixed size to rescale all icons to requested size
 - Replaced all std::string and sf::String by tgui::String
 - Replaced Text, Color, Rect and Vector2 classes from SFML with own versions
 - Replaced sf::Text::Style with tgui::TextStyle

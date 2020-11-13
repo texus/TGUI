@@ -171,7 +171,7 @@ namespace tgui
 
         String readLine(std::stringstream& stream)
         {
-            String line;
+            std::string line;
             bool whitespaceFound = false;
             while (stream.peek() != EOF)
             {

@@ -37,6 +37,7 @@
 #include <TGUI/Widgets/ColorPicker.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/HorizontalLayout.hpp>

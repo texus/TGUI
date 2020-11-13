@@ -521,7 +521,9 @@ namespace tgui
             {
                 m_selectedItems.erase(index);
                 setItemColor(index, m_textColorCached);
-                if (!m_multiSelect)
+                if (!m_selectedItems.empty())
+                    onItemSelect.emit(this, *m_selectedItems.begin());
+                else
                     onItemSelect.emit(this, -1);
             }
 
@@ -555,8 +557,8 @@ namespace tgui
             --m_iconCount;
 
             const float oldMaxIconWidth = m_maxIconWidth;
-            m_maxIconWidth = 0;
-            if (m_iconCount > 0)
+            m_maxIconWidth = m_fixedIconSize.x;
+            if ((m_fixedIconSize.x == 0) && (m_iconCount > 0))
             {
                 // Rescan all items to find the largest icon
                 for (const auto& item : m_items)
@@ -603,7 +605,7 @@ namespace tgui
         m_items.clear();
 
         m_iconCount = 0;
-        m_maxIconWidth = 0;
+        m_maxIconWidth = m_fixedIconSize.x;
 
        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
        if (updatedLastColumnMaxItemWidth)
@@ -651,6 +653,11 @@ namespace tgui
 
         m_selectedItems = indices;
         updateSelectedAndhoveredItemColors();
+
+        if (!m_selectedItems.empty())
+            onItemSelect.emit(this, *m_selectedItems.begin());
+        else
+            onItemSelect.emit(this, -1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -719,9 +726,21 @@ namespace tgui
         const bool wasIconSet = m_items[index].icon.isSet();
         m_items[index].icon.setTexture(texture);
 
+        Vector2f iconSize;
+        if ((m_fixedIconSize.x != 0) && (m_fixedIconSize.y != 0))
+            iconSize = m_fixedIconSize;
+        else if ((m_fixedIconSize.y != 0) && (m_fixedIconSize.y != texture.getImageSize().y))
+            iconSize = {static_cast<float>(texture.getImageSize().x) / texture.getImageSize().y * m_fixedIconSize.y, static_cast<float>(m_fixedIconSize.y)};
+        else if ((m_fixedIconSize.x != 0) && (m_fixedIconSize.x != texture.getImageSize().x))
+            iconSize = {static_cast<float>(m_fixedIconSize.x), static_cast<float>(texture.getImageSize().y) / texture.getImageSize().x * m_fixedIconSize.x};
+        else
+            iconSize = Vector2f{texture.getImageSize()};
+
+        m_items[index].icon.setSize(iconSize);
+
         if (m_items[index].icon.isSet())
         {
-            m_maxIconWidth = std::max(m_maxIconWidth, m_items[index].icon.getSize().x);
+            m_maxIconWidth = std::max(m_maxIconWidth, iconSize.x);
             if (!wasIconSet)
                 ++m_iconCount;
         }
@@ -730,8 +749,8 @@ namespace tgui
             --m_iconCount;
 
             const float oldMaxIconWidth = m_maxIconWidth;
-            m_maxIconWidth = 0;
-            if (m_iconCount > 0)
+            m_maxIconWidth = m_fixedIconSize.x;
+            if ((m_fixedIconSize.x == 0) && (m_iconCount > 0))
             {
                 // Rescan all items to find the largest icon
                 for (const auto& item : m_items)
@@ -1150,6 +1169,48 @@ namespace tgui
     unsigned int ListView::getHorizontalScrollbarValue() const
     {
         return m_horizontalScrollbar->getValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setFixedIconSize(Vector2f fixedIconSize)
+    {
+        if (fixedIconSize == m_fixedIconSize)
+            return;
+
+        m_fixedIconSize = fixedIconSize;
+        m_maxIconWidth = m_fixedIconSize.x; // If 0 then it will be changed below
+
+        if (m_iconCount == 0)
+            return;
+
+        for (auto& item : m_items)
+        {
+            if (!item.icon.isSet())
+                continue;
+
+            const Texture& texture = item.icon.getTexture();
+
+            Vector2f iconSize;
+            if ((m_fixedIconSize.x != 0) && (m_fixedIconSize.y != 0))
+                iconSize = m_fixedIconSize;
+            else if ((m_fixedIconSize.y != 0) && (m_fixedIconSize.y != texture.getImageSize().y))
+                iconSize = {static_cast<float>(texture.getImageSize().x) / texture.getImageSize().y * m_fixedIconSize.y, static_cast<float>(m_fixedIconSize.y)};
+            else if ((m_fixedIconSize.x != 0) && (m_fixedIconSize.x != texture.getImageSize().x))
+                iconSize = {static_cast<float>(m_fixedIconSize.x), static_cast<float>(texture.getImageSize().y) / texture.getImageSize().x * m_fixedIconSize.x};
+            else
+                iconSize = Vector2f{texture.getImageSize()};
+
+            item.icon.setSize(iconSize);
+            m_maxIconWidth = std::max(m_maxIconWidth, iconSize.x);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f ListView::getFixedIconSize() const
+    {
+        return m_fixedIconSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1662,6 +1723,9 @@ namespace tgui
         if (m_multiSelect)
             node->propertyValuePairs["MultiSelect"] = std::make_unique<DataIO::ValueNode>("true");
 
+        if ((m_fixedIconSize.x != 0) || (m_fixedIconSize.y != 0))
+            node->propertyValuePairs["FixedIconSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_fixedIconSize.x) + "," + String::fromNumber(m_fixedIconSize.y) + ")");
+
         if (!m_selectedItems.empty())
         {
             auto it = m_selectedItems.cbegin();
@@ -1777,6 +1841,9 @@ namespace tgui
             setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
         if (node->propertyValuePairs["MultiSelect"])
             setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["MultiSelect"]->value).getBool());
+
+        if (node->propertyValuePairs["FixedIconSize"])
+            setFixedIconSize(Vector2f(node->propertyValuePairs["FixedIconSize"]->value));
 
         if (node->propertyValuePairs["SelectedItemIndices"])
         {
@@ -2110,6 +2177,11 @@ namespace tgui
         }
 
         updateSelectedAndhoveredItemColors();
+
+        if (!m_selectedItems.empty())
+            onItemSelect.emit(this, *m_selectedItems.begin());
+        else
+            onItemSelect.emit(this, -1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2121,6 +2193,11 @@ namespace tgui
             setItemColor(item, m_textColorHoverCached);
         else
             setItemColor(item, m_textColorCached);
+
+        if (!m_selectedItems.empty())
+            onItemSelect.emit(this, *m_selectedItems.begin());
+        else
+            onItemSelect.emit(this, -1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2255,31 +2332,26 @@ namespace tgui
 
     void ListView::updateHorizontalScrollbarMaximum()
     {
-        unsigned int maxWidth = 0;
+        float maxWidth = 0;
 
         if (!m_headerVisible || m_columns.empty())
-            maxWidth = static_cast<unsigned int>(m_maxItemWidth);
+            maxWidth = m_maxItemWidth;
         else
         {
             float columnsWidth = 0;
             for (const auto& column : m_columns)
-            {
                 columnsWidth += column.width;
-            }
 
             if (m_expandLastColumn)
             {
-                maxWidth = static_cast<unsigned int>(columnsWidth - m_columns.back().width + ((m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth()))
-                    + std::max(m_columns.back().maxItemWidth, m_columns.back().width));
+                maxWidth = columnsWidth - m_columns.back().width + ((m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth()))
+                    + std::max(m_columns.back().maxItemWidth, m_columns.back().width);
             }
             else
-            {
-                maxWidth = static_cast<unsigned int>(columnsWidth - m_columns.back().width + (m_columns.size() * static_cast<float>(getTotalSeparatorWidth()))
-                    + m_columns.back().width);
-            }
+                maxWidth = columnsWidth + (m_columns.size() * static_cast<float>(getTotalSeparatorWidth()));
         }
 
-        m_horizontalScrollbar->setMaximum(maxWidth);
+        m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(maxWidth));
 
         updateScrollbars();
     }
@@ -2323,9 +2395,8 @@ namespace tgui
         const float columnHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
                                    - getCurrentHeaderHeight() - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 
-        // Draw the icons.
-        // If at least one icon is set then all items in the first column have to be shifted to make room for the icon.
-        if ((column == 0) && (m_iconCount > 0))
+        // Draw the icons
+        if ((column == 0) && (m_maxIconWidth > 0))
         {
             const Transform transformBeforeIcons = states.transform;
             target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}});

@@ -283,7 +283,7 @@ TEST_CASE("[Button]")
 
     SECTION("Saving and loading from file")
     {
-        button->setText("SomeText");
+        button->setText(U"SomeText \u2190");
         button->setTextSize(25);
 
         testSavingWidget("Button", button);

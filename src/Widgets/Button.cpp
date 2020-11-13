@@ -467,9 +467,9 @@ namespace tgui
     {
         if (m_autoSize)
         {
-            const float spaceAroundText = m_text.getSize().y;
+            const float spaceAroundText = m_text.getLineHeight();
             Widget::setSize({m_text.getSize().x + spaceAroundText + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                             m_text.getSize().y * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                             m_text.getLineHeight() * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
 
         m_bordersCached.updateParentSize(getSize());

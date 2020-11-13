@@ -168,6 +168,19 @@ namespace tgui
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the texture from an array of 32-bits RGBA pixels
+        ///
+        /// @param size       Width and height of the image to create
+        /// @param pixels     Pointer to array of size.x*size.y*4 bytes with RGBA pixels
+        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        ///
+        /// @return True on success, false if the backend failed to create the texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the id that was used to load the texture (for the default loader, the id is the filename)
         ///
         /// @return Id of the texture
