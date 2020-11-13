@@ -456,7 +456,7 @@ namespace tgui
 
     std::tuple<String, String, String> FileDialog::getListViewColumnCaptions() const
     {
-        return {m_listView->getColumnText(0), m_listView->getColumnText(1), m_listView->getColumnText(2)};
+        return std::make_tuple(m_listView->getColumnText(0), m_listView->getColumnText(1), m_listView->getColumnText(2));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

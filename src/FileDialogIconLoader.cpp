@@ -32,11 +32,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if !defined(TGUI_SYSTEM_WINDOWS) && !defined(TGUI_SYSTEM_LINUX)
+    // This struct is used to be able to use make_shared while still keeping the constructor protected.
+    struct MakeSharedFileDialogIconLoader : public FileDialogIconLoader {};
+
     std::shared_ptr<FileDialogIconLoader> FileDialogIconLoader::createInstance()
     {
         // Platform-specific implementations are found in other files. This implementation is only used on platforms
         // where loading the system icons is not (yet) supported.
-        return std::make_shared<FileDialogIconLoader>();
+        return std::make_shared<MakeSharedFileDialogIconLoader>();
     }
 #endif
 
