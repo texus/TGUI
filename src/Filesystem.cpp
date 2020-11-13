@@ -447,7 +447,7 @@ namespace tgui
             TGUI_EMPLACE_BACK(fileInfo, fileList)
             fileInfo.filename = filename;
             fileInfo.path = path / filename;
-            fileInfo.directory = (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+            fileInfo.directory = (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 
             fileInfo.modificationTime = FileTimeToUnixTime(entry.ftLastWriteTime);
             if (!fileInfo.directory)

@@ -193,7 +193,7 @@ namespace tgui
 
         if (m_threadStarted)
         {
-            assert(m_thread != nullptr);
+            TGUI_ASSERT(m_thread != nullptr, "Thead handle has to be valid if thread is running");
 
             // Abort the old thread that was still running.
             // We don't check the return type, if it differs from WAIT_OBJECT_0 then we have a big problem
@@ -429,7 +429,7 @@ namespace tgui
 
     DWORD WINAPI FileDialogIconLoaderWindows::loadIconsThread(void* parameter)
     {
-        assert(parameter != nullptr);
+        TGUI_ASSERT(parameter != nullptr, "Thread parameter can't be a nullptr");
         auto threadData = static_cast<ThreadData*>(parameter);
 
         threadData->icons.clear();
