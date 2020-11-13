@@ -26,7 +26,7 @@ jobs:
     script:
       - chmod +x tests/travis_linux_tests.sh
       - CXX=$COMPILER tests/travis_linux_tests.sh
-    after_success: bash <(curl -s https://codecov.io/bash) -x gcov-7 -a "-s /home/travis/build/texus/TGUI -pr"
+    after_success: bash <(curl -s https://codecov.io/bash) -x gcov-8 -a "-s /home/travis/build/texus/TGUI -pr"
 
   - stage: Cross-platform tests
     name: Linux (c++14)

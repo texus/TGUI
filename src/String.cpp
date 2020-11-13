@@ -198,6 +198,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool String::startsWith(const String& substring) const
+    {
+        if (substring.length() <= length())
+            return compare(0, substring.length(), substring) == 0;
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::endsWith(const String& substring) const
+    {
+        if (substring.length() <= length())
+            return compare(length() - substring.length(), substring.length(), substring) == 0;
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     String& String::replace(const String& searchFor, const String& replaceWith)
     {
         std::size_t step = replaceWith.length();

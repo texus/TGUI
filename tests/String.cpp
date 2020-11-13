@@ -1303,31 +1303,80 @@ TEST_CASE("[String]")
 
     SECTION("toLower")
     {
-        str = "aBCdEfgHIJ";
-        REQUIRE(str.toLower() == "abcdefghij");
+        str = "aBCdEfgHIJ \u20AC";
+        REQUIRE(str.toLower() == "abcdefghij \u20AC");
     }
 
     SECTION("toUpper")
     {
-        str = "aBCdEfgHIJ";
-        REQUIRE(str.toUpper() == "ABCDEFGHIJ");
+        str = "aBCdEfgHIJ \u20AC";
+        REQUIRE(str.toUpper() == "ABCDEFGHIJ \u20AC");
     }
 
-    SECTION("Helper functions")
+    SECTION("split")
     {
-        SECTION("isWhitespace")
-        {
-            REQUIRE(tgui::isWhitespace(' '));
-            REQUIRE(tgui::isWhitespace('\t'));
-            REQUIRE(tgui::isWhitespace('\r'));
-            REQUIRE(tgui::isWhitespace('\n'));
-            REQUIRE(!tgui::isWhitespace('x'));
+        std::vector<tgui::String> parts = tgui::String("alpha, bravo, charlie").split(',');
+        REQUIRE(parts.size() == 3);
+        REQUIRE(parts[0] == "alpha");
+        REQUIRE(parts[1] == " bravo");
+        REQUIRE(parts[2] == " charlie");
 
-            REQUIRE(tgui::isWhitespace(U' '));
-            REQUIRE(tgui::isWhitespace(U'\t'));
-            REQUIRE(tgui::isWhitespace(U'\r'));
-            REQUIRE(tgui::isWhitespace(U'\n'));
-            REQUIRE(!tgui::isWhitespace(U'x'));
-        }
+        parts = tgui::String("xyz").split(',');
+        REQUIRE(parts.size() == 1);
+        REQUIRE(parts[0] == "xyz");
+
+        parts = tgui::String("").split(',');
+        REQUIRE(parts.size() == 1);
+        REQUIRE(parts[0] == "");
+
+        parts = tgui::String("a|b").split('|');
+        REQUIRE(parts.size() == 2);
+        REQUIRE(parts[0] == "a");
+        REQUIRE(parts[1] == "b");
+    }
+
+    SECTION("join")
+    {
+        REQUIRE(tgui::String::join({"alpha", "bravo", "charlie"}, ", ") == "alpha, bravo, charlie");
+        REQUIRE(tgui::String::join({"xyz"}, ", ") == "xyz");
+        REQUIRE(tgui::String::join({""}, ", ") == "");
+        REQUIRE(tgui::String::join({}, ", ") == "");
+    }
+
+    SECTION("startsWith")
+    {
+        REQUIRE(tgui::String(U"abc\u20ACxyz").startsWith("ab"));
+        REQUIRE(tgui::String(U"abc\u20ACxyz").startsWith(U"abc\u20ACxyz"));
+        REQUIRE(tgui::String(U"abc\u20ACxyz").startsWith(""));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").startsWith(U"abc\u20ACxyz123"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").startsWith(U"123abc\u20ACxyz"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").startsWith("xyz"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").startsWith("o"));
+    }
+
+    SECTION("endsWith")
+    {
+        REQUIRE(tgui::String(U"abc\u20ACxyz").endsWith("yz"));
+        REQUIRE(tgui::String(U"abc\u20ACxyz").endsWith(U"abc\u20ACxyz"));
+        REQUIRE(tgui::String(U"abc\u20ACxyz").endsWith(""));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").endsWith(U"abc\u20ACxyz123"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").endsWith(U"123abc\u20ACxyz"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").endsWith("abc"));
+        REQUIRE(!tgui::String(U"abc\u20ACxyz").endsWith("o"));
+    }
+
+    SECTION("isWhitespace")
+    {
+        REQUIRE(tgui::isWhitespace(' '));
+        REQUIRE(tgui::isWhitespace('\t'));
+        REQUIRE(tgui::isWhitespace('\r'));
+        REQUIRE(tgui::isWhitespace('\n'));
+        REQUIRE(!tgui::isWhitespace('x'));
+
+        REQUIRE(tgui::isWhitespace(U' '));
+        REQUIRE(tgui::isWhitespace(U'\t'));
+        REQUIRE(tgui::isWhitespace(U'\r'));
+        REQUIRE(tgui::isWhitespace(U'\n'));
+        REQUIRE(!tgui::isWhitespace(U'x'));
     }
 }
