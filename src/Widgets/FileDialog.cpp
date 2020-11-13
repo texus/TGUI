@@ -519,6 +519,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void FileDialog::setIconLoader(std::shared_ptr<FileDialogIconLoader> iconLoader)
+    {
+        TGUI_ASSERT(iconLoader != nullptr, "Icon loader can't be a nullptr");
+        m_iconLoader = iconLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<FileDialogIconLoader> FileDialog::getIconLoader() const
+    {
+        return m_iconLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void FileDialog::keyPressed(const Event::KeyEvent& event)
     {
         if ((event.code == Event::KeyboardKey::Enter) && (!m_editBoxPath->isFocused()))

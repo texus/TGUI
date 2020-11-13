@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/Widgets/FileDialog.hpp>
+#include <TGUI/FileDialogIconLoader.hpp>
 
 TEST_CASE("[FileDialog]")
 {
@@ -127,6 +128,18 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getMultiSelect());
         dialog->setMultiSelect(false);
         REQUIRE(!dialog->getMultiSelect());
+    }
+
+    SECTION("Icon loader")
+    {
+        class CustomIconLoader : public tgui::FileDialogIconLoader {};
+        auto iconLoader = std::make_shared<CustomIconLoader>();
+
+        REQUIRE(dialog->getIconLoader() != nullptr);
+        REQUIRE(dialog->getIconLoader() != iconLoader);
+
+        dialog->setIconLoader(iconLoader);
+        REQUIRE(dialog->getIconLoader() == iconLoader);
     }
 
     testWidgetRenderer(dialog->getRenderer());
