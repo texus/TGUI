@@ -522,7 +522,7 @@ namespace tgui
                 m_selectedItems.erase(index);
                 setItemColor(index, m_textColorCached);
                 if (!m_selectedItems.empty())
-                    onItemSelect.emit(this, *m_selectedItems.begin());
+                    onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
                 else
                     onItemSelect.emit(this, -1);
             }
@@ -655,7 +655,7 @@ namespace tgui
         updateSelectedAndhoveredItemColors();
 
         if (!m_selectedItems.empty())
-            onItemSelect.emit(this, *m_selectedItems.begin());
+            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
         else
             onItemSelect.emit(this, -1);
     }
@@ -2179,7 +2179,7 @@ namespace tgui
         updateSelectedAndhoveredItemColors();
 
         if (!m_selectedItems.empty())
-            onItemSelect.emit(this, *m_selectedItems.begin());
+            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
         else
             onItemSelect.emit(this, -1);
     }
@@ -2195,7 +2195,7 @@ namespace tgui
             setItemColor(item, m_textColorCached);
 
         if (!m_selectedItems.empty())
-            onItemSelect.emit(this, *m_selectedItems.begin());
+            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
         else
             onItemSelect.emit(this, -1);
     }

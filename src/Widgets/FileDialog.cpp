@@ -1126,7 +1126,7 @@ namespace tgui
         {
             std::size_t filterIndex = 0;
             if (node->propertyValuePairs["SelectedFileTypeFilter"])
-                filterIndex = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["SelectedFileTypeFilter"]->value).getNumber();
+                filterIndex = static_cast<std::size_t>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["SelectedFileTypeFilter"]->value).getNumber());
 
             setFileTypeFilters(fileTypeFilters, filterIndex);
         }

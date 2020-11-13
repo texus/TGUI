@@ -94,12 +94,12 @@ namespace tgui
         {
             decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle = nullptr;
             std::vector<Filesystem::FileInfo> files; // List of files for which the thread should load the icons
-            std::vector<FileDialogIconLoaderWindowsIconData> icons; // List of loaded icons
+            std::vector<IconData> icons; // List of loaded icons
             HANDLE cancelEvent = nullptr;
             HANDLE finishedEvent = nullptr;
         };
 
-        static FileDialogIconLoaderWindowsIconData loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
+        static IconData loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
         static Texture loadIcon(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
         static DWORD WINAPI loadIconsThread(void* parameter);
 
@@ -117,7 +117,7 @@ namespace tgui
         HANDLE m_thread = nullptr;
         HANDLE m_cancelEvent = nullptr;
         HANDLE m_finishedEvent = nullptr;
-        FileDialogIconLoaderWindowsThreadData m_threadData;
+        ThreadData m_threadData;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,6 +227,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool FileDialogIconLoaderWindows::supportsSystemIcons() const
+    {
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool FileDialogIconLoaderWindows::hasGenericIcons() const
+    {
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::vector<Texture> FileDialogIconLoaderWindows::retrieveFileIcons()
     {
         std::vector<Texture> icons;
@@ -251,9 +265,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialogIconLoaderWindowsIconData FileDialogIconLoaderWindows::loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory)
+    FileDialogIconLoaderWindows::IconData FileDialogIconLoaderWindows::loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory)
     {
-        FileDialogIconLoaderWindowsIconData iconData;
+        IconData iconData;
         if (!dllGetFileInfoFuncHandle)
             return iconData;
 
@@ -416,7 +430,7 @@ namespace tgui
     DWORD WINAPI FileDialogIconLoaderWindows::loadIconsThread(void* parameter)
     {
         assert(parameter != nullptr);
-        auto threadData = static_cast<FileDialogIconLoaderWindowsThreadData*>(parameter);
+        auto threadData = static_cast<ThreadData*>(parameter);
 
         threadData->icons.clear();
         threadData->icons.reserve(threadData->files.size());

@@ -1073,7 +1073,7 @@ namespace tgui
             setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Title"]->value).getString());
 
         if (node->propertyValuePairs["TitleTextSize"])
-            setTitleTextSize(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TitleTextSize"]->value).getNumber());
+            setTitleTextSize(static_cast<unsigned int>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TitleTextSize"]->value).getNumber()));
 
         if (node->propertyValuePairs["KeepInParent"])
             setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["KeepInParent"]->value).getBool());
