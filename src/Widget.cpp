@@ -1008,10 +1008,13 @@ namespace tgui
         m_parent = parent;
 
         // Give the layouts another chance to find widgets to which it refers
-        m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-        m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-        m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-        m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+        if (parent)
+        {
+            m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
+            m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
+            m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
+            m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

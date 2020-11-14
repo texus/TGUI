@@ -1254,6 +1254,42 @@ TEST_CASE("[String]")
 #endif
     }
 
+    SECTION("attemptToInt")
+    {
+        int val = 0;
+        str = "123";
+        REQUIRE(str.attemptToInt(val));
+        REQUIRE(val == 123);
+
+        str = "text";
+        REQUIRE(!str.attemptToInt(val));
+        REQUIRE(val == 123);
+    }
+
+    SECTION("attemptToUInt")
+    {
+        unsigned int val = 0;
+        str = "123";
+        REQUIRE(str.attemptToUInt(val));
+        REQUIRE(val == 123);
+
+        str = "text";
+        REQUIRE(!str.attemptToUInt(val));
+        REQUIRE(val == 123);
+    }
+
+    SECTION("attemptToFloat")
+    {
+        float val = 0;
+        str = "0.5";
+        REQUIRE(str.attemptToFloat(val));
+        REQUIRE(val == 0.5f);
+
+        str = "text";
+        REQUIRE(!str.attemptToFloat(val));
+        REQUIRE(val == 0.5f);
+    }
+
     SECTION("toInt")
     {
         str = "123";

@@ -63,7 +63,8 @@ namespace tgui
 
     Layout::Layout(String expression)
     {
-        // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus)
+        // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus,
+        // where "-x" is parsed as "" - "x").
         expression = expression.trim();
         if (expression.empty())
             return;
@@ -91,43 +92,47 @@ namespace tgui
             }
             else
             {
+                std::size_t startIndex = 0;
+                auto lastDotIndex = expression.rfind('.');
+                if (lastDotIndex != String::npos)
+                    startIndex = lastDotIndex + 1;
+
+                // partAfterDot can be entire string if there is no dot, e.g. if layout is just "width" (widget refering to self)
+                const String& partAfterDot = expression.substr(startIndex);
+
                 // The expression might reference to a widget instead of being a constant
-                expression = expression.toLower();
-                if ((expression.substr(expression.size()-1) == "x")
-                 || (expression.substr(expression.size()-1) == "y")
-                 || (expression.substr(expression.size()-1) == "w") // width
-                 || (expression.substr(expression.size()-1) == "h") // height
-                 || (expression.size() >= 2 && expression.substr(expression.size()-2) == "iw") // width inside the container
-                 || (expression.size() >= 2 && expression.substr(expression.size()-2) == "ih") // height inside the container
-                 || (expression.size() >= 4 && expression.substr(expression.size()-4) == "left")
-                 || (expression.size() >= 3 && expression.substr(expression.size()-3) == "top")
-                 || (expression.size() >= 5 && expression.substr(expression.size()-5) == "width")
-                 || (expression.size() >= 6 && expression.substr(expression.size()-6) == "height")
-                 || (expression.size() >= 4 && expression.substr(expression.size()-4) == "size")
-                 || (expression.size() >= 3 && expression.substr(expression.size()-3) == "pos")
-                 || (expression.size() >= 8 && expression.substr(expression.size()-8) == "position")
-                 || (expression.size() >= 9 && expression.substr(expression.size()-9) == "innersize")
-                 || (expression.size() >= 10 && expression.substr(expression.size()-10) == "innerwidth")
-                 || (expression.size() >= 11 && expression.substr(expression.size()-11) == "innerheight"))
+                if ((partAfterDot == "x") || (partAfterDot == "left")
+                 || (partAfterDot == "y") || (partAfterDot == "top")
+                 || (partAfterDot == "w") || (partAfterDot == "width")
+                 || (partAfterDot == "h") || (partAfterDot == "height")
+                 || (partAfterDot == "iw") || (partAfterDot == "innerwidth") // width inside the container
+                 || (partAfterDot == "ih") || (partAfterDot == "innerheight") // height inside the container
+                 || (partAfterDot == "pos") || (partAfterDot == "position")
+                 || (partAfterDot == "size") || (partAfterDot == "innersize"))
                 {
                     // We can't search for the referenced widget yet as no widget is connected to the widget yet, so store the string for future parsing
                     m_boundString = expression;
                     m_operation = Operation::BindingString;
                 }
-                else if (expression.size() >= 5 && expression.substr(expression.size()-5) == "right")
+                else if (partAfterDot == "right")
                 {
                     *this = Layout{Operation::Plus,
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "left"),
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "width")};
                 }
-                else if (expression.size() >= 6 && expression.substr(expression.size()-6) == "bottom")
+                else if (partAfterDot == "bottom")
                 {
                     *this = Layout{Operation::Plus,
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "top"),
                                    std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
                 }
                 else // Constant value
-                    m_value = expression.toFloat();
+                {
+                    if (!expression.attemptToFloat(m_value))
+                    {
+                        TGUI_PRINT_WARNING("invalid value while parsing layout string '" << expression << "'.");
+                    }
+                }
             }
 
             return;
@@ -758,6 +763,7 @@ namespace tgui
             }
 
             // The referred widget was not found or there was something wrong with the string
+            TGUI_PRINT_WARNING("failed to find bound widget in expression '" << expression << "'.");
             return;
         }
 

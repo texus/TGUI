@@ -60,80 +60,101 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int String::toInt(int defaultValue) const
+    bool String::attemptToInt(int& result) const
     {
         const std::string ansiStr = toAnsiString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
-        int value;
-        const char* cstr = ansiStr.c_str();
-        if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
-            return value;
-        else
-            return defaultValue;
+        return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
 #else
         try
         {
-            return std::stoi(ansiStr);
+            result = std::stoi(ansiStr);
+            return true;
         }
         catch (const std::exception&)
         {
-            return defaultValue;
+            return false;
         }
 #endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::attemptToUInt(unsigned int& result) const
+    {
+        const std::string ansiStr = toAnsiString();
+
+#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+        return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
+#else
+        try
+        {
+            result = static_cast<unsigned int>(std::stoi(ansiStr));
+            return true;
+        }
+        catch (const std::exception&)
+        {
+            return false;
+        }
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::attemptToFloat(float& result) const
+    {
+        const std::string ansiStr = toAnsiString();
+
+#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+        return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
+#else
+        // We can't use std::stof because it always depends on the global locale
+        std::istringstream iss(ansiStr);
+        iss.imbue(std::locale::classic());
+
+        float value = 0;
+        iss >> value;
+
+        if (iss.fail())
+            return false;
+
+        result = value;
+        return true;
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int String::toInt(int defaultValue) const
+    {
+        int result;
+        if (attemptToInt(result))
+            return result;
+        else
+            return defaultValue;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int String::toUInt(unsigned int defaultValue) const
     {
-        const std::string ansiStr = toAnsiString();
-
-#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
-        unsigned int value;
-        const char* cstr = ansiStr.c_str();
-        if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
-            return value;
+        unsigned int result;
+        if (attemptToUInt(result))
+            return result;
         else
             return defaultValue;
-#else
-        try
-        {
-            return static_cast<unsigned int>(std::stoi(ansiStr));
-        }
-        catch (const std::exception&)
-        {
-            return defaultValue;
-        }
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float String::toFloat(float defaultValue) const
     {
-        const std::string ansiStr = toAnsiString();
-
-#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
-        float value;
-        const char* cstr = ansiStr.c_str();
-        if (std::from_chars(&cstr[0], &cstr[ansiStr.length()], value).ec == std::errc{})
-            return value;
+        float result;
+        if (attemptToFloat(result))
+            return result;
         else
             return defaultValue;
-#else
-        // We can't use std::stof because it always depends on the global locale
-        std::istringstream iss(ansiStr);
-        iss.imbue(std::locale::classic());
-
-        float result = 0;
-        iss >> result;
-
-        if (iss.fail())
-            result = defaultValue;
-
-        return result;
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -95,9 +95,39 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to an integer
         ///
+        /// @param result  Integer value if the string contains a base 10 integer. Unmodified if string is invalid.
+        ///
+        /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool attemptToInt(int& result) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts the string to an unsigned int
+        ///
+        /// @param result  Unsigned integer value if the string contains a base 10 unsigned int. Unmodified if string is invalid.
+        ///
+        /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool attemptToUInt(unsigned int& result) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts the string to a float
+        ///
+        /// @param result  Float value if the string contains a float. Unmodified if string is invalid.
+        ///
+        /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool attemptToFloat(float& result) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts the string to an integer
+        ///
         /// @param defaultValue  Value to return if conversion fails
         ///
-        /// @brief Returns the integer value or defaultValue if the string didn't contain a base 10 integer
+        /// @return Returns the integer value or defaultValue if the string didn't contain a base 10 integer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int toInt(int defaultValue = 0) const;
 
@@ -107,7 +137,7 @@ namespace tgui
         ///
         /// @param defaultValue  Value to return if conversion fails
         ///
-        /// @brief Returns the unsigned integer value or defaultValue if the string didn't contain a base 10 unsigned integer
+        /// @return Returns the unsigned integer value or defaultValue if the string didn't contain a base 10 unsigned integer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int toUInt(unsigned int defaultValue = 0) const;
 
@@ -117,7 +147,7 @@ namespace tgui
         ///
         /// @param defaultValue  Value to return if conversion fails
         ///
-        /// @brief Returns the float value or defaultValue if the string didn't contain an float
+        /// @return Returns the float value or defaultValue if the string didn't contain an float
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float toFloat(float defaultValue = 0) const;
 
