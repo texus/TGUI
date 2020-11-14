@@ -1245,7 +1245,7 @@ namespace tgui
 
             const bool mouseOnSelectedItem = (m_selectedItems.find(m_hoveredItem) != m_selectedItems.end());
             if (!mouseOnSelectedItem)
-                m_possibleDoubleClick = -1;
+                m_possibleDoubleClick = false;
 
             if (m_multiSelect && keyboard::isMultiselectModifierPressed())
             {
@@ -1276,16 +1276,17 @@ namespace tgui
             }
 
             // Check if you double-clicked
-            if (m_possibleDoubleClick >= 0)
+            if (m_possibleDoubleClick)
             {
                 if (!m_selectedItems.empty())
-                    onDoubleClick.emit(this, m_possibleDoubleClick);
-                m_possibleDoubleClick = -1;
+                    onDoubleClick.emit(this, m_hoveredItem);
+
+                m_possibleDoubleClick = false;
             }
             else // This is the first click
             {
                 m_animationTimeElapsed = {};
-                m_possibleDoubleClick = m_hoveredItem;
+                m_possibleDoubleClick = true;
             }
         }
 
@@ -1377,13 +1378,13 @@ namespace tgui
             {
                 updateHoveredItemByMousePos(pos);
 
+                if (m_hoveredItem != oldHoveredItem)
+                    m_possibleDoubleClick = false;
+
                 // If the mouse is held down then select the item below the mouse
                 if ((m_hoveredItem != oldHoveredItem) && m_mouseDown && !m_verticalScrollbar->isMouseDown())
                 {
                     const bool mouseOnSelectedItem = (m_selectedItems.find(m_hoveredItem) != m_selectedItems.end());
-                    if (!mouseOnSelectedItem)
-                        m_possibleDoubleClick = -1;
-
                     if (m_multiSelect)
                     {
                         if (keyboard::isMultiselectModifierPressed())
@@ -1451,7 +1452,7 @@ namespace tgui
 
         updateHoveredItem(-1);
 
-        m_possibleDoubleClick = -1;
+        m_possibleDoubleClick = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2463,7 +2464,7 @@ namespace tgui
         if (m_animationTimeElapsed >= getDoubleClickTime())
         {
             m_animationTimeElapsed = {};
-            m_possibleDoubleClick = -1;
+            m_possibleDoubleClick = false;
         }
 
         return screenRefreshRequired;

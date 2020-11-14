@@ -548,10 +548,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool FileDialog::updateTime(Duration)
+    bool FileDialog::updateTime(Duration elapsedTime)
     {
+        const bool childWidgetUpdated = ChildWindow::updateTime(elapsedTime);
+
         if (!m_iconLoader->update())
-            return false;
+            return childWidgetUpdated;
 
         m_fileIcons = m_iconLoader->retrieveFileIcons();
 

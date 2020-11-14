@@ -1053,7 +1053,7 @@ namespace tgui
         Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Automatic;
 
         int m_mouseOnHeaderIndex = -1; // If the left mouse is down, this contains the index of the column if the mouse went down on the header
-        int m_possibleDoubleClick = -1; // Will be set to index of item after the first click, but gets reset to -1 when the second click does not occur soon after
+        int m_possibleDoubleClick = false; // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_autoScroll = true; // Should the list view scroll to the bottom when a new item is added?
 
         // Cached renderer properties
