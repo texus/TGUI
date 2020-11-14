@@ -83,6 +83,8 @@ namespace tgui
 
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, textureFormat, image->w, image->h));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, imageFormat, GL_UNSIGNED_BYTE, image->pixels));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
 
         m_image = image;
         return true;
@@ -107,6 +109,8 @@ namespace tgui
 
         TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, image->w, image->h));
         TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
 
         m_image = image;
         return true;
@@ -124,22 +128,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendTextureSDL::setSmooth(bool)
+    void BackendTextureSDL::setSmooth(bool smooth)
     {
-        // The SDL backend currently doesn't support changing the smooth flag
+        if (m_isSmooth == smooth)
+            return;
 
-        // One of the following lines can be used to set the interpolation on textures, but it only affects new textures and
-        // it affects all textures that are created afterwards so it might affect user code.
-        // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        m_isSmooth = smooth;
+
+        if (!m_textureId)
+            return;
+
+        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, false);
+
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendTextureSDL::isSmooth() const
     {
-        // The SDL backend doesn't support querying the smooth flag
-        return false;
+        return m_isSmooth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

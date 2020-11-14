@@ -49,7 +49,7 @@ namespace tgui
         ///
         /// @param texture    The texture object to store the loaded image
         /// @param filename   Filename of the image to load
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image
+        /// @param partRect   Load only part of the image. Use UIntRect(0, 0, 0, 0) if you want to load the full image.
         /// @param smooth     Enable smoothing on the texture
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
@@ -57,7 +57,7 @@ namespace tgui
         /// @return Texture data when loaded successfully, nullptr otherwise
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, const UIntRect& partRect = UIntRect(0, 0, 0, 0), bool smooth = false);
+        static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, const UIntRect& partRect, bool smooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

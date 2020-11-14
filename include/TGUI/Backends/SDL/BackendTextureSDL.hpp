@@ -121,6 +121,7 @@ namespace tgui
 
         SDL_Surface* m_image = nullptr;
         GLuint m_textureId = 0;
+        bool m_isSmooth = true;
     };
 }
 
