@@ -207,7 +207,7 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldTextureLoader = tgui::Texture::getTextureLoader();
 
-        auto func = [&](tgui::Texture& texture, const tgui::String& filename, const tgui::UIntRect&, bool) {
+        auto func = [&](tgui::Texture& texture, const tgui::String& filename, bool) {
             REQUIRE(filename == "resources/image.png");
             auto data = std::make_shared<tgui::TextureData>();
             data->backendTexture = std::make_shared<tgui::BackendTextureSFML>();

@@ -58,7 +58,6 @@ namespace tgui
     {
         std::shared_ptr<TextureData> data;
         String  filename;
-        UIntRect partRect;
         bool smooth = true;
         unsigned int users = 0;
     };

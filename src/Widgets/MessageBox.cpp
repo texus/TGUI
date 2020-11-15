@@ -68,11 +68,8 @@ namespace tgui
         m_buttons        {std::move(other.m_buttons)},
         m_label          {std::move(other.m_label)}
     {
-        for (auto& button : m_buttons)
-        {
-            button->onPress.disconnectAll();
-            button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
-        }
+        for (std::size_t i = 0; i < m_buttons.size(); ++i)
+            connectButtonPressSignal(i);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,14 +78,12 @@ namespace tgui
     {
         if (this != &other)
         {
-            MessageBox temp(other);
-            ChildWindow::operator=(temp);
+            ChildWindow::operator=(other);
+            onButtonPress     = other.onButtonPress;
+            m_loadedThemeFile = other.m_loadedThemeFile;
+            m_buttonClassName = other.m_buttonClassName;
 
-            std::swap(onButtonPress,     temp.onButtonPress);
-            std::swap(m_loadedThemeFile, temp.m_loadedThemeFile);
-            std::swap(m_buttonClassName, temp.m_buttonClassName);
-            std::swap(m_buttons,         temp.m_buttons);
-            std::swap(m_label,           temp.m_label);
+            identifyLabelAndButtons();
         }
 
         return *this;
@@ -108,11 +103,8 @@ namespace tgui
             m_buttons         = std::move(other.m_buttons);
             m_label           = std::move(other.m_label);
 
-            for (auto& button : m_buttons)
-            {
-                button->onPress.disconnectAll();
-                button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
-            }
+            for (std::size_t i = 0; i < m_buttons.size(); ++i)
+                connectButtonPressSignal(i);
         }
 
         return *this;
@@ -206,11 +198,11 @@ namespace tgui
         auto button = Button::create(caption);
         button->setRenderer(getSharedRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
 
+        connectButtonPressSignal(m_buttons.size() - 1);
         rearrange();
     }
 
@@ -359,13 +351,25 @@ namespace tgui
             if ((m_widgets[i]->getWidgetName().length() >= 32) && (m_widgets[i]->getWidgetName().substr(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
             {
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
-                button->onPress.disconnectAll();
-                button->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{ onButtonPress.emit(this, button->getText()); });
                 m_buttons.push_back(button);
+                connectButtonPressSignal(m_buttons.size() - 1);
             }
         }
 
         rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::connectButtonPressSignal(std::size_t buttonIndex)
+    {
+        TGUI_ASSERT(buttonIndex < m_buttons.size(), "Index shouldn't be out-of-range");
+        m_buttons[buttonIndex]->onPress.disconnectAll();
+        m_buttons[buttonIndex]->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+            // We can't copy button into this lambda because it would cause a memory leak.
+            // We can however copy the index and access the button from m_buttons via the copied this pointer.
+            onButtonPress.emit(this, m_buttons[buttonIndex]->getText());
+        });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

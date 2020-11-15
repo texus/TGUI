@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_RUNNER
 #include "Tests.hpp"
 
+#include <TGUI/TextureManager.hpp>
+
 int main (int argc, char * argv[])
 {
     // All tests are performed while a Gui object exists.
@@ -8,4 +10,9 @@ int main (int argc, char * argv[])
     tgui::GuiSFML gui;
 
     return Catch::Session().run(argc, argv);
+}
+
+TEST_CASE("[Memory leak test]")
+{
+    REQUIRE(tgui::TextureManager::getCachedImagesCount() == 0);
 }

@@ -49,7 +49,6 @@ namespace tgui
         ///
         /// @param texture    The texture object to store the loaded image
         /// @param filename   Filename of the image to load
-        /// @param partRect   Load only part of the image. Use UIntRect(0, 0, 0, 0) if you want to load the full image.
         /// @param smooth     Enable smoothing on the texture
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
@@ -57,7 +56,7 @@ namespace tgui
         /// @return Texture data when loaded successfully, nullptr otherwise
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, const UIntRect& partRect, bool smooth);
+        static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, bool smooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +77,17 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void removeTexture(std::shared_ptr<TextureData> textureDataToRemove);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Returns how many textures are stored in the texture manager
+        ///
+        /// @return Number of images in the texture manager
+        ///
+        /// This function is used in the tests to verify that there are no textures being leaked when the tests are finished.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static std::size_t getCachedImagesCount();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

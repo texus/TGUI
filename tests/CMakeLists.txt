@@ -1,5 +1,4 @@
 set(TEST_SOURCES
-    main.cpp
     Tests.cpp
     CompareFiles.cpp
     AbsoluteOrRelativeValue.cpp
@@ -67,6 +66,7 @@ set(TEST_SOURCES
     Widgets/TextArea.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
+    main.cpp  # Keep this one last
 )
 
 if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)

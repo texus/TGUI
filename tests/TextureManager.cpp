@@ -32,16 +32,20 @@ TEST_CASE("[TextureManager]")
 {
     std::streambuf *oldbuf = sf::err().rdbuf(0);
     tgui::Texture texture;
-    REQUIRE(tgui::TextureManager::getTexture(texture, "NonExistent.png") == nullptr);
+    REQUIRE(tgui::TextureManager::getTexture(texture, "NonExistent.png", true) == nullptr);
     sf::err().rdbuf(oldbuf);
 
     tgui::Texture texture1;
     tgui::Texture texture2;
-    std::shared_ptr<tgui::TextureData> textureData1 = tgui::TextureManager::getTexture(texture1, "resources/image.png");
-    std::shared_ptr<tgui::TextureData> textureData2 = tgui::TextureManager::getTexture(texture2, "resources/image.png");
+    tgui::Texture texture3;
+    std::shared_ptr<tgui::TextureData> textureData1 = tgui::TextureManager::getTexture(texture1, "resources/image.png", true);
+    std::shared_ptr<tgui::TextureData> textureData2 = tgui::TextureManager::getTexture(texture2, "resources/image.png", true);
+    std::shared_ptr<tgui::TextureData> textureData3 = tgui::TextureManager::getTexture(texture3, "resources/image.png", false);
     REQUIRE(textureData1 != nullptr);
     REQUIRE(textureData2 != nullptr);
+    REQUIRE(textureData3 != nullptr);
     REQUIRE(textureData1 == textureData2);
+    REQUIRE(textureData1 != textureData3);
 
     REQUIRE_THROWS_AS(tgui::TextureManager::copyTexture(nullptr), tgui::Exception);
     REQUIRE_THROWS_AS(tgui::TextureManager::copyTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
@@ -52,4 +56,6 @@ TEST_CASE("[TextureManager]")
     REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData1));
     REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData1));
     REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(textureData1), tgui::Exception);
+
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData3));
 }

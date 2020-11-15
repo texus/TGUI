@@ -172,13 +172,13 @@ namespace tgui
         if (id[0] != '/')
 #endif
         {
-            data = m_textureLoader(*this, getResourcePath() + id, partRect, smooth);
+            data = m_textureLoader(*this, getResourcePath() + id, smooth);
             if (!data)
                 throw Exception{"Failed to load '" + getResourcePath() + id + "'"};
         }
         else
         {
-            data = m_textureLoader(*this, id, partRect, smooth);
+            data = m_textureLoader(*this, id, smooth);
             if (!data)
                 throw Exception{"Failed to load '" + id + "'"};
         }

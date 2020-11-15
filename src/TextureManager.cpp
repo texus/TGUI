@@ -36,7 +36,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const String& filename, const UIntRect& partRect, bool smooth)
+    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const String& filename, bool smooth)
     {
         // Let the texture alert the texture manager when it is being copied or destroyed
         texture.setCopyCallback(&TextureManager::copyTexture);
@@ -49,45 +49,14 @@ namespace tgui
         if (imageIt != m_imageMap.end())
         {
             // Loop all our textures to find the one containing the image
-            auto matchOnPartRect = imageIt->second.end();
-            auto matchOnSmooth = imageIt->second.end();
             for (auto dataIt = imageIt->second.begin(); dataIt != imageIt->second.end(); ++dataIt)
             {
                 // We can reuse everything only if the image is loaded with the same settings
-                if ((dataIt->partRect == partRect) && (dataIt->smooth == smooth))
+                if (dataIt->smooth == smooth)
                 {
                     // The exact same texture is now used at multiple places
                     ++(dataIt->users);
                     return dataIt->data;
-                }
-                else if (dataIt->partRect == partRect)
-                    matchOnPartRect = dataIt;
-                else if (dataIt->smooth == smooth)
-                    matchOnSmooth = dataIt;
-            }
-
-            // We can still share some data on a partial match
-            if (!isSvg && ((matchOnPartRect != imageIt->second.end()) || (matchOnSmooth != imageIt->second.end())))
-            {
-                TGUI_EMPLACE_BACK(dataHolder, imageIt->second)
-                dataHolder.filename = filename;
-                dataHolder.users = 1;
-                dataHolder.partRect = partRect;
-                dataHolder.smooth = smooth;
-
-                if (matchOnPartRect != imageIt->second.end())
-                {
-                    // If only smooth is different then we can still share the image data
-                    dataHolder.data = std::make_shared<TextureData>(*matchOnPartRect->data);
-                    dataHolder.data->backendTexture->setSmooth(smooth);
-                    return dataHolder.data;
-                }
-
-                if (matchOnSmooth != imageIt->second.end())
-                {
-                    // If only the part rect is different then we can share both image and texture
-                    dataHolder.data = imageIt->second.front().data;
-                    return dataHolder.data;
                 }
             }
         }
@@ -101,7 +70,6 @@ namespace tgui
         TGUI_EMPLACE_BACK(dataHolder, imageIt->second)
         dataHolder.filename = filename;
         dataHolder.users = 1;
-        dataHolder.partRect = partRect;
         dataHolder.smooth = smooth;
         dataHolder.data = std::make_shared<TextureData>();
 
@@ -180,6 +148,13 @@ namespace tgui
         }
 
         throw Exception{"Trying to remove a texture that was not loaded by the TextureManager."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t TextureManager::getCachedImagesCount()
+    {
+        return m_imageMap.size();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
