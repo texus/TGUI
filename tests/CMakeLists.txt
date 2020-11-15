@@ -66,7 +66,6 @@ set(TEST_SOURCES
     Widgets/TextArea.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
-    main.cpp  # Keep this one last
 )
 
 if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
@@ -98,6 +97,8 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
         set(TEST_SOURCES ${NEW_TEST_SOURCES})
     endif()
 endif()
+
+set(TEST_SOURCES ${TEST_SOURCES} main.cpp) # Main file has to be last and can't be part of unity build
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
