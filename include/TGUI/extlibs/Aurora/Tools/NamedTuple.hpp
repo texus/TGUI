@@ -29,8 +29,8 @@
 #ifndef AURORA_NAMEDTUPLE_HPP
 #define AURORA_NAMEDTUPLE_HPP
 
-#include <TGUI/Aurora/Meta/Preprocessor.hpp>
-#include <TGUI/Aurora/Tools/Hash.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Preprocessor.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Hash.hpp>
 
 #include <tuple>
 

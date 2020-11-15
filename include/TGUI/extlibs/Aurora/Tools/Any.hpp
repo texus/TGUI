@@ -29,10 +29,10 @@
 #ifndef AURORA_ANY_HPP
 #define AURORA_ANY_HPP
 
-#include <TGUI/Aurora/Config.hpp>
-#include <TGUI/Aurora/Tools/Swap.hpp>
-#include <TGUI/Aurora/Tools/SafeBool.hpp>
-#include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Swap.hpp>
+#include <TGUI/extlibs/Aurora/Tools/SafeBool.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
 
 #include <typeindex>
 

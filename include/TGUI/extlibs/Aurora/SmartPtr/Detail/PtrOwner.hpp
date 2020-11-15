@@ -45,7 +45,7 @@
 #ifndef AURORA_PTROWNER_HPP
 #define AURORA_PTROWNER_HPP
 
-#include <TGUI/Aurora/Tools/NonCopyable.hpp>
+#include <TGUI/extlibs/Aurora/Tools/NonCopyable.hpp>
 
 #include <cassert>
 #include <utility>

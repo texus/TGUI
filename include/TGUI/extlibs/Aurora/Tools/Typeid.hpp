@@ -29,7 +29,7 @@
 #ifndef AURORA_TYPEID_HPP
 #define AURORA_TYPEID_HPP
 
-#include <TGUI/Aurora/Meta/Templates.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Templates.hpp>
 
 #include <typeindex>
 #include <type_traits>

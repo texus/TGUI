@@ -10,5 +10,4 @@ coverage:
 ignore:
 - tests/.*
 - examples/.*
-- include/TGUI/Aurora/.*
-- include/TGUI/nanosvg/.*
+- include/TGUI/extlibs/.*

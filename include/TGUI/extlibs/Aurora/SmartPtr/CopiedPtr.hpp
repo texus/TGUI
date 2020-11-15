@@ -29,11 +29,11 @@
 #ifndef AURORA_COPIEDPTR_HPP
 #define AURORA_COPIEDPTR_HPP
 
-#include <TGUI/Aurora/SmartPtr/ClonersAndDeleters.hpp>
-#include <TGUI/Aurora/SmartPtr/Detail/PtrOwner.hpp>
-#include <TGUI/Aurora/Tools/SafeBool.hpp>
-#include <TGUI/Aurora/Tools/Swap.hpp>
-#include <TGUI/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/ClonersAndDeleters.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/Detail/PtrOwner.hpp>
+#include <TGUI/extlibs/Aurora/Tools/SafeBool.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Swap.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
 
 #include <algorithm>
 #include <type_traits>

@@ -23,23 +23,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-// Contains preprocessor metaprograms for code generation of smart pointer makeXY() factories
+/// @file
+/// @brief Complete Dispatch module
 
-#ifndef AURORA_FACTORIES_HPP
-#define AURORA_FACTORIES_HPP
+#ifndef AURORA_MODULE_DISPATCH_HPP
+#define AURORA_MODULE_DISPATCH_HPP
 
-#include <TGUI/Aurora/Meta/Preprocessor.hpp>
+#include <TGUI/extlibs/Aurora/Dispatch/DispatchTraits.hpp>
+#include <TGUI/extlibs/Aurora/Dispatch/DoubleDispatcher.hpp>
+#include <TGUI/extlibs/Aurora/Dispatch/SingleDispatcher.hpp>
 
-
-#define AURORA_DETAIL_TYPENAME(n) typename A ## n
-#define AURORA_DETAIL_PARAMETER(n) A ## n && arg ## n
-#define AURORA_DETAIL_FORWARD_ARG(n) std::forward<A ## n>(arg ## n)
-
-#define AURORA_DETAIL_SMARTPTR_FACTORY(SmartPtr, factoryFunction, n)									\
-	template <typename T AURORA_PP_COMMA_IF(n) AURORA_PP_ENUMERATE_COMMA(n, AURORA_DETAIL_TYPENAME)>	\
-	SmartPtr<T> factoryFunction(AURORA_PP_ENUMERATE_COMMA(n, AURORA_DETAIL_PARAMETER))					\
-	{																									\
-		return SmartPtr<T>(new T( AURORA_PP_ENUMERATE_COMMA(n, AURORA_DETAIL_FORWARD_ARG) ));			\
-	}
-
-#endif // AURORA_FACTORIES_HPP
+#endif // AURORA_MODULE_DISPATCH_HPP

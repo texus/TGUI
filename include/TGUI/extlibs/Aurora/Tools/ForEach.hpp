@@ -29,7 +29,7 @@
 #ifndef AURORA_FOREACH_HPP
 #define AURORA_FOREACH_HPP
 
-#include <TGUI/Aurora/Meta/Preprocessor.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Preprocessor.hpp>
 
 
 // Preprocessor metaprogramming to ensure line-unique identifiers

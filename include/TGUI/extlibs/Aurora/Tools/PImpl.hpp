@@ -29,8 +29,8 @@
 #ifndef AURORA_PIMPL_HPP
 #define AURORA_PIMPL_HPP
 
-#include <TGUI/Aurora/Config.hpp>
-#include <TGUI/Aurora/Tools/Swap.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Swap.hpp>
 
 #include <type_traits> // std::aligned_storage
 

@@ -29,7 +29,7 @@
 #ifndef AURORA_HASH_HPP
 #define AURORA_HASH_HPP
 
-#include <TGUI/Aurora/Meta/Templates.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Templates.hpp>
 
 #include <functional>
 

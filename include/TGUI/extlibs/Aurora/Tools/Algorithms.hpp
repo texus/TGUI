@@ -29,7 +29,7 @@
 #ifndef AURORA_ALGORITHMS_HPP
 #define AURORA_ALGORITHMS_HPP
 
-#include <TGUI/Aurora/Tools/Swap.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Swap.hpp>
 
 #include <algorithm>
 #include <cassert>

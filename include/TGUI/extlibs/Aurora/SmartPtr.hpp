@@ -24,13 +24,13 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 /// @file
-/// @brief Complete Dispatch module
+/// @brief Complete SmartPtr module
 
-#ifndef AURORA_MODULE_DISPATCH_HPP
-#define AURORA_MODULE_DISPATCH_HPP
+#ifndef AURORA_MODULE_SMARTPTR_HPP
+#define AURORA_MODULE_SMARTPTR_HPP
 
-#include <TGUI/Aurora/Dispatch/DispatchTraits.hpp>
-#include <TGUI/Aurora/Dispatch/DoubleDispatcher.hpp>
-#include <TGUI/Aurora/Dispatch/SingleDispatcher.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/MakeUnique.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/ClonersAndDeleters.hpp>
 
-#endif // AURORA_MODULE_DISPATCH_HPP
+#endif // AURORA_MODULE_SMARTPTR_HPP

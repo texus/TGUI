@@ -29,12 +29,12 @@
 #ifndef AURORA_DOUBLEDISPATCHER_HPP
 #define AURORA_DOUBLEDISPATCHER_HPP
 
-#include <TGUI/Aurora/Dispatch/DispatchTraits.hpp>
-#include <TGUI/Aurora/Tools/NonCopyable.hpp>
-#include <TGUI/Aurora/Tools/Exceptions.hpp>
-#include <TGUI/Aurora/Tools/Hash.hpp>
-#include <TGUI/Aurora/Meta/Templates.hpp>
-#include <TGUI/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/Dispatch/DispatchTraits.hpp>
+#include <TGUI/extlibs/Aurora/Tools/NonCopyable.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Exceptions.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Hash.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Templates.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
 
 #include <unordered_map>
 #include <functional>

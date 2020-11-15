@@ -44,8 +44,8 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
-#include <TGUI/Aurora/Tools/Downcast.hpp>
+#include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
+#include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
 
 #include <unordered_set>
 

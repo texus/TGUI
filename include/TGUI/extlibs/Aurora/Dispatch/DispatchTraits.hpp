@@ -29,8 +29,8 @@
 /// @file
 /// @brief Class template aurora::DispatchTraits
 
-#include <TGUI/Aurora/Meta/Templates.hpp>
-#include <TGUI/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Templates.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
 
 #include <typeindex>
 #include <functional>

@@ -29,9 +29,9 @@
 #ifndef AURORA_TUPLE_HPP
 #define AURORA_TUPLE_HPP
 
-#include <TGUI/Aurora/Config.hpp>
-#include <TGUI/Aurora/Meta/Templates.hpp>
-#include <TGUI/Aurora/Meta/Variadic.hpp>
+#include <TGUI/extlibs/Aurora/Config.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Templates.hpp>
+#include <TGUI/extlibs/Aurora/Meta/Variadic.hpp>
 
 #include <tuple>
 
