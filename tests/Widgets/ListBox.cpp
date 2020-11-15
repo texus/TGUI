@@ -302,6 +302,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getAutoScroll());
     }
 
+    testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {
         auto container = tgui::Group::create({400.f, 300.f});
@@ -326,11 +327,6 @@ TEST_CASE("[ListBox]")
         listBox->addItem("Item 1");
         listBox->addItem("Item 2");
         listBox->addItem("Item 3");
-
-        SECTION("Widget")
-        {
-            testWidgetSignals(listBox);
-        }
 
         unsigned int itemSelectedCount = 0;
         unsigned int doubleClickedCount = 0;

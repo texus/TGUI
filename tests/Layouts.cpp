@@ -239,6 +239,23 @@ TEST_CASE("[Layouts]")
                 REQUIRE(height.getValue() == 30);
                 REQUIRE(size.getValue() == tgui::Vector2f(40, 30));
             }
+
+            SECTION("Bound widgets to string")
+            {
+                auto root = tgui::Panel::create({400, 300});
+
+                auto panel = tgui::Panel::create({300, 200});
+                root->add(panel, "Panel");
+
+                auto button1 = std::make_shared<tgui::Button>();
+                auto button2 = std::make_shared<tgui::Button>();
+                auto button3 = std::make_shared<tgui::Button>();
+                panel->add(button1, "b1");
+                panel->add(button2, "b2");
+
+                auto layout = bindRight(button1) + bindBottom(button2) + bindInnerWidth(panel) + bindInnerHeight(panel) + 10;
+                REQUIRE(layout.toString() == "((((b1.left + b1.width) + (b2.top + b2.height)) + Panel.innerwidth) + Panel.innerheight) + 10");
+            }
         }
     }
 
@@ -333,8 +350,11 @@ TEST_CASE("[Layouts]")
 
             REQUIRE(Layout("(5 + 3) * 2 - 1").toString() == "((5 + 3) * 2) - 1");
 
-            REQUIRE(Layout("xyz").getValue() == 0);
             REQUIRE(Layout("width").getValue() == 0);
+
+            std::streambuf *oldbuf = std::cerr.rdbuf(0);
+            REQUIRE(Layout("xyz").getValue() == 0);
+            std::cerr.rdbuf(oldbuf);
         }
 
         SECTION("bind functions")
@@ -362,8 +382,10 @@ TEST_CASE("[Layouts]")
             REQUIRE(button2->getSizeLayout().toString() == "(b1.size, b1.size)");
             REQUIRE(button2->getPositionLayout().toString() == "(b1.position, b1.position)");
 
+            std::streambuf *oldbuf = std::cerr.rdbuf(0);
             button2->setPosition({"b1.p"});
             REQUIRE(button2->getPosition() == tgui::Vector2f(0, 0));
+            std::cerr.rdbuf(oldbuf);
 
             button2->setPosition({"b1.pos"});
             REQUIRE(button2->getPosition() == tgui::Vector2f(40, 60));
@@ -381,8 +403,10 @@ TEST_CASE("[Layouts]")
             REQUIRE(button2->getSize() == tgui::Vector2f(340, 110));
             REQUIRE(button2->getSizeLayout().toString() == "(b1.left + b1.width, b1.top + b1.height)");
 
+            oldbuf = std::cerr.rdbuf(0);
             button2->setSize({"{@, #}"});
             REQUIRE(button2->getSize() == tgui::Vector2f(0, 0));
+            std::cerr.rdbuf(oldbuf);
 
             button2->setPosition({"parent.x"}, {"&.y"});
             REQUIRE(button2->getPosition() == tgui::Vector2f(10, 25));

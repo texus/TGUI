@@ -121,9 +121,18 @@ namespace tgui
     Container::Container(const Container& other) :
         Widget{other}
     {
-        // Copy all the widgets
+        // Widgets with layouts that refer to each other need to be added simultaneously.
+        // They all need to be in m_widgets before setParent is called on the first widget,
+        // which is why we can't just use call add(widget) for each widget.
+        m_widgets.reserve(other.m_widgets.size());
         for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
-            add(other.m_widgets[i]->clone(), other.m_widgets[i]->getWidgetName());
+            m_widgets.push_back(other.m_widgets[i]->clone());
+
+        for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
+        {
+            m_widgets[i]->setWidgetName(other.m_widgets[i]->getWidgetName());
+            widgetAdded(m_widgets[i]);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,11 +179,17 @@ namespace tgui
             // Remove all the old widgets
             Container::removeAllWidgets();
 
-            // Copy all the widgets
+            // Widgets with layouts that refer to each other need to be added simultaneously.
+            // They all need to be in m_widgets before setParent is called on the first widget,
+            // which is why we can't just use call add(widget) for each widget.
+            m_widgets.reserve(right.m_widgets.size());
+            for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
+                m_widgets.push_back(right.m_widgets[i]->clone());
+
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
             {
-                // Don't allow the 'add' function of a derived class to be called, since its members are not copied yet
-                Container::add(right.m_widgets[i]->clone(), right.m_widgets[i]->getWidgetName());
+                m_widgets[i]->setWidgetName(right.m_widgets[i]->getWidgetName());
+                widgetAdded(m_widgets[i]);
             }
         }
 
@@ -231,21 +246,10 @@ namespace tgui
     {
         TGUI_ASSERT(widgetPtr != nullptr, "Can't add nullptr to container");
 
-        if (widgetPtr->getParent())
-            widgetPtr->getParent()->remove(widgetPtr);
-
-        widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
         widgetPtr->setWidgetName(widgetName);
 
-        if (m_fontCached != Font::getGlobalFont())
-            widgetPtr->setInheritedFont(m_fontCached);
-
-        if (m_opacityCached < 1)
-            widgetPtr->setInheritedOpacity(m_opacityCached);
-
-        if (m_textSize != 0)
-            widgetPtr->setTextSize(m_textSize);
+        widgetAdded(widgetPtr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1245,6 +1249,28 @@ namespace tgui
         transform.scale(widget->getScale(), scaleOrigin);
         mousePos = transform.getInverse().transformPoint(mousePos);
         return mousePos + widget->getPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::widgetAdded(Widget::Ptr widgetPtr)
+    {
+        if (widgetPtr->getParent())
+        {
+            widgetPtr->getParent()->remove(widgetPtr);
+            TGUI_PRINT_WARNING("widget was already connected to a parent while being added to parent");
+        }
+
+        widgetPtr->setParent(this);
+
+        if (m_fontCached != Font::getGlobalFont())
+            widgetPtr->setInheritedFont(m_fontCached);
+
+        if (m_opacityCached < 1)
+            widgetPtr->setInheritedOpacity(m_opacityCached);
+
+        if (m_textSize != 0)
+            widgetPtr->setTextSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

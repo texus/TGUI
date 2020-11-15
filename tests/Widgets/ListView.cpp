@@ -491,6 +491,7 @@ TEST_CASE("[ListView]")
         tgui::getBackend()->setClipboard("");
     }
 
+    testWidgetSignals(listView);
     SECTION("Events / Signals")
     {
         auto root = std::make_shared<tgui::RootContainer>();
@@ -520,11 +521,6 @@ TEST_CASE("[ListView]")
         listView->addItem({"Item 1", "1,2"});
         listView->addItem({"Item 2", "2,2"});
         listView->addItem({"Item 3", "3,2"});
-
-        SECTION("Widget")
-        {
-            testWidgetSignals(listView);
-        }
 
         unsigned int itemSelectedCount = 0;
         unsigned int doubleClickedCount = 0;
