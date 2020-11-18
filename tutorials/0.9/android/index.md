@@ -10,8 +10,6 @@ The tutorial assumes that the Android SDK and Android NDK are already installed 
 
 You will need to use CMake in order to build TGUI. You can download the latest version [here](https://www.cmake.org/download/).
 
-You will also need [gradle](https://gradle.org) to build the apk files.
-
 The TGUI source code can be downloaded from the [download page](/download).
 
 The SFML backend has to be used to run TGUI on Android, other backends are currently unsupported. SFML should have already been installed inside the NDK before building TGUI.
@@ -43,7 +41,7 @@ make install
 
 To test if everything is working, you can build the example code.
 
-Open the `TGUI/example/android` folder. Add a "local.properties" file with the following contents, specifying the android SDK and NDK paths:
+Open the `TGUI/examples/android` folder. Add a "local.properties" file with the following contents, specifying the android SDK and NDK paths:
 ```bash
 sdk.dir=/path/to/android-sdk
 ndk.dir=/path/to/android-ndk
@@ -51,16 +49,16 @@ ndk.dir=/path/to/android-ndk
 
 Make sure to check the `abiFilters` in `app/build.gradle` and `APP_ABI` in `app/src/main/jni/Application.mk` inside the android example folder, they have to match the `CMAKE_ANDROID_ARCH_ABI` that was passed to cmake. The error that TGUI.hpp is not found can mean that this value is wrong.
 
-Now you should be able to build project with gradle by running the following from the command line:
+Now you should be able to build project with gradle by running the following from the command line in the `TGUI/examples/android` directory:
 ```bash
-gradle build
+./gradlew build
 ```
 
-If this results in an error stating `Could not open terminal for stdout: could not get termcap entry` then set the TERM variable to dumb (e.g. run `TERM=dumb gradle build` on Linux).
+If this results in an error stating `Could not open terminal for stdout: could not get termcap entry` then set the TERM variable to dumb (e.g. run `TERM=dumb ./gradlew build` on Linux).
 
 If all goes well then you can now install the apk to a device (or a running simulator) by running
 ```bash
-gradle installDebug
+./gradlew installDebug
 ```
 
 
@@ -73,7 +71,7 @@ LOCAL_SHARED_LIBRARIES += tgui
 
 You also have to import TGUI in that file. Importing SFML is not needed as TGUI will already do that for you.
 ```bash
-$(call import-module,tgui)
+$(call import-module, third_party/tgui)
 ```
 
 In Application.mk you must enable exceptions and RTTI, add the tgui-activity module and make sure you use c++14 or higher.
@@ -84,7 +82,7 @@ APP_CPPFLAGS += -fexceptions -frtti -std=c++14
 APP_MODULES := sfml-activity tgui-activity your-program
 ```
 
-Finally you have to load the tgui-activity so that it can load the tgui library. You do that by having the following in your AndroidManifest.xml file. The order is important, you must load SFML before TGUI.
+Finally you have to load the tgui-activity so that it can load the tgui library. You do that by having the following in your AndroidManifest.xml file (inside the activity element). The order is important, you must load SFML before TGUI. The `your-program` name should match the LOCAL_MODULE value in Android.mk.
 ```bash
 <meta-data android:name="android.app.lib_name" android:value="sfml-activity" />
 <meta-data android:name="sfml.app.lib_name" android:value="tgui-activity" />
