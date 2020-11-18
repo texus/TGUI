@@ -30,17 +30,20 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton::RadioButton()
+    RadioButton::RadioButton(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "RadioButton";
         m_text.setFont(m_fontCached);
 
-        m_renderer = aurora::makeCopied<RadioButtonRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<RadioButtonRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                 m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                     m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

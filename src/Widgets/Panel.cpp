@@ -31,22 +31,25 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel(const Layout2d& size)
+    Panel::Panel(const char* typeName, bool initRenderer) :
+        Group{typeName, false}
     {
-        m_type = "Panel";
         m_isolatedFocus = true;
 
-        m_renderer = aurora::makeCopied<PanelRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-        setSize(size);
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<PanelRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Ptr Panel::create(Layout2d size)
     {
-        return std::make_shared<Panel>(size);
+        auto panel = std::make_shared<Panel>();
+        panel->setSize(size);
+        return panel;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

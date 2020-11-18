@@ -47,24 +47,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// @internal
+        /// @brief Constructor
+        /// @param typeName     Type of the widget
+        /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
+        /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SpinControl(float min = 0.0f, float max = 10.0f, float value = 0.0f, unsigned decimal = 0, float step = 1.0f);
+        SpinControl(const char* typeName = "SpinControl", bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new spin button widget
         ///
-        /// @param min  The minimum value of the spin control
-        /// @param max  The maximum value of the spin control
-        /// @param value  Initial value
-        /// @param decimal  Number of decimal places to display
-        /// @param step  Increment value
+        /// @param min     The minimum value of the spin control
+        /// @param max     The maximum value of the spin control
+        /// @param value   Initial value
+        /// @param decimal Number of decimal places to display
+        /// @param step    Increment value
         ///
         /// @return The new spin control
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SpinControl::Ptr create(float min = 0.0f, float max = 10.0f, float value = 0.0f,
-            unsigned decimal = 0, float step = 1.0f);
+        static SpinControl::Ptr create(float min = 0.0f, float max = 10.0f, float value = 0.0f, unsigned int decimal = 0, float step = 1.0f);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +210,7 @@ namespace tgui
         ///
         /// The default value is 0, which means that the value has to be an integer.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setDecimalPlaces(unsigned decimalPlaces);
+        void setDecimalPlaces(unsigned int decimalPlaces);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +220,7 @@ namespace tgui
         ///
         /// The default value is 0, which means that the value has to be an integer.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned getDecimalPlaces() const;
+        unsigned int getDecimalPlaces() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +277,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        unsigned m_decimalPlaces;
+        unsigned int m_decimalPlaces = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:

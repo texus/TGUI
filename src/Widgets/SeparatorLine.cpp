@@ -31,12 +31,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SeparatorLine::SeparatorLine()
+    SeparatorLine::SeparatorLine(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "SeparatorLine";
-
-        m_renderer = aurora::makeCopied<SeparatorLineRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<SeparatorLineRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

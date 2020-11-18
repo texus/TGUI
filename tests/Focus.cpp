@@ -234,7 +234,7 @@ TEST_CASE("[Focussing widgets]")
     outerPanel->add(buttonRegister);
 
     auto childWindow = tgui::ChildWindow::create("Window 1");
-    childWindow->setSize({100, 30});
+    childWindow->setClientSize({100, 30});
     childWindow->setPosition({10, 470});
     rootContainer->add(childWindow);
 
@@ -244,7 +244,7 @@ TEST_CASE("[Focussing widgets]")
     childWindow->add(childButton);
 
     auto emptyChildWindow = tgui::ChildWindow::create("Window 2");
-    emptyChildWindow->setSize({100, 30});
+    emptyChildWindow->setClientSize({100, 30});
     emptyChildWindow->setPosition({120, 470});
     rootContainer->add(emptyChildWindow);
 

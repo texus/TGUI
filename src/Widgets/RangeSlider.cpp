@@ -32,14 +32,16 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RangeSlider::RangeSlider()
+    RangeSlider::RangeSlider(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "RangeSlider";
-
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<RangeSliderRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<RangeSliderRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setSize(200, 16);
     }

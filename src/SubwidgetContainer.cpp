@@ -31,7 +31,8 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SubwidgetContainer::SubwidgetContainer()
+    SubwidgetContainer::SubwidgetContainer(const char* typeName, bool initRenderer) :
+        Widget{typeName, initRenderer}
     {
         m_draggableWidget = true;
     }

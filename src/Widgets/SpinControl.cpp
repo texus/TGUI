@@ -30,20 +30,12 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl::SpinControl(float min, float max, float value, unsigned decimal, float step) :
-        m_decimalPlaces(decimal)
+    SpinControl::SpinControl(const char* typeName, bool initRenderer) :
+        SubwidgetContainer{typeName, initRenderer}
     {
-        m_type = "SpinControl";
-
         m_spinButton = SpinButton::create();
         m_spinText = EditBox::create();
         m_spinText->setInputValidator(EditBox::Validator::Float);
-        setString(String(value));
-
-        m_spinButton->setMinimum(min);
-        m_spinButton->setMaximum(max);
-        m_spinButton->setValue(value);
-        m_spinButton->setStep(step);
 
         m_spinText->setSize(m_spinText->getSize().x, m_spinButton->getSize().y);
 
@@ -57,7 +49,14 @@ namespace tgui
 
     SpinControl::Ptr SpinControl::create(float min, float max, float value, unsigned decimal, float step)
     {
-        return std::make_shared<SpinControl>(min, max, value, decimal, step);
+        auto spinControl = std::make_shared<SpinControl>();
+        spinControl->setMinimum(min);
+        spinControl->setMaximum(max);
+        spinControl->setValue(value);
+        spinControl->setString(String(value));
+        spinControl->setDecimalPlaces(decimal);
+        spinControl->setStep(step);
+        return spinControl;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

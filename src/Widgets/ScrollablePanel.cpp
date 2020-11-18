@@ -35,18 +35,17 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::ScrollablePanel(const Layout2d& size, Vector2f contentSize) :
-        Panel{size}
+    ScrollablePanel::ScrollablePanel(const char* typeName, bool initRenderer) :
+        Panel{typeName, false}
     {
-        m_type = "ScrollablePanel";
-
         // Rotate the horizontal scrollbar
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
 
-        m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-        setContentSize(contentSize);
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +146,10 @@ namespace tgui
 
     ScrollablePanel::Ptr ScrollablePanel::create(Layout2d size, Vector2f contentSize)
     {
-        return std::make_shared<ScrollablePanel>(size, contentSize);
+        auto panel = std::make_shared<ScrollablePanel>();
+        panel->setSize(size);
+        panel->setContentSize(contentSize);
+        return panel;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

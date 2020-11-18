@@ -31,21 +31,23 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group(const Layout2d& size)
+    Group::Group(const char* typeName, bool initRenderer) :
+        Container{typeName, false}
     {
-        m_type = "Group";
-
-        m_renderer = aurora::makeCopied<GroupRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-        setSize(size);
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<GroupRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Group::Ptr Group::create(const Layout2d& size)
     {
-        return std::make_shared<Group>(size);
+        auto group = std::make_shared<Group>();
+        group->setSize(size);
+        return group;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

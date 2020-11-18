@@ -75,9 +75,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
+        /// @internal
+        /// @brief Constructor
+        /// @param typeName     Type of the widget
+        /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
+        /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget();
+        Widget(const char* typeName, bool initRenderer);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -1128,7 +1133,7 @@ namespace tgui
         Widget::Ptr m_toolTip = nullptr;
 
         // Renderer of the widget
-        aurora::CopiedPtr<WidgetRenderer> m_renderer = aurora::makeCopied<WidgetRenderer>();
+        aurora::CopiedPtr<WidgetRenderer> m_renderer = nullptr;
 
         // Show animations
         std::vector<std::shared_ptr<priv::Animation>> m_showAnimations;

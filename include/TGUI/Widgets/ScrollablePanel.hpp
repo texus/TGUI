@@ -46,14 +46,13 @@ namespace tgui
         typedef std::shared_ptr<const ScrollablePanel> ConstPtr; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        ///
-        /// @param size        Size of the panel
-        /// @param contentSize Size of the content area for which the scrollbars will appear if larger than the size
-        ///
-        /// When contentSize is set to (0,0), the content size is determined by the child widgets of the panel.
+        /// @internal
+        /// @brief Constructor
+        /// @param typeName     Type of the widget
+        /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
+        /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollablePanel(const Layout2d& size = {"100%", "100%"}, Vector2f contentSize = {0, 0});
+        ScrollablePanel(const char* typeName = "ScrollablePanel", bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

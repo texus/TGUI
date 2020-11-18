@@ -32,21 +32,24 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::ComboBox()
+    ComboBox::ComboBox(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "ComboBox";
         m_draggableWidget = true;
         m_text.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
         initListBox();
 
-        m_renderer = aurora::makeCopied<ComboBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ComboBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setSize({m_text.getLineHeight() * 10,
-                 m_text.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({m_text.getLineHeight() * 10,
+                     m_text.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

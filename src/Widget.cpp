@@ -131,9 +131,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Widget()
+    Widget::Widget(const char* typeName, bool initRenderer) :
+        m_type(typeName)
     {
-        m_renderer->subscribe(this, m_rendererChangedCallback);
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<WidgetRenderer>();
+            m_renderer->subscribe(this, m_rendererChangedCallback);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

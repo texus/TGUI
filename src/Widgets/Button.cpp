@@ -31,15 +31,17 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Button()
+    Button::Button(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "Button";
-        m_text.setFont(m_fontCached);
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ButtonRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        m_renderer = aurora::makeCopied<ButtonRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-        setTextSize(getGlobalTextSize());
+            m_text.setFont(m_fontCached);
+            setTextSize(getGlobalTextSize());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

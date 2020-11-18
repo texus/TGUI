@@ -40,9 +40,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::EditBox()
+    EditBox::EditBox(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "EditBox";
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection.setFont(m_fontCached);
         m_textAfterSelection.setFont(m_fontCached);
@@ -52,12 +52,15 @@ namespace tgui
 
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<EditBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<EditBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setSize({m_textFull.getLineHeight() * 10,
-                 m_textFull.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({m_textFull.getLineHeight() * 10,
+                     m_textFull.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

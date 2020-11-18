@@ -30,12 +30,10 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabContainer::TabContainer(const tgui::Layout2d& size) : m_index(-1)
+    TabContainer::TabContainer(const char* typeName, bool initRenderer) :
+        SubwidgetContainer{typeName, initRenderer}
     {
-        m_type = "TabContainer";
-        setSize(size);
         m_tabs = tgui::Tabs::create();
-        m_tabs->setSize({ size.x, m_tabs->getSize().y });
         m_container->add(m_tabs, "Tabs");
         init();
     }
@@ -44,7 +42,9 @@ namespace tgui
 
     TabContainer::Ptr TabContainer::create(const tgui::Layout2d& size)
     {
-        return std::make_shared<TabContainer>(size);
+        auto tabControl = std::make_shared<TabContainer>();
+        tabControl->setSize(size);
+        return tabControl;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +91,7 @@ namespace tgui
     {
         SubwidgetContainer::setSize(size);
 
+        m_tabs->setWidth(size.x);
         for (auto& ptr : m_panels)
             ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
     }
@@ -272,13 +273,12 @@ namespace tgui
 
     void TabContainer::init()
     {
-        m_tabs->onTabSelect([this]()
-            {
-                auto cur = m_tabs->getSelectedIndex();
-                select(cur);
-                if (m_tabs->getSelectedIndex() != m_index)
-                    m_tabs->select(m_index);
-            });
+        m_tabs->onTabSelect([this](){
+            auto cur = m_tabs->getSelectedIndex();
+            select(cur);
+            if (m_tabs->getSelectedIndex() != m_index)
+                m_tabs->select(m_index);
+        });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

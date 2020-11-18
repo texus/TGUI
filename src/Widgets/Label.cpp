@@ -33,13 +33,16 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Label()
+    Label::Label(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "Label";
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<LabelRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<LabelRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         m_scrollbar->setVisible(false);
         setTextSize(getGlobalTextSize());

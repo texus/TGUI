@@ -35,11 +35,10 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog::FileDialog() :
+    FileDialog::FileDialog(const char* typeName, bool initRenderer) :
+        ChildWindow{typeName, false},
         m_iconLoader(FileDialogIconLoader::createInstance())
     {
-        m_type = "FileDialog";
-
         setClientSize({600, 400});
 
         m_buttonBack = Button::create();
@@ -115,8 +114,11 @@ namespace tgui
         m_buttonForward->setText(U"\u2192");
         m_buttonUp->setText(U"\u2191");
 
-        m_renderer = aurora::makeCopied<FileDialogRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<FileDialogRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setFileTypeFilters({});
 

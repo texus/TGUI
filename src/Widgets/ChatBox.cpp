@@ -31,20 +31,23 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox::ChatBox()
+    ChatBox::ChatBox(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "ChatBox";
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<ChatBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ChatBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
-                 Text::getLineHeight(m_fontCached, m_textSize) * 8
-                 + Text::getExtraVerticalPadding(m_textSize)
-                 + m_paddingCached.getTop() + m_paddingCached.getBottom()
-                 + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
+                     Text::getLineHeight(m_fontCached, m_textSize) * 8
+                     + Text::getExtraVerticalPadding(m_textSize)
+                     + m_paddingCached.getTop() + m_paddingCached.getBottom()
+                     + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -130,12 +130,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker::ColorPicker()
+    ColorPicker::ColorPicker(const char* typeName, bool initRenderer) :
+        ChildWindow{typeName, false}
     {
-        m_type = "ColorPicker";
-
-        m_renderer = aurora::makeCopied<ColorPickerRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ColorPickerRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setTitleButtons(ChildWindow::TitleButton::None);
         Container::setTextSize(getGlobalTextSize());

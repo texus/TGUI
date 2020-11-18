@@ -35,9 +35,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextArea::TextArea()
+    TextArea::TextArea(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "TextArea";
         m_draggableWidget = true;
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection1.setFont(m_fontCached);
@@ -49,13 +49,16 @@ namespace tgui
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
         m_horizontalScrollbar->setVisible(false);
 
-        m_renderer = aurora::makeCopied<TextAreaRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<TextAreaRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
-                 10 * m_fontCached.getLineSpacing(m_textSize) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize) + Text::getExtraVerticalPadding(m_textSize)
-                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
+                     10 * m_fontCached.getLineSpacing(m_textSize) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize) + Text::getExtraVerticalPadding(m_textSize)
+                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

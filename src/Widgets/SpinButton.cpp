@@ -31,12 +31,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinButton::SpinButton()
+    SpinButton::SpinButton(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "SpinButton";
-
-        m_renderer = aurora::makeCopied<SpinButtonRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<SpinButtonRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setSize(20, 42);
     }

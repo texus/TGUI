@@ -51,21 +51,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow(const String& title, unsigned int titleButtons)
+    ChildWindow::ChildWindow(const char* typeName, bool initRenderer) :
+        Container{typeName, false}
     {
-        m_type = "ChildWindow";
         m_isolatedFocus = true;
         m_titleText.setFont(m_fontCached);
 
         setTitleTextSize(getGlobalTextSize());
         m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
 
-        m_renderer = aurora::makeCopied<ChildWindowRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ChildWindowRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTitle(title);
-        setTitleButtons(titleButtons);
-        setSize({400, 300});
+            setSize({400, 300});
+        }
 
         m_maximizeButton->onPress([this]{ onMaximize.emit(this); });
         m_minimizeButton->onPress([this]{ onMinimize.emit(this); });
@@ -76,7 +77,10 @@ namespace tgui
 
     ChildWindow::Ptr ChildWindow::create(const String& title, unsigned int titleButtons)
     {
-        return std::make_shared<ChildWindow>(title, titleButtons);
+        auto window = std::make_shared<ChildWindow>();
+        window->setTitle(title);
+        window->setTitleButtons(titleButtons);
+        return window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

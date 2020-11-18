@@ -33,21 +33,24 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListView::ListView()
+    ListView::ListView(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "ListView";
         m_draggableWidget = true;
 
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
 
-        m_renderer = aurora::makeCopied<ListViewRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ListViewRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTextSize(getGlobalTextSize());
-        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f));
-        setSize({m_itemHeight * 12,
-                 getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
-                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f));
+            setSize({m_itemHeight * 12,
+                     getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
+                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

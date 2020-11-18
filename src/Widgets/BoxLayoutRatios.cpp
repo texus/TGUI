@@ -31,8 +31,8 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BoxLayoutRatios::BoxLayoutRatios(const Layout2d& size) :
-        BoxLayout{size}
+    BoxLayoutRatios::BoxLayoutRatios(const char* typeName, bool initRenderer) :
+        BoxLayout{typeName, initRenderer}
     {
     }
 

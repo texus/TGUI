@@ -31,28 +31,31 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture()
+    Picture::Picture(const char* typeName, bool initRenderer) :
+        ClickableWidget{typeName, false}
     {
-        m_type = "Picture";
-
-        m_renderer = aurora::makeCopied<PictureRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<PictureRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const Texture& texture, bool transparentTexture) :
-        Picture{}
+    Picture::Ptr Picture::create()
     {
-        getRenderer()->setTexture(texture);
-        getRenderer()->setTransparentTexture(transparentTexture);
+        return std::make_shared<Picture>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Ptr Picture::create(const Texture& texture, bool fullyClickable)
+    Picture::Ptr Picture::create(const Texture& texture, bool transparentTexture)
     {
-        return std::make_shared<Picture>(texture, fullyClickable);
+        auto picture = std::make_shared<Picture>();
+        picture->getRenderer()->setTexture(texture);
+        picture->getRenderer()->setTransparentTexture(transparentTexture);
+        return picture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

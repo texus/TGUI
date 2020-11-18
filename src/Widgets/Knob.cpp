@@ -44,15 +44,18 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::Knob()
+    Knob::Knob(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "Knob";
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<KnobRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<KnobRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize(140, 140);
+            setSize(140, 140);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

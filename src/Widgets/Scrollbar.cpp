@@ -31,14 +31,16 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Scrollbar()
+    Scrollbar::Scrollbar(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "Scrollbar";
-
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<ScrollbarRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ScrollbarRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setSize(getDefaultWidth(), 160);
         m_sizeSet = false;

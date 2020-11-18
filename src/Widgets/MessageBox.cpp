@@ -31,12 +31,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::MessageBox()
+    MessageBox::MessageBox(const char* typeName, bool initRenderer) :
+        ChildWindow{typeName, false}
     {
-        m_type = "MessageBox";
-
-        m_renderer = aurora::makeCopied<MessageBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<MessageBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setTitleButtons(ChildWindow::TitleButton::None);
         setTextSize(getGlobalTextSize());

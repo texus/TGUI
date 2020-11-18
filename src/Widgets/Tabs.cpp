@@ -32,13 +32,16 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Tabs()
+    Tabs::Tabs(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "Tabs";
         m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
 
-        m_renderer = aurora::makeCopied<TabsRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<TabsRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setTextSize(getGlobalTextSize());
         setTabHeight(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom());

@@ -46,19 +46,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
+        /// @internal
+        /// @brief Constructor
+        /// @param typeName     Type of the widget
+        /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
+        /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Picture();
+        Picture(const char* typeName = "Picture", bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor to create the picture from a texture
+        /// @brief Creates a new empty picture widget
         ///
-        /// @param texture  The texture to load the picture from
-        /// @param transparentTexture  Are there transparent parts in the texture where the mouse events should be passed
-        ///                            to the widget behind the picture?
+        /// @return The new picture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Picture(const Texture& texture, bool transparentTexture = false);
+        static Picture::Ptr create();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +82,7 @@ namespace tgui
         /// auto picture3 = Picture::create(texture);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr create(const Texture& texture = {}, bool transparentTexture = false);
+        static Picture::Ptr create(const Texture& texture, bool transparentTexture = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

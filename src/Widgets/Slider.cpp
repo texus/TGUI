@@ -32,14 +32,16 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::Slider()
+    Slider::Slider(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "Slider";
-
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<SliderRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<SliderRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setSize(200, 16);
     }

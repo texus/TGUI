@@ -32,15 +32,18 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CheckBox::CheckBox()
+    CheckBox::CheckBox(const char* typeName, bool initRenderer) :
+        RadioButton{typeName, false}
     {
-        m_type = "CheckBox";
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<CheckBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        m_renderer = aurora::makeCopied<CheckBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-        setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                 m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                     m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

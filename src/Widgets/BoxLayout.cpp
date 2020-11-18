@@ -32,8 +32,8 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BoxLayout::BoxLayout(const Layout2d& size) :
-        Group{size}
+    BoxLayout::BoxLayout(const char* typeName, bool initRenderer) :
+        Group{typeName, initRenderer}
     {
     }
 

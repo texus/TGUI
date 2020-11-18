@@ -171,14 +171,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MenuBar::MenuBar() :
+    MenuBar::MenuBar(const char* typeName, bool initRenderer) :
+        Widget{typeName, false},
         m_menuWidgetPlaceholder(std::make_shared<MenuBarMenuPlaceholder>(this))
     {
-        m_type = "MenuBar";
         m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
 
-        m_renderer = aurora::makeCopied<MenuBarRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<MenuBarRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setTextSize(getGlobalTextSize());
         setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSize) * 4) + (2 * m_distanceToSideCached));
@@ -1535,6 +1538,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBarMenuPlaceholder::MenuBarMenuPlaceholder(MenuBar* menuBar) :
+        Widget{"MenuBarMenuPlaceholder", true},
         m_menuBar{menuBar}
     {
     }

@@ -32,20 +32,23 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    VerticalLayout::VerticalLayout(const Layout2d& size) :
-        BoxLayoutRatios{size}
+    VerticalLayout::VerticalLayout(const char* typeName, bool initRenderer) :
+        BoxLayoutRatios{typeName, false}
     {
-        m_type = "VerticalLayout";
-
-        m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     VerticalLayout::Ptr VerticalLayout::create(const Layout2d& size)
     {
-        return std::make_shared<VerticalLayout>(size);
+        auto layout = std::make_shared<VerticalLayout>();
+        layout->setSize(size);
+        return layout;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

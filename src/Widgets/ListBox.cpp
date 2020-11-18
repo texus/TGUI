@@ -31,14 +31,16 @@ namespace tgui
 {
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox::ListBox()
+    ListBox::ListBox(const char* typeName, bool initRenderer) :
+        Widget{typeName, false}
     {
-        m_type = "ListBox";
-
         m_draggableWidget = true;
 
-        m_renderer = aurora::makeCopied<ListBoxRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        if (initRenderer)
+        {
+            m_renderer = aurora::makeCopied<ListBoxRenderer>();
+            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+        }
 
         setTextSize(getGlobalTextSize());
         setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f));
