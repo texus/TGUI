@@ -6,7 +6,7 @@ breadcrumb: android
 
 ### Requirements
 
-The tutorial assumes that the Android SDK and Android NDK are already installed correctly. TGUI was tested up to NDK r18b, as SFML 2.5.1 didn't work out of the box with newer NDK versions.
+The tutorial assumes that the Android SDK and Android NDK are already installed correctly. TGUI was tested up to NDK r18b, as SFML 2.5.1 didn't work out of the box with newer NDK versions (it failed to find the GLES library).
 
 You will need to use CMake in order to build TGUI. You can download the latest version [here](https://www.cmake.org/download/).
 
@@ -17,14 +17,14 @@ The SFML backend has to be used to run TGUI on Android, other backends are curre
 
 ### Building the library
 
-Create a new folder inside the downloaded TGUI folder (e.g. called "build-android"). Open a terminal inside this folder and run the following command (with optionally a few changes as explained below).
+Create a new folder inside the downloaded TGUI folder (e.g. called "build-android-arm64-v8a"). Open a terminal inside this folder and run the following command (with optionally a few changes as explained below).
 ```bash
 cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=/path/to/ndk -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
 **CMAKE_ANDROID_NDK** has to be the path to the NDK (which will end in something like "ndk/18.1.5063045" if you installed the NDK using the sdkmanager).
 
-**CMAKE_ANDROID_ARCH_ABI** specifies the architecture to use. To use TGUI on real hardware you will need `arm64-v8a` (or `armeabi-v7a` if you still want to support 32-bit devices). To run TGUI on a simulator you will likely need `x86` (32-bit) or `x86_64` (64-bit), depending on which simulator you installed.
+**CMAKE_ANDROID_ARCH_ABI** specifies the architecture to use. To use TGUI on real hardware you will need `arm64-v8a` (or `armeabi-v7a` if you still want to support 32-bit devices). To run TGUI on a simulator you will likely need `x86` (32-bit) or `x86_64` (64-bit), depending on which simulator you installed. The architecture has to match the SFML libraries, so you may be limited to x86 and armeabi-v7a as SFML 2.5.1 (latest version at time of writing) doesn't contain 64-bit extlibs and thus doesn't support arm64-v8a or x86_64 out of the box.
 
 **CMAKE_BUILD_TYPE** chooses whether you want to build a Release or Debug library. The example code currently requires Debug libraries (due to hardcoded values).
 
