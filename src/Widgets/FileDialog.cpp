@@ -101,7 +101,7 @@ namespace tgui
         m_listView->setPosition({10, "#TGUI_INTERNAL$EditBoxPath#.y + #TGUI_INTERNAL$EditBoxPath#.height + 10"});
         m_listView->setSize({"100% - 20", "#TGUI_INTERNAL$EditBoxFilename#.y - #TGUI_INTERNAL$EditBoxFilename#.height - top - 10"});
 
-        m_listView->addColumn("Name", 330);
+        m_listView->addColumn("Name", 325);
         m_listView->addColumn("Size", 75, ListView::ColumnAlignment::Right);
         m_listView->addColumn("Modified", 145, ListView::ColumnAlignment::Right);
 

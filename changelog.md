@@ -50,6 +50,7 @@ TGUI 0.9-dev
 - Container now translates the widget position before calling draw function
 - Dragging scrollbar inside child window didn't work when mouse left child window
 - Removed all code that was marked as deprecated
+- Some other small changes that weren't added to the changelog
 
 Older Releases
 --------------
