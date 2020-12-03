@@ -58,7 +58,18 @@ namespace tgui
             if (image->format->Rmask == 0x000000ff)
                 imageFormat = GL_RGBA;
             else
+            {
+#if TGUI_USE_GLES
+                imageFormat = GL_RGBA;
+                SDL_Surface* surfaceBGRA = image;
+                image = SDL_ConvertSurfaceFormat(surfaceBGRA, SDL_PIXELFORMAT_RGBA32, 0);
+                SDL_FreeSurface(surfaceBGRA);
+                if (!image)
+                    return false;
+#else
                 imageFormat = GL_BGRA;
+#endif
+            }
         }
         else if (bpp == 24)
         {
@@ -66,7 +77,18 @@ namespace tgui
             if (image->format->Rmask == 0x000000ff)
                 imageFormat = GL_RGB;
             else
+            {
+#if TGUI_USE_GLES
+                imageFormat = GL_RGB;
+                SDL_Surface* surfaceBGR = image;
+                image = SDL_ConvertSurfaceFormat(surfaceBGR, SDL_PIXELFORMAT_RGB24, 0);
+                SDL_FreeSurface(surfaceBGR);
+                if (!image)
+                    return false;
+#else
                 imageFormat = GL_BGR;
+#endif
+            }
         }
         else
         {

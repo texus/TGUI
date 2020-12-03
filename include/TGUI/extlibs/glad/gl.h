@@ -27,8 +27,8 @@
 
 // Some defines and functions have been prefixed with "TGUI_" or "tgui_" in this file to prevent name collisions.
 
-#ifndef GLAD_GL_H_
-#define GLAD_GL_H_
+#ifndef TGUI_GLAD_GL_H_
+#define TGUI_GLAD_GL_H_
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -62,8 +62,8 @@
 extern "C" {
 #endif
 
-#ifndef GLAD_PLATFORM_H_
-#define GLAD_PLATFORM_H_
+#ifndef TGUI_GLAD_PLATFORM_H_
+#define TGUI_GLAD_PLATFORM_H_
 
 #ifndef GLAD_PLATFORM_WIN32
   #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
@@ -174,7 +174,7 @@ typedef GLADapiproc (*GLADuserptrloadfunc)(void *userptr, const char *name);
 typedef void (*GLADprecallback)(const char *name, GLADapiproc apiproc, int len_args, ...);
 typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...);
 
-#endif /* GLAD_PLATFORM_H_ */
+#endif /* TGUI_GLAD_PLATFORM_H_ */
 
 #define GL_ACTIVE_ATOMIC_COUNTER_BUFFERS 0x92D9
 #define GL_ACTIVE_ATTRIBUTES 0x8B89
@@ -3654,8 +3654,8 @@ GLAD_API_CALL int tgui_gladLoadGL( GLADloadfunc load);
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef GLAD_IMPL_UTIL_C_
-#define GLAD_IMPL_UTIL_C_
+#ifndef TGUI_GLAD_IMPL_UTIL_C_
+#define TGUI_GLAD_IMPL_UTIL_C_
 
 #ifdef _MSC_VER
 #define GLAD_IMPL_UTIL_SSCANF sscanf_s
@@ -3663,7 +3663,7 @@ GLAD_API_CALL int tgui_gladLoadGL( GLADloadfunc load);
 #define GLAD_IMPL_UTIL_SSCANF sscanf
 #endif
 
-#endif /* GLAD_IMPL_UTIL_C_ */
+#endif /* TGUI_GLAD_IMPL_UTIL_C_ */
 
 #ifdef __cplusplus
 extern "C" {

@@ -139,7 +139,7 @@ namespace tgui
 
     void Timer::setCallback(const std::function<void(std::shared_ptr<Timer>)>& callback)
     {
-        m_callback = [=]{ callback(shared_from_this()); };
+        m_callback = TGUI_LAMBDA_CAPTURE_EQ_THIS{ callback(shared_from_this()); };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

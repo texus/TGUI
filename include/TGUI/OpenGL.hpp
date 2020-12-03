@@ -27,7 +27,12 @@
 #define TGUI_OPEN_GL_HPP
 
 #include <TGUI/Config.hpp>
-#include <TGUI/extlibs/glad/gl.h>
+
+#if TGUI_USE_GLES
+    #include <TGUI/extlibs/glad/gles2.h>
+#else
+    #include <TGUI/extlibs/glad/gl.h>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
