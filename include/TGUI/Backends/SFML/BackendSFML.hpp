@@ -159,6 +159,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         String getClipboard() const override;
 
+#ifdef TGUI_SYSTEM_ANDROID
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Uses the AssetManager on Android to read a file and return its contents
+        ///
+        /// @param filename      Filename of the file to read
+        /// @param fileContents  Reference to empty string stream that will be filled with the contents of the file on success
+        ///
+        /// @return True if the file was successfully read. False on failure or if platform isn't Android.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool readFileFromAndroidAssets(const String& filename, std::stringstream& fileContents) const override;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the SFML target to which the gui will render and returns a new render target object to interact with

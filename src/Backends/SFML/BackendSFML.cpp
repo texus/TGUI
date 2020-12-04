@@ -36,6 +36,7 @@
     #error BackendSFML requires TGUI to be build with SFML integration
 #endif
 
+#include <SFML/Config.hpp>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Clipboard.hpp>
@@ -50,7 +51,13 @@
     #include <X11/cursorfont.h>
 #endif
 
-#include <SFML/Config.hpp>
+#ifdef TGUI_SYSTEM_ANDROID
+    #include <SFML/System/NativeActivity.hpp>
+    #include <android/asset_manager_jni.h>
+    #include <android/asset_manager.h>
+    #include <android/native_activity.h>
+    #include <android/configuration.h>
+#endif
 
 #if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5)
     #error BackendSFML requires at least SFML >= 2.5.0
@@ -205,6 +212,41 @@ namespace tgui
         return String(sf::Clipboard::getString());
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifdef TGUI_SYSTEM_ANDROID
+    bool BackendSFML::readFileFromAndroidAssets(const String& filename, std::stringstream& fileContents) const
+    {
+        ANativeActivity* activity = sf::getNativeActivity();
+
+        JNIEnv* env = 0;
+        activity->vm->AttachCurrentThread(&env, NULL);
+        jclass clazz = env->GetObjectClass(activity->clazz);
+
+        jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
+        jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
+        jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
+        AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
+        if (!assetManager)
+            return false;
+
+        AAsset* asset = AAssetManager_open(assetManager, filename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
+        if (!asset)
+            return false;
+
+        off_t assetLength = AAsset_getLength(asset);
+
+        auto buffer = std::make_unique<char[]>(assetLength + 1);
+        AAsset_read(asset, buffer.get(), assetLength);
+        buffer[assetLength] = 0;
+
+        fileContents << buffer.get();
+
+        AAsset_close(asset);
+
+        activity->vm->DetachCurrentThread();
+        return true;
+    }
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<BackendRenderTargetSFML> BackendSFML::createGuiRenderTarget(GuiSFML* gui, sf::RenderTarget& target)

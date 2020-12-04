@@ -49,7 +49,11 @@ namespace tgui
     {
         const GLchar* vertexShaderSource[] =
         {
+#if TGUI_USE_GLES
+            "#version 310 es\n"
+#else
             "#version 430 core\n"
+#endif
             "layout(location=0) uniform mat4 projectionMatrix;"
             "layout(location=0) in vec2 inPosition;\n"
             "layout(location=1) in vec4 inColor;\n"
@@ -65,7 +69,12 @@ namespace tgui
 
         const GLchar* fragmentShaderSource[] =
         {
+#if TGUI_USE_GLES
+            "#version 310 es\n"
+            "precision mediump float;"
+#else
             "#version 430 core\n"
+#endif
             "uniform sampler2D uTexture;"
             "in vec4 color;"
             "in vec2 texCoord;"

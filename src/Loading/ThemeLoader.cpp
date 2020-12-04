@@ -26,17 +26,10 @@
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Global.hpp>
+#include <TGUI/Backend.hpp>
 
 #include <sstream>
 #include <fstream>
-
-#ifdef TGUI_SYSTEM_ANDROID
-    #include <SFML/System/NativeActivity.hpp>
-    #include <android/asset_manager_jni.h>
-    #include <android/asset_manager.h>
-    #include <android/native_activity.h>
-    #include <android/configuration.h>
-#endif
 
 // Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
 #if defined _MSC_VER
@@ -243,35 +236,8 @@ namespace tgui
         // If the file does not start with a slash then load it from the assets
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {
-            ANativeActivity* activity = sf::getNativeActivity();
-
-            JNIEnv* env = 0;
-            activity->vm->AttachCurrentThread(&env, NULL);
-            jclass clazz = env->GetObjectClass(activity->clazz);
-
-            jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
-            jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
-            jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
-            AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
-            if (!assetManager)
-                throw Exception{"Failed to open theme file '" + fullFilename + "' because AAssetManager_fromJava returned a nullptr."};
-
-            AAsset* asset = AAssetManager_open(assetManager, fullFilename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
-            if (!asset)
+            if (!getBackend()->readFileFromAndroidAssets(fullFilename, contents))
                 throw Exception{"Failed to open theme file '" + fullFilename + "' from assets."};
-
-            off_t assetLength = AAsset_getLength(asset);
-
-            char* buffer = new char[assetLength + 1];
-            AAsset_read(asset, buffer, assetLength);
-            buffer[assetLength] = 0;
-
-            contents << buffer;
-
-            AAsset_close(asset);
-            delete[] buffer;
-
-            activity->vm->DetachCurrentThread();
         }
         else
 #endif

@@ -45,6 +45,12 @@
     #include <X11/cursorfont.h>
 #endif
 
+#ifdef TGUI_SYSTEM_ANDROID
+    #include <jni.h>
+    #include <android/asset_manager.h>
+    #include <android/asset_manager_jni.h>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -55,11 +61,11 @@ namespace tgui
     {
 #if TGUI_USE_GLES
         const int version = tgui_gladLoadGLES2(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
-        if (GLAD_VERSION_MAJOR(version) < 3)
-            throw Exception{"BackendSDL expects at least OpenGL ES 3.0"};
+        if ((TGUI_GLAD_VERSION_MAJOR(version) < 3) || ((TGUI_GLAD_VERSION_MAJOR(version) == 3) && TGUI_GLAD_VERSION_MINOR(version) < 1))
+            throw Exception{"BackendSDL expects at least OpenGL ES 3.1"};
 #else
         const int version = tgui_gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
-        if ((GLAD_VERSION_MAJOR(version) < 4) || ((GLAD_VERSION_MAJOR(version) == 4) && GLAD_VERSION_MINOR(version) < 3))
+        if ((TGUI_GLAD_VERSION_MAJOR(version) < 4) || ((TGUI_GLAD_VERSION_MAJOR(version) == 4) && TGUI_GLAD_VERSION_MINOR(version) < 3))
             throw Exception{"BackendSDL expects at least OpenGL 4.3"};
 #endif
     }
@@ -240,6 +246,37 @@ namespace tgui
             return "";
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifdef TGUI_SYSTEM_ANDROID
+    bool BackendSDL::readFileFromAndroidAssets(const String& filename, std::stringstream& fileContents) const
+    {
+        JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+        jobject activity = (jobject)SDL_AndroidGetActivity();
+        jclass clazz = env->GetObjectClass(activity);
+
+        jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
+        jobject assetManagerObject = env->CallObjectMethod(activity, methodID);
+        jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
+        AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
+        if (!assetManager)
+            return false;
+
+        AAsset* asset = AAssetManager_open(assetManager, filename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
+        if (!asset)
+            return false;
+
+        off_t assetLength = AAsset_getLength(asset);
+
+        auto buffer = std::make_unique<char[]>(assetLength + 1);
+        AAsset_read(asset, buffer.get(), assetLength);
+        buffer[assetLength] = 0;
+
+        fileContents << buffer.get();
+
+        AAsset_close(asset);
+        return true;
+    }
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<BackendRenderTargetSDL> BackendSDL::createGuiRenderTarget(GuiSDL* gui, SDL_Window* window)

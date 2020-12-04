@@ -227,6 +227,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Uses the AssetManager on Android to read a file and return its contents
+        ///
+        /// @param filename      Filename of the file to read
+        /// @param fileContents  Reference to empty string stream that will be filled with the contents of the file on success
+        ///
+        /// @return True if the file was successfully read. False on failure or if platform isn't Android.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool readFileFromAndroidAssets(const String& filename, std::stringstream& fileContents) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         bool m_destroyOnLastGuiDetatch = false;

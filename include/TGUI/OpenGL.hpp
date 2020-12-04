@@ -28,10 +28,19 @@
 
 #include <TGUI/Config.hpp>
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
 #if TGUI_USE_GLES
     #include <TGUI/extlibs/glad/gles2.h>
 #else
     #include <TGUI/extlibs/glad/gl.h>
+#endif
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
