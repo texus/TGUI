@@ -195,16 +195,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendSDL::openVirtualKeyboard(const FloatRect&)
+    void BackendSDL::openVirtualKeyboard(const FloatRect& rect)
     {
-        /// TODO
+        SDL_Rect inputRect;
+        inputRect.x = static_cast<int>(rect.left);
+        inputRect.y = static_cast<int>(rect.top);
+        inputRect.w = static_cast<int>(rect.width);
+        inputRect.h = static_cast<int>(rect.height);
+
+        SDL_StartTextInput();
+        SDL_SetTextInputRect(&inputRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendSDL::closeVirtualKeyboard()
     {
-        /// TODO
+        SDL_StopTextInput();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
