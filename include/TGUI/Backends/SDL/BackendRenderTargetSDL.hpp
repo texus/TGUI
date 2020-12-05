@@ -32,6 +32,7 @@
 
 struct SDL_Window;
 struct SDL_Rect;
+typedef int GLint;
 typedef unsigned int GLuint;
 
 namespace tgui
@@ -215,6 +216,7 @@ namespace tgui
         std::vector<std::pair<FloatRect, std::array<int, 4>>> m_clippingLayers;
 
         Transform m_projectionTransform;
+        GLint m_projectionMatrixUniformLocation = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

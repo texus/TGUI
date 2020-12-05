@@ -50,11 +50,12 @@ namespace tgui
         const GLchar* vertexShaderSource[] =
         {
 #if TGUI_USE_GLES
-            "#version 310 es\n"
+            "#version 300 es\n"
+            "uniform mat4 projectionMatrix;"
 #else
             "#version 430 core\n"
-#endif
             "layout(location=0) uniform mat4 projectionMatrix;"
+#endif
             "layout(location=0) in vec2 inPosition;\n"
             "layout(location=1) in vec4 inColor;\n"
             "layout(location=2) in vec2 inTexCoord;\n"
@@ -70,7 +71,7 @@ namespace tgui
         const GLchar* fragmentShaderSource[] =
         {
 #if TGUI_USE_GLES
-            "#version 310 es\n"
+            "#version 300 es\n"
             "precision mediump float;"
 #else
             "#version 430 core\n"
@@ -161,6 +162,11 @@ namespace tgui
         m_shaderProgram(createShaderProgram()),
         m_window(window)
     {
+#if TGUI_USE_GLES
+        // Giving it a fixed location in the shader was only supported by GLES 3.1 or newer while we still support GLES 3.0
+        m_projectionMatrixUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
+#endif
+
         createBuffers(m_vertexArray, m_vertexBuffer, m_indexBuffer);
 
         // Create a solid white 1x1 texture to pass to the shader when we aren't drawing a texture
@@ -518,7 +524,7 @@ namespace tgui
         finalTransform.roundPosition(); // Avoid blurry texts
         finalTransform = m_projectionTransform * finalTransform;
 
-        glUniformMatrix4fv(0, 1, GL_FALSE, finalTransform.getMatrix());
+        glUniformMatrix4fv(m_projectionMatrixUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
