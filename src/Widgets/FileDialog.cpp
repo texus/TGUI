@@ -29,6 +29,10 @@
 #include <map>
 #include <ctime>
 
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/WindowsInclude.hpp>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -584,6 +588,28 @@ namespace tgui
 
         m_filesInDirectory = Filesystem::listFilesInDirectory(path);
 
+#ifdef TGUI_SYSTEM_WINDOWS
+        if (path.asString().empty())
+        {
+            m_listView->setHeaderVisible(false);
+            m_listView->setShowVerticalGridLines(false);
+            m_listView->removeAllItems();
+            wchar_t logicalDrives[MAX_PATH];
+
+            if (GetLogicalDriveStringsW(MAX_PATH, logicalDrives))
+            {
+                wchar_t* drive = logicalDrives;
+                while (*drive)
+                {
+                    m_listView->setItemData(m_listView->addItem(Filesystem::Path(drive).asString()), true);
+                    drive += std::wcslen(drive) + 1;
+                }
+            }
+            m_filesInDirectory.clear();
+            return;
+        }
+#endif // TGUI_SYSTEM_WINDOWS
+
         // If only directories should be shown then remove the files from the list
         if (m_selectingDirectory)
         {
@@ -672,6 +698,11 @@ namespace tgui
             }
         });
 
+        if (!m_listView->getHeaderVisible())
+        {
+            m_listView->setHeaderVisible(true);
+            m_listView->setShowVerticalGridLines(true);
+        }
         m_listView->removeAllItems();
         for (const auto& item : items)
         {
@@ -869,7 +900,12 @@ namespace tgui
             historyChanged();
         });
         m_buttonUp->onPress([this]{
-            changePath(m_currentDirectory.getParentPath(), true);
+            auto parent = m_currentDirectory.getParentPath();
+#ifdef TGUI_SYSTEM_WINDOWS
+            if (parent.asString() == m_currentDirectory.asString())
+                parent = Filesystem::Path("");
+#endif // TGUI_SYSTEM_WINDOWS
+            changePath(parent, true);
         });
         m_editBoxPath->onReturnKeyPress([this]{
             changePath(Filesystem::Path(m_editBoxPath->getText()), true);
@@ -908,6 +944,13 @@ namespace tgui
 
             if (m_listView->getItemData<bool>(itemIndex))
             {
+#ifdef TGUI_SYSTEM_WINDOWS
+                if (m_currentDirectory.asString().empty())
+                {
+                    changePath(Filesystem::Path(m_listView->getItem(itemIndex)), true);
+                    return;
+                }
+#endif
                 changePath(m_currentDirectory / m_listView->getItem(itemIndex), true);
                 if (m_selectingDirectory)
                     m_editBoxFilename->setText(U"");
