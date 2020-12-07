@@ -16,6 +16,8 @@ SDL_TTF_PATH := $(LOCAL_PATH)/../SDL_ttf
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include $(SDL_PATH)/include $(SDL_IMAGE_PATH) $(SDL_TTF_PATH)
 
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+
 LOCAL_SRC_FILES := \
     $(subst $(LOCAL_PATH)/,, \
         $(wildcard $(LOCAL_PATH)/src/*.cpp) \
@@ -41,7 +43,7 @@ LOCAL_CFLAGS += \
 
 LOCAL_CPPFLAGS += -fexceptions -frtti -std=c++14
 
-LOCAL_LDLIBS := -landroid -lGLESv3
+LOCAL_LDLIBS := -landroid -lGLESv3 -llog
 
 # Don't strip debug symbols for debug libraries
 ifeq ($(NDK_DEBUG),1)
@@ -64,7 +66,7 @@ LOCAL_MODULE_FILENAME := libtgui-s
 LOCAL_CPPFLAGS += -fexceptions -frtti -std=c++14
 
 LOCAL_LDLIBS := 
-LOCAL_EXPORT_LDLIBS := -landroid -lGLESv3
+LOCAL_EXPORT_LDLIBS := -landroid -lGLESv3 -llog
 
 include $(BUILD_STATIC_LIBRARY)
 
