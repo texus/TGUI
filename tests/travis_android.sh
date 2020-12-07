@@ -40,7 +40,7 @@ cd build-android
 cmake -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$NDK_DIR -DCMAKE_ANDROID_ARCH_ABI=x86 -DCMAKE_ANDROID_STL_TYPE=c++_static -DCMAKE_BUILD_TYPE=Debug ..
 make -j2
 make install
-cd ../examples/android
+cd ../examples/android-sfml
 echo ndk.dir=$NDK_DIR >> local.properties
 ./gradlew build  # Gradle 4.1+ is required but Travis only has 4.0 right now, so use a wrapper instead of just running "gradle build"
 
