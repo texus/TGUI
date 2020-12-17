@@ -33,6 +33,7 @@
 #include "WidgetProperties/KnobProperties.hpp"
 #include "WidgetProperties/LabelProperties.hpp"
 #include "WidgetProperties/ListBoxProperties.hpp"
+#include "WidgetProperties/ListViewProperties.hpp"
 #include "WidgetProperties/PanelProperties.hpp"
 #include "WidgetProperties/PictureProperties.hpp"
 #include "WidgetProperties/ProgressBarProperties.hpp"
@@ -314,6 +315,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
     m_widgetProperties["Knob"] = std::make_unique<KnobProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
+    m_widgetProperties["ListView"] = std::make_unique<ListViewProperties>();
     m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
     m_widgetProperties["Picture"] = std::make_unique<PictureProperties>();
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
@@ -943,6 +945,7 @@ void GuiBuilder::loadToolbox()
         {"Knob", []{ return tgui::Knob::create(); }},
         {"Label", []{ return tgui::Label::create("Label"); }},
         {"ListBox", []{ return tgui::ListBox::create(); }},
+        {"ListView", []{ return tgui::ListView::create(); }},
         {"Panel", []{ return tgui::Panel::create({150, 150}); }},
         {"Picture", []{ return tgui::Picture::create("resources/DefaultPicture.png"); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
