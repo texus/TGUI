@@ -85,8 +85,6 @@ namespace tgui
 
     void BackendSDL::attachGui(GuiBase* gui)
     {
-        TGUI_ASSERT(m_guis.empty(), "BackendSDL currently only supports a single window and thus also a single Gui object");
-
         m_guis[gui] = {};
     }
 
