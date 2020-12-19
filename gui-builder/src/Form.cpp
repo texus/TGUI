@@ -26,11 +26,82 @@
 #include "Form.hpp"
 #include "GuiBuilder.hpp"
 
+// WidgetProperties are only included to allow importing 0.8 form files.
+// No new widgets need to be added here and this can be removed again in the future.
+#include "WidgetProperties/BitmapButtonProperties.hpp"
+#include "WidgetProperties/ButtonProperties.hpp"
+#include "WidgetProperties/ChatBoxProperties.hpp"
+#include "WidgetProperties/ChildWindowProperties.hpp"
+#include "WidgetProperties/ComboBoxProperties.hpp"
+#include "WidgetProperties/EditBoxProperties.hpp"
+#include "WidgetProperties/GroupProperties.hpp"
+#include "WidgetProperties/KnobProperties.hpp"
+#include "WidgetProperties/LabelProperties.hpp"
+#include "WidgetProperties/ListBoxProperties.hpp"
+#include "WidgetProperties/ListViewProperties.hpp"
+#include "WidgetProperties/PanelProperties.hpp"
+#include "WidgetProperties/PictureProperties.hpp"
+#include "WidgetProperties/ProgressBarProperties.hpp"
+#include "WidgetProperties/RadioButtonProperties.hpp"
+#include "WidgetProperties/RangeSliderProperties.hpp"
+#include "WidgetProperties/ScrollablePanelProperties.hpp"
+#include "WidgetProperties/ScrollbarProperties.hpp"
+#include "WidgetProperties/SliderProperties.hpp"
+#include "WidgetProperties/SpinButtonProperties.hpp"
+#include "WidgetProperties/SpinControlProperties.hpp"
+#include "WidgetProperties/TabsProperties.hpp"
+#include "WidgetProperties/TextAreaProperties.hpp"
+#include "WidgetProperties/TreeViewProperties.hpp"
+
 #include <stack>
 #include <cassert>
 #include <cmath>
+#include <fstream>
+#include <set>
 
 const static float MOVE_STEP = 10;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void importOldFormFileExtractValidProperties(std::set<tgui::String>& possibleProperties, const PropertyValueMap& propertyMap)
+{
+    for (const auto& pair : propertyMap)
+        possibleProperties.insert(pair.first);
+}
+
+static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO::Node>& parentNode, const std::set<tgui::String>& possibleProperties)
+{
+    for (auto& node : parentNode->children)
+    {
+        if (!node->children.empty())
+            importOldFormFileFixRendererProperties(node, possibleProperties);
+
+        auto nameSeparator = node->name.find('.');
+        auto widgetType = node->name.substr(0, nameSeparator);
+        if ((node->name != "Renderer") && (widgetType != "Renderer"))
+            continue;
+
+        auto oldPropertyValuePairs = std::move(node->propertyValuePairs);
+        node->propertyValuePairs.clear();
+        for (auto& property : oldPropertyValuePairs)
+        {
+            bool matchingPropertyFound = false;
+            for (const auto& validProperty : possibleProperties)
+            {
+                if (property.first.equalIgnoreCase(validProperty))
+                {
+                    node->propertyValuePairs[validProperty] = std::move(property.second);
+                    matchingPropertyFound = true;
+                    break;
+                }
+            }
+
+            // If the property is invalid then just keep the old value. It will give an error later.
+            if (!matchingPropertyFound)
+                node->propertyValuePairs[property.first] = std::move(property.second);
+        }
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -502,11 +573,96 @@ bool Form::load()
     {
         m_widgetsContainer->loadWidgetsFromFile(getFilename());
     }
-    catch (const tgui::Exception& e)
+    catch (const tgui::Exception&)
     {
-        // Failed to open file
-        std::cout << "Failed to load '" << getFilename() << "', reason: " << e.what() << std::endl;
-        return false;
+        // Attempt to import 0.8 form files
+        try
+        {
+            // Load the file in memory
+            tgui::String filenameInResources = getFilename();
+            if (!tgui::getResourcePath().empty())
+                filenameInResources = (tgui::Filesystem::Path(tgui::getResourcePath()) / getFilename()).asString();
+
+            std::ifstream in{filenameInResources.toAnsiString()};
+            if (!in.is_open())
+            {
+                // Failed to open file
+                std::cout << "Failed to load '" << getFilename() << "'" << std::endl;
+                return false;
+            }
+
+            std::stringstream inStream;
+            inStream << in.rdbuf();
+
+            // Parse the file from memory
+            auto rootNode = tgui::DataIO::parse(inStream);
+
+            // Construct a list of all existing renderer properties for all widgets.
+            // Since the renderers may be global in the form file, we can't know which
+            // widget they will be used it (without some effort), so instead we just
+            // get the properties for all widget types to match on.
+            std::set<tgui::String> possibleProperties;
+            importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Button")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Group")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Knob")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Label")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Panel")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Picture")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Slider")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
+            importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
+                tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
+
+            // Convert renderer properties from lowercase to the correct case-sensitive string
+            importOldFormFileFixRendererProperties(rootNode, possibleProperties);
+
+            // Recreate the changed file in memory
+            std::stringstream outStream;
+            tgui::DataIO::emit(rootNode, outStream);
+
+            // Try to load the modified file from memory
+            m_widgetsContainer->loadWidgetsFromStream(outStream);
+        }
+        catch (const tgui::Exception& e)
+        {
+            // Failed to open file
+            std::cout << "Failed to load '" << getFilename() << "', reason: " << e.what() << std::endl;
+            return false;
+        }
     }
 
     importLoadedWidgets(m_widgetsContainer);
