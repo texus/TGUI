@@ -39,3 +39,5 @@ E-mail: vdv_b@tgui.eu
 [![Discord](https://img.shields.io/badge/chat-on_discord-7389D8.svg?logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/Msf4vyx)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/texusius)
+
+[![Patreon](https://tgui.eu/resources/PatreonThin.png)](https://www.patreon.com/tgui)
