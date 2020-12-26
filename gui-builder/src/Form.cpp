@@ -78,7 +78,12 @@ static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO:
 
         auto nameSeparator = node->name.find('.');
         auto widgetType = node->name.substr(0, nameSeparator);
-        if ((node->name != "Renderer") && (widgetType != "Renderer"))
+
+        // Rename TextBox type to TextArea
+        if (widgetType == U"TextBox")
+            node->name = U"TextArea" + node->name.substr(nameSeparator);
+
+        if ((node->name != U"Renderer") && (widgetType != U"Renderer"))
             continue;
 
         auto oldPropertyValuePairs = std::move(node->propertyValuePairs);
