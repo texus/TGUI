@@ -606,6 +606,13 @@ void GuiBuilder::reloadProperties()
 
     if (selectedWidget)
     {
+        // If the widget isn't supported by the Gui Builder (i.e. it was manually placed in the form file), then don't try to create properties
+        if (m_widgetProperties.find(selectedWidget->ptr->getWidgetType()) == m_widgetProperties.end())
+        {
+            std::cout << "Widget of type '" << selectedWidget->ptr->getWidgetType() << "' can't be edited." << std::endl;
+            return;
+        }
+
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const tgui::String& value){
                 if (selectedWidget->name != value)
