@@ -58,13 +58,6 @@
 #include <stack>
 #include <map>
 
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <direct.h> // _getcwd
-    #define getcwd _getcwd
-#else
-    #include <unistd.h> // getcwd
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static const float EDIT_BOX_HEIGHT = 24;
@@ -113,25 +106,12 @@ namespace
                         continue;
                     }
 
-                    char* buffer = getcwd(nullptr, 0);
-                    if (buffer)
+                    const tgui::String absoluteFilename = (tgui::Filesystem::getCurrentWorkingDirectory()
+                        / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
+                    if ((absoluteFilename == themeIt->second.getTexture().getId())
+                     && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
                     {
-                        tgui::String workingDirectory = buffer;
-                        free(buffer);
-
-                        if (!workingDirectory.empty()
-                         && (workingDirectory[workingDirectory.size() - 1] != '/')
-                         && (workingDirectory[workingDirectory.size() - 1] != '\\'))
-                        {
-                            workingDirectory.push_back('/');
-                        }
-
-                        tgui::String absoluteFilename = workingDirectory + widgetPropertyValuePairs[themeIt->first].getTexture().getId();
-                        if ((absoluteFilename == themeIt->second.getTexture().getId())
-                         && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                 }
 
@@ -791,27 +771,14 @@ void GuiBuilder::closeForm(Form* form)
 
 void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad)
 {
-    auto filenameWindow = openWindowWithFocus();
-    filenameWindow->setTitle(title);
-    filenameWindow->setClientSize({400, 100});
-    filenameWindow->loadWidgetsFromFile("resources/forms/LoadFile.txt");
+    auto fileDialog = tgui::FileDialog::create(title, loadButtonCaption);
+    fileDialog->setPath((tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).getNormalForm());
+    fileDialog->setFilename(defaultFilename);
+    openWindowWithFocus(fileDialog);
 
-    auto editBoxFilename = filenameWindow->get<tgui::EditBox>("EditFilename");
-    auto buttonLoad = filenameWindow->get<tgui::Button>("BtnLoad");
-    auto buttonCancelLoadingImage = filenameWindow->get<tgui::Button>("BtnCancel");
-
-    buttonLoad->setText(loadButtonCaption);
-    editBoxFilename->setText(defaultFilename);
-    editBoxFilename->setFocused(true);
-
-    buttonCancelLoadingImage->onPress([=]{ filenameWindow->close(); });
-    buttonLoad->onPress([=]{
-        onLoad(editBoxFilename->getText());
-        filenameWindow->close();
-    });
-    editBoxFilename->onReturnKeyPress([=]{
-        onLoad(editBoxFilename->getText());
-        filenameWindow->close();
+    fileDialog->onFileSelect([onLoad](const std::vector<tgui::Filesystem::Path>& selectedFiles){
+        if (!selectedFiles.empty())
+            onLoad(selectedFiles[0].asString());
     });
 }
 
@@ -911,7 +878,9 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 
         addedRecentFile = true;
         m_menuBar->addMenuItem({"File", "Recent", recentFile});
-        m_menuBar->connectMenuItem({"File", "Recent", recentFile}, [this,recentFile]{ menuBarCallbackLoadRecent(recentFile); });
+        m_menuBar->connectMenuItem({"File", "Recent", recentFile}, [this,recentFile]{
+            tgui::Timer::scheduleCallback([this,recentFile]{ menuBarCallbackLoadRecent(recentFile); });
+        });
     }
     m_menuBar->setMenuItemEnabled({"File", "Recent"}, addedRecentFile);
 
@@ -1273,9 +1242,18 @@ void GuiBuilder::removePopupMenu()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::createNewForm(const tgui::String& filename)
+void GuiBuilder::createNewForm(tgui::String filename)
 {
-    if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / tgui::String(filename)))
+    // If the filename is an absolute path that contains the resource path then make it relative
+    const tgui::String basePath = (tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).asString();
+    if (filename.find(basePath) == 0)
+    {
+        filename.erase(0, basePath.length());
+        if ((filename[0] == '/') || (filename[0] == '\\'))
+            filename.erase(0, 1);
+    }
+
+    if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / filename))
     {
         auto panel = tgui::Panel::create({"100%", "100%"});
         panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
@@ -1305,8 +1283,17 @@ void GuiBuilder::createNewForm(const tgui::String& filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool GuiBuilder::loadForm(const tgui::String& filename)
+bool GuiBuilder::loadForm(tgui::String filename)
 {
+    // If the filename is an absolute path that contains the resource path then make it relative
+    const tgui::String basePath = (tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).getNormalForm().asString();
+    if (filename.find(basePath) == 0)
+    {
+        filename.erase(0, basePath.length());
+        if ((filename[0] == '/') || (filename[0] == '\\'))
+            filename.erase(0, 1);
+    }
+
     loadEditingScreen(filename);
 
     if (!m_selectedForm->load())

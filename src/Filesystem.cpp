@@ -198,6 +198,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Filesystem::Path Filesystem::Path::getNormalForm() const
+    {
+#ifdef TGUI_USE_STD_FILESYSTEM
+        return Path(m_path.lexically_normal());
+#else
+        Filesystem::Path newPath = *this;
+        for (std::size_t i = newPath.m_parts.size(); i > 0; --i)
+        {
+            if (newPath.m_parts[i-1] == U".")
+                newPath.m_parts.erase(newPath.m_parts.begin() + (i-1));
+            else if (m_parts[i-1] == U"..")
+            {
+                if (i > 1)
+                {
+                    newPath.m_parts.erase(newPath.m_parts.begin() + (i-2), newPath.m_parts.begin() + i);
+                    --i;
+                }
+                else
+                    newPath.m_parts.clear();
+            }
+        }
+
+        return newPath;
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef TGUI_SYSTEM_WINDOWS
     std::wstring Filesystem::Path::asNativeString() const
     {

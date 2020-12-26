@@ -21,7 +21,7 @@ Renderer.3 {
 
 Panel.MainPanel {
     Position = ((&.w - w) / 2, (&.h - h) / 2);
-    Size = (512, 370);
+    Size = (720, 500);
 
     Renderer {
         BackgroundColor = #E6E6E6;
@@ -30,7 +30,7 @@ Panel.MainPanel {
     }
 
     Panel.PnlNewForm {
-        Position = (270, 30);
+        Position = (374, 80);
         Size = (200, 124);
         Renderer = &2;
 
@@ -59,7 +59,7 @@ Panel.MainPanel {
 
     Label.Widget21 {
         AutoSize = true;
-        Position = (120, 180);
+        Position = (120, 230);
         ScrollbarPolicy = Never;
         Size = (102.2, 18);
         Text = "Recent forms";
@@ -75,7 +75,7 @@ Panel.MainPanel {
     }
 
     Picture.BtnDeleteRecentForm1 {
-        Position = (150, 210);
+        Position = (150, 260);
         Size = (16, 16);
         Visible = false;
 
@@ -87,7 +87,7 @@ Panel.MainPanel {
 
     Label.LblRecentForm1 {
         AutoSize = true;
-        Position = (171, 209);
+        Position = (171, 259);
         ScrollbarPolicy = Never;
         Size = (56.2, 18);
         Text = "form.txt";
@@ -98,7 +98,7 @@ Panel.MainPanel {
 
     Label.LblRecentForm2 {
         AutoSize = true;
-        Position = (171, 239);
+        Position = (171, 289);
         ScrollbarPolicy = Never;
         Size = (56.2, 18);
         Text = "form.txt";
@@ -109,7 +109,7 @@ Panel.MainPanel {
 
     Label.LblRecentForm3 {
         AutoSize = true;
-        Position = (171, 269);
+        Position = (171, 319);
         ScrollbarPolicy = Never;
         Size = (56.2, 18);
         Text = "form.txt";
@@ -120,7 +120,7 @@ Panel.MainPanel {
 
     Label.LblRecentForm5 {
         AutoSize = true;
-        Position = (171, 329);
+        Position = (171, 379);
         ScrollbarPolicy = Never;
         Size = (56.2, 18);
         Text = "form.txt";
@@ -131,7 +131,7 @@ Panel.MainPanel {
 
     Label.LblRecentForm4 {
         AutoSize = true;
-        Position = (171, 299);
+        Position = (171, 349);
         ScrollbarPolicy = Never;
         Size = (56.2, 18);
         Text = "form.txt";
@@ -141,7 +141,7 @@ Panel.MainPanel {
     }
 
     Picture.BtnDeleteRecentForm2 {
-        Position = (150, 240);
+        Position = (150, 290);
         Size = (16, 16);
         Visible = false;
 
@@ -152,7 +152,7 @@ Panel.MainPanel {
     }
 
     Picture.BtnDeleteRecentForm3 {
-        Position = (150, 270);
+        Position = (150, 320);
         Size = (16, 16);
         Visible = false;
 
@@ -163,7 +163,7 @@ Panel.MainPanel {
     }
 
     Picture.BtnDeleteRecentForm4 {
-        Position = (150, 300);
+        Position = (150, 350);
         Size = (16, 16);
         Visible = false;
 
@@ -174,7 +174,7 @@ Panel.MainPanel {
     }
 
     Picture.BtnDeleteRecentForm5 {
-        Position = (150, 330);
+        Position = (150, 380);
         Size = (16, 16);
         Visible = false;
 
@@ -186,7 +186,7 @@ Panel.MainPanel {
 
     Label.LblNoRecentFiles {
         AutoSize = true;
-        Position = (150, 210);
+        Position = (150, 260);
         ScrollbarPolicy = Never;
         Size = (95.2, 18);
         Text = "No recent files";
@@ -196,7 +196,7 @@ Panel.MainPanel {
     }
 
     Panel.PnlLoadForm {
-        Position = (40, 30);
+        Position = (144, 80);
         Size = (200, 124);
         Renderer = &2;
 

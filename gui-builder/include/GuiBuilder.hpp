@@ -71,8 +71,8 @@ private:
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
     void removePopupMenu();
-    void createNewForm(const tgui::String& filename);
-    bool loadForm(const tgui::String& filename);
+    void createNewForm(tgui::String filename);
+    bool loadForm(tgui::String filename);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
 
