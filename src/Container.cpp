@@ -130,10 +130,7 @@ namespace tgui
             m_widgets.push_back(other.m_widgets[i]->clone());
 
         for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
-        {
-            m_widgets[i]->setWidgetName(other.m_widgets[i]->getWidgetName());
             widgetAdded(m_widgets[i]);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,10 +185,7 @@ namespace tgui
                 m_widgets.push_back(right.m_widgets[i]->clone());
 
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-            {
-                m_widgets[i]->setWidgetName(right.m_widgets[i]->getWidgetName());
                 widgetAdded(m_widgets[i]);
-            }
         }
 
         return *this;
