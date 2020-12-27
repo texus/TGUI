@@ -25,6 +25,8 @@
  *
  */
 
+// Some defines and functions have been prefixed with "TGUI_" or "tgui_" in this file to prevent name collisions.
+
 #ifndef TGUI_GLAD_GLES2_H_
 #define TGUI_GLAD_GLES2_H_
 
@@ -2647,7 +2649,7 @@ int tgui_gladLoadGLES2( GLADloadfunc load) {
 
 
 
- 
+
 
 
 #ifdef __cplusplus

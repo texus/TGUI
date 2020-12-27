@@ -297,8 +297,11 @@ namespace tgui
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextSDL::createLineTexture requires backend texture of type BackendSDL");
         std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(textureId, true);
 
-        TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, surface->w, surface->h));
-        TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
 
         SDL_FreeSurface(surface);
 

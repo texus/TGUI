@@ -103,10 +103,11 @@ namespace tgui
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromFile requires backend texture of type BackendSDL");
         std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
 
-        TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, textureFormat, image->w, image->h));
-        TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, imageFormat, GL_UNSIGNED_BYTE, image->pixels));
+        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, image->w, image->h, 0, imageFormat, GL_UNSIGNED_BYTE, image->pixels));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
         m_image = image;
         return true;
@@ -129,10 +130,11 @@ namespace tgui
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromPixelData requires backend texture of type BackendSDL");
         std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
 
-        TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, image->w, image->h));
-        TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image->w, image->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
         m_image = image;
         return true;

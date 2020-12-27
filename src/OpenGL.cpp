@@ -54,10 +54,6 @@ namespace tgui
                 case GL_INVALID_ENUM:       error = "GL_INVALID_ENUM";      break;
                 case GL_INVALID_VALUE:      error = "GL_INVALID_VALUE";     break;
                 case GL_INVALID_OPERATION:  error = "GL_INVALID_OPERATION"; break;
-#if !TGUI_USE_GLES
-                case GL_STACK_OVERFLOW:     error = "GL_STACK_OVERFLOW";    break;
-                case GL_STACK_UNDERFLOW:    error = "GL_STACK_UNDERFLOW";   break;
-#endif
                 case GL_OUT_OF_MEMORY:      error = "GL_OUT_OF_MEMORY";     break;
                 default:                    error = "Unknown error";        break;
             }

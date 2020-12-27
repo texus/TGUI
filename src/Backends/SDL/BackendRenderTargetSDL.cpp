@@ -51,11 +51,10 @@ namespace tgui
         {
 #if TGUI_USE_GLES
             "#version 300 es\n"
-            "uniform mat4 projectionMatrix;"
 #else
-            "#version 430 core\n"
-            "layout(location=0) uniform mat4 projectionMatrix;"
+            "#version 410 core\n"
 #endif
+            "uniform mat4 projectionMatrix;"
             "layout(location=0) in vec2 inPosition;\n"
             "layout(location=1) in vec4 inColor;\n"
             "layout(location=2) in vec2 inTexCoord;\n"
@@ -74,7 +73,7 @@ namespace tgui
             "#version 300 es\n"
             "precision mediump float;"
 #else
-            "#version 430 core\n"
+            "#version 410 core\n"
 #endif
             "uniform sampler2D uTexture;"
             "in vec4 color;"
@@ -162,10 +161,9 @@ namespace tgui
         m_shaderProgram(createShaderProgram()),
         m_window(window)
     {
-#if TGUI_USE_GLES
-        // Giving it a fixed location in the shader was only supported by GLES 3.1 or newer while we still support GLES 3.0
+        // Giving it a fixed uniform location in the shader was only supported by GL 4.3 and GLES 3.1 or newer.
+        // Since we are limited to GL 4.1 and GLES 3.0, we have to query the location here.
         m_projectionMatrixUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
-#endif
 
         createBuffers(m_vertexArray, m_vertexBuffer, m_indexBuffer);
 
@@ -173,8 +171,12 @@ namespace tgui
         std::uint32_t pixelData = 0xFFFFFFFF;
         TGUI_GL_CHECK(glGenTextures(1, &m_emptyTexture));
         changeTexture(m_emptyTexture, true);
-        TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1));
-        TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
+
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
