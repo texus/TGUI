@@ -158,6 +158,13 @@ if(TGUI_OS_ANDROID)
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
+# Enable OpenGL ES on mobile platforms or when explicitly requested (option is ignored by backends that don't use OpenGL)
+if(TGUI_OS_IOS OR TGUI_OS_ANDROID)
+    set(TGUI_USE_GLES 1)
+elseif (NOT DEFINED TGUI_USE_GLES)
+    set(TGUI_USE_GLES 0)
+endif()
+
 # Add an option to choose whether PDB debug symbols should be generated for Visual Studio
 if(TGUI_COMPILER_MSVC)
     tgui_set_option(TGUI_GENERATE_PDB TRUE BOOL "True to generate PDB debug symbols, FALSE otherwise.")

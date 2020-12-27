@@ -74,10 +74,8 @@
     #define TGUI_API
 #endif
 
-// Use OpenGL ES on mobile platforms in backends that use OpenGL
-#if defined(TGUI_SYSTEM_ANDROID) || defined(TGUI_SYSTEM_IOS)
-    #define TGUI_USE_GLES 1
-#endif
+// Use OpenGL ES on mobile platforms (in backends that use OpenGL directly)
+#cmakedefine01 TGUI_USE_GLES
 
 // Enables code that uses SFML
 #cmakedefine01 TGUI_BUILD_WITH_SFML
