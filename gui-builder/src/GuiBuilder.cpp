@@ -573,7 +573,7 @@ void GuiBuilder::saveGuiBuilderState()
     if (openStateFile(stateOutputFile))
         stateOutputFile << stream.rdbuf();
     else
-        std::cout << "Failed to open GuiBuilderState.txt for writing" << std::endl;
+        displayErrorMessage("Failed to open GuiBuilderState.txt for writing");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -609,7 +609,7 @@ void GuiBuilder::reloadProperties()
         // If the widget isn't supported by the Gui Builder (i.e. it was manually placed in the form file), then don't try to create properties
         if (m_widgetProperties.find(selectedWidget->ptr->getWidgetType()) == m_widgetProperties.end())
         {
-            std::cout << "Widget of type '" << selectedWidget->ptr->getWidgetType() << "' can't be edited." << std::endl;
+            std::cerr << "Warning: widget of type '" << selectedWidget->ptr->getWidgetType() << "' can't be edited." << std::endl;
             return;
         }
 
@@ -1034,10 +1034,11 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
     }
     catch (const tgui::Exception& e)
     {
-        std::cout << "Exception caught when setting property: " << e.what() << std::endl;
-
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, oldValue);
         valueChanged = false;
+
+        reloadProperties(); // Restore the old value before showing the error, of we keep repeating the error
+        displayErrorMessage(tgui::String(U"Exception caught when setting property: ") + e.what());
     }
 
     reloadProperties(); // reload all properties in case something else changed
@@ -1303,10 +1304,15 @@ bool GuiBuilder::loadForm(tgui::String filename)
 
     loadEditingScreen(filename);
 
-    if (!m_selectedForm->load())
+    try
+    {
+        m_selectedForm->load();
+    }
+    catch (const tgui::Exception& e)
     {
         loadStartScreen();
         widgetHierarchyChanged();
+        displayErrorMessage("Failed to load '" + filename + "', reason: " + e.what());
         return false;
     }
 
@@ -1340,6 +1346,19 @@ bool GuiBuilder::loadForm(tgui::String filename)
     m_recentFiles.insert(m_recentFiles.begin(), filename);
     saveGuiBuilderState();
     return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::displayErrorMessage(const tgui::String& error)
+{
+    std::cerr << error << std::endl;
+
+    auto messageBox = tgui::MessageBox::create("Error", error, {"OK"});
+    messageBox->setPosition("(&.size - size) / 2");
+    openWindowWithFocus(messageBox);
+
+    messageBox->onButtonPress([messageBox]{ messageBox->close(); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1948,7 +1967,8 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         }
         catch (tgui::Exception& e)
         {
-            std::cout << "Exception caught when loading image: " << e.what() << std::endl;
+            // Is it possible to reach this code? It would mean the existing value was already bad, but we don't allow setting bad values?
+            displayErrorMessage(tgui::String(U"Exception caught when loading image: ") + e.what());
         }
 
         tgui::String originalFilename = originalTexture.getId();
@@ -2197,7 +2217,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
         }
         catch (const tgui::Exception& e)
         {
-            std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
+            displayErrorMessage(tgui::String(U"Exception caught when adding theme: ") + e.what());
         }
 
         initProperties();

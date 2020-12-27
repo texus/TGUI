@@ -73,6 +73,7 @@ private:
     void removePopupMenu();
     void createNewForm(tgui::String filename);
     bool loadForm(tgui::String filename);
+    void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
 

@@ -176,6 +176,10 @@ namespace tgui
 
     void Canvas::draw(const tgui::Sprite& sprite, const RenderStates& states)
     {
+        // If the sprite is empty then don't try to draw it
+        if (!sprite.getTexture().getData())
+            return;
+
         const std::vector<Vertex>& vertices = sprite.getVertices();
         const std::vector<int>& indices = sprite.getIndices();
         std::vector<Vertex> triangleVertices(indices.size());

@@ -61,7 +61,7 @@ public:
     bool isChanged() const;
     void focus();
     bool hasFocus() const;
-    bool load();
+    void load();
     void save();
     void drawExtra(sf::RenderWindow& window) const;
 
