@@ -282,9 +282,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-#if TGUI_BUILD_WITH_SFML
-        sf::Shader* m_shader = nullptr;
-#endif
         Vector2f    m_size;
         Texture     m_texture;
         std::shared_ptr<BackendTextureBase> m_svgTexture;

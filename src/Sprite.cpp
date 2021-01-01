@@ -42,9 +42,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Sprite::Sprite(const Sprite& other) :
-#if TGUI_BUILD_WITH_SFML
-        m_shader     (other.m_shader),
-#endif
         m_size       (other.m_size),
         m_texture    (other.m_texture),
         m_svgTexture (nullptr),
@@ -64,9 +61,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Sprite::Sprite(Sprite&& other) noexcept :
-#if TGUI_BUILD_WITH_SFML
-        m_shader     (std::move(other.m_shader)),
-#endif
         m_size       (std::move(other.m_size)),
         m_texture    (std::move(other.m_texture)),
         m_svgTexture (std::move(other.m_svgTexture)),
@@ -89,9 +83,6 @@ namespace tgui
         {
             Sprite temp(other);
 
-#if TGUI_BUILD_WITH_SFML
-            std::swap(m_shader,      temp.m_shader);
-#endif
             std::swap(m_size,        temp.m_size);
             std::swap(m_texture,     temp.m_texture);
             std::swap(m_svgTexture,  temp.m_svgTexture);
@@ -114,9 +105,6 @@ namespace tgui
     {
         if (this != &other)
         {
-#if TGUI_BUILD_WITH_SFML
-            m_shader      = std::move(other.m_shader);
-#endif
             m_size        = std::move(other.m_size);
             m_texture     = std::move(other.m_texture);
             m_svgTexture  = std::move(other.m_svgTexture);
@@ -139,9 +127,6 @@ namespace tgui
     {
         m_texture = texture;
         m_vertexColor = m_texture.getColor();
-#if TGUI_BUILD_WITH_SFML
-        m_shader = m_texture.getShader();
-#endif
 
         if (isSet())
         {
