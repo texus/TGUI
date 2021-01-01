@@ -36,8 +36,11 @@ namespace tgui
 
     GuiBase::~GuiBase()
     {
-        m_container->setParentGui(nullptr);
-        getBackend()->detatchGui(this);
+        if (m_container) // Always the case, unless derived class throws exception in constructor while creating backend
+        {
+            m_container->setParentGui(nullptr);
+            getBackend()->detatchGui(this);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

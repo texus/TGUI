@@ -66,7 +66,15 @@ namespace tgui
 #else
         const int version = tgui_gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
         if ((TGUI_GLAD_VERSION_MAJOR(version) < 4) || ((TGUI_GLAD_VERSION_MAJOR(version) == 4) && TGUI_GLAD_VERSION_MINOR(version) < 1))
-            throw Exception{"BackendSDL expects at least OpenGL 4.1"};
+        {
+            if (version == 0)
+                throw Exception{"BackendSDL failed to query OpenGL version. Has an OpenGL context been created with SDL_GL_CreateContext?"};
+            else
+            {
+                throw Exception{"BackendSDL expects at least OpenGL 4.1, found version "
+                    + String(TGUI_GLAD_VERSION_MAJOR(version)) + '.' + String(TGUI_GLAD_VERSION_MINOR(version))};
+            }
+        }
 #endif
     }
 
