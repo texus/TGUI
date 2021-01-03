@@ -133,10 +133,12 @@ build_script:
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-s-d.pdb ..\tgui\lib\ > nul &&
       move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
       move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.pdb ..\tgui\lib\ > nul &&
       move doc\html ..\tgui\doc\ > nul &&
       move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
       cd .. &&
@@ -159,10 +161,12 @@ build_script:
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-s-d.pdb ..\tgui\lib\ > nul &&
       move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
       move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.pdb ..\tgui\lib\ > nul &&
       move doc\html ..\tgui\doc\ > nul &&
       move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
       cd .. &&
