@@ -95,16 +95,3 @@ bool runExample(tgui::GuiBase& gui)
         return false;
     }
 }
-
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(400, 300), "TGUI window");
-    window.setFramerateLimit(60);
-
-    tgui::GuiSFML gui(window);
-    if (!runExample(gui))
-        return -1;
-
-    gui.mainLoop();
-    return EXIT_SUCCESS;
-}

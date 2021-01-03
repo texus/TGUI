@@ -33,6 +33,11 @@ else()
         set(TGUI_BUILD_WITH_SFML FALSE CACHE INTERNAL ${DescriptionBuildWitSFML})
         set(TGUI_BACKEND_SDL TRUE)
     endif()
+
+    # The backend options shouldn't be changeable by the user (because he selected one with TGUI_BACKEND),
+    # but they still need to be available in other parts of the project (e.g. in the examples).
+    set(TGUI_BACKEND_SFML ${TGUI_BACKEND_SFML} PARENT_SCOPE)
+    set(TGUI_BACKEND_SDL ${TGUI_BACKEND_SDL} PARENT_SCOPE)
 endif()
 
 # If we aren't building SFML then we don't need to keep the SFML_DIR variable (but don't erase its value if it had one)
@@ -51,9 +56,6 @@ endif()
 if(NOT TGUI_BACKEND_SFML)
     if(TGUI_BUILD_GUI_BUILDER)
         message(FATAL_ERROR "Gui Builder currently requires the SFML backend. Uncheck TGUI_BUILD_GUI_BUILDER or change backend.")
-    endif()
-    if(TGUI_BUILD_EXAMPLES)
-        message(FATAL_ERROR "Examples currently require the SFML backend. Uncheck TGUI_BUILD_EXAMPLES or change backend.")
     endif()
     if(TGUI_BUILD_TESTS)
         message(FATAL_ERROR "Tests currently require the SFML backend. Uncheck TGUI_BUILD_TESTS or change backend.")

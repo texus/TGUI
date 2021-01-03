@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define SFML_NO_DEPRECATED_WARNINGS
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Core.hpp>
+#include <TGUI/AllWidgets.hpp>
 #include <iostream>
 
 bool runExample(tgui::GuiBase& gui)
@@ -226,6 +226,7 @@ bool runExample(tgui::GuiBase& gui)
         chatbox->addLine("Me: The widgets rock ^^", tgui::Color::Yellow);
         gui.add(chatbox);
 
+#if TGUI_BUILD_WITH_SFML
         sf::Texture texture;
         sf::Sprite  sprite;
         texture.loadFromFile("../ThinkLinux.jpg");
@@ -238,6 +239,7 @@ bool runExample(tgui::GuiBase& gui)
         canvas->draw(sprite);
         canvas->display();
         gui.add(canvas);
+#endif
 
         button = tgui::Button::create();
         button->setRenderer(theme.getRenderer("Button"));
@@ -254,17 +256,3 @@ bool runExample(tgui::GuiBase& gui)
 
     return true;
 }
-
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
-    window.setFramerateLimit(60);
-
-    tgui::Gui gui(window);
-    if (!runExample(gui))
-        return -1;
-
-    gui.mainLoop();
-    return EXIT_SUCCESS;
-}
-

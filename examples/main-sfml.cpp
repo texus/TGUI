@@ -22,23 +22,20 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_CORE_HPP
-#define TGUI_CORE_HPP
+#include <TGUI/Core.hpp>
+#include <TGUI/Backends/SFML.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool runExample(tgui::GuiBase& gui);
 
-#include <TGUI/Animation.hpp>
-#include <TGUI/Cursor.hpp>
-#include <TGUI/Timer.hpp>
-#include <TGUI/Widget.hpp>
-#include <TGUI/ToolTip.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/GuiBase.hpp>
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI example");
+    window.setFramerateLimit(60);
 
-#include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Loading/WidgetFactory.hpp>
+    tgui::Gui gui(window);
+    if (!runExample(gui))
+        return EXIT_FAILURE;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif // TGUI_CORE_HPP
+    gui.mainLoop();
+    return EXIT_SUCCESS;
+}
