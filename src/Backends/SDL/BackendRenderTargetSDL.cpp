@@ -52,7 +52,7 @@ namespace tgui
 #if TGUI_USE_GLES
             "#version 300 es\n"
 #else
-            "#version 410 core\n"
+            "#version 330 core\n"
 #endif
             "uniform mat4 projectionMatrix;"
             "layout(location=0) in vec2 inPosition;\n"
@@ -73,7 +73,7 @@ namespace tgui
             "#version 300 es\n"
             "precision mediump float;"
 #else
-            "#version 410 core\n"
+            "#version 330 core\n"
 #endif
             "uniform sampler2D uTexture;"
             "in vec4 color;"

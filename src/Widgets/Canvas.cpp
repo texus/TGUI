@@ -35,14 +35,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Canvas(const char* typeName, bool initRenderer) :
+    CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, initRenderer}
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Canvas(const Canvas& other) :
+    CanvasSFML::CanvasSFML(const CanvasSFML& other) :
         ClickableWidget{other}
     {
         setSize(other.getSize());
@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Canvas(Canvas&& other) :
+    CanvasSFML::CanvasSFML(CanvasSFML&& other) :
         ClickableWidget{std::move(other)}
     {
         // sf::RenderTexture does not support move yet
@@ -59,7 +59,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas& Canvas::operator= (const Canvas& right)
+    CanvasSFML& CanvasSFML::operator= (const CanvasSFML& right)
     {
         if (this != &right)
         {
@@ -72,7 +72,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas& Canvas::operator= (Canvas&& right)
+    CanvasSFML& CanvasSFML::operator= (CanvasSFML&& right)
     {
         if (this != &right)
         {
@@ -87,26 +87,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Ptr Canvas::create(Layout2d size)
+    CanvasSFML::Ptr CanvasSFML::create(Layout2d size)
     {
-        auto canvas = std::make_shared<Canvas>();
+        auto canvas = std::make_shared<CanvasSFML>();
         canvas->setSize(size);
         return canvas;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Ptr Canvas::copy(Canvas::ConstPtr canvas)
+    CanvasSFML::Ptr CanvasSFML::copy(CanvasSFML::ConstPtr canvas)
     {
         if (canvas)
-            return std::static_pointer_cast<Canvas>(canvas->clone());
+            return std::static_pointer_cast<CanvasSFML>(canvas->clone());
         else
             return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setSize(const Layout2d& size)
+    void CanvasSFML::setSize(const Layout2d& size)
     {
         Vector2f newSize = size.getValue();
 
@@ -125,56 +125,56 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setView(const sf::View& view)
+    void CanvasSFML::setView(const sf::View& view)
     {
         m_renderTexture.setView(view);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::View& Canvas::getView() const
+    const sf::View& CanvasSFML::getView() const
     {
         return m_renderTexture.getView();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::View& Canvas::getDefaultView() const
+    const sf::View& CanvasSFML::getDefaultView() const
     {
         return m_renderTexture.getDefaultView();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    IntRect Canvas::getViewport() const
+    IntRect CanvasSFML::getViewport() const
     {
         return IntRect(m_renderTexture.getViewport(m_renderTexture.getView()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::clear(Color color)
+    void CanvasSFML::clear(Color color)
     {
         m_renderTexture.clear(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
+    void CanvasSFML::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
     {
         m_renderTexture.draw(drawable, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+    void CanvasSFML::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
     {
         m_renderTexture.draw(vertices, vertexCount, type, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(const tgui::Sprite& sprite, const RenderStates& states)
+    void CanvasSFML::draw(const tgui::Sprite& sprite, const RenderStates& states)
     {
         // If the sprite is empty then don't try to draw it
         if (!sprite.getTexture().getData())
@@ -194,7 +194,7 @@ namespace tgui
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
 
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
-                    "Canvas::draw requires sprite to have a backend texture of type BackendTextureSFML");
+                    "CanvasSFML::draw requires sprite to have a backend texture of type BackendTextureSFML");
         statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
@@ -204,7 +204,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::display()
+    void CanvasSFML::display()
     {
         m_renderTexture.display();
 
@@ -215,7 +215,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::rendererChanged(const String& property)
+    void CanvasSFML::rendererChanged(const String& property)
     {
         Widget::rendererChanged(property);
 
@@ -225,7 +225,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void CanvasSFML::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;
@@ -235,7 +235,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Canvas::canGainFocus() const
+    bool CanvasSFML::canGainFocus() const
     {
         return false;
     }

@@ -28,15 +28,15 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <cmath>
 
-#if TGUI_BUILD_WITH_SFML
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    const unsigned int colorWheelSize = 200;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color hsv2rgb(sf::Vector3f c /**hsv*/)
+    static Color hsv2rgb(float h, float s, float v)
     {
         /**
          * vec3 hsv2rgb(vec3 c) {
@@ -45,79 +45,72 @@ namespace tgui
          *      return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
          * }
         **/
-        auto fract = [](auto &&x) { return x - std::floor(x); };
-        auto mix = [](auto &&x, auto &&y, auto &&a) { return x * (1.0f - a) + y * a; };
-        auto clamp = [](auto &&x, auto &&minVal, auto &&maxVal) {
+        auto fract = [](float x) { return x - std::floor(x); };
+        auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
+        auto clamp = [](float x, float minVal, float maxVal) {
             return std::min(std::max(x, minVal), maxVal);
         };
 
-        c.x = clamp(c.x, 0.f, 1.f);
-        c.y = clamp(c.y, 0.f, 1.f);
-        c.z = clamp(c.z, 0.f, 1.f);
+        h = clamp(h, 0.f, 1.f);
+        s = clamp(s, 0.f, 1.f);
+        v = clamp(v, 0.f, 1.f);
 
-        ///xyzw
-        ///rgba
-        ///vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
         float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
-        ///vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-        float p[] = {std::abs(fract(c.x + K[0]) * 6.0f - K[3]),
-                     std::abs(fract(c.x + K[1]) * 6.0f - K[3]),
-                     std::abs(fract(c.x + K[2]) * 6.0f - K[3])};
+        float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
+                     std::abs(fract(h + K[1]) * 6.0f - K[3]),
+                     std::abs(fract(h + K[2]) * 6.0f - K[3])};
 
-        ///return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-        float C[] = {c.z * mix(K[0], clamp(p[0] - K[0], 0.f, 1.f), c.y),
-                     c.z * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), c.y),
-                     c.z * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), c.y)};
+        float C[] = {v * mix(K[0], clamp(p[0] - K[0], 0.f, 1.f), s),
+                     v * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), s),
+                     v * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), s)};
 
-        return {static_cast<uint8_t>(clamp(static_cast<int>(255 * C[0]), 0, 255)),
-                static_cast<uint8_t>(clamp(static_cast<int>(255 * C[1]), 0, 255)),
-                static_cast<uint8_t>(clamp(static_cast<int>(255 * C[2]), 0, 255))};
+        return {static_cast<std::uint8_t>(clamp(255 * C[0], 0, 255)),
+                static_cast<std::uint8_t>(clamp(255 * C[1], 0, 255)),
+                static_cast<std::uint8_t>(clamp(255 * C[2], 0, 255))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color calculateColor(Vector2f position, float V, int A)
+    static Color calculateColor(Vector2f position, float v, float a)
     {
         /**
-             * vec2 position = ( gl_FragCoord.xy / resolution.xy );
-             * vec2 p2 = position - vec2(0.5, 0.5);
+         * vec2 position = ( gl_FragCoord.xy / resolution.xy );
+         * vec2 p2 = position - vec2(0.5, 0.5);
 
-             * float S = length(p2*2.0);
-             * if(S > 1. && S < 1.01){
-             *      discard;
-             * }
+         * float S = length(p2*2.0);
+         * if(S > 1. && S < 1.01){
+         *      discard;
+         * }
 
-             * float V = 1.;
-             * float H = atan(-p2.y, -p2.x);
+         * float V = 1.;
+         * float H = atan(-p2.y, -p2.x);
 
-             * H /= 2.*Pi;
-             * H += 0.5;
-             * gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
-             * gl_FragColor.a = 1.0;
-             */
+         * H /= 2.*Pi;
+         * H += 0.5;
+         * gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
+         * gl_FragColor.a = 1.0;
+         */
 
         auto length = [](Vector2f x) {
             return std::sqrt(x.x * x.x + x.y * x.y);
         };
 
-        float S = length(position);
+        float s = length(position);
 
-        float H = atan2(position.y, -position.x);
+        float h = atan2(position.y, -position.x);
 
         constexpr float Pi = 3.14159265359f;
 
-        H /= 2.f * Pi;
-        H += 0.5f;
+        h /= 2.f * Pi;
+        h += 0.5f;
 
-        auto c = hsv2rgb({H, S, V});
-        c.a = static_cast<sf::Uint8>(A);
-        return c;
+        return Color::applyOpacity(hsv2rgb(h, s, v), a);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float logInvCurve(float x)
+    static float logInvCurve(float x)
     {
         /**
          * 0.1  - normal curve
@@ -142,36 +135,36 @@ namespace tgui
         setTitleButtons(ChildWindow::TitleButton::None);
         Container::setTextSize(getGlobalTextSize());
 
-        m_HSV = std::make_shared<sf::Shader>();
-        m_HSV->loadFromMemory("#version 110\n"
-                              "\n"
-                              "uniform float V;\n"
-                              "uniform vec2 resolution;\n"
-                              "\n"
-                              "const float Pi = 3.14159265359;\n"
-                              "\n"
-                              "vec3 hsv2rgb(vec3 c) {\n"
-                              "      vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n"
-                              "      vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n"
-                              "      return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n"
-                              "}\n"
-                              "\n"
-                              "void main( void ) {\n"
-                              "      vec2 position = ( gl_FragCoord.xy / resolution.xy );\n"
-                              "      vec2 p2 = position - vec2(0.5, 0.5);//<-0.5,0.5>\n"
-                              "      \n"
-                              "      float S = length(p2*2.0);\n"
-                              "      if(S > 1.0){\n"
-                              "          discard;\n"
-                              "      }\n"
-                              "      \n"
-                              "      float H = atan(-p2.y, -p2.x);\n"
-                              "      \n"
-                              "      H /= 2.*Pi;\n"
-                              "      H += 0.5;\n"
-                              "      gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));\n"
-                              "      gl_FragColor.a = 1.0;\n"
-                              "}", sf::Shader::Fragment);
+        auto pixels = std::make_unique<std::uint8_t[]>(colorWheelSize * colorWheelSize * 4);
+        for (unsigned int y = 0; y < colorWheelSize; ++y)
+        {
+            for (unsigned int x = 0; x < colorWheelSize; ++x)
+            {
+                const Vector2f position = {((static_cast<float>(x) / colorWheelSize) - 0.5f) * 2.f,
+                                           ((static_cast<float>(y) / colorWheelSize) - 0.5f) * 2.f};
+                if (std::sqrt(position.x * position.x + position.y * position.y) <= 1.f)
+                {
+                    const Color pixelColor = calculateColor(position, 1, 1);
+                    const unsigned int pixelIndex = ((y * colorWheelSize) + x) * 4;
+                    pixels[pixelIndex] = pixelColor.getRed();
+                    pixels[pixelIndex+1] = pixelColor.getGreen();
+                    pixels[pixelIndex+2] = pixelColor.getBlue();
+                    pixels[pixelIndex+3] = pixelColor.getAlpha();
+                }
+                else // Pixel lies outside the circle, draw a transparent pixel
+                {
+                    const unsigned int pixelIndex = ((y * colorWheelSize) + x) * 4;
+                    pixels[pixelIndex] = 0;
+                    pixels[pixelIndex+1] = 0;
+                    pixels[pixelIndex+2] = 0;
+                    pixels[pixelIndex+3] = 0;
+                }
+            }
+        }
+
+        m_colorWheelTexture.load({colorWheelSize, colorWheelSize}, pixels.get());
+        m_colorWheelSprite.setTexture(m_colorWheelTexture);
+        pixels = nullptr;
 
         Container::add(Label::create("R"), "#TGUI_INTERNAL$ColorPickerLR#");
         Container::add(m_red, "#TGUI_INTERNAL$ColorPickerRed#");
@@ -201,7 +194,6 @@ namespace tgui
         alphaBox->setInputValidator(EditBox::Validator::Int);
         Container::add(alphaBox, "#TGUI_INTERNAL$ColorPickerAlphaBox#");
 
-        Container::add(m_canvas, "#TGUI_INTERNAL$ColorPickerCanvas#");
         Container::add(m_value, "#TGUI_INTERNAL$ColorPickerValue#");
         m_value->setValue(m_value->getMaximum());
         m_value->setVerticalScroll(true);
@@ -230,7 +222,15 @@ namespace tgui
             ChildWindow{other},
             onColorChange{other.onColorChange},
             onOkPress{other.onOkPress},
-            m_HSV{other.m_HSV}
+            m_colorWheelTexture{other.m_colorWheelTexture},
+            m_colorWheelSprite{other.m_colorWheelSprite},
+            m_red{nullptr},
+            m_green{nullptr},
+            m_blue{nullptr},
+            m_alpha{nullptr},
+            m_value{nullptr},
+            m_last{nullptr},
+            m_current{nullptr}
     {
         identifyButtonsAndConnect();
     }
@@ -241,7 +241,15 @@ namespace tgui
             ChildWindow{std::move(other)},
             onColorChange{std::move(other.onColorChange)},
             onOkPress{std::move(other.onOkPress)},
-            m_HSV{std::move(other.m_HSV)}
+            m_colorWheelTexture{std::move(other.m_colorWheelTexture)},
+            m_colorWheelSprite{std::move(other.m_colorWheelSprite)},
+            m_red{nullptr},
+            m_green{nullptr},
+            m_blue{nullptr},
+            m_alpha{nullptr},
+            m_value{nullptr},
+            m_last{nullptr},
+            m_current{nullptr}
     {
         identifyButtonsAndConnect();
     }
@@ -257,7 +265,8 @@ namespace tgui
 
             std::swap(onColorChange, temp.onColorChange);
             std::swap(onOkPress, temp.onOkPress);
-            std::swap(m_HSV, temp.m_HSV);
+            std::swap(m_colorWheelTexture, temp.m_colorWheelTexture);
+            std::swap(m_colorWheelSprite, temp.m_colorWheelSprite);
 
             identifyButtonsAndConnect();
         }
@@ -271,19 +280,12 @@ namespace tgui
     {
         if (this != &other)
         {
+            ChildWindow::operator=(std::move(other));
+
             onColorChange = std::move(other.onColorChange);
             onOkPress = std::move(other.onOkPress);
-            m_canvas = std::move(other.m_canvas);
-            m_red = std::move(other.m_red);
-            m_green = std::move(other.m_green);
-            m_blue = std::move(other.m_blue);
-            m_alpha = std::move(other.m_alpha);
-            m_value = std::move(other.m_value);
-            m_last = std::move(other.m_last);
-            m_current = std::move(other.m_current);
-            m_HSV = std::move(other.m_HSV);
-
-            ChildWindow::operator=(std::move(other));
+            m_colorWheelTexture = std::move(other.m_colorWheelTexture);
+            m_colorWheelSprite = std::move(other.m_colorWheelSprite),
 
             identifyButtonsAndConnect();
         }
@@ -344,7 +346,7 @@ namespace tgui
 
     void ColorPicker::setColor(const Color &color)
     {
-        auto colorLast = m_current->getRenderer()->getBackgroundColor();
+        const auto colorLast = m_current->getRenderer()->getBackgroundColor();
         m_last->getRenderer()->setBackgroundColor(color);
         m_current->getRenderer()->setBackgroundColor(color);
 
@@ -372,19 +374,19 @@ namespace tgui
     {
         ChildWindow::leftMousePressed(pos);
 
+        const Vector2f originalPos = pos;
         pos -= getPosition() + getChildWidgetsOffset();
 
-        if (m_canvas->isMouseOnWidget(pos))
+        if (FloatRect(m_colorWheelSprite.getPosition(), m_colorWheelSprite.getSize()).contains(pos))
         {
             m_colorRead = true;
 
-            auto length = [](Vector2f x) {
-                return std::sqrt(x.x * x.x + x.y * x.y);
+            auto length = [](Vector2f vec) {
+                return std::sqrt(vec.x * vec.x + vec.y * vec.y);
             };
 
-            Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
-                                 (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
-
+            Vector2f position = {(pos.x - m_colorWheelSprite.getPosition().x) / m_colorWheelSprite.getSize().x,
+                                 (pos.y - m_colorWheelSprite.getPosition().y) / m_colorWheelSprite.getSize().y};
             position -= {0.5f, 0.5f};
             position *= 2.0f;
 
@@ -394,22 +396,8 @@ namespace tgui
                 return;
             }
 
-            float V = m_value->getValue() / m_value->getMaximum();
-            V = logInvCurve(V);
-
-            const auto c = calculateColor(position, V, static_cast<int>(m_alpha->getValue()));
-
-            m_current->getRenderer()->setBackgroundColor(c);
-            onColorChange.setEnabled(false);
-            m_red->setValue(static_cast<float>(c.r));
-            m_green->setValue(static_cast<float>(c.g));
-            m_blue->setValue(static_cast<float>(c.b));
-            m_alpha->setValue(static_cast<float>(c.a));
-            onColorChange.setEnabled(true);
-
-            onColorChange.emit(this, c);
+            mouseMoved(originalPos);
         }
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,10 +406,7 @@ namespace tgui
     {
         ChildWindow::leftMouseButtonNoLongerDown();
 
-        if (m_colorRead)
-        {
-            m_colorRead = false;
-        }
+        m_colorRead = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,24 +419,20 @@ namespace tgui
 
         if (m_colorRead)
         {
-
-            Vector2f position = {(pos.x - m_canvas->getPosition().x) / m_canvas->getSize().x,
-                                 (pos.y - m_canvas->getPosition().y) / m_canvas->getSize().y};
-
+            Vector2f position = {(pos.x - m_colorWheelSprite.getPosition().x) / m_colorWheelSprite.getSize().x,
+                                 (pos.y - m_colorWheelSprite.getPosition().y) / m_colorWheelSprite.getSize().y};
             position -= {0.5f, 0.5f};
             position *= 2.0f;
 
-            float V = m_value->getValue() / m_value->getMaximum();
-            V = logInvCurve(V);
-
-            const auto c = calculateColor(position, V, static_cast<int>(m_alpha->getValue()));
+            const float v = logInvCurve(m_value->getValue() / m_value->getMaximum());
+            const auto c = calculateColor(position, v, m_alpha->getValue() / 255.f);
 
             m_current->getRenderer()->setBackgroundColor(c);
             onColorChange.setEnabled(false);
-            m_red->setValue(static_cast<float>(c.r));
-            m_green->setValue(static_cast<float>(c.g));
-            m_blue->setValue(static_cast<float>(c.b));
-            m_alpha->setValue(static_cast<float>(c.a));
+            m_red->setValue(static_cast<float>(c.getRed()));
+            m_green->setValue(static_cast<float>(c.getGreen()));
+            m_blue->setValue(static_cast<float>(c.getBlue()));
+            m_alpha->setValue(static_cast<float>(c.getAlpha()));
             onColorChange.setEnabled(true);
 
             onColorChange.emit(this, c);
@@ -462,8 +443,8 @@ namespace tgui
 
     void ColorPicker::rearrange()
     {
-        m_canvas->setPosition(10, 10);
-        m_value->setPosition("#TGUI_INTERNAL$ColorPickerCanvas#.right + 10", 10);
+        m_colorWheelSprite.setPosition({10, 10});
+        m_value->setPosition(2 * m_colorWheelSprite.getPosition().x + colorWheelSize, 10);
 
         get<Label>("#TGUI_INTERNAL$ColorPickerLR#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", 10);
         get<Label>("#TGUI_INTERNAL$ColorPickerLG#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10",
@@ -488,12 +469,11 @@ namespace tgui
                                                                          "#TGUI_INTERNAL$ColorPickerAlpha#.top");
 
         auto labelLast = get<Label>("#TGUI_INTERNAL$ColorPickerLabelLast#");
-        auto labelCurrent = get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#");
-
         labelLast->setSize(70, 20);
         labelLast->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left",
                                "#TGUI_INTERNAL$ColorPickerLast#.top");
 
+        auto labelCurrent = get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#");
         labelCurrent->setSize(70, 20);
         labelCurrent->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left",
                                   "#TGUI_INTERNAL$ColorPickerCurrent#.top");
@@ -577,21 +557,30 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> ColorPicker::save(SavingRenderersMap &renderers) const
     {
-        auto node = ChildWindow::save(renderers);
-        // Labels, Canvas, Buttons and Sliders are saved indirectly by saving the child window
-        return node;
+        // Labels, buttons and sliders are saved indirectly by saving the child window
+        return ChildWindow::save(renderers);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ColorPicker::load(const std::unique_ptr<DataIO::Node> &node, const LoadingRenderersMap &renderers)
     {
-        // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
+        // Remove the widgets that the ColorPicker constructor creates because they will be created when loading the child window
         removeAllWidgets();
 
         ChildWindow::load(node, renderers);
 
         identifyButtonsAndConnect();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ColorPicker::draw(BackendRenderTargetBase& target, RenderStates states) const
+    {
+        ChildWindow::draw(target, states);
+
+        states.transform.translate(getChildWidgetsOffset());
+        target.drawSprite(states, m_colorWheelSprite);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -603,7 +592,6 @@ namespace tgui
         auto blueBox = get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#");
         auto alphaBox = get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#");
 
-        m_canvas = get<Canvas>("#TGUI_INTERNAL$ColorPickerCanvas#");
         m_red = get<Slider>("#TGUI_INTERNAL$ColorPickerRed#");
         m_green = get<Slider>("#TGUI_INTERNAL$ColorPickerGreen#");
         m_blue = get<Slider>("#TGUI_INTERNAL$ColorPickerBlue#");
@@ -614,8 +602,8 @@ namespace tgui
 
         auto recalculateColor = [this]() {
             m_current->getRenderer()->setBackgroundColor(
-                    {static_cast<uint8_t>(m_red->getValue()), static_cast<uint8_t>(m_green->getValue()),
-                     static_cast<uint8_t>(m_blue->getValue()), static_cast<uint8_t>(m_alpha->getValue())});
+                    {static_cast<std::uint8_t>(m_red->getValue()), static_cast<std::uint8_t>(m_green->getValue()),
+                     static_cast<std::uint8_t>(m_blue->getValue()), static_cast<std::uint8_t>(m_alpha->getValue())});
             onColorChange.emit(this, getColor());
         };
 
@@ -692,35 +680,17 @@ namespace tgui
         });
 
         auto valueChangeFunc = [this](float value){
-            const auto size = m_canvas->getView().getSize();
-            sf::Vertex array[4];
-            array[0].position = {0, 0};
-            array[1].position = {0, size.y};
-            array[2].position = {size.x, 0};
-            array[3].position = {size.x, size.y};
-
-            m_canvas->clear(Color::Transparent);
-
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 4
-            m_HSV->setParameter("V", logInvCurve(v / m_value->getMaximum()));
-            m_HSV->setParameter("resolution", size);
-            m_canvas->draw(array, 4, sf::TrianglesStrip, m_HSV.get());
-#else
-            m_HSV->setUniform("V", logInvCurve(value / m_value->getMaximum()));
-            m_HSV->setUniform("resolution", size);
-            m_canvas->draw(array, 4, sf::TriangleStrip, m_HSV.get());
-#endif
-            m_canvas->display();
+            const std::uint8_t factor = static_cast<std::uint8_t>(255 * logInvCurve(value / m_value->getMaximum()));
+            m_colorWheelTexture.setColor({factor, factor, factor});
+            m_colorWheelSprite.setTexture(m_colorWheelTexture);
         };
 
         m_value->onValueChange.disconnectAll();
         m_value->onValueChange(valueChangeFunc);
-        valueChangeFunc(m_value->getValue()); // Redraw the canvas now
+        valueChangeFunc(m_value->getValue());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-#endif // TGUI_BUILD_WITH_SFML
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
