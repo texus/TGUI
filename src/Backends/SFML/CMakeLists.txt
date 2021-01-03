@@ -24,6 +24,10 @@ if(NOT TARGET sfml-graphics)
         set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
         message(FATAL_ERROR "CMake couldn't find SFML.\nSet SFML_DIR to the directory containing SFMLConfig.cmake (usually something like SFML_ROOT/lib/cmake/SFML), or change TGUI_BACKEND to not use SFML.")
     endif()
+
+    if (${SFML_VERSION} VERSION_LESS "2.5.0")
+        message(FATAL_ERROR "TGUI requires SFML 2.5 or higher")
+    endif()
 endif()
 
 # Link to SFML and set include and library search directories
