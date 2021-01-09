@@ -35,7 +35,7 @@
 #include <TGUI/Rect.hpp>
 #include <functional>
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Shader.hpp>
 #endif
@@ -94,7 +94,7 @@ namespace tgui
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
                 bool smooth = true);
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture from an existing sf::Texture
         ///
@@ -151,7 +151,7 @@ namespace tgui
                   const UIntRect& middleRect = {},
                   bool smooth = true);
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture from an existing sf::Texture
         ///
@@ -249,7 +249,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getColor() const;
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the shader used to draw the texture
         /// @param shader  New shader to use
@@ -381,7 +381,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         sf::Shader* m_shader = nullptr;
 #endif
 

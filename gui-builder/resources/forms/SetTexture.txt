@@ -34,7 +34,7 @@ Renderer.3 {
     TextColor = #3C3C3C;
 }
 
-Canvas.ImagePreview {
+Picture.ImagePreview {
     Position = ((&.iw - w) / 2, 10);
     Size = (100, 100);
 

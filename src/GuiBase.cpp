@@ -172,6 +172,10 @@ namespace tgui
                 updateContainerSize();
                 break;
             }
+            case Event::Type::Closed:
+            {
+                break;
+            }
         }
 
         // The event wasn't absorbed by the gui

@@ -20,10 +20,15 @@ target_sources(tgui PRIVATE
 )
 
 add_library(tgui-sdl-interface INTERFACE)
-target_link_libraries(tgui-sdl-interface INTERFACE SDL2::Core SDL2::Image SDL2::TTF)
+target_link_libraries(tgui-sdl-interface INTERFACE SDL2::Core SDL2::Image SDL2::TTF SDL2::Main)
 
-if(TGUI_BUILD_GUI_BUILDER OR TGUI_BUILD_TESTS OR TGUI_BUILD_EXAMPLES)
+# Also link to OpenGL or OpenGL ES
+if(NOT TGUI_USE_GLES)
     find_package(OpenGL REQUIRED)
-    add_library(tgui-sdl-main-interface INTERFACE)
-    target_link_libraries(tgui-sdl-main-interface INTERFACE SDL2::Main OpenGL::OpenGL)
+    target_link_libraries(tgui PRIVATE OpenGL::GL)
+    target_link_libraries(tgui-sdl-interface INTERFACE OpenGL::GL)
+else() # OpenGL ES was requested
+    # On linux, GL ES 3 code is included in the GLESv2 library
+    target_link_libraries(tgui PRIVATE -lEGL -lGLESv2)
+    target_link_libraries(tgui-sdl-interface INTERFACE -lEGL -lGLESv2)
 endif()

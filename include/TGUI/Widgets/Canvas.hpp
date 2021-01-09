@@ -28,7 +28,7 @@
 
 #include <TGUI/Config.hpp>
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -280,7 +280,7 @@ namespace tgui
     using Canvas = CanvasSFML;
 }
 
-#endif // TGUI_BUILD_WITH_SFML
+#endif // TGUI_HAS_BACKEND_SFML
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

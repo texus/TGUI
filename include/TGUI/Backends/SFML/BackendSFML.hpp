@@ -33,6 +33,7 @@
 
 namespace sf
 {
+    class Event;
     class Cursor;
     class Window;
     class RenderTarget;
@@ -50,6 +51,15 @@ namespace tgui
     class TGUI_API BackendSFML : public BackendBase
     {
     public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Helper function that converts an SFML event to a TGUI event
+        /// @param eventSFML  The input SFML event
+        /// @param eventTGUI  The output TGUI event
+        /// @return Did the SFML event match on a TGUI event and has the output event been written to?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static bool convertEvent(const sf::Event& eventSFML, Event& eventTGUI);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the backend that a new gui object has been created.

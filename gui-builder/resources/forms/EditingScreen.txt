@@ -250,5 +250,9 @@ ChildWindow.Form {
                 Borders = (0, 0, 0, 0);
             }
         }
+
+        Group.Overlay {
+            Size = (100%, 100%);
+        }
     }
 }

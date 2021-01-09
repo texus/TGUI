@@ -226,7 +226,7 @@ bool runExample(tgui::GuiBase& gui)
         chatbox->addLine("Me: The widgets rock ^^", tgui::Color::Yellow);
         gui.add(chatbox);
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         sf::Texture texture;
         sf::Sprite  sprite;
         texture.loadFromFile("../ThinkLinux.jpg");

@@ -11,7 +11,7 @@ endif()
 
 add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
 target_include_directories(gui-builder PRIVATE include)
-target_link_libraries(gui-builder PRIVATE tgui tgui-sfml-interface tgui-sfml-main-interface)
+target_link_libraries(gui-builder PRIVATE tgui tgui-default-backend-interface)
 
 tgui_set_global_compile_flags(gui-builder)
 tgui_set_stdlib(gui-builder)

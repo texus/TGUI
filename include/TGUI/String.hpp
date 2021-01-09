@@ -36,7 +36,7 @@
 #include <ostream>
 #include <sstream>
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     #include <SFML/System/String.hpp>
 #endif
 
@@ -336,7 +336,7 @@ namespace tgui
         explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
         explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
         explicit String(const sf::String& str)
             : m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}

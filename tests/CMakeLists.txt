@@ -1,3 +1,7 @@
+if(NOT TGUI_HAS_BACKEND_SFML)
+    message(FATAL_ERROR "Tests currently require the SFML backend. Uncheck TGUI_BUILD_TESTS or change backend.")
+endif()
+
 set(TEST_SOURCES
     Tests.cpp
     CompareFiles.cpp

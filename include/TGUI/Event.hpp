@@ -231,7 +231,8 @@ namespace tgui
             MouseButtonPressed,     //!< A mouse button was pressed (data in event.mouseButton)
             MouseButtonReleased,    //!< A mouse button was released (data in event.mouseButton)
             MouseMoved,             //!< The mouse cursor moved (data in event.mouseMove)
-            Resized                 //!< The window was resized (data in event.size)
+            Resized,                //!< The window was resized (data in event.size)
+            Closed                  //!< The window was closed
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

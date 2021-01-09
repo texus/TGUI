@@ -45,8 +45,6 @@ target_sources(tgui PRIVATE
 
 add_library(tgui-sfml-interface INTERFACE)
 target_link_libraries(tgui-sfml-interface INTERFACE sfml-graphics)
-
-add_library(tgui-sfml-main-interface INTERFACE)
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
-    target_link_libraries(tgui-sfml-main-interface INTERFACE sfml-main)
+    target_link_libraries(tgui-sfml-interface INTERFACE sfml-main)
 endif()

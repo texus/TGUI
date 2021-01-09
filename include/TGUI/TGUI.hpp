@@ -35,7 +35,7 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     #include <TGUI/Backends/SFML.hpp>
 #endif
 

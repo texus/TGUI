@@ -53,6 +53,8 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 
+#include <TGUI/Backend.hpp>
+
 #include <stack>
 #include <cassert>
 #include <cmath>
@@ -115,6 +117,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
     m_formWindow      {formWindow},
     m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
     m_widgetsContainer{m_scrollablePanel->get<tgui::Panel>("WidgetContainer")},
+    m_overlay         {formWindow->get<tgui::Group>("Overlay")},
     m_filename        {filename}
 {
     m_widgets["form"] = nullptr;
@@ -369,7 +372,7 @@ void Form::selectParent()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::mouseMoved(sf::Vector2i pos)
+void Form::mouseMoved(tgui::Vector2i pos)
 {
     if (m_draggingWidget || m_draggingSelectionSquare)
         onDrag(pos);
@@ -385,7 +388,7 @@ void Form::mouseReleased()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Form::rightMouseClick(sf::Vector2i pos)
+bool Form::rightMouseClick(tgui::Vector2i pos)
 {
     tgui::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
     if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getSize()}.contains(relativeWindowPos))
@@ -402,7 +405,7 @@ bool Form::rightMouseClick(sf::Vector2i pos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
+void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
 {
     if (!m_selectedWidget)
         return;
@@ -411,13 +414,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
 
     if (keyEvent.shift && keyEvent.control)
     {
-        if (keyEvent.code == sf::Keyboard::Left)
+        if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Right)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
             selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Up)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
             selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
-        else if (keyEvent.code == sf::Keyboard::Down)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
             selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
 
         setChanged(true);
@@ -426,13 +429,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     }
     else if (keyEvent.shift)
     {
-        if (keyEvent.code == sf::Keyboard::Left)
+        if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSizeLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Right)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
             selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Up)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
             selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1});
-        else if (keyEvent.code == sf::Keyboard::Down)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
             selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
 
         setChanged(true);
@@ -441,13 +444,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     }
     else if (keyEvent.control)
     {
-        if (keyEvent.code == sf::Keyboard::Left)
+        if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidget->setPosition({selectedWidget->getPosition().x - 1, selectedWidget->getPositionLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Right)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
             selectedWidget->setPosition({selectedWidget->getPosition().x + 1, selectedWidget->getPositionLayout().y});
-        else if (keyEvent.code == sf::Keyboard::Up)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
             selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - 1});
-        else if (keyEvent.code == sf::Keyboard::Down)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
             selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + 1});
 
         setChanged(true);
@@ -457,13 +460,13 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
     else
     {
         tgui::Vector2f selectedWidgetPoint;
-        if (keyEvent.code == sf::Keyboard::Left)
+        if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
-        else if (keyEvent.code == sf::Keyboard::Right)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
             selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
-        else if (keyEvent.code == sf::Keyboard::Up)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
             selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y};
-        else if (keyEvent.code == sf::Keyboard::Down)
+        else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
             selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y + selectedWidget->getSize().y};
 
         float closestDistance = std::numeric_limits<float>::infinity();
@@ -475,20 +478,20 @@ void Form::arrowKeyPressed(const sf::Event::KeyEvent& keyEvent)
                 continue;
 
             tgui::Vector2f widgetPoint;
-            if (keyEvent.code == sf::Keyboard::Left)
+            if (keyEvent.code == tgui::Event::KeyboardKey::Left)
                 widgetPoint = {widget->getPosition().x + widget->getSize().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
-            else if (keyEvent.code == sf::Keyboard::Right)
+            else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
                 widgetPoint = {widget->getPosition().x, widget->getPosition().y + (widget->getSize().y / 2.f)};
-            else if (keyEvent.code == sf::Keyboard::Up)
+            else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
                 widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y + widget->getSize().y};
-            else if (keyEvent.code == sf::Keyboard::Down)
+            else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
                 widgetPoint = {widget->getPosition().x + (widget->getSize().x / 2.f), widget->getPosition().y};
 
             // Don't allow going in the opposite direction when there are no widgets on the chosen side
-            if (((keyEvent.code == sf::Keyboard::Left) && (widgetPoint.x >= selectedWidgetPoint.x))
-             || ((keyEvent.code == sf::Keyboard::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
-             || ((keyEvent.code == sf::Keyboard::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
-             || ((keyEvent.code == sf::Keyboard::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
+            if (((keyEvent.code == tgui::Event::KeyboardKey::Left) && (widgetPoint.x >= selectedWidgetPoint.x))
+             || ((keyEvent.code == tgui::Event::KeyboardKey::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
+             || ((keyEvent.code == tgui::Event::KeyboardKey::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
+             || ((keyEvent.code == tgui::Event::KeyboardKey::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
                 continue;
 
             const float distance = std::abs(widgetPoint.x - selectedWidgetPoint.x) + std::abs(widgetPoint.y - selectedWidgetPoint.y);
@@ -671,42 +674,39 @@ void Form::save()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::drawExtra(sf::RenderWindow& window) const
+void Form::updateAlignmentLines()
 {
-    if (!m_selectedWidget)
+    static std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> lastLines;
+
+    std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> lines = getAlignmentLines();
+    if (lines == lastLines)
         return;
 
-    if (!m_draggingWidget && !m_draggingSelectionSquare
-     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl)
-     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift))
-        return;
-
-    const auto selectedWidget = m_selectedWidget->ptr;
-    const tgui::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
-    const tgui::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
-    const auto widgets = selectedWidget->getParent()->getWidgets();
-    for (const auto& widget : widgets)
+    // Update the position and sizes of new lines
+    for (std::size_t i = 0; i < lines.size(); ++i)
     {
-        if (widget == selectedWidget)
-            continue;
+        if (i >= m_alignmentLines.size())
+        {
+            // If the line didn't exist yet then add it now
+            m_alignmentLines.emplace_back(tgui::SeparatorLine::create());
+            m_alignmentLines.back()->getRenderer()->setColor({0, 0, 139});
+            m_overlay->add(m_alignmentLines.back());
+        }
 
-        const tgui::Vector2f topLeft = widget->getAbsolutePosition();
-        const tgui::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
-
-        const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
-        const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
-        const float minY = std::min({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
-        const float maxY = std::max({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
-
-        if ((topLeft.x == selectedTopLeft.x) || (topLeft.x == selectedBottomRight.x))
-            drawLine(window, {topLeft.x, minY}, {topLeft.x, maxY});
-        if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
-            drawLine(window, {minX, topLeft.y}, {maxX, topLeft.y});
-        if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
-            drawLine(window, {bottomRight.x, minY}, {bottomRight.x, maxY});
-        if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
-            drawLine(window, {minX, bottomRight.y}, {maxX, bottomRight.y});
+        const auto& startPoint = lines[i].first;
+        const auto& endPoint = lines[i].second;
+        m_alignmentLines[i]->setPosition({startPoint.x, startPoint.y});
+        m_alignmentLines[i]->setSize({std::max(endPoint.x - startPoint.x, 1.f), std::max(endPoint.y - startPoint.y, 1.f)});
     }
+
+    // Remove all lines that are no longer needed
+    for (std::size_t i = m_alignmentLines.size(); i > lines.size(); --i)
+    {
+        m_overlay->remove(m_alignmentLines[i-1]);
+        m_alignmentLines.pop_back();
+    }
+
+    lastLines = std::move(lines);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -782,11 +782,11 @@ void Form::onFormMousePress(tgui::Vector2f pos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::onDrag(sf::Vector2i mousePos)
+void Form::onDrag(tgui::Vector2i mousePos)
 {
     assert(m_selectedWidget != nullptr);
 
-    const tgui::Vector2f pos = tgui::Vector2f{sf::Vector2f{mousePos}} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
+    const tgui::Vector2f pos = tgui::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
     auto selectedWidget = m_selectedWidget->ptr;
 
     bool updated = false;
@@ -1017,11 +1017,52 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::drawLine(sf::RenderWindow& window, tgui::Vector2f startPoint, tgui::Vector2f endPoint) const
+std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines() const
 {
-    sf::Vertex line[2] = {
-        {{startPoint.x + 0.5f, startPoint.y + 0.5f}, sf::Color{0, 0, 139}},
-        {{endPoint.x + 0.5f, endPoint.y + 0.5f}, sf::Color{0, 0, 139}}
-    };
-    window.draw(line, 2, sf::Lines);
+    std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> lines;
+
+    if (!m_selectedWidget)
+        return lines;
+
+    if (!m_draggingWidget && !m_draggingSelectionSquare
+     && !tgui::getBackend()->isKeyboardModifierPressed(tgui::Event::KeyModifier::Control)
+     && !tgui::getBackend()->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
+        return lines;
+
+    const auto selectedWidget = m_selectedWidget->ptr;
+    const tgui::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
+    const tgui::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
+    const auto widgets = selectedWidget->getParent()->getWidgets();
+    for (const auto& widget : widgets)
+    {
+        if (widget == selectedWidget)
+            continue;
+
+        const tgui::Vector2f topLeft = widget->getAbsolutePosition();
+        const tgui::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
+
+        const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float minY = std::min({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+        const float maxY = std::max({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+
+        if ((topLeft.x == selectedTopLeft.x) || (topLeft.x == selectedBottomRight.x))
+            lines.emplace_back(tgui::Vector2f{topLeft.x, minY}, tgui::Vector2f{topLeft.x, maxY});
+        if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
+            lines.emplace_back(tgui::Vector2f{minX, topLeft.y}, tgui::Vector2f{maxX, topLeft.y});
+        if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
+            lines.emplace_back(tgui::Vector2f{bottomRight.x, minY}, tgui::Vector2f{bottomRight.x, maxY});
+        if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
+            lines.emplace_back(tgui::Vector2f{minX, bottomRight.y}, tgui::Vector2f{maxX, bottomRight.y});
+    }
+
+    // Because we used absolute positions to compare widgets inside and outside groups, the coordinates of the lines
+    // still need to be adjusted to start relative to the form.
+    for (auto& line : lines)
+    {
+        line.first -= m_overlay->getAbsolutePosition();
+        line.second -= m_overlay->getAbsolutePosition();
+    }
+
+    return lines;
 }

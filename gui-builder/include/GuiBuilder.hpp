@@ -28,6 +28,7 @@
 
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Filesystem.hpp>
+#include <TGUI/DefaultBackendWindow.hpp>
 #include "WidgetProperties/WidgetProperties.hpp"
 #include "Form.hpp"
 
@@ -119,8 +120,8 @@ private:
 
     std::vector<tgui::String> m_recentFiles;
 
-    sf::RenderWindow m_window;
-    tgui::GuiSFML m_gui;
+    std::shared_ptr<tgui::DefaultBackendWindow> m_window;
+    tgui::GuiBase* m_gui;
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;

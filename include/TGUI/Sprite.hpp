@@ -34,7 +34,7 @@
 #include <vector>
 #include <memory>
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     #include <SFML/Graphics/Shader.hpp>
 #endif
 

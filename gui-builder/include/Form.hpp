@@ -49,10 +49,10 @@ public:
     void selectWidgetById(const tgui::String& id);
     void selectWidgetByName(const tgui::String& name);
     void selectParent();
-    void mouseMoved(sf::Vector2i pos);
+    void mouseMoved(tgui::Vector2i pos);
     void mouseReleased();
-    bool rightMouseClick(sf::Vector2i pos);
-    void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);
+    bool rightMouseClick(tgui::Vector2i pos);
+    void arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent);
     void setFilename(const tgui::String& filename);
     tgui::String getFilename() const;
     void setSize(tgui::Vector2f size);
@@ -63,16 +63,16 @@ public:
     bool hasFocus() const;
     void load();
     void save();
-    void drawExtra(sf::RenderWindow& window) const;
+    void updateAlignmentLines();
 
 private:
     void importLoadedWidgets(tgui::Container::Ptr parent);
     void onSelectionSquarePress(tgui::Button::Ptr square, tgui::Vector2f pos);
     tgui::Widget::Ptr getWidgetBelowMouse(tgui::Container::Ptr parent, tgui::Vector2f pos);
     void onFormMousePress(tgui::Vector2f pos);
-    void onDrag(sf::Vector2i mousePos);
+    void onDrag(tgui::Vector2i mousePos);
     void selectWidget(std::shared_ptr<WidgetInfo> widget);
-    void drawLine(sf::RenderWindow& window, tgui::Vector2f startPoint, tgui::Vector2f endPoint) const;
+    std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
 
 private:
 
@@ -80,6 +80,7 @@ private:
     tgui::ChildWindow::Ptr m_formWindow;
     tgui::ScrollablePanel::Ptr m_scrollablePanel;
     tgui::Group::Ptr m_widgetsContainer;
+    tgui::Group::Ptr m_overlay;
     std::shared_ptr<WidgetInfo> m_selectedWidget = nullptr;
     std::array<tgui::Button::Ptr, 8> m_selectionSquares;
     std::map<tgui::String, std::shared_ptr<WidgetInfo>> m_widgets;
@@ -89,6 +90,7 @@ private:
     tgui::Vector2f m_draggingPos;
     tgui::String m_filename;
     tgui::Vector2f m_size;
+    std::vector<tgui::SeparatorLine::Ptr> m_alignmentLines;
 };
 
 #endif // TGUI_GUI_BUILDER_FORM_HPP

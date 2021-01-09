@@ -6,6 +6,7 @@ set(TGUI_SRC
     Container.cpp
     Cursor.cpp
     CustomWidgetForBindings.cpp
+    DefaultBackendWindow.cpp
     FileDialogIconLoader.cpp
     FileDialogIconLoaderLinux.cpp
     FileDialogIconLoaderWindows.cpp

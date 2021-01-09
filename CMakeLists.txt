@@ -9,6 +9,11 @@ if(POLICY CMP0068)
     cmake_policy(SET CMP0068 NEW)
 endif()
 
+# Prefer GLVND OpenGL libraries on linux (CMake 3.11 and newer)
+if (POLICY CMP0072)
+    cmake_policy(SET CMP0072 NEW)
+endif()
+
 # Don't warn about existence of SFML_ROOT variable (CMake 3.12 and newer)
 if(POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)

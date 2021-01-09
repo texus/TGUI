@@ -77,18 +77,19 @@
 // Use OpenGL ES on mobile platforms (in backends that use OpenGL directly)
 #cmakedefine01 TGUI_USE_GLES
 
-// Enables code that uses SFML
-#cmakedefine01 TGUI_BUILD_WITH_SFML
-
-// Include the version header when c++20 is available to use the library feature-testing macros
-#if TGUI_COMPILED_WITH_CPP_VER >= 20
-    #include <version>
-#endif
+// Enables code that relies on a specific backend
+#cmakedefine01 TGUI_HAS_BACKEND_SFML
+#cmakedefine01 TGUI_HAS_BACKEND_SDL
 
 // Define that specifies the mininmum c++ support in both the TGUI code and user code.
 // This constant can be lower than the actual c++ standard version used to compile with,
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.
 #define TGUI_COMPILED_WITH_CPP_VER @TGUI_CXX_STANDARD@
+
+// Include the version header when c++20 is available to use the library feature-testing macros
+#if TGUI_COMPILED_WITH_CPP_VER >= 20
+    #include <version>
+#endif
 
 // Enable the use of std::filesystem if TGUI is built with c++17 with a new enough compiler.
 // Although GCC and clang supported it before version 9, this is the first version where no

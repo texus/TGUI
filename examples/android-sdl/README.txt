@@ -9,7 +9,7 @@ The build system for android doesn't actually use cmake, but Config.hpp needs to
 
 Create a new "build-null" folder inside the TGUI root folder. From inside that folder, execute the following:
 ```
-cmake -DTGUI_BACKEND=Custom -DTGUI_BUILD_GUI_BUILDER=FALSE ..
+cmake -DTGUI_BACKEND=Custom -DTGUI_USE_GLES=TRUE -DTGUI_BUILD_GUI_BUILDER=FALSE ..
 ```
 
 This will generate the required files. You can delete the "build-null" now, the contents of that folder isn't needed.

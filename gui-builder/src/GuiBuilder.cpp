@@ -53,6 +53,7 @@
 #include <cassert>
 #include <memory>
 #include <string>
+#include <thread> // this_thread::sleep_for
 #include <cctype> // isdigit
 #include <cmath> // max
 #include <stack>
@@ -272,8 +273,8 @@ namespace
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GuiBuilder::GuiBuilder(const char* programName) :
-    m_window{{1300, 680}, "TGUI - GUI Builder"},
-    m_gui         {m_window},
+    m_window      {tgui::DefaultBackendWindow::create(1300, 680, "TGUI - GUI Builder")},
+    m_gui         {m_window->getGui()},
     m_themes      {{"White", *tgui::Theme::getDefault()}},
     m_defaultTheme{"White"},
     m_programPath {tgui::Filesystem::Path(programName).getParentPath()}
@@ -281,8 +282,6 @@ GuiBuilder::GuiBuilder(const char* programName) :
     // If the program is started from a different folder then it wouldn't be able to find its resources unless we set this path.
     // One case where this seems to be required is to start the executable on macOS by double-clicking it.
     tgui::setResourcePath(m_programPath.asString());
-
-    m_window.setFramerateLimit(60);
 
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
@@ -310,9 +309,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
-    sf::Image icon;
-    if (icon.loadFromFile(sf::String((tgui::Filesystem::Path(tgui::getResourcePath()) / "resources/Icon.png").asString())))
-        m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    m_window->setIcon((tgui::Filesystem::Path(tgui::getResourcePath()) / "resources/Icon.png").asString());
 
     loadStartScreen();
 }
@@ -328,29 +325,25 @@ GuiBuilder::~GuiBuilder()
 
 void GuiBuilder::mainLoop()
 {
-    while (m_window.isOpen())
+    while (m_window->isOpen())
     {
-        sf::Event event;
-        while (m_window.pollEvent(event))
+        tgui::Event event;
+        while (m_window->pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == tgui::Event::Type::Closed)
             {
                 while (!m_forms.empty())
                     closeForm(m_forms[0].get());
 
-                m_window.close();
+                m_window->close();
             }
-            else if (event.type == sf::Event::Resized)
-            {
-                m_window.setView(sf::View({0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
-            }
-            else if (event.type == sf::Event::MouseButtonReleased)
+            else if (event.type == tgui::Event::Type::MouseButtonReleased)
             {
                 if (m_selectedForm)
                 {
-                    if (event.mouseButton.button == sf::Mouse::Button::Left)
+                    if (event.mouseButton.button == tgui::Event::MouseButton::Left)
                         m_selectedForm->mouseReleased();
-                    else if (event.mouseButton.button == sf::Mouse::Button::Right)
+                    else if (event.mouseButton.button == tgui::Event::MouseButton::Right)
                     {
                         if (m_popupMenu)
                         {
@@ -360,7 +353,7 @@ void GuiBuilder::mainLoop()
                         {
                             auto panel = tgui::Panel::create({"100%", "100%"});
                             panel->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
-                            m_gui.add(panel);
+                            m_gui->add(panel);
 
                             m_popupMenu = tgui::ListBox::create();
                             panel->add(m_popupMenu);
@@ -404,45 +397,45 @@ void GuiBuilder::mainLoop()
                     }
                 }
             }
-            else if (event.type == sf::Event::MouseMoved)
+            else if (event.type == tgui::Event::Type::MouseMoved)
             {
                 if (m_selectedForm)
                     m_selectedForm->mouseMoved({event.mouseMove.x, event.mouseMove.y});
             }
-            else if (event.type == sf::Event::KeyPressed)
+            else if (event.type == tgui::Event::Type::KeyPressed)
             {
-                if ((event.key.code == sf::Keyboard::Key::Left) || (event.key.code == sf::Keyboard::Key::Right)
-                 || (event.key.code == sf::Keyboard::Key::Up) || (event.key.code == sf::Keyboard::Key::Down))
+                if ((event.key.code == tgui::Event::KeyboardKey::Left) || (event.key.code == tgui::Event::KeyboardKey::Right)
+                 || (event.key.code == tgui::Event::KeyboardKey::Up) || (event.key.code == tgui::Event::KeyboardKey::Down))
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         m_selectedForm->arrowKeyPressed(event.key);
                 }
-                else if (event.key.code == sf::Keyboard::Key::Delete)
+                else if (event.key.code == tgui::Event::KeyboardKey::Delete)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         removeSelectedWidget();
                 }
-                else if (event.key.code == sf::Keyboard::Key::Escape)
+                else if (event.key.code == tgui::Event::KeyboardKey::Escape)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         m_selectedForm->selectParent();
                 }
-                else if ((event.key.code == sf::Keyboard::Key::S) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::S) && event.key.control)
                 {
                     if (m_selectedForm)
                         m_selectedForm->save();
                 }
-                else if ((event.key.code == sf::Keyboard::Key::C) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::C) && event.key.control)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
                 }
-                else if ((event.key.code == sf::Keyboard::Key::V) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::V) && event.key.control)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         pasteWidgetFromInternalClipboard();
                 }
-                else if ((event.key.code == sf::Keyboard::Key::X) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::X) && event.key.control)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                     {
@@ -452,16 +445,14 @@ void GuiBuilder::mainLoop()
                 }
             }
 
-            m_gui.handleEvent(event);
+            m_gui->handleEvent(event);
         }
 
-        m_window.clear({200, 200, 200});
-        m_gui.draw();
-
         if (m_selectedForm && m_selectedForm->hasFocus())
-            m_selectedForm->drawExtra(m_window);
+            m_selectedForm->updateAlignmentLines();
 
-        m_window.display();
+        m_window->draw();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -724,19 +715,19 @@ void GuiBuilder::closeForm(Form* form)
 
     auto panel = tgui::Panel::create({"100%", "100%"});
     panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-    m_gui.add(panel);
+    m_gui->add(panel);
 
     auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", {"Yes", "No"});
     messageBox->setPosition("(&.size - size) / 2");
-    m_gui.add(messageBox);
+    m_gui->add(messageBox);
 
     bool haltProgram = true;
     messageBox->onButtonPress([=,&haltProgram](const tgui::String& button){
         if (button == "Yes")
             m_selectedForm->save();
 
-        m_gui.remove(panel);
-        m_gui.remove(messageBox);
+        m_gui->remove(panel);
+        m_gui->remove(messageBox);
 
         if (m_selectedForm == form)
             m_selectedForm = nullptr;
@@ -749,28 +740,23 @@ void GuiBuilder::closeForm(Form* form)
     });
 
     // The closeForm function has to halt the execution of the normal main loop (to be able to prevent closing the window)
-    while (haltProgram && m_window.isOpen())
+    while (haltProgram && m_window->isOpen())
     {
-        sf::Event event;
-        while (m_window.pollEvent(event))
+        tgui::Event event;
+        while (m_window->pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == tgui::Event::Type::Closed)
             {
                 // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
-                m_window.close();
+                m_window->close();
                 m_forms.clear();
             }
-            else if (event.type == sf::Event::Resized)
-            {
-                m_window.setView(sf::View({0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
-            }
 
-            m_gui.handleEvent(event);
+            m_gui->handleEvent(event);
         }
 
-        m_window.clear({200, 200, 200});
-        m_gui.draw();
-        m_window.display();
+        m_window->draw();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -800,8 +786,8 @@ void GuiBuilder::loadStartScreen()
     m_propertiesContainer = nullptr;
     m_selectedWidgetComboBox = nullptr;
 
-    m_gui.removeAllWidgets();
-    m_gui.loadWidgetsFromFile("resources/forms/StartScreen.txt");
+    m_gui->removeAllWidgets();
+    m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
 
     if (!loadGuiBuilderState())
     {
@@ -810,7 +796,7 @@ void GuiBuilder::loadStartScreen()
         m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
     }
 
-    auto panel = m_gui.get<tgui::Panel>("MainPanel");
+    auto panel = m_gui->get<tgui::Panel>("MainPanel");
     panel->get<tgui::Panel>("PnlNewForm")->onClick([=]{
         showLoadFileWindow("New form", "Create", getDefaultFilename(), [=](const tgui::String& filename){
             createNewForm(filename);
@@ -846,13 +832,13 @@ void GuiBuilder::loadStartScreen()
 
 void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 {
-    m_gui.removeAllWidgets();
-    m_gui.loadWidgetsFromFile("resources/forms/EditingScreen.txt");
+    m_gui->removeAllWidgets();
+    m_gui->loadWidgetsFromFile("resources/forms/EditingScreen.txt");
 
-    m_forms.push_back(std::make_unique<Form>(this, filename, m_gui.get<tgui::ChildWindow>("Form"), m_formSize));
+    m_forms.push_back(std::make_unique<Form>(this, filename, m_gui->get<tgui::ChildWindow>("Form"), m_formSize));
     m_selectedForm = m_forms[0].get();
 
-    m_propertiesWindow = m_gui.get<tgui::ChildWindow>("PropertiesWindow");
+    m_propertiesWindow = m_gui->get<tgui::ChildWindow>("PropertiesWindow");
     m_propertiesContainer = m_propertiesWindow->get<tgui::ScrollablePanel>("Properties");
     m_selectedWidgetComboBox = m_propertiesWindow->get<tgui::ComboBox>("SelectedWidgetComboBox");
 
@@ -860,7 +846,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
     m_selectedWidgetComboBox->setSelectedItemById("form");
     m_selectedWidgetComboBox->onItemSelect([this](tgui::String, tgui::String id){ m_selectedForm->selectWidgetById(id); });
 
-    m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
+    m_menuBar = m_gui->get<tgui::MenuBar>("MenuBar");
     m_menuBar->onMouseEnter([this]{ m_menuBar->moveToFront(); });
     m_menuBar->connectMenuItem({"File", "New"}, [this]{ menuBarCallbackNewForm(); });
     m_menuBar->connectMenuItem({"File", "Load"}, [this]{ menuBarCallbackLoadForm(); });
@@ -891,7 +877,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
     }
     m_menuBar->setMenuItemEnabled({"File", "Recent"}, addedRecentFile);
 
-    const auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
+    const auto hierarchyWindow = m_gui->get<tgui::ChildWindow>("HierarchyWindow");
     m_widgetHierarchyTree = hierarchyWindow->get<tgui::TreeView>("WidgetsTree");
     m_widgetHierarchyTree->onItemSelect([this](tgui::String name){
         if (!name.empty())
@@ -906,7 +892,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 
 void GuiBuilder::loadToolbox()
 {
-    auto toolboxWindow = m_gui.get<tgui::ChildWindow>("ToolboxWindow");
+    auto toolboxWindow = m_gui->get<tgui::ChildWindow>("ToolboxWindow");
     auto toolbox = toolboxWindow->get<tgui::ScrollablePanel>("Widgets");
 
     const auto widgets = std::vector<std::pair<tgui::String, std::function<tgui::Widget::Ptr()>>>{
@@ -1265,15 +1251,15 @@ void GuiBuilder::createNewForm(tgui::String filename)
     {
         auto panel = tgui::Panel::create({"100%", "100%"});
         panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-        m_gui.add(panel);
+        m_gui->add(panel);
 
         auto messageBox = tgui::MessageBox::create("Create form", "The form already exists, are you certain you want to overwrite it?", {"Yes", "No"});
         messageBox->setPosition("(&.size - size) / 2");
-        m_gui.add(messageBox);
+        m_gui->add(messageBox);
 
         messageBox->onButtonPress([=](const tgui::String& button){
-            m_gui.remove(panel);
-            m_gui.remove(messageBox);
+            m_gui->remove(panel);
+            m_gui->remove(messageBox);
 
             if (button == "Yes")
             {
@@ -1367,18 +1353,18 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
 {
     auto panel = tgui::Panel::create({"100%", "100%"});
     panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-    m_gui.add(panel);
+    m_gui->add(panel);
 
     window->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
-    m_gui.add(window);
+    m_gui->add(window);
 
     window->setFocused(true);
 
-    const bool tabUsageEnabled = m_gui.isTabKeyUsageEnabled();
+    const bool tabUsageEnabled = m_gui->isTabKeyUsageEnabled();
     auto closeWindow = [=]{
-        m_gui.remove(window);
-        m_gui.remove(panel);
-        m_gui.setTabKeyUsageEnabled(tabUsageEnabled);
+        m_gui->remove(window);
+        m_gui->remove(panel);
+        m_gui->setTabKeyUsageEnabled(tabUsageEnabled);
     };
 
     panel->onClick(closeWindow);
@@ -1713,7 +1699,7 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
         textArea->onTextChange([=]{ onChange(tgui::Serializer::serialize(textArea->getText())); });
         textArea->setFocused(true);
 
-        m_gui.setTabKeyUsageEnabled(false);
+        m_gui->setTabKeyUsageEnabled(false);
     });
 }
 
@@ -1846,7 +1832,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         textureWindow->setClientSize({235, 235});
         textureWindow->loadWidgetsFromFile("resources/forms/SetTexture.txt");
 
-        auto previewCanvas = textureWindow->get<tgui::Canvas>("ImagePreview");
+        auto previewPicture = textureWindow->get<tgui::Picture>("ImagePreview");
         auto buttonSelectFile = textureWindow->get<tgui::Button>("BtnSelectFile");
         auto editBoxPartRect = textureWindow->get<tgui::EditBox>("EditPartRect");
         auto editBoxMiddleRect = textureWindow->get<tgui::EditBox>("EditMiddleRect");
@@ -1865,10 +1851,12 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                 return {};
         };
 
-        previewCanvas->setUserData(std::make_shared<tgui::Texture>());
+        previewPicture->setUserData(std::make_shared<tgui::Texture>());
+
+        auto separators = std::make_shared<std::vector<tgui::SeparatorLine::Ptr>>();
 
         auto updateForm = [=](tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool resetPartRect, bool resetMiddleRect, bool resetSize){
-            auto texture = previewCanvas->getUserData<std::shared_ptr<tgui::Texture>>();
+            auto texture = previewPicture->getUserData<std::shared_ptr<tgui::Texture>>();
             if (resetSize)
             {
                 try
@@ -1886,14 +1874,11 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             const tgui::Vector2u imageSize = texture->getImageSize();
             const tgui::Vector2f extraSpace{20, 155};
             const tgui::Vector2f minSize{235, 140};
-            const tgui::Layout2d maxSize{tgui::bindWidth(m_gui) - 50, tgui::bindHeight(m_gui) - 50};
+            const tgui::Layout2d maxSize{tgui::bindWidth(*m_gui) - 50, tgui::bindHeight(*m_gui) - 50};
             const tgui::Layout scaling = tgui::bindMin(1.f, tgui::bindMin((maxSize.x - extraSpace.x) / imageSize.x, (maxSize.y - extraSpace.y) / imageSize.y));
             if (resetSize)
             {
-                previewCanvas->onSizeChange.setEnabled(false);
-                previewCanvas->setSize({imageSize.x * scaling, imageSize.y * scaling});
-                previewCanvas->onSizeChange.setEnabled(true);
-
+                previewPicture->setSize({imageSize.x * scaling, imageSize.y * scaling});
                 textureWindow->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
             }
 
@@ -1916,38 +1901,40 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                 editBoxMiddleRect->onTextChange.setEnabled(true);
             }
 
-            tgui::Sprite sprite{*texture};
-            sprite.setSize({imageSize.x * scaling.getValue(), imageSize.y * scaling.getValue()});
+            previewPicture->getRenderer()->setTexture(*texture);
 
-            previewCanvas->clear(tgui::Color::Transparent);
-            previewCanvas->draw(sprite);
+            for (auto& separator : *separators)
+                textureWindow->remove(separator);
+            separators->clear();
 
             if ((middleRect != tgui::UIntRect{}) && (middleRect != tgui::UIntRect{0, 0, imageSize.x, imageSize.y}))
             {
-                std::vector<sf::Vertex> lines;
+                std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> lines;
                 if ((middleRect.left != 0) || (middleRect.width != imageSize.x))
                 {
-                    lines.push_back({sf::Vector2f{middleRect.left + 0.5f, 0} * scaling.getValue(), sf::Color{255, 128, 255}});
-                    lines.push_back({sf::Vector2f{middleRect.left + 0.5f, static_cast<float>(imageSize.y)} * scaling.getValue(), sf::Color{255, 128, 255}});
-
-                    lines.push_back({sf::Vector2f{middleRect.left + middleRect.width - 0.5f, 0} * scaling.getValue(), sf::Color{255, 128, 255}});
-                    lines.push_back({sf::Vector2f{middleRect.left + middleRect.width - 0.5f, static_cast<float>(imageSize.y)} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.emplace_back(tgui::Vector2f{static_cast<float>(middleRect.left), 0} * scaling.getValue(),
+                                       tgui::Vector2f{static_cast<float>(middleRect.left), static_cast<float>(imageSize.y)} * scaling.getValue());
+                    lines.emplace_back(tgui::Vector2f{static_cast<float>(middleRect.left + middleRect.width), 0} * scaling.getValue(),
+                                       tgui::Vector2f{static_cast<float>(middleRect.left + middleRect.width), static_cast<float>(imageSize.y)} * scaling.getValue());
                 }
-
                 if ((middleRect.top != 0) || (middleRect.height != imageSize.y))
                 {
-                    lines.push_back({sf::Vector2f{0, middleRect.top + 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
-                    lines.push_back({sf::Vector2f{static_cast<float>(imageSize.x), middleRect.top + 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
-
-                    lines.push_back({sf::Vector2f{0, middleRect.top + middleRect.height - 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
-                    lines.push_back({sf::Vector2f{static_cast<float>(imageSize.x), middleRect.top + middleRect.height - 0.5f} * scaling.getValue(), sf::Color{255, 128, 255}});
+                    lines.emplace_back(tgui::Vector2f{0, static_cast<float>(middleRect.top)} * scaling.getValue(),
+                                       tgui::Vector2f{static_cast<float>(imageSize.x), static_cast<float>(middleRect.top)} * scaling.getValue());
+                    lines.emplace_back(tgui::Vector2f{0, static_cast<float>(middleRect.top + middleRect.height)} * scaling.getValue(),
+                                       tgui::Vector2f{static_cast<float>(imageSize.x), static_cast<float>(middleRect.top + middleRect.height)} * scaling.getValue());
                 }
 
-                if (!lines.empty())
-                    previewCanvas->draw(lines.data(), lines.size(), sf::Lines);
+                for (const auto& line : lines)
+                {
+                    auto separator = tgui::SeparatorLine::create();
+                    separator->setPosition(previewPicture->getPosition() + line.first);
+                    separator->setSize(std::max(line.second.x - line.first.x, 1.f), std::max(line.second.y - line.first.y, 1.f));
+                    separator->getRenderer()->setColor({255, 128, 255});
+                    textureWindow->add(separator);
+                    separators->push_back(separator);
+                }
             }
-
-            previewCanvas->display();
         };
 
         editBoxPartRect->onTextChange([=]{
@@ -1955,9 +1942,6 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         });
         editBoxMiddleRect->onTextChange([=]{
             updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()), deserializeRect(editBoxMiddleRect->getText()), false, false, true);
-        });
-        previewCanvas->onSizeChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()), deserializeRect(editBoxMiddleRect->getText()), false, false, false);
         });
 
         tgui::Texture originalTexture;
@@ -2166,7 +2150,7 @@ void GuiBuilder::menuBarCallbackQuit()
     while (!m_forms.empty())
         closeForm(m_forms[0].get());
 
-    m_window.close();
+    m_window->close();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

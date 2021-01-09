@@ -48,7 +48,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     Texture::Texture(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middlePart)
     {
         load(texture, partRect, middlePart);
@@ -57,7 +57,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& other) :
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         m_shader          {other.m_shader},
 #endif
         m_data            {other.m_data},
@@ -75,7 +75,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(Texture&& other) noexcept :
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
         m_shader          {std::move(other.m_shader)},
 #endif
         m_data            {std::move(other.m_data)},
@@ -107,7 +107,7 @@ namespace tgui
         {
             Texture temp{other};
 
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
             std::swap(m_shader,           temp.m_shader);
 #endif
             std::swap(m_data,             temp.m_data);
@@ -128,7 +128,7 @@ namespace tgui
     {
         if (this != &other)
         {
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
             m_shader           = std::move(other.m_shader);
 #endif
             m_data             = std::move(other.m_data);
@@ -190,7 +190,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     void Texture::load(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middleRect)
     {
         if (getData() && (m_destructCallback != nullptr))
@@ -281,7 +281,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
     void Texture::setShader(sf::Shader* shader)
     {
         m_shader = shader;
@@ -335,7 +335,7 @@ namespace tgui
         return (m_id == right.m_id)
             && (!m_id.empty() || (m_data == right.m_data))
             && (m_middleRect == right.m_middleRect)
-#if TGUI_BUILD_WITH_SFML
+#if TGUI_HAS_BACKEND_SFML
             && (m_shader == right.m_shader)
 #endif
             && (m_color == right.m_color);
