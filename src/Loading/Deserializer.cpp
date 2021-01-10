@@ -402,7 +402,7 @@ namespace tgui
 
         ObjectConverter deserializeRendererData(const String& renderer)
         {
-            std::stringstream ss{renderer.toAnsiString()};
+            std::stringstream ss{renderer.toStdString()};
             auto node = DataIO::parse(ss);
 
             // The root node should contain exactly one child which is the node we need

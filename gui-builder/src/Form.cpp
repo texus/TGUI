@@ -588,7 +588,7 @@ void Form::load()
         if (!tgui::getResourcePath().empty())
             filenameInResources = (tgui::Filesystem::Path(tgui::getResourcePath()) / getFilename()).asString();
 
-        std::ifstream in{filenameInResources.toAnsiString()};
+        std::ifstream in{filenameInResources.toStdString()};
         if (!in.is_open())
             throw e;
 

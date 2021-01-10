@@ -229,7 +229,7 @@ namespace tgui
 
         std::vector<LineTexture> textures;
         for (std::size_t i = 0; i < m_lines.size(); ++i)
-            textures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toAnsiString(), m_textColor, 0));
+            textures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toStdString(), m_textColor, 0));
 
         // If an outline exists then create textures for it as well
         std::vector<LineTexture> outlineTextures;
@@ -238,7 +238,7 @@ namespace tgui
             TTF_SetFontOutline(font, m_fontOutline);
 
             for (std::size_t i = 0; i < m_lines.size(); ++i)
-                outlineTextures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toAnsiString(), m_outlineColor, m_fontOutline));
+                outlineTextures.push_back(createLineTexture(font, static_cast<int>(i * lineSpacing), m_lines[i].toStdString(), m_outlineColor, m_fontOutline));
 
             // Reset the outline again so that we can always assume that it is set to 0 everywhere
             TTF_SetFontOutline(font, 0);

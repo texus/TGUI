@@ -34,7 +34,7 @@ namespace tgui
     bool BackendTextureSFML::loadFromFile(const String& filename)
     {
         m_image = std::make_unique<sf::Image>();
-        if (!m_image->loadFromFile(filename.toAnsiString()))
+        if (!m_image->loadFromFile(filename.toStdString()))
         {
             m_image = nullptr;
             return false;

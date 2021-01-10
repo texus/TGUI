@@ -77,7 +77,7 @@ namespace tgui
             {
                 if (pair.second.getType() == ObjectConverter::Type::RendererData)
                 {
-                    std::stringstream ss{ObjectConverter{pair.second}.getString().toAnsiString()};
+                    std::stringstream ss{ObjectConverter{pair.second}.getString().toStdString()};
                     auto rendererRootNode = DataIO::parse(ss);
 
                     // If there are braces around the renderer string, then the child node is the one we need
@@ -352,7 +352,7 @@ namespace tgui
         if (!getResourcePath().empty())
             filenameInResources = (Filesystem::Path(getResourcePath()) / filename).asString();
 
-        std::ifstream in{filenameInResources.toAnsiString()};
+        std::ifstream in{filenameInResources.toStdString()};
         if (!in.is_open())
             throw Exception{"Failed to open '" + filenameInResources + "' to load the widgets from it."};
 
@@ -384,7 +384,7 @@ namespace tgui
         std::stringstream stream;
         saveWidgetsToStream(stream);
 
-        std::ofstream out{filenameInResources.toAnsiString()};
+        std::ofstream out{filenameInResources.toStdString()};
         if (!out.is_open())
             throw Exception{"Failed to open '" + filenameInResources + "' for saving the widgets to it."};
 

@@ -237,7 +237,7 @@ namespace tgui
         else
 #endif
         {
-            std::ifstream file{fullFilename.toAnsiString()};
+            std::ifstream file{fullFilename.toStdString()};
             if (!file.is_open())
                 throw Exception{"Failed to open theme file '" + fullFilename + "'."};
 

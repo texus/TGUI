@@ -45,7 +45,7 @@ namespace tgui
     class TGUI_API Exception : public std::runtime_error {
     public:
         explicit Exception(const String& argument) :
-            std::runtime_error(argument.toAnsiString())
+            std::runtime_error(argument.toStdString())
         {
         }
     };

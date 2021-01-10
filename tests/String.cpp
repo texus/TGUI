@@ -110,6 +110,7 @@ TEST_CASE("[String]")
         REQUIRE(std::u32string(tgui::String(U"\U00010348")) == U"\U00010348");
 
         REQUIRE(tgui::String("xyz").toAnsiString() == "xyz");
+        REQUIRE(tgui::String("xyz").toStdString() == "xyz");
         REQUIRE(tgui::String(U"\u20AC").toWideString() == L"\u20AC");
         REQUIRE(tgui::String(U"\U00010348").toUtf16() == u"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf32() == U"\U00010348");

@@ -159,7 +159,7 @@ private:
 
         try
         {
-            std::stringstream ss{(U"l=[" + serializedColumn + U"];").toAnsiString()};
+            std::stringstream ss{(U"l=[" + serializedColumn + U"];").toStdString()};
             auto node = tgui::DataIO::parse(ss);
             if (node->propertyValuePairs["l"])
             {

@@ -62,7 +62,7 @@ namespace tgui
 
     bool String::attemptToInt(int& result) const
     {
-        const std::string ansiStr = toAnsiString();
+        const std::string& ansiStr = toStdString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
@@ -83,7 +83,7 @@ namespace tgui
 
     bool String::attemptToUInt(unsigned int& result) const
     {
-        const std::string ansiStr = toAnsiString();
+        const std::string ansiStr = toStdString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
@@ -104,7 +104,7 @@ namespace tgui
 
     bool String::attemptToFloat(float& result) const
     {
-        const std::string ansiStr = toAnsiString();
+        const std::string ansiStr = toStdString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
@@ -481,7 +481,7 @@ namespace tgui
 
     String::operator std::string() const
     {
-        return toAnsiString();
+        return toStdString();
     }
 
     String::operator std::wstring() const
@@ -497,6 +497,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string String::toAnsiString() const
+    {
+        return toStdString();
+    }
+
+    std::string String::toStdString() const
     {
         return utf::convertUtf32toStdStringUtf8(m_string);
     }

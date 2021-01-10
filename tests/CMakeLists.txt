@@ -105,6 +105,7 @@ endif()
 set(TEST_SOURCES ${TEST_SOURCES} main.cpp) # Main file has to be last and can't be part of unity build
 
 add_executable(tests ${TEST_SOURCES})
+target_compile_definitions(tests PRIVATE TGUI_NO_DEPRECATED_WARNINGS)
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui tgui-sfml-interface)
 

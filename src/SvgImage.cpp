@@ -40,7 +40,7 @@ namespace tgui
 
     SvgImage::SvgImage(const String& filename)
     {
-        m_svg = nsvgParseFromFile(filename.toAnsiString().c_str(), "px", 96);
+        m_svg = nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
         if (!m_svg)
         {
             TGUI_PRINT_WARNING("Failed to load svg: " << filename);

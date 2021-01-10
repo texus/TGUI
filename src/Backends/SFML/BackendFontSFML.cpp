@@ -33,7 +33,7 @@ namespace tgui
 
     bool BackendFontSFML::loadFromFile(const String& filename)
     {
-        return m_font.loadFromFile(filename.toAnsiString());
+        return m_font.loadFromFile(filename.toStdString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,12 +33,12 @@
 void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2)
 {
     sf::Image image1;
-    if (!image1.loadFromFile(filename1.toAnsiString()))
-        REQUIRE(image1.loadFromFile(filename1.toAnsiString()));
+    if (!image1.loadFromFile(filename1.toStdString()))
+        REQUIRE(image1.loadFromFile(filename1.toStdString()));
 
     sf::Image image2;
-    if (!image2.loadFromFile(filename2.toAnsiString()))
-        REQUIRE(image2.loadFromFile(filename2.toAnsiString()));
+    if (!image2.loadFromFile(filename2.toStdString()))
+        REQUIRE(image2.loadFromFile(filename2.toStdString()));
 
     if (image1.getSize() != image2.getSize())
         REQUIRE(image1.getSize() == image2.getSize());
@@ -70,11 +70,11 @@ bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFil
     bool result;
 
     // Open the two files.
-    leftFile.open(leftFileName.toAnsiString().c_str(), std::ios_base::in | std::ios_base::binary);
+    leftFile.open(leftFileName.toStdString().c_str(), std::ios_base::in | std::ios_base::binary);
     if (!leftFile.is_open())
         return false;
 
-    rightFile.open(rightFileName.toAnsiString().c_str(), std::ios_base::in | std::ios_base::binary);
+    rightFile.open(rightFileName.toStdString().c_str(), std::ios_base::in | std::ios_base::binary);
     if (!rightFile.is_open())
     {
         leftFile.close();

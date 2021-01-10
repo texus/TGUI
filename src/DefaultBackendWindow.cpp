@@ -53,7 +53,7 @@ namespace tgui
     {
     public:
         BackendWindowSFML(unsigned int width, unsigned int height, const String& title) :
-            m_window({width, height}, title.toAnsiString()),
+            m_window({width, height}, title.toStdString()),
             m_gui(std::make_unique<GuiSFML>(m_window))
         {
         }
@@ -126,7 +126,7 @@ namespace tgui
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #endif
-            m_window = SDL_CreateWindow(title.toAnsiString().c_str(),
+            m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       width, height,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -192,7 +192,7 @@ namespace tgui
 
         void setIcon(const String& filename)
         {
-            SDL_Surface* icon = IMG_Load(filename.toAnsiString().c_str());
+            SDL_Surface* icon = IMG_Load(filename.toStdString().c_str());
             if (!icon)
                 return;
 

@@ -45,7 +45,7 @@ namespace tgui
 
     bool BackendTextureSDL::loadFromFile(const String& filename)
     {
-        SDL_Surface* image = IMG_Load(filename.toAnsiString().c_str());
+        SDL_Surface* image = IMG_Load(filename.toStdString().c_str());
         if (!image)
             return false;
 

@@ -460,7 +460,7 @@ namespace tgui
         if (!assetManager)
             return false;
 
-        AAsset* asset = AAssetManager_open(assetManager, filename.toAnsiString().c_str(), AASSET_MODE_UNKNOWN);
+        AAsset* asset = AAssetManager_open(assetManager, filename.toStdString().c_str(), AASSET_MODE_UNKNOWN);
         if (!asset)
             return false;
 

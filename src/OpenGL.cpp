@@ -61,7 +61,7 @@ namespace tgui
             std::string fileStr = file;
             TGUI_PRINT_WARNING("An internal OpenGL call failed in "
                                + fileStr.substr(fileStr.find_last_of("\\/") + 1)
-                               + "(" + String(line).toAnsiString() + ")."
+                               + "(" + String(line).toStdString() + ")."
                                + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
         }
 #else

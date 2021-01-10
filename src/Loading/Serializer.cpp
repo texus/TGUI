@@ -233,7 +233,7 @@ namespace tgui
                 String strValue;
                 if (pair.second.getType() == ObjectConverter::Type::RendererData)
                 {
-                    std::stringstream ss{ObjectConverter{pair.second}.getString().toAnsiString()};
+                    std::stringstream ss{ObjectConverter{pair.second}.getString().toStdString()};
                     node->children.push_back(DataIO::parse(ss));
                     node->children.back()->name = pair.first;
                 }

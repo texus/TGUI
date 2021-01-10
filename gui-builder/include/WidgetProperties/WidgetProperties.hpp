@@ -107,7 +107,7 @@ struct WidgetProperties
     {
         try
         {
-            std::stringstream ss{("list = " + listStr + ";").toAnsiString()};
+            std::stringstream ss{("list = " + listStr + ";").toStdString()};
             auto node = tgui::DataIO::parse(ss);
 
             if (node->propertyValuePairs["list"])

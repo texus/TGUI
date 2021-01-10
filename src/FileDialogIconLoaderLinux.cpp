@@ -384,7 +384,7 @@ namespace tgui
     void FileDialogIconLoaderLinux::loadMIMEToIconsMap(const String& filename)
     {
         std::string line;
-        std::ifstream fileStream(filename.toAnsiString());
+        std::ifstream fileStream(filename.toStdString());
         while (std::getline(fileStream, line))
         {
             const std::size_t colonPos = line.find(':');
@@ -505,14 +505,14 @@ namespace tgui
         bool version2 = false;
         for (const auto& dir : m_dataDirs)
         {
-            fileStream.open((dir + "/mime/globs2").toAnsiString());
+            fileStream.open((dir + "/mime/globs2").toStdString());
             if (fileStream.good())
             {
                 version2 = true;
                 break;
             }
 
-            fileStream.open((dir + "/mime/globs").toAnsiString());
+            fileStream.open((dir + "/mime/globs").toStdString());
             if (fileStream.good())
                 break;
         }

@@ -146,7 +146,7 @@ namespace tgui
     TTF_Font* BackendFontSDL::loadInternalFont(unsigned int characterSize) const
     {
         if (!m_filename.empty())
-            return TTF_OpenFont(m_filename.toAnsiString().c_str(), characterSize);
+            return TTF_OpenFont(m_filename.toStdString().c_str(), characterSize);
 
         if ((m_memoryAddress != nullptr) && (m_memorySizeInBytes > 0))
         {

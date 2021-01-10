@@ -64,8 +64,7 @@ namespace tgui
     /// The interface is similar to std::basic_string, but functions accept char, wchar_t, char8_t, char16_t and char32_t.
     /// Some extra helper functions are also provided to e.g. convert the string to an integer or float or to lowercase.
     ///
-    /// Note that when converting to std::string, an UTF-8 encoded string will be returned, even by the asAnsiString function.
-    /// This is done to be able to use UTF-8 without c++20 support (the toUtf8 function always returns an std::u8string).
+    /// Note that when converting to std::string, an UTF-8 encoded string will be returned.
     /// Similarly, when passing an std::string or const char* to this class, the encoding is assumed to be UTF-8.
     ///
     /// Data is stored in UTF-32, so any parameter or operator using a different encoding will have to convert the string
@@ -357,7 +356,8 @@ namespace tgui
             return m_string;
         }
 
-        std::string toAnsiString() const;
+        TGUI_DEPRECATED("Use toStdString instead") std::string toAnsiString() const;
+        std::string toStdString() const;
         std::wstring toWideString() const;
         std::u16string toUtf16() const;
         const std::u32string& toUtf32() const
@@ -371,9 +371,9 @@ namespace tgui
             return utf::convertUtf32toUtf8(m_string);
         }
 #else
-        std::string toUtf8() const
+        TGUI_DEPRECATED("Use toStdString instead") std::string toUtf8() const
         {
-            return toAnsiString();
+            return toStdString();
         }
 #endif
 
