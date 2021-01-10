@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseThemeLoader::injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const String& path) const
+    void BaseThemeLoader::injectThemePath(const std::unique_ptr<DataIO::Node>& node, const String& path) const
     {
         for (const auto& pair : node->propertyValuePairs)
         {
@@ -61,7 +61,8 @@ namespace tgui
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
                     continue;
 
-                // Insert the path into the filename unless the filename is already an absolute path
+                // Insert the path into the filename unless the filename is already an absolute path.
+                // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
                 if (pair.second->value[0] != '"')
                 {
                 #ifdef TGUI_SYSTEM_WINDOWS
@@ -87,13 +88,7 @@ namespace tgui
         }
 
         for (const auto& child : node->children)
-        {
-            if (handledSections.find(child.get()) == handledSections.end())
-            {
-                handledSections.insert(child.get());
-                injectThemePath(handledSections, child, path);
-            }
-        }
+            injectThemePath(child, path);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,10 +254,7 @@ namespace tgui
 
         // Turn texture and font filenames into paths relative to the theme file
         if (!resourcePath.empty())
-        {
-            std::set<const DataIO::Node*> handledSections;
-            injectThemePath(handledSections, root, resourcePath);
-        }
+            injectThemePath(root, resourcePath);
 
         return root;
     }

@@ -286,17 +286,7 @@ namespace tgui
 
             // If there are no quotes then the value just contains a filename
             if (value[0] != '"')
-            {
-                // Load the texture but insert the resource path into the filename unless the filename is an absolute path
-#ifdef TGUI_SYSTEM_WINDOWS
-                if ((value[0] != '/') && (value[0] != '\\') && ((value.size() <= 1) || (value[1] != ':')))
-#else
-                if (value[0] != '/')
-#endif
-                    return Texture{getResourcePath() + value};
-                else
-                    return Texture{value};
-            }
+                return Texture{value};
 
             String::const_iterator c = value.begin();
             ++c; // Skip the opening quote

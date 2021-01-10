@@ -358,7 +358,18 @@ namespace tgui
 
         std::stringstream stream;
         stream << in.rdbuf();
-        loadWidgetsFromStream(stream, replaceExisting);
+
+        const auto rootNode = DataIO::parse(stream);
+
+        // All files need to be loaded relative to the form file
+        const auto& parentPath = Filesystem::Path(filename).getParentPath();
+        if (!parentPath.isEmpty())
+        {
+            std::map<String, bool> checkedFilenames;
+            injectFormFilePath(rootNode, parentPath.asString(), checkedFilenames);
+        }
+
+        loadWidgetsImpl(rootNode, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,54 +396,7 @@ namespace tgui
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
         const auto rootNode = DataIO::parse(stream);
-
-        // Replace the existing widgets by the ones that will be loaded if requested
-        if (replaceExisting)
-            removeAllWidgets();
-
-        if (rootNode->propertyValuePairs.size() != 0)
-            Widget::load(rootNode, {});
-
-        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
-        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
-        for (const auto& node : rootNode->children)
-        {
-            auto nameSeparator = node->name.find('.');
-            auto widgetType = node->name.substr(0, nameSeparator);
-
-            String objectName;
-            if (nameSeparator != String::npos)
-                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
-
-            if (widgetType == "Renderer")
-            {
-                if (!objectName.empty())
-                    availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
-            }
-            else // Section describes a widget
-            {
-                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
-                if (constructor)
-                {
-                    Widget::Ptr widget = constructor();
-                    add(widget, objectName);
-
-                    // We delay loading of widgets until they have all been added to the container.
-                    // Otherwise there would be issues if their position and size layouts refer to
-                    // widgets that have not yet been loaded.
-                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
-                }
-                else
-                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
-            }
-        }
-
-        for (auto& pair : widgetsToLoad)
-        {
-            Widget::Ptr& widget = pair.first;
-            const auto& node = pair.second.get();
-            widget->load(node, availableRenderers);
-        }
+        loadWidgetsImpl(rootNode, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1266,6 +1230,159 @@ namespace tgui
 
         if (m_textSize != 0)
             widgetPtr->setTextSize(m_textSize);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::injectFormFilePath(const std::unique_ptr<DataIO::Node>& node, const String& path, std::map<String, bool>& checkedFilenames) const
+    {
+        for (const auto& pair : node->propertyValuePairs)
+        {
+            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
+            {
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("none") || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                    continue;
+
+                // Skip absolute paths
+                if (pair.second->value[0] != '"')
+                {
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[0] == '/') || (pair.second->value[0] == '\\') || ((pair.second->value.size() > 1) && (pair.second->value[1] == ':')))
+                #else
+                    if (pair.second->value[0] == '/')
+                #endif
+                        continue;
+                }
+                else // The filename is between quotes
+                {
+                    if (pair.second->value.size() <= 1)
+                        continue;
+
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[1] == '/') || (pair.second->value[1] == '\\') || ((pair.second->value.size() > 2) && (pair.second->value[2] == ':')))
+                #else
+                    if (pair.second->value[1] == '/')
+                #endif
+                        continue;
+                }
+
+                String filename;
+                if (pair.second->value[0] != '"')
+                    filename = pair.second->value;
+                else
+                {
+                    // The filename is surrounded by quotes, with optional options behind it
+                    const auto endQuotePos = pair.second->value.find('"', 1);
+                    TGUI_ASSERT(endQuotePos != String::npos, "End quote must exist in Container::injectFormFilePath, DataIO could not accept the value otherwise");
+                    filename = pair.second->value.substr(1, endQuotePos - 1);
+                }
+
+                // If this image already appeared in the form file, then we already know whether it exists or not,
+                // and we would have already warned if it is located in the wrong folder.
+                auto checkedFileIt = checkedFilenames.find(filename);
+                if ((checkedFileIt != checkedFilenames.end()) && !checkedFileIt->second)
+                    continue; // File found on wrong location, don't inject path to new directory
+
+                // Check if the file is located where it should, and warn if it is located on the old search location
+                if (checkedFileIt == checkedFilenames.end())
+                {
+                    bool canInjectPath = true;
+                    if (!Filesystem::fileExists(Filesystem::Path(getResourcePath()) / path / filename)
+                     && Filesystem::fileExists(Filesystem::Path(getResourcePath()) / filename))
+                    {
+                        canInjectPath = false;
+                        TGUI_PRINT_WARNING(U"Form file contained '" + filename
+                            + U"', which TGUI now interprets as '" + (Filesystem::Path(getResourcePath()) / path / filename).asString()
+                            + U"'. File was however found at '" + (Filesystem::Path(getResourcePath()) / filename).asString()
+                            + U"', which is the deprecated search location. Loading will fail in future TGUI versions.");
+                    }
+
+                    checkedFilenames[filename] = canInjectPath;
+                    if (!canInjectPath)
+                        continue;
+                }
+
+                // Insert the path into the filename unless the filename is already an absolute path.
+                // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
+                if (pair.second->value[0] != '"')
+                {
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
+                #else
+                    if (pair.second->value[0] != '/')
+                #endif
+                        pair.second->value = path + '/' + pair.second->value;
+                }
+                else // The filename is between quotes
+                {
+                    if (pair.second->value.size() <= 1)
+                        continue;
+
+                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+                #else
+                    if (pair.second->value[1] != '/')
+                #endif
+                        pair.second->value = '"' + path + '/' + pair.second->value.substr(1);
+                }
+            }
+        }
+
+        for (const auto& child : node->children)
+            injectFormFilePath(child, path, checkedFilenames);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
+    {
+        // Replace the existing widgets by the ones that will be loaded if requested
+        if (replaceExisting)
+            removeAllWidgets();
+
+        if (rootNode->propertyValuePairs.size() != 0)
+            Widget::load(rootNode, {});
+
+        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
+        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
+        for (const auto& node : rootNode->children)
+        {
+            auto nameSeparator = node->name.find('.');
+            auto widgetType = node->name.substr(0, nameSeparator);
+
+            String objectName;
+            if (nameSeparator != String::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if (widgetType == "Renderer")
+            {
+                if (!objectName.empty())
+                    availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
+            }
+            else // Section describes a widget
+            {
+                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
+                if (constructor)
+                {
+                    Widget::Ptr widget = constructor();
+                    add(widget, objectName);
+
+                    // We delay loading of widgets until they have all been added to the container.
+                    // Otherwise there would be issues if their position and size layouts refer to
+                    // widgets that have not yet been loaded.
+                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
+                }
+                else
+                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+            }
+        }
+
+        for (auto& pair : widgetsToLoad)
+        {
+            Widget::Ptr& widget = pair.first;
+            const auto& node = pair.second.get();
+            widget->load(node, availableRenderers);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
