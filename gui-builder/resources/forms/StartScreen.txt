@@ -51,7 +51,7 @@ Panel.MainPanel {
             Size = (48, 48);
 
             Renderer {
-                Texture = "resources/NewFile.png";
+                Texture = "../NewFile.png";
                 TransparentTexture = false;
             }
         }
@@ -80,7 +80,7 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            Texture = "resources/Trash.png";
+            Texture = "../Trash.png";
             TransparentTexture = false;
         }
     }
@@ -146,7 +146,7 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            Texture = "resources/Trash.png";
+            Texture = "../Trash.png";
             TransparentTexture = false;
         }
     }
@@ -157,7 +157,7 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            Texture = "resources/Trash.png";
+            Texture = "../Trash.png";
             TransparentTexture = false;
         }
     }
@@ -168,7 +168,7 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            Texture = "resources/Trash.png";
+            Texture = "../Trash.png";
             TransparentTexture = false;
         }
     }
@@ -179,7 +179,7 @@ Panel.MainPanel {
         Visible = false;
 
         Renderer {
-            Texture = "resources/Trash.png";
+            Texture = "../Trash.png";
             TransparentTexture = false;
         }
     }
@@ -206,7 +206,7 @@ Panel.MainPanel {
             Size = (48, 48);
 
             Renderer {
-                Texture = "resources/LoadFile.png";
+                Texture = "../LoadFile.png";
                 TransparentTexture = false;
             }
         }

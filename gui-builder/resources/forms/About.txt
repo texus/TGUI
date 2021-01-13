@@ -10,7 +10,7 @@ Picture.Widget1 {
     Size = (64, 64);
 
     Renderer {
-        Texture = "resources/Icon.png";
+        Texture = "../Icon.png";
         TransparentTexture = false;
     }
 }

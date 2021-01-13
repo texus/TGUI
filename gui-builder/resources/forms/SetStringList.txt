@@ -109,7 +109,7 @@ Button.BtnAdd {
 }
 
 BitmapButton.BtnArrowUp {
-    Image = "resources/ArrowUp.png";
+    Image = "../ArrowUp.png";
     ImageScaling = 0;
     Position = (320, 30);
     Size = (23, 36);
@@ -118,7 +118,7 @@ BitmapButton.BtnArrowUp {
 }
 
 BitmapButton.BtnArrowDown {
-    Image = "resources/ArrowDown.png";
+    Image = "../ArrowDown.png";
     ImageScaling = 0;
     Position = (320, 71);
     Size = (23, 36);

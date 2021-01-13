@@ -124,7 +124,7 @@ Picture.InfoPartRect {
     }
 
     Renderer {
-        Texture = "resources/Info.png";
+        Texture = "../Info.png";
         TransparentTexture = false;
     }
 }
@@ -148,6 +148,6 @@ Picture.InfoMiddleRect {
     }
 
     Renderer {
-        Texture = "resources/Info.png";
+        Texture = "../Info.png";
     }
 }
