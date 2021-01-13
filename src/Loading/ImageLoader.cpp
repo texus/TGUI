@@ -30,11 +30,13 @@
 #   pragma GCC diagnostic ignored "-Wold-style-cast"
 #   pragma GCC diagnostic ignored "-Wsign-compare"
 #   pragma GCC diagnostic ignored "-Wdouble-promotion"
+#   pragma GCC diagnostic ignored "-Wunused-function"
 #   if !defined(__clang__)
 #       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #   endif
 #endif
 
+#define STB_IMAGE_STATIC
 #define STBI_WINDOWS_UTF8
 #define STB_IMAGE_IMPLEMENTATION
 #include <TGUI/extlibs/stb/stb_image.h>
