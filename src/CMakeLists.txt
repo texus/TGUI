@@ -2,6 +2,7 @@ set(TGUI_SRC
     Animation.cpp
     Backend.cpp
     BackendRenderTarget.cpp
+    BackendTexture.cpp
     Color.cpp
     Container.cpp
     Cursor.cpp
@@ -32,6 +33,7 @@ set(TGUI_SRC
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
+    Loading/ImageLoader.cpp
     Loading/Serializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp

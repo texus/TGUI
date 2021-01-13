@@ -90,7 +90,7 @@ namespace tgui
         auto pixels = std::make_unique<unsigned char[]>(size.x * size.y * 4);
         nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY), pixels.get(), size.x, size.y, size.x * 4);
 
-        texture.loadFromPixelData(size, pixels.get());
+        texture.load(size, std::move(pixels));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

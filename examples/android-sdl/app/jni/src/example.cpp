@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <SDL.h>
-#include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_opengles2.h>
 
@@ -120,15 +119,13 @@ int main(int, char**)
 
     glClearColor(0.8f, 0.8f, 0.8f, 1.f);
 
-    // SDL_Image and SDL_TTF need to be initialized before using TGUI
-    IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+    // SDL_TTF needs to be initialized before using TGUI
     TTF_Init();
 
     run_application(window);
 
-    // All TGUI resources must be destroyed before SDL_Image and SDL_TTF are cleaned up
+    // All TGUI resources must be destroyed before SDL_TTF is cleaned up
     TTF_Quit();
-    IMG_Quit();
 
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);

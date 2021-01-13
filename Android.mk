@@ -11,10 +11,9 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := tgui
 
 SDL_PATH := $(LOCAL_PATH)/../SDL
-SDL_IMAGE_PATH := $(LOCAL_PATH)/../SDL_image
 SDL_TTF_PATH := $(LOCAL_PATH)/../SDL_ttf
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/include $(SDL_PATH)/include $(SDL_IMAGE_PATH) $(SDL_TTF_PATH)
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include $(SDL_PATH)/include $(SDL_TTF_PATH)
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 
@@ -27,7 +26,7 @@ LOCAL_SRC_FILES := \
         $(wildcard $(LOCAL_PATH)/src/Widgets/*.cpp) \
     )
 
-LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_ttf
+LOCAL_SHARED_LIBRARIES := SDL2 SDL2_ttf
 
 LOCAL_CFLAGS += \
     -Wall \

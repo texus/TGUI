@@ -1,11 +1,10 @@
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake_modules)
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 # Link to SDL and set include and library search directories
-target_link_libraries(tgui PRIVATE SDL2::Core SDL2::Image SDL2::TTF)
+target_link_libraries(tgui PRIVATE SDL2::Core SDL2::TTF)
 
 # Add the backend source files to the library
 target_sources(tgui PRIVATE
@@ -20,7 +19,7 @@ target_sources(tgui PRIVATE
 )
 
 add_library(tgui-sdl-interface INTERFACE)
-target_link_libraries(tgui-sdl-interface INTERFACE SDL2::Core SDL2::Image SDL2::TTF SDL2::Main)
+target_link_libraries(tgui-sdl-interface INTERFACE SDL2::Core SDL2::TTF SDL2::Main)
 
 # Also link to OpenGL or OpenGL ES
 if(NOT TGUI_USE_GLES)

@@ -29,6 +29,10 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/TextureManager.hpp>
 #include <TGUI/BackendTexture.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
+
+#include <memory>
+#include <cstdint>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,7 +41,12 @@ namespace tgui
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTextureBase& backendTexture, const String& filename)
         {
-            return backendTexture.loadFromFile(filename);
+            Vector2u imageSize;
+            auto pixelPtr = ImageLoader::loadFromFile(filename, imageSize);
+            if (!pixelPtr)
+                return false;
+
+            return backendTexture.load(imageSize, std::move(pixelPtr));
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,26 +209,61 @@ namespace tgui
         }
 
         m_data = nullptr;
-        auto data = std::make_shared<TextureData>();
-        data->backendTexture = getBackend()->createTexture();
-        data->backendTexture->loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()); /// TODO: Allow reusing data based on address of input texture?
-
-        m_id = "";
-        setTextureData(data, partRect, middleRect);
+        loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr(), partRect, middleRect);
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Texture::load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect, const UIntRect& middleRect)
     {
+        try
+        {
+            loadFromPixelData(size, pixels, partRect, middleRect);
+            return true;
+        }
+        catch (const Exception&)
+        {
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::loadFromMemory(const std::uint8_t* fileData, std::size_t fileDataSize, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)
+    {
         auto data = std::make_shared<TextureData>();
         data->backendTexture = getBackend()->createTexture();
-        if (!data->backendTexture->loadFromPixelData(size, pixels))
-            return false;
+
+        Vector2u imageSize;
+        auto pixelPtr = ImageLoader::loadFromMemory(fileData, fileDataSize, imageSize);
+        if (!pixelPtr)
+            throw Exception{"Failed to load texture from provided memory location (" + String(fileDataSize) + " bytes)"};
+
+        if (!data->backendTexture->load(imageSize, std::move(pixelPtr)))
+            throw Exception{"Failed to load texture from pixels that were loaded from file in memory"};
+
+        data->backendTexture->setSmooth(smooth);
 
         m_id = "";
         setTextureData(data, partRect, middleRect);
-        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)
+    {
+        auto data = std::make_shared<TextureData>();
+        data->backendTexture = getBackend()->createTexture();
+
+        auto pixelPtr = std::make_unique<std::uint8_t[]>(size.x * size.y * 4);
+        std::memcpy(pixelPtr.get(), pixels, size.x * size.y * 4);
+        if (!data->backendTexture->load(size, std::move(pixelPtr)))
+            throw Exception{"Failed to load texture from provided pixel data"};
+
+        data->backendTexture->setSmooth(smooth);
+
+        m_id = "";
+        setTextureData(data, partRect, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

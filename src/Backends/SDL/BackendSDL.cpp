@@ -358,7 +358,7 @@ namespace tgui
 
     void BackendSDL::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
     {
-        SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(const_cast<std::uint8_t*>(pixels)), static_cast<int>(size.x), static_cast<int>(size.y),
+        SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
             32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
         if (!surface)
             return;

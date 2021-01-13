@@ -68,6 +68,7 @@ namespace tgui
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         /// @param smooth     Enable smoothing on the texture
         ///
+        /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const char* id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
@@ -88,6 +89,7 @@ namespace tgui
         ///
         /// This constructor just calls the corresponding load function.
         ///
+        /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const String& id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
@@ -145,6 +147,7 @@ namespace tgui
         /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         /// @param smooth     Enable smoothing on the texture
         ///
+        /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const String& id,
                   const UIntRect& partRect = {},
@@ -161,6 +164,7 @@ namespace tgui
         ///
         /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
         ///
+        /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const sf::Texture& texture,
                   const UIntRect& partRect = {},
@@ -177,7 +181,37 @@ namespace tgui
         ///
         /// @return True on success, false if the backend failed to create the texture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
+        TGUI_DEPRECATED("Use loadFromPixelData instead") bool load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the texture from memory (data in memory should contain the entire file, not just the pixels)
+        ///
+        /// @param data       Pointer to the file in memory
+        /// @param dataSize   Amount of bytes of the file in memory
+        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
+        ///
+        /// @throw Exception when loading failed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the texture from an array of 32-bits RGBA pixels
+        ///
+        /// @param size       Width and height of the image to create
+        /// @param pixels     Pointer to array of size.x*size.y*4 bytes with RGBA pixels
+        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
+        ///
+        /// The pixels are copied by this function, you can free the buffer after calling this function.
+        ///
+        /// @throw Exception when loading failed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

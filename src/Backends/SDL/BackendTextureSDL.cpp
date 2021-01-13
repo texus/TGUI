@@ -25,10 +25,12 @@
 
 #include <TGUI/Backends/SDL/BackendTextureSDL.hpp>
 #include <TGUI/Backends/SDL/BackendSDL.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/OpenGL.hpp>
 
 #include <SDL.h>
-#include <SDL_image.h>
+
+#include <cstring> // memcpy
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,111 +45,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendTextureSDL::loadFromFile(const String& filename)
+    bool BackendTextureSDL::load(Vector2u size, std::unique_ptr<std::uint8_t[]> pixels)
     {
-        SDL_Surface* image = IMG_Load(filename.toStdString().c_str());
-        if (!image)
-            return false;
+        TGUI_ASSERT(pixels.get() && (size.x > 0) && (size.y > 0), "BackendTextureSDL::loadFromPixelDataImpl needs valid parameters");
 
-        GLenum textureFormat;
-        GLenum imageFormat;
-        const Uint8 bpp = image->format->BytesPerPixel * 8;
-        if (bpp == 32)
-        {
-            textureFormat = GL_RGBA8;
-            if (image->format->Rmask == 0x000000ff)
-                imageFormat = GL_RGBA;
-            else
-            {
-#if TGUI_USE_GLES
-                imageFormat = GL_RGBA;
-                SDL_Surface* surfaceBGRA = image;
-                image = SDL_ConvertSurfaceFormat(surfaceBGRA, SDL_PIXELFORMAT_RGBA32, 0);
-                SDL_FreeSurface(surfaceBGRA);
-                if (!image)
-                    return false;
-#else
-                imageFormat = GL_BGRA;
-#endif
-            }
-        }
-        else if (bpp == 24)
-        {
-            textureFormat = GL_RGB8;
-            if (image->format->Rmask == 0x000000ff)
-                imageFormat = GL_RGB;
-            else
-            {
-#if TGUI_USE_GLES
-                imageFormat = GL_RGB;
-                SDL_Surface* surfaceBGR = image;
-                image = SDL_ConvertSurfaceFormat(surfaceBGR, SDL_PIXELFORMAT_RGB24, 0);
-                SDL_FreeSurface(surfaceBGR);
-                if (!image)
-                    return false;
-#else
-                imageFormat = GL_BGR;
-#endif
-            }
-        }
-        else
-        {
-            TGUI_PRINT_WARNING("Failed to load image '" + filename + "'. Only 24bpp and 32bpp images are currently supported in BackendTextureSDL.");
-            return false;
-        }
-
-        releaseResources(); // Delete existing image and texture if one was previously loaded
+        releaseResources(); // Delete existing texture if one was previously loaded
 
         TGUI_GL_CHECK(glGenTextures(1, &m_textureId));
 
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromFile requires backend texture of type BackendSDL");
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL requires backend texture of type BackendSDL");
         std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
 
-        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, image->w, image->h, 0, imageFormat, GL_UNSIGNED_BYTE, image->pixels));
+        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.get()));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
-        m_image = image;
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BackendTextureSDL::loadFromPixelData(Vector2u size, const std::uint8_t* pixels)
-    {
-        SDL_Surface* image = SDL_CreateRGBSurfaceFrom(static_cast<void*>(const_cast<std::uint8_t*>(pixels)),
-            static_cast<int>(size.x), static_cast<int>(size.y), 32, 4 * static_cast<int>(size.x),
-            0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-        if (!image)
-            return false;
-
-        releaseResources(); // Delete existing image and texture if one was previously loaded
-
-        TGUI_GL_CHECK(glGenTextures(1, &m_textureId));
-
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL::loadFromPixelData requires backend texture of type BackendSDL");
-        std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
-
-        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image->w, image->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
-        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
-        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
-        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-        TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-
-        m_image = image;
-        return true;
+        return BackendTextureBase::load(size, std::move(pixels));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u BackendTextureSDL::getSize() const
     {
-        if (m_image)
-            return {static_cast<unsigned int>(m_image->w), static_cast<unsigned int>(m_image->h)};
-        else
-            return {0, 0};
+        return m_imageSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,23 +99,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendTextureSDL::isTransparentPixel(Vector2u pixel) const
-    {
-        if (!m_image)
-            return false;
-        if (m_image->format->BytesPerPixel != 4)
-            return false;
-
-        const auto offset = pixel.y * m_image->pitch + pixel.x * 4;
-        const std::uint32_t pixelValue = *reinterpret_cast<std::uint32_t*>(static_cast<std::uint8_t*>(m_image->pixels) + offset);
-
-        SDL_Color color;
-        SDL_GetRGBA(pixelValue, m_image->format, &color.r, &color.g, &color.b, &color.a);
-        return (color.a == 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     GLuint BackendTextureSDL::getInternalTexture() const
     {
         return m_textureId;
@@ -207,12 +112,6 @@ namespace tgui
         {
             TGUI_GL_CHECK(glDeleteTextures(1, &m_textureId));
             m_textureId = 0;
-        }
-
-        if (m_image)
-        {
-            SDL_FreeSurface(m_image);
-            m_image = nullptr;
         }
     }
 

@@ -162,7 +162,7 @@ namespace tgui
             }
         }
 
-        m_colorWheelTexture.load({colorWheelSize, colorWheelSize}, pixels.get());
+        m_colorWheelTexture.loadFromPixelData({colorWheelSize, colorWheelSize}, pixels.get());
         m_colorWheelSprite.setTexture(m_colorWheelTexture);
         pixels = nullptr;
 

@@ -48,22 +48,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the texture from a file
-        ///
-        /// @param filename  Filename of the image to load
-        ///
-        /// @return True if the image was loaded successfully, false on failure
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromFile(const String& filename) = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from an array of 32-bits RGBA pixels
         ///
         /// @param size   Width and height of the image to create
-        /// @param pixels Pointer to array of size.x*size.y*4 bytes with RGBA pixels, or a nullptr to create an empty texture
+        /// @param pixels Moved pointer to array of size.x*size.y*4 bytes with RGBA pixels, or nullptr to create an empty texture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromPixelData(Vector2u size, const std::uint8_t* pixels) = 0;
+        virtual bool load(Vector2u size, std::unique_ptr<std::uint8_t[]> pixels);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +86,14 @@ namespace tgui
         ///
         /// @return True when the pixel is transparent, false when it is not
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool isTransparentPixel(Vector2u pixel) const = 0;
+        bool isTransparentPixel(Vector2u pixel) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Vector2u m_imageSize;
+        std::unique_ptr<std::uint8_t[]> m_pixels;
     };
 }
 

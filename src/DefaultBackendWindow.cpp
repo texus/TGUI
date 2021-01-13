@@ -24,6 +24,7 @@
 
 
 #include <TGUI/DefaultBackendWindow.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/GuiBase.hpp>
 #include <TGUI/Event.hpp>
 
@@ -33,7 +34,6 @@
     #include <TGUI/Backends/SDL.hpp>
 
     #include <SDL.h>
-    #include <SDL_image.h>
     #include <SDL_ttf.h>
 
     #if TGUI_USE_GLES
@@ -96,9 +96,10 @@ namespace tgui
 
         void setIcon(const String& filename)
         {
-            sf::Image icon;
-            if (icon.loadFromFile(sf::String(filename)))
-                m_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+            Vector2u iconSize;
+            auto pixelPtr = ImageLoader::loadFromFile(filename, iconSize);
+            if (pixelPtr)
+                m_window.setIcon(iconSize.x, iconSize.y, pixelPtr.get());
         }
 
     private:
@@ -114,8 +115,6 @@ namespace tgui
         BackendWindowSDL(unsigned int width, unsigned int height, const String& title)
         {
             SDL_Init(SDL_INIT_VIDEO);
-
-            IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
             TTF_Init();
 
 #if TGUI_USE_GLES
@@ -149,8 +148,6 @@ namespace tgui
                 SDL_DestroyWindow(m_window);
 
             TTF_Quit();
-            IMG_Quit();
-
             SDL_Quit();
         }
 
@@ -192,7 +189,14 @@ namespace tgui
 
         void setIcon(const String& filename)
         {
-            SDL_Surface* icon = IMG_Load(filename.toStdString().c_str());
+            Vector2u iconSize;
+            auto pixelPtr = ImageLoader::loadFromFile(filename, iconSize);
+            if (!pixelPtr)
+                return;
+
+            SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(),
+                static_cast<int>(iconSize.x), static_cast<int>(iconSize.y), 32, 4 * static_cast<int>(iconSize.x),
+                SDL_PIXELFORMAT_RGBA32);
             if (!icon)
                 return;
 

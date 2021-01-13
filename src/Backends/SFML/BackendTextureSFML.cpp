@@ -31,38 +31,17 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendTextureSFML::loadFromFile(const String& filename)
-    {
-        m_image = std::make_unique<sf::Image>();
-        if (!m_image->loadFromFile(filename.toStdString()))
-        {
-            m_image = nullptr;
-            return false;
-        }
-
-        if (!m_texture.loadFromImage(*m_image))
-        {
-            m_image = nullptr;
-            return false;
-        }
-
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BackendTextureSFML::loadFromPixelData(Vector2u size, const std::uint8_t* pixels)
+    bool BackendTextureSFML::load(Vector2u size, std::unique_ptr<std::uint8_t[]> pixels)
     {
         if (Vector2u{m_texture.getSize()} != size)
         {
             if (!m_texture.create(size.x, size.y))
                 return false;
-
-            m_image = nullptr;
         }
 
-        m_texture.update(pixels);
-        return true;
+        m_texture.update(pixels.get());
+
+        return BackendTextureBase::load(size, std::move(pixels));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,16 +63,6 @@ namespace tgui
     bool BackendTextureSFML::isSmooth() const
     {
         return m_texture.isSmooth();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BackendTextureSFML::isTransparentPixel(Vector2u pixel) const
-    {
-        if (!m_image)
-            return false;
-
-        return (m_image->getPixel(pixel.x, pixel.y).a == 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

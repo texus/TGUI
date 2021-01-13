@@ -77,7 +77,14 @@ namespace tgui
             event.mouseWheel.y = static_cast<int>(m_lastMousePos.y);
         }
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wold-style-cast"  // SDL_TOUCH_MOUSEID is a define for "((Uint32)-1)"
+#endif
         if ((sdlEvent.type == SDL_MOUSEBUTTONDOWN) && (sdlEvent.button.which == SDL_TOUCH_MOUSEID))
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
         {
             // For touches, always send a mouse move event before the mouse press,
             // because widgets may assume that the mouse had to move to the clicked location first
