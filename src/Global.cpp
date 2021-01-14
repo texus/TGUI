@@ -25,11 +25,13 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Duration.hpp>
+#include <TGUI/Backend.hpp>
 #include <functional>
 #include <sstream>
 #include <locale>
 #include <cctype> // isspace
 #include <cmath> // abs
+#include <stdio.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -103,6 +105,51 @@ namespace tgui
     Duration getEditCursorBlinkRate()
     {
         return globalEditBlinkRate;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<std::uint8_t[]> readFileToMemory(const String& filename, std::size_t& fileSize)
+    {
+#ifdef TGUI_SYSTEM_ANDROID
+        // If the file does not start with a slash then load it from the assets
+        if (!filename.empty() && (filename[0] != '/'))
+        {
+            return getBackend()->readFileFromAndroidAssets(filename, fileSize);
+        }
+        else
+#endif
+        {
+            FILE* file;
+#if defined(_MSC_VER)
+            if (_wfopen_s(&file, filename.toWideString().c_str(), L"rb") != 0)
+                return nullptr;
+#else
+            file = fopen(filename.toStdString().c_str(), "rb");
+            if (!file)
+                return nullptr;
+#endif
+            fseek(file, 0, SEEK_END);
+            const long bytesInFile = ftell(file);
+            fseek(file, 0, SEEK_SET);
+
+            if (bytesInFile <= 0)
+            {
+                fclose(file);
+                return nullptr;
+            }
+
+            fileSize = static_cast<std::size_t>(bytesInFile);
+            auto buffer = std::make_unique<std::uint8_t[]>(fileSize);
+            if (fread(buffer.get(), 1, fileSize, file) != fileSize)
+            {
+                fclose(file);
+                return nullptr;
+            }
+
+            fclose(file);
+            return buffer;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

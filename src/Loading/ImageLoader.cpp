@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Loading/ImageLoader.hpp>
+#include <TGUI/Global.hpp>
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -31,11 +32,13 @@
 #   pragma GCC diagnostic ignored "-Wsign-compare"
 #   pragma GCC diagnostic ignored "-Wdouble-promotion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
+#   pragma GCC diagnostic ignored "-Wcast-align"
 #   if !defined(__clang__)
 #       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #   endif
 #endif
 
+#define STBI_NO_STDIO
 #define STB_IMAGE_STATIC
 #define STBI_WINDOWS_UTF8
 #define STB_IMAGE_IMPLEMENTATION
@@ -55,27 +58,12 @@ namespace tgui
 
     std::unique_ptr<std::uint8_t[]> ImageLoader::loadFromFile(const String& filename, Vector2u& imageSize)
     {
-        std::unique_ptr<std::uint8_t[]> pixelData = nullptr;
+        std::size_t fileSize;
+        auto fileContents = readFileToMemory(filename, fileSize);
+        if (!fileContents)
+            return nullptr;
 
-        int imgWidth;
-        int imgHeight;
-        int imgChannels;
-        stbi_uc* buffer = stbi_load(filename.toStdString().data(), &imgWidth, &imgHeight, &imgChannels, 4);
-        if (!buffer)
-            return pixelData;
-
-        if ((imgWidth > 0) && (imgHeight > 0))
-        {
-            const std::size_t pixelDataSize = static_cast<std::size_t>(4 * imgWidth * imgHeight);
-            pixelData = std::make_unique<std::uint8_t[]>(pixelDataSize);
-            std::memcpy(pixelData.get(), buffer, pixelDataSize);
-
-            imageSize.x = static_cast<unsigned int>(imgWidth);
-            imageSize.y = static_cast<unsigned int>(imgHeight);
-        }
-
-        stbi_image_free(buffer);
-        return pixelData;
+        return loadFromMemory(fileContents.get(), fileSize, imageSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +86,7 @@ namespace tgui
             std::memcpy(pixelData.get(), buffer, pixelDataSize);
 
             imageSize.x = static_cast<unsigned int>(imgWidth);
-            imageSize.x = static_cast<unsigned int>(imgHeight);
+            imageSize.y = static_cast<unsigned int>(imgHeight);
         }
 
         stbi_image_free(buffer);

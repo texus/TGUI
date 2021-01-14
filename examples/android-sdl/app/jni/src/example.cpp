@@ -130,4 +130,5 @@ int main(int, char**)
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
+    return 0;
 }

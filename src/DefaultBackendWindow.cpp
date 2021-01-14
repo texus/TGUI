@@ -58,17 +58,17 @@ namespace tgui
         {
         }
 
-        GuiBase* getGui() const
+        GuiBase* getGui() const override
         {
             return m_gui.get();
         }
 
-        bool isOpen() const
+        bool isOpen() const override
         {
             return m_window.isOpen();
         }
 
-        void close()
+        void close() override
         {
             m_window.close();
         }
@@ -89,15 +89,15 @@ namespace tgui
             m_window.display();
         }
 
-        void mainLoop()
+        void mainLoop() override
         {
             m_gui->mainLoop();
         }
 
-        void setIcon(const String& filename)
+        void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile(filename, iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((tgui::Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
             if (pixelPtr)
                 m_window.setIcon(iconSize.x, iconSize.y, pixelPtr.get());
         }
@@ -151,17 +151,17 @@ namespace tgui
             SDL_Quit();
         }
 
-        GuiBase* getGui() const
+        GuiBase* getGui() const override
         {
             return m_gui.get();
         }
 
-        bool isOpen() const
+        bool isOpen() const override
         {
             return m_windowOpen;
         }
 
-        void close()
+        void close() override
         {
             m_windowOpen = false;
         }
@@ -182,15 +182,15 @@ namespace tgui
             SDL_GL_SwapWindow(m_window);
         }
 
-        void mainLoop()
+        void mainLoop() override
         {
             m_gui->mainLoop();
         }
 
-        void setIcon(const String& filename)
+        void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile(filename, iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((tgui::Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
             if (!pixelPtr)
                 return;
 

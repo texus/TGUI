@@ -445,7 +445,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_SYSTEM_ANDROID
-    bool BackendSFML::readFileFromAndroidAssets(const String& filename, std::stringstream& fileContents) const
+    std::unique_ptr<std::uint8_t[]> BackendSFML::readFileFromAndroidAssets(const String& filename, std::uint8_t& fileSize) const
     {
         ANativeActivity* activity = sf::getNativeActivity();
 
@@ -458,24 +458,24 @@ namespace tgui
         jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
         AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
         if (!assetManager)
-            return false;
+            return nullptr;
 
         AAsset* asset = AAssetManager_open(assetManager, filename.toStdString().c_str(), AASSET_MODE_UNKNOWN);
         if (!asset)
-            return false;
+            return nullptr;
 
-        off_t assetLength = AAsset_getLength(asset);
+        const off_t assetLength = AAsset_getLength(asset);
 
-        auto buffer = std::make_unique<char[]>(assetLength + 1);
-        AAsset_read(asset, buffer.get(), assetLength);
-        buffer[assetLength] = 0;
-
-        fileContents << buffer.get();
+        auto buffer = std::make_unique<std::uint8_t[]>(assetLength);
+        if (AAsset_read(asset, buffer.get(), assetLength) < 0)
+            return nullptr;
 
         AAsset_close(asset);
 
         activity->vm->DetachCurrentThread();
-        return true;
+
+        fileSize = static_cast<std::size_t>(assetLength);
+        return buffer;
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,8 @@
 #include <TGUI/Backends/SDL/FontCacheSDL.hpp>
 #include <TGUI/Global.hpp>
 
+#include <cstring> // memcpy
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -45,7 +47,14 @@ namespace tgui
 
     bool BackendFontSDL::loadFromFile(const String& filename)
     {
-        m_filename = filename;
+        std::size_t fileSize;
+        auto fileContents = readFileToMemory(filename, fileSize);
+        if (!fileContents)
+            return false;
+
+        m_fileContents = std::move(fileContents);
+        m_fileSize = fileSize;
+
         return (getInternalFont(getGlobalTextSize()) != nullptr);
     }
 
@@ -53,8 +62,10 @@ namespace tgui
 
     bool BackendFontSDL::loadFromMemory(const void* data, std::size_t sizeInBytes)
     {
-        m_memoryAddress = data;
-        m_memorySizeInBytes = sizeInBytes;
+        m_fileSize = sizeInBytes;
+        m_fileContents = std::make_unique<std::uint8_t[]>(sizeInBytes);
+        std::memcpy(m_fileContents.get(), data, sizeInBytes);
+
         return (getInternalFont(getGlobalTextSize()) != nullptr);
     }
 
@@ -145,19 +156,14 @@ namespace tgui
 
     TTF_Font* BackendFontSDL::loadInternalFont(unsigned int characterSize) const
     {
-        if (!m_filename.empty())
-            return TTF_OpenFont(m_filename.toStdString().c_str(), characterSize);
+        if (!m_fileContents || (m_fileSize == 0))
+            return nullptr;
 
-        if ((m_memoryAddress != nullptr) && (m_memorySizeInBytes > 0))
-        {
-            SDL_RWops* handle = SDL_RWFromConstMem(m_memoryAddress, static_cast<int>(m_memorySizeInBytes));
-            if (!handle)
-                return nullptr;
+        SDL_RWops* handle = SDL_RWFromConstMem(m_fileContents.get(), static_cast<int>(m_fileSize));
+        if (!handle)
+            return nullptr;
 
-            return TTF_OpenFontRW(handle, 1, characterSize);
-        }
-
-        return nullptr;
+        return TTF_OpenFontRW(handle, 1, characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

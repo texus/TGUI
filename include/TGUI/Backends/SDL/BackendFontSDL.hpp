@@ -130,9 +130,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        String m_filename;
-        const void* m_memoryAddress = nullptr;
-        std::size_t m_memorySizeInBytes = 0;
+        std::unique_ptr<std::uint8_t[]> m_fileContents;
+        std::size_t m_fileSize = 0;
         unsigned int m_lastCharacterSize = 0;
         TTF_Font* m_cachedFont = nullptr;
     };

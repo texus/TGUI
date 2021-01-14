@@ -26,7 +26,6 @@
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Global.hpp>
-#include <TGUI/Backend.hpp>
 
 #include <sstream>
 #include <fstream>
@@ -225,27 +224,15 @@ namespace tgui
         else
             fullFilename = filename;
 
-        std::stringstream contents;
+        std::size_t fileSize;
+        auto fileContents = readFileToMemory(fullFilename, fileSize);
+        if (!fileContents)
+            throw Exception{"Failed to open theme file '" + fullFilename + "'."};
 
-#ifdef TGUI_SYSTEM_ANDROID
-        // If the file does not start with a slash then load it from the assets
-        if (!fullFilename.empty() && (fullFilename[0] != '/'))
-        {
-            if (!getBackend()->readFileFromAndroidAssets(fullFilename, contents))
-                throw Exception{"Failed to open theme file '" + fullFilename + "' from assets."};
-        }
-        else
-#endif
-        {
-            std::ifstream file{fullFilename.toStdString()};
-            if (!file.is_open())
-                throw Exception{"Failed to open theme file '" + fullFilename + "'."};
+        std::stringstream stream;
+        stream.write(reinterpret_cast<char*>(fileContents.get()), fileSize);
 
-            contents << file.rdbuf();
-            file.close();
-        }
-
-        std::unique_ptr<DataIO::Node> root = DataIO::parse(contents);
+        std::unique_ptr<DataIO::Node> root = DataIO::parse(stream);
 
         String resourcePath;
         auto slashPos = filename.find_last_of("/\\");
