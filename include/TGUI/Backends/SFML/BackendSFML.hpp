@@ -178,7 +178,7 @@ namespace tgui
         ///
         /// @return File contents if the file was successfully read, or a nullptr on failure or if platform isn't Android.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool readFileFromAndroidAssets(const String& filename, std::uint8_t& fileSize) const override;
+        std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const override;
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

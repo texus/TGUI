@@ -445,7 +445,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_SYSTEM_ANDROID
-    std::unique_ptr<std::uint8_t[]> BackendSFML::readFileFromAndroidAssets(const String& filename, std::uint8_t& fileSize) const
+    std::unique_ptr<std::uint8_t[]> BackendSFML::readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const
     {
         ANativeActivity* activity = sf::getNativeActivity();
 
