@@ -315,10 +315,12 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2
                                   VERSION_VAR SDL2_VERSION_STRING)
 
 if(SDL2MAIN_LIBRARY)
+  # Adding NAME_MISMATCHED to FIND_PACKAGE_HANDLE_STANDARD_ARGS is only supported in CMake 3.17 or higher, so we set
+  # the FPHSA_NAME_MISMATCHED variable instead. This bypasses the warning about the package name not matching the module name.
+  set(FPHSA_NAME_MISMATCHED 1)
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2main
                                     REQUIRED_VARS SDL2MAIN_LIBRARY SDL2_INCLUDE_DIR
-                                    VERSION_VAR SDL2_VERSION_STRING
-                                    NAME_MISMATCHED)
+                                    VERSION_VAR SDL2_VERSION_STRING)
 endif()
 
 
