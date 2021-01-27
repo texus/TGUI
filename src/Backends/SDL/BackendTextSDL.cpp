@@ -70,6 +70,8 @@ namespace tgui
     void BackendTextSDL::setString(const String& string)
     {
         m_lines = string.split('\n');
+        for (auto& line : m_lines)
+            line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
         m_texturesValid = false;
     }
 

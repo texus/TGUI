@@ -158,6 +158,8 @@ namespace tgui
                 width = 0;
                 lines++;
             }
+            else if (string[i] == '\r')
+                continue; // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
             else if (string[i] == '\t')
                 width += (static_cast<float>(font->getGlyph(' ', textSize, bold).advance) * 4) + kerning;
             else

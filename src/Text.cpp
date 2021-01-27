@@ -304,6 +304,8 @@ namespace tgui
             const char32_t curChar = text[i];
             if (curChar == '\n')
                 break;
+            else if (curChar == U'\r')
+                continue; // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
             else if (curChar == '\t')
                 charWidth = font.getGlyph(' ', characterSize, bold).advance * 4.0f;
             else
@@ -311,7 +313,7 @@ namespace tgui
 
             const float kerning = font.getKerning(prevChar, curChar, characterSize);
 
-            width = width + charWidth + kerning;
+            width += charWidth + kerning;
             prevChar = curChar;
         }
 
@@ -403,6 +405,8 @@ namespace tgui
                     index++;
                     break;
                 }
+                else if (curChar == U'\r')
+                    continue; // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
                 else if (curChar == U'\t')
                     charWidth = font.getGlyph(' ', textSize, bold).advance * 4;
                 else
