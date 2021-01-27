@@ -254,7 +254,7 @@ namespace tgui
         {
             TGUI_EMPLACE_BACK(texture, icons);
             if (iconData.pixels)
-                texture.load({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we add the texture either way
+                texture.loadFromPixelData({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we add the texture either way
         }
 
         m_threadStarted = false;
@@ -420,7 +420,7 @@ namespace tgui
 
         Texture texture;
         if (iconData.pixels)
-            texture.load({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we return the texture anyway
+            texture.loadFromPixelData({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we return the texture anyway
 
         return texture;
     }

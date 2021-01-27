@@ -36,6 +36,9 @@
 #   if !defined(__clang__)
 #       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #   endif
+#elif defined (_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4505)
 #endif
 
 #define STBI_NO_STDIO
@@ -46,6 +49,8 @@
 
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined (_MSC_VER)
+    #pragma warning(pop)
 #endif
 
 #include <cstring> // memcpy

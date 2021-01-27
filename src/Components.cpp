@@ -34,15 +34,16 @@ namespace priv
 {
 namespace dev
 {
-    template<> std::unordered_map<std::uint64_t, Color> StyleProperty<Color>::m_globalValues;
-    template<> std::unordered_map<std::uint64_t, Texture> StyleProperty<Texture>::m_globalValues;
-    template<> std::unordered_map<std::uint64_t, Outline> StyleProperty<Outline>::m_globalValues;
-    template<> std::unordered_map<std::uint64_t, TextStyles> StyleProperty<TextStyles>::m_globalValues;
+    template<typename ValueType>
+    std::unordered_map<std::uint64_t, ValueType> StyleProperty<ValueType>::m_globalValues;
 
-    template<> std::uint64_t StyleProperty<Color>::m_nextGlobalValueIndex = 0;
-    template<> std::uint64_t StyleProperty<Texture>::m_nextGlobalValueIndex = 0;
-    template<> std::uint64_t StyleProperty<Outline>::m_nextGlobalValueIndex = 0;
-    template<> std::uint64_t StyleProperty<TextStyles>::m_nextGlobalValueIndex = 0;
+    template<typename ValueType>
+    std::uint64_t StyleProperty<ValueType>::m_nextGlobalValueIndex = 0;
+
+    template class StyleProperty<Color>;
+    template class StyleProperty<Texture>;
+    template class StyleProperty<Outline>;
+    template class StyleProperty<TextStyles>;
 
     std::unordered_map<std::uint64_t, std::set<std::uint64_t>> MessageBroker::m_topicIdToCallbackIds;
     std::unordered_map<std::uint64_t, std::uint64_t> MessageBroker::m_callbackIdToTopicId;
