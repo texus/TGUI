@@ -143,6 +143,12 @@ namespace tgui
         m_widgetWithRightMouseDown{std::move(other.m_widgetWithRightMouseDown)},
         m_focusedWidget           {std::move(other.m_focusedWidget)}
     {
+        // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
+        // Otherwise calling setParent on one widget could cause another widget's position to be recalculated which could
+        // give a warning if it still has its old parent where it won't find any siblings.
+        for (auto& widget : m_widgets)
+            widget->setParent(nullptr);
+
         for (auto& widget : m_widgets)
             widget->setParent(this);
 
@@ -204,6 +210,12 @@ namespace tgui
             m_widgetWithLeftMouseDown  = std::move(right.m_widgetWithLeftMouseDown);
             m_widgetWithRightMouseDown = std::move(right.m_widgetWithRightMouseDown);
             m_focusedWidget            = std::move(right.m_focusedWidget);
+
+            // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
+            // Otherwise calling setParent on one widget could cause another widget's position to be recalculated which could
+            // give a warning if it still has its old parent where it won't find any siblings.
+            for (auto& widget : m_widgets)
+                widget->setParent(nullptr);
 
             for (auto& widget : m_widgets)
                 widget->setParent(this);

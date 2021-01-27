@@ -156,7 +156,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog::FileDialog(FileDialog&& other) :
+    FileDialog::FileDialog(FileDialog&& other) noexcept :
         ChildWindow             {std::move(other)},
         onFileSelect            {std::move(other.onFileSelect)},
         m_buttonBack            {std::move(other.m_buttonBack)},
@@ -220,7 +220,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog& FileDialog::operator= (FileDialog&& other)
+    FileDialog& FileDialog::operator= (FileDialog&& other) noexcept
     {
         if (this != &other)
         {
