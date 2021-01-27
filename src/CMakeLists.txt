@@ -4,6 +4,7 @@ set(TGUI_SRC
     BackendRenderTarget.cpp
     BackendTexture.cpp
     Color.cpp
+    Components.cpp
     Container.cpp
     Cursor.cpp
     CustomWidgetForBindings.cpp
@@ -71,6 +72,7 @@ set(TGUI_SRC
     Widgets/BoxLayout.cpp
     Widgets/BoxLayoutRatios.cpp
     Widgets/Button.cpp
+    Widgets/ButtonBase.cpp
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp

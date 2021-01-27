@@ -32,8 +32,79 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BitmapButton::BitmapButton(const char* typeName, bool initRenderer) :
-        Button{typeName, initRenderer}
+        Button{typeName, initRenderer},
+        m_imageComponent{std::make_shared<priv::dev::ImageComponent>(&icon)}
     {
+        initComponentsBitmapButton();
+
+        m_imageComponent->setVisible(false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BitmapButton::BitmapButton(const BitmapButton& other) :
+        Button               (other),
+        icon                 (other.icon),
+        m_imageComponent     (std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
+        m_relativeGlyphHeight(other.m_relativeGlyphHeight)
+    {
+        initComponentsBitmapButton();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BitmapButton::BitmapButton(BitmapButton&& other) :
+        Button               (std::move(other)),
+        icon                 (std::move(other.icon)),
+        m_imageComponent     (std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
+        m_relativeGlyphHeight(std::move(other.m_relativeGlyphHeight))
+    {
+        initComponentsBitmapButton();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BitmapButton& BitmapButton::operator=(const BitmapButton& other)
+    {
+        if (&other != this)
+        {
+            text.style.disconnectCallback(m_textStyleChangedCallbackId);
+
+            Button::operator=(other);
+            icon = other.icon;
+            m_imageComponent = std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon);
+            m_relativeGlyphHeight = other.m_relativeGlyphHeight;
+
+            initComponentsBitmapButton();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BitmapButton& BitmapButton::operator=(BitmapButton&& other)
+    {
+        if (&other != this)
+        {
+            text.style.disconnectCallback(m_textStyleChangedCallbackId);
+
+            Button::operator=(std::move(other));
+            icon = std::move(other.icon);
+            m_imageComponent = std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon);
+            m_relativeGlyphHeight = std::move(other.m_relativeGlyphHeight);
+
+            initComponentsBitmapButton();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BitmapButton::~BitmapButton()
+    {
+        text.style.disconnectCallback(m_textStyleChangedCallbackId);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,11 +140,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::setText(const String& text)
+    void BitmapButton::setText(const String& caption)
     {
-        m_string = text;
-        m_text.setString(text);
-        m_text.setCharacterSize(m_textSize);
+        m_string = caption;
+        m_textComponent->setString(caption);
+        if (m_textSize != 0)
+            m_textComponent->setCharacterSize(m_textSize);
 
         if (m_autoSize && (m_textSize != 0))
         {
@@ -81,14 +153,28 @@ namespace tgui
             updateSize();
             m_updatingSizeWhileSettingText = false;
         }
+        else
+            updateComponentPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BitmapButton::setImage(const Texture& image)
     {
-        m_glyphTexture = image;
-        m_glyphSprite.setTexture(m_glyphTexture);
+        priv::dev::setOptionalPropertyValue(icon, image, priv::dev::ComponentState::Normal);
+
+        if (image.getData())
+        {
+            m_textComponent->setPositionAlignment(priv::dev::PositionAlignment::None);
+            m_imageComponent->setSize(Vector2f{image.getImageSize()});
+            m_imageComponent->setVisible(true);
+        }
+        else
+        {
+            m_textComponent->setPositionAlignment(priv::dev::PositionAlignment::Center);
+            m_imageComponent->setVisible(false);
+        }
+
         updateSize();
     }
 
@@ -96,7 +182,7 @@ namespace tgui
 
     const Texture& BitmapButton::getImage() const
     {
-        return m_glyphTexture;
+        return icon.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,10 +202,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BitmapButton::rendererChanged(const String& property)
+    {
+        if ((property == "Opacity") || (property == "OpacityDisabled"))
+        {
+            Button::rendererChanged(property);
+            m_imageComponent->setOpacity(m_opacityCached);
+        }
+        else
+            Button::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<DataIO::Node> BitmapButton::save(SavingRenderersMap& renderers) const
     {
         auto node = Button::save(renderers);
-        node->propertyValuePairs["Image"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_glyphTexture));
+        node->propertyValuePairs["Image"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(icon.getValue()));
         node->propertyValuePairs["ImageScaling"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_relativeGlyphHeight));
         return node;
     }
@@ -138,63 +237,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::draw(BackendRenderTargetBase& target, RenderStates states) const
-    {
-        if (!m_glyphSprite.isSet())
-        {
-            Button::draw(target, states);
-            return;
-        }
-
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
-            states.transform.translate(m_bordersCached.getOffset());
-        }
-
-        // Check if there is a background texture
-        if (m_sprite.isSet())
-        {
-            if (!m_enabled && m_spriteDisabled.isSet())
-                target.drawSprite(states, m_spriteDisabled);
-            else if (m_mouseHover && m_mouseDown && m_spriteDown.isSet())
-                target.drawSprite(states, m_spriteDown);
-            else if (m_mouseHover && m_spriteHover.isSet())
-                target.drawSprite(states, m_spriteHover);
-            else if (m_focused && m_spriteFocused.isSet())
-                target.drawSprite(states, m_spriteFocused);
-            else
-                target.drawSprite(states, m_sprite);
-        }
-        else // There is no background texture
-        {
-            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
-        }
-
-        target.addClippingLayer(states, {{}, getInnerSize()});
-        if (m_text.getString().empty())
-        {
-            states.transform.translate({(getInnerSize().x - m_glyphSprite.getSize().x) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
-            target.drawSprite(states, m_glyphSprite);
-        }
-        else // There is some text next to the glyph
-        {
-            const float distanceBetweenTextAndImage = m_text.getSize().y / 5.f;
-            const float width = m_glyphSprite.getSize().x + distanceBetweenTextAndImage + m_text.getSize().x;
-            states.transform.translate({(getInnerSize().x - width) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
-            target.drawSprite(states, m_glyphSprite);
-            states.transform.translate({m_glyphSprite.getSize().x + distanceBetweenTextAndImage, (m_glyphSprite.getSize().y - m_text.getSize().y) / 2.f});
-            target.drawText(states, m_text);
-        }
-        target.removeClippingLayer();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BitmapButton::updateSize()
     {
-        if (!m_glyphSprite.isSet())
+        if (!m_imageComponent->isVisible())
         {
             Button::updateSize();
             return;
@@ -202,48 +247,83 @@ namespace tgui
 
         if (m_autoSize)
         {
-            Widget::setSize({getSize().x, m_text.getSize().y * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            const Outline& borders = m_backgroundComponent->getBorders();
+            Widget::setSize({getSize().x, m_textComponent->getLineHeight() * 1.25f + borders.getTop() + borders.getBottom()});
 
             recalculateGlyphSize();
 
-            if (m_text.getString().empty())
+            if (m_string.empty())
             {
-                Widget::setSize({m_glyphSprite.getSize().x + (getInnerSize().y - m_glyphSprite.getSize().y) + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                const Vector2f innerSize = m_backgroundComponent->getClientSize();
+                Widget::setSize({m_imageComponent->getSize().x + (innerSize.y - m_imageComponent->getSize().y) + borders.getLeft() + borders.getRight(),
                                  getSize().y});
             }
             else
             {
-                const float spaceAroundImageAndText = m_text.getSize().y;
-                const float distanceBetweenTextAndImage = m_text.getSize().y / 5.f;
-                Widget::setSize({m_glyphSprite.getSize().x + distanceBetweenTextAndImage + m_text.getSize().x
-                                + spaceAroundImageAndText + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y});
+                const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
+                const float spaceAroundImageAndText = m_textComponent->getLineHeight();
+                Widget::setSize({m_imageComponent->getSize().x + distanceBetweenTextAndImage + m_textComponent->getSize().x
+                                + spaceAroundImageAndText + borders.getLeft() + borders.getRight(), getSize().y});
             }
+
+            m_backgroundComponent->setSize(getSize());
         }
         else
+        {
+            m_backgroundComponent->setSize(getSize());
             recalculateGlyphSize();
+        }
 
-        m_bordersCached.updateParentSize(getSize());
-
-        // Reset the texture sizes
-        m_sprite.setSize(getInnerSize());
-        m_spriteHover.setSize(getInnerSize());
-        m_spriteDown.setSize(getInnerSize());
-        m_spriteDisabled.setSize(getInnerSize());
-        m_spriteFocused.setSize(getInnerSize());
+        updateComponentPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BitmapButton::recalculateGlyphSize()
     {
-        if (!m_glyphSprite.isSet())
+        if (!m_imageComponent->isVisible())
             return;
 
         if (m_relativeGlyphHeight == 0)
-            m_glyphSprite.setSize(Vector2f{m_glyphTexture.getImageSize()});
+            m_imageComponent->setSize(Vector2f{icon.getValue().getImageSize()});
         else
-            m_glyphSprite.setSize({m_relativeGlyphHeight * getInnerSize().y,
-                                   (m_relativeGlyphHeight * getInnerSize().y) / m_glyphTexture.getImageSize().y * m_glyphTexture.getImageSize().x});
+        {
+            const Vector2f innerSize = m_backgroundComponent->getClientSize();
+            m_imageComponent->setSize({m_relativeGlyphHeight * innerSize.y,
+                                       (m_relativeGlyphHeight * innerSize.y) / icon.getValue().getImageSize().y * icon.getValue().getImageSize().x});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BitmapButton::initComponentsBitmapButton()
+    {
+        m_stylePropertiesNames.emplace(m_type + U".Icon", &icon);
+        m_namedComponents.emplace("Icon", m_imageComponent);
+
+        m_textStyleChangedCallbackId = text.style.connectCallback([this]{
+            updateComponentPositions();
+        });
+
+        m_backgroundComponent->addComponent(m_imageComponent);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BitmapButton::updateComponentPositions()
+    {
+        if (!m_imageComponent->isVisible())
+            return;
+
+        const Vector2f innerSize = m_backgroundComponent->getClientSize();
+        const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
+        float contentsWidth = m_imageComponent->getSize().x;
+        if (!m_string.empty())
+            contentsWidth += distanceBetweenTextAndImage + m_textComponent->getSize().x;
+
+        m_imageComponent->setPosition({(innerSize.x - contentsWidth) / 2.f, (innerSize.y - m_imageComponent->getSize().y) / 2.f});
+        m_textComponent->setPosition({m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
+                                      m_imageComponent->getPosition().y + (m_imageComponent->getSize().y - m_textComponent->getLineHeight()) / 2.f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

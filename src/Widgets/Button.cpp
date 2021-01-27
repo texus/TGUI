@@ -32,16 +32,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, false}
+        ButtonBase{typeName, initRenderer}
     {
-        if (initRenderer)
-        {
-            m_renderer = aurora::makeCopied<ButtonRenderer>();
-            setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-            m_text.setFont(m_fontCached);
-            setTextSize(getGlobalTextSize());
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,151 +60,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ButtonRenderer* Button::getSharedRenderer()
-    {
-        return aurora::downcast<ButtonRenderer*>(Widget::getSharedRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ButtonRenderer* Button::getSharedRenderer() const
-    {
-        return aurora::downcast<const ButtonRenderer*>(Widget::getSharedRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ButtonRenderer* Button::getRenderer()
-    {
-        return aurora::downcast<ButtonRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ButtonRenderer* Button::getRenderer() const
-    {
-        return aurora::downcast<const ButtonRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setSize(const Layout2d& size)
-    {
-        Widget::setSize(size);
-
-        m_autoSize = false;
-        updateSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setEnabled(bool enabled)
-    {
-        Widget::setEnabled(enabled);
-        updateTextColorAndStyle();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setText(const String& text)
-    {
-        m_string = text;
-        m_text.setString(text);
-
-        // Set the text size when the text has a fixed size
-        if (m_textSize != 0)
-        {
-            m_text.setCharacterSize(m_textSize);
-            m_updatingSizeWhileSettingText = true;
-            updateSize();
-            m_updatingSizeWhileSettingText = false;
-        }
-
-        // Draw the text normally unless the height is more than double of the width
-        if (getInnerSize().y <= getInnerSize().x * 2)
-        {
-            // Auto size the text when necessary
-            if (m_textSize == 0)
-            {
-                const unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
-                m_text.setCharacterSize(textSize);
-
-                // Make the text smaller when it's too width
-                if (m_text.getSize().x > (getInnerSize().x * 0.85f))
-                    m_text.setCharacterSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_text.getSize().x)));
-            }
-        }
-        else // Place the text vertically
-        {
-            // The text is vertical
-            if (!m_string.empty())
-            {
-                m_text.setString(m_string[0]);
-
-                for (unsigned int i = 1; i < m_string.length(); ++i)
-                    m_text.setString(m_text.getString() + "\n" + m_string[i]);
-            }
-
-            // Auto size the text when necessary
-            if (m_textSize == 0)
-            {
-                unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().x * 0.8f);
-                m_text.setCharacterSize(textSize);
-
-                // Make the text smaller when it's too high
-                if (m_text.getSize().y > (getInnerSize().y * 0.85f))
-                    m_text.setCharacterSize(static_cast<unsigned int>(textSize * getInnerSize().y * 0.85f / m_text.getSize().y));
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const String& Button::getText() const
-    {
-        return m_string;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setTextSize(unsigned int size)
-    {
-        if (size != m_textSize)
-        {
-            m_textSize = size;
-
-            // Call setText to reposition the text
-            setText(getText());
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Button::getTextSize() const
-    {
-        return m_text.getCharacterSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Button::isMouseOnWidget(Vector2f pos) const
-    {
-        if (ClickableWidget::isMouseOnWidget(pos))
-        {
-            if (!m_transparentTextureCached || !m_sprite.isSet() || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
-                return true;
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::leftMousePressed(Vector2f pos)
     {
-        ClickableWidget::leftMousePressed(pos);
-
-        updateTextColorAndStyle();
+        m_down = true;
+        ButtonBase::leftMousePressed(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,11 +71,36 @@ namespace tgui
     void Button::leftMouseReleased(Vector2f pos)
     {
         if (m_mouseDown)
-            onPress.emit(this, m_text.getString());
+            onPress.emit(this, m_string);
 
-        ClickableWidget::leftMouseReleased(pos);
+        m_down = false;
+        ButtonBase::leftMouseReleased(pos);
+    }
 
-        updateTextColorAndStyle();
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::mouseEnteredWidget()
+    {
+        if (m_mouseDown)
+            m_down = true;
+
+        ButtonBase::mouseEnteredWidget();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::mouseLeftWidget()
+    {
+        m_down = false;
+        ButtonBase::mouseLeftWidget();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::leftMouseButtonNoLongerDown()
+    {
+        m_down = false;
+        ButtonBase::leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,23 +108,7 @@ namespace tgui
     void Button::keyPressed(const Event::KeyEvent& event)
     {
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
-            onPress.emit(this, m_text.getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::mouseEnteredWidget()
-    {
-        Widget::mouseEnteredWidget();
-        updateTextColorAndStyle();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::mouseLeftWidget()
-    {
-        Widget::mouseLeftWidget();
-        updateTextColorAndStyle();
+            onPress.emit(this, m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,269 +118,7 @@ namespace tgui
         if (signalName == onPress.getName())
             return onPress;
         else
-            return ClickableWidget::getSignal(std::move(signalName));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::rendererChanged(const String& property)
-    {
-        if (property == "Borders")
-        {
-            m_bordersCached = getSharedRenderer()->getBorders();
-            updateSize();
-        }
-        else if ((property == "TextColor") || (property == "TextColorHover") || (property == "TextColorDown") || (property == "TextColorDisabled") || (property == "TextColorFocused")
-              || (property == "TextStyle") || (property == "TextStyleHover") || (property == "TextStyleDown") || (property == "TextStyleDisabled") || (property == "TextStyleFocused"))
-        {
-            updateTextColorAndStyle();
-        }
-        else if (property == "Texture")
-        {
-            m_sprite.setTexture(getSharedRenderer()->getTexture());
-        }
-        else if (property == "TextureHover")
-        {
-            m_spriteHover.setTexture(getSharedRenderer()->getTextureHover());
-        }
-        else if (property == "TextureDown")
-        {
-            m_spriteDown.setTexture(getSharedRenderer()->getTextureDown());
-        }
-        else if (property == "TextureDisabled")
-        {
-            m_spriteDisabled.setTexture(getSharedRenderer()->getTextureDisabled());
-        }
-        else if (property == "TextureFocused")
-        {
-            m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
-        }
-        else if (property == "BorderColor")
-        {
-            m_borderColorCached = getSharedRenderer()->getBorderColor();
-        }
-        else if (property == "BorderColorHover")
-        {
-            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
-        }
-        else if (property == "BorderColorDown")
-        {
-            m_borderColorDownCached = getSharedRenderer()->getBorderColorDown();
-        }
-        else if (property == "BorderColorDisabled")
-        {
-            m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
-        }
-        else if (property == "BorderColorFocused")
-        {
-            m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
-        }
-        else if (property == "BackgroundColor")
-        {
-            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
-        }
-        else if (property == "BackgroundColorHover")
-        {
-            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
-        }
-        else if (property == "BackgroundColorDown")
-        {
-            m_backgroundColorDownCached = getSharedRenderer()->getBackgroundColorDown();
-        }
-        else if (property == "BackgroundColorDisabled")
-        {
-            m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
-        }
-        else if (property == "BackgroundColorFocused")
-        {
-            m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
-        }
-        else if (property == "TextOutlineThickness")
-        {
-            m_text.setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
-        }
-        else if (property == "TextOutlineColor")
-        {
-            m_text.setOutlineColor(getSharedRenderer()->getTextOutlineColor());
-        }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
-        {
-            Widget::rendererChanged(property);
-
-            m_sprite.setOpacity(m_opacityCached);
-            m_spriteHover.setOpacity(m_opacityCached);
-            m_spriteDown.setOpacity(m_opacityCached);
-            m_spriteDisabled.setOpacity(m_opacityCached);
-            m_spriteFocused.setOpacity(m_opacityCached);
-
-            m_text.setOpacity(m_opacityCached);
-        }
-        else if (property == "Font")
-        {
-            Widget::rendererChanged(property);
-
-            m_text.setFont(m_fontCached);
-            setText(getText());
-        }
-        else
-            Widget::rendererChanged(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::unique_ptr<DataIO::Node> Button::save(SavingRenderersMap& renderers) const
-    {
-        auto node = Widget::save(renderers);
-
-        if (!m_string.empty())
-            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
-        if (m_textSize > 0)
-            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
-
-        // Don't store size when auto-sizing
-        if (m_autoSize)
-            node->propertyValuePairs.erase("Size");
-
-        return node;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
-    {
-        Widget::load(node, renderers);
-
-        if (node->propertyValuePairs["Text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Button::getInnerSize() const
-    {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const Color& Button::getCurrentBackgroundColor() const
-    {
-        if (!m_enabled && m_backgroundColorDisabledCached.isSet())
-            return m_backgroundColorDisabledCached;
-        else if (m_mouseHover && m_mouseDown && m_backgroundColorDownCached.isSet())
-            return m_backgroundColorDownCached;
-        else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
-            return m_backgroundColorHoverCached;
-        else if (m_focused && m_backgroundColorFocusedCached.isSet())
-            return m_backgroundColorFocusedCached;
-        else
-            return m_backgroundColorCached;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const Color& Button::getCurrentBorderColor() const
-    {
-        if (!m_enabled && m_borderColorDisabledCached.isSet())
-            return m_borderColorDisabledCached;
-        else if (m_mouseHover && m_mouseDown && m_borderColorDownCached.isSet())
-            return m_borderColorDownCached;
-        else if (m_mouseHover && m_borderColorHoverCached.isSet())
-            return m_borderColorHoverCached;
-        else if (m_focused && m_borderColorFocusedCached.isSet())
-            return m_borderColorFocusedCached;
-        else
-            return m_borderColorCached;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::updateTextColorAndStyle()
-    {
-        if (!m_enabled && getSharedRenderer()->getTextStyleDisabled().isSet())
-            m_text.setStyle(getSharedRenderer()->getTextStyleDisabled());
-        else if (m_mouseHover && m_mouseDown && getSharedRenderer()->getTextStyleDown().isSet())
-            m_text.setStyle(getSharedRenderer()->getTextStyleDown());
-        else if (m_mouseHover && getSharedRenderer()->getTextStyleHover().isSet())
-            m_text.setStyle(getSharedRenderer()->getTextStyleHover());
-        else if (m_focused && getSharedRenderer()->getTextStyleFocused().isSet())
-            m_text.setStyle(getSharedRenderer()->getTextStyleFocused());
-        else
-            m_text.setStyle(getSharedRenderer()->getTextStyle());
-
-        if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
-            m_text.setColor(getSharedRenderer()->getTextColorDisabled());
-        else if (m_mouseHover && m_mouseDown && getSharedRenderer()->getTextColorDown().isSet())
-            m_text.setColor(getSharedRenderer()->getTextColorDown());
-        else if (m_mouseHover && getSharedRenderer()->getTextColorHover().isSet())
-            m_text.setColor(getSharedRenderer()->getTextColorHover());
-        else if (m_focused && getSharedRenderer()->getTextColorFocused().isSet())
-            m_text.setColor(getSharedRenderer()->getTextColorFocused());
-        else
-            m_text.setColor(getSharedRenderer()->getTextColor());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::updateSize()
-    {
-        if (m_autoSize)
-        {
-            const float spaceAroundText = m_text.getLineHeight();
-            Widget::setSize({m_text.getSize().x + spaceAroundText + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                             m_text.getLineHeight() * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
-        }
-
-        m_bordersCached.updateParentSize(getSize());
-
-        // Reset the texture sizes
-        m_sprite.setSize(getInnerSize());
-        m_spriteHover.setSize(getInnerSize());
-        m_spriteDown.setSize(getInnerSize());
-        m_spriteDisabled.setSize(getInnerSize());
-        m_spriteFocused.setSize(getInnerSize());
-
-        // Recalculate the text size (needed when auto-sizing or to update whether letters are placed horizontally or vertically)
-        if (!m_updatingSizeWhileSettingText)
-            setText(getText());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::draw(BackendRenderTargetBase& target, RenderStates states) const
-    {
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
-            states.transform.translate(m_bordersCached.getOffset());
-        }
-
-        // Check if there is a background texture
-        if (m_sprite.isSet())
-        {
-            if (!m_enabled && m_spriteDisabled.isSet())
-                target.drawSprite(states, m_spriteDisabled);
-            else if (m_mouseHover && m_mouseDown && m_spriteDown.isSet())
-                target.drawSprite(states, m_spriteDown);
-            else if (m_mouseHover && m_spriteHover.isSet())
-                target.drawSprite(states, m_spriteHover);
-            else if (m_focused && m_spriteFocused.isSet())
-                target.drawSprite(states, m_spriteFocused);
-            else
-                target.drawSprite(states, m_sprite);
-        }
-        else // There is no background texture
-        {
-            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
-        }
-
-        // If the button has a text then also draw the text
-        states.transform.translate({(getInnerSize().x - m_text.getSize().x) / 2.f, (getInnerSize().y - m_text.getSize().y) / 2.f});
-        target.drawText(states, m_text);
+            return ButtonBase::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

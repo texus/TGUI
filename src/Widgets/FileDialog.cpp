@@ -717,7 +717,7 @@ namespace tgui
                 bool fileAccepted = false;
                 for (const auto& filter : m_fileTypeFilters[m_selectedFileTypeFilter].second)
                 {
-                    assert(!filter.empty()); // Empty strings are removed in setFileTypeFilters
+                    TGUI_ASSERT(!filter.empty(), "FileDialog::sortFilesInListView can't have empty filter, they are removed in setFileTypeFilters");
 
                     if (filter[0] == '*')
                     {
@@ -911,8 +911,8 @@ namespace tgui
             changePath(Filesystem::Path(m_editBoxPath->getText()), true);
         });
         m_comboBoxFileTypes->onItemSelect([this](int selectedItem){
-            assert(selectedItem >= 0);
-            assert(static_cast<std::size_t>(selectedItem) < m_fileTypeFilters.size());
+            TGUI_ASSERT(selectedItem >= 0, "There always needs to be a file type filter selected in FileDialog");
+            TGUI_ASSERT(static_cast<std::size_t>(selectedItem) < m_fileTypeFilters.size(), "Can't select file type filter that doesn't exist");
             m_selectedFileTypeFilter = static_cast<std::size_t>(selectedItem);
             sortFilesInListView();
         });
@@ -927,7 +927,7 @@ namespace tgui
                 m_editBoxFilename->setText(m_listView->getItem(itemIndex));
         });
         m_listView->onHeaderClick([this](int itemIndex){
-            assert(itemIndex >= 0);
+            TGUI_ASSERT(itemIndex >= 0, "Can't click on list view header that doesn't exist");
             if (m_sortColumnIndex != static_cast<std::size_t>(itemIndex))
             {
                 m_sortColumnIndex = static_cast<std::size_t>(itemIndex);
