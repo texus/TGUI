@@ -69,6 +69,7 @@ namespace tgui
         {"Tabs", std::make_shared<Tabs>},
         {"TabContainer", std::make_shared<TabContainer>},
         {"TextArea", std::make_shared<TextArea>},
+        {"ToggleButton", std::make_shared<ToggleButton>},
         {"TreeView", std::make_shared<TreeView>},
         {"VerticalLayout", std::make_shared<VerticalLayout>}
     };

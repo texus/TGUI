@@ -468,7 +468,12 @@ namespace dev
     bool BackgroundComponent::isTransparentPixel(Vector2f pos, bool transparentTexture) const
     {
         if (transparentTexture && m_sprite.isSet()) /// TODO: transparentTexture should be option on Texture (similar to Smooth) instead of a parameter
-            return m_sprite.isTransparentPixel(pos);
+        {
+            if ((pos.x < m_borders.getLeft()) || (pos.y < m_borders.getTop()) || (pos.x >= m_borders.getLeft() + m_clientSize.x) || (pos.y >= m_borders.getTop() + m_clientSize.y))
+                return false;
+            else
+                return m_sprite.isTransparentPixel(pos - m_borders.getOffset());
+        }
         else /// TODO: Perform check when using rounded corners
             return false;
     }
@@ -508,7 +513,7 @@ namespace dev
 
         m_clientSize = {std::max(0.f, m_size.x - m_borders.getLeft() - m_borders.getRight() - m_padding.getLeft() - m_padding.getRight()),
                         std::max(0.f, m_size.y - m_borders.getTop() - m_borders.getBottom() - m_padding.getTop() - m_padding.getBottom())};
-        Component::updateLayout();
+        GroupComponent::updateLayout();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -68,6 +68,7 @@ set(TEST_SOURCES
     Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
     Widgets/TextArea.cpp
+    Widgets/ToggleButton.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
 )

@@ -121,7 +121,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class StylePropertyBase
+    class TGUI_API StylePropertyBase
     {
     public:
         virtual ~StylePropertyBase() = default;
@@ -264,18 +264,22 @@ namespace dev
 
             if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Disabled))
             {
-                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::DisabledActive)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
+                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive)];
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled)];
             }
             else if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
             {
-                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::FocusedActiveHover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover)];
-                else if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::FocusedActive)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive))))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive)];
-                else if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::FocusedHover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
+                {
+                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
+                        return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover)];
+                    else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive)))
+                        return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive)];
+                }
+
+                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover)];
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Focused)];
@@ -283,7 +287,7 @@ namespace dev
 
             if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
             {
-                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::ActiveHover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover))))
+                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover))))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover)];
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
                     return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Active)];
@@ -358,10 +362,10 @@ namespace dev
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename ValueType>
-    TGUI_API std::unordered_map<std::uint64_t, ValueType> StyleProperty<ValueType>::m_globalValues;
+    std::unordered_map<std::uint64_t, ValueType> StyleProperty<ValueType>::m_globalValues;
 
     template <typename ValueType>
-    TGUI_API std::uint64_t StyleProperty<ValueType>::m_nextGlobalValueIndex = 0;
+    std::uint64_t StyleProperty<ValueType>::m_nextGlobalValueIndex = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

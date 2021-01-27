@@ -351,7 +351,7 @@ namespace tgui
         else if (property == "TextColorHover")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorHover(), priv::dev::ComponentState::Hover);
         else if (property == "TextColorDownHover")
-            priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownHover(), priv::dev::ComponentState::Hover);
+            priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownHover(), priv::dev::ComponentState::ActiveHover);
         else if (property == "TextColorDisabled")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == "TextColorDownDisabled")
@@ -378,10 +378,12 @@ namespace tgui
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownFocused(), priv::dev::ComponentState::FocusedActive);
         else if (property == "Texture")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTexture(), priv::dev::ComponentState::Normal);
-        else if (property == "TextureHover")
-            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureHover(), priv::dev::ComponentState::Hover);
         else if (property == "TextureDown")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDown(), priv::dev::ComponentState::Active);
+        else if (property == "TextureHover")
+            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureHover(), priv::dev::ComponentState::Hover);
+        else if (property == "TextureDownHover")
+            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownHover(), priv::dev::ComponentState::ActiveHover);
         else if (property == "TextureDisabled")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == "TextureDownDisabled")
@@ -397,7 +399,7 @@ namespace tgui
         else if (property == "BorderColorHover")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorHover(), priv::dev::ComponentState::Hover);
         else if (property == "BorderColorDownHover")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownHover(), priv::dev::ComponentState::Hover);
+            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownHover(), priv::dev::ComponentState::ActiveHover);
         else if (property == "BorderColorDisabled")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == "BorderColorDownDisabled")
@@ -413,7 +415,7 @@ namespace tgui
         else if (property == "BackgroundColorHover")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorHover(), priv::dev::ComponentState::Hover);
         else if (property == "BackgroundColorDownHover")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownHover(), priv::dev::ComponentState::Hover);
+            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownHover(), priv::dev::ComponentState::ActiveHover);
         else if (property == "BackgroundColorDisabled")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == "BackgroundColorDownDisabled")
