@@ -228,7 +228,7 @@ namespace dev
         void setValue(const ValueType& value, ComponentState state = ComponentState::Normal)
         {
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-            m_propertyData |= (1 << static_cast<std::uint8_t>(state));
+            m_propertyData |= static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state);
             m_globalValues[baseIndex + static_cast<std::uint8_t>(state)] = value;
 
             MessageBroker::sendEvent(m_messageTopicId);
@@ -358,14 +358,6 @@ namespace dev
         static std::unordered_map<std::uint64_t, ValueType> m_globalValues;
         static std::uint64_t m_nextGlobalValueIndex;
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    template <typename ValueType>
-    std::unordered_map<std::uint64_t, ValueType> StyleProperty<ValueType>::m_globalValues;
-
-    template <typename ValueType>
-    std::uint64_t StyleProperty<ValueType>::m_nextGlobalValueIndex = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

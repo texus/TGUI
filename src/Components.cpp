@@ -34,6 +34,16 @@ namespace priv
 {
 namespace dev
 {
+    std::unordered_map<std::uint64_t, Color> StyleProperty<Color>::m_globalValues;
+    std::unordered_map<std::uint64_t, Texture> StyleProperty<Texture>::m_globalValues;
+    std::unordered_map<std::uint64_t, Outline> StyleProperty<Outline>::m_globalValues;
+    std::unordered_map<std::uint64_t, TextStyles> StyleProperty<TextStyles>::m_globalValues;
+
+    std::uint64_t StyleProperty<Color>::m_nextGlobalValueIndex = 0;
+    std::uint64_t StyleProperty<Texture>::m_nextGlobalValueIndex = 0;
+    std::uint64_t StyleProperty<Outline>::m_nextGlobalValueIndex = 0;
+    std::uint64_t StyleProperty<TextStyles>::m_nextGlobalValueIndex = 0;
+
     std::unordered_map<std::uint64_t, std::set<std::uint64_t>> MessageBroker::m_topicIdToCallbackIds;
     std::unordered_map<std::uint64_t, std::uint64_t> MessageBroker::m_callbackIdToTopicId;
     std::unordered_map<std::uint64_t, std::function<void()>> MessageBroker::m_listeners;
