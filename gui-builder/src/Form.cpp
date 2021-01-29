@@ -265,7 +265,7 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
                     continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS
-                if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') || ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+                if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
 #else
                 if (pair.second->value[1] != '/')
 #endif
@@ -360,8 +360,16 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
 
                             if (filename.startsWith(basePathStr))
                             {
-                                filename.erase(0, basePathStr.length());
-                                filename = relativePath + filename;
+                                if (pair.second->value[0] != '"')
+                                {
+                                    pair.second->value.erase(0, basePathStr.length());
+                                    pair.second->value = relativePath + pair.second->value;
+                                }
+                                else
+                                {
+                                    pair.second->value.erase(0, basePathStr.length() + 1);
+                                    pair.second->value = U'"' + relativePath + pair.second->value;
+                                }
                             }
                             else
                                 std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr + "'." << std::endl;
