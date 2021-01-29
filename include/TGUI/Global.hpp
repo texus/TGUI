@@ -31,6 +31,7 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Duration.hpp>
 #include <TGUI/Font.hpp>
+#include <TGUI/Filesystem.hpp>
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -74,7 +75,16 @@ namespace tgui
     /// This pathname is placed in front of every filename that is used to load a resource.
     ///
     /// @param path  New resource path
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API void setResourcePath(const Filesystem::Path& path);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Sets a new resource path
     ///
+    /// This pathname is placed in front of every filename that is used to load a resource.
+    ///
+    /// @param path  New resource path
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_API void setResourcePath(const String& path);
 
@@ -85,9 +95,8 @@ namespace tgui
     /// This pathname is placed in front of every filename that is used to load a resource.
     ///
     /// @return The current resource path
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API const String& getResourcePath();
+    TGUI_API const Filesystem::Path& getResourcePath();
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

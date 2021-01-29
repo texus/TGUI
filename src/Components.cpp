@@ -34,12 +34,13 @@ namespace priv
 {
 namespace dev
 {
+/**
     template<typename ValueType>
     std::unordered_map<std::uint64_t, ValueType> StyleProperty<ValueType>::m_globalValues;
 
     template<typename ValueType>
     std::uint64_t StyleProperty<ValueType>::m_nextGlobalValueIndex = 0;
-
+*/
     template class StyleProperty<Color>;
     template class StyleProperty<Texture>;
     template class StyleProperty<Outline>;

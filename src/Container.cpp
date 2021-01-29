@@ -361,8 +361,8 @@ namespace tgui
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
-        if (!getResourcePath().empty())
-            filenameInResources = (Filesystem::Path(getResourcePath()) / filename).asString();
+        if (!getResourcePath().isEmpty())
+            filenameInResources = (getResourcePath() / filename).asString();
 
         std::ifstream in{filenameInResources.toStdString()};
         if (!in.is_open())
@@ -390,8 +390,8 @@ namespace tgui
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
-        if (!getResourcePath().empty())
-            filenameInResources = (Filesystem::Path(getResourcePath()) / filename).asString();
+        if (!getResourcePath().isEmpty())
+            filenameInResources = (getResourcePath() / filename).asString();
 
         std::stringstream stream;
         saveWidgetsToStream(stream);
@@ -1299,13 +1299,13 @@ namespace tgui
                 if (checkedFileIt == checkedFilenames.end())
                 {
                     bool canInjectPath = true;
-                    if (!Filesystem::fileExists(Filesystem::Path(getResourcePath()) / path / filename)
-                     && Filesystem::fileExists(Filesystem::Path(getResourcePath()) / filename))
+                    if (!Filesystem::fileExists(getResourcePath() / path / filename)
+                     && Filesystem::fileExists(getResourcePath() / filename))
                     {
                         canInjectPath = false;
                         TGUI_PRINT_WARNING(U"Form file contained '" + filename
-                            + U"', which TGUI now interprets as '" + (Filesystem::Path(getResourcePath()) / path / filename).asString()
-                            + U"'. File was however found at '" + (Filesystem::Path(getResourcePath()) / filename).asString()
+                            + U"', which TGUI now interprets as '" + (getResourcePath() / path / filename).asString()
+                            + U"'. File was however found at '" + (getResourcePath() / filename).asString()
                             + U"', which is the deprecated search location. Loading will fail in future TGUI versions.");
                     }
 
@@ -1314,29 +1314,12 @@ namespace tgui
                         continue;
                 }
 
-                // Insert the path into the filename unless the filename is already an absolute path.
+                // Insert the path into the filename.
                 // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
                 if (pair.second->value[0] != '"')
-                {
-                #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
-                #else
-                    if (pair.second->value[0] != '/')
-                #endif
-                        pair.second->value = path + '/' + pair.second->value;
-                }
+                    pair.second->value = path + '/' + pair.second->value;
                 else // The filename is between quotes
-                {
-                    if (pair.second->value.size() <= 1)
-                        continue;
-
-                #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
-                #else
-                    if (pair.second->value[1] != '/')
-                #endif
-                        pair.second->value = '"' + path + '/' + pair.second->value.substr(1);
-                }
+                    pair.second->value = '"' + path + '/' + pair.second->value.substr(1);
             }
         }
 

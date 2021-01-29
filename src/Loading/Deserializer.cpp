@@ -127,7 +127,7 @@ namespace tgui
 #else
             if (filename[0] != '/')
 #endif
-                font->loadFromFile((getResourcePath() + filename));
+                font->loadFromFile((getResourcePath() / filename).asString());
             else
                 font->loadFromFile(filename);
 

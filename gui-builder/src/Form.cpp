@@ -71,6 +71,8 @@ static void importOldFormFileExtractValidProperties(std::set<tgui::String>& poss
         possibleProperties.insert(pair.first);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO::Node>& parentNode, const std::set<tgui::String>& possibleProperties)
 {
     for (auto& node : parentNode->children)
@@ -108,6 +110,277 @@ static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO:
                 node->propertyValuePairs[property.first] = std::move(property.second);
         }
     }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void importOldForm(std::unique_ptr<tgui::DataIO::Node>& rootNode)
+{
+    // Construct a list of all existing renderer properties for all widgets.
+    // Since the renderers may be global in the form file, we can't know which widget type will use it (without some effort),
+    // so instead we just get the properties for all widget types to match on.
+    std::set<tgui::String> possibleProperties;
+    importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Button")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Group")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Knob")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Label")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Panel")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Picture")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Slider")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
+    importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
+        tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
+
+    // Convert renderer properties from lowercase to the correct case-sensitive string
+    importOldFormFileFixRendererProperties(rootNode, possibleProperties);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void makePathsAbsolute(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::Filesystem::Path& formPath)
+{
+    for (const auto& pair : node->propertyValuePairs)
+    {
+        if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
+        {
+            if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("none") || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                continue;
+
+            // Skip absolute paths
+            if (pair.second->value[0] != '"')
+            {
+#ifdef TGUI_SYSTEM_WINDOWS
+                if ((pair.second->value[0] == '/') || (pair.second->value[0] == '\\') || ((pair.second->value.size() > 1) && (pair.second->value[1] == ':')))
+#else
+                if (pair.second->value[0] == '/')
+#endif
+                    continue;
+            }
+            else // The filename is between quotes
+            {
+                if (pair.second->value.size() <= 1)
+                    continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
+                if ((pair.second->value[1] == '/') || (pair.second->value[1] == '\\') || ((pair.second->value.size() > 2) && (pair.second->value[2] == ':')))
+#else
+                if (pair.second->value[1] == '/')
+#endif
+                    continue;
+            }
+
+            tgui::String filename;
+            if (pair.second->value[0] != '"')
+                filename = pair.second->value;
+            else
+            {
+                // The filename is surrounded by quotes, with optional options behind it
+                const auto endQuotePos = pair.second->value.find('"', 1);
+                assert(endQuotePos != tgui::String::npos);
+                filename = pair.second->value.substr(1, endQuotePos - 1);
+            }
+
+            // If the file can't be found anywhere then don't inject the file path
+            const bool fileFoundRelativeToForm = tgui::Filesystem::fileExists(formPath / filename);
+            const bool fileFoundRelativeToGuiBuilder = tgui::Filesystem::fileExists(tgui::getResourcePath() / filename);
+            if (!fileFoundRelativeToForm && !fileFoundRelativeToGuiBuilder)
+                continue;
+
+            tgui::String pathToInject = fileFoundRelativeToForm ? formPath.asString() : tgui::getResourcePath().asString();
+            assert(!pathToInject.empty());
+            if (pathToInject.back() == '/')
+                pathToInject.pop_back();
+
+            // Insert the path into the filename.
+            // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
+            if (pair.second->value[0] != '"')
+                pair.second->value = pathToInject + '/' + pair.second->value;
+            else // The filename is between quotes
+                pair.second->value = '"' + pathToInject + '/' + pair.second->value.substr(1);
+        }
+    }
+
+    for (const auto& child : node->children)
+        makePathsAbsolute(child, formPath);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::String& formPath, const tgui::String& guiBuilderPath)
+{
+    for (const auto& pair : node->propertyValuePairs)
+    {
+        if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
+        {
+            if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("none") || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                continue;
+
+            // Skip paths that are already relative (this shouldn't happen)
+            if (pair.second->value[0] != '"')
+            {
+#ifdef TGUI_SYSTEM_WINDOWS
+                if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
+#else
+                if (pair.second->value[0] != '/')
+#endif
+                    continue;
+            }
+            else // The filename is between quotes
+            {
+                if (pair.second->value.size() <= 1)
+                    continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
+                if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') || ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+#else
+                if (pair.second->value[1] != '/')
+#endif
+                    continue;
+            }
+
+            tgui::String filename;
+            if (pair.second->value[0] != '"')
+                filename = pair.second->value;
+            else
+            {
+                // The filename is surrounded by quotes, with optional options behind it
+                const auto endQuotePos = pair.second->value.find('"', 1);
+                assert(endQuotePos != tgui::String::npos); // DataIO wouldn't have accepted the file if there is no close quote
+                filename = pair.second->value.substr(1, endQuotePos - 1);
+            }
+
+            // Make the path relative to the form or gui builder
+            if (filename.startsWith(formPath))
+            {
+                if (pair.second->value[0] != '"')
+                    pair.second->value.erase(0, formPath.length());
+                else
+                    pair.second->value.erase(1, formPath.length());
+            }
+            else if (filename.startsWith(guiBuilderPath))
+            {
+                if (pair.second->value[0] != '"')
+                    pair.second->value.erase(0, guiBuilderPath.length());
+                else
+                    pair.second->value.erase(1, guiBuilderPath.length());
+            }
+            else // We will need to use ".." if we want to make the path relative
+            {
+                // Split the form path an filename in parts (the folders that make up the path).
+                tgui::String lastPath;
+                tgui::Filesystem::Path path = tgui::Filesystem::Path(formPath);
+                std::vector<tgui::String> formPathParts;
+                while (path.asString() != lastPath)
+                {
+                    if (!path.getFilename().empty())
+                        formPathParts.insert(formPathParts.begin(), path.getFilename());
+
+                    lastPath = path.asString();
+                    path = path.getParentPath();
+                }
+
+                lastPath = U"";
+                path = tgui::Filesystem::Path(filename).getParentPath();
+                std::vector<tgui::String> resourceParts;
+                while (path.asString() != lastPath)
+                {
+                    if (!path.getFilename().empty())
+                        resourceParts.insert(resourceParts.begin(), path.getFilename());
+
+                    lastPath = path.asString();
+                    path = path.getParentPath();
+                }
+
+                const std::size_t originalFormPartsLength = formPathParts.size();
+                while (!formPathParts.empty() && !resourceParts.empty())
+                {
+                    if (formPathParts.size() > resourceParts.size())
+                        formPathParts.pop_back();
+                    else if (formPathParts.size() < resourceParts.size())
+                        resourceParts.pop_back();
+                    else
+                    {
+                        // Check if both subpaths are equal
+                        bool pathsEqual = true;
+                        for (std::size_t i = 0; pathsEqual && (i < formPathParts.size()); ++i)
+                            pathsEqual &= (formPathParts[i] == resourceParts[i]);
+
+                        if (pathsEqual)
+                        {
+                            assert(originalFormPartsLength > formPathParts.size());
+                            const std::size_t pathsToGoUp = originalFormPartsLength - formPathParts.size();
+
+                            tgui::String relativePath;
+                            tgui::Filesystem::Path basePath = tgui::Filesystem::Path(formPath).getParentPath();
+                            assert(basePath.asString() + '/' == formPath);
+                            for (std::size_t i = 0; i < pathsToGoUp; ++i)
+                            {
+                                relativePath += U"../";
+                                basePath = basePath.getParentPath();
+                            }
+
+                            tgui::String basePathStr = basePath.asString();
+                            assert(!basePathStr.empty());
+                            if (basePathStr.back() != '/')
+                                basePathStr.push_back('/');
+
+                            if (filename.startsWith(basePathStr))
+                            {
+                                filename.erase(0, basePathStr.length());
+                                filename = relativePath + filename;
+                            }
+                            else
+                                std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr + "'." << std::endl;
+
+                            break;
+                        }
+                        else
+                        {
+                            formPathParts.pop_back();
+                            resourceParts.pop_back();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for (const auto& child : node->children)
+        makePathsRelative(child, formPath, guiBuilderPath);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -577,87 +850,30 @@ bool Form::hasFocus() const
 
 void Form::load()
 {
-    try
-    {
-        m_widgetsContainer->loadWidgetsFromFile(getFilename());
-    }
-    catch (const tgui::Exception& e)
-    {
-        // Loading failed, so try to make some conversions in case this is a TGUI 0.8 form file. Start by loading the file into memory.
-        tgui::String filenameInResources = getFilename();
-        if (!tgui::getResourcePath().empty())
-            filenameInResources = (tgui::Filesystem::Path(tgui::getResourcePath()) / getFilename()).asString();
+    // We will make some adjustments to the file before letting TGUI load it, so start by loading the file into memory.
+    const tgui::String filename = (tgui::getResourcePath() / getFilename()).asString();
+    std::ifstream inFile{filename.toStdString()};
+    if (!inFile.is_open())
+        throw tgui::Exception("Failed to open '" + filename + "'.");
 
-        std::ifstream in{filenameInResources.toStdString()};
-        if (!in.is_open())
-            throw e;
+    std::stringstream inStream;
+    inStream << inFile.rdbuf();
 
-        std::stringstream inStream;
-        inStream << in.rdbuf();
+    // Parse the file from memory
+    auto rootNode = tgui::DataIO::parse(inStream);
 
-        // Parse the file from memory
-        auto rootNode = tgui::DataIO::parse(inStream);
+    // If the file was created with TGUI 0.8 then convert it into a valid TGUI 0.9 form
+    importOldForm(rootNode);
 
-        // Construct a list of all existing renderer properties for all widgets.
-        // Since the renderers may be global in the form file, we can't know which
-        // widget they will be used it (without some effort), so instead we just
-        // get the properties for all widget types to match on.
-        std::set<tgui::String> possibleProperties;
-        importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Button")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Group")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Knob")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Label")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Panel")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Picture")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Slider")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
+    // Turn all paths into absolute paths, using either the form file or the gui builder as base path
+    makePathsAbsolute(rootNode, (tgui::getResourcePath() / getFilename()).getParentPath());
 
-        // Convert renderer properties from lowercase to the correct case-sensitive string
-        importOldFormFileFixRendererProperties(rootNode, possibleProperties);
+    // Recreate the changed file in memory
+    std::stringstream outStream;
+    tgui::DataIO::emit(rootNode, outStream);
 
-        // Recreate the changed file in memory
-        std::stringstream outStream;
-        tgui::DataIO::emit(rootNode, outStream);
-
-        // Try to load the modified file from memory
-        m_widgetsContainer->loadWidgetsFromStream(outStream);
-    }
+    // Try to load the modified file from memory
+    m_widgetsContainer->loadWidgetsFromStream(outStream);
 
     importLoadedWidgets(m_widgetsContainer);
 }
@@ -667,7 +883,34 @@ void Form::load()
 void Form::save()
 {
     setChanged(false);
-    m_widgetsContainer->saveWidgetsToFile(getFilename());
+
+    // Save the output file to memory so that it can be edited
+    std::stringstream originalOutStream;
+    m_widgetsContainer->saveWidgetsToStream(originalOutStream);
+    auto rootNode = tgui::DataIO::parse(originalOutStream);
+
+    tgui::String formPath = (tgui::getResourcePath() / getFilename()).getParentPath().asString();
+    if (formPath.back() != '/')
+        formPath.push_back('/');
+
+    tgui::String guiBuilderPath = (tgui::getResourcePath()).getParentPath().asString();
+    if (guiBuilderPath.back() != '/')
+        guiBuilderPath.push_back('/');
+
+    // Turn all paths into relative paths
+    makePathsRelative(rootNode, formPath, guiBuilderPath);
+
+    // Write the file to disk
+    const tgui::String filename = (tgui::getResourcePath() / getFilename()).asString();
+    std::ofstream outFile{filename.toStdString()};
+    if (!outFile.is_open())
+        throw tgui::Exception("Failed to write to '" + filename + "'.");
+
+    // Recreate the changed file in memory
+    std::stringstream outStream;
+    tgui::DataIO::emit(rootNode, outStream);
+
+    outFile << outStream.rdbuf();
 
     m_guiBuilder->formSaved(getFilename());
 }

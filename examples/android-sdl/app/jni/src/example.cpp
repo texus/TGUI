@@ -109,6 +109,7 @@ int main(int, char**)
     // TGUI currently requires at least OpenGL ES 3.0
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 
     // TGUI requires a window created with the SDL_WINDOW_OPENGL flag and an OpenGL context
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",

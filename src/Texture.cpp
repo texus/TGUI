@@ -181,9 +181,9 @@ namespace tgui
         if (id[0] != '/')
 #endif
         {
-            data = m_textureLoader(*this, getResourcePath() + id, smooth);
+            data = m_textureLoader(*this, (getResourcePath() / id).asString(), smooth);
             if (!data)
-                throw Exception{"Failed to load '" + getResourcePath() + id + "'"};
+                throw Exception{"Failed to load '" + (getResourcePath() / id).asString() + "'"};
         }
         else
         {

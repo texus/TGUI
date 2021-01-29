@@ -63,7 +63,7 @@ private:
     void loadStartScreen();
     void loadEditingScreen(const tgui::String& filename);
     void loadToolbox();
-    void showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad);
+    void showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad);
     void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
     bool updateWidgetProperty(const tgui::String& property, const tgui::String& value);
     void initProperties();

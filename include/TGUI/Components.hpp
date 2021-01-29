@@ -136,26 +136,24 @@ namespace dev
 
         StyleProperty() :
             m_defaultValue  {},
-            m_propertyData  {m_nextGlobalValueIndex},
+            m_propertyData  {0},
             m_messageTopicId{MessageBroker::createTopic()}
         {
-            m_nextGlobalValueIndex += 0x10000;
         }
 
         explicit StyleProperty(const ValueType& defaultValue) :
             m_defaultValue  {defaultValue},
-            m_propertyData  {m_nextGlobalValueIndex},
+            m_propertyData  {0},
             m_messageTopicId{MessageBroker::createTopic()}
         {
-            m_nextGlobalValueIndex += 0x10000;
         }
 
         StyleProperty(const StyleProperty& other) :
             m_defaultValue  {other.m_defaultValue},
-            m_propertyData  {m_nextGlobalValueIndex},
-            m_messageTopicId{MessageBroker::createTopic()}
+            m_propertyData  {0},
+            m_messageTopicId{MessageBroker::createTopic()},
+            m_globalValues  {other.m_globalValues}
         {
-            m_nextGlobalValueIndex += 0x10000;
             unsetValue();
 
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
@@ -180,7 +178,8 @@ namespace dev
         StyleProperty(StyleProperty&& other) :
             m_defaultValue  {std::move(other.m_defaultValue)},
             m_propertyData  {std::move(other.m_propertyData)},
-            m_messageTopicId{std::move(other.m_messageTopicId)}
+            m_messageTopicId{std::move(other.m_messageTopicId)},
+            m_globalValues  {std::move(other.m_globalValues)}
         {
             other.m_messageTopicId = 0;
         }
@@ -200,6 +199,7 @@ namespace dev
                 std::swap(m_defaultValue,   temp.m_defaultValue);
                 std::swap(m_propertyData,   temp.m_propertyData);
                 std::swap(m_messageTopicId, temp.m_messageTopicId);
+                std::swap(m_globalValues,   temp.m_globalValues);
             }
 
             return *this;
@@ -209,10 +209,12 @@ namespace dev
         {
             if (&other != this)
             {
-                StyleProperty temp(std::move(other));
-                std::swap(m_defaultValue,   temp.m_defaultValue);
-                std::swap(m_propertyData,   temp.m_propertyData);
-                std::swap(m_messageTopicId, temp.m_messageTopicId);
+                m_defaultValue = std::move(other.m_defaultValue);
+                m_propertyData = std::move(other.m_propertyData);
+                m_messageTopicId = std::move(other.m_messageTopicId);
+                m_globalValues = std::move(other.m_globalValues);
+
+                other.m_messageTopicId = 0;
             }
 
             return *this;
@@ -260,46 +262,46 @@ namespace dev
 
             // If we only have a value for the Normal state then always use this value
             if (storedStates == 1)
-                return m_globalValues[baseIndex];
+                return m_globalValues.at(baseIndex);
 
             if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Disabled))
             {
                 if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive));
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled));
             }
             else if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
             {
                 if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
                 {
                     if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
-                        return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover)];
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover));
                     else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive)))
-                        return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive)];
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive));
                 }
 
                 if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover));
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Focused)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Focused));
             }
 
             if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
             {
                 if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover))))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover));
                 else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
-                    return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Active)];
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Active));
             }
 
             if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Hover))))
-                return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Hover)];
+                return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Hover));
             else if (storedStates & 1)
             {
                 // We have a value for the Normal state, so return it. It is possible to pass here while storedStates != 1 when there
                 // is e.g. a value for both Normal and Disabled state and the widget is enabled.
-                return m_globalValues[baseIndex + static_cast<std::uint8_t>(ComponentState::Normal)];
+                return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Normal));
             }
             else
             {
@@ -355,8 +357,12 @@ namespace dev
         // All values are stored in a static map, which can be seen as a very large sparse list.
         // Each instance holds a unique 48-bit id that can be seen as the high bits of the index in the list.
         // The lowest 4 bits of the index contain the widget state. The remaining 12 bits inbetween are always 0.
-        static std::unordered_map<std::uint64_t, ValueType> m_globalValues;
-        static std::uint64_t m_nextGlobalValueIndex;
+        ///static std::unordered_map<std::uint64_t, ValueType> m_globalValues;
+        ///static std::uint64_t m_nextGlobalValueIndex;
+
+        /// TODO: The system with global values caused way too many implementation and platform-specific problems.
+        ///       For now we just store the values in the StyleProperty itself.
+        std::unordered_map<std::uint64_t, ValueType> m_globalValues;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

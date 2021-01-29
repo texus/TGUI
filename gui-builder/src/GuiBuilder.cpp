@@ -107,8 +107,7 @@ namespace
                         continue;
                     }
 
-                    const tgui::String absoluteFilename = (tgui::Filesystem::getCurrentWorkingDirectory()
-                        / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
+                    const tgui::String absoluteFilename = (tgui::getResourcePath() / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
                     if ((absoluteFilename == themeIt->second.getTexture().getId())
                      && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
                     {
@@ -281,7 +280,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
 {
     // If the program is started from a different folder then it wouldn't be able to find its resources unless we set this path.
     // One case where this seems to be required is to start the executable on macOS by double-clicking it.
-    tgui::setResourcePath(m_programPath.asString());
+    tgui::setResourcePath((tgui::Filesystem::getCurrentWorkingDirectory() / m_programPath).getNormalForm());
 
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
@@ -309,7 +308,7 @@ GuiBuilder::GuiBuilder(const char* programName) :
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
-    m_window->setIcon((tgui::Filesystem::Path(tgui::getResourcePath()) / "resources/Icon.png").asString());
+    m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
 
     loadStartScreen();
 }
@@ -482,7 +481,7 @@ bool GuiBuilder::loadGuiBuilderState()
         for (const auto& value : node->propertyValuePairs["RecentFiles"]->valueList)
         {
             tgui::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
-            if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / filename))
+            if (tgui::Filesystem::fileExists(tgui::getResourcePath() / filename))
             {
                 m_recentFiles.push_back(filename);
                 if (m_recentFiles.size() == 5)
@@ -496,7 +495,7 @@ bool GuiBuilder::loadGuiBuilderState()
         for (const auto& theme : node->propertyValuePairs["Themes"]->valueList)
         {
             const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
-            m_themes[deserializedTheme] = {deserializedTheme};
+            m_themes[deserializedTheme] = {(tgui::getResourcePath() / deserializedTheme).asString()};
         }
     }
 
@@ -520,7 +519,7 @@ void GuiBuilder::saveGuiBuilderState()
     tgui::String recentFileList;
     for (auto fileIt = m_recentFiles.begin(); fileIt != m_recentFiles.end(); ++fileIt)
     {
-        if (!tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / tgui::String(*fileIt)))
+        if (!tgui::Filesystem::fileExists(tgui::getResourcePath() / tgui::String(*fileIt)))
             continue;
 
         if (recentFileList.empty())
@@ -762,10 +761,15 @@ void GuiBuilder::closeForm(Form* form)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad)
+void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad)
 {
     auto fileDialog = tgui::FileDialog::create(title, loadButtonCaption);
-    fileDialog->setPath((tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).getNormalForm());
+    fileDialog->setFileMustExist(fileMustExist);
+    if (m_forms.empty())
+        fileDialog->setPath((tgui::getResourcePath() / m_defaultPath).getNormalForm());
+    else
+        fileDialog->setPath((tgui::getResourcePath() / m_forms[0]->getFilename()).getParentPath().getNormalForm());
+
     fileDialog->setFilename(defaultFilename);
     openWindowWithFocus(fileDialog);
 
@@ -791,19 +795,19 @@ void GuiBuilder::loadStartScreen()
 
     if (!loadGuiBuilderState())
     {
-        m_themes["themes/Black.txt"] = {"themes/Black.txt"};
-        m_themes["themes/BabyBlue.txt"] = {"themes/BabyBlue.txt"};
-        m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
+        m_themes["themes/Black.txt"] = {(tgui::getResourcePath() / "themes/Black.txt").asString()};
+        m_themes["themes/BabyBlue.txt"] = {(tgui::getResourcePath() / "themes/BabyBlue.txt").asString()};
+        m_themes["themes/TransparentGrey.txt"] = {(tgui::getResourcePath() / "themes/TransparentGrey.txt").asString()};
     }
 
     auto panel = m_gui->get<tgui::Panel>("MainPanel");
     panel->get<tgui::Panel>("PnlNewForm")->onClick([=]{
-        showLoadFileWindow("New form", "Create", getDefaultFilename(), [=](const tgui::String& filename){
+        showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [=](const tgui::String& filename){
             createNewForm(filename);
         });
     });
     panel->get<tgui::Panel>("PnlLoadForm")->onClick([=]{
-        showLoadFileWindow("Load form", "Load", getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
+        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
     });
 
     if (m_recentFiles.empty())
@@ -909,7 +913,7 @@ void GuiBuilder::loadToolbox()
         {"ListBox", []{ return tgui::ListBox::create(); }},
         {"ListView", []{ return tgui::ListView::create(); }},
         {"Panel", []{ return tgui::Panel::create({150, 150}); }},
-        {"Picture", []{ return tgui::Picture::create("resources/DefaultPicture.png"); }},
+        {"Picture", []{ return tgui::Picture::create((tgui::getResourcePath() / "resources/DefaultPicture.png").asString()); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
         {"RangeSlider", []{ return tgui::RangeSlider::create(); }},
@@ -1239,7 +1243,7 @@ void GuiBuilder::removePopupMenu()
 void GuiBuilder::createNewForm(tgui::String filename)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
-    const tgui::String basePath = (tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).asString();
+    const tgui::String basePath = tgui::getResourcePath().asString();
     if (filename.find(basePath) == 0)
     {
         filename.erase(0, basePath.length());
@@ -1247,7 +1251,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
             filename.erase(0, 1);
     }
 
-    if (tgui::Filesystem::fileExists(tgui::Filesystem::Path(tgui::getResourcePath()) / filename))
+    if (tgui::Filesystem::fileExists(tgui::getResourcePath() / filename))
     {
         auto panel = tgui::Panel::create({"100%", "100%"});
         panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
@@ -1280,7 +1284,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
 bool GuiBuilder::loadForm(tgui::String filename)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
-    const tgui::String basePath = (tgui::Filesystem::getCurrentWorkingDirectory() / tgui::Filesystem::Path(tgui::getResourcePath())).getNormalForm().asString();
+    const tgui::String basePath = tgui::getResourcePath().getNormalForm().asString();
     if (filename.find(basePath) == 0)
     {
         filename.erase(0, basePath.length());
@@ -1378,11 +1382,7 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
 
 tgui::String GuiBuilder::getDefaultFilename() const
 {
-    const tgui::String defaultFilename = "form.txt";
-    if (!m_defaultPath.empty())
-        return m_defaultPath + defaultFilename;
-    else
-        return defaultFilename;
+    return "form.txt";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1961,7 +1961,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         updateForm(originalFilename, originalPartRect, originalMiddleRect, true, true, true);
 
         buttonSelectFile->onPress([=]{
-            showLoadFileWindow("Load image", "Load", buttonSelectFile->getUserData<tgui::String>(), [=](const tgui::String& filename){
+            showLoadFileWindow("Load image", "Load", true, buttonSelectFile->getUserData<tgui::String>(), [=](const tgui::String& filename){
                 updateForm(filename, {}, {}, true, true, true);
             });
         });
@@ -2108,7 +2108,7 @@ void GuiBuilder::menuBarCallbackNewForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("New form", "Create", getDefaultFilename(), [=](const tgui::String& filename){
+    showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [=](const tgui::String& filename){
         createNewForm(filename);
     });
 }
@@ -2119,7 +2119,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("Load form", "Load", getDefaultFilename(), [this](const tgui::String& filename){
+    showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){
         loadForm(filename);
     });
 }
@@ -2194,7 +2194,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
             const tgui::String filename = newThemeEditBox->getText();
             if (!themesList->contains(filename))
             {
-                tgui::Theme theme{filename};
+                tgui::Theme theme{(tgui::getResourcePath() / filename).asString()};
                 themesList->addItem(filename);
                 m_themes[filename] = theme;
             }

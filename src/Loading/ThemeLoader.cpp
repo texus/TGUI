@@ -220,7 +220,7 @@ namespace tgui
 #else
         if (filename[0] != '/')
 #endif
-            fullFilename = getResourcePath() + filename;
+            fullFilename = (getResourcePath() / filename).asString();
         else
             fullFilename = filename;
 

@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Duration.hpp>
 #include <TGUI/Backend.hpp>
 #include <functional>
 #include <sstream>
@@ -42,7 +41,7 @@ namespace tgui
         unsigned int globalTextSize = 13;
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
         Duration globalEditBlinkRate = std::chrono::milliseconds(500);
-        String globalResourcePath = "";
+        Filesystem::Path globalResourcePath;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,20 +74,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void setResourcePath(const String& path)
+    void setResourcePath(const Filesystem::Path& path)
     {
         globalResourcePath = path;
 
-        if (!globalResourcePath.empty())
-        {
-            if (globalResourcePath[globalResourcePath.length()-1] != '/')
-                globalResourcePath.push_back('/');
-        }
+        // If e.g. "a/b" was stored in the path then assume "b" is a folder and turn it into "a/b/"
+        if (!path.getFilename().empty())
+            globalResourcePath = Filesystem::Path(path.asString() + '/');
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const String& getResourcePath()
+    void setResourcePath(const String& path)
+    {
+        // Make sure the path ends with a slash, so that it is interpreted as a path instead of a filename
+        if (!path.empty() && (path.back() != '/') && (path.back() != '\\'))
+            globalResourcePath = Filesystem::Path(path + '/');
+        else
+            globalResourcePath = Filesystem::Path(path);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Filesystem::Path& getResourcePath()
     {
         return globalResourcePath;
     }

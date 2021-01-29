@@ -97,7 +97,7 @@ namespace tgui
         void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile((tgui::Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((tgui::getResourcePath() / filename).asString(), iconSize);
             if (pixelPtr)
                 m_window.setIcon(iconSize.x, iconSize.y, pixelPtr.get());
         }
@@ -119,7 +119,8 @@ namespace tgui
 
 #if TGUI_USE_GLES
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 #else
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
