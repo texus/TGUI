@@ -175,7 +175,21 @@ namespace tgui
         /// @param borderThickness  Thickness of the border to draw around the circle (outside given size if thickness is positive)
         /// @param borderColor      Color of the border, if borderThickness differs from 0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {}) = 0;
+        virtual void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Draws a rounded rectangle
+        ///
+        /// @param states           Render states to use for drawing
+        /// @param size             Size of the rectangle (includes borders)
+        /// @param backgroundColor  Fill color of the rectangle
+        /// @param radius           Radius of the rounded corners
+        /// @param borders          Optional borders on the sides of the rectangle (must be the same on all sides)
+        /// @param borderColor      Color of the borders
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void drawRoundedRectangle(const RenderStates& states, const Vector2f& size, const Color& backgroundColor, float radius,
+                                          const Borders& borders = {0}, const Color& borderColor = Color::Black);
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

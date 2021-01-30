@@ -277,17 +277,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSFML::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
-    {
-        sf::CircleShape bordersShape{size / 2};
-        bordersShape.setFillColor(sf::Color(backgroundColor));
-        bordersShape.setOutlineColor(sf::Color(borderColor));
-        bordersShape.setOutlineThickness(borderThickness);
-        m_target->draw(bordersShape, convertRenderStates(states));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::RenderStates BackendRenderTargetSFML::convertRenderStates(const RenderStates& states)
     {
         const float *transformMatrix = states.transform.getMatrix();

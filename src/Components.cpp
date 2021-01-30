@@ -496,17 +496,25 @@ namespace dev
     {
         states.transform.translate(m_position);
 
-        // Draw the borders
-        if (m_borders != Borders{0})
-            target.drawBorders(states, m_borders, m_size, m_borderColor);
-
-        states.transform.translate(m_background.rect.getPosition());
-
-        // Draw either a texture or a color
-        if (m_sprite.isSet())
-            target.drawSprite(states, m_sprite);
+        if ((m_backgroundStyle->roundedBorderRadius > 0) && !m_sprite.isSet())
+        {
+            target.drawRoundedRectangle(states, m_size, m_background.color, m_backgroundStyle->roundedBorderRadius, m_borders, m_borderColor);
+            states.transform.translate(m_background.rect.getPosition());
+        }
         else
-            target.drawFilledRect(states, m_background.rect.getSize(), m_background.color);
+        {
+            // Draw the borders
+            if (m_borders != Borders{0})
+                target.drawBorders(states, m_borders, m_size, m_borderColor);
+
+            states.transform.translate(m_background.rect.getPosition());
+
+            // Draw either a texture or a color
+            if (m_sprite.isSet())
+                target.drawSprite(states, m_sprite);
+            else
+                target.drawFilledRect(states, m_background.rect.getSize(), m_background.color);
+        }
 
         GroupComponent::draw(target, states);
     }

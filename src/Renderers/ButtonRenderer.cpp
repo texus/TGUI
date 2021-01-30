@@ -77,6 +77,8 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_NUMBER(ButtonRenderer, TextOutlineThickness, 0)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextOutlineColor, {})
+
+    TGUI_RENDERER_PROPERTY_NUMBER(ButtonRenderer, RoundedBorderRadius, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

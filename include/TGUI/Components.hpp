@@ -374,6 +374,8 @@ namespace dev
         StyleProperty<Texture> texture;
         StyleProperty<Outline> borders;
         StyleProperty<Outline> padding;
+
+        float roundedBorderRadius = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

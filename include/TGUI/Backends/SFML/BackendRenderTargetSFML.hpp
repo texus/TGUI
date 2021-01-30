@@ -129,18 +129,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draws a circle
-        ///
-        /// @param states           Render states to use for drawing
-        /// @param size             Diameter of the circle
-        /// @param backgroundColor  Color to fill the circle with
-        /// @param borderThickness  Thickness of the border to draw around the circle (outside given size if thickness is positive)
-        /// @param borderColor      Color of the border, if borderThickness differs from 0
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {}) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws one or more triangles (using the color that is specified in the vertices)
         ///
         /// @param states       Render states to use for drawing

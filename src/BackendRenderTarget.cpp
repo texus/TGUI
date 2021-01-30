@@ -25,11 +25,135 @@
 
 #include <TGUI/BackendRenderTarget.hpp>
 #include <array>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static std::vector<Vector2f> drawCircleHelperGetPoints(int nrPoints, float radius, float offset)
+    {
+        std::vector<Vector2f> points;
+        points.reserve(nrPoints);
+
+        const float twoPi = 2.f * 3.14159265358979f;
+        for (int i = 0; i < nrPoints; ++i)
+        {
+            points.emplace_back(offset + radius + (radius * std::cos(twoPi * i / nrPoints)),
+                                offset + radius + (radius * std::sin(twoPi * i / nrPoints)));
+        }
+
+        return points;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static std::vector<Vector2f> drawRoundedRectHelperGetPoints(const int nrCornerPoints, const Vector2f& size, float radius, float offset)
+    {
+        std::vector<Vector2f> points;
+        points.reserve(nrCornerPoints * 4);
+
+        const float twoPi = 2.f * 3.14159265358979f;
+        const int nrPointsInCircle = 4 * (nrCornerPoints - 1);
+
+        // Top right corner
+        for (int i = 0; i < nrCornerPoints; ++i)
+        {
+            points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * i / nrPointsInCircle)),
+                                offset + radius - (radius * std::sin(twoPi * i / nrPointsInCircle)));
+        }
+
+        // Top left corner
+        for (int i = 0; i < nrCornerPoints; ++i)
+        {
+            points.emplace_back(offset + radius + (radius * std::cos(twoPi * ((nrCornerPoints - 1) + i) / nrPointsInCircle)),
+                                offset + radius - (radius * std::sin(twoPi * ((nrCornerPoints - 1) + i) / nrPointsInCircle)));
+        }
+
+        // Bottom left corner
+        for (int i = 0; i < nrCornerPoints; ++i)
+        {
+            points.emplace_back(offset + radius + (radius * std::cos(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
+                                offset + size.y - radius - (radius * std::sin(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
+        }
+
+        // Bottom right corner
+        for (int i = 0; i < nrCornerPoints; ++i)
+        {
+            points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
+                                offset + size.y - radius - (radius * std::sin(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
+        }
+
+        return points;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static void drawBordersAroundShape(BackendRenderTargetBase* renderTarget, const RenderStates& states, const std::vector<Vector2f>& outerPoints, const std::vector<Vector2f>& innerPoints, const Color& color)
+    {
+        TGUI_ASSERT(outerPoints.size() == innerPoints.size(), "Inner and outer ring of cicle border should have the same amount of points");
+
+        // Create the vertices
+        std::vector<Vertex> vertices;
+        vertices.reserve(outerPoints.size() + innerPoints.size());
+        for (std::size_t i = 0; i < outerPoints.size(); ++i)
+            vertices.push_back({outerPoints[i], Vertex::Color(color)});
+        for (std::size_t i = 0; i < innerPoints.size(); ++i)
+            vertices.push_back({innerPoints[i], Vertex::Color(color)});
+
+        // Create the indices
+        std::vector<int> indices;
+        indices.reserve(3 * (outerPoints.size() + innerPoints.size()));
+        for (std::size_t i = 0; i < outerPoints.size(); ++i)
+        {
+            indices.push_back(i);
+            indices.push_back(i+1);
+            indices.push_back(outerPoints.size() + i);
+
+            indices.push_back(outerPoints.size() + i);
+            indices.push_back(outerPoints.size() + i+1);
+            indices.push_back(i+1);
+        }
+
+        // The last two triangles were given wrong indices by the loop (where there are "+1" in the code), and need to be overwitten to close the circle
+        indices[indices.size() - 1] = 0;
+        indices[indices.size() - 2] = outerPoints.size();
+        indices[indices.size() - 5] = 0;
+
+        // Draw the triangles
+        renderTarget->drawTriangles(states, vertices.data(), vertices.size(), indices.data(), indices.size());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static void drawInnerShape(BackendRenderTargetBase* renderTarget, const RenderStates& states, const std::vector<Vector2f>& points, const Vector2f& centerPoint, const Color& color)
+    {
+        // Create the vertices (one point in the middle of the circle and the others as provided in the 'points' parameter)
+        std::vector<Vertex> vertices;
+        vertices.reserve(1 + points.size());
+        vertices.push_back({centerPoint, Vertex::Color(color)});
+        for (std::size_t i = 0; i < points.size(); ++i)
+            vertices.push_back({points[i], Vertex::Color(color)});
+
+        // Create the indices
+        std::vector<int> indices;
+        indices.reserve(3 * points.size());
+        for (std::size_t i = 1; i <= points.size(); ++i)
+        {
+            indices.push_back(0); // Center point
+            indices.push_back(i);
+            indices.push_back(i+1);
+        }
+        indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
+
+        // Draw the triangles
+        renderTarget->drawTriangles(states, vertices.data(), vertices.size(), indices.data(), indices.size());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendRenderTargetBase::drawBorders(const RenderStates& states, const Borders& borders, Vector2f size, Color color)
     {
         //////////////////////
@@ -98,6 +222,68 @@ namespace tgui
             TGUI_ASSERT(indices.size() % 3 == 0, "BackendRenderTargetBase::drawTriangles requires that the number of indices is divisible by 3");
             drawTriangles(states, vertices.begin(), vertices.size(), indices.begin(), indices.size());
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
+    {
+        const float radius = size / 2.f;
+        const int nrPoints = static_cast<int>(std::ceil((radius + std::abs(borderThickness)) * 4));
+        if (borderThickness > 0)
+        {
+            const std::vector<Vector2f>& outerPoints = drawCircleHelperGetPoints(nrPoints, radius + borderThickness, -borderThickness);
+            const std::vector<Vector2f>& innerPoints = drawCircleHelperGetPoints(nrPoints, radius, 0);
+
+            drawBordersAroundShape(this, states, outerPoints, innerPoints, borderColor);
+            drawInnerShape(this, states, innerPoints, {radius, radius}, backgroundColor);
+        }
+        else if (borderThickness < 0)
+        {
+            const std::vector<Vector2f>& outerPoints = drawCircleHelperGetPoints(nrPoints, radius, 0);
+            const std::vector<Vector2f>& innerPoints = drawCircleHelperGetPoints(nrPoints, radius + borderThickness, -borderThickness);
+
+            drawBordersAroundShape(this, states, outerPoints, innerPoints, borderColor);
+            drawInnerShape(this, states, innerPoints, {radius, radius}, backgroundColor);
+        }
+        else // No outline
+        {
+            const std::vector<Vector2f>& innerPoints = drawCircleHelperGetPoints(nrPoints, radius, 0);
+            drawInnerShape(this, states, innerPoints, {radius, radius}, backgroundColor);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::drawRoundedRectangle(const RenderStates& states, const Vector2f& size, const Color& backgroundColor,
+                                                       float radius, const Borders& borders, const Color& borderColor)
+    {
+        // Radius can never be larger than half the width or height
+        if (radius > size.x / 2)
+            radius = size.x / 2;
+        if (radius > size.y / 2)
+            radius = size.y / 2;
+
+        const int nrCornerPoints = std::max(1, static_cast<int>(std::ceil(radius * 2)));
+        const std::vector<Vector2f>& outerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, size, radius, 0);
+
+        const float borderWidth = borders.getLeft();
+        if (borderWidth > 0)
+        {
+            radius = std::max(0.f, radius - borderWidth);
+            const Vector2f innerSize = {std::max(0.f, size.x - 2*borderWidth), std::max(0.f, size.y - 2*borderWidth)};
+            if (radius > innerSize.x / 2)
+                radius = innerSize.x / 2;
+            if (radius > innerSize.y / 2)
+                radius = innerSize.y / 2;
+
+            const std::vector<Vector2f>& innerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, innerSize, radius, borderWidth);
+
+            drawBordersAroundShape(this, states, outerPoints, innerPoints, borderColor);
+            drawInnerShape(this, states, innerPoints, size/2.f, backgroundColor);
+        }
+        else // There are no borders
+            drawInnerShape(this, states, outerPoints, size/2.f, backgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

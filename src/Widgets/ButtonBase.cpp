@@ -344,6 +344,10 @@ namespace tgui
             background.borders = getSharedRenderer()->getBorders();
             updateSize();
         }
+        else if (property == "RoundedBorderRadius")
+        {
+            background.roundedBorderRadius = getSharedRenderer()->getRoundedBorderRadius();
+        }
         else if (property == "TextColor")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColor(), priv::dev::ComponentState::Normal);
         else if (property == "TextColorDown")

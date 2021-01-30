@@ -398,7 +398,7 @@ namespace tgui
 
         if (text.getOutlineThickness() != 0)
         {
-            const auto& linesOutline = std::static_pointer_cast<BackendTextSDL>(text.getBackendText())->getInternalTextures();
+            const auto& linesOutline = std::static_pointer_cast<BackendTextSDL>(text.getBackendText())->getInternalOutlineTextures();
             for (const auto& line : linesOutline)
                 drawTextLine(line.bounding, line.textureId);
         }
@@ -420,27 +420,6 @@ namespace tgui
         updateTransformation(states.transform);
 
         TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, NULL));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendRenderTargetSDL::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
-    {
-        changeTexture(m_emptyTexture);
-
-        const float radius = size / 2.f;
-        if (borderThickness > 0)
-        {
-            drawCircleHelper(states, radius + borderThickness, borderColor, -borderThickness);
-            drawCircleHelper(states, radius, backgroundColor, 0);
-        }
-        else if (borderThickness < 0)
-        {
-            drawCircleHelper(states, radius, borderColor, 0);
-            drawCircleHelper(states, radius + borderThickness, backgroundColor, -borderThickness);
-        }
-        else // No outline
-            drawCircleHelper(states, radius, backgroundColor, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,42 +544,6 @@ namespace tgui
                                   {static_cast<unsigned int>(bounding.w), static_cast<unsigned int>(bounding.h)});
 
         TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, NULL));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendRenderTargetSDL::drawCircleHelper(const RenderStates& states, float radius, const Color& color, float offset)
-    {
-        if (offset != 0)
-        {
-            RenderStates movedStates = states;
-            movedStates.transform.translate({offset, offset});
-            updateTransformation(movedStates.transform);
-        }
-        else
-            updateTransformation(states.transform);
-
-        const int nrPoints = 1 + static_cast<int>(std::ceil(radius * 4));
-        const Vector2f center = {radius, radius};
-
-        std::vector<Vertex> vertices(nrPoints, {{}, Vertex::Color(color), {0, 0}});
-        vertices[0].position = center;
-
-        const float pi = 3.14159265358979f;
-        const float twoPi = 2.f * pi;
-        const int nrTriangles = nrPoints - 2;
-        for (int i = 0; i <= nrTriangles; ++i)
-        {
-            vertices[i].position = {center.x + (radius * std::cos(twoPi * i / nrTriangles)),
-                                    center.y + (radius * std::sin(twoPi * i / nrTriangles))};
-        }
-
-        std::vector<int> indices(nrPoints);
-        for (int i = 0; i < nrPoints; ++i)
-            indices[i] = i;
-
-        prepareVerticesAndIndices(vertices.data(), vertices.size(), indices.data(), indices.size());
-        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLE_FAN, nrPoints, GL_UNSIGNED_INT, NULL));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
