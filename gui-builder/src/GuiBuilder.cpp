@@ -107,8 +107,9 @@ namespace
                         continue;
                     }
 
-                    const tgui::String absoluteFilename = (tgui::getResourcePath() / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
-                    if ((absoluteFilename == themeIt->second.getTexture().getId())
+                    const tgui::String absoluteFilename1 = (tgui::getResourcePath() / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
+                    const tgui::String absoluteFilename2 = (tgui::getResourcePath() / tgui::Filesystem::Path(themeIt->second.getTexture().getId())).asString();
+                    if ((absoluteFilename1 == absoluteFilename2)
                      && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
                     {
                         continue;
@@ -495,7 +496,7 @@ bool GuiBuilder::loadGuiBuilderState()
         for (const auto& theme : node->propertyValuePairs["Themes"]->valueList)
         {
             const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
-            m_themes[deserializedTheme] = {(tgui::getResourcePath() / deserializedTheme).asString()};
+            m_themes[deserializedTheme] = deserializedTheme;
         }
     }
 
@@ -2159,7 +2160,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
 {
     auto editThemesWindow = openWindowWithFocus();
     editThemesWindow->setTitle("Edit themes");
-    editThemesWindow->setClientSize({320, 280});
+    editThemesWindow->setClientSize({620, 280});
     editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
 
     auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");

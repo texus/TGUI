@@ -140,9 +140,9 @@ namespace tgui
             fseek(file, 0, SEEK_END);
             const long bytesInFile = ftell(file);
             fseek(file, 0, SEEK_SET);
-
-            if (bytesInFile <= 0)
+            if ((bytesInFile <= 0) || (bytesInFile == std::numeric_limits<long>::max()))
             {
+                // When filename was a directory on linux, ftell returned the maximum long value instead of -1
                 fclose(file);
                 return nullptr;
             }

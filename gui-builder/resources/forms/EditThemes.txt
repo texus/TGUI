@@ -24,7 +24,7 @@ ListBox.ThemesList {
     ItemHeight = 20;
     MaximumItems = 0;
     Position = (10, 10);
-    Size = (300, 200);
+    Size = (600, 200);
     TextSize = 12;
 
     Renderer {
@@ -44,7 +44,7 @@ ListBox.ThemesList {
 
 EditBox.NewThemeEditBox {
     Position = (10, 220);
-    Size = (300, 22);
+    Size = (600, 22);
     TextSize = 12;
 
     Renderer {
@@ -72,7 +72,7 @@ EditBox.NewThemeEditBox {
 
 Button.ButtonAdd {
     Enabled = false;
-    Position = (120, 250);
+    Position = (420, 250);
     Size = (90, 22);
     Text = Add;
     TextSize = 12;
@@ -81,7 +81,7 @@ Button.ButtonAdd {
 
 Button.ButtonDelete {
     Enabled = false;
-    Position = (220, 250);
+    Position = (520, 250);
     Size = (90, 22);
     Text = Delete;
     TextSize = 12;
