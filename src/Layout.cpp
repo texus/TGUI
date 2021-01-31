@@ -294,16 +294,21 @@ namespace tgui
         m_boundWidget{boundWidget}
     {
         TGUI_ASSERT(m_boundWidget != nullptr, "Bound widget passed to Layout constructor can't be a nullptr");
-        TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+        TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
+               || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
                || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
             "Layout constructor with bound widget must be called with an operation that involves the widget"
         );
 
-        if (m_operation == Operation::BindingLeft)
+        if (m_operation == Operation::BindingPosX)
             m_value = m_boundWidget->getPosition().x;
-        else if (m_operation == Operation::BindingTop)
+        else if (m_operation == Operation::BindingPosY)
             m_value = m_boundWidget->getPosition().y;
+        else if (m_operation == Operation::BindingLeft)
+            m_value = m_boundWidget->getPosition().x - (m_boundWidget->getOrigin().x * m_boundWidget->getSize().x);
+        else if (m_operation == Operation::BindingTop)
+            m_value = m_boundWidget->getPosition().y - (m_boundWidget->getOrigin().y * m_boundWidget->getSize().y);
         else if (m_operation == Operation::BindingWidth)
             m_value = m_boundWidget->getSize().x;
         else if (m_operation == Operation::BindingHeight)
@@ -492,7 +497,8 @@ namespace tgui
                 return m_boundString;
             else
             {
-                if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+                if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
+                 || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                  || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
                  || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight))
                 {
@@ -503,7 +509,11 @@ namespace tgui
                         TGUI_PRINT_WARNING("layout can't be correctly converted to string because the bound widget has no name");
                     }
 
-                    if (m_operation == Operation::BindingLeft)
+                    if (m_operation == Operation::BindingPosX)
+                        return boundWidgetName + U".x";
+                    else if (m_operation == Operation::BindingPosY)
+                        return boundWidgetName + U".y";
+                    else if (m_operation == Operation::BindingLeft)
                         return boundWidgetName + U".left";
                     else if (m_operation == Operation::BindingTop)
                         return boundWidgetName + U".top";
@@ -533,13 +543,14 @@ namespace tgui
     {
         if (m_boundWidget)
         {
-            TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+            TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
+                   || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
                    || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
                 "Layout with bound widget should have an operation that involves the widget"
             );
 
-            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
+            if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY) || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->unbindPositionLayout(this);
             else
                 m_boundWidget->unbindSizeLayout(this);
@@ -560,13 +571,14 @@ namespace tgui
 
         if (m_boundWidget)
         {
-            TGUI_ASSERT((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+            TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
+                   || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
                    || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
                 "Layout with bound widget should have an operation that involves the widget"
             );
 
-            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
+            if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY) || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->bindPositionLayout(this);
             else
                 m_boundWidget->bindSizeLayout(this);
@@ -642,11 +654,17 @@ namespace tgui
             case Operation::Maximum:
                 m_value = std::max(m_leftOperand->getValue(), m_rightOperand->getValue());
                 break;
-            case Operation::BindingLeft:
+            case Operation::BindingPosX:
                 m_value = m_boundWidget->getPosition().x;
                 break;
-            case Operation::BindingTop:
+            case Operation::BindingPosY:
                 m_value = m_boundWidget->getPosition().y;
+                break;
+            case Operation::BindingLeft:
+                m_value = m_boundWidget->getPosition().x - (m_boundWidget->getOrigin().x * m_boundWidget->getSize().x);
+                break;
+            case Operation::BindingTop:
+                m_value = m_boundWidget->getPosition().y - (m_boundWidget->getOrigin().y * m_boundWidget->getSize().y);
                 break;
             case Operation::BindingWidth:
                 m_value = m_boundWidget->getSize().x;
@@ -708,12 +726,22 @@ namespace tgui
 
     void Layout::parseBindingString(const String& expression, Widget* widget, bool xAxis)
     {
-        if (expression == "x" || expression == "left")
+        if (expression == "x")
+        {
+            m_operation = Operation::BindingPosX;
+            m_boundWidget = widget;
+        }
+        else if (expression == "y")
+        {
+            m_operation = Operation::BindingPosY;
+            m_boundWidget = widget;
+        }
+        else if (expression == "left")
         {
             m_operation = Operation::BindingLeft;
             m_boundWidget = widget;
         }
-        else if (expression == "y" || expression == "top")
+        else if (expression == "top")
         {
             m_operation = Operation::BindingTop;
             m_boundWidget = widget;
@@ -896,6 +924,20 @@ namespace tgui
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Layout bindPosX(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingPosX, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindPosY(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingPosY, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Layout bindLeft(Widget::Ptr widget)
         {
             return Layout{Layout::Operation::BindingLeft, widget.get()};
@@ -958,7 +1000,7 @@ namespace tgui
 
         Layout2d bindPosition(Widget::Ptr widget)
         {
-            return {bindLeft(widget), bindTop(widget)};
+            return {bindPosX(widget), bindPosY(widget)};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -77,17 +77,17 @@ namespace tgui
 
 #ifdef TGUI_SYSTEM_WINDOWS
         m_buttonCancel->setPosition("100% - 10", "100% - 10");
-        m_buttonConfirm->setPosition("#TGUI_INTERNAL$ButtonCancel#.x - #TGUI_INTERNAL$ButtonCancel#.width - 10", "100% - 10");
+        m_buttonConfirm->setPosition("#TGUI_INTERNAL$ButtonCancel#.left - 10", "100% - 10");
 #else
         m_buttonConfirm->setPosition("100% - 10", "100% - 10");
-        m_buttonCancel->setPosition("#TGUI_INTERNAL$ButtonConfirm#.x - #TGUI_INTERNAL$ButtonConfirm#.width - 10", "100% - 10");
+        m_buttonCancel->setPosition("#TGUI_INTERNAL$ButtonConfirm#.left - 10", "100% - 10");
 #endif
         m_comboBoxFileTypes->setWidth("33%");
-        m_comboBoxFileTypes->setPosition("100% - 10", "#TGUI_INTERNAL$ButtonConfirm#.y - #TGUI_INTERNAL$ButtonConfirm#.height - 15");
+        m_comboBoxFileTypes->setPosition("100% - 10", "#TGUI_INTERNAL$ButtonConfirm#.top - 15");
 
-        m_labelFilename->setPosition({10, "#TGUI_INTERNAL$ComboBoxFileTypes#.y - (#TGUI_INTERNAL$ComboBoxFileTypes#.height + #TGUI_INTERNAL$LabelFilename#.height) / 2"});
+        m_labelFilename->setPosition({10, "#TGUI_INTERNAL$ComboBoxFileTypes#.top + (#TGUI_INTERNAL$ComboBoxFileTypes#.height - #TGUI_INTERNAL$LabelFilename#.height) / 2"});
 
-        m_editBoxFilename->setPosition("#TGUI_INTERNAL$ComboBoxFileTypes#.x - #TGUI_INTERNAL$ComboBoxFileTypes#.width - 10", "#TGUI_INTERNAL$ComboBoxFileTypes#.y");
+        m_editBoxFilename->setPosition("#TGUI_INTERNAL$ComboBoxFileTypes#.left - 10", "#TGUI_INTERNAL$ComboBoxFileTypes#.y");
         m_editBoxFilename->setWidth("#TGUI_INTERNAL$EditBoxFilename#.x - #TGUI_INTERNAL$LabelFilename#.width - #TGUI_INTERNAL$LabelFilename#.x - 5");
 
         m_buttonBack->setPosition({10, 10});
@@ -103,7 +103,7 @@ namespace tgui
         m_editBoxPath->setWidth("100% - #TGUI_INTERNAL$EditBoxPath#.x - 10");
 
         m_listView->setPosition({10, "#TGUI_INTERNAL$EditBoxPath#.y + #TGUI_INTERNAL$EditBoxPath#.height + 10"});
-        m_listView->setSize({"100% - 20", "#TGUI_INTERNAL$EditBoxFilename#.y - #TGUI_INTERNAL$EditBoxFilename#.height - top - 10"});
+        m_listView->setSize({"100% - 20", "#TGUI_INTERNAL$EditBoxFilename#.top - top - 10"});
 
         m_listView->addColumn("Name", 325);
         m_listView->addColumn("Size", 75, ListView::ColumnAlignment::Right);

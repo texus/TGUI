@@ -60,6 +60,8 @@ namespace tgui
             Divides,
             Minimum,
             Maximum,
+            BindingPosX, // X position, same as BindingLeft if widget origin isn't changed
+            BindingPosY, // Y position, same as BindingTop if widget origin isn't changed
             BindingLeft,
             BindingTop,
             BindingWidth,
@@ -403,10 +405,16 @@ namespace tgui
 
     inline namespace bind_functions
     {
-        /// @brief Bind to the x position of the widget
+        /// @brief Bind to the x position of the widget (same as bindLeft unless widget origin is changed)
+        TGUI_API Layout bindPosX(std::shared_ptr<Widget> widget);
+
+        /// @brief Bind to the y position of the widget (same as bindTop unless widget origin is changed)
+        TGUI_API Layout bindPosY(std::shared_ptr<Widget> widget);
+
+        /// @brief Bind to the left position of the widget
         TGUI_API Layout bindLeft(std::shared_ptr<Widget> widget);
 
-        /// @brief Bind to the y position of the widget
+        /// @brief Bind to the top position of the widget
         TGUI_API Layout bindTop(std::shared_ptr<Widget> widget);
 
         /// @brief Bind to the width of the widget
