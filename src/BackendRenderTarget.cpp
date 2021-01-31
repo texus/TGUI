@@ -108,18 +108,18 @@ namespace tgui
         indices.reserve(3 * (outerPoints.size() + innerPoints.size()));
         for (std::size_t i = 0; i < outerPoints.size(); ++i)
         {
-            indices.push_back(i);
-            indices.push_back(i+1);
-            indices.push_back(outerPoints.size() + i);
+            indices.push_back(static_cast<int>(i));
+            indices.push_back(static_cast<int>(i+1));
+            indices.push_back(static_cast<int>(outerPoints.size() + i));
 
-            indices.push_back(outerPoints.size() + i);
-            indices.push_back(outerPoints.size() + i+1);
-            indices.push_back(i+1);
+            indices.push_back(static_cast<int>(outerPoints.size() + i));
+            indices.push_back(static_cast<int>(outerPoints.size() + i+1));
+            indices.push_back(static_cast<int>(i+1));
         }
 
         // The last two triangles were given wrong indices by the loop (where there are "+1" in the code), and need to be overwitten to close the circle
         indices[indices.size() - 1] = 0;
-        indices[indices.size() - 2] = outerPoints.size();
+        indices[indices.size() - 2] = static_cast<int>(outerPoints.size());
         indices[indices.size() - 5] = 0;
 
         // Draw the triangles
@@ -143,8 +143,8 @@ namespace tgui
         for (std::size_t i = 1; i <= points.size(); ++i)
         {
             indices.push_back(0); // Center point
-            indices.push_back(i);
-            indices.push_back(i+1);
+            indices.push_back(static_cast<int>(i));
+            indices.push_back(static_cast<int>(i+1));
         }
         indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
 

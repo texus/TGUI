@@ -10,8 +10,6 @@ set(TGUI_SRC
     CustomWidgetForBindings.cpp
     DefaultBackendWindow.cpp
     FileDialogIconLoader.cpp
-    FileDialogIconLoaderLinux.cpp
-    FileDialogIconLoaderWindows.cpp
     Filesystem.cpp
     Font.cpp
     Global.cpp
@@ -111,6 +109,12 @@ set(TGUI_SRC
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
 )
+
+if(TGUI_OS_WINDOWS)
+    list(APPEND TGUI_SRC FileDialogIconLoaderWindows.cpp)
+elseif(TGUI_OS_LINUX)
+    list(APPEND TGUI_SRC FileDialogIconLoaderLinux.cpp)
+endif()
 
 if(TGUI_OPTIMIZE_SINGLE_BUILD)
     list(LENGTH TGUI_SRC fileCount)
