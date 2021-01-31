@@ -72,8 +72,6 @@ namespace tgui
     void BackendTextSDL::setString(const String& string)
     {
         m_lines = string.split(U'\n');
-        for (auto& line : m_lines)
-            line.erase(std::remove(line.begin(), line.end(), U'\r'), line.end());
         m_texturesValid = false;
     }
 
@@ -160,7 +158,7 @@ namespace tgui
         std::size_t lineNumber = 0;
         while (index > m_lines[lineNumber].length())
         {
-            index -= m_lines[lineNumber].length() - 1;
+            index -= m_lines[lineNumber].length() + 1;
             ++lineNumber;
             TGUI_ASSERT(lineNumber < m_lines.size(), "Index out-of-range in BackendTextSDL::findCharacterPos");
         }
@@ -261,8 +259,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendTextSDL::LineTexture BackendTextSDL::createLineTexture(TTF_Font* font, int verticalOffset, const std::string& line, const SDL_Color& color, int outline)
+    BackendTextSDL::LineTexture BackendTextSDL::createLineTexture(TTF_Font* font, int verticalOffset, std::string line, const SDL_Color& color, int outline)
     {
+        line.erase(std::remove(line.begin(), line.end(), U'\r'), line.end()); // We shouldn't render a square if the line contains a '\r'
+
         LineTexture lineTexture;
         if (line.empty())
         {
