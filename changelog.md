@@ -7,8 +7,11 @@ TGUI 0.9-dev
 - Added insertItem function to ListView ([PR #138](https://github.com/texus/TGUI/pull/138))
 - Up and down arrows now change selected item in ListBox and ListView ([PR #146](https://github.com/texus/TGUI/pull/146))
 - Horizontal scrollbar can now depend on item width in ListView ([PR #147](https://github.com/texus/TGUI/pull/147))
+- Added support to copy selected ListView items to clipboard ([PR #148](https://github.com/texus/TGUI/pull/148))
+- Add setTextSize for SubwidgetContainer ([PR #149](https://github.com/texus/TGUI/pull/149))
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Added new FileDialog widget
+- Added new ToggleButton widget
 - Added new SeparatorLine widget
 - Added support for setting mouse cursor + use them on resizable child windows
 - Added timers and optional gui.mainLoop()
@@ -18,6 +21,9 @@ TGUI 0.9-dev
 - Added ViewChanged signal to GuiBase
 - Added hover and selected border colors for Tabs
 - Added TextureSelectedTrack property to RangeSlider renderer
+- Added String::fromNumberRounded to convert float to string with a fixed amount of decimals
+- Added startsWith and endsWith helper functions to String
+- Added RoundedBorderRadius property to button renderer
 - Separators can be added to MenuBar by inserting menu items with "-" string
 - ListBox and ListView can now store user data in their items
 - ListView icons can be given a fixed size to rescale all icons to requested size
@@ -49,7 +55,9 @@ TGUI 0.9-dev
 - Gui::getFont now returns the global font if no font was set in the Gui
 - Container now translates the widget position before calling draw function
 - Dragging scrollbar inside child window didn't work when mouse left child window
+- Selected part of RangeSlider wasn't drawn when using textures
 - Removed all code that was marked as deprecated
+- Binding left and top in layouts now works correctly when the origin is changed
 - Some other small changes that weren't added to the changelog
 
 Older Releases
