@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <SFML/Graphics/View.hpp>
-namespace
+namespace sf  // Anonymous namespace didn't work for Clang on macOS
 {
     bool operator==(const sf::View& left, const sf::View& right)
     {

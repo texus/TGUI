@@ -224,6 +224,9 @@ namespace tgui
         return std::make_shared<BackendWindowSDL>(width, height, title);
 #else
         TGUI_ASSERT(false, "DefaultBackendWindow can't be used when TGUI was build without a backend");
+        (void)width;
+        (void)height;
+        (void)title;
         return nullptr;
 #endif
     }

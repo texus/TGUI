@@ -1,0 +1,278 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  linux-sfml:
+    runs-on: ubuntu-latest
+    env:
+      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+    steps:
+      - name: Cache SFML
+        uses: actions/cache@v2
+        with:
+          path: ${{github.workspace}}/SFML_INSTALL
+          key: CACHE_LINUX_SFML_LATEST_V2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build SFML
+        run: |
+          mkdir -p $SFML_INSTALL_DIR
+          git clone --depth 1 https://github.com/SFML/SFML $GITHUB_WORKSPACE/SFML
+          cd $GITHUB_WORKSPACE/SFML
+          if [[ ! -d "$SFML_INSTALL_DIR/lib" || ! -f "$SFML_INSTALL_DIR/revision_cache" || `git rev-parse HEAD` != `cat "$SFML_INSTALL_DIR/revision_cache"` ]]; then
+            if [[ ! -d "$SFML_INSTALL_DIR/lib" ]]; then
+              echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
+            else
+              echo "$(tput setaf 3)Rebuilding SFML: updating version$(tput sgr 0)"
+            fi
+
+            git rev-parse HEAD > "$SFML_INSTALL_DIR/revision_cache"
+
+            mkdir $GITHUB_WORKSPACE/SFML-build
+            cd $GITHUB_WORKSPACE/SFML-build
+            cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE ../SFML
+            make -j2
+            make install
+          else
+            echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
+          fi
+
+      - name: Build TGUI
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+          cd $GITHUB_WORKSPACE/TGUI-build
+          cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          make -j2
+
+      - name: Run tests
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI-build/tests
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests
+
+      - name: Test TGUIConfig.cmake
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI/tests/cmake
+          cmake -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build .
+          make
+          test -e TguiTest
+
+  linux-sfml-minimum-supported-versions:
+    runs-on: ubuntu-16.04
+    env:
+      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+    steps:
+      - name: Cache SFML
+        uses: actions/cache@v2
+        id: cache-sfml
+        with:
+          path: ${{github.workspace}}/SFML_INSTALL
+          key: CACHE_LINUX_SFML_2_5_0_V2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+          sudo apt-get install g++-5 clang-4.0
+          sudo sh -c 'wget -nv -O- "https://cmake.org/files/v3.5/cmake-3.5.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Checkout SFML 2.5.0
+        uses: actions/checkout@v2
+        with:
+          repository: SFML/SFML
+          ref: 2.5.0
+          path: SFML
+
+      - name: Build SFML
+        if: steps.cache-sfml.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SFML-build
+          cd $GITHUB_WORKSPACE/SFML-build
+          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE ../SFML
+          make -j2
+          make install
+
+      - name: Build TGUI (gcc 5)
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build-gcc
+          cd $GITHUB_WORKSPACE/TGUI-build-gcc
+          cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          make -j2
+
+      - name: Build TGUI (clang 4)
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build-clang
+          cd $GITHUB_WORKSPACE/TGUI-build-clang
+          cmake -DCMAKE_C_COMPILER=clang-4.0 -DCMAKE_CXX_COMPILER=clang++-4.0 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          make -j2
+
+  macos-sfml:
+    runs-on: macos-latest
+    steps:
+      - name: Install SFML
+        run: |
+          brew install sfml
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI (dylib)
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build-dylib
+          cd $GITHUB_WORKSPACE/TGUI-build-dylib
+          cmake -DTGUI_BUILD_FRAMEWORK=FALSE -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          make -j2
+
+      - name: Build TGUI (framework)
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build-framework
+          cd $GITHUB_WORKSPACE/TGUI-build-framework
+          cmake -DTGUI_BUILD_FRAMEWORK=TRUE -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          make -j2
+
+  android-sfml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache SFML
+        uses: actions/cache@v2
+        id: cache-sfml
+        with:
+          path: ${{github.workspace}}/sfml-cache
+          key: CACHE_ANDROID_SFML_2_5_1_V3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+          echo "y" | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --install "ndk;17.2.4988734"
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Checkout SFML 2.5.1
+        uses: actions/checkout@v2
+        with:
+          repository: SFML/SFML
+          ref: 2.5.1
+          path: SFML
+
+      - name: Restore cached SFML
+        if: steps.cache-sfml.outputs.cache-hit == 'true'
+        run: |
+          mkdir $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml
+          cp -Rp $GITHUB_WORKSPACE/sfml-cache/* $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml/
+
+      - name: Build SFML
+        if: steps.cache-sfml.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SFML-build
+          cd $GITHUB_WORKSPACE/SFML-build
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/17.2.4988734 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug ../SFML
+          make -j2
+          make install
+          mkdir $GITHUB_WORKSPACE/sfml-cache
+          cp -Rp $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml/* $GITHUB_WORKSPACE/sfml-cache/
+        
+      - name: Build TGUI
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+          cd $GITHUB_WORKSPACE/TGUI-build
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/17.2.4988734 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          make -j2
+          make install
+
+      - name: Build example
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI/examples/android-sfml
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "ndk.dir=$ANDROID_SDK_ROOT/ndk/17.2.4988734" >> local.properties
+          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'armeabi-v7a'/" app/build.gradle
+          ./gradlew build
+
+  linux-sdl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsdl2-dev libsdl2-ttf-dev
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+          cd $GITHUB_WORKSPACE/TGUI-build
+          cmake -DTGUI_BACKEND=SDL -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          make -j2
+
+  android-sdl:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache SDL
+      uses: actions/cache@v2
+      id: cache-sdl
+      with:
+        path: |
+          ${{github.workspace}}/SDL2-2.0.5
+          ${{github.workspace}}/SDL2_ttf-2.0.14
+          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/freetype
+          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/SDL2
+          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/SDL2_ttf
+        key: CACHE_LINUX_SDL_2_0_5_AND_SDL_TTF_2_0_14_V3
+
+    - name: Install dependencies
+      if: steps.cache-sdl.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        wget -nv https://www.libsdl.org/release/SDL2-2.0.5.tar.gz
+        tar -xzf SDL2-2.0.5.tar.gz
+        wget -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz
+        tar -xzf SDL2_ttf-2.0.14.tar.gz
+
+    - name: Checkout TGUI
+      uses: actions/checkout@v2
+      with:
+        path: TGUI
+
+    - name: Generate Config.hpp
+      run: |
+        mkdir $GITHUB_WORKSPACE/TGUI-build-temp
+        cd $GITHUB_WORKSPACE/TGUI-build-temp
+        cmake -DTGUI_BACKEND=Custom -DTGUI_USE_GLES=TRUE -DTGUI_BUILD_GUI_BUILDER=FALSE ../TGUI
+        cd $GITHUB_WORKSPACE
+        rm -R $GITHUB_WORKSPACE/TGUI-build-temp
+
+    - name: Patching example
+      run: |
+        cd $GITHUB_WORKSPACE/TGUI/examples/android-sdl
+        sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'arm64-v8a'/" app/build.gradle
+        ln -s $GITHUB_WORKSPACE/SDL2-2.0.5 app/jni/SDL
+        ln -s $GITHUB_WORKSPACE/SDL2_ttf-2.0.14 app/jni/SDL_ttf
+        ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
+
+    - name: Build
+      run: |
+        cd $GITHUB_WORKSPACE/TGUI/examples/android-sdl
+        ./gradlew bundleDebug
