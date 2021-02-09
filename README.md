@@ -10,10 +10,17 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-| Linux | macOS | Windows | Android | Test coverage |
-|-------|-------|---------|---------|---------------|
-| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.9-dev/2)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.9-dev/4)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.9-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.9-dev) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.9-dev/3)](https://travis-ci.org/texus/TGUI) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.9-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9-dev) |
+[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.9-dev)](https://github.com/texus/TGUI/actions)
+[![CI AppVeyor](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.9-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.9-dev)
 
+[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.9-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9-dev)
+
+|                     | Windows                 | Linux                   | macOS                   | Android                 | iOS        | Raspberry Pi       |
+|---------------------|-------------------------|-------------------------|-------------------------|-------------------------|------------|--------------------|
+| SFML backend        | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :question: | :question:         |
+| SDL/OpenGL backend  | :question:              | :heavy_check_mark: (CI) | :question:              | :heavy_check_mark: (CI) | :x:        | :heavy_check_mark: |
+
+(Platforms with a question mark are likely to work with no or minor adjustments, but have either not been tested or haven't been tested for a long time)
 
 Download
 --------
