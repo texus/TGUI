@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build
           cd $GITHUB_WORKSPACE/TGUI-build
-          cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          CXXFLAGS="-fprofile-arcs -ftest-coverage" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=TRUE -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
           make -j2
 
       - name: Run tests
@@ -65,6 +65,11 @@ jobs:
           cmake -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build .
           make
           test -e TguiTest
+
+      - name: Upload coverage reports to Codecov
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI
+          bash <(curl -s https://codecov.io/bash) -p $GITHUB_WORKSPACE/TGUI-build -s $GITHUB_WORKSPACE/TGUI -a "-s $GITHUB_WORKSPACE/TGUI -pr"
 
   linux-sfml-minimum-supported-versions:
     runs-on: ubuntu-16.04
@@ -110,7 +115,7 @@ jobs:
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build-gcc
           cd $GITHUB_WORKSPACE/TGUI-build-gcc
-          cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
           make -j2
 
       - name: Build TGUI (clang 4)
@@ -190,7 +195,7 @@ jobs:
           make install
           mkdir $GITHUB_WORKSPACE/sfml-cache
           cp -Rp $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml/* $GITHUB_WORKSPACE/sfml-cache/
-        
+
       - name: Build TGUI
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build
