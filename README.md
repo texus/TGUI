@@ -10,10 +10,10 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.9-dev)](https://github.com/texus/TGUI/actions)
-[![CI AppVeyor](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.9-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.9-dev)
+[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.9)](https://github.com/texus/TGUI/actions)
+[![CI AppVeyor](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.9?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.9)
 
-[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.9-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9-dev)
+[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.9/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9)
 
 |                     | Windows                 | Linux                   | macOS                   | Android                 | iOS        | Raspberry Pi       |
 |---------------------|-------------------------|-------------------------|-------------------------|-------------------------|------------|--------------------|
@@ -25,7 +25,9 @@ Status
 Download
 --------
 
-You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.9-dev): [Download ZIP](https://github.com/texus/TGUI/archive/0.9-dev.zip)
+You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.9): [Download ZIP](https://github.com/texus/TGUI/archive/0.9.zip)
+
+Precompiled libraries for some compilers are available for each [release](https://github.com/texus/TGUI/releases).
 
 Learn
 -----

@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build
           cd $GITHUB_WORKSPACE/TGUI-build
-          CXXFLAGS="-fprofile-arcs -ftest-coverage" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=TRUE -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+          CXXFLAGS="-fprofile-arcs -ftest-coverage" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=TRUE -DTGUI_ENABLE_DRAW_TESTS=TRUE -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
           make -j2
 
       - name: Run tests

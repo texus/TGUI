@@ -1,5 +1,5 @@
-TGUI 0.9-dev
-------------
+TGUI 0.9.1  (12 February 2021)
+------------------------------
 
 - Added new SpinControl widget (combination of EditBox and SpinButton) ([PR #135](https://github.com/texus/TGUI/pull/135))
 - Added new TabContainer widget (combination of Tabs with Panel below) ([PR #139](https://github.com/texus/TGUI/pull/139))
