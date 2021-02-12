@@ -1,5 +1,5 @@
-TGUI 0.8.9  (TBD)
------------------
+TGUI 0.8.9  (12 February 2021)
+------------------------------
 
 - ColorPicker widget added ([PR #145](https://github.com/texus/TGUI/pull/145))
 - Added sortWidgets to Container to update the z-order of all widgets ([PR #141](https://github.com/texus/TGUI/pull/141))
