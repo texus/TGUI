@@ -132,14 +132,16 @@ TEST_CASE("[EditBox]")
         REQUIRE(editBox->isTextWidthLimited());
         REQUIRE(editBox->getText() == "too long ");
 
-        editBox->setText("some other text");
-        REQUIRE(editBox->getText() == "some ot");
+        // Currently the exact width of the text depends on the backend so not every string can be
+        // tested here. The chosen string should lead to same behavior on different SFML versions.
+        editBox->setText("yet another text");
+        REQUIRE(editBox->getText() == "yet anot");
 
         editBox->limitTextWidth(false);
         REQUIRE(!editBox->isTextWidthLimited());
 
-        editBox->setText("yet another text");
-        REQUIRE(editBox->getText() == "yet another text");
+        editBox->setText("some other text");
+        REQUIRE(editBox->getText() == "some other text");
     }
 
     SECTION("ReadOnly")

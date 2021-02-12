@@ -373,12 +373,16 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZXYZ");
                 REQUIRE(tgui::getBackend()->getClipboard() == "XYZ");
 
-                for (unsigned int i = 0; i < 4; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
+                // Select some text near the beginning, because if we select text near then end then
+                // it currently depends on the backend which letter is on which line.
+                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Home, true, false));
+                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, false));
+                for (unsigned int i = 0; i < 2; ++i)
+                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, true));
 
                 textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::X, true, false));
-                REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTUVXYZ");
-                REQUIRE(tgui::getBackend()->getClipboard() == "WXYZ");
+                REQUIRE(textArea->getText() == "ADEFGHIJKLMNOPQRSTUVWXYZXYZ");
+                REQUIRE(tgui::getBackend()->getClipboard() == "BC");
             }
 
             SECTION("Pressing tab")

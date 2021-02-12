@@ -117,6 +117,10 @@ if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
     target_compile_options(tests PRIVATE /bigobj)
 endif()
 
+if(TGUI_ENABLE_DRAW_TESTS)
+    target_compile_definitions(tests PRIVATE TGUI_ENABLE_DRAW_TESTS)
+endif()
+
 # Copy the resources folder to the build directory to execute the tests without installing them
 add_custom_command(TARGET tests
                    POST_BUILD

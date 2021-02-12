@@ -50,19 +50,19 @@
             tgui::GuiSFML gui{target}; \
             gui.add(widget);
 
-#ifdef TGUI_SKIP_DRAW_TESTS
-    #define TEST_DRAW(filename) \
-                target.clear({25, 130, 10}); \
-                gui.draw(); \
-                target.display(); \
-                target.getTexture().copyToImage().saveToFile(filename);
-#else
+#ifdef TGUI_ENABLE_DRAW_TESTS
     #define TEST_DRAW(filename) \
                 target.clear({25, 130, 10}); \
                 gui.draw(); \
                 target.display(); \
                 target.getTexture().copyToImage().saveToFile(filename); \
                 compareImageFiles(filename, "expected/" filename);
+#else
+    #define TEST_DRAW(filename) \
+                target.clear({25, 130, 10}); \
+                gui.draw(); \
+                target.display(); \
+                target.getTexture().copyToImage().saveToFile(filename);
 #endif
 
 static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);
