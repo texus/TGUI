@@ -26,6 +26,8 @@
 #include <TGUI/Backends/SFML/BackendTextSFML.hpp>
 #include <TGUI/Backends/SFML/BackendFontSFML.hpp>
 
+#include <SFML/Config.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -151,7 +153,11 @@ namespace tgui
         const unsigned int textSize = m_text.getCharacterSize();
         for (std::size_t i = 0; i < string.getSize(); ++i)
         {
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // bold parameter was added in SFML 2.6
+            const float kerning = font->getKerning(prevChar, string[i], textSize, bold);
+#else
             const float kerning = font->getKerning(prevChar, string[i], textSize);
+#endif
             if (string[i] == '\n')
             {
                 maxWidth = std::max(maxWidth, width);

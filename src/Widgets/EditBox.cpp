@@ -1019,7 +1019,7 @@ namespace tgui
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
 
-            const float kerning = m_fontCached.getKerning(prevChar, curChar, textSize);
+            const float kerning = m_fontCached.getKerning(prevChar, curChar, textSize, bold);
             if (width + charWidth < posX)
                 width += charWidth + kerning;
             else
@@ -1113,7 +1113,13 @@ namespace tgui
 
             // Watch out for the kerning
             if (charsBeforeSelection > 0)
-                textX += m_fontCached.getKerning(m_displayedText[charsBeforeSelection - 1], m_displayedText[charsBeforeSelection], m_textBeforeSelection.getCharacterSize());
+            {
+                const bool bold = (m_textFull.getStyle() & TextStyle::Bold) != 0;
+                textX += m_fontCached.getKerning(m_displayedText[charsBeforeSelection - 1],
+                                                 m_displayedText[charsBeforeSelection],
+                                                 m_textBeforeSelection.getCharacterSize(),
+                                                 bold);
+            }
 
             textX += m_textBeforeSelection.findCharacterPos(charsBeforeSelection).x;
 
@@ -1126,9 +1132,13 @@ namespace tgui
 
             // Watch out for kerning
             if (m_displayedText.length() > charsBeforeSelection + m_selChars)
+            {
+                const bool bold = (m_textFull.getStyle() & TextStyle::Bold) != 0;
                 textX += m_fontCached.getKerning(m_displayedText[charsBeforeSelection + m_selChars - 1],
                                                  m_displayedText[charsBeforeSelection + m_selChars],
-                                                 m_textBeforeSelection.getCharacterSize());
+                                                 m_textBeforeSelection.getCharacterSize(),
+                                                 bold);
+            }
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_selChars).x;

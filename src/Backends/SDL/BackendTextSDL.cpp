@@ -171,7 +171,7 @@ namespace tgui
         {
             const char32_t currentChar = m_lines[lineNumber][i];
             x += m_font->getGlyph(currentChar, m_characterSize, bold, static_cast<float>(m_fontOutline)).advance;
-            x += m_font->getKerning(prevChar, currentChar, m_characterSize);
+            x += m_font->getKerning(prevChar, currentChar, m_characterSize, bold);
             prevChar = currentChar;
         }
 

@@ -97,7 +97,27 @@ namespace tgui
         ///
         /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize) = 0;
+        TGUI_DEPRECATED("Extra bold argument should be added") virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize)
+        {
+            return getKerning(first, second, characterSize, false);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the kerning offset of two glyphs
+        ///
+        /// The kerning is an extra offset (negative) to apply between two glyphs when rendering them, to make the pair look
+        /// more "natural". For example, the pair "AV" have a special kerning to make them closer than other characters.
+        /// Most of the glyphs pairs have a kerning offset of zero, though.
+        ///
+        /// @param first         Unicode code point of the first character
+        /// @param second        Unicode code point of the second character
+        /// @param characterSize Size of the characters
+        /// @param bold          Are the glyphs bold or regular?
+        ///
+        /// @return Kerning value for first and second, in pixels
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

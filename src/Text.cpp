@@ -311,7 +311,7 @@ namespace tgui
             else
                 charWidth = font.getGlyph(curChar, characterSize, bold).advance;
 
-            const float kerning = font.getKerning(prevChar, curChar, characterSize);
+            const float kerning = font.getKerning(prevChar, curChar, characterSize, bold);
 
             width += charWidth + kerning;
             prevChar = curChar;
@@ -412,7 +412,7 @@ namespace tgui
                 else
                     charWidth = font.getGlyph(curChar, textSize, bold).advance;
 
-                const float kerning = font.getKerning(prevChar, curChar, textSize);
+                const float kerning = font.getKerning(prevChar, curChar, textSize, bold);
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
                     width += kerning + charWidth;

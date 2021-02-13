@@ -180,10 +180,11 @@ namespace tgui
         /// @param first         Unicode code point of the first character
         /// @param second        Unicode code point of the second character
         /// @param characterSize Size of the characters
+        /// @param bold          Are the glyphs bold or regular?
         ///
         /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getKerning(char32_t first, char32_t second, unsigned int characterSize) const;
+        float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold = false) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

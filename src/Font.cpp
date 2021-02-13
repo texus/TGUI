@@ -142,10 +142,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Font::getKerning(char32_t first, char32_t second, unsigned int characterSize) const
+    float Font::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) const
     {
         if (m_backendFont)
-            return m_backendFont->getKerning(first, second, characterSize);
+            return m_backendFont->getKerning(first, second, characterSize, bold);
         else
             return 0;
     }

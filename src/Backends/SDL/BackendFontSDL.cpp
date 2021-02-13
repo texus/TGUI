@@ -109,13 +109,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontSDL::getKerning(char32_t first, char32_t second, unsigned int characterSize)
+    float BackendFontSDL::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold)
     {
         TTF_Font* font = getInternalFont(characterSize);
         if (!font)
             return 0;
 
-        return static_cast<float>(TTF_GetFontKerningSizeGlyphs(font, static_cast<std::uint16_t>(first), static_cast<std::uint16_t>(second)));
+        if (bold)
+            TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+
+        const int kerning = TTF_GetFontKerningSizeGlyphs(font, static_cast<std::uint16_t>(first), static_cast<std::uint16_t>(second));
+
+        if (bold)
+            TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
+
+        return static_cast<float>(kerning);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

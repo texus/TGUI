@@ -25,6 +25,8 @@
 
 #include <TGUI/Backends/SFML/BackendFontSFML.hpp>
 
+#include <SFML/Config.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -57,9 +59,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize)
+    float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold)
     {
-        return m_font.getKerning(first, second, characterSize);
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // bold parameter was added in SFML 2.6
+    return m_font.getKerning(first, second, characterSize, bold);
+#else
+    (void)bold;
+    return m_font.getKerning(first, second, characterSize);
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

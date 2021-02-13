@@ -841,7 +841,7 @@ namespace tgui
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, getTextSize(), false).advance);
 
-            const float kerning = m_fontCached.getKerning(prevChar, curChar, getTextSize());
+            const float kerning = m_fontCached.getKerning(prevChar, curChar, getTextSize(), false);
             if (width + charWidth + kerning <= position.x)
                 width += charWidth + kerning;
             else
@@ -1499,7 +1499,7 @@ namespace tgui
 
             float kerning = 0;
             if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].length()))
-                kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
+                kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize, false);
 
             m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
         }
@@ -1593,11 +1593,11 @@ namespace tgui
 
             float kerningSelectionStart = 0;
             if ((selectionStart.x > 0) && (selectionStart.x < m_lines[selectionStart.y].length()))
-                kerningSelectionStart = m_fontCached.getKerning(m_lines[selectionStart.y][selectionStart.x-1], m_lines[selectionStart.y][selectionStart.x], m_textSize);
+                kerningSelectionStart = m_fontCached.getKerning(m_lines[selectionStart.y][selectionStart.x-1], m_lines[selectionStart.y][selectionStart.x], m_textSize, false);
 
             float kerningSelectionEnd = 0;
             if ((selectionEnd.x > 0) && (selectionEnd.x < m_lines[selectionEnd.y].length()))
-                kerningSelectionEnd = m_fontCached.getKerning(m_lines[selectionEnd.y][selectionEnd.x-1], m_lines[selectionEnd.y][selectionEnd.x], m_textSize);
+                kerningSelectionEnd = m_fontCached.getKerning(m_lines[selectionEnd.y][selectionEnd.x-1], m_lines[selectionEnd.y][selectionEnd.x], m_textSize, false);
 
             if (selectionStart.x > 0)
             {
