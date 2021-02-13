@@ -1,3 +1,9 @@
+TGUI 0.9.2  (TBD)
+-----------------
+
+- Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
+
+
 TGUI 0.9.1  (12 February 2021)
 ------------------------------
 
