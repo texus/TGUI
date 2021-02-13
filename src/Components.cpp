@@ -360,7 +360,8 @@ namespace dev
 
     BackgroundComponent::BackgroundComponent(const BackgroundComponent& other, StylePropertyBackground* backgroundStyle) :
         GroupComponent(other),
-        m_backgroundStyle{backgroundStyle ? backgroundStyle : other.m_backgroundStyle}
+        m_backgroundStyle{backgroundStyle ? backgroundStyle : other.m_backgroundStyle},
+        m_sprite{other.m_sprite}
     {
         init();
     }
@@ -372,6 +373,7 @@ namespace dev
         if (&other != this)
         {
             GroupComponent::operator=(other);
+            m_sprite = other.m_sprite;
 
             m_backgroundStyle->borderColor.disconnectCallback(m_borderColorCallbackId);
             m_backgroundStyle->color.disconnectCallback(m_backgroundColorCallbackId);
@@ -572,6 +574,7 @@ namespace dev
 
     TextComponent::TextComponent(const TextComponent& other, StylePropertyText* textStyle) :
         Component(other),
+        m_text{other.m_text},
         m_textStyle{textStyle ? textStyle : other.m_textStyle}
     {
         init();
@@ -584,6 +587,7 @@ namespace dev
         if (&other != this)
         {
             Component::operator=(other);
+            m_text = other.m_text;
 
             m_textStyle->color.disconnectCallback(m_colorCallbackId);
             m_textStyle->style.disconnectCallback(m_styleCallbackId);
@@ -607,6 +611,9 @@ namespace dev
             m_text.setStyle(m_style);
             updateLayout();
         });
+
+        m_color = m_textStyle->color.getValue(m_state);
+        m_style = m_textStyle->style.getValue(m_state);
 
         m_text.setColor(m_color);
         m_text.setStyle(m_style);
@@ -768,7 +775,8 @@ namespace dev
 
     ImageComponent::ImageComponent(const ImageComponent& other, StyleProperty<Texture>* textureStyle) :
         Component(other),
-        m_textureStyle{textureStyle ? textureStyle : other.m_textureStyle}
+        m_textureStyle{textureStyle ? textureStyle : other.m_textureStyle},
+        m_sprite{other.m_sprite}
     {
         init();
     }
@@ -780,6 +788,7 @@ namespace dev
         if (&other != this)
         {
             Component::operator=(other);
+            m_sprite = other.m_sprite;
 
             m_textureStyle->disconnectCallback(m_textureCallbackId);
 
