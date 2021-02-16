@@ -127,9 +127,15 @@ namespace tgui
 #else
             if (filename[0] != '/')
 #endif
-                font->loadFromFile((getResourcePath() / filename).asString());
+            {
+                if (!font->loadFromFile((getResourcePath() / filename).asString()))
+                    throw Exception{"Failed to load font from '" + (getResourcePath() / filename).asString() + "'"};
+            }
             else
-                font->loadFromFile(filename);
+            {
+                if (!font->loadFromFile(filename))
+                    throw Exception{"Failed to load font from '" + filename + "'"};
+            }
 
             // We create the backend font manually first, as passing the string to the Font constructor would cause
             // an endless recursive call to this function.

@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/Loading/Deserializer.hpp>
+#include <SFML/System/Err.hpp>
 
 using Type = tgui::ObjectConverter::Type;
 
@@ -31,22 +32,26 @@ TEST_CASE("[Deserializer]")
 {
     SECTION("deserialize bool")
     {
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "True").getBool());
-        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "FALSE").getBool());
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "YeS").getBool());
-        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "nO").getBool());
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "1").getBool());
-        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "0").getBool());
+        REQUIRE(tgui::Deserializer::deserialize(Type::Bool, "True").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(Type::Bool, "FALSE").getBool());
+        REQUIRE(tgui::Deserializer::deserialize(Type::Bool, "YeS").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(Type::Bool, "nO").getBool());
+        REQUIRE(tgui::Deserializer::deserialize(Type::Bool, "1").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(Type::Bool, "0").getBool());
 
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Bool, "InvalidString"), tgui::Exception);
     }
 
     SECTION("deserialize font")
     {
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DejaVuSans.ttf").getFont() != nullptr);
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "\"resources/DejaVuSans.ttf\"").getFont() != nullptr);
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "nullptr").getFont() == nullptr);
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "null").getFont() == nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Font, "resources/DejaVuSans.ttf").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Font, "\"resources/DejaVuSans.ttf\"").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Font, "nullptr").getFont() == nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Font, "null").getFont() == nullptr);
+
+        std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Font, "NonExistentFile"), tgui::Exception);
+        sf::err().rdbuf(oldbuf);
     }
 
     SECTION("deserialize color")
@@ -184,6 +189,10 @@ TEST_CASE("[Deserializer]")
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,1,2)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
+
+        std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "NonExistentFile"), tgui::Exception);
+        sf::err().rdbuf(oldbuf);
     }
 
     SECTION("deserialize text style")

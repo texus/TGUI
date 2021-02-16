@@ -2,6 +2,7 @@ TGUI 0.9.2  (TBD)
 -----------------
 
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
+- Exception is now thrown when loading a font fails
 - Button text was lost when copying button
 
 

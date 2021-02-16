@@ -24,10 +24,15 @@
 
 #include "Tests.hpp"
 #include <TGUI/Font.hpp>
+#include <SFML/System/Err.hpp>
 
 TEST_CASE("[Font]")
 {
     REQUIRE(tgui::Font() == nullptr);
     REQUIRE(tgui::Font(nullptr) == nullptr);
     REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
+
+    std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
+    REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
+    sf::err().rdbuf(oldbuf);
 }
