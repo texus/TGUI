@@ -93,6 +93,28 @@ namespace tgui
 
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// @brief Checks whether the path is absolute.
+            ///
+            /// An absolute path is a path that unambiguously identifies the location of a file without reference to an
+            /// additional starting location.
+            ///
+            /// @return True for absolute paths, false for relative paths
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            bool isAbsolute() const;
+
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// @brief Checks whether the path is relative.
+            ///
+            /// An absolute path is a path that unambiguously identifies the location of a file without reference to an
+            /// additional starting location. A path is relative when it isn't an absolute path.
+            ///
+            /// @return True for relative paths, false for absolute paths
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            bool isRelative() const;
+
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns the path as a string
             ///
             /// @return The path stored in this object

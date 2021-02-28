@@ -444,6 +444,7 @@ namespace tgui
         ///
         /// @param filename  Filename of the widget file
         ///
+        /// @throw Exception when file could not be opened for writing
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void saveWidgetsToFile(const String& filename);
 

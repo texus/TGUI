@@ -233,7 +233,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the child widgets to a text file
+        ///
         /// @param filename  Filename of the widget file
+        ///
         /// @throw Exception when file could not be opened for writing
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void saveWidgetsToFile(const String& filename);
@@ -261,8 +263,36 @@ namespace tgui
         /// @brief Saves the child widgets to a text file
         ///
         /// @param stream  stringstream to which the widget file will be added
+        /// @param rootDirectory  Directory to use as root when making paths relative. Empty to skip additional path conversion.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void saveWidgetsToStream(std::stringstream& stream) const;
+        void saveWidgetsToStream(std::stringstream& stream, const String& rootDirectory = "") const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the child widgets from a tree of nodes that contain all information about the widgets
+        ///
+        /// @param rootNode         Root node of the tree
+        /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// This function is used internally by the other load functions.
+        /// @see loadWidgetsFromFile
+        /// @see loadWidgetsFromStream
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Saves the child widgets to a tree of nodes that contain all information about the widgets
+        ///
+        /// @param rootDirectory  Directory to use as root when making paths relative. Empty to skip additional path conversion.
+        ///
+        /// @return Root node of the tree
+        ///
+        /// This function is used internally by the other save functions.
+        /// @see saveWidgetsToFile
+        /// @see saveWidgetsToStream
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::unique_ptr<DataIO::Node> saveWidgetsToNodeTree(const String& rootDirectory = "") const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

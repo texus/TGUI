@@ -107,6 +107,41 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void makePathsRelativeToForm(const std::unique_ptr<DataIO::Node>& node, const String& formPath)
+        {
+            for (const auto& pair : node->propertyValuePairs)
+            {
+                if (!pair.first.startsWith(U"Texture") && (pair.first != U"Font"))
+                    continue;
+
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("none") || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                    continue;
+
+                String filename;
+                if (pair.second->value[0] != '"')
+                    filename = pair.second->value;
+                else
+                {
+                    // The filename is surrounded by quotes, with optional options behind it
+                    const auto endQuotePos = pair.second->value.find('"', 1);
+                    assert(endQuotePos != String::npos); // DataIO wouldn't have accepted the file if there is no close quote
+                    filename = pair.second->value.substr(1, endQuotePos - 1);
+                }
+
+                // Make the path relative to the form file
+                if (filename.startsWith(formPath))
+                {
+                    if (pair.second->value[0] != '"')
+                        pair.second->value.erase(0, formPath.length());
+                    else
+                        pair.second->value.erase(1, formPath.length());
+                }
+            }
+
+            for (const auto& childNode : node->children)
+                makePathsRelativeToForm(childNode, formPath);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +416,7 @@ namespace tgui
             injectFormFilePath(rootNode, parentPath.asString(), checkedFilenames);
         }
 
-        loadWidgetsImpl(rootNode, replaceExisting);
+        loadWidgetsFromNodeTree(rootNode, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,8 +428,10 @@ namespace tgui
         if (!getResourcePath().isEmpty())
             filenameInResources = (getResourcePath() / filename).asString();
 
+        const String formFileDir = Filesystem::Path(filename).getParentPath().asString();
+
         std::stringstream stream;
-        saveWidgetsToStream(stream);
+        saveWidgetsToStream(stream, formFileDir);
 
         std::ofstream out{filenameInResources.toStdString()};
         if (!out.is_open())
@@ -408,7 +445,7 @@ namespace tgui
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
         const auto rootNode = DataIO::parse(stream);
-        loadWidgetsImpl(rootNode, replaceExisting);
+        loadWidgetsFromNodeTree(rootNode, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,9 +457,70 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::saveWidgetsToStream(std::stringstream& stream) const
+    void Container::saveWidgetsToStream(std::stringstream& stream, const String& rootDirectory) const
     {
-        auto node = std::make_unique<DataIO::Node>();
+        auto rootNode = saveWidgetsToNodeTree(rootDirectory);
+        DataIO::emit(rootNode, stream);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
+    {
+        // Replace the existing widgets by the ones that will be loaded if requested
+        if (replaceExisting)
+            removeAllWidgets();
+
+        if (rootNode->propertyValuePairs.size() != 0)
+            Widget::load(rootNode, {});
+
+        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
+        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
+        for (const auto& node : rootNode->children)
+        {
+            auto nameSeparator = node->name.find('.');
+            auto widgetType = node->name.substr(0, nameSeparator);
+
+            String objectName;
+            if (nameSeparator != String::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if (widgetType == "Renderer")
+            {
+                if (!objectName.empty())
+                    availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
+            }
+            else // Section describes a widget
+            {
+                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
+                if (constructor)
+                {
+                    Widget::Ptr widget = constructor();
+                    add(widget, objectName);
+
+                    // We delay loading of widgets until they have all been added to the container.
+                    // Otherwise there would be issues if their position and size layouts refer to
+                    // widgets that have not yet been loaded.
+                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
+                }
+                else
+                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+            }
+        }
+
+        for (auto& pair : widgetsToLoad)
+        {
+            Widget::Ptr& widget = pair.first;
+            const auto& node = pair.second.get();
+            widget->load(node, availableRenderers);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> Container::saveWidgetsToNodeTree(const String& rootDirectory) const
+    {
+        auto rootNode = std::make_unique<DataIO::Node>();
 
         std::map<RendererData*, std::vector<const Widget*>> renderers;
         getAllRenderers(renderers, this);
@@ -441,15 +539,23 @@ namespace tgui
             // When the widget is shared, only provide the id instead of the node itself
             ++id;
             const String idStr = String::fromNumber(id);
-            node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
+            rootNode->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
             for (const auto& child : renderer.second)
                 renderersMap[child] = std::make_pair(nullptr, idStr); // Did not compile with VS2015 Update 2 when using braces
         }
 
         for (const auto& child : getWidgets())
-            node->children.emplace_back(child->save(renderersMap));
+            rootNode->children.emplace_back(child->save(renderersMap));
 
-        DataIO::emit(node, stream);
+        if (!rootDirectory.empty())
+        {
+            if ((rootDirectory.back() != '/') && (rootDirectory.back() != '\\'))
+                makePathsRelativeToForm(rootNode, rootDirectory + U'/');
+            else
+                makePathsRelativeToForm(rootNode, rootDirectory);
+        }
+
+        return rootNode;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1161,7 +1267,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::tryFocusWidget(const tgui::Widget::Ptr &widget, bool reverseWidgetOrder, bool recursive)
+    bool Container::tryFocusWidget(const Widget::Ptr &widget, bool reverseWidgetOrder, bool recursive)
     {
         // If you are not allowed to focus the widget, then skip it
         if (!widget->canGainFocus() || !widget->isVisible() || !widget->isEnabled())
@@ -1325,59 +1431,6 @@ namespace tgui
 
         for (const auto& child : node->children)
             injectFormFilePath(child, path, checkedFilenames);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
-    {
-        // Replace the existing widgets by the ones that will be loaded if requested
-        if (replaceExisting)
-            removeAllWidgets();
-
-        if (rootNode->propertyValuePairs.size() != 0)
-            Widget::load(rootNode, {});
-
-        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
-        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
-        for (const auto& node : rootNode->children)
-        {
-            auto nameSeparator = node->name.find('.');
-            auto widgetType = node->name.substr(0, nameSeparator);
-
-            String objectName;
-            if (nameSeparator != String::npos)
-                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
-
-            if (widgetType == "Renderer")
-            {
-                if (!objectName.empty())
-                    availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
-            }
-            else // Section describes a widget
-            {
-                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
-                if (constructor)
-                {
-                    Widget::Ptr widget = constructor();
-                    add(widget, objectName);
-
-                    // We delay loading of widgets until they have all been added to the container.
-                    // Otherwise there would be issues if their position and size layouts refer to
-                    // widgets that have not yet been loaded.
-                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
-                }
-                else
-                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
-            }
-        }
-
-        for (auto& pair : widgetsToLoad)
-        {
-            Widget::Ptr& widget = pair.first;
-            const auto& node = pair.second.get();
-            widget->load(node, availableRenderers);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

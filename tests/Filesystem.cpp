@@ -47,6 +47,21 @@ TEST_CASE("[Filesystem]")
         REQUIRE(tgui::Filesystem::Path().isEmpty());
     }
 
+    SECTION("Absolute / relative")
+    {
+        REQUIRE(tgui::Filesystem::Path("/a/b/").isAbsolute());
+        REQUIRE(!tgui::Filesystem::Path("/a/b/").isRelative());
+
+        REQUIRE(tgui::Filesystem::Path("/a/b").isAbsolute());
+        REQUIRE(!tgui::Filesystem::Path("/a/b").isRelative());
+
+        REQUIRE(!tgui::Filesystem::Path("a/b/").isAbsolute());
+        REQUIRE(tgui::Filesystem::Path("a/b/").isRelative());
+
+        REQUIRE(!tgui::Filesystem::Path("a/b").isAbsolute());
+        REQUIRE(tgui::Filesystem::Path("a/b").isRelative());
+    }
+
     SECTION("File/directory exists")
     {
         REQUIRE(!tgui::Filesystem::directoryExists("nonexistent-dir"));
