@@ -1,7 +1,7 @@
 TGUI 0.9.2  (TBD)
 -----------------
 
-- Added function to change whether textures are smoothed by default or not
+- Added Texture::setDefaultSmooth to choose default interpolation setting
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
 - saveWidgetsToFile now makes paths relative to the form path
 - Exception is now thrown when loading a font fails

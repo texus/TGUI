@@ -165,15 +165,15 @@ TEST_CASE("[Texture]")
     SECTION("Smooth")
     {
         // Textures are smoothed by default
-        REQUIRE(tgui::getDefaultTextureSmooth());
+        REQUIRE(tgui::Texture::getDefaultSmooth());
         REQUIRE(tgui::Texture("resources/image.png").isSmooth());
 
-        tgui::setDefaultTextureSmooth(false);
-        REQUIRE(!tgui::getDefaultTextureSmooth());
+        tgui::Texture::setDefaultSmooth(false);
+        REQUIRE(!tgui::Texture::getDefaultSmooth());
         REQUIRE(!tgui::Texture("resources/image.png").isSmooth());
 
-        tgui::setDefaultTextureSmooth(true);
-        REQUIRE(tgui::getDefaultTextureSmooth());
+        tgui::Texture::setDefaultSmooth(true);
+        REQUIRE(tgui::Texture::getDefaultSmooth());
         REQUIRE(tgui::Texture("resources/image.png").isSmooth());
     }
 

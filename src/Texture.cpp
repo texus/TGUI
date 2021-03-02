@@ -38,6 +38,8 @@
 
 namespace tgui
 {
+    bool Texture::m_defaultSmooth = true;
+
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTextureBase& backendTexture, const String& filename)
         {
@@ -390,6 +392,20 @@ namespace tgui
     bool Texture::operator!=(const Texture& right) const
     {
         return !(*this == right);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setDefaultSmooth(bool smooth)
+    {
+        m_defaultSmooth = smooth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::getDefaultSmooth()
+    {
+        return m_defaultSmooth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -74,7 +74,7 @@ namespace tgui
         Texture(const char* id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = getDefaultTextureSmooth())
+                bool smooth = m_defaultSmooth)
             : Texture(String{id}, partRect, middlePart, smooth)
         {
         }
@@ -95,7 +95,7 @@ namespace tgui
         Texture(const String& id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = getDefaultTextureSmooth());
+                bool smooth = m_defaultSmooth);
 
 #if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ namespace tgui
         void load(const String& id,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {},
-                  bool smooth = getDefaultTextureSmooth());
+                  bool smooth = m_defaultSmooth);
 
 #if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = getDefaultTextureSmooth());
+        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = getDefaultTextureSmooth());
+        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +353,30 @@ namespace tgui
         bool operator!=(const Texture& right) const;
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether textures are smoothed by default or not
+        ///
+        /// @param smooth  Enable smoothing on the texture by default
+        ///
+        /// Smoothed textures are rendered with bilinear interpolation (default). Turning smoothing off will switch rendering to
+        /// nearest neighbor interpolation.
+        ///
+        /// Changing the default only affects new textures where smoothing isn't explicitly set. No existing textures are modified.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setDefaultSmooth(bool smooth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether textures are smoothed by default or not
+        ///
+        /// @return True if smoothing is enabled by default, false if it is disabled
+        ///
+        /// Smoothed textures are rendered with bilinear interpolation (default). Turning smoothing off will switch rendering to
+        /// nearest neighbor interpolation.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static bool getDefaultSmooth();
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a different backend texture loader
         ///
@@ -429,6 +453,8 @@ namespace tgui
 
         CallbackFunc m_copyCallback;
         CallbackFunc m_destructCallback;
+
+        static bool m_defaultSmooth;
 
         static TextureLoaderFunc m_textureLoader;
         static BackendTextureLoaderFunc m_backendTextureLoader;
