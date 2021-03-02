@@ -39,6 +39,7 @@ namespace tgui
     namespace
     {
         unsigned int globalTextSize = 13;
+        bool globalDefaultTextureSmooth = true;
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
         Duration globalEditBlinkRate = std::chrono::milliseconds(500);
         Filesystem::Path globalResourcePath;
@@ -56,6 +57,20 @@ namespace tgui
     unsigned int getGlobalTextSize()
     {
         return globalTextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setDefaultTextureSmooth(bool smooth)
+    {
+        globalDefaultTextureSmooth = smooth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool getDefaultTextureSmooth()
+    {
+        return globalDefaultTextureSmooth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

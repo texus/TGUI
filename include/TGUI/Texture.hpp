@@ -31,6 +31,7 @@
 #include <TGUI/TextureData.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/String.hpp>
+#include <TGUI/Global.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Rect.hpp>
 #include <functional>
@@ -73,7 +74,7 @@ namespace tgui
         Texture(const char* id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = true)
+                bool smooth = getDefaultTextureSmooth())
             : Texture(String{id}, partRect, middlePart, smooth)
         {
         }
@@ -94,7 +95,7 @@ namespace tgui
         Texture(const String& id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = true);
+                bool smooth = getDefaultTextureSmooth());
 
 #if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +153,7 @@ namespace tgui
         void load(const String& id,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {},
-                  bool smooth = true);
+                  bool smooth = getDefaultTextureSmooth());
 
 #if TGUI_HAS_BACKEND_SFML
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +196,7 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = true);
+        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = getDefaultTextureSmooth());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +212,7 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = true);
+        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = getDefaultTextureSmooth());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

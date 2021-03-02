@@ -162,6 +162,21 @@ TEST_CASE("[Texture]")
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
     }
 
+    SECTION("Smooth")
+    {
+        // Textures are smoothed by default
+        REQUIRE(tgui::getDefaultTextureSmooth());
+        REQUIRE(tgui::Texture("resources/image.png").isSmooth());
+
+        tgui::setDefaultTextureSmooth(false);
+        REQUIRE(!tgui::getDefaultTextureSmooth());
+        REQUIRE(!tgui::Texture("resources/image.png").isSmooth());
+
+        tgui::setDefaultTextureSmooth(true);
+        REQUIRE(tgui::getDefaultTextureSmooth());
+        REQUIRE(tgui::Texture("resources/image.png").isSmooth());
+    }
+
     SECTION("Color")
     {
         tgui::Texture texture{"resources/image.png"};
