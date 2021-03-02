@@ -1830,13 +1830,14 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
     buttonMore->onPress([=]{
         auto textureWindow = openWindowWithFocus();
         textureWindow->setTitle("Set texture");
-        textureWindow->setClientSize({235, 235});
+        textureWindow->setClientSize({235, 250});
         textureWindow->loadWidgetsFromFile("resources/forms/SetTexture.txt");
 
         auto previewPicture = textureWindow->get<tgui::Picture>("ImagePreview");
         auto buttonSelectFile = textureWindow->get<tgui::Button>("BtnSelectFile");
         auto editBoxPartRect = textureWindow->get<tgui::EditBox>("EditPartRect");
         auto editBoxMiddleRect = textureWindow->get<tgui::EditBox>("EditMiddleRect");
+        auto checkBoxSmooth = textureWindow->get<tgui::CheckBox>("CheckBoxSmooth");
 
         auto deserializeRect = [=](tgui::String str) -> tgui::UIntRect {
             if (str.empty())
@@ -1856,32 +1857,27 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
 
         auto separators = std::make_shared<std::vector<tgui::SeparatorLine::Ptr>>();
 
-        auto updateForm = [=](tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool resetPartRect, bool resetMiddleRect, bool resetSize){
+        auto updateForm = [=](tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
             auto texture = previewPicture->getUserData<std::shared_ptr<tgui::Texture>>();
-            if (resetSize)
-            {
-                try
-                {
-                    texture->load(filename, partRect, middleRect);
-                    onChange(tgui::Serializer::serialize(*texture));
-                }
-                catch (tgui::Exception&)
-                {
-                }
 
-                buttonSelectFile->setUserData(filename); // Not using texture.getId() as it would be empty if file didn't exist
+            try
+            {
+                texture->load(filename, partRect, middleRect, smooth);
+                onChange(tgui::Serializer::serialize(*texture));
             }
+            catch (tgui::Exception&)
+            {
+            }
+
+            buttonSelectFile->setUserData(filename); // Not using texture.getId() as it would be empty if file didn't exist
 
             const tgui::Vector2u imageSize = texture->getImageSize();
-            const tgui::Vector2f extraSpace{20, 155};
-            const tgui::Vector2f minSize{235, 140};
+            const tgui::Vector2f extraSpace{20, 180};
+            const tgui::Vector2f minSize{235, 165};
             const tgui::Layout2d maxSize{tgui::bindWidth(*m_gui) - 50, tgui::bindHeight(*m_gui) - 50};
             const tgui::Layout scaling = tgui::bindMin(1.f, tgui::bindMin((maxSize.x - extraSpace.x) / imageSize.x, (maxSize.y - extraSpace.y) / imageSize.y));
-            if (resetSize)
-            {
-                previewPicture->setSize({imageSize.x * scaling, imageSize.y * scaling});
-                textureWindow->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
-            }
+            previewPicture->setSize({imageSize.x * scaling, imageSize.y * scaling});
+            textureWindow->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
 
             if (resetPartRect)
             {
@@ -1900,6 +1896,13 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                 editBoxMiddleRect->setText("(" + tgui::String::fromNumber(middleRect.left) + ", " + tgui::String::fromNumber(middleRect.top)
                     + ", " + tgui::String::fromNumber(middleRect.width) + ", " + tgui::String::fromNumber(middleRect.height) + ")");
                 editBoxMiddleRect->onTextChange.setEnabled(true);
+            }
+
+            if (resetSmooth)
+            {
+                checkBoxSmooth->onChange.setEnabled(false);
+                checkBoxSmooth->setChecked(texture->isSmooth());
+                checkBoxSmooth->onChange.setEnabled(true);
             }
 
             previewPicture->getRenderer()->setTexture(*texture);
@@ -1939,10 +1942,16 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         };
 
         editBoxPartRect->onTextChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()), {}, false, true, true);
+            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
+                       {}, checkBoxSmooth->isChecked(), false, true, false);
         });
         editBoxMiddleRect->onTextChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()), deserializeRect(editBoxMiddleRect->getText()), false, false, true);
+            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
+                       deserializeRect(editBoxMiddleRect->getText()), checkBoxSmooth->isChecked(), false, false, false);
+        });
+        checkBoxSmooth->onChange([=]{
+            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
+                       deserializeRect(editBoxMiddleRect->getText()), checkBoxSmooth->isChecked(), false, false, false);
         });
 
         tgui::Texture originalTexture;
@@ -1956,14 +1965,15 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             displayErrorMessage(tgui::String(U"Exception caught when loading image: ") + e.what());
         }
 
-        tgui::String originalFilename = originalTexture.getId();
-        tgui::UIntRect originalPartRect = originalTexture.getPartRect();
-        tgui::UIntRect originalMiddleRect = originalTexture.getMiddleRect();
-        updateForm(originalFilename, originalPartRect, originalMiddleRect, true, true, true);
+        const tgui::String originalFilename = originalTexture.getId();
+        const tgui::UIntRect originalPartRect = originalTexture.getPartRect();
+        const tgui::UIntRect originalMiddleRect = originalTexture.getMiddleRect();
+        const bool originalSmooth = originalTexture.isSmooth();
+        updateForm(originalFilename, originalPartRect, originalMiddleRect, originalSmooth, true, true, true);
 
         buttonSelectFile->onPress([=]{
             showLoadFileWindow("Load image", "Load", true, buttonSelectFile->getUserData<tgui::String>(), [=](const tgui::String& filename){
-                updateForm(filename, {}, {}, true, true, true);
+                updateForm(filename, {}, {}, checkBoxSmooth->isChecked(), true, true, false);
             });
         });
     });

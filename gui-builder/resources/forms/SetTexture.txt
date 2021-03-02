@@ -25,6 +25,7 @@ Renderer.2 {
     BorderColor = #3C3C3C;
     Borders = (0, 0, 0, 0);
     TextColor = #3C3C3C;
+    TextureBackground = None;
 }
 
 Renderer.3 {
@@ -32,6 +33,7 @@ Renderer.3 {
     BorderColor = #3C3C3C;
     Borders = (1, 1, 1, 1);
     TextColor = #3C3C3C;
+    TextureBackground = None;
 }
 
 Picture.ImagePreview {
@@ -39,11 +41,12 @@ Picture.ImagePreview {
     Size = (100, 100);
 
     Renderer {
+        Texture = None;
     }
 }
 
 Button.BtnSelectFile {
-    Position = ((&.iw - w) / 2, &.ih - 115);
+    Position = ((&.iw - w) / 2, &.ih - 135);
     Size = (100, 22);
     Text = "Select file";
     TextSize = 13;
@@ -66,6 +69,8 @@ Button.BtnSelectFile {
         Texture = None;
         TextureDisabled = None;
         TextureDown = None;
+        TextureDownFocused = None;
+        TextureDownHover = None;
         TextureFocused = None;
         TextureHover = None;
     }
@@ -73,53 +78,53 @@ Button.BtnSelectFile {
 
 Label.Widget3 {
     AutoSize = true;
-    Position = ((&.iw - 215) / 2, (&.ih - 75) + 2);
+    Position = ((&.iw - 215) / 2, (&.ih - 100) + 2);
+    Renderer = &2;
     ScrollbarPolicy = Never;
-    Size = (34.2, 18);
+    Size = (33.2, 18);
     Text = "Part:";
     TextSize = 13;
-    Renderer = &2;
 }
 
 EditBox.EditPartRect {
-    Position = (((&.iw - 215) / 2) + 52, &.ih - 75);
+    Position = (((&.iw - 215) / 2) + 52, &.ih - 100);
+    Renderer = &1;
     Size = (138, 22);
     TextSize = 13;
-    Renderer = &1;
 }
 
 EditBox.EditMiddleRect {
-    Position = (((&.iw - 215) / 2) + 52, &.ih - 40);
+    Position = (((&.iw - 215) / 2) + 52, &.ih - 65);
+    Renderer = &1;
     Size = (138, 22);
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget6 {
     AutoSize = true;
-    Position = ((&.iw - 215) / 2, (&.ih - 40) + 2);
+    Position = ((&.iw - 215) / 2, (&.ih - 65) + 2);
+    Renderer = &2;
     ScrollbarPolicy = Never;
-    Size = (48.2, 18);
+    Size = (49.2, 18);
     Text = "Middle:";
     TextSize = 13;
-    Renderer = &2;
 }
 
 Picture.InfoPartRect {
-    Position = (((&.iw - 215) / 2) + 198, (&.ih - 75) + 3);
+    Position = (((&.iw - 215) / 2) + 198, (&.ih - 100) + 3);
     Size = (16, 16);
 
     ToolTip {
         DistanceToMouse = (5,20);
-        TimeToDisplay = 0;
+        InitialDelay = 0.5;
 
         Label {
             AutoSize = true;
+            Renderer = &3;
             ScrollbarPolicy = Never;
             Size = (320.2, 20);
             Text = "Part of the image to load (left, top, width, height)";
             TextSize = 13;
-            Renderer = &3;
         }
     }
 
@@ -130,20 +135,85 @@ Picture.InfoPartRect {
 }
 
 Picture.InfoMiddleRect {
-    Position = (((&.iw - 215) / 2) + 198, (&.ih - 40) + 3);
+    Position = (((&.iw - 215) / 2) + 198, (&.ih - 65) + 3);
     Size = (16, 16);
 
     ToolTip {
         DistanceToMouse = (5,20);
-        TimeToDisplay = 0;
+        InitialDelay = 0.5;
 
         Label {
             AutoSize = true;
+            Renderer = &3;
             ScrollbarPolicy = Never;
-            Size = (550.2, 20);
+            Size = (558.2, 20);
             Text = "Middle part of the image (relative to Part rect) which defines how the image is scaled";
             TextSize = 13;
+        }
+    }
+
+    Renderer {
+        Texture = "../Info.png";
+    }
+}
+
+CheckBox.CheckBoxSmooth {
+    Position = (((&.iw - 215) / 2) + 65, &.ih - 30);
+    Size = (18, 18);
+    TextSize = 13;
+
+    Renderer {
+        BackgroundColor = #F5F5F5;
+        BackgroundColorDisabled = #E6E6E6;
+        BackgroundColorHover = white;
+        BorderColor = #3C3C3C;
+        BorderColorDisabled = #7D7D7D;
+        BorderColorFocused = #1E1EB4;
+        BorderColorHover = black;
+        Borders = (1, 1, 1, 1);
+        CheckColor = #3C3C3C;
+        CheckColorDisabled = #7D7D7D;
+        CheckColorHover = black;
+        TextColor = #3C3C3C;
+        TextColorDisabled = #7D7D7D;
+        TextColorHover = black;
+        TextDistanceRatio = 0.2;
+        TextureChecked = None;
+        TextureCheckedDisabled = None;
+        TextureCheckedFocused = None;
+        TextureCheckedHover = None;
+        TextureUnchecked = None;
+        TextureUncheckedDisabled = None;
+        TextureUncheckedFocused = None;
+        TextureUncheckedHover = None;
+    }
+}
+
+Label.Label1 {
+    AutoSize = true;
+    Position = ((&.iw - 215) / 2, &.ih - 30);
+    Renderer = &2;
+    ScrollbarPolicy = Never;
+    Size = (58.2, 18);
+    Text = "Smooth:";
+    TextSize = 13;
+}
+
+Picture.InfoSmooth {
+    Position = (((&.iw - 215) / 2) + 100, (&.ih - 30) + 1);
+    Size = (16, 16);
+
+    ToolTip {
+        DistanceToMouse = (5,20);
+        InitialDelay = 0.5;
+
+        Label {
+            AutoSize = true;
             Renderer = &3;
+            ScrollbarPolicy = Never;
+            Size = (585.2, 20);
+            Text = "Texture is drawn with biliear interpolation if checked. Nearest neighbor is used otherwise.";
+            TextSize = 13;
         }
     }
 
