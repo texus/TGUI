@@ -58,7 +58,7 @@ namespace tgui
         /// @param eventTGUI  The output TGUI event
         /// @return Did the SFML event match on a TGUI event and has the output event been written to?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static bool convertEvent(const sf::Event& eventSFML, Event& eventTGUI);
+        TGUI_DEPRECATED("Use GuiSFML::convertEvent instead") static bool convertEvent(const sf::Event& eventSFML, Event& eventTGUI);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -77,7 +77,7 @@ namespace tgui
         {
             sf::Event eventSFML;
             if (m_window.pollEvent(eventSFML))
-                return BackendSFML::convertEvent(eventSFML, event);
+                return m_gui->convertEvent(eventSFML, event);
             else // No new events
                 return false;
         }
@@ -171,7 +171,7 @@ namespace tgui
         {
             SDL_Event eventSDL;
             if (SDL_PollEvent(&eventSDL) != 0)
-                return BackendSDL::convertEvent(eventSDL, event);
+                return m_gui->convertEvent(eventSDL, event);
             else // No new events
                 return false;
         }

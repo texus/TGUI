@@ -55,6 +55,7 @@ namespace tgui
         /// @param eventTGUI  The output TGUI event
         /// @return Did the SDL event match on a TGUI event and has the output event been written to?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_DEPRECATED("Use GuiSDL::convertEvent instead. This function doesn't handle touch events on desktop platforms.")
         static bool convertEvent(const SDL_Event& eventSDL, Event& eventTGUI);
 
 
