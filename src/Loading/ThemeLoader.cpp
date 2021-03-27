@@ -55,9 +55,9 @@ namespace tgui
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == "Texture")) || (pair.first == "Font"))
+            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture")) || (pair.first == U"Font") || (pair.first == U"Image"))
             {
-                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase("null") || pair.second->value.equalIgnoreCase("nullptr"))
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
                     continue;
 
                 // Insert the path into the filename unless the filename is already an absolute path.

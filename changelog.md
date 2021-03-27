@@ -6,6 +6,7 @@ TGUI 0.9.2  (TBD)
 - saveWidgetsToFile now makes paths relative to the form path
 - Exception is now thrown when loading a font fails
 - Button text was lost when copying button
+- Image in BitmapButton was searched in wrong directory when loading from form file
 
 
 TGUI 0.9.1  (12 February 2021)
