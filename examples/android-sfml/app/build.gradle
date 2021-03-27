@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
+    ndkVersion '18.1.5063045'
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.tgui"
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

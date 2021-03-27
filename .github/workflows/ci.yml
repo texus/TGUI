@@ -165,7 +165,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
-          echo "y" | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --install "ndk;17.2.4988734"
+          echo "y" | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --install "ndk;18.1.5063045"
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
@@ -182,25 +182,25 @@ jobs:
       - name: Restore cached SFML
         if: steps.cache-sfml.outputs.cache-hit == 'true'
         run: |
-          mkdir $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml
-          cp -Rp $GITHUB_WORKSPACE/sfml-cache/* $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml/
+          mkdir $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml
+          cp -Rp $GITHUB_WORKSPACE/sfml-cache/* $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml/
 
       - name: Build SFML
         if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/17.2.4988734 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug ../SFML
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/18.1.5063045 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug ../SFML
           make -j2
           make install
           mkdir $GITHUB_WORKSPACE/sfml-cache
-          cp -Rp $ANDROID_SDK_ROOT/ndk/17.2.4988734/sources/third_party/sfml/* $GITHUB_WORKSPACE/sfml-cache/
+          cp -Rp $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml/* $GITHUB_WORKSPACE/sfml-cache/
 
       - name: Build TGUI
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build
           cd $GITHUB_WORKSPACE/TGUI-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/17.2.4988734 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/18.1.5063045 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
           make -j2
           make install
 
@@ -208,7 +208,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/TGUI/examples/android-sfml
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          echo "ndk.dir=$ANDROID_SDK_ROOT/ndk/17.2.4988734" >> local.properties
           sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'armeabi-v7a'/" app/build.gradle
           ./gradlew build
 
