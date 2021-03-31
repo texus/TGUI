@@ -283,8 +283,8 @@ namespace tgui
 
         sf::RenderStates statesSFML;
         statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], transformMatrix[12],
-            transformMatrix[1], transformMatrix[5], transformMatrix[13],
+            transformMatrix[0], transformMatrix[4], std::round(transformMatrix[12]),
+            transformMatrix[1], transformMatrix[5], std::round(transformMatrix[13]),
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
 
         return statesSFML;
