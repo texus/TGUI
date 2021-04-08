@@ -26,7 +26,7 @@
 
 // SDL has its own main function on some platforms but it has a define so that we can still call our version "main".
 // So if we are using the SDL backend then we must include it in this file.
-#if !defined(TGUI_HAS_BACKEND_SFML) && defined(TGUI_HAS_BACKEND_SDL)
+#if !TGUI_HAS_BACKEND_SFML && TGUI_HAS_BACKEND_SDL
     #include <SDL_main.h>
 #endif
 
@@ -34,4 +34,5 @@ int main(int, char* argv[])
 {
     GuiBuilder builder(argv[0]);
     builder.mainLoop();
+    return 0;
 }
