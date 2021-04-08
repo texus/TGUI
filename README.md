@@ -18,7 +18,7 @@ Status
 |                     | Windows                 | Linux                   | macOS                   | Android                 | iOS        | Raspberry Pi       |
 |---------------------|-------------------------|-------------------------|-------------------------|-------------------------|------------|--------------------|
 | SFML backend        | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :question: | :question:         |
-| SDL/OpenGL backend  | :question:              | :heavy_check_mark: (CI) | :question:              | :heavy_check_mark: (CI) | :x:        | :heavy_check_mark: |
+| SDL/OpenGL backend  | :heavy_check_mark:      | :heavy_check_mark: (CI) | :question:              | :heavy_check_mark: (CI) | :x:        | :heavy_check_mark: |
 
 (Platforms with a question mark are likely to work with no or minor adjustments, but have either not been tested or haven't been tested for a long time)
 
