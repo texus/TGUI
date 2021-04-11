@@ -1352,11 +1352,18 @@ TEST_CASE("[String]")
 
     SECTION("split")
     {
-        std::vector<tgui::String> parts = tgui::String("alpha, bravo, charlie").split(',');
+        const tgui::String listStr("alpha, bravo, charlie");
+        std::vector<tgui::String> parts = listStr.split(',');
         REQUIRE(parts.size() == 3);
         REQUIRE(parts[0] == "alpha");
         REQUIRE(parts[1] == " bravo");
         REQUIRE(parts[2] == " charlie");
+
+        parts = listStr.split(',', true);
+        REQUIRE(parts.size() == 3);
+        REQUIRE(parts[0] == "alpha");
+        REQUIRE(parts[1] == "bravo");
+        REQUIRE(parts[2] == "charlie");
 
         parts = tgui::String("xyz").split(',');
         REQUIRE(parts.size() == 1);

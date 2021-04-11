@@ -257,7 +257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<String> String::split(char32_t delimiter) const
+    std::vector<String> String::split(char32_t delimiter, bool trim) const
     {
         std::vector<String> substrings;
 
@@ -274,6 +274,12 @@ namespace tgui
             substrings.push_back(*this);
         else
             substrings.push_back(substr(startPos, length() - startPos));
+
+        if (trim)
+        {
+            for (auto& part : substrings)
+                part = part.trim();
+        }
 
         return substrings;
     }

@@ -220,8 +220,9 @@ namespace tgui
         /// @brief Splits the string into multiple substrings given the delimiter that separates them
         ///
         /// @param delimiter  Character that separates the substrings
+        /// @param trim       Should whitespace be removed at the start and end of each part?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<String> split(char32_t delimiter) const;
+        std::vector<String> split(char32_t delimiter, bool trim = false) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
