@@ -71,7 +71,6 @@
 #else
     // Static build doesn't need import/export macros
     #define TGUI_API
-    #define TGUI_API
 #endif
 
 // Use OpenGL ES on mobile platforms (in backends that use OpenGL directly)
