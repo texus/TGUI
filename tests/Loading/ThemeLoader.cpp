@@ -30,19 +30,20 @@
     #pragma warning(disable : 4503)
 #endif
 
-namespace tgui
+class CustomThemeLoader : public tgui::DefaultThemeLoader
 {
-    struct DefaultThemeLoaderTest
+public:
+    static auto& getPropertiesCache()
     {
-        static auto& getPropertiesCache(std::shared_ptr<DefaultThemeLoader> loader) { return loader->m_propertiesCache; }
-    };
-}
+        return m_propertiesCache;
+    }
+};
 
 TEST_CASE("[ThemeLoader]")
 {
-    tgui::DefaultThemeLoader::flushCache();
+    tgui::DefaultThemeLoader::flushCache(); // Clear static data that could be cached from other tests
 
-    auto loader = std::make_shared<tgui::DefaultThemeLoader>();
+    auto loader = std::make_shared<CustomThemeLoader>();
 
     SECTION("load black theme")
     {
@@ -112,14 +113,14 @@ TEST_CASE("[ThemeLoader]")
 
     SECTION("cache")
     {
-        REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 0);
+        REQUIRE(loader->getPropertiesCache().size() == 0);
 
         SECTION("with preload")
         {
             loader->preload("resources/ThemeSpecialCases.txt");
             loader->preload("resources/ThemeButton1.txt");
 
-            auto& propertyCache = tgui::DefaultThemeLoaderTest::getPropertiesCache(loader);
+            auto& propertyCache = loader->getPropertiesCache();
             REQUIRE(propertyCache.size() == 2);
 
             auto& cache1 = propertyCache["resources/ThemeSpecialCases.txt"];
@@ -163,9 +164,9 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(properties.size() == 2);
             REQUIRE(properties["TextColor"] == "rgb(0, 255, 0)");
             REQUIRE(properties["BackgroundColor"] == "rgb(255, 255, 255)");
-            REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 1);
+            REQUIRE(loader->getPropertiesCache().size() == 1);
 
-            auto& cache = tgui::DefaultThemeLoaderTest::getPropertiesCache(loader)["resources/ThemeSpecialCases.txt"];
+            auto& cache = loader->getPropertiesCache()["resources/ThemeSpecialCases.txt"];
             REQUIRE(cache.size() == 4);
             REQUIRE(cache["Button1"].size() == 1);
             REQUIRE(cache["Button1"]["TextColor"] == "rgb(255, 0, 0)");
@@ -178,15 +179,15 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(cache["label"]["TextColor"] == "rgb(0, 0, 255)");
 
             properties = loader->load("resources/Black.txt", "EditBox");
-            REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);
+            REQUIRE(loader->getPropertiesCache().size() == 2);
             properties = loader->load("resources/ThemeButton1.txt", "Button1");
-            REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 3);
+            REQUIRE(loader->getPropertiesCache().size() == 3);
 
             tgui::DefaultThemeLoader::flushCache("resources/Black.txt");
-            REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);
+            REQUIRE(loader->getPropertiesCache().size() == 2);
 
             tgui::DefaultThemeLoader::flushCache();
-            REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 0);
+            REQUIRE(loader->getPropertiesCache().size() == 0);
         }
     }
 }
