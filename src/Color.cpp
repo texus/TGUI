@@ -30,6 +30,7 @@
 
 namespace tgui
 {
+#if TGUI_COMPILED_WITH_CPP_VER < 17
     const Color Color::Black      {  0,   0,   0};
     const Color Color::White      {255, 255, 255};
     const Color Color::Red        {255,   0,   0};
@@ -39,7 +40,13 @@ namespace tgui
     const Color Color::Magenta    {255,   0, 255};
     const Color Color::Cyan       {  0, 255, 255};
     const Color Color::Transparent{  0,   0,   0,   0};
+#endif
 
+    // This somehow gives a deprecated warning, while this is just the definition of the deprecated value
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     const std::map<String, Color> Color::colorMap =
     {
         {"black", Color::Black},
@@ -52,6 +59,24 @@ namespace tgui
         {"magenta", Color::Magenta},
         {"transparent", Color::Transparent}
     };
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
+
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    const std::array<std::pair<String, Color>, 9> Color::colorNamesMap
+    {
+        {{U"black", Color::Black},
+         {U"white", Color::White},
+         {U"red", Color::Red},
+         {U"yellow", Color::Yellow},
+         {U"green", Color::Green},
+         {U"cyan", Color::Cyan},
+         {U"blue", Color::Blue},
+         {U"magenta", Color::Magenta},
+         {U"transparent", Color::Transparent}}
+    };
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -100,10 +100,10 @@ namespace tgui
                 return "None";
 
             // Check if the color can be represented by a string with its name
-            for (const auto& pair : Color::colorMap)
+            for (const auto& pair : Color::colorNamesMap)
             {
                 if (color == pair.second)
-                    return pair.first;
+                    return String(pair.first);
             }
 
             // Return the color by its rgb value

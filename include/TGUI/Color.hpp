@@ -243,7 +243,9 @@ namespace tgui
         static const Color Cyan;        //!< Cyan predefined color
         static const Color Transparent; //!< Transparent (black) predefined color
 
-        static const std::map<String, Color> colorMap;
+        TGUI_DEPRECATED("Use colorNamesMap instead") static const std::map<String, Color> colorMap;
+
+        static const std::array<std::pair<StringView, Color>, 9> colorNamesMap;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,6 +259,32 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    inline constexpr const Color Color::Black      {  0,   0,   0};
+    inline constexpr const Color Color::White      {255, 255, 255};
+    inline constexpr const Color Color::Red        {255,   0,   0};
+    inline constexpr const Color Color::Green      {  0, 255,   0};
+    inline constexpr const Color Color::Blue       {  0,   0, 255};
+    inline constexpr const Color Color::Yellow     {255, 255,   0};
+    inline constexpr const Color Color::Magenta    {255,   0, 255};
+    inline constexpr const Color Color::Cyan       {  0, 255, 255};
+    inline constexpr const Color Color::Transparent{  0,   0,   0,   0};
+
+    inline constexpr const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
+    {
+        {{U"black", Color::Black},
+         {U"white", Color::White},
+         {U"red", Color::Red},
+         {U"yellow", Color::Yellow},
+         {U"green", Color::Green},
+         {U"cyan", Color::Cyan},
+         {U"blue", Color::Blue},
+         {U"magenta", Color::Magenta},
+         {U"transparent", Color::Transparent}}
+    };
+#endif
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

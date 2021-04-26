@@ -40,6 +40,11 @@
     #include <SFML/System/String.hpp>
 #endif
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <type_traits>
+    #include <string_view>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -74,6 +79,20 @@ namespace tgui
     {
     private:
         std::u32string m_string;
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        // Helper to check if template parameter is a string_view
+        template <typename StringViewType>
+        using IsStringViewType = std::enable_if_t<
+            std::is_same_v<StringViewType, std::string_view>
+#if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
+            || std::is_same_v<StringViewType, std::u8string_view>
+#endif
+            || std::is_same_v<StringViewType, std::wstring_view>
+            || std::is_same_v<StringViewType, std::u16string_view>
+            || std::is_same_v<StringViewType, std::u32string_view>,
+            void>;
+#endif
 
     public:
 
@@ -336,6 +355,20 @@ namespace tgui
         explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
         explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        template <typename StringViewType, typename = IsStringViewType<StringViewType>>
+        explicit String(const StringViewType& stringView) :
+            String(stringView.data(), stringView.size())
+        {
+        }
+
+        template <typename StringViewType, typename = IsStringViewType<StringViewType>>
+        explicit String(const StringViewType& stringView, std::size_t pos, std::size_t count) :
+            String(stringView.data(), pos, count)
+        {
+        }
+#endif
+
 #if TGUI_HAS_BACKEND_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
         explicit String(const sf::String& str)
@@ -356,6 +389,13 @@ namespace tgui
         {
             return m_string;
         }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        operator std::u32string_view() const noexcept
+        {
+            return m_string;
+        }
+#endif
 
         TGUI_DEPRECATED("Use toStdString instead") std::string toAnsiString() const;
         std::string toStdString() const;
@@ -1387,6 +1427,12 @@ namespace tgui
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    using StringView = std::u32string_view;
+#else
+    using StringView = String;
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

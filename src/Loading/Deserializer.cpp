@@ -151,9 +151,11 @@ namespace tgui
                 return Color();
 
             // Check if the color is represented by a string with its name
-            const auto it = Color::colorMap.find(str);
-            if (it != Color::colorMap.end())
-                return it->second;
+            for (const auto& pair : Color::colorNamesMap)
+            {
+                if (str == pair.first)
+                    return pair.second;
+            }
 
             // The color can be represented with a hexadecimal number
             if (str[0] == '#')
