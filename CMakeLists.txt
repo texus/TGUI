@@ -66,8 +66,15 @@ if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
     tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
 endif()
 
+# Set the default c++ standard version to 17 on GCC >= 11
+if (TGUI_COMPILER_GCC AND (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 11))
+    set(TGUI_DEFAULT_CXX_STANDARD "17")
+else() # Set the default c++ standard version to 14 on all other compilers
+    set(TGUI_DEFAULT_CXX_STANDARD "14")
+endif()
+
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
-tgui_set_option(TGUI_CXX_STANDARD "14" STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
+tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
 
 # At least c++14 has to be used
 if(TGUI_CXX_STANDARD LESS "14")
