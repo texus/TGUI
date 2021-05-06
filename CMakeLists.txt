@@ -184,7 +184,7 @@ endif()
 
 # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++
 # This can't be done in the tgui_set_stdlib macro because it is too late to change these variables by then
-if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
+if(TGUI_USE_STATIC_STD_LIBS AND (TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
     foreach(flag
             CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
             CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)

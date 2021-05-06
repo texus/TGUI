@@ -43,28 +43,21 @@ else()
     return()
 endif()
 
-# detect the compiler and its version
-# Note: on some platforms (OS X), CMAKE_COMPILER_IS_GNUCXX is true
-# even when CLANG is used, therefore the Clang test is done first
-if(CMAKE_CXX_COMPILER MATCHES ".*clang[+][+]" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-   # CMAKE_CXX_COMPILER_ID is an internal CMake variable subject to change,
-   # but there is no other way to detect CLang at the moment
-   set(TGUI_COMPILER_CLANG 1)
-   execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "--version" OUTPUT_VARIABLE CLANG_VERSION_OUTPUT)
-   string(REGEX REPLACE ".*clang version ([0-9]+\\.[0-9]+).*" "\\1" TGUI_CLANG_VERSION "${CLANG_VERSION_OUTPUT}")
+# Detect the compiler.
+# Note: The detection is order is important because:
+# - Visual Studio can both use MSVC and Clang
+# - GNUCXX can still be set on macOS when using Clang
+if(MSVC)
+    set(TGUI_COMPILER_MSVC 1)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(TGUI_COMPILER_CLANG 1)
 elseif(CMAKE_COMPILER_IS_GNUCXX)
     set(TGUI_COMPILER_GCC 1)
-    execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpversion" OUTPUT_VARIABLE GCC_VERSION_OUTPUT)
-    string(REGEX REPLACE "([0-9]+\\.[0-9]+).*" "\\1" TGUI_GCC_VERSION "${GCC_VERSION_OUTPUT}")
+
+    # Check if this is the TDM-GCC version.
+    # The TGUI_COMPILER_GCC_TDM variable will contain a text if TDM and will be empty otherwise.
     execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "--version" OUTPUT_VARIABLE GCC_COMPILER_VERSION)
     string(REGEX MATCHALL ".*(tdm[64]*-[1-9]).*" TGUI_COMPILER_GCC_TDM "${GCC_COMPILER_VERSION}")
-    execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpmachine" OUTPUT_VARIABLE GCC_MACHINE)
-    string(STRIP "${GCC_MACHINE}" GCC_MACHINE)
-    if(GCC_MACHINE MATCHES ".*w64.*")
-        set(TGUI_COMPILER_GCC_W64 1)
-    endif()
-elseif(MSVC)
-    set(TGUI_COMPILER_MSVC 1)
 else()
     message(FATAL_ERROR "Unsupported compiler")
     return()
