@@ -67,7 +67,8 @@ if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
 endif()
 
 # Set the default c++ standard version to 17 on GCC >= 11
-if (TGUI_COMPILER_GCC AND (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 11))
+# Note that we can't use VERSION_GREATER_EQUAL which was only added in CMake 3.7
+if (TGUI_COMPILER_GCC AND (NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "11"))
     set(TGUI_DEFAULT_CXX_STANDARD "17")
 else() # Set the default c++ standard version to 14 on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
