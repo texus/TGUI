@@ -405,7 +405,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
 
     m_formWindow->setTitle(filename);
     m_formWindow->onClose([this]{ m_guiBuilder->closeForm(this); });
-    m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getSize()); });
+    m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->onMousePress([=](tgui::Vector2f pos){ onFormMousePress(pos); });
@@ -672,7 +672,7 @@ void Form::mouseReleased()
 bool Form::rightMouseClick(tgui::Vector2i pos)
 {
     tgui::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
-    if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getSize()}.contains(relativeWindowPos))
+    if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getClientSize()}.contains(relativeWindowPos))
         return false;
 
     const tgui::Vector2f relativePanelPos{
