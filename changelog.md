@@ -1,6 +1,7 @@
 TGUI 0.9.2  (TBD)
 -----------------
 
+- Arrow keys now change selected item in TreeView
 - Added Texture::setDefaultSmooth to choose default interpolation setting
 - String::split now takes an optional boolean to trim the returned values
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)

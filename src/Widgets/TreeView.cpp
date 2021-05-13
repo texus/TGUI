@@ -880,6 +880,83 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TreeView::keyPressed(const Event::KeyEvent& event)
+    {
+        // Don't do anything when no item is selected
+        if (m_selectedItem < 0)
+            return;
+
+        if (event.code == Event::KeyboardKey::Up)
+        {
+            // Select the item above
+            if (m_selectedItem > 0)
+                updateSelectedItem(m_selectedItem - 1);
+        }
+        else if (event.code == Event::KeyboardKey::Down)
+        {
+            // Select the item below
+            if (static_cast<unsigned int>(m_selectedItem) + 1 < m_visibleNodes.size())
+                updateSelectedItem(m_selectedItem + 1);
+        }
+        else if (event.code == Event::KeyboardKey::Left)
+        {
+            // If item is an expanded node then collapse it. Otherwise select the parent node, or the previous sibling node if it has no parent.
+            TGUI_ASSERT(static_cast<unsigned int>(m_selectedItem) <= m_visibleNodes.size(), "Selected item index has to be in range");
+            if (!m_visibleNodes[m_selectedItem]->nodes.empty() && m_visibleNodes[m_selectedItem]->expanded)
+            {
+                m_visibleNodes[m_selectedItem]->expanded = false;
+                markNodesDirty();
+            }
+            else if (m_visibleNodes[m_selectedItem]->parent)
+            {
+                for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+                {
+                    if (m_visibleNodes[i].get() == m_visibleNodes[m_selectedItem]->parent)
+                    {
+                        updateSelectedItem(i);
+                        break;
+                    }
+                }
+            }
+            else if (m_selectedItem > 0)
+            {
+                unsigned int nodeIndex = 0;
+                for (unsigned int i = 0; i < m_nodes.size(); ++i)
+                {
+                    if (m_nodes[i] == m_visibleNodes[m_selectedItem])
+                    {
+                        nodeIndex = i;
+                        break;
+                    }
+                }
+
+                TGUI_ASSERT(nodeIndex > 0, "Index can't be 0 as this is not the top item");
+                for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+                {
+                    if (m_visibleNodes[i] == m_nodes[nodeIndex - 1])
+                    {
+                        updateSelectedItem(i);
+                        break;
+                    }
+                }
+            }
+        }
+        else if (event.code == Event::KeyboardKey::Right)
+        {
+            // If item is a collapsed node then expand it. Otherwise simply select the next item.
+            TGUI_ASSERT(static_cast<unsigned int>(m_selectedItem) <= m_visibleNodes.size(), "Selected item index has to be in range");
+            if (!m_visibleNodes[m_selectedItem]->nodes.empty() && !m_visibleNodes[m_selectedItem]->expanded)
+            {
+                m_visibleNodes[m_selectedItem]->expanded = true;
+                markNodesDirty();
+            }
+            else if (static_cast<unsigned int>(m_selectedItem) + 1 < m_visibleNodes.size())
+                updateSelectedItem(m_selectedItem + 1);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& TreeView::getSignal(String signalName)
     {
         if (signalName == onItemSelect.getName())
