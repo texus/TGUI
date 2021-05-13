@@ -32,7 +32,23 @@
 
 int main(int, char* argv[])
 {
-    GuiBuilder builder(argv[0]);
-    builder.mainLoop();
+    try
+    {
+        GuiBuilder builder(argv[0]);
+        builder.mainLoop();
+    }
+    catch (const tgui::Exception& e)
+    {
+        std::cerr << "TGUI exception thrown: " << e.what() << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception thrown: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown exception thrown" << std::endl;
+        throw; // Throw to hopefully print some information about the exception on some platforms
+    }
     return 0;
 }
