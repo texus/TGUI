@@ -40,7 +40,7 @@
     // We define the required contents of shellapi.h ourselves if the Windows API can't be found
     #ifndef SHSTDAPI_
         #if !defined(_SHELL32_)
-            #define SHSTDAPI_(type)   EXTERN_C DECLSPEC_IMPORT type STDAPICALLTYPE
+            #define SHSTDAPI_(type)   extern "C" DECLSPEC_IMPORT type STDAPICALLTYPE
         #else
             #define SHSTDAPI_(type)   STDAPI_(type)
         #endif
@@ -104,8 +104,6 @@ namespace tgui
         static DWORD WINAPI loadIconsThread(void* parameter);
 
     private:
-        unsigned int m_usageCount = 0;
-
         HMODULE m_dllModuleHandle = nullptr;
         decltype(&SHGetFileInfoW) m_dllGetFileInfoFuncHandle = nullptr;
 
@@ -133,7 +131,16 @@ namespace tgui
     {
         m_dllModuleHandle = LoadLibraryW(L"shell32.dll");
         if (m_dllModuleHandle)
+        {
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
             m_dllGetFileInfoFuncHandle = reinterpret_cast<decltype(&SHGetFileInfoW)>(GetProcAddress(m_dllModuleHandle, "SHGetFileInfoW"));
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
+        }
 
         if (!m_dllGetFileInfoFuncHandle)
             return;
@@ -271,7 +278,9 @@ namespace tgui
         if (!dllGetFileInfoFuncHandle)
             return iconData;
 
-        SHFILEINFOW shellFileInfo = {0};
+        SHFILEINFOW shellFileInfo;
+        std::memset(&shellFileInfo, 0, sizeof(SHFILEINFOW));
+
         const DWORD fileAttributes = isDirectory ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL;
         const UINT flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_ADDOVERLAYS | SHGFI_LARGEICON;
         if (dllGetFileInfoFuncHandle(filename.toWideString().c_str(), fileAttributes, &shellFileInfo, sizeof(shellFileInfo), flags) == 0)
@@ -337,7 +346,7 @@ namespace tgui
             auto buffer = std::make_unique<std::uint8_t[]>(2 * static_cast<std::size_t>(bitmapSize));
             std::uint8_t* pixelsBGRA = &buffer[0];
 
-            if (!GetDIBits(hDC, iconInfo.hbmColor, 0, iconHeight, (void*)pixelsBGRA, &infoheader, DIB_RGB_COLORS))
+            if (!GetDIBits(hDC, iconInfo.hbmColor, 0, iconHeight, static_cast<void*>(pixelsBGRA), &infoheader, DIB_RGB_COLORS))
             {
                 releaseResources();
                 return iconData;
@@ -376,13 +385,13 @@ namespace tgui
             std::uint8_t* pixelsBGR = &buffer[0];
             std::uint8_t* pixelsAlpha = &buffer[bitmapSize];
 
-            if (!GetDIBits(hDC, iconInfo.hbmColor, 0, iconHeight, (void*)pixelsBGR, &infoheader, DIB_RGB_COLORS))
+            if (!GetDIBits(hDC, iconInfo.hbmColor, 0, iconHeight, static_cast<void*>(pixelsBGR), &infoheader, DIB_RGB_COLORS))
             {
                 releaseResources();
                 return iconData;
             }
 
-            if (!GetDIBits(hDC, iconInfo.hbmMask, 0, iconHeight, (void*)pixelsAlpha, &infoheader, DIB_RGB_COLORS))
+            if (!GetDIBits(hDC, iconInfo.hbmMask, 0, iconHeight, static_cast<void*>(pixelsAlpha), &infoheader, DIB_RGB_COLORS))
             {
                 releaseResources();
                 return iconData;

@@ -1,7 +1,7 @@
 TGUI 0.9.2  (TBD)
 -----------------
 
-- Arrow keys now change selected item in TreeView
+- Arrow keys can now be used to navigate TreeView
 - Added Texture::setDefaultSmooth to choose default interpolation setting
 - String::split now takes an optional boolean to trim the returned values
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
@@ -9,6 +9,8 @@ TGUI 0.9.2  (TBD)
 - Exception is now thrown when loading a font fails
 - Button text was lost when copying button
 - Image in BitmapButton was searched in wrong directory when loading from form file
+- Form files didn't load on Windows when path contained non-ANSI characters
+- Modification time in FileDialog was empty when MinGW compiler was used
 
 
 TGUI 0.9.1  (12 February 2021)

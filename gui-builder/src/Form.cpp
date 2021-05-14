@@ -860,12 +860,13 @@ void Form::load()
 {
     // We will make some adjustments to the file before letting TGUI load it, so start by loading the file into memory.
     const tgui::String filename = (tgui::getResourcePath() / getFilename()).asString();
-    std::ifstream inFile{filename.toStdString()};
-    if (!inFile.is_open())
+    std::size_t fileSize;
+    auto fileContents = readFileToMemory(filename, fileSize);
+    if (!fileContents)
         throw tgui::Exception("Failed to open '" + filename + "'.");
 
-    std::stringstream inStream;
-    inStream << inFile.rdbuf();
+    /// TODO: Optimize this (DataIO::parse function should be able to use a string view directly on file contents)
+    std::stringstream inStream{std::string{reinterpret_cast<const char*>(fileContents.get()), fileSize}};
 
     // Parse the file from memory
     auto rootNode = tgui::DataIO::parse(inStream);
@@ -908,17 +909,14 @@ void Form::save()
     // Turn all paths into relative paths
     makePathsRelative(rootNode, formPath, guiBuilderPath);
 
-    // Write the file to disk
-    const tgui::String filename = (tgui::getResourcePath() / getFilename()).asString();
-    std::ofstream outFile{filename.toStdString()};
-    if (!outFile.is_open())
-        throw tgui::Exception("Failed to write to '" + filename + "'.");
-
     // Recreate the changed file in memory
     std::stringstream outStream;
     tgui::DataIO::emit(rootNode, outStream);
 
-    outFile << outStream.rdbuf();
+    // Write the file to disk
+    const tgui::String filename = (tgui::getResourcePath() / getFilename()).asString();
+    if (!tgui::writeFile(filename, outStream))
+        throw tgui::Exception("Failed to write to '" + filename + "'.");
 
     m_guiBuilder->formSaved(getFilename());
 }

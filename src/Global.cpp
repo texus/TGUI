@@ -30,7 +30,7 @@
 #include <locale>
 #include <cctype> // isspace
 #include <cmath> // abs
-#include <stdio.h>
+#include <stdio.h> // C header for compatibility with _wfopen_s
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,15 +128,16 @@ namespace tgui
         else
 #endif
         {
-            FILE* file;
-#if defined(_MSC_VER)
+#if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
+            FILE* file = nullptr;
             if (_wfopen_s(&file, filename.toWideString().c_str(), L"rb") != 0)
                 return nullptr;
 #else
-            file = fopen(filename.toStdString().c_str(), "rb");
+            FILE*  file = fopen(filename.toStdString().c_str(), "rb");
+#endif
             if (!file)
                 return nullptr;
-#endif
+
             fseek(file, 0, SEEK_END);
             const long bytesInFile = ftell(file);
             fseek(file, 0, SEEK_SET);
@@ -158,6 +159,38 @@ namespace tgui
             fclose(file);
             return buffer;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool writeFile(const String& filename, std::stringstream& stream)
+    {
+#if TGUI_COMPILED_WITH_CPP_VER >= 20
+        return writeFile(filename, stream.view());
+#else
+        return writeFile(filename, stream.str());
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool writeFile(const String& filename, const CharStringView& stringView)
+    {
+#if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
+        FILE* file = nullptr;
+        if (_wfopen_s(&file, filename.toWideString().c_str(), L"w") != 0)
+            return false;
+#else
+        FILE* file = fopen(filename.toStdString().c_str(), "w");
+#endif
+        if (!file)
+            return false;
+
+        if (fwrite(stringView.data(), 1, stringView.size(), file) < stringView.size())
+            return false;
+
+        fclose(file);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

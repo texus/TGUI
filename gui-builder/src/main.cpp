@@ -30,20 +30,51 @@
     #include <SDL_main.h>
 #endif
 
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/WindowsInclude.hpp> // GetCommandLineW
+    #include <shellapi.h> // CommandLineToArgvW
+#endif
+
+#ifdef TGUI_SYSTEM_WINDOWS
+int main(int, char**) // We don't use argv on Windows
+#else
 int main(int, char* argv[])
+#endif
 {
     try
     {
-        GuiBuilder builder(argv[0]);
+        // On Windows we can't rely on argv because it would contain '?' characters if the path contained non-ANSI characters.
+        // There are other main function signatures on Windows that do support unicode, but this function might not be the
+        // actual entry point of the program (e.g. when including SDL_main.h), so we can't use them.
+        // Instead we just use GetCommandLineW and CommandLineToArgvW to access the argv parameter with unicode support.
+#ifdef TGUI_SYSTEM_WINDOWS
+        LPCWSTR commandLineStr = GetCommandLineW();
+
+        int argcW;
+        LPWSTR* argvW = CommandLineToArgvW(commandLineStr, &argcW);
+        if (argvW == NULL)
+        {
+            std::cerr << "Failed to access command line arguments" << std::endl;
+            return 1;
+        }
+
+        const tgui::String exePath = argvW[0];
+#else
+        const tgui::String exePath = argv[0];
+#endif
+
+        GuiBuilder builder(exePath);
         builder.mainLoop();
     }
     catch (const tgui::Exception& e)
     {
         std::cerr << "TGUI exception thrown: " << e.what() << std::endl;
+        return 1;
     }
     catch (const std::exception& e)
     {
         std::cerr << "Exception thrown: " << e.what() << std::endl;
+        return 1;
     }
     catch (...)
     {

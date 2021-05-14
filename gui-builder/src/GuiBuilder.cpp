@@ -226,53 +226,11 @@ namespace
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool openStateFile(std::ofstream& stream)
-    {
-        tgui::Filesystem::Path dataDir = getDataDirectory(true);
-        if (!dataDir.isEmpty())
-        {
-            // Try to open the files in the local user data folder
-            stream.open(std::string((dataDir / "GuiBuilderState.txt").asString()).c_str());
-            if (stream)
-                return true;
-        }
-
-        // If we failed to write to the user directory then try writing to the current working directory
-        stream.open("GuiBuilderState.txt");
-        if (stream)
-            return true;
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool openStateFile(std::ifstream& stream)
-    {
-        tgui::Filesystem::Path dataDir = getDataDirectory(false);
-        if (!dataDir.isEmpty())
-        {
-            // Try to open the files in the local user data folder
-            stream.open(std::string((dataDir / "GuiBuilderState.txt").asString()).c_str());
-            if (stream)
-                return true;
-        }
-
-        // If we failed to write to the user directory then try writing to the current working directory
-        stream.open("GuiBuilderState.txt");
-        if (stream)
-            return true;
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-GuiBuilder::GuiBuilder(const char* programName) :
+GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_window      {tgui::DefaultBackendWindow::create(1300, 680, "TGUI - GUI Builder")},
     m_gui         {m_window->getGui()},
     m_themes      {{"White", *tgui::Theme::getDefault()}},
@@ -462,13 +420,24 @@ bool GuiBuilder::loadGuiBuilderState()
 {
     m_recentFiles.clear();
 
-    std::ifstream stateInputFile;
-    if (!openStateFile(stateInputFile))
+    std::size_t fileSize = 0;
+    std::unique_ptr<std::uint8_t[]> fileContents = nullptr;
+    tgui::Filesystem::Path dataDir = getDataDirectory(false);
+    if (!dataDir.isEmpty())
+    {
+        // Try to open the files in the local user data folder
+        fileContents = tgui::readFileToMemory((dataDir / "GuiBuilderState.txt").asString(), fileSize);
+    }
+
+    // If we failed to read from the user directory then try reading from the current working directory
+    if (!fileContents)
+        fileContents = tgui::readFileToMemory("GuiBuilderState.txt", fileSize);
+
+    if (!fileContents)
         return false;
 
-    std::stringstream stream;
-    stream << stateInputFile.rdbuf();
-
+    /// TODO: Optimize this (parse function should be able to use a string view directly on file contents)
+    std::stringstream stream{std::string{reinterpret_cast<const char*>(fileContents.get()), fileSize}};
     const auto node = tgui::DataIO::parse(stream);
 
     if (node->propertyValuePairs["RecentFiles"])
@@ -560,11 +529,21 @@ void GuiBuilder::saveGuiBuilderState()
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
 
-    std::ofstream stateOutputFile;
-    if (openStateFile(stateOutputFile))
-        stateOutputFile << stream.rdbuf();
-    else
-        displayErrorMessage("Failed to open GuiBuilderState.txt for writing");
+    bool fileWrittenToDataDir = false;
+    const tgui::Filesystem::Path dataDir = getDataDirectory(true);
+    if (!dataDir.isEmpty())
+    {
+        // Try to write the file to the local user data folder
+        if (tgui::writeFile((dataDir / "GuiBuilderState.txt").asString(), stream))
+            fileWrittenToDataDir = true;
+    }
+
+    // If we failed to write to the user directory then try writing to the current working directory
+    if (!fileWrittenToDataDir)
+    {
+        if (!tgui::writeFile("GuiBuilderState.txt", stream))
+            displayErrorMessage("Failed to open GuiBuilderState.txt for writing");
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

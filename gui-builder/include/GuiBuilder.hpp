@@ -36,7 +36,7 @@ class GuiBuilder
 {
 public:
 
-    GuiBuilder(const char* programName);
+    GuiBuilder(const tgui::String& programName);
     ~GuiBuilder();
     void mainLoop();
 

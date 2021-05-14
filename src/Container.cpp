@@ -399,13 +399,13 @@ namespace tgui
         if (!getResourcePath().isEmpty())
             filenameInResources = (getResourcePath() / filename).asString();
 
-        std::ifstream in{filenameInResources.toStdString()};
-        if (!in.is_open())
+        std::size_t fileSize;
+        auto fileContents = readFileToMemory(filenameInResources, fileSize);
+        if (!fileContents)
             throw Exception{"Failed to open '" + filenameInResources + "' to load the widgets from it."};
 
-        std::stringstream stream;
-        stream << in.rdbuf();
-
+        /// TODO: Optimize this (parse function should be able to use a string view directly on file contents)
+        std::stringstream stream{std::string{reinterpret_cast<const char*>(fileContents.get()), fileSize}};
         const auto rootNode = DataIO::parse(stream);
 
         // All files need to be loaded relative to the form file
@@ -433,11 +433,8 @@ namespace tgui
         std::stringstream stream;
         saveWidgetsToStream(stream, formFileDir);
 
-        std::ofstream out{filenameInResources.toStdString()};
-        if (!out.is_open())
-            throw Exception{"Failed to open '" + filenameInResources + "' for saving the widgets to it."};
-
-        out << stream.rdbuf();
+        if (!writeFile(filenameInResources, stream))
+            throw Exception{"Failed to write '" + filenameInResources + "' while trying to save widgets in it."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

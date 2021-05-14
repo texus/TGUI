@@ -31,6 +31,7 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Duration.hpp>
 #include <TGUI/Font.hpp>
+#include <TGUI/String.hpp>
 #include <TGUI/Filesystem.hpp>
 #include <cstdint>
 #include <string>
@@ -117,11 +118,33 @@ namespace tgui
     /// @param filename  Path to the file to read
     /// @param fileSize  Size of the file, to be filled in by this function if loading succeeds (untouched on failure)
     ///
-    /// @return Bytes read from the file, or nullptr if loading failed
+    /// @return Bytes read from the file, or nullptr if loading failed (or file was empty)
     ///
     /// On android, the file will be read using the asset manager if a relative filename is passed.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    std::unique_ptr<std::uint8_t[]> readFileToMemory(const String& filename, std::size_t& fileSize);
+    TGUI_API std::unique_ptr<std::uint8_t[]> readFileToMemory(const String& filename, std::size_t& fileSize);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Opens a file and writes the given contents to it
+    ///
+    /// @param filename    Path to the file to write
+    /// @param textToWrite Contents to be written to the file
+    ///
+    /// @return True on success, false if opening or writing to the file failed
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API bool writeFile(const String& filename, std::stringstream& textToWrite);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Opens a file and writes the given contents to it
+    ///
+    /// @param filename    Path to the file to write
+    /// @param textToWrite Contents to be written to the file
+    ///
+    /// @return True on success, false if opening or writing to the file failed
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API bool writeFile(const String& filename, const CharStringView& textToWrite);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

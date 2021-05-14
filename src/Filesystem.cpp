@@ -58,12 +58,12 @@ namespace tgui
     static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
     {
         const auto WINDOWS_TICK = 10000000ULL;
-        const auto SEC_TO_UNIX_EPOCH = 11644473600LL;
+        const auto SEC_TO_UNIX_EPOCH = 11644473600ULL;
 
         ULARGE_INTEGER DateTime;
         DateTime.LowPart = FileTime.dwLowDateTime;
         DateTime.HighPart = FileTime.dwHighDateTime;
-        return static_cast<std::time_t>(DateTime.QuadPart / 10000000ULL - 11644473600ULL);
+        return static_cast<std::time_t>(DateTime.QuadPart / WINDOWS_TICK - SEC_TO_UNIX_EPOCH);
     }
 #endif
 

@@ -392,17 +392,9 @@ TEST_CASE("[ChildWindow]")
         childWindow = tgui::ChildWindow::create();
         childWindow->setSize(400, 300);
 
-        SECTION("Only save contents")
-        {
-            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("ChildWindowWidgetFile1.txt"));
-
-            childWindow->setSize(200, 100);
-            REQUIRE_NOTHROW(childWindow->loadWidgetsFromFile("ChildWindowWidgetFile1.txt"));
-            REQUIRE(childWindow->getSize() == tgui::Vector2f(200, 100)); // The child window itself is not saved, only its children
-
-            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("ChildWindowWidgetFile2.txt"));
-            REQUIRE(compareFiles("ChildWindowWidgetFile1.txt", "ChildWindowWidgetFile2.txt"));
-        }
+        auto widget = tgui::ClickableWidget::create();
+        widget->setPosition(40, 20);
+        childWindow->add(widget);
 
         SECTION("Save entire child window")
         {
@@ -415,11 +407,19 @@ TEST_CASE("[ChildWindow]")
             childWindow->setPositionLocked();
             childWindow->setKeepInParent(true);
 
-            auto widget = tgui::ClickableWidget::create();
-            widget->setPosition(40, 20);
-            childWindow->add(widget);
-
             testSavingWidget("ChildWindow", childWindow);
+        }
+
+        SECTION("Only save contents")
+        {
+            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("ChildWindowWidgetFile4.txt"));
+
+            childWindow->setSize(200, 100);
+            REQUIRE_NOTHROW(childWindow->loadWidgetsFromFile("ChildWindowWidgetFile4.txt"));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(200, 100)); // The child window itself is not saved, only its children
+
+            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("ChildWindowWidgetFile5.txt"));
+            REQUIRE(compareFiles("ChildWindowWidgetFile4.txt", "ChildWindowWidgetFile5.txt"));
         }
     }
 

@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
+#include <TGUI/Loading/ImageLoader.hpp>
 #include <fstream>
 #include <cstring>
 
@@ -33,116 +34,80 @@
 // Worse test on Github Actions: Clipping_NestedLayers.png at 1.71%
 void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2)
 {
-    sf::Image image1;
-    if (!image1.loadFromFile(filename1.toStdString()))
-        REQUIRE(image1.loadFromFile(filename1.toStdString()));
+    tgui::Vector2u imageSize1;
+    tgui::Vector2u imageSize2;
+    auto imagePixels1 = tgui::ImageLoader::loadFromFile(filename1, imageSize1);
+    auto imagePixels2 = tgui::ImageLoader::loadFromFile(filename2, imageSize2);
 
-    sf::Image image2;
-    if (!image2.loadFromFile(filename2.toStdString()))
-        REQUIRE(image2.loadFromFile(filename2.toStdString()));
-
-    if (image1.getSize() != image2.getSize())
-        REQUIRE(image1.getSize() == image2.getSize());
+    if (!imagePixels1 || !imagePixels2 || (imageSize1 != imageSize2))
+    {
+        REQUIRE(imagePixels1);
+        REQUIRE(imagePixels2);
+        REQUIRE(imageSize1 == imageSize2);
+    }
 
     double totalDiff = 0;
-    const sf::Uint8* pixels1 = image1.getPixelsPtr();
-    const sf::Uint8* pixels2 = image2.getPixelsPtr();
-    for (unsigned int y = 0; y < image1.getSize().y; ++y)
+    for (unsigned int y = 0; y < imageSize1.y; ++y)
     {
-        for (unsigned int x = 0; x < image1.getSize().x; ++x)
+        for (unsigned int x = 0; x < imageSize1.x; ++x)
         {
             unsigned int index = ((y * x) + x) * 4;
-            totalDiff += std::abs(int(pixels1[index+0]) - int(pixels2[index+0])) / 255.0;
-            totalDiff += std::abs(int(pixels1[index+1]) - int(pixels2[index+1])) / 255.0;
-            totalDiff += std::abs(int(pixels1[index+2]) - int(pixels2[index+2])) / 255.0;
+            totalDiff += std::abs(int(imagePixels1[index+0]) - int(imagePixels2[index+0])) / 255.0;
+            totalDiff += std::abs(int(imagePixels1[index+1]) - int(imagePixels2[index+1])) / 255.0;
+            totalDiff += std::abs(int(imagePixels1[index+2]) - int(imagePixels2[index+2])) / 255.0;
         }
     }
 
-    double diffPercentage = (totalDiff * 100)  / (image1.getSize().x * image1.getSize().y * 3);
+    double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
     REQUIRE(diffPercentage < 1.75);
 }
 
-bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFileName)
+// The compareFiles can't be used to compare empty files because it uses readFileToMemory which
+// requires the file to have some contents.
+bool compareFiles(const tgui::String& filename1, const tgui::String& filename2)
 {
-    std::ifstream leftFile;
-    std::ifstream rightFile;
-    char leftRead = 0;
-    char rightRead = 0;
-    bool result;
-
-    // Open the two files.
-    leftFile.open(leftFileName.toStdString().c_str(), std::ios_base::in | std::ios_base::binary);
-    if (!leftFile.is_open())
+    std::size_t fileSize1;
+    std::size_t fileSize2;
+    auto fileContents1 = tgui::readFileToMemory(filename1, fileSize1);
+    auto fileContents2 = tgui::readFileToMemory(filename2, fileSize2);
+    if (!fileContents1 || !fileContents2)
         return false;
 
-    rightFile.open(rightFileName.toStdString().c_str(), std::ios_base::in | std::ios_base::binary);
-    if (!rightFile.is_open())
-    {
-        leftFile.close();
+    if (fileSize1 != fileSize2)
         return false;
-    }
 
-    result = true; // Files exist and are open, assuming equality unless a counterexamples shows up
-    while (result && leftFile.good() && rightFile.good())
+    for (std::size_t i = 0; i < fileSize1; ++i)
     {
-        leftFile.get(leftRead);
-        rightFile.get(rightRead);
-        result = (leftRead == rightRead);
+        if (fileContents1[i] != fileContents2[i])
+            return false;
     }
 
-    if (result)
-    {
-        // Last read was still equal, are we at the end of both files?
-        result = (!leftFile.good()) && (!rightFile.good());
-    }
-
-    leftFile.close();
-    rightFile.close();
-    return result;
+    return true;
 }
 
 // Tests the file comparison function
 TEST_CASE("compareFiles")
 {
-    std::ofstream myfile;
-    myfile.open("file1.txt");
-    myfile.close();
-    myfile.open("file2.txt");
-    myfile.close();
-
-    // Compare 2 empty files
-    REQUIRE(compareFiles("file1.txt", "file2.txt"));
-    REQUIRE(compareFiles("file2.txt", "file1.txt"));
-
-    // Compare an empty and a non-empty files
-    myfile.open("file1.txt");
-    myfile << "xxx" << std::endl << "yyy";
-    myfile.close();
-    REQUIRE(!compareFiles("file1.txt", "file2.txt"));
-    REQUIRE(!compareFiles("file2.txt", "file1.txt"));
+    tgui::writeFile("file1.txt", "");
+    tgui::writeFile("file2.txt", "");
 
     // Compare two equal files
-    myfile.open("file2.txt");
-    myfile << "xxx" << std::endl << "yyy";
-    myfile.close();
+    tgui::writeFile("file1.txt", "xxx\nyyy");
+    tgui::writeFile("file2.txt", "xxx\nyyy");
     REQUIRE(compareFiles("file1.txt", "file2.txt"));
     REQUIRE(compareFiles("file2.txt", "file1.txt"));
 
     // Compare 2 non-empty files which are off by a character in the middle
-    myfile.open("file2.txt");
-    myfile << "xxx" << std::endl << "xyy";
-    myfile.close();
+    tgui::writeFile("file2.txt", "xxx\nxyy");
     REQUIRE(!compareFiles("file1.txt", "file2.txt"));
     REQUIRE(!compareFiles("file2.txt", "file1.txt"));
 
     // Compare 2 non-empty files where one is one character shorter than the other
-    myfile.open("file2.txt");
-    myfile << "xxx" << std::endl << "yy";
-    myfile.close();
+    tgui::writeFile("file2.txt", "xxx\nyy");
     REQUIRE(!compareFiles("file1.txt", "file2.txt"));
     REQUIRE(!compareFiles("file2.txt", "file1.txt"));
 
-    // Compare existig against non existing file
-    REQUIRE(!compareFiles("file1.txt", "nonexisting.txt"));
-    REQUIRE(!compareFiles("nonexisting.txt", "file1.txt"));
+    // Compare existig against a nonexistent file
+    REQUIRE(!compareFiles("file1.txt", "nonexistent.txt"));
+    REQUIRE(!compareFiles("nonexistent.txt", "file1.txt"));
 }
