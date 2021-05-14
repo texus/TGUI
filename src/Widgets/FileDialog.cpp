@@ -767,6 +767,9 @@ namespace tgui
                 if (strftime(buffer, 19, "%e %b %Y  %R", &TimeStructure) != 0)
                     modificationTimeStr = buffer;
             }
+#elif defined(TGUI_SYSTEM_WINDOWS) && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)
+            if (strftime(buffer, 19, "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
+                modificationTimeStr = buffer;
 #else
             if (strftime(buffer, 19, "%e %b %Y  %R", std::localtime(&file.modificationTime)) != 0)
                 modificationTimeStr = buffer;
