@@ -86,7 +86,7 @@ install:
       cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
       cmake --build . --target install --config %BUILD_TYPE% -- /m
     )
-  ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
+  ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF "%APPVEYOR_REPO_BRANCH%" == "0.9" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
     cd C:\ &&
     appveyor-retry choco install doxygen.install &&
     IF NOT EXIST %SFML_PATH% (
@@ -118,7 +118,7 @@ build_script:
         cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
         tests.exe
       )
-    ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
+    ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF "%APPVEYOR_REPO_BRANCH%" == "0.9" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
       cd .. &&
       mkdir build-Win32 &&
       cd build-Win32 &&
