@@ -76,6 +76,7 @@ TEST_CASE("[Text]")
 
     SECTION("Size")
     {
+        text.setCharacterSize(30);
         text.setFont("resources/DejaVuSans.ttf");
 
         SECTION("Calculation")
@@ -127,11 +128,13 @@ TEST_CASE("[Text]")
             text.setString(L"\u00CAg");
 
             tgui::Text text2;
+            text2.setCharacterSize(text.getCharacterSize());
             text2.setFont("resources/DejaVuSans.ttf");
             text2.setString(".");
             REQUIRE(text.getSize().y == text2.getSize().y);
 
             tgui::Text text3;
+            text3.setCharacterSize(text.getCharacterSize());
             text3.setFont("resources/DejaVuSans.ttf");
             REQUIRE(text.getSize().y == text3.getSize().y);
         }

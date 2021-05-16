@@ -2,7 +2,7 @@ TGUI - Texus' Graphical User Interface
 =======================================
 
 TGUI is a cross-platform modern c++ GUI library.  
-Although mostly a library for [SFML](https://www.sfml-dev.org), custom backends can be used and an experimental backend is provided that uses SDL and OpenGL.
+Although originally a library for [SFML](https://www.sfml-dev.org), custom backends can be used and an alternative backend is provided that uses SDL and modern OpenGL.
 
 For more information, take a look at the [website](https://tgui.eu).
 
@@ -15,10 +15,10 @@ Status
 
 [![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.9/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9)
 
-|                     | Windows                 | Linux                   | macOS                   | Android                 | iOS        | Raspberry Pi       |
-|---------------------|-------------------------|-------------------------|-------------------------|-------------------------|------------|--------------------|
-| SFML backend        | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :heavy_check_mark: (CI) | :question: | :question:         |
-| SDL/OpenGL backend  | :heavy_check_mark:      | :heavy_check_mark: (CI) | :question:              | :heavy_check_mark: (CI) | :x:        | :heavy_check_mark: |
+|                     | Windows                 | Linux                   | macOS                   | Android                 | iOS        | Raspberry Pi               |
+|---------------------|-------------------------|-------------------------|-------------------------|-------------------------|------------|----------------------------|
+| SFML backend        | :heavy_check_mark:      | :heavy_check_mark:      | :heavy_check_mark:      | :heavy_check_mark:      | :question: | :question:                 |
+| SDL/OpenGL backend  | :heavy_check_mark:      | :heavy_check_mark:      | :question:              | :heavy_check_mark:      | :x:        | :heavy_check_mark: (no CI) |
 
 (Platforms with a question mark are likely to work with no or minor adjustments, but have either not been tested or haven't been tested for a long time)
 

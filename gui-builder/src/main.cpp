@@ -79,7 +79,7 @@ int main(int, char* argv[])
     catch (...)
     {
         std::cerr << "Unknown exception thrown" << std::endl;
-        throw; // Throw to hopefully print some information about the exception on some platforms
+        return 1;
     }
     return 0;
 }

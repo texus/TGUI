@@ -487,7 +487,8 @@ TEST_CASE("[ListView]")
         listView->setSelectedItems({ 0,2 });
 
         listView->keyPressed(event);
-        REQUIRE(tgui::getBackend()->getClipboard() == "1,1\n3,1\t3,2\n");
+        const tgui::String clipboardContents = getClipboardContents();
+        REQUIRE(((clipboardContents == "1,1\n3,1\t3,2\n") || (clipboardContents == "1,1\r\n3,1\t3,2\r\n")));
         tgui::getBackend()->setClipboard("");
     }
 

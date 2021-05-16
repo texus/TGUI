@@ -72,6 +72,11 @@ namespace tgui
     void BackendTextSDL::setString(const String& string)
     {
         m_lines = string.split(U'\n');
+
+        // Replace tab characters with 4 spaces, because SDL_ttf won't render tabs
+        for (auto& line : m_lines)
+            line.replace(U'\t', U"    ");
+
         m_texturesValid = false;
     }
 
@@ -138,11 +143,17 @@ namespace tgui
         if (m_font)
             FontCacheSDL::unregisterFontSize(m_font.get(), m_characterSize);
 
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendFontSDL>(font.getBackendFont()), "BackendTextSDL::setFont requires font of type BackendFontSDL");
-        m_font = std::static_pointer_cast<BackendFontSDL>(font.getBackendFont());
+        if (font)
+        {
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendFontSDL>(font.getBackendFont()), "BackendTextSDL::setFont requires font of type BackendFontSDL");
+            m_font = std::static_pointer_cast<BackendFontSDL>(font.getBackendFont());
 
-        // Register the text to the new font
-        FontCacheSDL::registerFontSize(m_font.get(), m_characterSize);
+            // Register the text to the new font
+            FontCacheSDL::registerFontSize(m_font.get(), m_characterSize);
+        }
+        else
+            m_font = nullptr;
+
         m_texturesValid = false;
     }
 
@@ -223,8 +234,10 @@ namespace tgui
         m_textures.clear();
         m_outlineTextures.clear();
 
+        const float extraVerticalSpace = Text::calculateExtraVerticalSpace(Font{m_font, ""}, m_characterSize, m_fontStyle);
+
         m_size.x = 0;
-        m_size.y = m_lines.size() * lineSpacing;
+        m_size.y = m_lines.size() * lineSpacing + extraVerticalSpace;
 
         if (m_fontStyle != TextStyle::Regular)
             TTF_SetFontStyle(font, m_fontStyle);
@@ -261,7 +274,7 @@ namespace tgui
 
     BackendTextSDL::LineTexture BackendTextSDL::createLineTexture(TTF_Font* font, int verticalOffset, std::string line, const SDL_Color& color, int outline)
     {
-        line.erase(std::remove(line.begin(), line.end(), U'\r'), line.end()); // We shouldn't render a square if the line contains a '\r'
+        line.erase(std::remove(line.begin(), line.end(), '\r'), line.end()); // We shouldn't render a square if the line contains a '\r'
 
         LineTexture lineTexture;
         if (line.empty())

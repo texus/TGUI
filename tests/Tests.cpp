@@ -24,6 +24,20 @@
 
 #include "Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Backend.hpp>
+#include <TGUI/WindowsInclude.hpp>
+
+tgui::String getClipboardContents()
+{
+#ifdef TGUI_SYSTEM_WINDOWS
+    // Wait a moment before accessing the clipboard.
+    // The data wasn't always there yet when requesting it immediately after changing it when using the SDL backend on Windows.
+    // The problem might be with setting instead of getting though: setting two times quickly resulted in access denied error.
+    Sleep(1);
+#endif
+
+    return tgui::getBackend()->getClipboard();
+}
 
 void mouseCallback(unsigned int& count, tgui::Vector2f pos)
 {

@@ -25,7 +25,17 @@
 #ifndef NOMINMAX // MinGW already defines this which causes a warning without this check
     #define NOMINMAX // Don't let windows.h define "min" and "max"
 #endif
-#define NOMB // Don't let windows.h define MessageBox
-#define VC_EXTRALEAN
-#define WIN32_LEAN_AND_MEAN
+
+#ifndef WIN32_LEAN_AND_MEAN // SDL_opengl.h already defines this which causes a warning without this check
+    #define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef VC_EXTRALEAN
+    #define VC_EXTRALEAN
+#endif
+
+#ifndef NOMB
+    #define NOMB // Don't let windows.h define MessageBox
+#endif
+
 #include <windows.h>

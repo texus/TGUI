@@ -2,14 +2,34 @@
 #include "Tests.hpp"
 
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Backend.hpp>
 
-int main (int argc, char * argv[])
+#if TGUI_HAS_BACKEND_SFML
+    #include <TGUI/Backends/SFML/BackendSFML.hpp>
+#elif TGUI_HAS_BACKEND_SDL
+    #include <TGUI/Backends/SDL/BackendSDL.hpp>
+    #include <TGUI/DefaultBackendWindow.hpp>
+#endif
+
+int main(int argc, char * argv[])
 {
-    // All tests are performed while a Gui object exists.
-    // This will keep the global font alive instead of being destructed and reconstructed multiple times between the tests.
-    tgui::GuiSFML gui;
+    // We create the backend manually so that there is always a backend present even while the tests create empty gui objects
+#if TGUI_HAS_BACKEND_SFML
+    tgui::setBackend(std::make_shared<tgui::BackendSFML>());
+#elif TGUI_HAS_BACKEND_SDL
+    // SDL/OpenGL backend requires a GL context, so we need to create a window
+    auto window = tgui::DefaultBackendWindow::create(250, 100, "TGUI Tests");
+#else
+    static_assert(false, "Tests require a backend");
+#endif
 
-    return Catch::Session().run(argc, argv);
+    const int retVal = Catch::Session().run(argc, argv);
+
+#if TGUI_HAS_BACKEND_SFML
+    tgui::setBackend(nullptr);
+#endif
+
+    return retVal;
 }
 
 TEST_CASE("[Memory leak test]")

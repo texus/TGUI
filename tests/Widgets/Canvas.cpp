@@ -22,6 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if TGUI_HAS_BACKEND_SFML
+
 #include <SFML/Graphics/View.hpp>
 namespace sf  // Anonymous namespace didn't work for Clang on macOS
 {
@@ -128,3 +130,5 @@ TEST_CASE("[Canvas]")
         TEST_DRAW("Canvas.png")
     }
 }
+
+#endif // TGUI_HAS_BACKEND_SFML

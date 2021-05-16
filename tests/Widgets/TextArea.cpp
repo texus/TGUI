@@ -366,12 +366,12 @@ TEST_CASE("[TextArea]")
                     textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
 
                 textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::C, true, false));
-                REQUIRE(tgui::getBackend()->getClipboard() == "XYZ");
+                REQUIRE(getClipboardContents() == "XYZ");
 
                 textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false)); // Deselect text
                 textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::V, true, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZXYZ");
-                REQUIRE(tgui::getBackend()->getClipboard() == "XYZ");
+                REQUIRE(getClipboardContents() == "XYZ");
 
                 // Select some text near the beginning, because if we select text near then end then
                 // it currently depends on the backend which letter is on which line.
@@ -382,27 +382,24 @@ TEST_CASE("[TextArea]")
 
                 textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::X, true, false));
                 REQUIRE(textArea->getText() == "ADEFGHIJKLMNOPQRSTUVWXYZXYZ");
-                REQUIRE(tgui::getBackend()->getClipboard() == "BC");
+                REQUIRE(getClipboardContents() == "BC");
             }
 
             SECTION("Pressing tab")
             {
-                auto sendTabEventToGui = [](tgui::GuiSFML& gui) {
-                    sf::Event event;
-                    event.key = sf::Event::KeyEvent();
+                auto sendTabEventToGui = [](GuiNull& gui) {
+                    tgui::Event event;
+                    event.key = tgui::Event::KeyEvent();
                     event.key.control = false;
                     event.key.alt     = false;
                     event.key.shift   = false;
                     event.key.system  = false;
-                    event.key.code    = sf::Keyboard::Key::Tab;
-                    event.type = sf::Event::KeyPressed;
-                    gui.handleEvent(event);
-                    event.type = sf::Event::KeyReleased;
+                    event.key.code    = tgui::Event::KeyboardKey::Tab;
+                    event.type = tgui::Event::Type::KeyPressed;
                     gui.handleEvent(event);
                 };
 
-                sf::RenderTexture tempRenderTexture;
-                tgui::GuiSFML gui{tempRenderTexture};
+                GuiNull gui;
                 gui.add(textArea);
 
                 textArea->setText("");

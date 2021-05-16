@@ -161,7 +161,7 @@ TEST_CASE("[Label]")
             label->leftMousePressed({115, 80});
             label->leftMouseReleased({115, 80});
 
-            tgui::GuiSFML gui;
+            GuiNull gui;
             gui.add(label);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 

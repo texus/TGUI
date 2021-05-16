@@ -89,7 +89,9 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(u16s.begin(), u16s.end()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(tgui::String(u32s.begin(), u32s.end()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
+#if TGUI_HAS_BACKEND_SFML
         REQUIRE(tgui::String(sf::String("xyz")) == "xyz");
+#endif
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         REQUIRE(tgui::String(std::u8string(u8"\U00010348")) == u8"\U00010348");
@@ -117,6 +119,10 @@ TEST_CASE("[String]")
 
         // Will work for older and newer compilers as it will either use std::string or std::u8string
         REQUIRE(tgui::String(u8"\U00010348").toUtf8() == u8"\U00010348");
+
+#if TGUI_HAS_BACKEND_SFML
+        REQUIRE(sf::String(tgui::String(U"test")) == sf::String("test"));
+#endif
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         REQUIRE(std::u8string(tgui::String(U"\U00010348")) == u8"\U00010348");

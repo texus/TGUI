@@ -27,7 +27,7 @@
 
 TEST_CASE("[Container]")
 {
-    auto container = std::make_shared<tgui::GuiSFML>();
+    auto container = std::make_shared<GuiNull>();
 
     auto widget1 = tgui::Label::create();
     auto widget2 = tgui::Panel::create();
@@ -43,7 +43,7 @@ TEST_CASE("[Container]")
     SECTION("default font")
     {
         REQUIRE(tgui::Font::getGlobalFont() != nullptr);
-        REQUIRE(std::make_shared<tgui::GuiSFML>()->getFont() != nullptr);
+        REQUIRE(std::make_shared<GuiNull>()->getFont() != nullptr);
         REQUIRE(tgui::Panel::create()->getRenderer()->getFont() == nullptr);
     }
 
@@ -342,9 +342,6 @@ TEST_CASE("[Container]")
 
     SECTION("getWidgetAtPosition / getWidgetBelowMouseCursor")
     {
-        sf::RenderTexture renderTexture;
-        renderTexture.create(200, 200);
-        container->setTarget(renderTexture);
         container->setAbsoluteView({-5, 40, 100, 400});
 
         container->removeAllWidgets();

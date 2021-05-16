@@ -34,7 +34,7 @@ namespace tgui
 {
     namespace
     {
-        std::shared_ptr<BackendBase> globalBackend;
+        std::shared_ptr<BackendBase> globalBackend = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

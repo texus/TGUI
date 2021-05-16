@@ -27,6 +27,7 @@
 #define TGUI_BACKEND_SFML_HPP
 
 #include <TGUI/Backend.hpp>
+#include <SFML/Window/Cursor.hpp> // Can't be an incomplete type when instantiating an object of type BackendSFML
 #include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,6 @@
 namespace sf
 {
     class Event;
-    class Cursor;
     class Window;
     class RenderTarget;
 }

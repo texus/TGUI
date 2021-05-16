@@ -25,8 +25,6 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Backends/SFML/GuiSFML.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
 
 using namespace tgui::bind_functions;
 using tgui::Layout;
@@ -221,9 +219,8 @@ TEST_CASE("[Layouts]")
 
             SECTION("Gui")
             {
-                sf::RenderTexture texture;
-                texture.create(20, 15);
-                tgui::GuiSFML gui{texture};
+                GuiNull gui;
+                gui.setAbsoluteView({0, 0, 20, 15});
 
                 auto width = bindWidth(gui);
                 auto height = bindHeight(gui);

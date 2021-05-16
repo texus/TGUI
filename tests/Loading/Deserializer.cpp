@@ -24,7 +24,10 @@
 
 #include "Tests.hpp"
 #include <TGUI/Loading/Deserializer.hpp>
-#include <SFML/System/Err.hpp>
+
+#if TGUI_HAS_BACKEND_SFML
+    #include <SFML/System/Err.hpp>
+#endif
 
 using Type = tgui::ObjectConverter::Type;
 
@@ -49,9 +52,15 @@ TEST_CASE("[Deserializer]")
         REQUIRE(tgui::Deserializer::deserialize(Type::Font, "nullptr").getFont() == nullptr);
         REQUIRE(tgui::Deserializer::deserialize(Type::Font, "null").getFont() == nullptr);
 
+#if TGUI_HAS_BACKEND_SFML
         std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
+#endif
+
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Font, "NonExistentFile"), tgui::Exception);
+
+#if TGUI_HAS_BACKEND_SFML
         sf::err().rdbuf(oldbuf);
+#endif
     }
 
     SECTION("deserialize color")
@@ -190,9 +199,15 @@ TEST_CASE("[Deserializer]")
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,1,2)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
 
+#if TGUI_HAS_BACKEND_SFML
         std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
+#endif
+
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "NonExistentFile"), tgui::Exception);
+
+#if TGUI_HAS_BACKEND_SFML
         sf::err().rdbuf(oldbuf);
+#endif
     }
 
     SECTION("deserialize text style")

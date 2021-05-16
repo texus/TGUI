@@ -207,22 +207,22 @@ TEST_CASE("[Animation]") {
         {
             REQUIRE(!widget->isAnimationPlaying());
 
-            widget->hideWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
+            widget->hideWithEffect(tgui::ShowAnimationType::Fade, tgui::Duration(300));
             REQUIRE(widget->isAnimationPlaying());
 
-            widget->updateTime(sf::milliseconds(200));
+            widget->updateTime(tgui::Duration(200));
             REQUIRE(widget->isAnimationPlaying());
 
-            widget->updateTime(sf::milliseconds(200));
+            widget->updateTime(tgui::Duration(200));
             REQUIRE(!widget->isAnimationPlaying());
 
-            widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(300));
+            widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, tgui::Duration(300));
             REQUIRE(widget->isAnimationPlaying());
 
-            widget->updateTime(sf::milliseconds(200));
+            widget->updateTime(tgui::Duration(200));
             REQUIRE(widget->isAnimationPlaying());
 
-            widget->updateTime(sf::milliseconds(200));
+            widget->updateTime(tgui::Duration(200));
             REQUIRE(!widget->isAnimationPlaying());
         }
 

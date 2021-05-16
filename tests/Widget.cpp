@@ -89,7 +89,7 @@ TEST_CASE("[Widget]")
 
     SECTION("ParentGui")
     {
-        auto gui = std::make_unique<tgui::GuiSFML>();
+        auto gui = std::make_unique<GuiNull>();
         auto panel = tgui::Panel::create();
         panel->add(widget);
 
@@ -368,8 +368,8 @@ TEST_CASE("[Widget]")
             renderer->setFont(nullptr);
             REQUIRE(renderer->getFont() == nullptr);
 
-            // Inheriting the font does not change the renderer (but the widget will have a usable font)
-            tgui::GuiSFML gui;
+            // Inheriting the font does not change the renderer
+            GuiNull gui;
             gui.add(widget);
             REQUIRE(renderer->getFont() == nullptr);
         }

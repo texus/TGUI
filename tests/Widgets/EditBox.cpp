@@ -25,6 +25,10 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/EditBox.hpp>
 
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/WindowsInclude.hpp>
+#endif
+
 TEST_CASE("[EditBox]")
 {
     tgui::EditBox::Ptr editBox = tgui::EditBox::create();
@@ -399,6 +403,9 @@ TEST_CASE("[EditBox]")
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 7);
 
+#ifdef TGUI_SYSTEM_WINDOWS
+            Sleep(1); // SDL on Windows seems to require some time to set the clipboard reliably
+#endif
             keyEvent.code = tgui::Event::KeyboardKey::V;
             editBox->keyPressed(keyEvent);
             REQUIRE(textChangedCount == 8);

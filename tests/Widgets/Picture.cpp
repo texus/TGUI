@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
 
 TEST_CASE("[Picture]")
 {
@@ -43,8 +44,8 @@ TEST_CASE("[Picture]")
 
     SECTION("Create")
     {
-        sf::Texture texture;
-        texture.loadFromFile("resources/image.png");
+        tgui::Vector2u imageSize;
+        tgui::ImageLoader::loadFromFile("resources/image.png", imageSize);
 
         SECTION("from tgui::Texture")
         {
@@ -52,13 +53,18 @@ TEST_CASE("[Picture]")
             REQUIRE(picture->getRenderer()->getTexture().getId() == "resources/image.png");
         }
 
+#if TGUI_HAS_BACKEND_SFML
         SECTION("from sf::Texture")
         {
+            sf::Texture texture;
+            texture.loadFromFile("resources/image.png");
+
             REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
             REQUIRE(picture->getRenderer()->getTexture().getId() == "");
         }
+#endif
 
-        REQUIRE(picture->getSize() == tgui::Vector2f(static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)));
+        REQUIRE(picture->getSize() == tgui::Vector2f(static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)));
     }
 
     SECTION("Position and Size")
@@ -100,7 +106,7 @@ TEST_CASE("[Picture]")
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});
 
-            tgui::GuiSFML gui;
+            GuiNull gui;
             gui.add(picture);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 

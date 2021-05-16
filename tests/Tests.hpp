@@ -36,39 +36,52 @@
 #endif
 
 #include "catch.hpp"
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <TGUI/Backends/SFML/GuiSFML.hpp>
+#include <TGUI/GuiBase.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
-#define TEST_DRAW_INIT(width, height, widget) \
-            sf::RenderTexture target; \
-            target.create(width, height); \
-            tgui::GuiSFML gui{target}; \
-            gui.add(widget);
+#if TGUI_HAS_BACKEND_SFML
+    #include <SFML/Graphics/RenderTexture.hpp>
+    #include <TGUI/Backends/SFML/GuiSFML.hpp>
 
-#ifdef TGUI_ENABLE_DRAW_TESTS
-    #define TEST_DRAW(filename) \
-                target.clear({25, 130, 10}); \
-                gui.draw(); \
-                target.display(); \
-                target.getTexture().copyToImage().saveToFile(filename); \
-                compareImageFiles(filename, "expected/" filename);
+    #define TEST_DRAW_INIT(width, height, widget) \
+                sf::RenderTexture target; \
+                target.create(width, height); \
+                tgui::GuiSFML gui{target}; \
+                gui.add(widget);
+
+    #ifdef TGUI_ENABLE_DRAW_TESTS
+        #define TEST_DRAW(filename) \
+                    target.clear({25, 130, 10}); \
+                    gui.draw(); \
+                    target.display(); \
+                    target.getTexture().copyToImage().saveToFile(filename); \
+                    compareImageFiles(filename, "expected/" filename);
+    #else
+        #define TEST_DRAW(filename) \
+                    target.clear({25, 130, 10}); \
+                    gui.draw(); \
+                    target.display(); \
+                    target.getTexture().copyToImage().saveToFile(filename);
+    #endif
 #else
-    #define TEST_DRAW(filename) \
-                target.clear({25, 130, 10}); \
-                gui.draw(); \
-                target.display(); \
-                target.getTexture().copyToImage().saveToFile(filename);
+    // Drawing tests are currently unsupported in other backends
+    #define TEST_DRAW_INIT(width, height, widget) \
+                GuiNull gui; \
+                gui.add(widget);
+
+    #define TEST_DRAW(filename)
 #endif
 
 static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);
 
 bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFileName);
 void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2);
+
+tgui::String getClipboardContents();
 
 void mouseCallback(unsigned int& count, tgui::Vector2f pos);
 void genericCallback(unsigned int& count);
@@ -144,5 +157,19 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
         REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile3.txt"));
     }
 }
+
+class GuiNull : public tgui::GuiBase
+{
+public:
+    GuiNull()
+    {
+        init();
+        setAbsoluteViewport({0, 0, 200, 200});
+        setAbsoluteView({0, 0, 200, 200});
+    }
+
+    void draw() {}
+    void mainLoop() {}
+};
 
 #endif // TGUI_TESTS_HPP

@@ -228,8 +228,41 @@ jobs:
         run: |
           mkdir $GITHUB_WORKSPACE/TGUI-build
           cd $GITHUB_WORKSPACE/TGUI-build
-          cmake -DTGUI_BACKEND=SDL -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          cmake -DTGUI_BACKEND=SDL -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
           make -j2
+
+      - name: Run tests
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI-build/tests
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests
+
+  windows-sdl:
+    runs-on: windows-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          cd $env:GITHUB_WORKSPACE
+          C:\msys64\usr\bin\wget.exe -q https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip
+          C:\msys64\usr\bin\wget.exe -q https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip
+          7z x SDL2-devel-2.0.14-VC.zip
+          7z x SDL2_ttf-devel-2.0.15-VC.zip
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Setting up environment for building with MSVC
+        uses: ilammy/msvc-dev-cmd@v1.8.0
+        with:
+          arch: x64
+
+      - name: Build TGUI
+        run: |
+          mkdir $env:GITHUB_WORKSPACE/TGUI-build
+          cd $env:GITHUB_WORKSPACE/TGUI-build
+          cmake -G "NMake Makefiles" -DTGUI_BACKEND=SDL -DSDL2_PATH="$env:GITHUB_WORKSPACE/SDL2-2.0.14" -DSDL2_TTF_PATH="$env:GITHUB_WORKSPACE/SDL2_ttf-2.0.15" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+          cmake --build . --config Debug
 
   android-sdl:
     runs-on: ubuntu-latest

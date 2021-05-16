@@ -136,7 +136,7 @@ static bool widgetFocused(tgui::Widget::Ptr widget)
 
 TEST_CASE("[Focussing widgets]")
 {
-    tgui::GuiSFML gui;
+    GuiNull gui;
     rootContainer = gui.getContainer();
 
     auto button = tgui::Button::create("Click me");
@@ -399,47 +399,35 @@ TEST_CASE("[Focussing widgets]")
 
     SECTION("Gui interaction")
     {
-        sf::RenderTexture target;
-        target.create(250, 530);
-        gui.setTarget(target);
-
-        sf::Event event;
-        event.type = sf::Event::MouseButtonPressed;
-        event.mouseButton = sf::Event::MouseButtonEvent();
-        event.mouseButton.button = sf::Mouse::Left;
+        tgui::Event event;
+        event.type = tgui::Event::Type::MouseButtonPressed;
+        event.mouseButton = tgui::Event::MouseButtonEvent();
+        event.mouseButton.button = tgui::Event::MouseButton::Left;
         event.mouseButton.x = 55;
         event.mouseButton.y = 145;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton2));
 
-        event.type = sf::Event::MouseButtonReleased;
+        event.type = tgui::Event::Type::MouseButtonReleased;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton2));
 
-        event.type = sf::Event::KeyPressed;
-        event.key = sf::Event::KeyEvent();
+        event.type = tgui::Event::Type::KeyPressed;
+        event.key = tgui::Event::KeyEvent();
         event.key.control = false;
         event.key.alt     = false;
         event.key.shift   = false;
         event.key.system  = false;
-        event.key.code    = sf::Keyboard::Tab;
+        event.key.code    = tgui::Event::KeyboardKey::Tab;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(editBox));
 
-        event.type = sf::Event::KeyReleased;
-        gui.handleEvent(event);
-        REQUIRE(widgetFocused(editBox));
-
-        event.type = sf::Event::KeyPressed;
+        event.type = tgui::Event::Type::KeyPressed;
         event.key.shift = true;
-        gui.handleEvent(event);
-        event.type = sf::Event::KeyReleased;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton2));
 
-        event.type = sf::Event::KeyPressed;
-        gui.handleEvent(event);
-        event.type = sf::Event::KeyReleased;
+        event.type = tgui::Event::Type::KeyPressed;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton1));
     }

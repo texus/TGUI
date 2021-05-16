@@ -1,5 +1,5 @@
-if(NOT TGUI_HAS_BACKEND_SFML)
-    message(FATAL_ERROR "Tests currently require the SFML backend. Uncheck TGUI_BUILD_TESTS or change backend.")
+if(NOT TGUI_HAS_BACKEND_SFML AND NOT TGUI_HAS_BACKEND_SDL)
+    message(FATAL_ERROR "Tests can't be build without a backend. Uncheck TGUI_BUILD_TESTS or change the backend.")
 endif()
 
 set(TEST_SOURCES
@@ -108,7 +108,7 @@ set(TEST_SOURCES ${TEST_SOURCES} main.cpp) # Main file has to be last and can't 
 add_executable(tests ${TEST_SOURCES})
 target_compile_definitions(tests PRIVATE TGUI_NO_DEPRECATED_WARNINGS)
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(tests PRIVATE tgui tgui-sfml-interface)
+target_link_libraries(tests PRIVATE tgui tgui-default-backend-interface)
 
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)

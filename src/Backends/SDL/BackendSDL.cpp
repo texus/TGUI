@@ -462,18 +462,31 @@ namespace tgui
 
     void BackendSDL::setClipboard(const String& contents)
     {
+#ifdef TGUI_SYSTEM_WINDOWS
+        // If setting the clipboard fails on Windows then sleep a moment and try again
+        if (SDL_SetClipboardText(contents.toStdString().c_str()) < 0)
+        {
+            Sleep(1);
+            SDL_SetClipboardText(contents.toStdString().c_str());
+        }
+#else
         SDL_SetClipboardText(contents.toStdString().c_str());
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String BackendSDL::getClipboard() const
     {
-        const char* text = SDL_GetClipboardText();
+        String contents;
+        char* text = SDL_GetClipboardText();
         if (text)
-            return text;
-        else
-            return "";
+        {
+            contents = text;
+            SDL_free(text);
+        }
+
+        return contents;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,11 @@ if(POLICY CMP0076)
     cmake_policy(SET CMP0076 NEW)
 endif()
 
+# Don't add the /W3 flag to MSVC automatically as it causes warnings when we add /W4 (CMake 3.15 and newer)
+if(POLICY CMP0092)
+    cmake_policy(SET CMP0092 NEW)
+endif()
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 
 # Set a default build type

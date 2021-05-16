@@ -505,6 +505,8 @@ namespace tgui
 
     void GuiBase::updateContainerSize()
     {
+        m_container->setSize(Vector2f{m_view.getWidth(), m_view.getHeight()});
+
         // Derived classes should update m_view in their updateContainerSize() function before calling this function
         const FloatRect& viewRect = m_view.getRect();
         if (viewRect != m_lastView)
