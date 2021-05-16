@@ -25,7 +25,10 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Backend.hpp>
-#include <TGUI/WindowsInclude.hpp>
+
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/WindowsInclude.hpp>
+#endif
 
 tgui::String getClipboardContents()
 {
