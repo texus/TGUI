@@ -1,3 +1,9 @@
+TGUI 0.8.10  (TBD)
+------------------
+
+TransparentTexture property didn't work when textures were created from sf::Texture
+
+
 TGUI 0.8.9  (12 February 2021)
 ------------------------------
 

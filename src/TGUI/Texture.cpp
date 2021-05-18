@@ -195,10 +195,11 @@ namespace tgui
 
         m_data = nullptr;
         auto data = std::make_shared<TextureData>();
+        data->image = std::make_shared<sf::Image>(texture.copyToImage());
         if (partRect == sf::IntRect{})
             data->texture = texture;
         else
-            data->texture.loadFromImage(texture.copyToImage(), partRect);
+            data->texture.loadFromImage(*data->image, partRect);
 
         m_id = "";
         setTextureData(data, middleRect);
