@@ -502,10 +502,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     std::string String::toAnsiString() const
     {
         return toStdString();
     }
+#endif
 
     std::string String::toStdString() const
     {

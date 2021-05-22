@@ -243,8 +243,9 @@ namespace tgui
         static const Color Cyan;        //!< Cyan predefined color
         static const Color Transparent; //!< Transparent (black) predefined color
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         TGUI_DEPRECATED("Use colorNamesMap instead") static const std::map<String, Color> colorMap;
-
+#endif
         static const std::array<std::pair<StringView, Color>, 9> colorNamesMap;
 
 

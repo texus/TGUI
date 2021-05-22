@@ -42,6 +42,7 @@ namespace tgui
     const Color Color::Transparent{  0,   0,   0,   0};
 #endif
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     // This somehow gives a deprecated warning, while this is just the definition of the deprecated value
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
@@ -67,6 +68,7 @@ namespace tgui
 #elif defined (_MSC_VER)
     #pragma warning(pop)
 #endif
+#endif // TGUI_REMOVE_DEPRECATED_CODE
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     const std::array<std::pair<String, Color>, 9> Color::colorNamesMap

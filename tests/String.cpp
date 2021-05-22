@@ -111,20 +111,17 @@ TEST_CASE("[String]")
         REQUIRE(std::u16string(tgui::String(U"\U00010348")) == u"\U00010348");
         REQUIRE(std::u32string(tgui::String(U"\U00010348")) == U"\U00010348");
 
-        REQUIRE(tgui::String("xyz").toAnsiString() == "xyz");
         REQUIRE(tgui::String("xyz").toStdString() == "xyz");
         REQUIRE(tgui::String(U"\u20AC").toWideString() == L"\u20AC");
         REQUIRE(tgui::String(U"\U00010348").toUtf16() == u"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf32() == U"\U00010348");
-
-        // Will work for older and newer compilers as it will either use std::string or std::u8string
-        REQUIRE(tgui::String(u8"\U00010348").toUtf8() == u8"\U00010348");
 
 #if TGUI_HAS_BACKEND_SFML
         REQUIRE(sf::String(tgui::String(U"test")) == sf::String("test"));
 #endif
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
+        REQUIRE(tgui::String(u8"\U00010348").toUtf8() == u8"\U00010348");
         REQUIRE(std::u8string(tgui::String(U"\U00010348")) == u8"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf8() == u8"\U00010348");
 #endif

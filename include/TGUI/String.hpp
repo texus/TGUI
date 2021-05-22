@@ -397,7 +397,10 @@ namespace tgui
         }
 #endif
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         TGUI_DEPRECATED("Use toStdString instead") std::string toAnsiString() const;
+#endif
+
         std::string toStdString() const;
         std::wstring toWideString() const;
         std::u16string toUtf16() const;
@@ -411,7 +414,7 @@ namespace tgui
         {
             return utf::convertUtf32toUtf8(m_string);
         }
-#else
+#elif !defined(TGUI_REMOVE_DEPRECATED_CODE)
         TGUI_DEPRECATED("Use toStdString instead") std::string toUtf8() const
         {
             return toStdString();

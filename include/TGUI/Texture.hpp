@@ -172,6 +172,7 @@ namespace tgui
                   const UIntRect& middleRect = {});
 #endif
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from an array of 32-bits RGBA pixels
         ///
@@ -183,7 +184,7 @@ namespace tgui
         /// @return True on success, false if the backend failed to create the texture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use loadFromPixelData instead") bool load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from memory (data in memory should contain the entire file, not just the pixels)

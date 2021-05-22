@@ -52,6 +52,7 @@ namespace tgui
     {
     public:
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Helper function that converts an SFML event to a TGUI event
         /// @param eventSFML  The input SFML event
@@ -59,7 +60,7 @@ namespace tgui
         /// @return Did the SFML event match on a TGUI event and has the output event been written to?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use GuiSFML::convertEvent instead") static bool convertEvent(const sf::Event& eventSFML, Event& eventTGUI);
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the backend that a new gui object has been created.

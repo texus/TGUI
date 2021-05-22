@@ -55,6 +55,7 @@
 
 namespace tgui
 {
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     static Event::KeyboardKey convertKeyCode(SDL_Keycode key)
     {
         switch (key)
@@ -271,6 +272,7 @@ namespace tgui
                 return false;
         }
     }
+#endif // TGUI_REMOVE_DEPRECATED_CODE
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
