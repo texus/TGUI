@@ -63,6 +63,7 @@
 
 namespace tgui
 {
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     static Event::KeyboardKey convertKeyCode(sf::Keyboard::Key key)
     {
         switch (key)
@@ -297,6 +298,7 @@ namespace tgui
                 return false;
         }
     }
+#endif // TGUI_REMOVE_DEPRECATED_CODE
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -503,6 +505,7 @@ namespace tgui
         case Cursor::Type::Hand:
             typeSFML = sf::Cursor::Type::Hand;
             break;
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6 // SFML < 2.6 has no directional arrows for Linux
         case Cursor::Type::SizeLeft:
         case Cursor::Type::SizeRight:
             typeSFML = sf::Cursor::Type::SizeHorizontal;
@@ -519,6 +522,32 @@ namespace tgui
         case Cursor::Type::SizeTopRight:
             typeSFML = sf::Cursor::Type::SizeBottomLeftTopRight;
             break;
+#else // SFML >= 2.6
+        case Cursor::Type::SizeLeft:
+            typeSFML = sf::Cursor::Type::SizeLeft;
+            break;
+        case Cursor::Type::SizeRight:
+            typeSFML = sf::Cursor::Type::SizeRight;
+            break;
+        case Cursor::Type::SizeTop:
+            typeSFML = sf::Cursor::Type::SizeTop;
+            break;
+        case Cursor::Type::SizeBottom:
+            typeSFML = sf::Cursor::Type::SizeBottom;
+            break;
+        case Cursor::Type::SizeBottomRight:
+            typeSFML = sf::Cursor::Type::SizeBottomRight;
+            break;
+        case Cursor::Type::SizeTopLeft:
+            typeSFML = sf::Cursor::Type::SizeTopLeft;
+            break;
+        case Cursor::Type::SizeBottomLeft:
+            typeSFML = sf::Cursor::Type::SizeBottomLeft;
+            break;
+        case Cursor::Type::SizeTopRight:
+            typeSFML = sf::Cursor::Type::SizeTopRight;
+            break;
+#endif
         case Cursor::Type::Crosshair:
             typeSFML = sf::Cursor::Type::Cross;
             break;
@@ -568,8 +597,8 @@ namespace tgui
 
     void BackendSFML::updateMouseCursor(sf::Window* window, Cursor::Type type)
     {
-#ifdef TGUI_SYSTEM_LINUX
-        // On Linux we use directional resize arrows, but SFML has no support for them
+        // On Linux we use directional resize arrows, but SFML < 2.6 had no support for them
+#if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6)
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
