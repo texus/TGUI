@@ -909,6 +909,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Selects multiple items when multi-select is on and the user selects an item while the shift key is held down
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void selectRangeFromEvent(std::size_t item);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Update the maximum item width of the last column by recalculating all items' widths.
         // Returns whether the max item width was changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1032,7 +1038,8 @@ namespace tgui
         std::set<std::size_t> m_selectedItems;
 
         int m_hoveredItem = -1;
-        int m_lastMouseDownItem = -1;
+        int m_firstSelectedItemIndex = -1;
+        int m_focusedItemIndex = -1;
 
         float m_requestedHeaderHeight = 0;
         unsigned int m_itemHeight = 0;

@@ -2,6 +2,7 @@ TGUI 0.9.2  (TBD)
 -----------------
 
 - Arrow keys can now be used to navigate TreeView
+- Control/shift now affect using arrow keys in multi-select ListView
 - Added Texture::setDefaultSmooth to choose default interpolation setting
 - String::split now takes an optional boolean to trim the returned values
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)

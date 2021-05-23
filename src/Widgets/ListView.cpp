@@ -543,6 +543,26 @@ namespace tgui
                 }
             }
 
+            if (m_firstSelectedItemIndex == static_cast<int>(index))
+            {
+                // The selection started from the removed item, just arbitrarily choose a different item (the top one)
+                if (!newSelectedItems.empty())
+                    m_firstSelectedItemIndex = static_cast<int>(*newSelectedItems.begin());
+                else
+                    m_firstSelectedItemIndex = -1;
+            }
+
+            if (m_focusedItemIndex == static_cast<int>(index))
+            {
+                // The focused item is removed, move the focus to a nearby item
+                if (index + 1 < m_items.size())
+                    m_focusedItemIndex = static_cast<int>(index + 1);
+                else if (index > 0)
+                    m_focusedItemIndex = static_cast<int>(index - 1);
+                else
+                    m_focusedItemIndex = -1;
+            }
+
             m_selectedItems = newSelectedItems;
             updateSelectedAndhoveredItemColors();
         }
@@ -658,9 +678,18 @@ namespace tgui
         updateSelectedAndhoveredItemColors();
 
         if (!m_selectedItems.empty())
+        {
+            // Select first selected item arbitrarily (top one is chosen) if the previous value is no longer valid
+            if ((m_firstSelectedItemIndex < 0) || (m_selectedItems.find(static_cast<std::size_t>(m_firstSelectedItemIndex)) == m_selectedItems.end()))
+                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.begin());
+
             onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
+        }
         else
+        {
+            m_firstSelectedItemIndex = -1;
             onItemSelect.emit(this, -1);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1256,27 +1285,13 @@ namespace tgui
                     removeSelectedItem(m_hoveredItem);
                 else
                     addSelectedItem(m_hoveredItem);
-
-                m_lastMouseDownItem = m_hoveredItem;
             }
             else if (m_multiSelect && (m_hoveredItem >= 0) && keyboard::isShiftPressed())
             {
-                if (m_lastMouseDownItem < 0)
-                    m_lastMouseDownItem = m_hoveredItem;
-
-                std::set<std::size_t> selectedItems;
-                const std::size_t rangeStart = static_cast<std::size_t>(std::min(m_lastMouseDownItem, m_hoveredItem));
-                const std::size_t rangeEnd = static_cast<std::size_t>(std::max(m_lastMouseDownItem, m_hoveredItem));
-                for (std::size_t i = rangeStart; i <= rangeEnd; ++i)
-                    selectedItems.insert(i);
-
-                setSelectedItems(selectedItems);
+                selectRangeFromEvent(static_cast<std::size_t>(m_hoveredItem));
             }
             else
-            {
                 updateSelectedItem(m_hoveredItem);
-                m_lastMouseDownItem = m_hoveredItem;
-            }
 
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -1401,18 +1416,7 @@ namespace tgui
                         else // Control/command isn't pressed. Select items between current position and item where mouse went down
                         {
                             if (m_hoveredItem >= 0)
-                            {
-                                if (m_lastMouseDownItem < 0)
-                                    m_lastMouseDownItem = m_hoveredItem;
-
-                                std::set<std::size_t> selectedItems;
-                                const std::size_t rangeStart = static_cast<std::size_t>(std::min(m_lastMouseDownItem, m_hoveredItem));
-                                const std::size_t rangeEnd = static_cast<std::size_t>(std::max(m_lastMouseDownItem, m_hoveredItem));
-                                for (std::size_t i = rangeStart; i <= rangeEnd; ++i)
-                                    selectedItems.insert(i);
-
-                                setSelectedItems(selectedItems);
-                            }
+                                selectRangeFromEvent(static_cast<std::size_t>(m_hoveredItem));
                         }
                     }
                     else // Only one item can be selected at once. Select the one below the mouse.
@@ -1473,17 +1477,39 @@ namespace tgui
     void ListView::keyPressed(const Event::KeyEvent& event)
     {
         Widget::keyPressed(event);
-        if (event.code == Event::KeyboardKey::Up && m_selectedItems.size() == 1)
+        if (event.code == Event::KeyboardKey::Up && (m_focusedItemIndex > 0))
         {
-            const std::size_t index = *m_selectedItems.begin();
-            if (index != 0)
-                setSelectedItem(index - 1);
+            const auto indexAbove = static_cast<std::size_t>(m_focusedItemIndex - 1);
+            if (m_multiSelect && keyboard::isShiftPressed())
+            {
+                selectRangeFromEvent(indexAbove);
+            }
+            else if (m_multiSelect && keyboard::isMultiselectModifierPressed())
+            {
+                if (m_selectedItems.find(indexAbove) != m_selectedItems.end())
+                    removeSelectedItem(indexAbove);
+                else
+                    addSelectedItem(indexAbove);
+            }
+            else // Only one item should be selected
+                setSelectedItem(indexAbove);
         }
-        else if (event.code == Event::KeyboardKey::Down && m_selectedItems.size() == 1)
+        else if (event.code == Event::KeyboardKey::Down && (m_focusedItemIndex + 1 < static_cast<int>(m_items.size())))
         {
-            const std::size_t index = *m_selectedItems.begin();
-            if (index != m_items.size() - 1)
-                setSelectedItem(index + 1);
+            const auto indexBelow = static_cast<std::size_t>(m_focusedItemIndex + 1);
+            if (m_multiSelect && keyboard::isShiftPressed())
+            {
+                selectRangeFromEvent(indexBelow);
+            }
+            else if (m_multiSelect && keyboard::isMultiselectModifierPressed())
+            {
+                if (m_selectedItems.find(indexBelow) != m_selectedItems.end())
+                    removeSelectedItem(indexBelow);
+                else
+                    addSelectedItem(indexBelow);
+            }
+            else // Only one item should be selected
+                setSelectedItem(indexBelow);
         }
         else if (keyboard::isKeyPressCopy(event))
         {
@@ -2026,6 +2052,9 @@ namespace tgui
                 setItemColor(selectedItem, m_textColorCached);
         }
 
+        m_firstSelectedItemIndex = item;
+        m_focusedItemIndex = item;
+
         if (item >= 0)
         {
             m_selectedItems = {static_cast<std::size_t>(item)};
@@ -2038,6 +2067,31 @@ namespace tgui
         }
 
         updateSelectedAndhoveredItemColors();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::selectRangeFromEvent(std::size_t item)
+    {
+        TGUI_ASSERT(m_multiSelect, "selectRangeFromEvent should only be called when multi-select is on");
+
+        if (m_firstSelectedItemIndex < 0)
+        {
+            if (m_focusedItemIndex >= 0)
+                m_firstSelectedItemIndex = m_focusedItemIndex;
+            else
+                m_firstSelectedItemIndex = item;
+        }
+
+        std::set<std::size_t> selectedItems;
+        const std::size_t rangeStart = std::min(static_cast<std::size_t>(m_firstSelectedItemIndex), item);
+        const std::size_t rangeEnd = std::max(static_cast<std::size_t>(m_firstSelectedItemIndex), item);
+        for (std::size_t i = rangeStart; i <= rangeEnd; ++i)
+            selectedItems.insert(i);
+
+        setSelectedItems(selectedItems);
+
+        m_focusedItemIndex = static_cast<int>(item);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2170,22 +2224,24 @@ namespace tgui
         if (m_selectedItems.find(item) != m_selectedItems.end())
             return;
 
-        if (item >= 0)
-        {
-            if ((item == m_hoveredItem) && m_textColorHoverCached.isSet())
-                setItemColor(static_cast<std::size_t>(item), m_textColorHoverCached);
-            else
-                setItemColor(static_cast<std::size_t>(item), m_textColorCached);
+        if (item < 0)
+            return;
 
-            m_selectedItems.insert(item);
-        }
+        if ((item == m_hoveredItem) && m_textColorHoverCached.isSet())
+            setItemColor(static_cast<std::size_t>(item), m_textColorHoverCached);
+        else
+            setItemColor(static_cast<std::size_t>(item), m_textColorCached);
+
+        TGUI_ASSERT(m_selectedItems.empty() == (m_firstSelectedItemIndex == -1), "m_firstSelectedItemIndex should (only) be set if there was a selection");
+        m_focusedItemIndex = item;
+        if (m_selectedItems.empty())
+            m_firstSelectedItemIndex = item;
+
+        m_selectedItems.insert(item);
 
         updateSelectedAndhoveredItemColors();
 
-        if (!m_selectedItems.empty())
-            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
-        else
-            onItemSelect.emit(this, -1);
+        onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2197,6 +2253,17 @@ namespace tgui
             setItemColor(item, m_textColorHoverCached);
         else
             setItemColor(item, m_textColorCached);
+
+        if (m_firstSelectedItemIndex == static_cast<int>(item))
+        {
+            // The selection started from the removed item, just arbitrarily choose a different item (the top one)
+            if (!m_selectedItems.empty())
+                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.begin());
+            else
+                m_firstSelectedItemIndex = -1;
+        }
+
+        m_focusedItemIndex = static_cast<int>(item);
 
         if (!m_selectedItems.empty())
             onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
