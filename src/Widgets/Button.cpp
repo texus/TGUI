@@ -70,11 +70,13 @@ namespace tgui
 
     void Button::leftMouseReleased(Vector2f pos)
     {
-        if (m_mouseDown)
-            onPress.emit(this, m_string);
+        const double bMouseWasDown = m_mouseDown;
 
         m_down = false;
         ButtonBase::leftMouseReleased(pos);
+
+        if (bMouseWasDown)
+            onPress.emit(this, m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
