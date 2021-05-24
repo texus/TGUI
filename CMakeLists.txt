@@ -29,6 +29,12 @@ if(POLICY CMP0092)
     cmake_policy(SET CMP0092 NEW)
 endif()
 
+# Initialize CMAKE_OSX_ARCHITECTURES for macOS if not provided by the user.
+# This variable has to be set before the call to project() and is ignored on non-Apple platforms.
+if(NOT CMAKE_OSX_ARCHITECTURES)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "macOS architecture to build. Possible values are 'x86_64', 'arm64' or 'x86_64;arm64' (to build for both)." FORCE)
+endif()
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 
 # Set a default build type
@@ -130,11 +136,12 @@ if(TGUI_OS_MACOS)
     # Add an option to build framework instead of dylib (release only)
     tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
 
-    # Only the default architecture (i.e. 64-bit) is supported
-    if(CMAKE_OSX_ARCHITECTURES AND NOT "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "x86_64")
-        message(FATAL_ERROR "Only 64-bit architecture is supported")
-        return()
-    endif()
+    # Only the default x86_64 or arm64 architectures are supported
+    foreach (arch IN LISTS CMAKE_OSX_ARCHITECTURES)
+        if (NOT (arch STREQUAL "x86_64" OR arch STREQUAL "arm64"))
+            message(FATAL_ERROR "Invalid arch ${arch}, only x86_64 and arm64 are supported")
+        endif()
+    endforeach()
 
     # Enable to use of rpath according to CMake Policy CMP0042
     set(CMAKE_MACOSX_RPATH 1)
