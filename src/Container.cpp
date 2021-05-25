@@ -638,6 +638,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Container::setWidgetIndex(const Widget::Ptr& widget, std::size_t index)
+    {
+        if (index >= m_widgets.size())
+            return false;
+
+        std::size_t currentWidgetIndex = m_widgets.size();
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        {
+            if (m_widgets[i] == widget)
+            {
+                currentWidgetIndex = i;
+                break;
+            }
+        }
+
+        if (currentWidgetIndex == m_widgets.size())
+            return false;
+
+        if (index == currentWidgetIndex)
+            return true;
+
+        // Move the widget to the new index (equivalent to removing it from the current index and re-inserting at the wanted index)
+        if (index < currentWidgetIndex)
+            std::rotate(m_widgets.rbegin() + (m_widgets.size() - index), m_widgets.rbegin() + (m_widgets.size() - index) + 1, m_widgets.rbegin() + (m_widgets.size() - currentWidgetIndex));
+        else
+            std::rotate(m_widgets.begin() + currentWidgetIndex, m_widgets.begin() + currentWidgetIndex + 1, m_widgets.begin() + index + 1);
+
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int Container::getWidgetIndex(const Widget::Ptr& widget) const
+    {
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        {
+            if (m_widgets[i] == widget)
+                return static_cast<int>(i);
+        }
+
+        return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr Container::getFocusedChild() const
     {
         return m_focusedWidget;

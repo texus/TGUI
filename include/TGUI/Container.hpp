@@ -342,6 +342,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the index of a widget in this container
+        ///
+        /// Widgets are drawn in the order of the list, so overlapping widgets with a higher index will appear on top of others.
+        ///
+        /// @param widget  Widget that is to be moved to a different index
+        /// @param index   New index of the widget, corresponding to the widget position after the widget has been moved
+        ///
+        /// @return True when the index was changed, false if widget wasn't found in the container or index was too high
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setWidgetIndex(const Widget::Ptr& widget, std::size_t index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the current index of a widget in this container
+        ///
+        /// @return Index of the widget, or -1 if the widget wasn't found in this container
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int getWidgetIndex(const Widget::Ptr& widget) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the child widget that is focused inside this container
         ///
         /// @return Focused child widget or nullptr if none of the widgets are currently focused

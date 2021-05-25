@@ -188,6 +188,10 @@ TEST_CASE("[Container]")
         REQUIRE(container->getWidgets()[0] == widget1);
         REQUIRE(container->getWidgets()[1] == widget2);
         REQUIRE(container->getWidgets()[2] == widget3);
+        REQUIRE(container->getWidgetIndex(widget1) == 0);
+        REQUIRE(container->getWidgetIndex(widget2) == 1);
+        REQUIRE(container->getWidgetIndex(widget3) == 2);
+        REQUIRE(container->getWidgetIndex(widget4) == -1);
 
         container->moveWidgetToFront(widget1);
         REQUIRE(container->getWidgets()[0] == widget2);
@@ -210,9 +214,36 @@ TEST_CASE("[Container]")
         REQUIRE(container->getWidgets()[0] == widget2);
         REQUIRE(container->getWidgets()[1] == widget3);
         REQUIRE(container->getWidgets()[2] == widget1);
+        REQUIRE(container->getWidgetIndex(widget1) == 2);
+        REQUIRE(container->getWidgetIndex(widget2) == 0);
+        REQUIRE(container->getWidgetIndex(widget3) == 1);
 
         // No widgets were added or removed while changing z-order
         REQUIRE(container->getWidgets().size() == 3);
+
+        container->removeAllWidgets();
+
+        container->add(widget1);
+        container->add(widget2);
+        container->add(widget3);
+        container->add(widget4);
+        container->add(widget5);
+        REQUIRE(container->setWidgetIndex(widget2, 3)); // Place widget2 after widget4
+        REQUIRE(container->setWidgetIndex(widget1, 4)); // Place widget1 after widget5
+        REQUIRE(container->setWidgetIndex(widget3, 0)); // Place widget3 before widget4
+        REQUIRE(container->setWidgetIndex(widget4, 1)); // Keeps widget4 in the same spot
+        REQUIRE(!container->setWidgetIndex(widget3, 5)); // Index too high
+        REQUIRE(!container->setWidgetIndex(tgui::Button::create(), 1)); // No such widget
+
+        REQUIRE(container->getWidgetIndex(widget1) == 4);
+        REQUIRE(container->getWidgetIndex(widget2) == 2);
+        REQUIRE(container->getWidgetIndex(widget3) == 0);
+        REQUIRE(container->getWidgetIndex(widget4) == 1);
+        REQUIRE(container->getWidgetIndex(widget5) == 3);
+        REQUIRE(container->getWidgetIndex(tgui::Button::create()) == -1);
+
+        // No widgets were added or removed while changing z-order
+        REQUIRE(container->getWidgets().size() == 5);
     }
 
     SECTION("widget name")
