@@ -9,6 +9,7 @@ TGUI 0.9.2  (TBD)
 - Added setWidgetIndex and getWidgetIndex functions to container
 - saveWidgetsToFile now makes paths relative to the form path
 - Exception is now thrown when loading a font fails
+- TabContainer can now create the panels internally
 - Button text was lost when copying button
 - Image in BitmapButton was searched in wrong directory when loading from form file
 - Form files didn't load on Windows when path contained non-ANSI characters

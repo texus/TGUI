@@ -199,7 +199,7 @@ namespace tgui
 
     bool Tabs::select(const String& text)
     {
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (m_tabs[i].text.getString() == text)
                 return select(i);
@@ -251,7 +251,7 @@ namespace tgui
 
     bool Tabs::remove(const String& text)
     {
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (m_tabs[i].text.getString() == text)
                 return remove(i);
@@ -438,7 +438,7 @@ namespace tgui
         pos -= getPosition();
 
         float width = m_bordersCached.getLeft() / 2.f;
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)
                 continue;
@@ -465,7 +465,7 @@ namespace tgui
         m_hoveringTab = -1;
         float width = m_bordersCached.getLeft() / 2.f;
 
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)
                 continue;
@@ -497,8 +497,8 @@ namespace tgui
 
     void Tabs::recalculateTabsWidth()
     {
-        unsigned int visibleTabs = 0;
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        std::size_t visibleTabs = 0;
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (m_tabs[i].visible)
                 visibleTabs++;
@@ -512,7 +512,7 @@ namespace tgui
             {
                 // First calculate the width of the tabs as if there aren't any borders
                 float totalWidth = 0;
-                for (unsigned int i = 0; i < m_tabs.size(); ++i)
+                for (std::size_t i = 0; i < m_tabs.size(); ++i)
                 {
                     if (!m_tabs[i].visible)
                         continue;
@@ -533,7 +533,7 @@ namespace tgui
         else // A size was provided
         {
             const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f))) / visibleTabs;
-            for (unsigned int i = 0; i < m_tabs.size(); ++i)
+            for (std::size_t i = 0; i < m_tabs.size(); ++i)
                 m_tabs[i].width = tabWidth;
         }
 
@@ -750,7 +750,7 @@ namespace tgui
                 throw Exception{"Failed to parse 'TabsVisible' property, expected a list as value"};
 
             const auto& values = node->propertyValuePairs["TabsVisible"]->valueList;
-            for (unsigned int i = 0; i < values.size(); ++i)
+            for (std::size_t i = 0; i < values.size(); ++i)
                 setTabVisible(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
@@ -760,7 +760,7 @@ namespace tgui
                 throw Exception{"Failed to parse 'TabsEnabled' property, expected a list as value"};
 
             const auto& values = node->propertyValuePairs["TabsEnabled"]->valueList;
-            for (unsigned int i = 0; i < values.size(); ++i)
+            for (std::size_t i = 0; i < values.size(); ++i)
                 setTabEnabled(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
@@ -817,7 +817,7 @@ namespace tgui
 
         const float borderWidth = (m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f;
         const float usableHeight = getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom();
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)
                 continue;
