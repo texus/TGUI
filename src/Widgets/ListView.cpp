@@ -1489,7 +1489,7 @@ namespace tgui
                 if (m_selectedItems.find(indexAbove) != m_selectedItems.end())
                     removeSelectedItem(indexAbove);
                 else
-                    addSelectedItem(indexAbove);
+                    addSelectedItem(static_cast<int>(indexAbove));
             }
             else // Only one item should be selected
                 setSelectedItem(indexAbove);
@@ -1506,7 +1506,7 @@ namespace tgui
                 if (m_selectedItems.find(indexBelow) != m_selectedItems.end())
                     removeSelectedItem(indexBelow);
                 else
-                    addSelectedItem(indexBelow);
+                    addSelectedItem(static_cast<int>(indexBelow));
             }
             else // Only one item should be selected
                 setSelectedItem(indexBelow);
@@ -2080,7 +2080,7 @@ namespace tgui
             if (m_focusedItemIndex >= 0)
                 m_firstSelectedItemIndex = m_focusedItemIndex;
             else
-                m_firstSelectedItemIndex = item;
+                m_firstSelectedItemIndex = static_cast<int>(item);
         }
 
         std::set<std::size_t> selectedItems;

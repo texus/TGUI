@@ -477,7 +477,7 @@ namespace tgui
             if (pos.x < width)
             {
                 if (m_tabs[i].enabled)
-                    m_hoveringTab = i;
+                    m_hoveringTab = static_cast<int>(i);
 
                 break;
             }

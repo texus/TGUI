@@ -127,6 +127,9 @@ namespace tgui
 
     Panel::Ptr TabContainer::insertTab(std::size_t index, const String& name, bool selectPanel)
     {
+        if (index > m_panels.size())
+            index = m_panels.size();
+
         auto panel = Panel::create();
         panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
         panel->setPosition({bindLeft(m_tabs), bindBottom(m_tabs)});
@@ -140,7 +143,11 @@ namespace tgui
         if (selectPanel)
             select(m_panels.size() - 1, false);
         else
+        {
             panel->setVisible(false);
+            if (static_cast<int>(index) <= m_index)
+                ++m_index;
+        }
 
         return panel;
     }
@@ -162,10 +169,14 @@ namespace tgui
 
     bool TabContainer::removeTab(std::size_t index)
     {
+        if (index >= m_panels.size())
+            return false;
+
         m_tabs->remove(index);
         m_container->remove(m_panels[index]);
         m_panels.erase(m_panels.begin() + index);
         select(m_tabs->getSelectedIndex());
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +203,20 @@ namespace tgui
         if (index > m_panels.size())
             return false;
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined (_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)
+#endif
         addPanel(ptr, name, selectPanel);
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined (_MSC_VER)
+    #pragma warning(pop)
+#endif
+
         auto size = m_panels.size();
         if (index != size)
         {

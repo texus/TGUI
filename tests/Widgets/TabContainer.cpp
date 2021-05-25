@@ -57,51 +57,47 @@ TEST_CASE("[tabContainer]")
     SECTION("Adding")
     {
         REQUIRE(tabContainer->getPanelCount() == 0);
-        tabContainer->addPanel(tgui::Panel::create(), "panel 1");
+        tabContainer->addTab("panel 1");
         REQUIRE(tabContainer->getPanelCount() == 1);
-        tabContainer->addPanel(tgui::Panel::create(), "panel 2", true);
+        tabContainer->addTab("panel 2", true);
         REQUIRE(tabContainer->getPanelCount() == 2);
     }
 
     SECTION("Inserting")
     {
-        auto p1 = tgui::Panel::create();
+        tabContainer->addTab("panel 1");
 
-        REQUIRE_FALSE(tabContainer->insertPanel(p1, "panel 1", 1));
-        REQUIRE(tabContainer->insertPanel(p1, "panel 1", 0));
-        REQUIRE(tabContainer->getPanel(0) == p1);
-
-        auto p2 = tgui::Panel::create();
-
-        REQUIRE(tabContainer->insertPanel(p2, "panel 2", 0, false));
+        auto p2 = tabContainer->insertTab(0, "panel 2", false);
         REQUIRE(tabContainer->getPanel(0) == p2);
         REQUIRE(tabContainer->getSelectedIndex() == 1);
 
-        auto p3 = tgui::Panel::create();
-        REQUIRE(tabContainer->insertPanel(p3, "panel 2", 1, false));
+        auto p3 = tabContainer->insertTab(1, "panel 3", false);
         REQUIRE(tabContainer->getPanel(1) == p3);
         REQUIRE(tabContainer->getSelectedIndex() == 2);
+
+        // Too high index just adds panel at end
+        auto p4 = tabContainer->insertTab(5, "panel 4");
+        REQUIRE(tabContainer->getPanel(3) == p4);
     }
 
     SECTION("Removing")
     {
-        auto p1 = tgui::Panel::create();
-
-        tabContainer->addPanel(p1, "panel 1");
-        tabContainer->addPanel(tgui::Panel::create(), "panel 2");
-        tabContainer->addPanel(tgui::Panel::create(), "panel 3", false);
-        tabContainer->removePanel(tgui::Panel::create());
+        auto p1 = tabContainer->addTab("panel 1");
+        tabContainer->addTab("panel 2");
+        tabContainer->addTab("panel 3", false);
+        REQUIRE(!tabContainer->removeTab("panel 4"));
         REQUIRE(tabContainer->getPanelCount() == 3);
-        tabContainer->removePanel(p1);
+        REQUIRE(tabContainer->removeTab("panel 1"));
         REQUIRE(tabContainer->getPanelCount() == 2);
         REQUIRE(tabContainer->getSelectedIndex() == 0);
+        REQUIRE(tabContainer->removeTab(1));
+        REQUIRE(!tabContainer->removeTab(5));
+        REQUIRE(tabContainer->getPanelCount() == 1);
     }
 
     SECTION("Indexing")
     {
-        auto p1 = tgui::Panel::create();
-
-        tabContainer->addPanel(p1, "panel 1");
+        auto p1 = tabContainer->addTab("panel 1");
 
         REQUIRE(tabContainer->getPanel(1) == nullptr);
         REQUIRE(tabContainer->getPanel(0) == p1);
@@ -111,15 +107,11 @@ TEST_CASE("[tabContainer]")
 
     SECTION("Selecting")
     {
-        auto p1 = tgui::Panel::create();
-        auto p2 = tgui::Panel::create();
-        auto p3 = tgui::Panel::create();
-
-        tabContainer->addPanel(p1, "Item 1", false);
+        auto p1 = tabContainer->addTab("Item 1", false);
         REQUIRE(tabContainer->getSelectedIndex() == -1);
-        tabContainer->addPanel(p2, "Item 2");
+        auto p2 = tabContainer->addTab("Item 2");
         REQUIRE(tabContainer->getSelectedIndex() == 1);
-        tabContainer->addPanel(p3, "Item 3", false);
+        auto p3 = tabContainer->addTab("Item 3", false);
         REQUIRE(tabContainer->getSelectedIndex() == 1);
         tabContainer->select(5);
         REQUIRE(tabContainer->getSelectedIndex() == 1);
@@ -127,9 +119,9 @@ TEST_CASE("[tabContainer]")
 
     SECTION("Changing items")
     {
-        tabContainer->addPanel(tgui::Panel::create(), "Item 1");
-        tabContainer->addPanel(tgui::Panel::create(), "Item 2");
-        tabContainer->addPanel(tgui::Panel::create(), "Item 3");
+        tabContainer->addTab("Item 1");
+        tabContainer->addTab("Item 2");
+        tabContainer->addTab("Item 3");
 
         REQUIRE(!tabContainer->changeTabText(3, "Item 00"));
         REQUIRE(tabContainer->getPanelCount() == 3);
@@ -153,11 +145,11 @@ TEST_CASE("[tabContainer]")
             unsigned int tabContainerelectedCount = 0;
             tabContainer->onSelectionChanged(&genericCallback, std::ref(tabContainerelectedCount));
 
-            tabContainer->addPanel(tgui::Panel::create(), "1");
-            tabContainer->addPanel(tgui::Panel::create(), "2");
+            tabContainer->addTab("1");
+            tabContainer->addTab("2");
             REQUIRE(tabContainerelectedCount == 2);
 
-            tabContainer->addPanel(tgui::Panel::create(), "3", false);
+            tabContainer->addTab("3", false);
             REQUIRE(tabContainerelectedCount == 2);
 
             tabContainer->select(2);
@@ -198,11 +190,11 @@ TEST_CASE("[tabContainer]")
                 tabContainerelectedCount++;
             });
 
-            tabContainer->addPanel(tgui::Panel::create(), "1");
-            tabContainer->addPanel(tgui::Panel::create(), "2");
+            tabContainer->addTab("1");
+            tabContainer->addTab("2");
             REQUIRE(tabContainerelectedCount == 2);
 
-            tabContainer->addPanel(tgui::Panel::create(), "3", false);
+            tabContainer->addTab("3", false);
             REQUIRE(tabContainerelectedCount == 2);
 
             tabContainer->select(2);

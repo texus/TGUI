@@ -659,12 +659,9 @@ namespace tgui
         if (index == currentWidgetIndex)
             return true;
 
-        // Move the widget to the new index (equivalent to removing it from the current index and re-inserting at the wanted index)
-        if (index < currentWidgetIndex)
-            std::rotate(m_widgets.rbegin() + (m_widgets.size() - index), m_widgets.rbegin() + (m_widgets.size() - index) + 1, m_widgets.rbegin() + (m_widgets.size() - currentWidgetIndex));
-        else
-            std::rotate(m_widgets.begin() + currentWidgetIndex, m_widgets.begin() + currentWidgetIndex + 1, m_widgets.begin() + index + 1);
-
+        // Move the widget to the new index
+        m_widgets.erase(m_widgets.begin() + currentWidgetIndex);
+        m_widgets.insert(m_widgets.begin() + index, widget);
         return true;
     }
 
