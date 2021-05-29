@@ -268,36 +268,41 @@ namespace dev
             {
                 if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
                     return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive));
-                else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
+                if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
                     return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled));
-            }
-            else if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
-            {
-                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
-                {
-                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
-                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover));
-                    else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive)))
-                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive));
-                }
-
-                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
-                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover));
-                else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
-                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Focused));
             }
 
             if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
             {
-                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover))))
-                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover));
-                else if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover))
+                {
+                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover));
+                    if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover)))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover));
+                }
+
+                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive))))
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive));
+                if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
                     return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Active));
             }
 
-            if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Hover))))
-                return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Hover));
-            else if (storedStates & 1)
+            if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover))
+            {
+                if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused)) && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover));
+                if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Hover)))
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Hover));
+            }
+
+            if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
+            {
+                if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Focused));
+            }
+
+            if (storedStates & 1)
             {
                 // We have a value for the Normal state, so return it. It is possible to pass here while storedStates != 1 when there
                 // is e.g. a value for both Normal and Disabled state and the widget is enabled.

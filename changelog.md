@@ -11,6 +11,7 @@ TGUI 0.9.2  (TBD)
 - Exception is now thrown when loading a font fails
 - TabContainer can now create the panels internally
 - Button text was lost when copying button
+- Down state of button wasn't displayed properly anymore when a focus state existed
 - Image in BitmapButton was searched in wrong directory when loading from form file
 - Form files didn't load on Windows when path contained non-ANSI characters
 - Modification time in FileDialog was empty when MinGW compiler was used
