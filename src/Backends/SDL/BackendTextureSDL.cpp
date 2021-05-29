@@ -56,11 +56,35 @@ namespace tgui
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendTextureSDL requires backend texture of type BackendSDL");
         std::static_pointer_cast<BackendSDL>(getBackend())->changeTexture(m_textureId, true);
 
-        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.get()));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#else
+        if (TGUI_GLAD_GL_VERSION_4_2)
+#endif
+        {
+            // GL 4.2 and GLES 3.0 support using glTexStorage2D instead of glTexImage2D
+            TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y)));
+            TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels.get()));
+        }
+#if TGUI_USE_GLES
+        else if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+        {
+            // GLES 2.0 doesn't support GL_RGBA8
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.get()));
+        }
+#endif
+        else
+        {
+            // Use glTexImage2D with GL_RGBA8, which is supported by GL 3.1 core and GLES 3.0
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.get()));
+        }
 
         return BackendTextureBase::load(size, std::move(pixels));
     }

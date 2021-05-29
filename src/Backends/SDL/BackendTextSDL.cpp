@@ -318,7 +318,31 @@ namespace tgui
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#else
+        if (TGUI_GLAD_GL_VERSION_4_2)
+#endif
+        {
+            // GL 4.2 and GLES 3.0 support using glTexStorage2D instead of glTexImage2D
+            TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, surface->w, surface->h));
+            TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
+        }
+#if TGUI_USE_GLES
+        else if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+        {
+            // GLES 2.0 doesn't support GL_RGBA8
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
+        }
+#endif
+        else
+        {
+            // Use glTexImage2D with GL_RGBA8, which is supported by GL 3.1 core and GLES 3.0
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, imageFormat, GL_UNSIGNED_BYTE, surface->pixels));
+        }
 
         SDL_FreeSurface(surface);
 

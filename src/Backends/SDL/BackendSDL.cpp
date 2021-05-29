@@ -279,18 +279,18 @@ namespace tgui
     BackendSDL::BackendSDL()
     {
 #if TGUI_USE_GLES
-        const int version = tgui_gladLoadGLES2(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
-        if (TGUI_GLAD_VERSION_MAJOR(version) < 3)
-            throw Exception{"BackendSDL expects at least OpenGL ES 3.0"};
+        const int version = tgui_gladLoadGLES2(reinterpret_cast<TGUI_GLADloadfunc>(SDL_GL_GetProcAddress));
+        if (TGUI_GLAD_VERSION_MAJOR(version) < 2)
+            throw Exception{"BackendSDL expects at least OpenGL ES 2.0"};
 #else
-        const int version = tgui_gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
-        if ((TGUI_GLAD_VERSION_MAJOR(version) < 4) || ((TGUI_GLAD_VERSION_MAJOR(version) == 4) && TGUI_GLAD_VERSION_MINOR(version) < 1))
+        const int version = tgui_gladLoadGL(reinterpret_cast<TGUI_GLADloadfunc>(SDL_GL_GetProcAddress));
+        if ((TGUI_GLAD_VERSION_MAJOR(version) < 3) || ((TGUI_GLAD_VERSION_MAJOR(version) == 3) && TGUI_GLAD_VERSION_MINOR(version) < 2))
         {
             if (version == 0)
-                throw Exception{"BackendSDL failed to query OpenGL version. Has an OpenGL context been created with SDL_GL_CreateContext?"};
+                throw Exception{"BackendSDL failed to query OpenGL version, or requested OpenGL version wasn't supported. Has an OpenGL context been created with SDL_GL_CreateContext?"};
             else
             {
-                throw Exception{"BackendSDL expects at least OpenGL 4.1, found version "
+                throw Exception{"BackendSDL expects at least OpenGL 3.2, found version "
                     + String(TGUI_GLAD_VERSION_MAJOR(version)) + '.' + String(TGUI_GLAD_VERSION_MINOR(version))};
             }
         }

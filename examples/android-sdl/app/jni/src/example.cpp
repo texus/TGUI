@@ -106,8 +106,8 @@ int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    // TGUI currently requires at least OpenGL ES 3.0
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    // TGUI requires at least OpenGL ES 2.0
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 

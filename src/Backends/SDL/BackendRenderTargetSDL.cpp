@@ -47,14 +47,66 @@ namespace tgui
 
     static GLuint createShaderProgram()
     {
-        const GLchar* vertexShaderSource[] =
+#if TGUI_USE_GLES
+        const GLchar* vertexShaderSource_GLES20 =
+        {
+            "#version 100\n"
+            "uniform mat4 projectionMatrix;\n"
+            "attribute vec2 inPosition;\n"
+            "attribute vec4 inColor;\n"
+            "attribute vec2 inTexCoord;\n"
+            "varying vec4 color;\n"
+            "varying vec2 texCoord;\n"
+            "void main() {\n"
+            "    gl_Position = projectionMatrix * vec4(inPosition.x, inPosition.y, 0, 1);\n"
+            "    color = inColor;\n"
+            "    texCoord = inTexCoord;\n"
+            "}"
+        };
+#else
+        const GLchar* vertexShaderSource_GL32 =
+        {
+            "#version 150 core\n"
+            "uniform mat4 projectionMatrix;\n"
+            "in vec2 inPosition;\n"
+            "in vec4 inColor;\n"
+            "in vec2 inTexCoord;\n"
+            "out vec4 color;\n"
+            "out vec2 texCoord;\n"
+            "void main() {\n"
+            "    gl_Position = projectionMatrix * vec4(inPosition.x, inPosition.y, 0, 1);\n"
+            "    color = inColor;\n"
+            "    texCoord = inTexCoord;\n"
+            "}"
+        };
+#endif
+        const GLchar* vertexShaderSource_GL33_GLES30 =
         {
 #if TGUI_USE_GLES
             "#version 300 es\n"
 #else
             "#version 330 core\n"
 #endif
-            "uniform mat4 projectionMatrix;"
+            "uniform mat4 projectionMatrix;\n"
+            "layout(location=0) in vec2 inPosition;\n"
+            "layout(location=1) in vec4 inColor;\n"
+            "layout(location=2) in vec2 inTexCoord;\n"
+            "out vec4 color;\n"
+            "out vec2 texCoord;\n"
+            "void main() {\n"
+            "    gl_Position = projectionMatrix * vec4(inPosition.x, inPosition.y, 0, 1);\n"
+            "    color = inColor;\n"
+            "    texCoord = inTexCoord;\n"
+            "}"
+        };
+        const GLchar* vertexShaderSource_GL43_GLES31 =
+        {
+#if TGUI_USE_GLES
+            "#version 310 es\n"
+#else
+            "#version 430 core\n"
+#endif
+            "layout(location=0) uniform mat4 projectionMatrix;\n"
             "layout(location=0) in vec2 inPosition;\n"
             "layout(location=1) in vec4 inColor;\n"
             "layout(location=2) in vec2 inTexCoord;\n"
@@ -67,29 +119,69 @@ namespace tgui
             "}"
         };
 
-        const GLchar* fragmentShaderSource[] =
+        const GLchar* vertexShaderSource;
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_1)
+            vertexShaderSource = vertexShaderSource_GL43_GLES31;
+        else if (TGUI_GLAD_GL_ES_VERSION_3_0)
+            vertexShaderSource = vertexShaderSource_GL33_GLES30;
+        else
+            vertexShaderSource = vertexShaderSource_GLES20;
+#else
+        if (TGUI_GLAD_GL_VERSION_4_3)
+            vertexShaderSource = vertexShaderSource_GL43_GLES31;
+        else if (TGUI_GLAD_GL_VERSION_3_3)
+            vertexShaderSource = vertexShaderSource_GL33_GLES30;
+        else
+            vertexShaderSource = vertexShaderSource_GL32;
+#endif
+
+#if TGUI_USE_GLES
+        const GLchar* fragmentShaderSource_GLES20 =
+        {
+            "#version 100\n"
+            "precision mediump float;\n"
+            "uniform sampler2D uTexture;\n"
+            "varying vec4 color;\n"
+            "varying vec2 texCoord;\n"
+            "void main() {\n"
+            "    gl_FragColor = texture2D(uTexture, texCoord) * color;\n"
+            "}"
+        };
+#endif
+        const GLchar* fragmentShaderSource_GL32_GLES30 =
         {
 #if TGUI_USE_GLES
             "#version 300 es\n"
-            "precision mediump float;"
+            "precision mediump float;\n"
 #else
-            "#version 330 core\n"
+            "#version 150 core\n"
 #endif
-            "uniform sampler2D uTexture;"
-            "in vec4 color;"
-            "in vec2 texCoord;"
+            "uniform sampler2D uTexture;\n"
+            "in vec4 color;\n"
+            "in vec2 texCoord;\n"
             "out vec4 outColor;\n"
             "void main() {\n"
             "    outColor = texture(uTexture, texCoord) * color;\n"
             "}"
         };
 
+        const GLchar* fragmentShaderSource;
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+            fragmentShaderSource = fragmentShaderSource_GL32_GLES30;
+        else
+            fragmentShaderSource = fragmentShaderSource_GLES20;
+#else
+        fragmentShaderSource = fragmentShaderSource_GL32_GLES30;
+#endif
+
         // Create the vertex shader
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         if (vertexShader == 0)
             throw Exception{"Failed to create shaders in BackendRenderTargetSDL. glCreateShader(GL_VERTEX_SHADER) returned 0."};
 
-        TGUI_GL_CHECK(glShaderSource(vertexShader, 1, vertexShaderSource, NULL));
+        TGUI_GL_CHECK(glShaderSource(vertexShader, 1, &vertexShaderSource, NULL));
         TGUI_GL_CHECK(glCompileShader(vertexShader));
 
         GLint vertexShaderCompiled = GL_FALSE;
@@ -102,7 +194,7 @@ namespace tgui
         if (fragmentShader == 0)
             throw Exception{"Failed to create shaders in BackendRenderTargetSDL. glCreateShader(GL_FRAGMENT_SHADER) returned 0."};
 
-        TGUI_GL_CHECK(glShaderSource(fragmentShader, 1, fragmentShaderSource, NULL));
+        TGUI_GL_CHECK(glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL));
         TGUI_GL_CHECK(glCompileShader(fragmentShader));
 
         GLint fragmentShaderCompiled = GL_FALSE;
@@ -126,46 +218,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static void createBuffers(GLuint& vertexArray, GLuint& vertexBuffer, GLuint& indexBuffer)
-    {
-        TGUI_GL_CHECK(glGenVertexArrays(1, &vertexArray));
-        TGUI_GL_CHECK(glBindVertexArray(vertexArray));
-
-        glEnableVertexAttribArray(0); // inPosition
-        glEnableVertexAttribArray(1); // inColor
-        glEnableVertexAttribArray(2); // inTexCoord
-
-        // Create the vertex buffer
-        // Position is stored as x,y in the first 2 floats
-        // Color is stored as r,g,b,a in the next 4 floats
-        // Texture coordinate is stored as u,v in the last 2 floats
-        TGUI_GL_CHECK(glGenBuffers(1, &vertexBuffer));
-        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
-        TGUI_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(0)));
-        TGUI_GL_CHECK(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(2 * sizeof(GLfloat))));
-        TGUI_GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat))));
-
-        // Create the index buffer
-        TGUI_GL_CHECK(glGenBuffers(1, &indexBuffer));
-        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer));
-
-        TGUI_GL_CHECK(glBindVertexArray(0));
-
-        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
-        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     BackendRenderTargetSDL::BackendRenderTargetSDL(SDL_Window* window) :
         m_shaderProgram(createShaderProgram()),
         m_window(window)
     {
-        // Giving it a fixed uniform location in the shader was only supported by GL 4.3 and GLES 3.1 or newer.
-        // Since we are limited to GL 4.1 and GLES 3.0, we have to query the location here.
-        m_projectionMatrixUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
+        // If our OpenGL version didn't support the layout qualifier in GLSL then we need to query the location
+#if TGUI_USE_GLES
+        if (!TGUI_GLAD_GL_ES_VERSION_3_1)
+#else
+        if (!TGUI_GLAD_GL_VERSION_4_3)
+#endif
+        {
+            m_projectionMatrixShaderUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
+        }
+#if TGUI_USE_GLES
+        if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+#else
+        if (!TGUI_GLAD_GL_VERSION_3_3)
+#endif
+        {
+            m_positionShaderLocation = glGetAttribLocation(m_shaderProgram, "inPosition");
+            m_colorShaderLocation = glGetAttribLocation(m_shaderProgram, "inColor");
+            m_texCoordShaderLocation = glGetAttribLocation(m_shaderProgram, "inTexCoord");
+        }
 
-        createBuffers(m_vertexArray, m_vertexBuffer, m_indexBuffer);
+        createBuffers();
 
         // Create a solid white 1x1 texture to pass to the shader when we aren't drawing a texture
         std::uint32_t pixelData = 0xFFFFFFFF;
@@ -176,7 +253,31 @@ namespace tgui
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-        TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#else
+        if (TGUI_GLAD_GL_VERSION_4_2)
+#endif
+        {
+            // GL 4.2 and GLES 3.0 support using glTexStorage2D instead of glTexImage2D
+            TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1));
+            TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
+        }
+#if TGUI_USE_GLES
+        else if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+        {
+            // GLES 2.0 doesn't support GL_RGBA8
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
+        }
+#endif
+        else
+        {
+            // Use glTexImage2D with GL_RGBA8, which is supported by GL 3.1 core and GLES 3.0
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
+            TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
+            TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +287,13 @@ namespace tgui
         TGUI_GL_CHECK(glDeleteTextures(1, &m_emptyTexture));
         TGUI_GL_CHECK(glDeleteBuffers(1, &m_vertexBuffer));
         TGUI_GL_CHECK(glDeleteBuffers(1, &m_indexBuffer));
-        TGUI_GL_CHECK(glDeleteVertexArrays(1, &m_vertexArray));
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#endif
+        {
+            TGUI_GL_CHECK(glDeleteVertexArrays(1, &m_vertexArray));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +363,13 @@ namespace tgui
         TGUI_GL_CHECK(glViewport(m_viewportGL[0], m_viewportGL[1], m_viewportGL[2], m_viewportGL[3]));
         TGUI_GL_CHECK(glScissor(m_viewportGL[0], m_viewportGL[1], m_viewportGL[2], m_viewportGL[3]));
         TGUI_GL_CHECK(glUseProgram(m_shaderProgram));
-        TGUI_GL_CHECK(glBindVertexArray(m_vertexArray));
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#endif
+        {
+            TGUI_GL_CHECK(glBindVertexArray(m_vertexArray));
+        }
 
         // Don't make any assumptions about the currently set texture
         changeTexture(m_emptyTexture, true);
@@ -265,7 +378,12 @@ namespace tgui
         root->draw(*this, {});
 
         // Restore the old state
-        TGUI_GL_CHECK(glBindVertexArray(0));
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#endif
+        {
+            TGUI_GL_CHECK(glBindVertexArray(0));
+        }
         TGUI_GL_CHECK(glUseProgram(0));
         TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
 
@@ -424,6 +542,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BackendRenderTargetSDL::setVertexAttribs()
+    {
+        TGUI_GL_CHECK(glEnableVertexAttribArray(m_positionShaderLocation));
+        TGUI_GL_CHECK(glEnableVertexAttribArray(m_colorShaderLocation));
+        TGUI_GL_CHECK(glEnableVertexAttribArray(m_texCoordShaderLocation));
+
+        // Position is stored as x,y in the first 2 floats
+        // Color is stored as r,g,b,a in the next 4 floats
+        // Texture coordinate is stored as u,v in the last 2 floats
+        TGUI_GL_CHECK(glVertexAttribPointer(m_positionShaderLocation, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(0)));
+        TGUI_GL_CHECK(glVertexAttribPointer(m_colorShaderLocation, 4, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(2 * sizeof(GLfloat))));
+        TGUI_GL_CHECK(glVertexAttribPointer(m_texCoordShaderLocation, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat))));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetSDL::createBuffers()
+    {
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#endif
+        {
+            TGUI_GL_CHECK(glGenVertexArrays(1, &m_vertexArray));
+            TGUI_GL_CHECK(glBindVertexArray(m_vertexArray));
+        }
+
+        // Create the vertex buffer
+        TGUI_GL_CHECK(glGenBuffers(1, &m_vertexBuffer));
+        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer));
+
+        // Create the index buffer
+        TGUI_GL_CHECK(glGenBuffers(1, &m_indexBuffer));
+        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer));
+
+        setVertexAttribs();
+
+#if TGUI_USE_GLES
+        if (TGUI_GLAD_GL_ES_VERSION_3_0)
+#endif
+        {
+            TGUI_GL_CHECK(glBindVertexArray(0));
+        }
+
+        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendRenderTargetSDL::prepareVerticesAndIndices(const Sprite& sprite)
     {
         const std::vector<tgui::Vertex>& vertices = sprite.getVertices();
@@ -487,6 +654,11 @@ namespace tgui
         }
         else
             TGUI_GL_CHECK(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexCount * sizeof(GLuint), indexData.get()));
+
+#if TGUI_USE_GLES
+        if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+            setVertexAttribs();
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,7 +677,7 @@ namespace tgui
         finalTransform.roundPosition(); // Avoid blurry texts
         finalTransform = m_projectionTransform * finalTransform;
 
-        glUniformMatrix4fv(m_projectionMatrixUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
+        glUniformMatrix4fv(m_projectionMatrixShaderUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
