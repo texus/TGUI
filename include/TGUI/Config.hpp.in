@@ -125,6 +125,26 @@
     #define TGUI_DEPRECATED(msg)
 #endif
 
+#if defined(__GNUC__)
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_START \
+        _Pragma("GCC diagnostic push") \
+        _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_END _Pragma("GCC diagnostic pop")
+#elif defined (_MSC_VER) && (_MSC_VER >= 1927)
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_START \
+        _Pragma("warning(push)") \
+        _Pragma("warning(disable: 4996)")
+
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_END _Pragma("warning(pop)")
+#elif defined (_MSC_VER)
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_START \
+        __pragma(warning(push)) \
+        __pragma(warning(disable: 4996))
+
+    #define TGUI_IGNORE_DEPRECATED_WARNINGS_END __pragma(warning(pop))
+#endif
+
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
     #include <iostream>
     #define TGUI_PRINT_WARNING(msg) { std::cerr << "TGUI warning: " << msg << "\n"; }

@@ -440,7 +440,8 @@ namespace tgui
         const auto& target = getTarget();
         m_viewport.updateParentSize({static_cast<float>(target->getSize().x), static_cast<float>(target->getSize().y)});
         m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});
-        m_renderTarget->setView(m_view.getRect(), m_viewport.getRect());
+        m_renderTarget->setView(m_view.getRect(), m_viewport.getRect(),
+                                {static_cast<float>(target->getSize().x), static_cast<float>(target->getSize().y)});
 
         GuiBase::updateContainerSize();
     }

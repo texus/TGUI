@@ -217,7 +217,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     BackendRenderTargetSDL::BackendRenderTargetSDL(SDL_Window* window) :
         m_shaderProgram(createShaderProgram()),
         m_window(window)
@@ -295,7 +295,7 @@ namespace tgui
             TGUI_GL_CHECK(glDeleteVertexArrays(1, &m_vertexArray));
         }
     }
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SDL_Window* BackendRenderTargetSDL::getWindow() const
@@ -304,32 +304,47 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendRenderTargetSDL::setView(FloatRect view, FloatRect viewport)
     {
         if (!m_window)
             return;
 
-        SDL_GetWindowSize(m_window, &m_windowWidth, &m_windowHeight);
+        int windowWidth = 0;
+        int windowHeight = 0;
+        SDL_GetWindowSize(m_window, &windowWidth, &windowHeight);
+        if ((windowWidth <= 0) || (windowHeight <= 0))
+            return;
+
+        setView(view, viewport, {static_cast<float>(windowWidth), static_cast<float>(windowHeight)});
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        m_viewportGL = {static_cast<int>(m_viewport.left), static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
+                        static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height)};
+
+        m_windowWidth = windowWidth;
+        m_windowHeight = windowHeight;
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
+    }
+#endif
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetSDL::setView(FloatRect view, FloatRect viewport, Vector2f targetSize)
+    {
+        BackendRenderTargetBase::setView(view, viewport, targetSize);
 
         m_projectionTransform = Transform();
-        m_projectionTransform.translate({-1 - (2.f * (view.left / view.width) * (viewport.width / view.width)),
-                                         1 + (2.f * (view.top / view.height) * (viewport.height / view.height))});
-        m_projectionTransform.scale({2.f / m_windowWidth * (viewport.width / view.width),
-                                     -2.f / m_windowHeight * (viewport.height / view.height)});
-
-        m_viewRect = view;
-        m_viewport = {static_cast<int>(viewport.left), static_cast<int>(viewport.top),
-                      static_cast<int>(viewport.width), static_cast<int>(viewport.height)};
-
-        m_viewportGL = {m_viewport.left, m_windowHeight - m_viewport.top - m_viewport.height, m_viewport.width, m_viewport.height};
+        m_projectionTransform.translate({-1 - (2.f * (view.left / view.width)), 1 + (2.f * (view.top / view.height))});
+        m_projectionTransform.scale({2.f / (m_targetSize.x * (viewport.width / m_targetSize.x)) * (viewport.width / view.width),
+                                     -2.f / (m_targetSize.y * (viewport.height / m_targetSize.y)) * (viewport.height / view.height)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSDL::drawGui(const std::shared_ptr<RootContainer>& root)
     {
-        if (!m_window)
+        if (!m_window || (m_targetSize.x == 0) || (m_targetSize.y == 0) || (m_viewRect.width <= 0) || (m_viewRect.height <= 0))
             return;
 
         // Get some values from the current state so that we can restore them when we are done drawing
@@ -360,8 +375,10 @@ namespace tgui
         TGUI_GL_CHECK(glGetIntegerv(GL_VIEWPORT, oldViewport));
 
         // Change the state that we need while drawing the gui
-        TGUI_GL_CHECK(glViewport(m_viewportGL[0], m_viewportGL[1], m_viewportGL[2], m_viewportGL[3]));
-        TGUI_GL_CHECK(glScissor(m_viewportGL[0], m_viewportGL[1], m_viewportGL[2], m_viewportGL[3]));
+        const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left), static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
+                                               static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height)};
+        TGUI_GL_CHECK(glViewport(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
+        TGUI_GL_CHECK(glScissor(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glUseProgram(m_shaderProgram));
 
 #if TGUI_USE_GLES
@@ -402,28 +419,15 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendRenderTargetSDL::drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget)
-    {
-        // If the widget lies outside of the clip rect then we can skip drawing it
-        const FloatRect& clipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
-        const Vector2f widgetBottomRight{states.transform.transformPoint(widget->getWidgetOffset() + widget->getFullSize())};
-        const Vector2f widgetTopLeft = states.transform.transformPoint(widget->getWidgetOffset());
-        if ((widgetTopLeft.x > clipRect.left + clipRect.width) || (widgetTopLeft.y > clipRect.top + clipRect.height)
-         || (widgetBottomRight.x < clipRect.left) || (widgetBottomRight.y < clipRect.top))
-            return;
-
-        widget->draw(*this, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendRenderTargetSDL::addClippingLayer(const RenderStates& states, FloatRect rect)
     {
+        BackendRenderTargetBase::addClippingLayer(states, rect);
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         const FloatRect& oldClipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
         const std::array<int, 4>& oldClipRectGL = m_clippingLayers.empty() ? m_viewportGL : m_clippingLayers.back().second;
 
-        /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
         const float* transformMatrix = states.transform.getMatrix();
         if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
          && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
@@ -438,27 +442,27 @@ namespace tgui
 
         const int clipLeft = std::max(static_cast<int>(topLeft.x), oldClipRectGL[0]);
         const int clipRight = std::max(clipLeft, std::min(static_cast<int>(bottomRight.x), oldClipRectGL[0] + oldClipRectGL[2]));
-        const int clipBottom = std::max(static_cast<int>(m_windowHeight - bottomRight.y), oldClipRectGL[1]);
-        const int clipTop = std::max(clipBottom, std::min(static_cast<int>(m_windowHeight - topLeft.y), oldClipRectGL[1] + oldClipRectGL[3]));
+        const int clipBottom = std::max(static_cast<int>(m_targetSize.y - bottomRight.y), oldClipRectGL[1]);
+        const int clipTop = std::max(clipBottom, std::min(static_cast<int>(m_targetSize.y - topLeft.y), oldClipRectGL[1] + oldClipRectGL[3]));
 
         const FloatRect clipRect = {topLeft, bottomRight - topLeft};
         const std::array<int, 4> clipRectGL = {clipLeft, clipBottom, clipRight - clipLeft, clipTop - clipBottom};
         m_clippingLayers.push_back({clipRect, clipRectGL});
-
-        TGUI_GL_CHECK(glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]));
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSDL::removeClippingLayer()
     {
+        BackendRenderTargetBase::removeClippingLayer();
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSDL::removeClippingLayer was called when there were no clipping layers");
         m_clippingLayers.pop_back();
-
-        const std::array<int, 4>& clipRectGL = m_clippingLayers.empty() ? m_viewportGL : m_clippingLayers.back().second;
-        TGUI_GL_CHECK(glScissor(clipRectGL[0], clipRectGL[1], clipRectGL[2], clipRectGL[3]));
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSDL::drawSprite(const RenderStates& states, const Sprite& sprite)
@@ -538,6 +542,21 @@ namespace tgui
         updateTransformation(states.transform);
 
         TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, NULL));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetSDL::updateClipping(FloatRect, FloatRect clipViewport)
+    {
+        if ((clipViewport.width > 0) && (clipViewport.height > 0))
+        {
+            TGUI_GL_CHECK(glScissor(static_cast<int>(clipViewport.left), static_cast<int>(m_targetSize.y - clipViewport.top - clipViewport.height),
+                                    static_cast<int>(clipViewport.width), static_cast<int>(clipViewport.height)));
+        }
+        else // Clip the entire window
+        {
+            TGUI_GL_CHECK(glScissor(0, 0, 0, 0));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

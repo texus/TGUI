@@ -203,19 +203,9 @@ namespace tgui
         if (index > m_panels.size())
             return false;
 
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined (_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)
-#endif
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         addPanel(ptr, name, selectPanel);
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-    #pragma warning(pop)
-#endif
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         auto size = m_panels.size();
         if (index != size)

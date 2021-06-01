@@ -43,14 +43,8 @@ namespace tgui
 #endif
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     // This somehow gives a deprecated warning, while this is just the definition of the deprecated value
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined (_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)
-#endif
     const std::map<String, Color> Color::colorMap =
     {
         {"black", Color::Black},
@@ -63,12 +57,8 @@ namespace tgui
         {"magenta", Color::Magenta},
         {"transparent", Color::Transparent}
     };
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-    #pragma warning(pop)
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
 #endif
-#endif // TGUI_REMOVE_DEPRECATED_CODE
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     const std::array<std::pair<String, Color>, 9> Color::colorNamesMap

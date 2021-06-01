@@ -37,12 +37,12 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     BackendRenderTargetSFML::BackendRenderTargetSFML(sf::RenderTarget& target) :
         m_target(&target)
     {
     }
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::RenderTarget* BackendRenderTargetSFML::getTarget() const
@@ -52,27 +52,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendRenderTargetSFML::setView(FloatRect view, FloatRect viewport)
     {
-        TGUI_ASSERT(m_clippingLayers.empty(), "You can't change the view of the render target during drawing");
+        BackendRenderTargetBase::setView(view, viewport, {static_cast<float>(m_target->getSize().x), static_cast<float>(m_target->getSize().y)});
 
-        m_view.setViewport({viewport.left / m_target->getSize().x, viewport.top / m_target->getSize().y,
-                            viewport.width / m_target->getSize().x, viewport.height / m_target->getSize().y});
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        m_view.setViewport({viewport.left / m_targetSize.x, viewport.top / m_targetSize.y,
+                            viewport.width / m_targetSize.x, viewport.height / m_targetSize.y});
         m_view.setSize(view.width, view.height);
         m_view.setCenter(view.left + (view.width / 2.f), view.top + (view.height / 2.f));
-        m_viewRect = view;
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSFML::drawGui(const std::shared_ptr<RootContainer>& root)
     {
-        if (!m_target)
+        if (!m_target || (m_targetSize.x == 0) || (m_targetSize.y == 0) || (m_viewRect.width <= 0) || (m_viewRect.height <= 0))
             return;
 
         // Change the view
         const sf::View oldView = m_target->getView();
-        m_target->setView(m_view);
+        updateClipping(m_viewRect, m_viewport);
 
         // Draw the widgets
         root->draw(*this, {});
@@ -82,34 +85,21 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendRenderTargetSFML::drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget)
-    {
-        // If the widget lies outside of the clip rect then we can skip drawing it
-        const FloatRect& clipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
-        const Vector2f widgetBottomRight{states.transform.transformPoint(widget->getWidgetOffset() + widget->getFullSize())};
-        const Vector2f widgetTopLeft = states.transform.transformPoint(widget->getWidgetOffset());
-        if ((widgetTopLeft.x > clipRect.left + clipRect.width) || (widgetTopLeft.y > clipRect.top + clipRect.height)
-         || (widgetBottomRight.x < clipRect.left) || (widgetBottomRight.y < clipRect.top))
-            return;
-
-        widget->draw(*this, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendRenderTargetSFML::addClippingLayer(const RenderStates& states, FloatRect rect)
     {
-        const FloatRect& oldClipRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
+        BackendRenderTargetBase::addClippingLayer(states, rect);
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         const sf::View& oldView = m_clippingLayers.empty() ? m_view : m_clippingLayers.back().second;
 
-        /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
         const float* transformMatrix = states.transform.getMatrix();
         if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
          && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
          && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
         {
-            m_clippingLayers.push_back({oldClipRect, oldView});
+            const FloatRect& oldClippingRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
+            m_clippingLayers.push_back({oldClippingRect, oldView});
             return;
         }
 
@@ -120,29 +110,29 @@ namespace tgui
         Vector2f viewTopLeft = topLeft;
         Vector2f size = bottomRight - topLeft;
 
-        topLeft.x -= m_view.getCenter().x - (m_view.getSize().x / 2.f);
-        topLeft.y -= m_view.getCenter().y - (m_view.getSize().y / 2.f);
-        bottomRight.x -= m_view.getCenter().x - (m_view.getSize().x / 2.f);
-        bottomRight.y -= m_view.getCenter().y - (m_view.getSize().y / 2.f);
+        topLeft.x -= m_viewRect.left;
+        topLeft.y -= m_viewRect.top;
+        bottomRight.x -= m_viewRect.left;
+        bottomRight.y -= m_viewRect.top;
 
-        topLeft.x *= m_view.getViewport().width / m_view.getSize().x;
-        topLeft.y *= m_view.getViewport().height / m_view.getSize().y;
-        size.x *= m_view.getViewport().width / m_view.getSize().x;
-        size.y *= m_view.getViewport().height / m_view.getSize().y;
+        topLeft.x *= m_viewport.width / m_targetSize.x / m_viewRect.width;
+        topLeft.y *= m_viewport.height / m_targetSize.y / m_viewRect.height;
+        size.x *= m_viewport.width / m_targetSize.x / m_viewRect.width;
+        size.y *= m_viewport.height / m_targetSize.y / m_viewRect.height;
 
-        topLeft.x += m_view.getViewport().left;
-        topLeft.y += m_view.getViewport().top;
+        topLeft.x += m_viewport.left / m_targetSize.x;
+        topLeft.y += m_viewport.top / m_targetSize.y;
 
         if (topLeft.x < oldView.getViewport().left)
         {
             size.x -= oldView.getViewport().left - topLeft.x;
-            viewTopLeft.x += (oldView.getViewport().left - topLeft.x) * (m_view.getSize().x / m_view.getViewport().width);
+            viewTopLeft.x += (oldView.getViewport().left - topLeft.x) * (m_viewRect.width / (m_viewport.width / m_targetSize.x));
             topLeft.x = oldView.getViewport().left;
         }
         if (topLeft.y < oldView.getViewport().top)
         {
             size.y -= oldView.getViewport().top - topLeft.y;
-            viewTopLeft.y += (oldView.getViewport().top - topLeft.y) * (m_view.getSize().y / m_view.getViewport().height);
+            viewTopLeft.y += (oldView.getViewport().top - topLeft.y) * (m_viewRect.height / (m_viewport.height / m_targetSize.y));
             topLeft.y = oldView.getViewport().top;
         }
 
@@ -156,8 +146,8 @@ namespace tgui
         {
             clippingView = sf::View{{std::round(viewTopLeft.x),
                                      std::round(viewTopLeft.y),
-                                     std::round(size.x * m_view.getSize().x / m_view.getViewport().width),
-                                     std::round(size.y * m_view.getSize().y / m_view.getViewport().height)}};
+                                     std::round(size.x * m_viewRect.width / (m_viewport.width / m_targetSize.x)),
+                                     std::round(size.y * m_viewRect.height / (m_viewport.height / m_targetSize.y))}};
             clippingView.setViewport({topLeft.x, topLeft.y, size.x, size.y});
         }
         else // The clipping area lies outside the viewport
@@ -167,23 +157,21 @@ namespace tgui
         }
 
         m_clippingLayers.push_back({clipRect, clippingView});
-
-        m_target->setView(clippingView);
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSFML::removeClippingLayer()
     {
+        BackendRenderTargetBase::removeClippingLayer();
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSFML::removeClippingLayer can't remove layer if there are none left");
-
         m_clippingLayers.pop_back();
-        if (m_clippingLayers.empty())
-            m_target->setView(m_view);
-        else
-            m_target->setView(m_clippingLayers.back().second);
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSFML::drawSprite(const RenderStates& states, const Sprite& sprite)
@@ -272,6 +260,26 @@ namespace tgui
         {
             const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(vertices);
             m_target->draw(sfmlVertices, vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetSFML::updateClipping(FloatRect clipRect, FloatRect clipViewport)
+    {
+        if ((clipViewport.width > 0) && (clipViewport.height > 0))
+        {
+            sf::View newView{{std::round(clipRect.left), std::round(clipRect.top),
+                              std::round(clipRect.width), std::round(clipRect.height)}};
+            newView.setViewport({clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y,
+                                 clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y});
+            m_target->setView(newView);
+        }
+        else // Clip the entire window
+        {
+            sf::View clippingView{{0, 0, 0, 0}};
+            clippingView.setViewport({0, 0, 0, 0});
+            m_target->setView(clippingView);
         }
     }
 

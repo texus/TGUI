@@ -624,6 +624,8 @@ namespace tgui
 
     void BackendSDL::updateShownMouseCursor(SDL_Window* window, Cursor::Type type)
     {
+        TGUI_ASSERT(window != nullptr, "BackendSDL::updateShownMouseCursor requires a valid window");
+
 #ifdef TGUI_SYSTEM_LINUX
         // On Linux we use directional resize arrows, but SDL has no support for them
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)

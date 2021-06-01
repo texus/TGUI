@@ -24,6 +24,7 @@
 
 
 #include <TGUI/BackendRenderTarget.hpp>
+#include <TGUI/Widget.hpp>
 #include <array>
 #include <cmath>
 
@@ -150,6 +151,99 @@ namespace tgui
 
         // Draw the triangles
         renderTarget->drawTriangles(states, vertices.data(), vertices.size(), indices.data(), indices.size());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+    void BackendRenderTargetBase::setView(FloatRect, FloatRect)
+    {
+        TGUI_ASSERT(false, "This function should not be called. Always use the setView function with 3 parameters");
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::setView(FloatRect view, FloatRect viewport, Vector2f targetSize)
+    {
+        TGUI_ASSERT(m_clipLayers.empty(), "You can't change the view of the render target during drawing");
+
+        m_viewRect = view;
+        m_viewport = viewport;
+        m_targetSize = targetSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget)
+    {
+        // If the widget lies outside of the clip rect then we can skip drawing it
+        const FloatRect& clipRect = m_clipLayers.empty() ? m_viewRect : m_clipLayers.back().first;
+        const Vector2f widgetBottomRight{states.transform.transformPoint(widget->getWidgetOffset() + widget->getFullSize())};
+        const Vector2f widgetTopLeft = states.transform.transformPoint(widget->getWidgetOffset());
+        if ((widgetTopLeft.x > clipRect.left + clipRect.width) || (widgetTopLeft.y > clipRect.top + clipRect.height)
+         || (widgetBottomRight.x < clipRect.left) || (widgetBottomRight.y < clipRect.top))
+            return;
+
+        widget->draw(*this, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::addClippingLayer(const RenderStates& states, FloatRect rect)
+    {
+        TGUI_ASSERT(m_targetSize.x > 0 && m_targetSize.y > 0, "Target size must be valid in BackendRenderTargetBase::addClippingLayer");
+
+        /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
+        const float* transformMatrix = states.transform.getMatrix();
+        if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
+         && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
+         && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
+        {
+            if (!m_clipLayers.empty())
+                m_clipLayers.push_back(m_clipLayers.back());
+            else
+                m_clipLayers.push_back({m_viewRect, m_viewport});
+            return;
+        }
+
+        const Vector2f bottomRight{states.transform.transformPoint(rect.getPosition() + rect.getSize())};
+        const Vector2f topLeft = states.transform.transformPoint(rect.getPosition());
+
+        const FloatRect oldClipRect = m_clipLayers.empty() ? m_viewRect : m_clipLayers.back().first;
+        const float clipLeft = std::max(topLeft.x, oldClipRect.left);
+        const float clipTop = std::max(topLeft.y, oldClipRect.top);
+        const float clipRight = std::min(bottomRight.x, oldClipRect.left + oldClipRect.width);
+        const float clipBottom = std::min(bottomRight.y, oldClipRect.top + oldClipRect.height);
+
+        if ((clipRight - clipLeft > 0) && (clipBottom - clipTop > 0))
+        {
+            const FloatRect clipRect = {clipLeft, clipTop, clipRight - clipLeft, clipBottom - clipTop};
+            const FloatRect clipViewport = {
+                m_viewport.left + (((clipLeft - m_viewRect.left) / m_viewRect.width) * m_viewport.width),
+                m_viewport.top + (((clipTop - m_viewRect.top) / m_viewRect.height) * m_viewport.height),
+                m_viewport.width * ((clipRight - clipLeft) / m_viewRect.width),
+                m_viewport.height * ((clipBottom - clipTop) / m_viewRect.height)
+            };
+            m_clipLayers.push_back({clipRect, clipViewport});
+            updateClipping(clipRect, clipViewport);
+        }
+        else // Entire window is being clipped
+        {
+            m_clipLayers.push_back({{}, {}});
+            updateClipping({}, {});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTargetBase::removeClippingLayer()
+    {
+        TGUI_ASSERT(!m_clipLayers.empty(), "BackendRenderTargetBase::removeClippingLayer can't remove layer if there are none left");
+
+        m_clipLayers.pop_back();
+        if (m_clipLayers.empty())
+            updateClipping(m_viewRect, m_viewport);
+        else
+            updateClipping(m_clipLayers.back().first, m_clipLayers.back().second);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

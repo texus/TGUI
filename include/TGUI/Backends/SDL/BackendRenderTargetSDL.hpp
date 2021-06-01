@@ -65,14 +65,24 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         SDL_Window* getWindow() const;
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the render target about which part of the window is used for rendering
         ///
         /// @param view     Defines which part of the gui is being shown
         /// @param viewport Defines which part of the window is being rendered to
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setView(FloatRect view, FloatRect viewport) override;
+        TGUI_DEPRECATED("Use setView(view, viewport, targetSize) instead") void setView(FloatRect view, FloatRect viewport) override;
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Informs the render target about which part of the window is used for rendering
+        ///
+        /// @param view        Defines which part of the gui is being shown
+        /// @param viewport    Defines which part of the window is being rendered to
+        /// @param targetSize  Size of the window
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setView(FloatRect view, FloatRect viewport, Vector2f targetSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,16 +92,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawGui(const std::shared_ptr<RootContainer>& root) override;
 
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draws a widget, if the widget is visible
-        ///
-        /// @param states  Render states to use for drawing
-        /// @param widget  The widget to draw
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawWidget(const RenderStates& states, const std::shared_ptr<Widget>& widget) override;
-
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds another clipping region
         ///
@@ -111,7 +112,7 @@ namespace tgui
         /// @warning The addClippingLayer function must have been called before calling this function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeClippingLayer() override;
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws a texture
@@ -147,6 +148,17 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
+        ///
+        /// @param clipRect      View rectangle to apply
+        /// @param clipViewport  Viewport to apply
+        ///
+        /// Both rectangles may be empty when nothing that will be drawn is going to be visible.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateClipping(FloatRect clipRect, FloatRect clipViewport) override;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Calls glEnableVertexAttribArray and glVertexAttribPointer.
@@ -203,12 +215,13 @@ namespace tgui
         std::size_t m_indexBufferSize = 0;
 
         SDL_Window* m_window = nullptr;
-        int m_windowWidth = 0;
-        int m_windowHeight = 0;
-        FloatRect m_viewRect;
-        IntRect m_viewport;
-        std::array<int, 4> m_viewportGL = {};
-        std::vector<std::pair<FloatRect, std::array<int, 4>>> m_clippingLayers;
+
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+        TGUI_DEPRECATED("Use m_targetSize instead") int m_windowWidth = 0;
+        TGUI_DEPRECATED("Use m_targetSize instead") int m_windowHeight = 0;
+        TGUI_DEPRECATED("Calculate by using m_viewport and m_targetSize instead") std::array<int, 4> m_viewportGL = {};
+        TGUI_DEPRECATED("Use m_clipLayers instead") std::vector<std::pair<FloatRect, std::array<int, 4>>> m_clippingLayers;
+#endif
 
         Transform m_projectionTransform;
         GLint m_projectionMatrixShaderUniformLocation = 0;

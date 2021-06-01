@@ -15,6 +15,7 @@ TGUI 0.9.2  (TBD)
 - Image in BitmapButton was searched in wrong directory when loading from form file
 - Form files didn't load on Windows when path contained non-ANSI characters
 - Modification time in FileDialog was empty when MinGW compiler was used
+- Clipping in SDL backend was incorrect when view and viewport were changed
 
 
 TGUI 0.9.1  (12 February 2021)
