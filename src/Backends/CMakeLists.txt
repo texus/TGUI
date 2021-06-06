@@ -18,8 +18,10 @@ else()
 
     if(TGUI_BACKEND STREQUAL "SFML")
         set(TGUI_HAS_BACKEND_SFML TRUE)
-    else()
+    elseif(TGUI_BACKEND STREQUAL "SDL")
         set(TGUI_HAS_BACKEND_SDL TRUE)
+    else()
+        message(FATAL_ERROR "TGUI_BACKEND was set to an unknown backend")
     endif()
 
     # The backend options shouldn't be changeable by the user (because he selected one with TGUI_BACKEND),
