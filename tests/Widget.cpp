@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <iostream>
 
 TEST_CASE("[Widget]")
 {
