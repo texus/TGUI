@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <iostream>
 
 using namespace tgui::bind_functions;
 using tgui::Layout;

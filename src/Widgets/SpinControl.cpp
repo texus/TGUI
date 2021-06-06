@@ -53,7 +53,7 @@ namespace tgui
         spinControl->setMinimum(min);
         spinControl->setMaximum(max);
         spinControl->setValue(value);
-        spinControl->setString(String(value));
+        spinControl->setString(String::fromNumberRounded(value, decimal));
         spinControl->setDecimalPlaces(decimal);
         spinControl->setStep(step);
         return spinControl;
@@ -178,7 +178,7 @@ namespace tgui
         if (m_spinButton->getValue() != value && inRange(value))
         {
             m_spinButton->setValue(value);
-            setString(String(value));
+            setString(String::fromNumberRounded(value, m_decimalPlaces));
             return true;
         }
         return false;
@@ -210,7 +210,7 @@ namespace tgui
     void SpinControl::setDecimalPlaces(unsigned decimalPlaces)
     {
         m_decimalPlaces = decimalPlaces;
-        setString(String(getValue()));
+        setString(String::fromNumberRounded(getValue(), m_decimalPlaces));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ namespace tgui
         m_spinButton = m_container->get<tgui::SpinButton>("SpinButton");
 
         init();
-        setString(String(m_spinButton->getValue()));
+        setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ namespace tgui
     {
         m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
         m_spinButton->onValueChange([this](const float val) {
-            setString(String(val));
+            setString(String::fromNumberRounded(val, m_decimalPlaces));
             onValueChange.emit(this, val);
         });
 
@@ -261,17 +261,17 @@ namespace tgui
             const float val = text.toFloat(defValue);
             if (val == defValue || !inRange(val))
             {
-                setString(String(curValue));
+                setString(String::fromNumberRounded(curValue, m_decimalPlaces));
             }
             else if (curValue != val)
             {
                 m_spinButton->setValue(val);
 
                 // Display actual value because SpinButton can round entered number
-                setString(String(m_spinButton->getValue()));
+                setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));
             }
             else
-                setString(text);
+                setString(String::fromNumberRounded(val, m_decimalPlaces));
         });
 
         const auto buttonSize = m_spinButton->getSize();
@@ -290,33 +290,7 @@ namespace tgui
 
     void SpinControl::setString(const String& str)
     {
-        const auto pos = str.find('.');
-        const auto integerPart = str.substr(0, pos);
-        if (m_decimalPlaces == 0)
-        {
-            m_spinText->setText(integerPart);
-            return;
-        }
-
-        String floatPart = ".";
-        if (pos != String::npos)
-        {
-            floatPart = str.substr(pos);
-        }
-        const auto len = floatPart.size() - 1;
-
-        if (len < m_decimalPlaces)
-        {
-            m_spinText->setText(integerPart + floatPart + String(m_decimalPlaces - len, '0'));
-        }
-        else if (len == m_decimalPlaces)
-        {
-            m_spinText->setText(str);
-        }
-        else
-        {
-            m_spinText->setText(integerPart + floatPart.substr(pos, m_decimalPlaces + 1));
-        }
+        m_spinText->setText(str);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

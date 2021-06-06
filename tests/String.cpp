@@ -1329,6 +1329,13 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String::fromNumber(0.5) == "0.5");
     }
 
+    SECTION("fromNumberRounded")
+    {
+        REQUIRE(tgui::String::fromNumberRounded(15.001f, 0) == "15");
+        REQUIRE(tgui::String::fromNumberRounded(-3.0015f, 3) == "-3.001");
+        REQUIRE(tgui::String::fromNumberRounded(0.5f, 2) == "0.50");
+    }
+
     SECTION("trim")
     {
         str = "\t xyz\r\n";
