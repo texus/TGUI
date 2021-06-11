@@ -8,6 +8,7 @@ TGUI 0.9.2  (TBD)
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
 - Added setWidgetIndex and getWidgetIndex functions to container
 - saveWidgetsToFile now makes paths relative to the form path
+- Tool tips will no longer be displayed outside the window when close to the side
 - Exception is now thrown when loading a font fails
 - TabContainer can now create the panels internally
 - Button text was lost when copying button

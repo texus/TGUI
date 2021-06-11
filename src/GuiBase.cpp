@@ -112,7 +112,7 @@ namespace tgui
                 if (m_visibleToolTip != nullptr)
                 {
                     // Correct the position of the tool tip so that it is relative again
-                    m_visibleToolTip->setPosition(m_visibleToolTip->getPosition() - ToolTip::getDistanceToMouse() - m_lastMousePos);
+                    m_visibleToolTip->setPosition(m_toolTipRelativePos);
 
                     remove(m_visibleToolTip);
                     m_visibleToolTip = nullptr;
@@ -485,8 +485,19 @@ namespace tgui
                     m_visibleToolTip = tooltip;
                     add(tooltip, "#TGUI_INTERNAL$ToolTip#");
 
-                    // Change the relative tool tip position in an absolute one
-                    tooltip->setPosition(m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition());
+                    // Remember the position of the tool tip, since we need to restore it when hiding it
+                    m_toolTipRelativePos = tooltip->getPosition();
+
+                    // Convert the relative tool tip position in an absolute one
+                    Vector2f pos = m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition();
+
+                    // Don't display the tool tip outside the window, unless it doesn't fit at all
+                    if (pos.x + tooltip->getSize().x > m_view.getLeft() + m_view.getWidth())
+                        pos.x = std::max(m_view.getLeft(), m_view.getLeft() + m_view.getWidth() - tooltip->getSize().x);
+                    if (pos.y + tooltip->getSize().y > m_view.getTop() + m_view.getHeight())
+                        pos.y = std::max(m_view.getTop(), m_view.getTop() + m_view.getHeight() - tooltip->getSize().y);
+
+                    tooltip->setPosition(pos);
                     screenRefreshRequired = true;
                 }
 

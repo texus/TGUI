@@ -613,6 +613,7 @@ namespace tgui
         Widget::Ptr m_visibleToolTip = nullptr;
         Duration m_tooltipTime;
         bool m_tooltipPossible = false;
+        Vector2f m_toolTipRelativePos;
         Vector2f m_lastMousePos;
 
         RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
