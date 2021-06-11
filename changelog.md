@@ -17,6 +17,7 @@ TGUI 0.9.2  (TBD)
 - Form files didn't load on Windows when path contained non-ANSI characters
 - Modification time in FileDialog was empty when MinGW compiler was used
 - Clipping in SDL backend was incorrect when view and viewport were changed
+- Opacity of color wheel wasn't set when making ColorPicker transparent
 
 
 TGUI 0.9.1  (12 February 2021)

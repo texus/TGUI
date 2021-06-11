@@ -549,6 +549,12 @@ namespace tgui
 
             m_value->setRenderer(renderer);
         }
+        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        {
+            Widget::rendererChanged(property);
+            m_colorWheelSprite.setOpacity(m_opacityCached);
+            ChildWindow::rendererChanged(property);
+        }
         else
             ChildWindow::rendererChanged(property);
     }
