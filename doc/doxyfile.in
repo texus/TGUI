@@ -18,6 +18,10 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Loading" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Widgets" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Renderers" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backends/SFML/GuiSFML.hpp" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backends/SFML/BackendSFML.hpp" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backends/SDL/GuiSDL.hpp" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backends/SDL/BackendSDL.hpp" \
                          "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
 EXCLUDE_SYMBOLS        = priv \
@@ -25,8 +29,7 @@ EXCLUDE_SYMBOLS        = priv \
                          TextureData \
                          TextureDataHolder \
                          GuiContainer \
-                         Any \
-                         Optional
+                         GuiResources
 
 HTML_HEADER            = "@DOXYGEN_INPUT_DIR@/doc/header.html"
 HTML_FOOTER            = "@DOXYGEN_INPUT_DIR@/doc/footer.html"
@@ -42,6 +45,9 @@ GENERATE_LATEX         = NO
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
-PREDEFINED             = "TGUI_DEPRECATED(x)="
+PREDEFINED             = TGUI_DEPRECATED(x)= \
+                         TGUI_COMPILED_WITH_CPP_VER=20 \
+                         TGUI_HAS_BACKEND_SFML=1 \
+                         TGUI_HAS_BACKEND_SDL=1
 
 HIDE_UNDOC_RELATIONS   = NO
