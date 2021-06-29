@@ -1,3 +1,7 @@
+if(NOT TGUI_HAS_BACKEND_SFML AND NOT TGUI_HAS_BACKEND_SDL)
+    message(FATAL_ERROR "Gui Builder can't be build without a backend. Uncheck TGUI_BUILD_GUI_BUILDER or change the backend.")
+endif()
+
 set(GUI_BUILDER_SOURCES
     src/main.cpp
     src/Form.cpp
