@@ -701,7 +701,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void RangeSlider::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})

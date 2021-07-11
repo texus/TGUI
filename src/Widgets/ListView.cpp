@@ -2429,7 +2429,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawHeaderText(BackendRenderTargetBase& target, RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
+    void ListView::drawHeaderText(BackendRenderTarget& target, RenderStates states, float columnWidth, float headerHeight, std::size_t column) const
     {
         if (column >= m_columns.size())
             return;
@@ -2455,7 +2455,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::drawColumn(BackendRenderTargetBase& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
+    void ListView::drawColumn(BackendRenderTarget& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const
     {
         if (firstItem == lastItem)
             return;
@@ -2542,7 +2542,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ListView::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 

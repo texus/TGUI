@@ -30,6 +30,8 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
+#include <unordered_map>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,7 +71,7 @@ namespace tgui
         };
 
         std::map<String, ObjectConverter> propertyValuePairs;
-        std::map<const void*, std::function<void(const String& property)>> observers;
+        std::unordered_map<const void*, std::function<void(const String& property)>> observers;
         bool shared = true;
     };
 

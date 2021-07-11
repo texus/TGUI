@@ -224,7 +224,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void CheckBox::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

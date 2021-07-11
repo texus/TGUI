@@ -566,7 +566,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonBase::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ButtonBase::draw(BackendRenderTarget& target, RenderStates states) const
     {
         for (auto& component : m_components)
             component->draw(target, states);

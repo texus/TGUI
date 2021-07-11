@@ -1523,7 +1523,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void EditBox::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

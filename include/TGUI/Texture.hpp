@@ -50,7 +50,11 @@ namespace tgui
     public:
 
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
-        using BackendTextureLoaderFunc = std::function<bool(BackendTextureBase&, const String&)>;
+#ifdef TGUI_NEXT
+        using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&, bool smooth)>;
+#else
+        using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&)>;
+#endif
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const String&, bool smooth)>;
 
 

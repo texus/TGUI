@@ -418,7 +418,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void SpinButton::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

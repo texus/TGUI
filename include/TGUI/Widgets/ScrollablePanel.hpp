@@ -128,6 +128,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the space available for widgets inside the container
+        /// @return Size without borders and padding, and without scrollbars if their policy is to always be visible
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getInnerSize() const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @warning This function does not return the absolute position of the ScrollablePanel. It is implemented in a way
         ///          that allows calling getAbsolutePosition() on a child widget of the ScrollablePanel to work.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +351,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,8 +428,8 @@ namespace tgui
         unsigned int m_verticalScrollAmount = 0;
         unsigned int m_horizontalScrollAmount = 0;
 
-        std::map<Widget::Ptr, unsigned int> m_connectedPositionCallbacks;
-        std::map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
+        std::unordered_map<Widget::Ptr, unsigned int> m_connectedPositionCallbacks;
+        std::unordered_map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

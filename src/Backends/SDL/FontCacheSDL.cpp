@@ -24,17 +24,18 @@
 
 
 #include <TGUI/Backends/SDL/FontCacheSDL.hpp>
-#include <TGUI/Backends/SDL/BackendFontSDL.hpp>
+#include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    std::map<const BackendFontSDL*, std::map<unsigned int, std::pair<unsigned int, TTF_Font*>>> FontCacheSDL::m_fonts;
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+    std::unordered_map<const BackendFontSDLttf*, std::map<unsigned int, std::pair<unsigned int, TTF_Font*>>> FontCacheSDL::m_fonts;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void FontCacheSDL::removeFont(const BackendFontSDL* fontId)
+    void FontCacheSDL::removeFont(const BackendFontSDLttf* fontId)
     {
         TGUI_ASSERT(m_fonts[fontId].size() == 0, "FontCacheSDL::removeFont for a font that still had registered users");
         m_fonts.erase(fontId);
@@ -42,14 +43,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void FontCacheSDL::registerFontSize(const BackendFontSDL* fontId, unsigned int characterSize)
+    void FontCacheSDL::registerFontSize(const BackendFontSDLttf* fontId, unsigned int characterSize)
     {
         m_fonts[fontId][characterSize].first++;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void FontCacheSDL::unregisterFontSize(const BackendFontSDL* fontId, unsigned int characterSize)
+    void FontCacheSDL::unregisterFontSize(const BackendFontSDLttf* fontId, unsigned int characterSize)
     {
         unsigned int& users = m_fonts[fontId][characterSize].first;
         TGUI_ASSERT(users > 0, "FontCacheSDL::unregisterFontSize can't be called more often than registerFontSize");
@@ -65,7 +66,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TTF_Font* FontCacheSDL::getFont(const BackendFontSDL* fontId, unsigned int characterSize)
+    TTF_Font* FontCacheSDL::getFont(const BackendFontSDLttf* fontId, unsigned int characterSize)
     {
         TGUI_ASSERT(m_fonts[fontId][characterSize].first > 0, "FontCacheSDL::getFont can't be called before registerFontSize is called");
 
@@ -78,7 +79,7 @@ namespace tgui
             return font;
         }
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

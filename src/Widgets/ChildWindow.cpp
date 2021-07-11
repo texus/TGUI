@@ -25,7 +25,7 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 #if TGUI_HAS_BACKEND_SFML
     #include <SFML/Config.hpp>
@@ -1137,7 +1137,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ChildWindow::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

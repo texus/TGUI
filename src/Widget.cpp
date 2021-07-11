@@ -27,7 +27,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
 

@@ -32,7 +32,7 @@
 #include <TGUI/Optional.hpp>
 #include <TGUI/SvgImage.hpp>
 
-#include <TGUI/BackendTexture.hpp>
+#include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
 #include <memory>
 #include <string>
@@ -48,7 +48,7 @@ namespace tgui
     {
         // Either svgImage or backendTexture MUST have a value
         Optional<SvgImage> svgImage;
-        std::shared_ptr<BackendTextureBase> backendTexture;
+        std::shared_ptr<BackendTexture> backendTexture;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

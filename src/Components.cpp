@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Components.hpp>
-#include <TGUI/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -300,7 +300,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupComponent::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void GroupComponent::draw(BackendRenderTarget& target, RenderStates states) const
     {
         for (const auto& child : m_children)
         {
@@ -494,7 +494,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackgroundComponent::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void BackgroundComponent::draw(BackendRenderTarget& target, RenderStates states) const
     {
         states.transform.translate(m_position);
 
@@ -739,7 +739,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextComponent::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void TextComponent::draw(BackendRenderTarget& target, RenderStates states) const
     {
         if (m_text.getString().empty())
             return;
@@ -849,7 +849,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ImageComponent::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ImageComponent::draw(BackendRenderTarget& target, RenderStates states) const
     {
         states.transform.translate(m_position);
         target.drawSprite(states, m_sprite);

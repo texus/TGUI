@@ -499,7 +499,7 @@ namespace tgui
         /// @param states Current render states
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -618,11 +618,11 @@ namespace tgui
 
         /// @internal
         /// Draw the backgrounds and text of the menu names on top of the bar itself
-        void drawMenusOnBar(BackendRenderTargetBase& target, RenderStates states) const;
+        void drawMenusOnBar(BackendRenderTarget& target, RenderStates states) const;
 
         /// @internal
         /// Draw an open menu and recusively draw submenus when open
-        void drawMenu(BackendRenderTargetBase& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
+        void drawMenu(BackendRenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -652,7 +652,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawOpenMenu(BackendRenderTargetBase& target, RenderStates states) const;
+        void drawOpenMenu(BackendRenderTarget& target, RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -752,7 +752,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

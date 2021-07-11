@@ -1257,7 +1257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void TreeView::draw(BackendRenderTarget& target, RenderStates states) const
     {
         RenderStates statesForScrollbars = states;
 

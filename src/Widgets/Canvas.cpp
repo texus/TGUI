@@ -26,7 +26,7 @@
 #include <TGUI/Widgets/Canvas.hpp>
 
 #if TGUI_HAS_BACKEND_SFML
-#include <TGUI/Backends/SFML/BackendTextureSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CanvasSFML::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void CanvasSFML::draw(BackendRenderTarget& target, RenderStates states) const
     {
         if ((getSize().x <= 0) || (getSize().y <= 0))
             return;

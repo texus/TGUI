@@ -743,7 +743,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void Label::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 

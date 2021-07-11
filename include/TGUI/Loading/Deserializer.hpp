@@ -28,6 +28,7 @@
 
 
 #include <TGUI/ObjectConverter.hpp>
+#include <unordered_map>
 #include <vector>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ namespace tgui
         static std::vector<String> split(const String& str, char delim);
 
     private:
-        static std::map<ObjectConverter::Type, DeserializeFunc> m_deserializers;
+        static std::unordered_map<ObjectConverter::Type, DeserializeFunc> m_deserializers;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

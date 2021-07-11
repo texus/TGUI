@@ -25,7 +25,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/ToolTip.hpp>
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
@@ -1212,7 +1212,7 @@ namespace tgui
 
     void Container::setParent(Container* parent)
     {
-        const GuiBase* oldParentGui = m_parentGui;
+        const BackendGui* oldParentGui = m_parentGui;
 
         Widget::setParent(parent);
 
@@ -1226,7 +1226,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setParentGui(GuiBase* gui)
+    void Container::setParentGui(BackendGui* gui)
     {
         m_parentGui = gui;
 
@@ -1265,7 +1265,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void Container::draw(BackendRenderTarget& target, RenderStates states) const
     {
         for (const auto& widget : m_widgets)
         {
@@ -1512,7 +1512,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RootContainer::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void RootContainer::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // The only reason to override this function was to change the access specifier, so just call the code from the base class
         Container::draw(target, states);

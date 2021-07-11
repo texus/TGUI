@@ -26,8 +26,8 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/BackendFont.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Global.hpp>
 #include <cstdint>
 
@@ -436,7 +436,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
+    std::unordered_map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
         {
             {ObjectConverter::Type::Bool, deserializeBool},
             {ObjectConverter::Type::Font, deserializeFont},

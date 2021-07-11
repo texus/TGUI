@@ -28,6 +28,7 @@
 
 
 #include <TGUI/ObjectConverter.hpp>
+#include <unordered_map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +49,7 @@ namespace tgui
         static const SerializeFunc& getFunction(ObjectConverter::Type type);
 
     private:
-        static std::map<ObjectConverter::Type, SerializeFunc> m_serializers;
+        static std::unordered_map<ObjectConverter::Type, SerializeFunc> m_serializers;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

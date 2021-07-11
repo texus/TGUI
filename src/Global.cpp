@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <functional>
 #include <sstream>
 #include <locale>
@@ -149,7 +149,7 @@ namespace tgui
             }
 
             fileSize = static_cast<std::size_t>(bytesInFile);
-            auto buffer = std::make_unique<std::uint8_t[]>(fileSize);
+            auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(fileSize);
             if (fread(buffer.get(), 1, fileSize, file) != fileSize)
             {
                 fclose(file);

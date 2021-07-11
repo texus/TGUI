@@ -25,10 +25,10 @@
 
 #include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/TextureManager.hpp>
-#include <TGUI/BackendTexture.hpp>
+#include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
 
 #include <memory>
@@ -41,14 +41,22 @@ namespace tgui
     bool Texture::m_defaultSmooth = true;
 
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
-    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTextureBase& backendTexture, const String& filename)
+#ifdef TGUI_NEXT
+    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTexture& backendTexture, const String& filename, bool smooth)
+#else
+    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTexture& backendTexture, const String& filename)
+#endif
         {
             Vector2u imageSize;
             auto pixelPtr = ImageLoader::loadFromFile(filename, imageSize);
             if (!pixelPtr)
                 return false;
 
-            return backendTexture.load(imageSize, std::move(pixelPtr));
+#ifdef TGUI_NEXT
+            return backendTexture.load(imageSize, std::move(pixelPtr), smooth);
+#else
+            return backendTexture.load(imageSize, std::move(pixelPtr), true);
+#endif
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,10 +251,8 @@ namespace tgui
         if (!pixelPtr)
             throw Exception{"Failed to load texture from provided memory location (" + String(fileDataSize) + " bytes)"};
 
-        if (!data->backendTexture->load(imageSize, std::move(pixelPtr)))
+        if (!data->backendTexture->load(imageSize, std::move(pixelPtr), smooth))
             throw Exception{"Failed to load texture from pixels that were loaded from file in memory"};
-
-        data->backendTexture->setSmooth(smooth);
 
         m_id = "";
         setTextureData(data, partRect, middleRect);
@@ -259,12 +265,11 @@ namespace tgui
         auto data = std::make_shared<TextureData>();
         data->backendTexture = getBackend()->createTexture();
 
-        auto pixelPtr = std::make_unique<std::uint8_t[]>(size.x * size.y * 4);
+        auto pixelPtr = MakeUniqueForOverwrite<std::uint8_t[]>(size.x * size.y * 4);
         std::memcpy(pixelPtr.get(), pixels, size.x * size.y * 4);
-        if (!data->backendTexture->load(size, std::move(pixelPtr)))
-            throw Exception{"Failed to load texture from provided pixel data"};
 
-        data->backendTexture->setSmooth(smooth);
+        if (!data->backendTexture->load(size, std::move(pixelPtr), smooth))
+            throw Exception{"Failed to load texture from provided pixel data"};
 
         m_id = "";
         setTextureData(data, partRect, middleRect);

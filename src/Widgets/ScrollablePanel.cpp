@@ -295,6 +295,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f ScrollablePanel::getInnerSize() const
+    {
+        Vector2f size = Panel::getInnerSize();
+        if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
+            size.x -= std::min(size.x, getScrollbarWidth());
+        if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
+            size.y -= std::min(size.y, getScrollbarWidth());
+        return size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Vector2f ScrollablePanel::getContentSize() const
     {
         if (m_contentSize != Vector2f{0, 0})
@@ -339,6 +351,9 @@ namespace tgui
             m_verticalScrollbar->setVisible(true);
             m_verticalScrollbar->setAutoHide(true);
         }
+
+///        for (auto& layout : m_boundSizeLayouts)
+///            layout->recalculateValue();
 
         updateScrollbars();
     }
@@ -598,7 +613,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ScrollablePanel::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const auto oldStates = states;
 
@@ -744,7 +759,7 @@ namespace tgui
         const Vector2f scrollbarSpace = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                          getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
-        const Vector2f visibleSize = getInnerSize();
+        const Vector2f visibleSize = Panel::getInnerSize();
         m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.x));
         m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.y));
 

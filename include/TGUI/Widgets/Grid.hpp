@@ -28,6 +28,7 @@
 
 
 #include <TGUI/Container.hpp>
+#include <unordered_map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -369,7 +370,7 @@ namespace tgui
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
 
-        std::map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
+        std::unordered_map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -343,7 +343,7 @@ namespace tgui
             infoheader.bmiHeader.biSizeImage = bitmapSize;
 
             // Allocate memory for the icon BGRA bitmap
-            auto buffer = std::make_unique<std::uint8_t[]>(2 * static_cast<std::size_t>(bitmapSize));
+            auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(2 * static_cast<std::size_t>(bitmapSize));
             std::uint8_t* pixelsBGRA = &buffer[0];
 
             if (!GetDIBits(hDC, iconInfo.hbmColor, 0, iconHeight, static_cast<void*>(pixelsBGRA), &infoheader, DIB_RGB_COLORS))
@@ -352,7 +352,7 @@ namespace tgui
                 return iconData;
             }
 
-            iconData.pixels = std::make_unique<std::uint8_t[]>(static_cast<std::size_t>(iconWidth) * iconHeight * 4);
+            iconData.pixels = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(iconWidth) * iconHeight * 4);
             iconData.width = iconWidth;
             iconData.height = iconHeight;
 
@@ -381,7 +381,7 @@ namespace tgui
             infoheader.bmiHeader.biSizeImage = bitmapSize;
 
             // Allocate memory for 2 bitmaps: the icon BGR bitmap and the icon mask bitmap
-            auto buffer = std::make_unique<std::uint8_t[]>(2 * static_cast<std::size_t>(bitmapSize));
+            auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(2 * static_cast<std::size_t>(bitmapSize));
             std::uint8_t* pixelsBGR = &buffer[0];
             std::uint8_t* pixelsAlpha = &buffer[bitmapSize];
 
@@ -397,7 +397,7 @@ namespace tgui
                 return iconData;
             }
 
-            iconData.pixels = std::make_unique<std::uint8_t[]>(static_cast<std::size_t>(iconWidth) * iconHeight * 4);
+            iconData.pixels = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(iconWidth) * iconHeight * 4);
             iconData.width = iconWidth;
             iconData.height = iconHeight;
 
