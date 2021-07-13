@@ -1433,7 +1433,7 @@ namespace tgui
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     using StringView = std::u32string_view;
-    using CharStringView = std::string_stream;
+    using CharStringView = std::string_view;
 #else
     using StringView = String;
     using CharStringView = std::string;
