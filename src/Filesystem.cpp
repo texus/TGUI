@@ -363,7 +363,8 @@ namespace tgui
     {
 #ifdef TGUI_USE_STD_FILESYSTEM
         std::error_code errorCode;
-        return std::filesystem::create_directory(path, errorCode);
+        const bool created = std::filesystem::create_directory(path, errorCode);
+        return created || !errorCode; // "created" will be false for existing directory, but we still return true for that case
 #elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), NULL);
         return (status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
