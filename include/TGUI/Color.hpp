@@ -40,6 +40,13 @@
 
 namespace tgui
 {
+    class Color;
+    namespace priv
+    {
+        TGUI_API Color constructColorFromString(String string);
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Wrapper for colors
     ///
@@ -48,7 +55,11 @@ namespace tgui
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    class Color
+#else
     class TGUI_API Color
+#endif
     {
     public:
 
@@ -118,7 +129,10 @@ namespace tgui
         ///
         /// The Deserializer class is used to convert the string into a color.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Color(const String& string);
+        Color(const String& string) :
+            Color{priv::constructColorFromString(string)}
+        {
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +142,10 @@ namespace tgui
         ///
         /// The Deserializer class is used to convert the string into a color.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Color(const char* string);
+        Color(const char* string) :
+            Color{String{string}}
+        {
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,6 +275,27 @@ namespace tgui
         std::uint8_t m_blue;
         std::uint8_t m_alpha;
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    namespace priv
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Construct a color object from a string
+        ///
+        /// @param string  String to be deserialized as color
+        ///
+        /// @return Color described by the string
+        ///
+        /// This is called internally when passing a string to the constructor of the Color class.
+        /// This function will simply use Deserializer::deserialize internally, but we don't call that function directly
+        /// to avoid including that class here.
+        ///
+        /// Note that having this function allows keeping the Color class outside of a DLL, which allows the color constants
+        /// to be defined as "inline constexpr".
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_API Color constructColorFromString(String string);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
