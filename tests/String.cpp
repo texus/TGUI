@@ -25,6 +25,8 @@
 #include "Tests.hpp"
 #include <TGUI/String.hpp>
 
+// TODO: Tests using string views
+
 TEST_CASE("[String]")
 {
     tgui::String str;
@@ -649,6 +651,31 @@ TEST_CASE("[String]")
         str1.swap(str2);
         REQUIRE(str1 == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(str2 == "abc");
+    }
+
+    SECTION("contains")
+    {
+        str = U"abc\u03b4\u03b5\u03b6\u03b7";
+
+        REQUIRE(str.contains("bc"));
+        REQUIRE(str.contains(L"c\u03b4"));
+        REQUIRE(str.contains(u"c\u03b4"));
+        REQUIRE(str.contains(U"c\u03b4"));
+
+        REQUIRE(str.contains('c'));
+        REQUIRE(str.contains(L'\x03b4'));
+        REQUIRE(str.contains(u'\x03b4'));
+        REQUIRE(str.contains(U'\x03b4'));
+
+        REQUIRE(!str.contains("abcd"));
+        REQUIRE(!str.contains(L"c\u03b3"));
+        REQUIRE(!str.contains(u"c\u03b3"));
+        REQUIRE(!str.contains(U"c\u03b3"));
+
+        REQUIRE(!str.contains('d'));
+        REQUIRE(!str.contains(L'\x03b3'));
+        REQUIRE(!str.contains(u'\x03b3'));
+        REQUIRE(!str.contains(U'\x03b3'));
     }
 
     SECTION("find")

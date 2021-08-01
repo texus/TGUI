@@ -732,6 +732,20 @@ namespace tgui
 
         void swap(String& other);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        bool contains(std::u32string_view sv) const noexcept;
+#endif
+
+        bool contains(char c) const noexcept;
+        bool contains(wchar_t c) const noexcept;
+        bool contains(char16_t c) const noexcept;
+        bool contains(char32_t c) const noexcept;
+
+        bool contains(const char* s) const;
+        bool contains(const wchar_t* s) const;
+        bool contains(const char16_t* s) const;
+        bool contains(const char32_t* s) const;
+
         std::size_t find(const std::string& str, std::size_t pos = 0) const noexcept;
         std::size_t find(const std::wstring& str, std::size_t pos = 0) const noexcept;
         std::size_t find(const std::u16string& str, std::size_t pos = 0) const noexcept;
@@ -752,6 +766,10 @@ namespace tgui
         std::size_t find(wchar_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find(char32_t ch, std::size_t pos = 0) const noexcept;
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t find(std::u32string_view sv, std::size_t pos = 0) const noexcept;
+#endif
 
         std::size_t find_first_of(const std::string& str, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(const std::wstring& str, std::size_t pos = 0) const noexcept;
@@ -929,6 +947,9 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, std::initializer_list<char8_t> chars);
 
         void resize(std::size_t count, char8_t ch);
+
+        bool contains(char8_t c) const noexcept;
+        bool contains(const char8_t* s) const noexcept;
 
         std::size_t find(const std::u8string& str, std::size_t pos = 0) const noexcept;
         std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
@@ -1299,6 +1320,16 @@ namespace tgui
     inline void String::resize(std::size_t count, char8_t ch)
     {
         m_string.resize(count, static_cast<char32_t>(ch));
+    }
+
+    inline bool String::contains(char8_t c) const noexcept
+    {
+        return contains(static_cast<char32_t>(c));
+    }
+
+    inline bool String::contains(const char8_t* s) const noexcept
+    {
+        return find(s) != npos;
     }
 
     inline std::size_t String::find(const std::u8string& str, std::size_t pos) const noexcept

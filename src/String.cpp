@@ -1775,6 +1775,71 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    bool String::contains(std::u32string_view sv) const noexcept
+    {
+#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
+        return m_string.contains(sv);
+#else
+        return find(sv) != npos;
+#endif
+    }
+#endif
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::contains(char c) const noexcept
+    {
+        return contains(static_cast<char32_t>(c));
+    }
+
+    bool String::contains(wchar_t c) const noexcept
+    {
+        return contains(static_cast<char32_t>(c));
+    }
+
+    bool String::contains(char16_t c) const noexcept
+    {
+        return contains(static_cast<char32_t>(c));
+    }
+
+    bool String::contains(char32_t c) const noexcept
+    {
+#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
+        return m_string.contains(c);
+#else
+        return find(c) != npos;
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::contains(const char* s) const
+    {
+        return find(s) != npos;
+    }
+
+    bool String::contains(const wchar_t* s) const
+    {
+        return find(s) != npos;
+    }
+
+    bool String::contains(const char16_t* s) const
+    {
+        return find(s) != npos;
+    }
+
+    bool String::contains(const char32_t* s) const
+    {
+#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
+        return m_string.contains(s);
+#else
+        return find(s) != npos;
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::size_t String::find(const std::string& str, std::size_t pos) const noexcept
     {
         return m_string.find(String{str}.m_string, pos);
@@ -1859,6 +1924,13 @@ namespace tgui
     {
         return m_string.find(ch, pos);
     }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::find(std::u32string_view sv, std::size_t pos) const noexcept
+    {
+        return m_string.find(sv, pos);
+    }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
