@@ -25,7 +25,7 @@
 
 #include <TGUI/TextureManager.hpp>
 #include <TGUI/Texture.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Exception.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,11 +84,16 @@ namespace tgui
         else // Not an svg
         {
             data->backendTexture = getBackend()->createTexture();
+#ifdef TGUI_NEXT
+            if (texture.getBackendTextureLoader()(*data->backendTexture, filename, smooth))
+                return data;
+#else
             if (texture.getBackendTextureLoader()(*data->backendTexture, filename))
             {
                 data->backendTexture->setSmooth(smooth);
                 return data;
             }
+#endif
         }
 
         // The image could not be loaded

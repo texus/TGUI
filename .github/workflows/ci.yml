@@ -3,21 +3,112 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  linux-sfml:
+  linux:
     runs-on: ubuntu-latest
     env:
-      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+      GCC_VERSION: 11
     steps:
+      - name: Install dependencies
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get -y install g++-$GCC_VERSION libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI (recent gcc)
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+
+          cd $GITHUB_WORKSPACE/TGUI-build
+
+          cmake
+          -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_CXX_STANDARD=17
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GLES2=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          ../TGUI
+
+          make -j2
+
+      - name: Test TGUIConfig.cmake
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI/tests/cmake
+          cmake -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build .
+          make
+          test -e TguiTest
+
+  #----------------------------------------
+
+  linux-latest:
+    runs-on: ubuntu-20.04
+    env:
+      SFML_GITHUB_URL: https://github.com/SFML/SFML
+      SDL_GITHUB_URL: https://github.com/libsdl-org/SDL
+      SDL_TTF_GITHUB_URL: https://github.com/libsdl-org/SDL_ttf
+      GLFW_GITHUB_URL: https://github.com/glfw/glfw
+      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+      SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
+      SDL_TTF_INSTALL_DIR: ${{github.workspace}}/SDL_TTF_INSTALL
+      GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW_INSTALL
+      CMAKE_VERSION: '3.21'
+      CMAKE_VERSION_PATCH: 1
+    steps:
+      - name: Lookup dependency versions
+        id: find-dependencies
+        run: |
+          echo "::set-output name=sfml-revision::$(git ls-remote $SFML_GITHUB_URL HEAD | cut -f1)"
+          echo "::set-output name=sdl-revision::$(git ls-remote $SDL_GITHUB_URL HEAD | cut -f1)"
+          echo "::set-output name=sdl-ttf-revision::$(git ls-remote $SDL_TTF_GITHUB_URL HEAD | cut -f1)"
+          echo "::set-output name=glfw-revision::$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)"
+
       - name: Cache SFML
         uses: actions/cache@v2
+        id: cache-sfml
         with:
-          path: ${{github.workspace}}/SFML_INSTALL
-          key: CACHE_LINUX_SFML_LATEST_V2
+          path: ${{env.SFML_INSTALL_DIR}}
+          key: CACHE_LINUX_SFML_LATEST_${{ steps.find-dependencies.outputs.sfml-revision }}
+
+      - name: Cache SDL
+        uses: actions/cache@v2
+        id: cache-sdl
+        with:
+          path: ${{env.SDL_INSTALL_DIR}}
+          key: CACHE_LINUX_SDL_LATEST_${{ steps.find-dependencies.outputs.sdl-revision }}
+
+      - name: Cache SDL_ttf
+        uses: actions/cache@v2
+        id: cache-sdl-ttf
+        with:
+          path: ${{env.SDL_TTF_INSTALL_DIR}}
+          key: CACHE_LINUX_SDL_TTF_LATEST_${{ steps.find-dependencies.outputs.sdl-ttf-revision }}
+
+      - name: Cache GLFW
+        uses: actions/cache@v2
+        id: cache-glfw
+        with:
+          path: ${{env.GLFW_INSTALL_DIR}}
+          key: CACHE_LINUX_GLFW_LATEST_${{ steps.find-dependencies.outputs.glfw-revision }}
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev
+          sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
@@ -25,199 +116,637 @@ jobs:
           path: TGUI
 
       - name: Build SFML
+        if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
           mkdir -p $SFML_INSTALL_DIR
-          git clone --depth 1 https://github.com/SFML/SFML $GITHUB_WORKSPACE/SFML
-          cd $GITHUB_WORKSPACE/SFML
-          if [[ ! -d "$SFML_INSTALL_DIR/lib" || ! -f "$SFML_INSTALL_DIR/revision_cache" || `git rev-parse HEAD` != `cat "$SFML_INSTALL_DIR/revision_cache"` ]]; then
-            if [[ ! -d "$SFML_INSTALL_DIR/lib" ]]; then
-              echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
-            else
-              echo "$(tput setaf 3)Rebuilding SFML: updating version$(tput sgr 0)"
-            fi
+          git clone --depth 1 $SFML_GITHUB_URL $GITHUB_WORKSPACE/SFML
+          mkdir $GITHUB_WORKSPACE/SFML-build
+          cd $GITHUB_WORKSPACE/SFML-build
+          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
+          make -j2
+          make install
 
-            git rev-parse HEAD > "$SFML_INSTALL_DIR/revision_cache"
+      - name: Build SDL
+        if: steps.cache-sdl.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $SDL_INSTALL_DIR
+          git clone --depth 1 $SDL_GITHUB_URL $GITHUB_WORKSPACE/SDL
+          mkdir $GITHUB_WORKSPACE/SDL-build
+          cd $GITHUB_WORKSPACE/SDL-build
+          cmake -DCMAKE_INSTALL_PREFIX=$SDL_INSTALL_DIR -DBUILD_SHARED_LIBS=ON ../SDL
+          make -j2
+          make install
 
-            mkdir $GITHUB_WORKSPACE/SFML-build
-            cd $GITHUB_WORKSPACE/SFML-build
-            cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE ../SFML
-            make -j2
-            make install
-          else
-            echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
-          fi
+      - name: Build SDL_ttf
+        if: steps.cache-sdl-ttf.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $SDL_TTF_INSTALL_DIR
+          git clone --depth 1 $SDL_TTF_GITHUB_URL $GITHUB_WORKSPACE/SDL_TTF
+          mkdir $GITHUB_WORKSPACE/SDL_TTF-build
+          cd $GITHUB_WORKSPACE/SDL_TTF-build
+          cmake -DCMAKE_INSTALL_PREFIX=$SDL_TTF_INSTALL_DIR -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2 -DBUILD_SHARED_LIBS=ON ../SDL_TTF
+          make -j2
+          make install
+
+      - name: Build GLFW
+        if: steps.cache-glfw.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $GLFW_INSTALL_DIR
+          git clone --depth 1 $GLFW_GITHUB_URL $GITHUB_WORKSPACE/GLFW
+          mkdir $GITHUB_WORKSPACE/GLFW-build
+          cd $GITHUB_WORKSPACE/GLFW-build
+          cmake -DCMAKE_INSTALL_PREFIX=$GLFW_INSTALL_DIR -DBUILD_SHARED_LIBS=ON ../GLFW
+          make -j2
+          make install
 
       - name: Build TGUI
-        run: |
+        run: >
           mkdir $GITHUB_WORKSPACE/TGUI-build
+
           cd $GITHUB_WORKSPACE/TGUI-build
-          CXXFLAGS="-fprofile-arcs -ftest-coverage -DTGUI_REMOVE_DEPRECATED_CODE" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=TRUE -DTGUI_ENABLE_DRAW_TESTS=TRUE -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
+
+          CXXFLAGS="-fprofile-arcs -ftest-coverage -DTGUI_REMOVE_DEPRECATED_CODE"
+          cmake
+          -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
+          -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2/
+          -DSDL2_TTF_PATH=$SDL_TTF_INSTALL_DIR
+          -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_CXX_STANDARD=20
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_ENABLE_DRAW_TESTS=ON
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GLES2=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          ../TGUI
+
           make -j2
 
       - name: Run tests
         run: |
           cd $GITHUB_WORKSPACE/TGUI-build/tests
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests
-
-      - name: Test TGUIConfig.cmake
-        run: |
-          cd $GITHUB_WORKSPACE/TGUI/tests/cmake
-          cmake -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build .
-          make
-          test -e TguiTest
 
       - name: Upload coverage reports to Codecov
         run: |
           cd $GITHUB_WORKSPACE/TGUI
           bash <(curl -s https://codecov.io/bash) -p $GITHUB_WORKSPACE/TGUI-build -s $GITHUB_WORKSPACE/TGUI -a "-s $GITHUB_WORKSPACE/TGUI -pr"
 
-  linux-sfml-minimum-supported-versions:
-    runs-on: ubuntu-16.04
+  #----------------------------------------
+
+  linux-oldest:
+    runs-on: ubuntu-18.04
     env:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+      SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
+      SDL_TTF_INSTALL_DIR: ${{github.workspace}}/SDL_TTF_INSTALL
+      GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW
+      SFML_VERSION: 2.5.1  # 2.5.0 has issue with mesa
+      SDL_VERSION: 2.0.9
+      SDL_TTF_VERSION: 2.0.15  # 2.0.14 has no cmake script
+      GLFW_VERSION: 3.2
+      CMAKE_VERSION: '3.10'  # 3.5 - 3.9 can't build SDL_ttf
+      CMAKE_VERSION_PATCH: 3
+      GCC_VERSION: 5
+      CLANG_VERSION: '4.0'
+    steps:
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        id: cache-deps
+        with:
+          path: |
+            ${{github.workspace}}/SFML_INSTALL
+            ${{github.workspace}}/SDL_INSTALL
+            ${{github.workspace}}/SDL_TTF_INSTALL
+            ${{github.workspace}}/GLFW_INSTALL
+          key: CACHE_LINUX_OLDEST_V1
+
+      - name: Cache SFML
+        uses: actions/cache@v2
+        id: cache-sfml
+        with:
+          path: ${{github.workspace}}/SFML_INSTALL
+          key: CACHE_LINUX_OLDEST_SFML_${{env.SFML_VERSION}}
+
+      - name: Cache SDL
+        uses: actions/cache@v2
+        id: cache-sdl
+        with:
+          path: ${{github.workspace}}/SDL_INSTALL
+          key: CACHE_LINUX_OLDEST_SDL_${{env.SDL_VERSION}}
+
+      - name: Cache SDL_ttf
+        uses: actions/cache@v2
+        id: cache-sdl-ttf
+        with:
+          path: ${{github.workspace}}/SDL_TTF_INSTALL
+          key: CACHE_LINUX_OLDEST_SDL_TTF_${{env.SDL_TTF_VERSION}}
+
+      - name: Cache GLFW
+        uses: actions/cache@v2
+        id: cache-glfw
+        with:
+          path: ${{github.workspace}}/GLFW_INSTALL
+          key: CACHE_LINUX_OLDEST_GLFW_${{env.GLFW_VERSION}}
+
+      - name: Install build tools and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install g++-$GCC_VERSION clang-$CLANG_VERSION
+          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev
+          sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build SFML
+        if: steps.cache-sfml.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SFML-build
+          cd $GITHUB_WORKSPACE/SFML-build
+          mkdir $GITHUB_WORKSPACE/SFML
+          wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/$SFML_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SFML
+          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
+          make -j2
+          make install
+
+      - name: Build SDL
+        if: steps.cache-sdl.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SDL-build
+          cd $GITHUB_WORKSPACE/SDL-build
+          mkdir $GITHUB_WORKSPACE/SDL
+          wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/tags/release-$SDL_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL
+          cmake -DCMAKE_INSTALL_PREFIX=$SDL_INSTALL_DIR -DBUILD_SHARED_LIBS=ON ../SDL
+          make -j2
+          make install
+
+      - name: Build SDL_ttf
+        if: steps.cache-sdl-ttf.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SDL_TTF-build
+          cd $GITHUB_WORKSPACE/SDL_TTF-build
+          mkdir $GITHUB_WORKSPACE/SDL_TTF
+          wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/archive/refs/tags/release-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL_TTF
+          cmake -DCMAKE_INSTALL_PREFIX=$SDL_TTF_INSTALL_DIR -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2 -DBUILD_SHARED_LIBS=ON ../SDL_TTF
+          make -j2
+          make install
+
+      - name: Build GLFW
+        if: steps.cache-glfw.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/GLFW-build
+          cd $GITHUB_WORKSPACE/GLFW-build
+          mkdir $GITHUB_WORKSPACE/GLFW
+          wget -nv -O- "https://github.com/glfw/glfw/archive/refs/tags/$GLFW_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/GLFW
+          cmake -DCMAKE_INSTALL_PREFIX=$GLFW_INSTALL_DIR -DBUILD_SHARED_LIBS=ON ../GLFW
+          make -j2
+          make install
+
+      - name: Build TGUI (old gcc)
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build-gcc
+
+          cd $GITHUB_WORKSPACE/TGUI-build-gcc
+
+          cmake
+          -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION
+          -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
+          -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2/
+          -DSDL2_TTF_PATH=$SDL_TTF_INSTALL_DIR
+          -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Release
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GLES2=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          ../TGUI
+
+          make -j2
+
+      - name: Build TGUI (old clang)
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build-clang
+
+          cd $GITHUB_WORKSPACE/TGUI-build-clang
+
+          cmake
+          -DCMAKE_CXX_COMPILER=clang++-$CLANG_VERSION
+          -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
+          -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2/
+          -DSDL2_TTF_PATH=$SDL_TTF_INSTALL_DIR
+          -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=OFF
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GLES2=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          ../TGUI
+
+          make -j2
+
+  #----------------------------------------
+
+  windows-sfml-graphics:
+    runs-on: windows-2022
+    env:
+      SFML_VERSION: 2.5.1
+      MSVC_TOOLSET_VERSION: 143  # VS2022
+      INSTALLED_VS_VERSION: Visual Studio 17 2022
+    steps:
+      - name: Install dependencies
+        run: |
+          cd ${env:GITHUB_WORKSPACE}
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
+          7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build
+
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build
+
+          cmake
+          -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_SHARED_LIBS=ON
+          -DTGUI_CXX_STANDARD=20
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
+
+          cmake --build . --config Debug
+
+  #----------------------------------------
+
+  windows-sdl-ttf-opengl:
+    runs-on: windows-2016
+    env:
+      SDL_VERSION: 2.0.6
+      SDL_TTF_VERSION: 2.0.14
+      CMAKE_VERSION: 3.8  # 3.5 and 3.6 didn't support VS2017, 3.7 doesn't have OpenGL::GL target
+      CMAKE_VERSION_PATCH: 2
+      MSVC_TOOLSET_VERSION: 141  # VS2017
+      INSTALLED_VS_VERSION: Visual Studio 15 2017
+    steps:
+      - name: Install dependencies
+        run: |
+          cd ${env:GITHUB_WORKSPACE}
+          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
+          C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
+          7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
+          7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI
+        run: >
+          mkdir "${env:GITHUB_WORKSPACE}/TGUI-build"
+
+          cd "${env:GITHUB_WORKSPACE}/TGUI-build"
+
+          & "${env:GITHUB_WORKSPACE}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe"
+          -G "${env:INSTALLED_VS_VERSION}" -T "v${env:MSVC_TOOLSET_VERSION}" -A Win32
+          -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
+          -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Release
+          -DTGUI_SHARED_LIBS=OFF
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_BACKEND=SDL_TTF_OPENGL3
+          ../TGUI
+
+          & "${env:GITHUB_WORKSPACE}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build . --config Release
+
+  #----------------------------------------
+
+  windows-static-mt:
+    runs-on: windows-2019
+    env:
+      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+      SFML_VERSION: 2.5.0
+      GLFW_VERSION: 3.3.3
+      FREETYPE_VERSION: 2.11.0
+      CMAKE_VERSION: 3.18
+      CMAKE_VERSION_PATCH: 6
+      MSVC_TOOLSET_VERSION: 142  # VS2019
+      INSTALLED_VS_VERSION: Visual Studio 16 2019
     steps:
       - name: Cache SFML
         uses: actions/cache@v2
         id: cache-sfml
         with:
           path: ${{github.workspace}}/SFML_INSTALL
-          key: CACHE_LINUX_SFML_2_5_0_V2
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
-          sudo apt-get install g++-5 clang-4.0
-          sudo sh -c 'wget -nv -O- "https://cmake.org/files/v3.5/cmake-3.5.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
-
-      - name: Checkout TGUI
-        uses: actions/checkout@v2
-        with:
-          path: TGUI
-
-      - name: Checkout SFML 2.5.0
-        uses: actions/checkout@v2
-        with:
-          repository: SFML/SFML
-          ref: 2.5.0
-          path: SFML
+          key: CACHE_WINDOWS_STATIC_MT_SFML_${{env.SFML_VERSION}}
 
       - name: Build SFML
         if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
-          mkdir $GITHUB_WORKSPACE/SFML-build
-          cd $GITHUB_WORKSPACE/SFML-build
-          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE ../SFML
-          make -j2
-          make install
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/archive/refs/tags/${env:SFML_VERSION}.zip
+          7z x "${env:SFML_VERSION}.zip" -o"${env:GITHUB_WORKSPACE}"
+          mkdir "${env:GITHUB_WORKSPACE}/SFML-build"
+          cd "${env:GITHUB_WORKSPACE}/SFML-build"
+          cmake -G "${env:INSTALLED_VS_VERSION}" -T "v${env:MSVC_TOOLSET_VERSION}" -A x64 -DCMAKE_INSTALL_PREFIX="${env:SFML_INSTALL_DIR}" -DBUILD_SHARED_LIBS=OFF -DSFML_USE_STATIC_STD_LIBS=ON -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF "../SFML-${env:SFML_VERSION}"
+          cmake --build . --config Release --target install
 
-      - name: Build TGUI (gcc 5)
+      - name: Download dependencies
         run: |
-          mkdir $GITHUB_WORKSPACE/TGUI-build-gcc
-          cd $GITHUB_WORKSPACE/TGUI-build-gcc
-          cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
-          make -j2
-
-      - name: Build TGUI (clang 4)
-        run: |
-          mkdir $GITHUB_WORKSPACE/TGUI-build-clang
-          cd $GITHUB_WORKSPACE/TGUI-build-clang
-          cmake -DCMAKE_C_COMPILER=clang-4.0 -DCMAKE_CXX_COMPILER=clang++-4.0 -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/ ../TGUI
-          make -j2
-
-  macos-sfml:
-    runs-on: macos-latest
-    steps:
-      - name: Install SFML
-        run: |
-          brew install sfml
+          cd ${env:GITHUB_WORKSPACE}
+          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN64.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
+          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64.zip
+          7z x glfw-${env:GLFW_VERSION}.bin.WIN64.zip
+          7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
         with:
           path: TGUI
 
-      - name: Build TGUI (dylib)
-        run: |
-          mkdir $GITHUB_WORKSPACE/TGUI-build-dylib
-          cd $GITHUB_WORKSPACE/TGUI-build-dylib
-          cmake -DTGUI_BUILD_FRAMEWORK=FALSE -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
-          make -j2
+      - name: Build TGUI
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build
 
-      - name: Build TGUI (framework)
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build
+
+          & "${env:GITHUB_WORKSPACE}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe"
+          -G "${env:INSTALLED_VS_VERSION}" -T "v${env:MSVC_TOOLSET_VERSION}" -A x64
+          -DSFML_DIR="${env:SFML_INSTALL_DIR}/lib/cmake/SFML/"
+          -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/include"
+          -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/lib-vc2019/glfw3_mt.lib"
+          -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Release
+          -DTGUI_SHARED_LIBS=OFF
+          -DTGUI_USE_STATIC_STD_LIBS=ON
+          -DTGUI_CXX_STANDARD=17
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          ../TGUI
+
+          cmake --build . --config Release
+
+  #----------------------------------------
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Install dependencies
         run: |
+          brew install sfml sdl2 sdl2_ttf glfw
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI (dylibs)
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build-dylibs
+
+          cd $GITHUB_WORKSPACE/TGUI-build-dylibs
+
+          cmake
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=3
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_BUILD_FRAMEWORK=OFF
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=OFF
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          ../TGUI
+
+          make -j3
+
+      - name: Build TGUI (frameworks)
+        run: >
           mkdir $GITHUB_WORKSPACE/TGUI-build-framework
+
           cd $GITHUB_WORKSPACE/TGUI-build-framework
-          cmake -DTGUI_BUILD_FRAMEWORK=TRUE -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=FALSE -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+
+          cmake
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=3
+          -DCMAKE_BUILD_TYPE=Release
+          -DTGUI_BUILD_FRAMEWORK=ON
+          -DTGUI_CXX_STANDARD=17
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=ON
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          ../TGUI
+
+          make -j3
+
+  #----------------------------------------
+
+  android-sdl-ttf-gles2:
+    runs-on: ubuntu-latest
+    env:
+      SDL_VERSION: 2.0.14
+      SDL_TTF_VERSION: 2.0.15
+      NDK_VERSION: 23.0.7599858
+      ARCH_ABI: arm64-v8a
+    steps:
+      - name: Cache NDK
+        id: cache-ndk
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
+          key: CACHE_NDK_${{env.NDK_VERSION}}
+
+      - name: Install NDK
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: echo "y" | ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --install "ndk;$NDK_VERSION"
+
+      - name: Download SDL
+        run: |
+          mkdir $GITHUB_WORKSPACE/SDL
+          mkdir $GITHUB_WORKSPACE/SDL_TTF
+          wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/tags/release-$SDL_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL
+          wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/archive/refs/tags/release-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL_TTF
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build project
+        run: |
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+          cd $GITHUB_WORKSPACE/TGUI-build
+          cmake -DTGUI_BACKEND=Custom ../TGUI
+          cd $GITHUB_WORKSPACE/TGUI/examples/android-SDL_TTF_GLES2
+          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters '${ARCH_ABI}'/" app/build.gradle
+          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${NDK_VERSION}'/" app/build.gradle
+          ln -s $GITHUB_WORKSPACE/SDL app/jni/SDL
+          ln -s $GITHUB_WORKSPACE/SDL_TTF app/jni/SDL_TTF
+          ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
+          ./gradlew buildRelease
+
+  #----------------------------------------
+
+  android-sfml-graphics:
+    runs-on: ubuntu-latest
+    env:
+      SFML_VERSION: 2.5.1
+      NDK_VERSION: 18.1.5063045
+      ARCH_ABI: x86
+    steps:
+      - name: Cache NDK with SFML
+        id: cache-ndk
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
+          key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}
+
+      - name: Install NDK
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: echo "y" | ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --install "ndk;$NDK_VERSION"
+
+      - name: Build SFML
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: |
+          mkdir $GITHUB_WORKSPACE/SFML
+          wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/${SFML_VERSION}.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SFML
+          mkdir $GITHUB_WORKSPACE/SFML-build
+          cd $GITHUB_WORKSPACE/SFML-build
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_static -DCMAKE_BUILD_TYPE=Debug ../SFML
+          make -j2
+          make install
+
+      - name: Checkout TGUI
+        uses: actions/checkout@v2
+        with:
+          path: TGUI
+
+      - name: Build TGUI
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build
+
+          cd $GITHUB_WORKSPACE/TGUI-build
+
+          cmake
+          -DCMAKE_SYSTEM_NAME=Android
+          -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION
+          -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          -DTGUI_CXX_STANDARD=14
+          ../TGUI
+
           make -j2
 
-  android-sfml:
-    runs-on: ubuntu-latest
+          make install
+
+      - name: Build example
+        run: |
+          cd $GITHUB_WORKSPACE/TGUI/examples/android-SFML_GRAPHICS
+          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters '${ARCH_ABI}'/" app/build.gradle
+          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${NDK_VERSION}'/" app/build.gradle
+          ./gradlew buildDebug
+
+      - name: Remove TGUI from NDK before caching it
+        run: rm -R ${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}/sources/third_party/tgui
+
+  #----------------------------------------
+
+  ios-sfml-graphics:
+    runs-on: macos-10.15
+    env:
+      SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
+      SFML_VERSION: 2.5.1
     steps:
       - name: Cache SFML
         uses: actions/cache@v2
         id: cache-sfml
         with:
-          path: ${{github.workspace}}/sfml-cache
-          key: CACHE_ANDROID_SFML_2_5_1_V3
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
-          echo "y" | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --install "ndk;18.1.5063045"
-
-      - name: Checkout TGUI
-        uses: actions/checkout@v2
-        with:
-          path: TGUI
-
-      - name: Checkout SFML 2.5.1
-        uses: actions/checkout@v2
-        with:
-          repository: SFML/SFML
-          ref: 2.5.1
-          path: SFML
-
-      - name: Restore cached SFML
-        if: steps.cache-sfml.outputs.cache-hit == 'true'
-        run: |
-          mkdir $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml
-          cp -Rp $GITHUB_WORKSPACE/sfml-cache/* $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml/
+          path: ${{github.workspace}}/SFML_INSTALL
+          key: CACHE_IOS_SFML_${{env.SFML_VERSION}}
 
       - name: Build SFML
         if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
+          cd $GITHUB_WORKSPACE
+          wget -nv https://github.com/SFML/SFML/releases/download/$SFML_VERSION/SFML-$SFML_VERSION-sources.zip
+          unzip SFML-$SFML_VERSION-sources.zip
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/18.1.5063045 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug ../SFML
-          make -j2
-          make install
-          mkdir $GITHUB_WORKSPACE/sfml-cache
-          cp -Rp $ANDROID_SDK_ROOT/ndk/18.1.5063045/sources/third_party/sfml/* $GITHUB_WORKSPACE/sfml-cache/
-
-      - name: Build TGUI
-        run: |
-          mkdir $GITHUB_WORKSPACE/TGUI-build
-          cd $GITHUB_WORKSPACE/TGUI-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/18.1.5063045 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_API=26 -DCMAKE_BUILD_TYPE=Debug -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
-          make -j2
-          make install
-
-      - name: Build example
-        run: |
-          cd $GITHUB_WORKSPACE/TGUI/examples/android-sfml
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'armeabi-v7a'/" app/build.gradle
-          ./gradlew build
-
-  linux-sdl:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libsdl2-dev libsdl2-ttf-dev
+          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DCMAKE_TOOLCHAIN_FILE=../SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake -DIOS_PLATFORM=OS -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML-$SFML_VERSION
+          cmake --build . --config Debug --target install
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
@@ -225,91 +754,207 @@ jobs:
           path: TGUI
 
       - name: Build TGUI
-        run: |
+        run: >
           mkdir $GITHUB_WORKSPACE/TGUI-build
+
           cd $GITHUB_WORKSPACE/TGUI-build
-          cmake -DTGUI_BACKEND=SDL -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
-          make -j2
 
-      - name: Run tests
-        run: |
-          cd $GITHUB_WORKSPACE/TGUI-build/tests
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests
+          cmake
+          -G "Unix Makefiles"
+          -DCMAKE_TOOLCHAIN_FILE=../TGUI/cmake/toolchains/iOS.toolchain.cmake
+          -DPLATFORM=OS64
+          -DDEPLOYMENT_TARGET=14.4
+          -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=3
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTGUI_CXX_STANDARD=20
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
 
-  windows-sdl:
-    runs-on: windows-latest
+          make -j3
+
+  #----------------------------------------
+
+  # TODO: How to put this in a separate workflow file?
+  #       The idea was to have the following at the top:
+  #         on:
+  #           workflow_run:
+  #             workflows: ["CI"]
+  #             branches: ["0.9"]
+  #             types:
+  #             - completed
+  #       and adding the following to the job:
+  #         if: github.event.workflow_run.conclusion == 'success'
+  #
+  #       But considering this CI workflow is also triggered by pull requests, I would need
+  #       some way to only let the nightly build run if this CI workflow was triggered by a push.
+  #       Since I can't find a way to do that, and workflow_dispatch requires a new job anyway,
+  #       I've decided to just put the nightly build code in this file as well.
+  nightly-build-windows-visual-studio:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/0.9'
+    needs: [linux, linux-latest, linux-oldest, windows-sfml-graphics, windows-sdl-ttf-opengl, windows-static-mt, macos, android-sdl-ttf-gles2, android-sfml-graphics, ios-sfml-graphics]
+    runs-on: windows-2016
+    env:
+      SFML_VERSION: 2.5.1
+      MSVC_TOOLSET_VERSION: 141  # VS2017
+      INSTALLED_VS_VERSION: Visual Studio 15 2017
     steps:
       - name: Install dependencies
         run: |
-          cd $env:GITHUB_WORKSPACE
-          C:\msys64\usr\bin\wget.exe -q https://libsdl.org/release/SDL2-devel-2.0.14-VC.zip
-          C:\msys64\usr\bin\wget.exe -q https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip
-          7z x SDL2-devel-2.0.14-VC.zip
-          7z x SDL2_ttf-devel-2.0.15-VC.zip
+          Choco-Install -PackageName doxygen.install
+          cd ${env:GITHUB_WORKSPACE}
+          mkdir x86
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
+          7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip -o"x86"
+          mkdir x64
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-64-bit.zip
+          7z x SFML-${env:SFML_VERSION}-windows-vc15-64-bit.zip -o"x64"
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
         with:
           path: TGUI
 
-      - name: Setting up environment for building with MSVC
-        uses: ilammy/msvc-dev-cmd@v1.8.0
-        with:
-          arch: x64
+      - name: Remove .git folder
+        run:
+          if (Test-Path -Path "${env:GITHUB_WORKSPACE}\TGUI\.git") { Remove-Item "${env:GITHUB_WORKSPACE}\TGUI\.git" -Recurse -Force -Confirm:$false }
 
-      - name: Build TGUI
-        run: |
-          mkdir $env:GITHUB_WORKSPACE/TGUI-build
-          cd $env:GITHUB_WORKSPACE/TGUI-build
-          cmake -G "NMake Makefiles" -DTGUI_BACKEND=SDL -DSDL2_PATH="$env:GITHUB_WORKSPACE/SDL2-2.0.14" -DSDL2_TTF_PATH="$env:GITHUB_WORKSPACE/SDL2_ttf-2.0.15" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_TESTS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ../TGUI
+      - name: Build TGUI (SFML_GRAPHICS, static, x86)
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build-static-x86
+
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build-static-x86
+
+          cmake
+          -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/x86/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DTGUI_SHARED_LIBS=OFF
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_DOC=ON
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
+
           cmake --build . --config Debug
 
-  android-sdl:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Cache SDL
-      uses: actions/cache@v2
-      id: cache-sdl
-      with:
-        path: |
-          ${{github.workspace}}/SDL2-2.0.5
-          ${{github.workspace}}/SDL2_ttf-2.0.14
-          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/freetype
-          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/SDL2
-          ${{github.workspace}}/TGUI/examples/android-sdl/app/build/intermediates/ndkBuild/debug/obj/local/arm64-v8a/objs-debug/SDL2_ttf
-        key: CACHE_LINUX_SDL_2_0_5_AND_SDL_TTF_2_0_14_V3
+          cmake --build . --config Release
 
-    - name: Install dependencies
-      if: steps.cache-sdl.outputs.cache-hit != 'true'
-      run: |
-        sudo apt-get update
-        wget -nv https://www.libsdl.org/release/SDL2-2.0.5.tar.gz
-        tar -xzf SDL2-2.0.5.tar.gz
-        wget -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz
-        tar -xzf SDL2_ttf-2.0.14.tar.gz
+      - name: Build TGUI (SFML_GRAPHICS, static, x64)
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build-static-x64
 
-    - name: Checkout TGUI
-      uses: actions/checkout@v2
-      with:
-        path: TGUI
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build-static-x64
 
-    - name: Generate Config.hpp
-      run: |
-        mkdir $GITHUB_WORKSPACE/TGUI-build-temp
-        cd $GITHUB_WORKSPACE/TGUI-build-temp
-        cmake -DTGUI_BACKEND=Custom -DTGUI_USE_GLES=TRUE -DTGUI_BUILD_GUI_BUILDER=FALSE ../TGUI
-        cd $GITHUB_WORKSPACE
-        rm -R $GITHUB_WORKSPACE/TGUI-build-temp
+          cmake
+          -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A x64
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/x64/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DTGUI_SHARED_LIBS=OFF
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_DOC=ON
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
 
-    - name: Patching example
-      run: |
-        cd $GITHUB_WORKSPACE/TGUI/examples/android-sdl
-        sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'arm64-v8a'/" app/build.gradle
-        ln -s $GITHUB_WORKSPACE/SDL2-2.0.5 app/jni/SDL
-        ln -s $GITHUB_WORKSPACE/SDL2_ttf-2.0.14 app/jni/SDL_ttf
-        ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
+          cmake --build . --config Debug
 
-    - name: Build
-      run: |
-        cd $GITHUB_WORKSPACE/TGUI/examples/android-sdl
-        ./gradlew bundleDebug
+          cmake --build . --config Release
+
+      - name: Build TGUI (SFML_GRAPHICS, dynamic, x86)
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build-dynamic-x86
+
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build-dynamic-x86
+
+          cmake
+          -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/x86/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DTGUI_SHARED_LIBS=ON
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=OFF
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
+
+          cmake --build . --config Debug
+
+          cmake --build . --config Release
+
+      - name: Build TGUI (SFML_GRAPHICS, dynamic, x64)
+        run: >
+          mkdir ${env:GITHUB_WORKSPACE}/TGUI-build-dynamic-x64
+
+          cd ${env:GITHUB_WORKSPACE}/TGUI-build-dynamic-x64
+
+          cmake
+          -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A x64
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/x64/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
+          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DTGUI_SHARED_LIBS=ON
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_GUI_BUILDER=OFF
+          -DTGUI_BUILD_TESTS=OFF
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          ../TGUI
+
+          cmake --build . --config Debug
+
+          cmake --build . --config Release
+
+      - name: Create package (SFML_GRAPHICS, x86)
+        run: |
+          cd ${env:GITHUB_WORKSPACE}
+          echo d | xcopy /s TGUI TGUI-0.9-nightly
+          mkdir TGUI-0.9-nightly\lib
+          move TGUI-build-static-x86\lib\Release\tgui-s.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x86\lib\Debug\tgui-s-d.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x86\lib\Debug\tgui-s-d.pdb TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Release\tgui.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Release\tgui.dll TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.dll TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.pdb TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x86\doc\html TGUI-0.9-nightly\doc\
+          7z a -tzip TGUI-0.9-nightly-VisualStudio-32bit-for-SFML-${env:SFML_VERSION}.zip TGUI-0.9-nightly
+          Remove-Item TGUI-0.9-nightly -Recurse -Force -Confirm:$false
+
+      - name: Create package (SFML_GRAPHICS, x64)
+        run: |
+          cd ${env:GITHUB_WORKSPACE}
+          echo d | xcopy /s TGUI TGUI-0.9-nightly
+          mkdir TGUI-0.9-nightly\lib
+          move TGUI-build-static-x64\lib\Release\tgui-s.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x64\lib\Debug\tgui-s-d.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x64\lib\Debug\tgui-s-d.pdb TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Release\tgui.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Release\tgui.dll TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.lib TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.dll TGUI-0.9-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.pdb TGUI-0.9-nightly\lib\
+          move TGUI-build-static-x64\doc\html TGUI-0.9-nightly\doc\
+          7z a -tzip TGUI-0.9-nightly-VisualStudio-64bit-for-SFML-${env:SFML_VERSION}.zip TGUI-0.9-nightly
+          Remove-Item TGUI-0.9-nightly -Recurse -Force -Confirm:$false
+
+      - name: Publish
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "nightly_build"
+          prerelease: true
+          title: "Nightly build"
+          files: |
+            TGUI-0.9-nightly-*.zip

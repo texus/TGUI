@@ -26,8 +26,8 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/BackendFont.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Global.hpp>
 #include <cstdint>
 

@@ -24,8 +24,8 @@
 
 
 #include <TGUI/Text.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/BackendText.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <algorithm>
 #include <vector>
 #include <cmath>
@@ -44,14 +44,14 @@ namespace tgui
     Text::Text(const Text& other) :
         m_backendText(getBackend()->createText())
     {
-        setString(other.m_string);
+        setString(other.getString());
         setPosition(other.m_position);
         setFont(other.m_font);
         setColor(other.m_color);
         setOutlineColor(other.m_outlineColor);
-        setStyle(other.m_textStyle);
-        setCharacterSize(other.m_characterSize);
-        setOutlineThickness(other.m_outlineThickness);
+        setStyle(other.getStyle());
+        setCharacterSize(other.getCharacterSize());
+        setOutlineThickness(other.getOutlineThickness());
         setOpacity(other.m_opacity);
     }
 
@@ -63,14 +63,10 @@ namespace tgui
         {
             Text temp{other};
             std::swap(m_backendText, temp.m_backendText);
-            std::swap(m_string, temp.m_string);
             std::swap(m_position, temp.m_position);
             std::swap(m_font, temp.m_font);
             std::swap(m_color, temp.m_color);
             std::swap(m_outlineColor, temp.m_outlineColor);
-            std::swap(m_textStyle, temp.m_textStyle);
-            std::swap(m_characterSize, temp.m_characterSize);
-            std::swap(m_outlineThickness, temp.m_outlineThickness);
             std::swap(m_opacity, temp.m_opacity);
         }
 
@@ -102,7 +98,6 @@ namespace tgui
 
     void Text::setString(const String& string)
     {
-        m_string = string;
         m_backendText->setString(string);
     }
 
@@ -110,14 +105,13 @@ namespace tgui
 
     const String& Text::getString() const
     {
-        return m_string;
+        return m_backendText->getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Text::setCharacterSize(unsigned int size)
     {
-        m_characterSize = size;
         m_backendText->setCharacterSize(size);
     }
 
@@ -125,7 +119,7 @@ namespace tgui
 
     unsigned int Text::getCharacterSize() const
     {
-        return m_characterSize;
+        return m_backendText->getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +159,7 @@ namespace tgui
     void Text::setFont(Font font)
     {
         m_font = font;
-        m_backendText->setFont(font);
+        m_backendText->setFont(font.getBackendFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,10 +173,6 @@ namespace tgui
 
     void Text::setStyle(TextStyles style)
     {
-        if (style == m_textStyle)
-            return;
-
-        m_textStyle = style;
         m_backendText->setStyle(style);
     }
 
@@ -190,7 +180,7 @@ namespace tgui
 
     TextStyles Text::getStyle() const
     {
-        return m_textStyle;
+        return m_backendText->getStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +202,6 @@ namespace tgui
 
     void Text::setOutlineThickness(float thickness)
     {
-        m_outlineThickness = thickness;
         m_backendText->setOutlineThickness(thickness);
     }
 
@@ -220,7 +209,7 @@ namespace tgui
 
     float Text::getOutlineThickness() const
     {
-        return m_outlineThickness;
+        return m_backendText->getOutlineThickness();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,7 +460,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTextBase> Text::getBackendText() const
+    std::shared_ptr<BackendText> Text::getBackendText() const
     {
         return m_backendText;
     }

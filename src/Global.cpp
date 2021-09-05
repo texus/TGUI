@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <functional>
 #include <sstream>
 #include <locale>
@@ -33,6 +33,36 @@
 #include <stdio.h> // C header for compatibility with _wfopen_s
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if TGUI_COMPILED_WITH_CPP_VER == 20
+namespace
+{
+    // Many compilers don't seem to support std::stringstream::view() yet, but I don't want to
+    // limit the use of other c++20 features. So in c++20 mode we just check if the function exists.
+
+    // This struct will be used when the view() member doesn't exist.
+    template <typename StreamType, typename = void>
+    struct StreamToStringViewConverter
+    {
+        // We can't return string_view because the string has to outlive the view,
+        // but the returned string will be implicitly converted to a string_view later.
+        static std::string convert(const StreamType& stream)
+        {
+            return stream.str();
+        }
+    };
+
+    // This struct will be used when the stringstream has a view() member function.
+    template <typename StreamType>
+    struct StreamToStringViewConverter<StreamType, std::void_t<decltype(&StreamType::view)>>
+    {
+        static std::string_view convert(const StreamType& stream)
+        {
+            return stream.view();
+        }
+    };
+}
+#endif
 
 namespace tgui
 {
@@ -149,7 +179,7 @@ namespace tgui
             }
 
             fileSize = static_cast<std::size_t>(bytesInFile);
-            auto buffer = std::make_unique<std::uint8_t[]>(fileSize);
+            auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(fileSize);
             if (fread(buffer.get(), 1, fileSize, file) != fileSize)
             {
                 fclose(file);
@@ -165,8 +195,11 @@ namespace tgui
 
     bool writeFile(const String& filename, std::stringstream& stream)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 20
+#if TGUI_COMPILED_WITH_CPP_VER > 20
         return writeFile(filename, stream.view());
+#elif TGUI_COMPILED_WITH_CPP_VER == 20
+        const auto& stringOrView = StreamToStringViewConverter<std::stringstream>::convert(stream);
+        return writeFile(filename, stringOrView);
 #else
         return writeFile(filename, stream.str());
 #endif

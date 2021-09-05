@@ -25,9 +25,9 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>
 #endif
 
@@ -1098,7 +1098,7 @@ namespace tgui
 
     void ChildWindow::mouseEnteredWidget()
     {
-#if TGUI_HAS_BACKEND_SFML && (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
+#if TGUI_HAS_WINDOW_BACKEND_SFML && (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
         if (m_resizable && (m_mouseCursor != Cursor::Type::Arrow))
         {
             // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML < 2.6.
@@ -1137,7 +1137,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ChildWindow::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders
         if (m_bordersCached != Borders{0})

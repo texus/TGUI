@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Filesystem.hpp>
+#include <TGUI/Global.hpp>
 
 #include <cstdlib> // getenv
 
@@ -381,11 +382,11 @@ namespace tgui
 #ifdef TGUI_SYSTEM_WINDOWS
     #if defined (_MSC_VER)
         const DWORD requiredBufferSizeHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", nullptr, 0);
-        auto bufferHomeDrive = std::make_unique<wchar_t[]>(requiredBufferSizeHomeDrive);
+        auto bufferHomeDrive = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSizeHomeDrive);
         const DWORD lengthHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", bufferHomeDrive.get(), requiredBufferSizeHomeDrive);
 
         const DWORD requiredBufferSizeHomePath = GetEnvironmentVariableW(L"HOMEPATH", nullptr, 0);
-        auto bufferHomePath = std::make_unique<wchar_t[]>(requiredBufferSizeHomePath);
+        auto bufferHomePath = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSizeHomePath);
         const DWORD lengthHomePath = GetEnvironmentVariableW(L"HOMEPATH", bufferHomePath.get(), requiredBufferSizeHomePath);
 
         if ((lengthHomeDrive + 1 == requiredBufferSizeHomeDrive) && (lengthHomePath + 1 == requiredBufferSizeHomePath))
@@ -417,18 +418,20 @@ namespace tgui
         return Path{std::filesystem::current_path(errorCode)};
 #elif defined(TGUI_SYSTEM_WINDOWS)
         const DWORD requiredBufferSize = GetCurrentDirectoryW(0, nullptr);
-        auto buffer = std::make_unique<wchar_t[]>(requiredBufferSize);
+        auto buffer = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSize);
         const DWORD pathLength = GetCurrentDirectoryW(requiredBufferSize, buffer.get());
         if (pathLength + 1 == requiredBufferSize)
             return Path(String(buffer.get(), pathLength));
+        else
+            return Path();
 #else
         const unsigned BUFFER_SIZE = 4096; // More than enough for any reasonable use and doesn't rely on PATH_MAX
         char buffer[BUFFER_SIZE];
         if (getcwd(buffer, BUFFER_SIZE))
             return Path(buffer);
+        else
+            return Path();
 #endif
-
-        return Path();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,7 +442,7 @@ namespace tgui
 #ifdef TGUI_SYSTEM_WINDOWS
     #if defined (_MSC_VER)
         const DWORD requiredBufferSize = GetEnvironmentVariableW(L"LOCALAPPDATA", nullptr, 0);
-        auto buffer = std::make_unique<wchar_t[]>(requiredBufferSize);
+        auto buffer = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSize);
         const DWORD length = GetEnvironmentVariableW(L"LOCALAPPDATA", buffer.get(), requiredBufferSize);
         if (length + 1 == requiredBufferSize)
             localDataDir = Path(String(buffer.get(), length));

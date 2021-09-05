@@ -22,7 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if TGUI_HAS_BACKEND_SFML
+#include "Tests.hpp"
+
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+
+#include <TGUI/Widgets/Canvas.hpp>
 
 #include <SFML/Graphics/View.hpp>
 namespace sf  // Anonymous namespace didn't work for Clang on macOS
@@ -35,9 +39,6 @@ namespace sf  // Anonymous namespace didn't work for Clang on macOS
             && left.getViewport() == right.getViewport();
     }
 }
-
-#include "Tests.hpp"
-#include <TGUI/Widgets/Canvas.hpp>
 
 TEST_CASE("[Canvas]")
 {
@@ -131,4 +132,4 @@ TEST_CASE("[Canvas]")
     }
 }
 
-#endif // TGUI_HAS_BACKEND_SFML
+#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS

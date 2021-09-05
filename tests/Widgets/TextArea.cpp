@@ -23,8 +23,27 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Widgets/TextArea.hpp>
+
+namespace
+{
+    tgui::Event::KeyEvent createKeyEvent(tgui::Event::KeyboardKey key, bool control, bool shift)
+    {
+        tgui::Event::KeyEvent event;
+        event.alt     = false;
+        event.shift   = shift;
+        event.code    = key;
+#ifdef TGUI_SYSTEM_MACOS
+        event.control = false;
+        event.system  = control;
+#else
+        event.control = control;
+        event.system  = false;
+#endif
+        return event;
+    }
+}
 
 TEST_CASE("[TextArea]")
 {
@@ -226,16 +245,6 @@ TEST_CASE("[TextArea]")
 
         SECTION("KeyPressed")
         {
-            auto keyEvent = [](tgui::Event::KeyboardKey key, bool control, bool shift) {
-                tgui::Event::KeyEvent event;
-                event.control = control;
-                event.alt     = false;
-                event.shift   = shift;
-                event.system  = false;
-                event.code    = key;
-                return event;
-            };
-
             textArea->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
             SECTION("Selecting text")
@@ -244,143 +253,143 @@ TEST_CASE("[TextArea]")
 
                 // Move the caret
                 for (unsigned int i = 0; i < 5; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Up, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Up, false, false));
                 for (unsigned int i = 0; i < 3; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, false));
                 for (unsigned int i = 0; i < 1; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Down, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Down, false, false));
 
                 REQUIRE(textArea->getSelectedText() == "");
 
                 // Move the caret while the shift key is pressed (text will be selected)
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, true));
                 for (unsigned int i = 0; i < 1; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Down, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Down, false, true));
                 for (unsigned int i = 0; i < 3; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, true));
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Up, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Up, false, true));
 
                 REQUIRE(textArea->getSelectedText() == "GHIJKLMNO");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::PageUp, false, true));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageUp, false, true));
                 REQUIRE(textArea->getSelectedText() == "ABCDEFGHIJKLMNO");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::PageDown, false, true));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageDown, false, true));
                 REQUIRE(textArea->getSelectedText() == "PQRSTUVWXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::PageUp, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageUp, false, false));
                 REQUIRE(textArea->getSelectedText() == "");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::PageDown, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageDown, false, false));
                 REQUIRE(textArea->getSelectedText() == "");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Home, false, true));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Home, false, true));
                 REQUIRE(textArea->getSelectedText() == "TUVWX");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::End, false, true));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::End, false, true));
                 REQUIRE(textArea->getSelectedText() == "YZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Home, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Home, false, false));
                 REQUIRE(textArea->getSelectedText() == "");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::End, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::End, false, false));
                 REQUIRE(textArea->getSelectedText() == "");
 
                 // CTRL+A selects the whole text
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::A, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::A, true, false));
                 REQUIRE(textArea->getSelectedText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             }
 
             SECTION("Editing text")
             {
                 for (unsigned int i = 0; i < 4; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTWXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Delete, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Delete, false, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Up, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Up, false, false));
                 for (unsigned int i = 0; i < 3; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, true));
 
                 REQUIRE(textArea->getSelectedText() == "LMN");
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKOPQRSTXYZ");
                 REQUIRE(textArea->getSelectedText() == "");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Up, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Up, false, false));
                 for (unsigned int i = 0; i < 3; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, true));
 
                 REQUIRE(textArea->getSelectedText() == "BCD");
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Delete, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Delete, false, false));
                 REQUIRE(textArea->getText() == "AEFGHIJKOPQRSTXYZ");
                 REQUIRE(textArea->getSelectedText() == "");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Enter, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Enter, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
                 REQUIRE(textArea->getText() == "A\n\nEFGHIJKOPQRSTXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "A\nEFGHIJKOPQRSTXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Down, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Down, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "A\nEFGHIJKOPRSTXYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, false));
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Enter, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "A\nEFGHIJKOP\n\nSTXYZ");
 
                 // The caret should not move when adding a newline at the start of a line that only exists due to word-wrap
                 textArea->setText(""); // Make sure the scrollbar is gone
                 textArea->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
                 for (unsigned int i = 0; i < 17; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Enter, false, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Delete, false, false));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Delete, false, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJ\nLMNOPQRSTUVWXYZ");
             }
 
             SECTION("Copy and Paste")
             {
                 for (unsigned int i = 0; i < 3; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, true));
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::C, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::C, true, false));
                 REQUIRE(getClipboardContents() == "XYZ");
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Left, false, false)); // Deselect text
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::V, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false)); // Deselect text
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::V, true, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZXYZ");
                 REQUIRE(getClipboardContents() == "XYZ");
 
                 // Select some text near the beginning, because if we select text near then end then
                 // it currently depends on the backend which letter is on which line.
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Home, true, false));
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Home, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, false));
                 for (unsigned int i = 0; i < 2; ++i)
-                    textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::Right, false, true));
+                    textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, true));
 
-                textArea->keyPressed(keyEvent(tgui::Event::KeyboardKey::X, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::X, true, false));
                 REQUIRE(textArea->getText() == "ADEFGHIJKLMNOPQRSTUVWXYZXYZ");
                 REQUIRE(getClipboardContents() == "BC");
             }
@@ -389,12 +398,7 @@ TEST_CASE("[TextArea]")
             {
                 auto sendTabEventToGui = [](GuiNull& gui) {
                     tgui::Event event;
-                    event.key = tgui::Event::KeyEvent();
-                    event.key.control = false;
-                    event.key.alt     = false;
-                    event.key.shift   = false;
-                    event.key.system  = false;
-                    event.key.code    = tgui::Event::KeyboardKey::Tab;
+                    event.key = createKeyEvent(tgui::Event::KeyboardKey::Tab, false, false);
                     event.type = tgui::Event::Type::KeyPressed;
                     gui.handleEvent(event);
                 };
@@ -655,12 +659,7 @@ TEST_CASE("[TextArea]")
     {
         SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)")
         {
-            tgui::Event::KeyEvent event;
-            event.control = true;
-            event.alt     = false;
-            event.shift   = false;
-            event.system  = false;
-            event.code    = tgui::Event::KeyboardKey::A;
+            auto event = createKeyEvent(tgui::Event::KeyboardKey::A, true, false);
 
             textArea->setText("Test");
             textArea->keyPressed(event);

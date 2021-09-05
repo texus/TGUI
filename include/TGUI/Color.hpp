@@ -32,7 +32,7 @@
 #include <string>
 #include <map>
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/Color.hpp>
 #endif
 
@@ -55,7 +55,7 @@ namespace tgui
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+#if TGUI_COMPILED_WITH_CPP_VER >= 20
     class Color
 #else
     class TGUI_API Color
@@ -88,7 +88,7 @@ namespace tgui
         {
         }
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from an sf::Color
         ///
@@ -158,7 +158,7 @@ namespace tgui
             return m_isSet;
         }
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts this object into an sf::Color object
         ///
@@ -269,11 +269,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        bool m_isSet;
-        std::uint8_t m_red;
-        std::uint8_t m_green;
-        std::uint8_t m_blue;
-        std::uint8_t m_alpha;
+        bool m_isSet = false;
+        std::uint8_t m_red = 0;
+        std::uint8_t m_green = 0;
+        std::uint8_t m_blue = 0;
+        std::uint8_t m_alpha = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +299,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 20 // Although technically available since c++17, we put the bar higher to allow building TGUI with c++17 in VS2017
     inline constexpr const Color Color::Black      {  0,   0,   0};
     inline constexpr const Color Color::White      {255, 255, 255};
     inline constexpr const Color Color::Red        {255,   0,   0};

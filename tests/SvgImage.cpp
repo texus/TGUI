@@ -24,7 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/SvgImage.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 
 TEST_CASE("[SvgImage]")

@@ -1,0 +1,243 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus' Graphical User Interface
+// Copyright (C) 2012-2021 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef TGUI_BACKEND_GUI_GLFW_HPP
+#define TGUI_BACKEND_GUI_GLFW_HPP
+
+#include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Optional.hpp>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+typedef struct GLFWwindow GLFWwindow;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui
+{
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TGUI_API BackendGuiGLFW : public BackendGui
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor
+        ///
+        /// @warning If you use this constructor then you will still have to call setWindow before using the gui.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BackendGuiGLFW() = default;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructs the gui and set the window on which the gui should be drawn
+        ///
+        /// @param window  The GLFW window that will be used by the gui
+        ///
+        /// If you use this constructor then you will no longer have to call setWindow yourself.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BackendGuiGLFW(GLFWwindow* window);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the window on which the gui should be drawn
+        ///
+        /// @param window  The GLFW window that will be used by the gui
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setWindow(GLFWwindow* window);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a focus event when a callback from glfwSetWindowFocusCallback occurs
+        /// @param focused  GLFW_TRUE if the window was given input focus, or GLFW_FALSE if it lost it
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void windowFocusCallback(int focused);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a framebuffer size event when a callback from glfwSetFramebufferSizeCallback occurs
+        /// @param width  The new width, in pixels, of the framebuffer
+        /// @param height The new height, in pixels, of the framebuffer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void sizeCallback(int width, int height);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a char event when a callback from glfwSetCharCallback occurs
+        /// @param codepoint  The Unicode code point of the character
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void charCallback(unsigned int codepoint);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a key event when a callback from glfwSetKeyCallback occurs
+        /// @param key      The keyboard key that was pressed or released
+        /// @param scancode The system-specific scancode of the key
+        /// @param action   GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+        /// @param mods     Bit field describing which modifier keys were held down
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void keyCallback(int key, int scancode, int action, int mods);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a scroll event when a callback from glfwSetScrollCallback occurs
+        /// @param xoffset  The scroll offset along the x-axis
+        /// @param yoffset  The scroll offset along the y-axis
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollCallback(double xoffset, double yoffset);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a cursor position event when a callback from glfwSetCursorPosCallback occurs
+        /// @param xpos  The new cursor x-coordinate, relative to the left edge of the content area
+        /// @param ypos  The new cursor y-coordinate, relative to the top edge of the content area
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void cursorPosCallback(double xpos, double ypos);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Inform the gui about a mouse button event when a callback from glfwSetMouseButtonCallback occurs
+        /// @param button  The mouse button that was pressed or released
+        /// @param action  One of GLFW_PRESS or GLFW_RELEASE
+        /// @param mods    Bit field describing which modifier keys were held down
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void mouseButtonCallback(int button, int action, int mods);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Give the gui control over the main loop
+        ///
+        /// This function is only intended in cases where your program only needs to respond to gui events.
+        /// For multimedia applications, games, or other programs where you want a high framerate or do a lot of processing
+        /// in the main loop, you should use your own main loop.
+        ///
+        /// You can consider this function to execute something similar (but not identical) to the following code:
+        /// @code
+        /// while (!glfwWindowShouldClose(window))
+        /// {
+        ///     glClear(GL_COLOR_BUFFER_BIT);
+        ///     gui.draw();
+        ///     glfwSwapBuffers(window);
+        ///     glfwWaitEvents();
+        /// }
+        /// @endcode
+        ///
+        /// Note that this function calls glfwSetWindowUserPointer and overwrites callback handlers.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void mainLoop() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetWindowFocusCallback occurs
+        /// @param focused  GLFW_TRUE if the window was given input focus, or GLFW_FALSE if it lost it
+        /// @see windowFocusCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertWindowFocusEvent(int focused);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetFramebufferSizeCallback occurs
+        /// @param width  The new width, in pixels, of the framebuffer
+        /// @param height The new height, in pixels, of the framebuffer
+        /// @see sizeCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertSizeEvent(int width, int height);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetCharCallback occurs
+        /// @param codepoint  The Unicode code point of the character
+        /// @see charCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertCharEvent(unsigned int codepoint);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetKeyCallback occurs
+        /// @param key      The keyboard key that was pressed or released
+        /// @param scancode The system-specific scancode of the key
+        /// @param action   GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+        /// @param mods     Bit field describing which modifier keys were held down
+        /// @see keyCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertKeyEvent(int key, int scancode, int action, int mods);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetScrollCallback occurs
+        /// @param xoffset  The scroll offset along the x-axis
+        /// @param yoffset  The scroll offset along the y-axis
+        /// @see scrollCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertScrollEvent(double xoffset, double yoffset);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetCursorPosCallback occurs
+        /// @param xpos  The new cursor x-coordinate, relative to the left edge of the content area
+        /// @param ypos  The new cursor y-coordinate, relative to the top edge of the content area
+        /// @see cursorPosCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertCursorPosEvent(double xpos, double ypos);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Create an event that can be passed to handleEvent when a callback from glfwSetMouseButtonCallback occurs
+        /// @param button  The mouse button that was pressed or released
+        /// @param action  One of GLFW_PRESS or GLFW_RELEASE
+        /// @param mods    Bit field describing which modifier keys were held down
+        /// @see mouseButtonCallback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Optional<Event> convertMouseButtonEvent(int button, int action, int mods);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the view and changes the size of the root container when needed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateContainerSize() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        GLFWwindow* m_window = nullptr;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif // TGUI_BACKEND_GUI_GLFW_HPP

@@ -27,22 +27,10 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Texture.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
-    #include <SFML/System/Err.hpp>
-#endif
-
 TEST_CASE("[TextureManager]")
 {
-#if TGUI_HAS_BACKEND_SFML
-    std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
-#endif
-
     tgui::Texture texture;
     REQUIRE(tgui::TextureManager::getTexture(texture, "NonExistent.png", true) == nullptr);
-
-#if TGUI_HAS_BACKEND_SFML
-    sf::err().rdbuf(oldbuf);
-#endif
 
     tgui::Texture texture1;
     tgui::Texture texture2;

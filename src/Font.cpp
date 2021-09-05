@@ -24,8 +24,8 @@
 
 
 #include <TGUI/Font.hpp>
-#include <TGUI/Backend.hpp>
-#include <TGUI/BackendFont.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ namespace tgui
 
     Font Font::getGlobalFont()
     {
-        if (!globalFont)
+        if (!globalFont && isBackendSet())
             globalFont = getBackend()->createDefaultFont();
 
         return globalFont;
@@ -84,7 +84,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font::Font(std::shared_ptr<BackendFontBase> backendFont, const String& id) :
+    Font::Font(std::shared_ptr<BackendFont> backendFont, const String& id) :
         m_backendFont(backendFont),
         m_id(id)
     {
@@ -162,7 +162,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendFontBase> Font::getBackendFont() const
+    void Font::setSmooth(bool smooth)
+    {
+        if (m_backendFont)
+            m_backendFont->setSmooth(smooth);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Font::isSmooth() const
+    {
+        if (m_backendFont)
+            return m_backendFont->isSmooth();
+        else
+            return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<BackendFont> Font::getBackendFont() const
     {
         return m_backendFont;
     }

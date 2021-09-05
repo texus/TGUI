@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Core.hpp>
-#include <TGUI/AllWidgets.hpp>
+#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent example, the define can be removed in the future
+#include <TGUI/TGUI.hpp>
 #include <iostream>
 
-bool runExample(tgui::GuiBase& gui)
+bool runExample(tgui::BackendGui& gui)
 {
     try
     {
@@ -226,7 +226,7 @@ bool runExample(tgui::GuiBase& gui)
         chatbox->addLine("Me: The widgets rock ^^", tgui::Color::Yellow);
         gui.add(chatbox);
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         sf::Texture texture;
         sf::Sprite  sprite;
         texture.loadFromFile("../ThinkLinux.jpg");

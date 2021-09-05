@@ -1,7 +1,6 @@
-#include <TGUI/TGUI.hpp>
+#include <TGUI/DefaultBackendWindow.hpp>
 
 int main()
 {
-    sf::RenderTexture target;
-    tgui::Gui gui{target};
+    auto window = tgui::DefaultBackendWindow::create(250, 100, "TGUI");
 }

@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent example, the define can be removed in the future
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 
@@ -32,14 +33,14 @@ void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
     std::cout << "Password: " << password->getText() << std::endl;
 }
 
-void updateTextSize(tgui::GuiBase& gui)
+void updateTextSize(tgui::BackendGui& gui)
 {
     // Update the text size of all widgets in the gui, based on the current window height
     const float windowHeight = gui.getView().getRect().height;
     gui.setTextSize(static_cast<unsigned int>(0.07f * windowHeight)); // 7% of height
 }
 
-void loadWidgets(tgui::GuiBase& gui)
+void loadWidgets(tgui::BackendGui& gui)
 {
     // Specify an initial text size instead of using the default value
     updateTextSize(gui);
@@ -82,7 +83,7 @@ void loadWidgets(tgui::GuiBase& gui)
     button->onPress(&login, editBoxUsername, editBoxPassword);
 }
 
-bool runExample(tgui::GuiBase& gui)
+bool runExample(tgui::BackendGui& gui)
 {
     try
     {

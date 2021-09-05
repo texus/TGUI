@@ -111,7 +111,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableWidget::draw(BackendRenderTargetBase&, RenderStates) const
+    void ClickableWidget::draw(BackendRenderTarget&, RenderStates) const
     {
     }
 

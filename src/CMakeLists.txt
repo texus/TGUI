@@ -1,8 +1,27 @@
+####################################################################################################
+# TGUI - Texus' Graphical User Interface
+# Copyright (C) 2012-2021 Bruno Van de Velde (vdv_b@tgui.eu)
+#
+# This software is provided 'as-is', without any express or implied warranty.
+# In no event will the authors be held liable for any damages arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it freely,
+# subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented;
+#    you must not claim that you wrote the original software.
+#    If you use this software in a product, an acknowledgment
+#    in the product documentation would be appreciated but is not required.
+#
+# 2. Altered source versions must be plainly marked as such,
+#    and must not be misrepresented as being the original software.
+#
+# 3. This notice may not be removed or altered from any source distribution.
+####################################################################################################
+
 set(TGUI_SRC
     Animation.cpp
-    Backend.cpp
-    BackendRenderTarget.cpp
-    BackendTexture.cpp
     Color.cpp
     Components.cpp
     Container.cpp
@@ -13,7 +32,6 @@ set(TGUI_SRC
     Filesystem.cpp
     Font.cpp
     Global.cpp
-    GuiBase.cpp
     Layout.cpp
     ObjectConverter.cpp
     Sprite.cpp
@@ -30,6 +48,12 @@ set(TGUI_SRC
     ToolTip.cpp
     Transform.cpp
     Widget.cpp
+    Backend/Font/BackendFont.cpp
+    Backend/Renderer/BackendRenderTarget.cpp
+    Backend/Renderer/BackendText.cpp
+    Backend/Renderer/BackendTexture.cpp
+    Backend/Window/Backend.cpp
+    Backend/Window/BackendGui.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
     Loading/ImageLoader.cpp
@@ -116,6 +140,9 @@ elseif(TGUI_OS_LINUX)
     list(APPEND TGUI_SRC FileDialogIconLoaderLinux.cpp)
 endif()
 
+# Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
+# Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
+# so this should only be enabled in places where the TGUI is build only once.
 if(TGUI_OPTIMIZE_SINGLE_BUILD)
     list(LENGTH TGUI_SRC fileCount)
     if(TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
@@ -173,10 +200,20 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
-# Add the backend files to the library.
+if(TGUI_OS_LINUX)
+    # For the FileDialog we need to link to pthreads and dl on Linux and BSD (to load system icons in the background)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    target_link_libraries(tgui PRIVATE Threads::Threads)
+    target_link_libraries(tgui PRIVATE ${CMAKE_DL_LIBS})
+endif()
+
+add_library(TGUI::TGUI ALIAS tgui)
+
+# Add the backends to the library.
 # Without the ability to call target_link_libraries in a subdirectory (which was only added in CMake 3.13 in policy CMP0079),
 # the code would be more complicated when using add_subdirectory. So we just avoid creating a new scope by using include.
-include(Backends/CMakeLists.txt)
+include(Backend/CMakeLists.txt)
 
 # Define either TGUI_STATIC or TGUI_DYNAMIC
 if(TGUI_SHARED_LIBS)
@@ -200,27 +237,6 @@ else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
 endif()
 
-if(TGUI_OS_LINUX OR TGUI_OS_BSD)
-    # On Linux and BSD we also need to link to X11
-    find_package(X11 REQUIRED)
-    add_library(TGUI_X11 INTERFACE)
-    target_include_directories(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_INCLUDE_DIR}>")
-    target_link_libraries(TGUI_X11 INTERFACE "$<BUILD_INTERFACE:${X11_X11_LIB}>")
-    install(TARGETS TGUI_X11 EXPORT TGUIConfigExport)
-    target_link_libraries(tgui PRIVATE TGUI_X11)
-
-    # For the FileDialog we need to link to pthreads and dl on Linux and BSD (to load system icons in the background)
-    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-    target_link_libraries(tgui PRIVATE Threads::Threads)
-    target_link_libraries(tgui PRIVATE ${CMAKE_DL_LIBS})
-endif()
-
-# define TGUI_USE_CPP17 if requested
-if(TGUI_USE_CPP17)
-    target_compile_definitions(tgui PUBLIC TGUI_USE_CPP17)
-endif()
-
 # We need to link to an extra library on android (to use the asset manager)
 if(TGUI_OS_ANDROID)
     target_link_libraries(tgui PRIVATE android)
@@ -236,22 +252,24 @@ if(NOT TGUI_OS_WINDOWS AND TGUI_SHARED_LIBS)
     target_compile_options(tgui PRIVATE -fvisibility=hidden)
 endif()
 
-# For Visual Studio on Windows, export debug symbols (PDB files) to lib directory
+# For Visual Studio on Windows, export debug symbols (PDB files) to lib directory (in Debug and RelWithDebInfo configurations)
 if(TGUI_GENERATE_PDB)
-    # PDB files are only generated in Debug and RelWithDebInfo configurations, find out which one
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        set(TGUI_PDB_POSTFIX "-d")
-    else()
-        set(TGUI_PDB_POSTFIX "")
-    endif()
+    # Linker PDB files seem to be generated on the correct location and with the correct name in VS2017,
+    # so we only have deal with the compiler PDBs for static libraries.
+    # In VS2019 compiler PDBs are also correctly generated by default, but in VS2017 the file is located at the wrong
+    # location and lacks the "-d" postfix. The behavior depends on the toolset version, not the IDE version itself.
+    # When using NMake Makefiles (even with VS2019), the same behavior as the v141 toolset (VS2017) is observed.
+    # MSVC_IDE is 1 when using a generator with "Visual Studio" in its name.
+    if(NOT TGUI_SHARED_LIBS AND (NOT MSVC_IDE OR MSVC_VERSION LESS 1920))  # 1920 = VS2019 (v142 toolset)
+        # In multi-configuration builds the CMAKE_BUILD_TYPE shouldn't be used and the postfix can be wrong.
+        # A generator expression for COMPILE_PDB_NAME to solve this didn't seem to work though.
+        # RelWithDebInfo is less likely to be used, so we will default to "-d" at the end.
+        if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+            set(TGUI_PDB_POSTFIX "")
+        else()
+            set(TGUI_PDB_POSTFIX "-d")
+        endif()
 
-    if(TGUI_SHARED_LIBS)
-        # DLLs export debug symbols in the linker PDB (the compiler PDB is an intermediate file)
-        set_target_properties(tgui PROPERTIES
-                              PDB_NAME "tgui${TGUI_PDB_POSTFIX}"
-                              PDB_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
-    else()
-        # Static libraries have no linker PDBs, thus the compiler PDBs are relevant
         set_target_properties(tgui PROPERTIES
                               COMPILE_PDB_NAME "tgui-s${TGUI_PDB_POSTFIX}"
                               COMPILE_PDB_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
@@ -298,6 +316,9 @@ if(TGUI_OS_ANDROID)
     add_subdirectory(Android)
 endif()
 
+# Generate the Config.hpp header
+configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
+
 # Install library
 install(TARGETS tgui EXPORT TGUIConfigExport
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
@@ -307,7 +328,8 @@ install(TARGETS tgui EXPORT TGUIConfigExport
 )
 
 # Generate the TGUIConfig.cmake file
-# This has to happen here instead of in the root CMakeLists.txt because otherwise
-# it might try to write to the macOS framework before the framework is installed.
+# This has to happen here instead of in the root CMakeLists.txt because otherwise it might try to write to the macOS framework before the framework is installed.
 # This is because the order of install rules is undefined between directories.
+# Some related things changed in CMake 3.13, so once the minimum cmake version is increased we should check if the issue still exists.
+# Since the config files relies on variables that are only defined in this scope (via the backend include), caution is required when moving this.
 tgui_export_target(TGUIConfigExport)

@@ -34,10 +34,6 @@
 #include <vector>
 #include <memory>
 
-#if TGUI_HAS_BACKEND_SFML
-    #include <SFML/Graphics/Shader.hpp>
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -244,7 +240,7 @@ namespace tgui
         /// @internal
         /// Returns the internal SVG texture for drawing.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::shared_ptr<BackendTextureBase>& getSvgTexture() const
+        const std::shared_ptr<BackendTexture>& getSvgTexture() const
         {
             return m_svgTexture;
         }
@@ -284,7 +280,7 @@ namespace tgui
 
         Vector2f    m_size;
         Texture     m_texture;
-        std::shared_ptr<BackendTextureBase> m_svgTexture;
+        std::shared_ptr<BackendTexture> m_svgTexture;
         std::vector<Vertex> m_vertices;
         std::vector<int> m_indices;
 

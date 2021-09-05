@@ -26,7 +26,7 @@
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Optional.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #include <cmath>
 

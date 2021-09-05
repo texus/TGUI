@@ -135,7 +135,7 @@ namespace tgui
         setTitleButtons(ChildWindow::TitleButton::None);
         Container::setTextSize(getGlobalTextSize());
 
-        auto pixels = std::make_unique<std::uint8_t[]>(colorWheelSize * colorWheelSize * 4);
+        auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(colorWheelSize * colorWheelSize * 4);
         for (unsigned int y = 0; y < colorWheelSize; ++y)
         {
             for (unsigned int x = 0; x < colorWheelSize; ++x)
@@ -581,7 +581,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ColorPicker::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void ColorPicker::draw(BackendRenderTarget& target, RenderStates states) const
     {
         ChildWindow::draw(target, states);
 

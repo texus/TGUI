@@ -42,7 +42,7 @@ TEST_CASE("[Duration]")
             REQUIRE(tgui::Duration(0) == std::chrono::nanoseconds(0));
             REQUIRE(tgui::Duration(15) == std::chrono::milliseconds(15));
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_WINDOW_BACKEND_SFML
             REQUIRE(tgui::Duration(sf::milliseconds(20)) == std::chrono::milliseconds(20));
 #endif
         }
@@ -53,7 +53,7 @@ TEST_CASE("[Duration]")
         REQUIRE(std::chrono::duration<int>(tgui::Duration(10000)).count() == 10);
         REQUIRE(std::chrono::nanoseconds(tgui::Duration(std::chrono::microseconds(3))).count() == 3000);
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_WINDOW_BACKEND_SFML
         REQUIRE(sf::Time(tgui::Duration(std::chrono::milliseconds(50))).asMilliseconds() == 50);
 #endif
     }

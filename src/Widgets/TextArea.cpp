@@ -1895,7 +1895,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void TextArea::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const RenderStates statesForScrollbar = states;
 

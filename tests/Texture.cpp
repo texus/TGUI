@@ -27,10 +27,6 @@
 #include <TGUI/Texture.hpp>
 #include <TGUI/TextureManager.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
-    #include <SFML/System/Err.hpp>
-#endif
-
 TEST_CASE("[Texture]")
 {
     SECTION("Loading")
@@ -45,15 +41,8 @@ TEST_CASE("[Texture]")
             }
             SECTION("Image not found")
             {
-#if TGUI_HAS_BACKEND_SFML
-                std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
-#endif
                 REQUIRE_THROWS_AS(tgui::Texture("NonExistent.png"), tgui::Exception);
                 REQUIRE_THROWS_AS(texture.load("NonExistent.png"), tgui::Exception);
-
-#if TGUI_HAS_BACKEND_SFML
-                sf::err().rdbuf(oldbuf);
-#endif
             }
 
             REQUIRE(texture.getId() == "");
@@ -193,7 +182,7 @@ TEST_CASE("[Texture]")
         REQUIRE(texture.getColor() == tgui::Color::Red);
     }
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     SECTION("Shader")
     {
         tgui::Texture texture{"resources/image.png"};
@@ -213,7 +202,7 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldBackendTextureLoader = tgui::Texture::getBackendTextureLoader();
 
-        auto func = [&](tgui::BackendTextureBase&, const tgui::String& filename) {
+        auto func = [&](tgui::BackendTexture&, const tgui::String& filename) {
             REQUIRE(filename == "resources/image.png");
             count++;
             return true;
@@ -234,7 +223,7 @@ TEST_CASE("[Texture]")
         auto func = [&](tgui::Texture& texture, const tgui::String& filename, bool) {
             REQUIRE(filename == "resources/image.png");
             auto data = std::make_shared<tgui::TextureData>();
-            data->backendTexture = std::make_shared<tgui::BackendTextureBase>();
+            data->backendTexture = std::make_shared<tgui::BackendTexture>();
             texture.getBackendTextureLoader()(*data->backendTexture, filename);
             count++;
             return data;

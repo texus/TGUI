@@ -91,7 +91,7 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(u16s.begin(), u16s.end()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(tgui::String(u32s.begin(), u32s.end()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_WINDOW_BACKEND_SFML
         REQUIRE(tgui::String(sf::String("xyz")) == "xyz");
 #endif
 
@@ -118,7 +118,7 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(U"\U00010348").toUtf16() == u"\U00010348");
         REQUIRE(tgui::String(U"\U00010348").toUtf32() == U"\U00010348");
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_WINDOW_BACKEND_SFML
         REQUIRE(sf::String(tgui::String(U"test")) == sf::String("test"));
 #endif
 

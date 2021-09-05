@@ -393,7 +393,12 @@ TEST_CASE("[EditBox]")
             REQUIRE(textChangedCount == 6);
 
             editBox->selectText();
+
+#ifdef TGUI_SYSTEM_MACOS
+            keyEvent.system = true;
+#else
             keyEvent.control = true;
+#endif
 
             keyEvent.code = tgui::Event::KeyboardKey::C;
             editBox->keyPressed(keyEvent);
@@ -786,11 +791,16 @@ TEST_CASE("[EditBox]")
         SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)")
         {
             tgui::Event::KeyEvent event;
-            event.control = true;
+            event.code    = tgui::Event::KeyboardKey::A;
             event.alt     = false;
             event.shift   = false;
+#ifdef TGUI_SYSTEM_MACOS
+            event.control = false;
+            event.system  = true;
+#else
+            event.control = true;
             event.system  = false;
-            event.code    = tgui::Event::KeyboardKey::A;
+#endif
 
             editBox->setText("Test");
             editBox->keyPressed(event);

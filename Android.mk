@@ -1,3 +1,7 @@
+# This file is used to build TGUI on Android with the SDL-TTF-GLES2 backend.
+# For the SFML_GRAPHICS backend, CMake is used and this file can be ignored.
+# No other backends are currently supported.
+
 LOCAL_PATH := $(call my-dir)
 
 ###########################
@@ -20,10 +24,16 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES := \
     $(subst $(LOCAL_PATH)/,, \
         $(wildcard $(LOCAL_PATH)/src/*.cpp) \
-        $(wildcard $(LOCAL_PATH)/src/Backends/SDL/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Loading/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Renderers/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Widgets/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Font/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Font/SDL_ttf/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Renderer/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Renderer/GLES2/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Window/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/Window/SDL/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Backend/SDL-TTF-GLES2.cpp) \
     )
 
 LOCAL_SHARED_LIBRARIES := SDL2 SDL2_ttf
@@ -40,9 +50,9 @@ LOCAL_CFLAGS += \
     -Wdouble-promotion \
     -Wformat=2
 
-LOCAL_CPPFLAGS += -fexceptions -frtti -std=c++14
+LOCAL_CPP_FEATURES := rtti exceptions
 
-LOCAL_LDLIBS := -landroid -lGLESv3 -llog
+LOCAL_LDLIBS := -landroid -lGLESv1_CM -lGLESv2 -llog
 
 # Don't strip debug symbols for debug libraries
 ifeq ($(NDK_DEBUG),1)
@@ -62,10 +72,10 @@ LOCAL_MODULE := tgui-s
 
 LOCAL_MODULE_FILENAME := libtgui-s
 
-LOCAL_CPPFLAGS += -fexceptions -frtti -std=c++14
+LOCAL_CPP_FEATURES := rtti exceptions
 
 LOCAL_LDLIBS := 
-LOCAL_EXPORT_LDLIBS := -landroid -lGLESv3 -llog
+LOCAL_EXPORT_LDLIBS := -landroid -lGLESv1_CM -lGLESv2 -llog
 
 include $(BUILD_STATIC_LIBRARY)
 

@@ -167,7 +167,14 @@ namespace tgui
 
     Widget::Ptr SubwidgetContainer::askToolTip(Vector2f mousePos)
     {
-        return m_container->askToolTip(mousePos);
+        auto toolTip = m_container->askToolTip(mousePos - getPosition());
+        if (toolTip)
+            return toolTip;
+
+        if (m_toolTip)
+            return getToolTip();
+
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +213,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void SubwidgetContainer::draw(BackendRenderTarget& target, RenderStates states) const
     {
         m_container->draw(target, states);
     }

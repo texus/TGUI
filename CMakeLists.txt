@@ -1,61 +1,115 @@
+####################################################################################################
+# TGUI - Texus' Graphical User Interface
+# Copyright (C) 2012-2021 Bruno Van de Velde (vdv_b@tgui.eu)
+#
+# This software is provided 'as-is', without any express or implied warranty.
+# In no event will the authors be held liable for any damages arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it freely,
+# subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented;
+#    you must not claim that you wrote the original software.
+#    If you use this software in a product, an acknowledgment
+#    in the product documentation would be appreciated but is not required.
+#
+# 2. Altered source versions must be plainly marked as such,
+#    and must not be misrepresented as being the original software.
+#
+# 3. This notice may not be removed or altered from any source distribution.
+####################################################################################################
+
+# CMake's built-in Android support requires 3.7
+# Normally CMAKE_SYSTEM_NAME is still empty here, but for Android this value is set by the user to tell CMake to cross-compile.
+#
+# If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
+# When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
+#
+# These are the changed policies that we mostly care about:
+# - CMP0068 (3.9):  RPATH settings on macOS do not affect install_name.
+# - CMP0072 (3.11): FindOpenGL prefers GLVND by default when available.
+# - CMP0074 (3.12): find_package uses PackageName_ROOT variables.
+# - CMP0076 (3.13): target_sources() command converts relative paths to absolute.
+# - CMP0082 (3.14): Install rules from add_subdirectory() are interleaved with those in caller.
+# - CMP0091 (3.15): MSVC runtime library flags are selected by an abstraction.
+# - CMP0092 (3.15): MSVC warning flags are not in CMAKE_{C,CXX}_FLAGS by default.
+#
+# TODO: Investigate the effect of CMP0126 that was instroduced in CMake 3.21 (set(CACHE) does not remove a normal variable of the same name).
+#       Is our code fully compatible with the new behavior? If so then "3.20" below can be changed to "3.21".
+#
+# TODO TGUI_NEXT: Update minimum version to 3.16
 if(CMAKE_SYSTEM_NAME MATCHES "Android")
-    cmake_minimum_required(VERSION 3.7)  # CMake's built-in Android support requires 3.7
+    cmake_minimum_required(VERSION 3.7...3.20)
 else()
-    cmake_minimum_required(VERSION 3.5)
+    cmake_minimum_required(VERSION 3.5...3.20)
 endif()
 
-# Use new RPATH behavior on macOS (CMake 3.9 and newer)
-if(POLICY CMP0068)
-    cmake_policy(SET CMP0068 NEW)
+# TODO TGUI_NEXT
+if(${CMAKE_VERSION} VERSION_LESS "3.16")
+    message("Warning: CMake >= 3.16 will be required by future TGUI versions")
 endif()
 
-# Prefer GLVND OpenGL libraries on linux (CMake 3.11 and newer)
-if (POLICY CMP0072)
-    cmake_policy(SET CMP0072 NEW)
-endif()
-
-# Don't warn about existence of SFML_ROOT variable (CMake 3.12 and newer)
-if(POLICY CMP0074)
-    cmake_policy(SET CMP0074 NEW)
-endif()
-
-# Use target_sources with relative file paths when possible (CMake 3.13 and newer)
-if(POLICY CMP0076)
-    cmake_policy(SET CMP0076 NEW)
-endif()
-
-# Don't add the /W3 flag to MSVC automatically as it causes warnings when we add /W4 (CMake 3.15 and newer)
-if(POLICY CMP0092)
-    cmake_policy(SET CMP0092 NEW)
-endif()
-
-# Initialize CMAKE_OSX_ARCHITECTURES for macOS if not provided by the user.
-# This variable has to be set before the call to project() and is ignored on non-Apple platforms.
-if(NOT CMAKE_OSX_ARCHITECTURES)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "macOS architecture to build. Possible values are 'x86_64', 'arm64' or 'x86_64;arm64' (to build for both)." FORCE)
-endif()
-
+# Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 
 # Set a default build type
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 
-# Project name and version
-project(TGUI VERSION 0.9.1)
+# Initialize CMAKE_OSX_ARCHITECTURES for macOS if not provided by the user.
+# This variable has to be set before the call to project() and is ignored on non-Apple platforms.
+# On iOS the value will be overwritten by our toolchain.
+if(NOT CMAKE_OSX_ARCHITECTURES)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "macOS architecture to build. Possible values are 'x86_64', 'arm64' or 'x86_64;arm64' (to build for both)." FORCE)
+endif()
 
-# TGUI uses the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
+# The iOS toolchain requires that we set the PLATFORM property. This has to be done before the project() call.
+if(CMAKE_TOOLCHAIN_FILE AND CMAKE_TOOLCHAIN_FILE MATCHES "iOS.toolchain.cmake$" AND NOT PLATFORM)
+    tgui_set_option(PLATFORM OS64 STRING "Choose the architecture to build for (i.e. simulator or not)")
+    set_property(CACHE PLATFORM PROPERTY STRINGS OS64;SIMULATOR64;SIMULATORARM64)
+    set(PLATFORM OS64)
+endif()
+
+# Project name and version
+project(TGUI VERSION 0.9.1 LANGUAGES CXX)
+
+# Use the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
 include(GNUInstallDirs)
 
-# Include the configuration file
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
+# Include the configuration file which identifies the OS and compiler
+include(${PROJECT_SOURCE_DIR}/cmake/Config.cmake)
+
+# Remove the CMAKE_OSX_ARCHITECTURES on non-Apple platforms
+if(NOT TGUI_OS_MACOS AND NOT TGUI_OS_IOS)
+    unset(CMAKE_OSX_ARCHITECTURES CACHE)
+endif()
+
+if(TGUI_OS_IOS)
+    # On iOS, hide the APPLE, UNIX and IOS properties created by the toolchain
+    unset(APPLE CACHE)
+    unset(UNIX CACHE)
+    unset(IOS CACHE)
+    set(APPLE TRUE)
+    set(UNIX TRUE)
+    set(IOS TRUE)
+
+    # SFML currently doesn't detect iOS in SFMLConfigDependencies.cmake when CMAKE_SYSTEM_NAME isn't Darwin,
+    # but luckily they don't have an error case so we just manually set the option about which OS was detected.
+    set(FIND_SFML_OS_IOS 1)
+endif()
+
+# Add the modules directory to find some of the dependencies
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 # Add an option for choosing the build type (shared or static)
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
     if(DEFINED BUILD_SHARED_LIBS)
-        tgui_set_option(TGUI_SHARED_LIBS ${BUILD_SHARED_LIBS} BOOL "TRUE to build TGUI as a shared library, FALSE to build it as a static library")
+        set(TGUI_DEFAULT_SHARED_LIBS ${BUILD_SHARED_LIBS})
     else()
-        tgui_set_option(TGUI_SHARED_LIBS TRUE BOOL "TRUE to build TGUI as a shared library, FALSE to build it as a static library")
+        set(TGUI_DEFAULT_SHARED_LIBS TRUE)
     endif()
+
+    tgui_set_option(TGUI_SHARED_LIBS ${TGUI_DEFAULT_SHARED_LIBS} BOOL "TRUE to build TGUI as a shared (dynamic) library, FALSE to build it as a static library")
 else()
     if(TGUI_OS_IOS)
         set(TGUI_SHARED_LIBS FALSE)
@@ -64,86 +118,127 @@ else()
     endif()
 endif()
 
-# Add option to build the examples
-if(NOT TGUI_OS_ANDROID)
-    tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
-else()
-    set(TGUI_BUILD_EXAMPLES FALSE)
+if(TGUI_BACKEND)
+    set(backend_provided TRUE)
+
+    if(TGUI_BACKEND STREQUAL "SFML")
+        set(TGUI_BACKEND SFML_GRAPHICS)
+        message(WARNING "TGUI_BACKEND should no longer be set to 'SFML', you should use 'SFML_GRAPHICS' instead")
+    elseif(TGUI_BACKEND STREQUAL "SDL")
+        if(TGUI_USE_GLES)
+            set(TGUI_BACKEND SDL_TTF_GLES2)
+            message(WARNING "TGUI_BACKEND should no longer be set to 'SDL', you should use 'SDL_TTF_GLES2' instead")
+        else()
+            set(TGUI_BACKEND SDL_TTF_OPENGL3)
+            message(WARNING "TGUI_BACKEND should no longer be set to 'SDL', you should use 'SDL_TTF_OPENGL3' instead")
+        endif()
+    endif()
 endif()
 
-# Add options to build the Gui Builder and tests
-if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
-    tgui_set_option(TGUI_BUILD_GUI_BUILDER TRUE BOOL "TRUE to compile the GUI Builder")
-    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
+# Construct a list of supported backends based on the platform
+set(TGUI_BACKEND_OPTIONS "")
+set(TGUI_BACKEND_OPTIONS_DESC "")
+if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS OR TGUI_OS_ANDROID OR TGUI_OS_IOS)
+    list(APPEND TGUI_BACKEND_OPTIONS SFML_GRAPHICS)
+    string(APPEND TGUI_BACKEND_OPTIONS_DESC " - SFML_GRAPHICS: sfml-graphics\n")
+endif()
+if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS)
+    list(APPEND TGUI_BACKEND_OPTIONS SFML_OPENGL3 SDL_OPENGL3 SDL_TTF_OPENGL3 GLFW_OPENGL3)
+    string(APPEND TGUI_BACKEND_OPTIONS_DESC
+        " - SFML_OPENGL3: sfml-window + OpenGL + FreeType\n"
+        " - SDL_OPENGL3: SDL2 + OpenGL + FreeType\n"
+        " - SDL_TTF_OPENGL3: SDL2 + OpenGL + SDL2_ttf\n"
+        " - GLFW_OPENGL3: GLFW + OpenGL + FreeType\n")
+endif()
+if(TGUI_OS_LINUX) # Only linux because iOS currently isn't supported by our SDL and GLFW backends and Android SDL builds don't use CMake
+    list(APPEND TGUI_BACKEND_OPTIONS SDL_GLES2 SDL_TTF_GLES2 GLFW_GLES2)
+    string(APPEND TGUI_BACKEND_OPTIONS_DESC
+        " - SDL_GLES2: SDL2 + OpenGL ES + FreeType\n"
+        " - SDL_TTF_GLES2: SDL2 + OpenGL ES + SDL2_ttf\n"
+        " - GLFW_GLES2: GLFW + OpenGL ES + FreeType\n")
 endif()
 
-# Set the default c++ standard version to 17 on GCC >= 11
-# Note that we can't use VERSION_GREATER_EQUAL which was only added in CMake 3.7
+tgui_set_option(TGUI_BACKEND SFML_GRAPHICS STRING "Select a backend for rendering or select Custom to use multiple or no backends")
+set_property(CACHE TGUI_BACKEND PROPERTY STRINGS Custom;${TGUI_BACKEND_OPTIONS})
+
+if(NOT backend_provided)
+    # For backwards compatibility we have to select SFML automatically without asking for a backend.
+    # So we only ask for a backend if SFML can't be found.
+    if(NOT DEFINED SFML_STATIC_LIBRARIES)
+        tgui_assign_bool(SFML_STATIC_LIBRARIES NOT TGUI_SHARED_LIBS)
+    endif()
+    if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
+        set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
+        find_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
+    elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
+        find_host_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
+    else()
+        find_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
+    endif()
+
+    if(NOT SFML_PATH AND NOT SFML_DIR AND NOT SFML_FOUND)
+        # Remove the SFML_DIR propery that was created by find_package but which we won't need if we don't select SFML
+        unset(SFML_DIR CACHE)
+
+        message(FATAL_ERROR
+          " Please select a backend by setting the value of TGUI_BACKEND.\n"
+          " \n"
+          " The following backends are available:\n"
+          ${TGUI_BACKEND_OPTIONS_DESC}
+          " \n"
+          " SFML_GRAPHICS is the default and has been preselected, press configure again to continue with this backend.\n"
+          " Select 'Custom' if you wish to build TGUI with multiple or no backends.\n")
+    else()
+        message(STATUS "TGUI_BACKEND wasn't set, but SFML was found. Selecting SFML_GRAPHICS backend for backwards compatibility.")
+    endif()
+endif()
+
+string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
+
+# Use c++17 by default on GCC >= 11
+# Note that we can't use VERSION_GREATER_EQUAL yet because it was only added in CMake 3.7
 if (TGUI_COMPILER_GCC AND (NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "11"))
     set(TGUI_DEFAULT_CXX_STANDARD "17")
-else() # Set the default c++ standard version to 14 on all other compilers
+else() # Use c++14 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
 endif()
 
-tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
-tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a version equal or higher to this")
+tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a c++ version equal or higher to this")
 
 # At least c++14 has to be used
 if(TGUI_CXX_STANDARD LESS "14")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
 endif()
 
-# Define the install directory for miscellaneous files
-if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
-    set(DEFAULT_INSTALL_MISC_DIR .)
-elseif(TGUI_OS_ANDROID)
-    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
-else()
-    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
-endif()
-tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
-mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
-
-# Install pkg-config files by default on Linux and BSD
-if (TGUI_OS_LINUX OR TGUI_OS_BSD)
-    set(TGUI_INSTALL_PKGCONFIG_DEFAULT TRUE)
-else()
-    set(TGUI_INSTALL_PKGCONFIG_DEFAULT FALSE)
-endif()
-
-tgui_set_option(TGUI_INSTALL_PKGCONFIG_FILES ${TGUI_INSTALL_PKGCONFIG_DEFAULT} BOOL "TRUE to automatically install pkg-config files so other projects can find TGUI")
-
-if (TGUI_INSTALL_PKGCONFIG_FILES)
-    tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
-
-    configure_file("pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
-endif()
-
 # Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)
-    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from SFML.")
+    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use the standard libraries as DLLs. This is NOT the option that you need to build TGUI statically, for that you just need to set TGUI_SHARED_LIBS to FALSE.")
+    mark_as_advanced(TGUI_USE_STATIC_STD_LIBS)
 
-    # The following combination of flags is not valid
+    # Building TGUI as a dynamic library but linking statically to the standard library is not valid
     if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_STD_LIBS)
-        message(FATAL_ERROR "TGUI_SHARED_LIBS and TGUI_USE_STATIC_STD_LIBS cannot be used together")
+        message(FATAL_ERROR "TGUI_SHARED_LIBS and TGUI_USE_STATIC_STD_LIBS cannot be used together, you can only link statically to the standard library when TGUI is also build statically")
     endif()
 endif()
 
-# macOS specific options
+if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND (CMAKE_GENERATOR MATCHES "Visual Studio"))
+    tgui_set_option(TGUI_USE_MULTI_PROCESSOR_COMPILATION TRUE BOOL "Use /MP to speed up compilation of the TGUI library by using all cores")
+endif()
+
+# macOS-specific options
 if(TGUI_OS_MACOS)
 
     # Add an option to build framework instead of dylib (release only)
     tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
 
-    # Only the default x86_64 or arm64 architectures are supported
+    # Only x86_64 or arm64 architectures are supported
     foreach (arch IN LISTS CMAKE_OSX_ARCHITECTURES)
         if (NOT (arch STREQUAL "x86_64" OR arch STREQUAL "arm64"))
             message(FATAL_ERROR "Invalid arch ${arch}, only x86_64 and arm64 are supported")
         endif()
     endforeach()
 
-    # Enable to use of rpath according to CMake Policy CMP0042
+    # Enable to use of RPATH according to CMake Policy CMP0042
     set(CMAKE_MACOSX_RPATH 1)
 
     if(TGUI_BUILD_FRAMEWORK)
@@ -161,17 +256,11 @@ if(TGUI_OS_MACOS)
     endif()
 endif()
 
-# Android options
+# Android-specific options
 if(TGUI_OS_ANDROID)
 
-    # Make sure there's the android library available
     if(CMAKE_ANDROID_API LESS 19)
         message(FATAL_ERROR "Android API level (${CMAKE_ANDROID_API}) must be equal or greater than 19.")
-    endif()
-
-    # CMake doesn't support defining the STL to be used with Nsight Tegra, so warn the user
-    if(CMAKE_VS_PLATFORM_NAME STREQUAL "Tegra-Android")
-        message(WARNING "CMake might not properly support setting the STL. Make sure to adjust all generated library projects!")
     endif()
 
     # Install everything in $NDK/sources/third_party by default
@@ -183,11 +272,19 @@ if(TGUI_OS_ANDROID)
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
-# Enable OpenGL ES on mobile platforms or when explicitly requested (option is ignored by backends that don't use OpenGL)
-if(TGUI_OS_IOS OR TGUI_OS_ANDROID)
-    set(TGUI_USE_GLES 1)
-elseif (NOT DEFINED TGUI_USE_GLES)
-    set(TGUI_USE_GLES 0)
+# Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++ when using CMake < 3.15
+# This can't be done in the tgui_set_stdlib function because it is too late to change these variables by then.
+# In newer CMake versions we can do this properly in tgui_set_stdlib thanks to policy CMP0091.
+if(CMAKE_VERSION VERSION_LESS "3.15")
+    if(TGUI_USE_STATIC_STD_LIBS AND (TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
+        foreach(flag
+                CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+            if(${flag} MATCHES "/MD")
+                string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
+            endif()
+        endforeach()
+    endif()
 endif()
 
 # Add an option to choose whether PDB debug symbols should be generated for Visual Studio
@@ -195,49 +292,106 @@ if(TGUI_COMPILER_MSVC)
     tgui_set_option(TGUI_GENERATE_PDB TRUE BOOL "True to generate PDB debug symbols, FALSE otherwise.")
 endif()
 
-# Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++
-# This can't be done in the tgui_set_stdlib macro because it is too late to change these variables by then
-if(TGUI_USE_STATIC_STD_LIBS AND (TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
-    foreach(flag
-            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-        if(${flag} MATCHES "/MD")
-            string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
-        endif()
-    endforeach()
-endif()
-
 # Set the path for the libraries
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 
-# Jump to the CMakeLists.txt file in the source folder
+# Define the macros to link TGUI to its dependencies
+include(${PROJECT_SOURCE_DIR}/cmake/Dependencies.cmake)
+
+# Set up the TGUI library
 add_subdirectory(src)
 
-# Generate the Config.hpp header
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
+# Create an interface to create a console app that uses TGUI (used to build the tests)
+add_library(tgui-console-app-interface INTERFACE)
+target_link_libraries(tgui-console-app-interface INTERFACE tgui)
+if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUAL "SFML_OPENGL3")
+    if(TGUI_OS_IOS)
+        tgui_find_dependency_sfml(main QUIET)
+        target_link_libraries(tgui-console-app-interface INTERFACE sfml-main)
+    endif()
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
+       OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
+    tgui_find_dependency_sdl()
+    target_link_libraries(tgui-console-app-interface INTERFACE SDL2::SDL2main)
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2")
+    # We don't have to do anything for console apps when using GLFW as it assumes a normal main function
+endif()
 
-# Build the documentation when requested
+# Create an interface to create a graphical app that uses TGUI (used to build the examples and Gui Builder)
+add_library(tgui-gui-app-interface INTERFACE)
+target_link_libraries(tgui-gui-app-interface INTERFACE tgui)
+if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUAL "SFML_OPENGL3")
+    if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
+        tgui_find_dependency_sfml(main QUIET)
+        target_link_libraries(tgui-gui-app-interface INTERFACE sfml-main)
+    endif()
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
+       OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
+    tgui_find_dependency_sdl()
+    target_link_libraries(tgui-gui-app-interface INTERFACE SDL2::SDL2main)
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2")
+    if(TGUI_OS_WINDOWS AND NOT CMAKE_VERSION VERSION_LESS "3.13") # VERSION_GREATER_EQUAL was only added in CMake 3.7
+        if(TGUI_COMPILER_MSVC)
+            target_link_options(tgui-gui-app-interface INTERFACE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
+        else()
+            target_link_options(tgui-gui-app-interface INTERFACE "-mwindow")
+        endif()
+    endif()
+endif()
+
+# Optionally build the GUI Builder
+if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
+    tgui_assign_bool(TGUI_DEFAULT_BUILD_GUI_BUILDER TGUI_DEFAULT_BACKEND)
+
+    tgui_set_option(TGUI_BUILD_GUI_BUILDER ${TGUI_DEFAULT_BUILD_GUI_BUILDER} BOOL "TRUE to build the GUI Builder")
+    if(TGUI_BUILD_GUI_BUILDER)
+        add_subdirectory("${PROJECT_SOURCE_DIR}/gui-builder")
+    endif()
+endif()
+
+# Optionally build the examples
+if(NOT TGUI_OS_ANDROID)
+    tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
+    if(TGUI_BUILD_EXAMPLES)
+        add_subdirectory(examples)
+    endif()
+endif()
+
+# Optionally build the tests
+if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
+    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
+    if(TGUI_BUILD_TESTS)
+        add_subdirectory(tests)
+    endif()
+endif()
+
+# Optionally build the documentation
+tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 if(TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
-# Build the examples if requested
-if(TGUI_BUILD_EXAMPLES)
-    add_subdirectory(examples)
+# Define the install directory for miscellaneous files
+if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
+    set(DEFAULT_INSTALL_MISC_DIR .)
+elseif(TGUI_OS_ANDROID)
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
+else()
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
 endif()
+tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
+mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
 
-# Build the tests if requested
-if(TGUI_BUILD_TESTS)
-    if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        message(WARNING "TGUI_BUILD_TESTS is ON but CMAKE_BUILD_TYPE isn't Debug")
-    endif()
+# Install pkg-config files by default on Linux (and BSD)
+tgui_assign_bool(TGUI_INSTALL_PKGCONFIG_DEFAULT TGUI_OS_LINUX)
 
-    add_subdirectory(tests)
-endif()
+tgui_set_option(TGUI_INSTALL_PKGCONFIG_FILES ${TGUI_INSTALL_PKGCONFIG_DEFAULT} BOOL "TRUE to automatically install pkg-config files so other projects can find TGUI")
 
-# Build the GUI Builder if requested
-if(TGUI_BUILD_GUI_BUILDER)
-    add_subdirectory("${PROJECT_SOURCE_DIR}/gui-builder")
+if (TGUI_INSTALL_PKGCONFIG_FILES)
+    tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
+
+    configure_file("pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
 endif()
 
 # Install include files
@@ -246,12 +400,35 @@ if(NOT TGUI_BUILD_FRAMEWORK)
             DESTINATION .
             COMPONENT devel
             FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
+endif()
 
-    if(TGUI_GENERATE_PDB)
-        install(DIRECTORY "${PROJECT_BINARY_DIR}/lib"
-                DESTINATION .
-                COMPONENT devel
-                FILES_MATCHING PATTERN "*.pdb")
+# Install PDB file
+if(TGUI_GENERATE_PDB)
+    # When using a Visual Studio generator, the pdb files are located in Debug and RelWithDebInfo subfolders, but not when
+    # using single-configuration generators such as NMake Makefiles.
+    # When using Linker PDB files (i.e. TGUI_SHARED_LIBS=FALSE), CMake 3.13 introduced a generator expression that helps us.
+    # Linker PDB files are installed next to the dll file (where VS searches them) while compiler PDB files are placed next to the lib file.
+    # TODO: Find a reliable way to know whether the file has a "-d" postfix instead of trying to install both. OPTIONAL is also required for when config is Release.
+    if(TGUI_SHARED_LIBS)
+        if(CMAKE_VERSION VERSION_LESS "3.13")
+            if (MSVC_IDE)
+                install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
+                install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-d.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
+            else()
+                install (FILES "${PROJECT_BINARY_DIR}/lib/tgui.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
+                install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-d.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
+            endif()
+        else()
+            install (FILES $<TARGET_PDB_FILE:tgui> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL COMPONENT devel)
+        endif()
+    else()
+        if (MSVC_IDE)
+            install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+        else()
+            install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+        endif()
     endif()
 endif()
 

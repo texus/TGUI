@@ -80,11 +80,11 @@ namespace tgui
             LControl,     //!< The left Control key
             LShift,       //!< The left Shift key
             LAlt,         //!< The left Alt key
-            LSystem,      //!< The left OS specific key: window (Windows and Linux), apple (MacOS X), ...
+            LSystem,      //!< The left OS specific key (windows key / super key / command key)
             RControl,     //!< The right Control key
             RShift,       //!< The right Shift key
             RAlt,         //!< The right Alt key
-            RSystem,      //!< The right OS specific key: window (Windows and Linux), apple (MacOS X), ...
+            RSystem,      //!< The right OS specific key (windows key / super key / command key)
             Menu,         //!< The Menu key
             LBracket,     //!< The [ key
             RBracket,     //!< The ] key

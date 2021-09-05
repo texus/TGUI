@@ -34,7 +34,7 @@ namespace tgui
     {
         {"BitmapButton", std::make_shared<BitmapButton>},
         {"Button", std::make_shared<Button>},
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         {"Canvas", std::make_shared<CanvasSFML>},
 #endif
         {"ChatBox", std::make_shared<ChatBox>},

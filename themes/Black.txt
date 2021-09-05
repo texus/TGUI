@@ -160,9 +160,9 @@ ListView {
 }
 
 MenuBar {
-    TextureBackground             = "Black.png" Part(71, 330, 8, 6) Middle(2, 2) Smooth;
-    TextureItemBackground         = "Black.png" Part(51, 330, 8, 4) Middle(2, 0, 4, 2) Smooth;
-    TextureSelectedItemBackground = "Black.png" Part(61, 330, 8, 6) Middle(2, 2) Smooth;
+    TextureBackground             = "Black.png" Part(71, 330, 8, 6) Middle(2, 2) NoSmooth;
+    TextureItemBackground         = "Black.png" Part(51, 330, 8, 4) Middle(2, 0, 4, 2) NoSmooth;
+    TextureSelectedItemBackground = "Black.png" Part(61, 330, 8, 6) Middle(2, 2) NoSmooth;
     TextColor                     = rgb(190, 190, 190);
     SelectedTextColor             = White;
     DistanceToSide                = 5;

@@ -1,12 +1,16 @@
 TGUI 0.9.2  (TBD)
 -----------------
 
+- Backends were rewritten
+- Added SFML/OpenGL backend (sfml-window + OpenGL >= 3.3)
+- Added GLFW/OpenGL backend (glfw3 + OpenGL >= 3.3 or GLES >= 2.0)
 - Arrow keys can now be used to navigate TreeView
 - Control/shift now affect using arrow keys in multi-select ListView
 - Added Texture::setDefaultSmooth to choose default interpolation setting
 - String::split now takes an optional boolean to trim the returned values
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
 - Added setWidgetIndex and getWidgetIndex functions to container
+- Added String::contains function
 - saveWidgetsToFile now makes paths relative to the form path
 - Tool tips will no longer be displayed outside the window when close to the side
 - Exception is now thrown when loading a font fails

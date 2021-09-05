@@ -1,3 +1,25 @@
+####################################################################################################
+# TGUI - Texus' Graphical User Interface
+# Copyright (C) 2012-2021 Bruno Van de Velde (vdv_b@tgui.eu)
+#
+# This software is provided 'as-is', without any express or implied warranty.
+# In no event will the authors be held liable for any damages arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it freely,
+# subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented;
+#    you must not claim that you wrote the original software.
+#    If you use this software in a product, an acknowledgment
+#    in the product documentation would be appreciated but is not required.
+#
+# 2. Altered source versions must be plainly marked as such,
+#    and must not be misrepresented as being the original software.
+#
+# 3. This notice may not be removed or altered from any source distribution.
+####################################################################################################
+
 # This script provides the TGUI libraries as imported targets
 # ===========================================================
 #
@@ -5,21 +27,21 @@
 # -----
 #
 # Examples:
-#   find_package(TGUI 0.8)
-#   find_package(TGUI 0.8 REQUIRED)
+#   find_package(TGUI 0.9)
+#   find_package(TGUI 0.9 REQUIRED)
 #
-# By default, the dynamic libraries of TGUI will be found. To find the static ones instead,
-# you must set the TGUI_STATIC_LIBRARIES variable to TRUE before calling find_package(TGUI ...).
+# If you have both dynamic and static TGUI libraries installed then you need to set the TGUI_STATIC_LIBRARIES variable
+# before calling find_package(TGUI ...) in order to select the right library type.
 # example:
 #   set(TGUI_STATIC_LIBRARIES TRUE)
-#   find_package(TGUI 0.8 REQUIRED)
+#   find_package(TGUI 0.9 REQUIRED)
 #
 # On macOS by default CMake will search for frameworks. If you want to use static libraries and have installed
 # both TGUI frameworks and TGUI static libraries, your must set CMAKE_FIND_FRAMEWORK to "NEVER" or "LAST"
 # in addition to setting TGUI_STATIC_LIBRARIES to TRUE. Otherwise CMake will check the frameworks bundle config and
 # fail after finding out that it does not provide static libraries. Please refer to CMake documentation for more details.
 #
-# Additionally, keep in mind that TGUI frameworks are only available as release libraries unlike dylibs which
+# Additionally, keep in mind that TGUI frameworks on macOS are only available as release libraries unlike dylibs which
 # are available for both release and debug modes.
 #
 # If TGUI is not installed in a standard path, you can use the TGUI_DIR CMake variable
@@ -30,34 +52,70 @@
 # ------
 #
 # This script defines the following variable:
-# - TGUI_FOUND:        true if all the required modules are found
+# - TGUI_FOUND:        true if TGUI and all its dependencies are found
 #
 # And the following target:
-#   - tgui
+#   - TGUI::TGUI
 #
 # The TGUI target is the same for both Debug and Release build configurations and will automatically provide
 # correct settings based on your currently active build configuration. The TGUI target name also does not change
 # when using dynamic or static TGUI libraries.
 #
 # example:
-#   find_package(TGUI 0.8 REQUIRED)
+#   find_package(TGUI 0.9 REQUIRED)
 #   add_executable(myapp ...)
-#   target_link_libraries(myapp tgui)
+#   target_link_libraries(myapp TGUI::TGUI)
 
-set(FIND_TGUI_PATHS
-    "${CMAKE_CURRENT_LIST_DIR}/../.."
-    ${TGUI_ROOT}
-    $ENV{TGUI_ROOT}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local
-    /usr
-    /sw
-    /opt/local
-    /opt/csw
-    /opt)
+include(CMakeFindDependencyMacro)
 
-# Choose which target definitions must be imported
+if(NOT DEFINED TGUI_STATIC_LIBRARIES)
+    if(@TGUI_SHARED_LIBS@)
+        set(TGUI_STATIC_LIBRARIES FALSE)
+    else()
+        set(TGUI_STATIC_LIBRARIES TRUE)
+    endif()
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "@TGUI_BUILT_IN_MODULES_DIR@")
+
+# Search for SFML when a backend uses it
+if(NOT DEFINED SFML_STATIC_LIBRARIES)
+    set(SFML_STATIC_LIBRARIES ${TGUI_STATIC_LIBRARIES})
+endif()
+if(@TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS@ OR @TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS@)
+    find_dependency(SFML 2 CONFIG COMPONENTS graphics)
+elseif(@TGUI_HAS_WINDOW_BACKEND_SFML@)
+    find_dependency(SFML 2 CONFIG COMPONENTS window)
+endif()
+
+# Search for GLFW when a backend requires it
+if(@TGUI_HAS_WINDOW_BACKEND_GLFW@)
+    if(@TGUI_FOUND_GLFW_CONFIG@)
+        find_dependency(glfw3 CONFIG)
+    else()
+        find_dependency(glfw3)
+    endif()
+endif()
+
+# Search for SDL when a backend requires it
+if(@TGUI_HAS_WINDOW_BACKEND_SDL@ OR @TGUI_HAS_FONT_BACKEND_SDL_TTF@)
+    if(@TGUI_FOUND_SDL2_CONFIG@)
+        find_dependency(SDL2 CONFIG)
+    else()
+        find_dependency(SDL2)
+    endif()
+endif()
+
+# Search for SDL_ttf when a backend requires it
+if(@TGUI_HAS_FONT_BACKEND_SDL_TTF@)
+    if(@TGUI_FOUND_SDL2_TTF_CONFIG@)
+        find_dependency(sdl2-ttf CONFIG)
+    else()
+        find_dependency(SDL2_ttf)
+    endif()
+endif()
+
+# Choose whether the target definitions of static or shared libs must be imported
 if (TGUI_STATIC_LIBRARIES)
 	set(TGUI_IS_FRAMEWORK_INSTALL "@TGUI_BUILD_FRAMEWORKS@")
     if (TGUI_IS_FRAMEWORK_INSTALL)
@@ -70,22 +128,11 @@ else()
 endif()
 set(targets_config_file "${CMAKE_CURRENT_LIST_DIR}/TGUI${config_name}Targets.cmake")
 
-# Generate imported targets for TGUI
+# Generate imported target for TGUI
 if (EXISTS "${targets_config_file}")
-    # Set TGUI_FOUND to TRUE by default, may be overwritten by one of the includes below
+    # Set TGUI_FOUND to TRUE by default, may be overwritten by the include below
     set(TGUI_FOUND TRUE)
     include("${targets_config_file}")
-
-    # Search for X11 on Linux and BSD
-    if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR CMAKE_SYSTEM_NAME MATCHES "^k?FreeBSD$" OR CMAKE_SYSTEM_NAME MATCHES "^OpenBSD$")
-        find_library(TGUI_X11_LIB NAMES X11 PATHS ${FIND_TGUI_PATHS} PATH_SUFFIXES lib NO_SYSTEM_ENVIRONMENT_PATH)
-        mark_as_advanced(TGUI_X11_LIB)
-        if(TGUI_X11_LIB)
-            set_property(TARGET TGUI_X11 APPEND PROPERTY INTERFACE_LINK_LIBRARIES "${TGUI_X11_LIB}")
-        else()
-            set(FIND_TGUI_DEPENDENCIES_NOTFOUND "${FIND_TGUI_DEPENDENCIES_NOTFOUND} X11" PARENT_SCOPE)
-        endif()
-    endif()
 else()
     set(FIND_TGUI_ERROR "Requested TGUI configuration (${config_name}) was not found")
     set(TGUI_FOUND FALSE)
@@ -99,6 +146,10 @@ if (NOT TGUI_FOUND)
         # error but continue
         message(STATUS "${FIND_TGUI_ERROR}")
     endif()
+endif()
+
+if (TGUI_FOUND)
+    add_library(TGUI::TGUI ALIAS tgui)
 endif()
 
 if (TGUI_FOUND AND NOT TGUI_FIND_QUIETLY)

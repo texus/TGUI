@@ -356,13 +356,13 @@ TEST_CASE("[ProgressBar]")
 
                 progressBar->setSize({30, 90});
 
-                SECTION("LeftToRight")
+                SECTION("TopToBottom")
                 {
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
                     TEST_DRAW("ProgressBar_TopToBottom.png")
                 }
 
-                SECTION("RightToLeft")
+                SECTION("BottomToTop")
                 {
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
                     TEST_DRAW("ProgressBar_BottomToTop.png")

@@ -53,7 +53,7 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #include <stack>
 #include <cassert>
@@ -408,7 +408,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
     m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
-    eventHandler->onMousePress([=](tgui::Vector2f pos){ onFormMousePress(pos); });
+    eventHandler->onMousePress([this](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
     setSize(formSize);
@@ -420,7 +420,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
         square->setSize(tgui::Vector2f{square->getRenderer()->getTexture().getImageSize()});
         square->setVisible(false);
-        square->onMousePress([=](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
+        square->onMousePress(TGUI_LAMBDA_CAPTURE_EQ_THIS(tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
 }
@@ -693,7 +693,13 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
 
     auto selectedWidget = m_selectedWidget->ptr;
 
-    if (keyEvent.shift && keyEvent.control)
+#ifdef TGUI_SYSTEM_MACOS
+    const auto controlPressed = keyEvent.system;
+#else
+    const auto controlPressed = keyEvent.control;
+#endif
+
+    if (keyEvent.shift && controlPressed)
     {
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
@@ -723,7 +729,7 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
         updateSelectionSquarePositions();
         m_guiBuilder->reloadProperties();
     }
-    else if (keyEvent.control)
+    else if (controlPressed)
     {
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidget->setPosition({selectedWidget->getPosition().x - 1, selectedWidget->getPositionLayout().y});
@@ -1273,8 +1279,14 @@ std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines()
     if (!m_selectedWidget)
         return lines;
 
+#ifdef TGUI_SYSTEM_MACOS
+    const auto controlModifier = tgui::Event::KeyModifier::System;
+#else
+    const auto controlModifier = tgui::Event::KeyModifier::Control;
+#endif
+
     if (!m_draggingWidget && !m_draggingSelectionSquare
-     && !tgui::getBackend()->isKeyboardModifierPressed(tgui::Event::KeyModifier::Control)
+     && !tgui::getBackend()->isKeyboardModifierPressed(controlModifier)
      && !tgui::getBackend()->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
         return lines;
 

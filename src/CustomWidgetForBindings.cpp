@@ -232,7 +232,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CustomWidgetForBindings::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void CustomWidgetForBindings::draw(BackendRenderTarget& target, RenderStates states) const
     {
         implDrawFunction(target, states);
     }

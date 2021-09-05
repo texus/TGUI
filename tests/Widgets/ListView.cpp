@@ -25,7 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/Group.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
 TEST_CASE("[ListView]")
 {
@@ -473,11 +473,16 @@ TEST_CASE("[ListView]")
     SECTION("CopyToClipboard")
     {
         tgui::Event::KeyEvent event;
-        event.control = true;
+        event.code = tgui::Event::KeyboardKey::C;
         event.alt = false;
         event.shift = false;
+#ifdef TGUI_SYSTEM_MACOS
+        event.control = false;
+        event.system = true;
+#else
+        event.control = true;
         event.system = false;
-        event.code = tgui::Event::KeyboardKey::C;
+#endif
 
         listView->addItem("1,1");
         listView->addItem({ "2,1", "2,2", "2,3" });

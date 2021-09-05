@@ -36,7 +36,7 @@
 
 namespace tgui
 {
-    class BackendTextBase;
+    class BackendText;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -358,21 +358,17 @@ namespace tgui
         /// @brief Returns the internal text
         /// @return Backend text that is used internally
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<BackendTextBase> getBackendText() const;
+        std::shared_ptr<BackendText> getBackendText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::shared_ptr<BackendTextBase> m_backendText;
-        String       m_string;
+        std::shared_ptr<BackendText> m_backendText;
         Vector2f     m_position;
         Font         m_font;
         Color        m_color;
         Color        m_outlineColor;
-        TextStyles    m_textStyle = TextStyle::Regular;
-        unsigned int m_characterSize = 32;
-        float        m_outlineThickness = 0;
         float        m_opacity = 1;
     };
 

@@ -34,13 +34,13 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Filesystem.hpp>
+#include <unordered_map>
 #include <type_traits>
 #include <functional>
 #include <typeindex>
 #include <memory>
 #include <vector>
 #include <deque>
-#include <map>
 
 #undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
 
@@ -269,7 +269,7 @@ namespace tgui
 
         bool m_enabled = true;
         String m_name;
-        std::map<unsigned int, std::function<void()>> m_handlers;
+        std::unordered_map<unsigned int, std::function<void()>> m_handlers;
 
         static unsigned int m_lastSignalId;
         static std::deque<const void*> m_parameters;

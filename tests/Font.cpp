@@ -25,23 +25,11 @@
 #include "Tests.hpp"
 #include <TGUI/Font.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
-    #include <SFML/System/Err.hpp>
-#endif
-
 TEST_CASE("[Font]")
 {
     REQUIRE(tgui::Font() == nullptr);
     REQUIRE(tgui::Font(nullptr) == nullptr);
     REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
 
-#if TGUI_HAS_BACKEND_SFML
-    std::streambuf *oldbuf = sf::err().rdbuf(0); // Prevent SFML from printing a warning
-#endif
-
     REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
-
-#if TGUI_HAS_BACKEND_SFML
-    sf::err().rdbuf(oldbuf);
-#endif
 }

@@ -34,7 +34,8 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>

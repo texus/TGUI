@@ -39,7 +39,7 @@
 
 namespace tgui
 {
-    class BackendRenderTargetBase;
+    class BackendRenderTarget;
 
 namespace priv
 {
@@ -419,7 +419,7 @@ namespace dev
 
         void setParent(GroupComponent* parent);
 
-        virtual void draw(BackendRenderTargetBase& target, RenderStates states) const = 0;
+        virtual void draw(BackendRenderTarget& target, RenderStates states) const = 0;
 
         virtual void updateLayout();
 
@@ -460,7 +460,7 @@ namespace dev
 
         const std::vector<std::shared_ptr<Component>>& getComponents() const;
 
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         void updateLayout() override;
 
@@ -508,7 +508,7 @@ namespace dev
 
         bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
 
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         Vector2f getSizeWithoutBorders() const;
 
@@ -582,7 +582,7 @@ namespace dev
 
         void setComponentState(ComponentState state);
 
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         std::shared_ptr<Component> clone() const override;
 
@@ -620,7 +620,7 @@ namespace dev
 
         bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
 
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         std::shared_ptr<Component> clone() const override;
 

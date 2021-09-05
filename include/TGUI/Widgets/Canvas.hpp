@@ -28,7 +28,7 @@
 
 #include <TGUI/Config.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -222,7 +222,7 @@ namespace tgui
         /// @param states Current render states
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(BackendRenderTargetBase& target, RenderStates states) const override;
+        void draw(BackendRenderTarget& target, RenderStates states) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +280,7 @@ namespace tgui
     using Canvas = CanvasSFML;
 }
 
-#endif // TGUI_HAS_BACKEND_SFML
+#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -26,6 +26,7 @@
 #ifndef TGUI_GUI_BUILDER_FORM_HPP
 #define TGUI_GUI_BUILDER_FORM_HPP
 
+#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent code, the define can be removed in the future
 #include "WidgetInfo.hpp"
 #include <TGUI/TGUI.hpp>
 #include <array>

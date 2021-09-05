@@ -53,7 +53,7 @@ TEST_CASE("[Picture]")
             REQUIRE(picture->getRenderer()->getTexture().getId() == "resources/image.png");
         }
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         SECTION("from sf::Texture")
         {
             sf::Texture texture;

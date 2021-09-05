@@ -83,7 +83,7 @@ namespace tgui
 
     bool String::attemptToUInt(unsigned int& result) const
     {
-        const std::string& ansiStr = trim().toStdString();
+        const std::string ansiStr = trim().toStdString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
@@ -104,7 +104,7 @@ namespace tgui
 
     bool String::attemptToFloat(float& result) const
     {
-        const std::string& ansiStr = trim().toStdString();
+        const std::string ansiStr = trim().toStdString();
 
 #if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};

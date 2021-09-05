@@ -38,7 +38,7 @@
 #include <TGUI/Cursor.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Any.hpp>
-#include <TGUI/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
@@ -53,7 +53,7 @@
 
 namespace tgui
 {
-    class GuiBase;
+    class BackendGui;
     class Container;
 
     enum class ShowAnimationType;
@@ -603,7 +603,7 @@ namespace tgui
         ///
         /// @return Pointer to the gui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        GuiBase* getParentGui() const
+        BackendGui* getParentGui() const
         {
             return m_parentGui;
         }
@@ -981,7 +981,7 @@ namespace tgui
         /// @param target Render target to draw to
         /// @param states Current render states
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(BackendRenderTargetBase& target, RenderStates states) const = 0;
+        virtual void draw(BackendRenderTarget& target, RenderStates states) const = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1108,7 +1108,7 @@ namespace tgui
 
         // This will point to our parent widget. If there is no parent then this will be nullptr.
         Container* m_parent = nullptr;
-        GuiBase* m_parentGui = nullptr;
+        BackendGui* m_parentGui = nullptr;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
         bool m_mouseHover = false;

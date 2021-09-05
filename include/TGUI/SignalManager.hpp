@@ -28,8 +28,8 @@
 
 
 #include <TGUI/Widget.hpp>
+#include <unordered_map>
 #include <memory>
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -167,7 +167,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int generateUniqueId();
 
-        unsigned int m_lastId;
+        unsigned int m_lastId = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ namespace tgui
         static SignalManager::Ptr m_manager;
 
         std::vector<Weak> m_widgets;
-        std::map<SignalID, SignalTuple> m_signals;
+        std::unordered_map<SignalID, SignalTuple> m_signals;
         std::vector<ConnectedSignalTuple> m_connectedSignals;
     };
 

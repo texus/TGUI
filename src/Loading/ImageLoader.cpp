@@ -38,7 +38,7 @@
 #   endif
 #elif defined (_MSC_VER)
 #   pragma warning(push)
-#   pragma warning(disable: 4505)
+#   pragma warning(disable: 4505) // Unreferenced local function
 #endif
 
 #define STBI_NO_STDIO
@@ -87,7 +87,7 @@ namespace tgui
         if ((imgWidth > 0) && (imgHeight > 0))
         {
             const std::size_t pixelDataSize = static_cast<std::size_t>(4 * imgWidth * imgHeight);
-            pixelData = std::make_unique<std::uint8_t[]>(pixelDataSize);
+            pixelData = MakeUniqueForOverwrite<std::uint8_t[]>(pixelDataSize);
             std::memcpy(pixelData.get(), buffer, pixelDataSize);
 
             imageSize.x = static_cast<unsigned int>(imgWidth);

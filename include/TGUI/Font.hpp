@@ -37,7 +37,7 @@
 
 namespace tgui
 {
-    class BackendFontBase;
+    class BackendFont;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,7 @@ namespace tgui
     {
         float     advance = 0;  //!< Offset to move horizontally to the next character
         FloatRect bounds;       //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
+        IntRect   textureRect;  //!< Texture coordinates of the glyph inside the font's texture
     };
 
 
@@ -109,7 +110,7 @@ namespace tgui
         /// @param backendFont  Internal font to use
         /// @param id           Id of the font (usually filename)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Font(std::shared_ptr<BackendFontBase> backendFont, const String& id);
+        Font(std::shared_ptr<BackendFont> backendFont, const String& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,16 +201,38 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enable or disable the smooth filter
+        ///
+        /// When the filter is activated, the font appears smoother so that pixels are less noticeable. However if you want
+        /// the font to look exactly the same as its source file then you should disable it.
+        /// The smooth filter is enabled by default.
+        ///
+        /// @param smooth  True to enable smoothing, false to disable it
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSmooth(bool smooth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Tell whether the smooth filter is enabled or not
+        ///
+        /// @return True if smoothing is enabled, false if it is disabled
+        ///
+        /// @see setSmooth
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isSmooth() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the internal font
         /// @return Backend font that is used internally
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<BackendFontBase> getBackendFont() const;
+        std::shared_ptr<BackendFont> getBackendFont() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::shared_ptr<BackendFontBase> m_backendFont;
+        std::shared_ptr<BackendFont> m_backendFont;
         String m_id;
     };
 

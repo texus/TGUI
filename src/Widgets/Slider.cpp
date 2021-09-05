@@ -686,7 +686,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void Slider::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // Draw the borders around the track
         if (m_bordersCached != Borders{0})

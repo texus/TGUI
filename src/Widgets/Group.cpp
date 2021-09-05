@@ -149,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void Group::draw(BackendRenderTarget& target, RenderStates states) const
     {
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 

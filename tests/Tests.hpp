@@ -36,21 +36,21 @@
 #endif
 
 #include "catch.hpp"
-#include <TGUI/GuiBase.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/RenderTexture.hpp>
-    #include <TGUI/Backends/SFML/GuiSFML.hpp>
+    #include <TGUI/Backend/SFML-Graphics.hpp>
 
     #define TEST_DRAW_INIT(width, height, widget) \
                 sf::RenderTexture target; \
                 target.create(width, height); \
-                tgui::GuiSFML gui{target}; \
+                tgui::Gui gui{target}; \
                 gui.add(widget);
 
     #ifdef TGUI_ENABLE_DRAW_TESTS
@@ -158,12 +158,11 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
     }
 }
 
-class GuiNull : public tgui::GuiBase
+class GuiNull : public tgui::BackendGui
 {
 public:
     GuiNull()
     {
-        init();
         setAbsoluteViewport({0, 0, 200, 200});
         setAbsoluteView({0, 0, 200, 200});
     }

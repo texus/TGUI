@@ -27,7 +27,7 @@
 #define TGUI_BACKEND_FONT_CACHE_SDL_HPP
 
 #include <TGUI/Config.hpp>
-#include <map>
+#include <unordered_map>
 
 #include <SDL_ttf.h>
 
@@ -35,7 +35,8 @@
 
 namespace tgui
 {
-    class BackendFontSDL;
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+    class BackendFontSDLttf;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Caches TTF_Font so that they can be reused
@@ -51,7 +52,7 @@ namespace tgui
         ///
         /// @warning This function will assert if the font was still registered somwhere.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void removeFont(const BackendFontSDL* fontId);
+        TGUI_DEPRECATED("The FontCacheSDL class is no longer used!") static void removeFont(const BackendFontSDLttf* fontId);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ namespace tgui
         /// @warning This function must be called before the font is accessed.
         /// @warning Each call to this function requires a call to unregisterFontSize.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void registerFontSize(const BackendFontSDL* fontId, unsigned int characterSize);
+        TGUI_DEPRECATED("The FontCacheSDL class is no longer used!") static void registerFontSize(const BackendFontSDLttf* fontId, unsigned int characterSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +75,7 @@ namespace tgui
         ///
         /// @warning This function has to be called for each call to registerFontSize.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void unregisterFontSize(const BackendFontSDL* fontId, unsigned int characterSize);
+        TGUI_DEPRECATED("The FontCacheSDL class is no longer used!") static void unregisterFontSize(const BackendFontSDLttf* fontId, unsigned int characterSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,15 +88,16 @@ namespace tgui
         ///
         /// If the font did not exist yet in the cache then it will be created here.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TTF_Font* getFont(const BackendFontSDL* fontId, unsigned int characterSize);
+        TGUI_DEPRECATED("The FontCacheSDL class is no longer used!") static TTF_Font* getFont(const BackendFontSDLttf* fontId, unsigned int characterSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
         // fontId -> character size -> (nrUsers, font)
-        static std::map<const BackendFontSDL*, std::map<unsigned int, std::pair<unsigned int, TTF_Font*>>> m_fonts;
+        static std::unordered_map<const BackendFontSDLttf*, std::unordered_map<unsigned int, std::pair<unsigned int, TTF_Font*>>> m_fonts;
     };
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

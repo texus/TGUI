@@ -24,7 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Backend.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/WindowsInclude.hpp>

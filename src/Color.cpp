@@ -30,7 +30,7 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
+#if TGUI_COMPILED_WITH_CPP_VER < 20
     const Color Color::Black      {  0,   0,   0};
     const Color Color::White      {255, 255, 255};
     const Color Color::Red        {255,   0,   0};
@@ -60,8 +60,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START
 TGUI_IGNORE_DEPRECATED_WARNINGS_END
 #endif
 
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    const std::array<std::pair<String, Color>, 9> Color::colorNamesMap
+#if TGUI_COMPILED_WITH_CPP_VER < 20
+    const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
     {
         {{U"black", Color::Black},
          {U"white", Color::White},

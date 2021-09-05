@@ -1,5 +1,28 @@
-if(NOT TGUI_HAS_BACKEND_SFML AND NOT TGUI_HAS_BACKEND_SDL)
-    message(FATAL_ERROR "Tests can't be build without a backend. Uncheck TGUI_BUILD_TESTS or change the backend.")
+####################################################################################################
+# TGUI - Texus' Graphical User Interface
+# Copyright (C) 2012-2021 Bruno Van de Velde (vdv_b@tgui.eu)
+#
+# This software is provided 'as-is', without any express or implied warranty.
+# In no event will the authors be held liable for any damages arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it freely,
+# subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented;
+#    you must not claim that you wrote the original software.
+#    If you use this software in a product, an acknowledgment
+#    in the product documentation would be appreciated but is not required.
+#
+# 2. Altered source versions must be plainly marked as such,
+#    and must not be misrepresented as being the original software.
+#
+# 3. This notice may not be removed or altered from any source distribution.
+####################################################################################################
+
+if(NOT TGUI_DEFAULT_BACKEND)
+    message(WARNING "Warning: Skipping building tests. The TGUI_BUILD_TESTS option was TRUE but no backend was selected")
+    return()
 endif()
 
 set(TEST_SOURCES
@@ -73,6 +96,9 @@ set(TEST_SOURCES
     Widgets/VerticalLayout.cpp
 )
 
+# Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
+# Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
+# so this should only be enabled in places where the TGUI is build only once.
 if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
     list(LENGTH TEST_SOURCES fileCount)
     if (TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
@@ -107,7 +133,7 @@ set(TEST_SOURCES ${TEST_SOURCES} main.cpp) # Main file has to be last and can't 
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(tests PRIVATE tgui tgui-default-backend-interface)
+target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)
@@ -123,14 +149,16 @@ endif()
 # Copy the resources folder to the build directory to execute the tests without installing them
 add_custom_command(TARGET tests
                    POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/expected $<TARGET_FILE_DIR:tests>/expected
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/resources $<TARGET_FILE_DIR:tests>/resources
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/themes $<TARGET_FILE_DIR:tests>/resources)
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/tests/expected" "$<TARGET_FILE_DIR:tests>/expected"
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/tests/resources" "$<TARGET_FILE_DIR:tests>/resources"
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/themes" "$<TARGET_FILE_DIR:tests>/resources")
 
 set(target_install_dir "${TGUI_MISC_INSTALL_PREFIX}/tests")
 
-# Set the RPATH of the executable on Linux and BSD
-if (TGUI_SHARED_LIBS AND (TGUI_OS_LINUX OR TGUI_OS_BSD))
+copy_dlls_to_exe("$<TARGET_FILE_DIR:tests>" "${target_install_dir}" tests)
+
+# Set the RPATH of the executable on Linux (and BSD)
+if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
     file(RELATIVE_PATH rel_lib_dir
          ${CMAKE_INSTALL_PREFIX}/${target_install_dir}
          ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})

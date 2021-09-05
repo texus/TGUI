@@ -36,7 +36,7 @@
 #include <TGUI/Rect.hpp>
 #include <functional>
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Shader.hpp>
 #endif
@@ -50,7 +50,11 @@ namespace tgui
     public:
 
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
-        using BackendTextureLoaderFunc = std::function<bool(BackendTextureBase&, const String&)>;
+#ifdef TGUI_NEXT
+        using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&, bool smooth)>;
+#else
+        using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&)>;
+#endif
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const String&, bool smooth)>;
 
 
@@ -97,7 +101,7 @@ namespace tgui
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
                 bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture from an existing sf::Texture
         ///
@@ -155,7 +159,7 @@ namespace tgui
                   const UIntRect& middleRect = {},
                   bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture from an existing sf::Texture
         ///
@@ -285,7 +289,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getColor() const;
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the shader used to draw the texture
         /// @param shader  New shader to use
@@ -441,7 +445,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-#if TGUI_HAS_BACKEND_SFML
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
         sf::Shader* m_shader = nullptr;
 #endif
 

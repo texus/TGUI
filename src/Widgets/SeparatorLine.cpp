@@ -98,7 +98,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SeparatorLine::draw(BackendRenderTargetBase& target, RenderStates states) const
+    void SeparatorLine::draw(BackendRenderTarget& target, RenderStates states) const
     {
         target.drawFilledRect(states, getSize(), Color::applyOpacity(m_colorCached, m_opacityCached));
     }

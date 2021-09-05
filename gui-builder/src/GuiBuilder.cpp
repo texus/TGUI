@@ -362,6 +362,11 @@ void GuiBuilder::mainLoop()
             }
             else if (event.type == tgui::Event::Type::KeyPressed)
             {
+#ifdef TGUI_SYSTEM_MACOS
+                const auto controlPressed = event.key.system;
+#else
+                const auto controlPressed = event.key.control;
+#endif
                 if ((event.key.code == tgui::Event::KeyboardKey::Left) || (event.key.code == tgui::Event::KeyboardKey::Right)
                  || (event.key.code == tgui::Event::KeyboardKey::Up) || (event.key.code == tgui::Event::KeyboardKey::Down))
                 {
@@ -378,22 +383,22 @@ void GuiBuilder::mainLoop()
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         m_selectedForm->selectParent();
                 }
-                else if ((event.key.code == tgui::Event::KeyboardKey::S) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::S) && controlPressed)
                 {
                     if (m_selectedForm)
                         m_selectedForm->save();
                 }
-                else if ((event.key.code == tgui::Event::KeyboardKey::C) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::C) && controlPressed)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
                 }
-                else if ((event.key.code == tgui::Event::KeyboardKey::V) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::V) && controlPressed)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                         pasteWidgetFromInternalClipboard();
                 }
-                else if ((event.key.code == tgui::Event::KeyboardKey::X) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::X) && controlPressed)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
                     {
@@ -584,7 +589,7 @@ void GuiBuilder::reloadProperties()
         }
 
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
-            [=](const tgui::String& value){
+            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (selectedWidget->name != value)
                     changeWidgetName(value);
             });
@@ -594,7 +599,7 @@ void GuiBuilder::reloadProperties()
         for (const auto& property : m_propertyValuePairs.first)
         {
             addPropertyValueWidgets(topPosition, property,
-                [=](const tgui::String& value){
+                TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                     if (updateWidgetProperty(property.first, value))
                         m_selectedForm->setChanged(true);
                 });
@@ -610,7 +615,7 @@ void GuiBuilder::reloadProperties()
             for (const auto& property : m_propertyValuePairs.second)
             {
                 addPropertyValueWidgets(topPosition, property,
-                    [=](const tgui::String& value){
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                         if (updateWidgetProperty(property.first, value))
                         {
                             m_selectedForm->setChanged(true);
@@ -629,7 +634,7 @@ void GuiBuilder::reloadProperties()
     else // The form itself was selected
     {
         addPropertyValueWidgets(topPosition, {"Filename", {"String", m_selectedForm->getFilename()}},
-            [=](const tgui::String& value){
+            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (m_selectedForm->getFilename() != value)
                 {
                     m_selectedForm->setChanged(true);
@@ -639,7 +644,7 @@ void GuiBuilder::reloadProperties()
             });
 
         addPropertyValueWidgets(topPosition, {"Width", {"UInt", tgui::String::fromNumber(m_selectedForm->getSize().x)}},
-            [=](const tgui::String& value){
+            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().x) != value)
                 {
                     // Form is not marked as changed since the width is saved as editor property
@@ -650,7 +655,7 @@ void GuiBuilder::reloadProperties()
             });
 
         addPropertyValueWidgets(topPosition, {"Height", {"UInt", tgui::String::fromNumber(m_selectedForm->getSize().y)}},
-            [=](const tgui::String& value){
+            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().y) != value)
                 {
                     // Form is not marked as changed since the height is saved as editor property
@@ -701,7 +706,11 @@ void GuiBuilder::closeForm(Form* form)
     m_gui->add(messageBox);
 
     bool haltProgram = true;
+#if __cplusplus > 201703L
+    messageBox->onButtonPress([=,this,&haltProgram](const tgui::String& button){
+#else
     messageBox->onButtonPress([=,&haltProgram](const tgui::String& button){
+#endif
         if (button == "Yes")
             m_selectedForm->save();
 
@@ -781,12 +790,12 @@ void GuiBuilder::loadStartScreen()
     }
 
     auto panel = m_gui->get<tgui::Panel>("MainPanel");
-    panel->get<tgui::Panel>("PnlNewForm")->onClick([=]{
-        showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [=](const tgui::String& filename){
+    panel->get<tgui::Panel>("PnlNewForm")->onClick([this]{
+        showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [this](const tgui::String& filename){
             createNewForm(filename);
         });
     });
-    panel->get<tgui::Panel>("PnlLoadForm")->onClick([=]{
+    panel->get<tgui::Panel>("PnlLoadForm")->onClick([this]{
         showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
     });
 
@@ -799,7 +808,7 @@ void GuiBuilder::loadStartScreen()
             auto labelRecentForm = panel->get<tgui::Label>("LblRecentForm" + tgui::String::fromNumber(i+1));
             labelRecentForm->setText(m_recentFiles[i]);
             labelRecentForm->setVisible(true);
-            labelRecentForm->onClick([=,filename=m_recentFiles[i]]{ loadForm(filename); });
+            labelRecentForm->onClick([this,filename=m_recentFiles[i]]{ loadForm(filename); });
 
             auto buttonRemoveFormFromList = panel->get<tgui::ClickableWidget>("BtnDeleteRecentForm" + tgui::String::fromNumber(i+1));
             buttonRemoveFormFromList->setVisible(true);
@@ -927,7 +936,7 @@ void GuiBuilder::loadToolbox()
         verticalLayout->add(panel);
         toolbox->add(verticalLayout);
 
-        panel->onClick([=]{
+        panel->onClick(TGUI_LAMBDA_CAPTURE_EQ_THIS{
             createNewWidget(widget.second());
 
             auto selectedWidget = m_selectedForm->getSelectedWidget();
@@ -1053,7 +1062,7 @@ void GuiBuilder::initProperties()
         rendererComboBox->setSelectedItem(selectedWidget->theme);
         m_propertiesContainer->add(rendererComboBox, "RendererSelectorComboBox");
 
-        rendererComboBox->onItemSelect([=](const tgui::String& item){
+        rendererComboBox->onItemSelect(TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& item){
             selectedWidget->theme = item;
             if (item != "Custom")
                 selectedWidget->ptr->setRenderer(m_themes[item].getRendererNoThrow(selectedWidget->ptr->getWidgetType()));
@@ -1087,7 +1096,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         propertyEditBox->setText(property);
         m_propertiesContainer->add(propertyEditBox, "Property" + property);
         propertyEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
-        propertyEditBox->onFocus([=]{ m_propertiesContainer->focusNextWidget(); });
+        propertyEditBox->onFocus([this]{ m_propertiesContainer->focusNextWidget(); });
     }
 
     if (type == "Bool")
@@ -1241,7 +1250,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
         messageBox->setPosition("(&.size - size) / 2");
         m_gui->add(messageBox);
 
-        messageBox->onButtonPress([=](const tgui::String& button){
+        messageBox->onButtonPress(TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& button){
             m_gui->remove(panel);
             m_gui->remove(messageBox);
 
@@ -1345,7 +1354,7 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
     window->setFocused(true);
 
     const bool tabUsageEnabled = m_gui->isTabKeyUsageEnabled();
-    auto closeWindow = [=]{
+    auto closeWindow = TGUI_LAMBDA_CAPTURE_EQ_THIS{
         m_gui->remove(window);
         m_gui->remove(panel);
         m_gui->setTabKeyUsageEnabled(tabUsageEnabled);
@@ -1501,7 +1510,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const tgui::String& pro
         buttonMore = tgui::Button::create();
         buttonMore->setText(L"\u22EF");
         buttonMore->setTextSize(18);
-        buttonMore->onFocus([=]{ m_propertiesContainer->focusNextWidget(); });
+        buttonMore->onFocus([this]{ m_propertiesContainer->focusNextWidget(); });
         m_propertiesContainer->add(buttonMore, "ValueButton" + property);
     }
 
@@ -1572,7 +1581,7 @@ void GuiBuilder::addPropertyValueColor(const tgui::String& property, const tgui:
         colorPreviewPanel->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
 
     colorPreviewPanel->onClick.disconnectAll();
-    colorPreviewPanel->onClick([=]{
+    colorPreviewPanel->onClick(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         const tgui::Color color = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor();
         auto colorPicker = tgui::ColorPicker::create("Select color", color);
         openWindowWithFocus(colorPicker);
@@ -1589,7 +1598,7 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto textStyleWindow = openWindowWithFocus();
         textStyleWindow->setTitle("Set text style");
         textStyleWindow->setClientSize({180, 160});
@@ -1628,7 +1637,7 @@ void GuiBuilder::addPropertyValueOutline(const tgui::String& property, const tgu
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set outline");
         outlineWindow->setClientSize({150, 150});
@@ -1668,7 +1677,7 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto multilineStringWindow = openWindowWithFocus();
         multilineStringWindow->setTitle("Set multiline text");
         multilineStringWindow->setClientSize({470, 220});
@@ -1696,7 +1705,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
     };
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto stringListWindow = openWindowWithFocus();
         stringListWindow->setTitle("Set string list");
         stringListWindow->setClientSize({352, 215});
@@ -1806,7 +1815,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto textureWindow = openWindowWithFocus();
         textureWindow->setTitle("Set texture");
         textureWindow->setClientSize({235, 250});
@@ -1836,7 +1845,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
 
         auto separators = std::make_shared<std::vector<tgui::SeparatorLine::Ptr>>();
 
-        auto updateForm = [=](tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
+        auto updateForm = TGUI_LAMBDA_CAPTURE_EQ_THIS(tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
             auto texture = previewPicture->getUserData<std::shared_ptr<tgui::Texture>>();
 
             try
@@ -1950,7 +1959,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         const bool originalSmooth = originalTexture.isSmooth();
         updateForm(originalFilename, originalPartRect, originalMiddleRect, originalSmooth, true, true, true);
 
-        buttonSelectFile->onPress([=]{
+        buttonSelectFile->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
             showLoadFileWindow("Load image", "Load", true, buttonSelectFile->getUserData<tgui::String>(), [=](const tgui::String& filename){
                 updateForm(filename, {}, {}, checkBoxSmooth->isChecked(), true, true, false);
             });
@@ -1965,7 +1974,7 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const tgui::String& prope
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set accepted input");
         outlineWindow->setClientSize({190, 215});
@@ -2017,7 +2026,7 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress([=]{
+    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto titleButtonWindow = openWindowWithFocus();
         titleButtonWindow->setTitle("Set title buttons");
         titleButtonWindow->setClientSize({125, 125});
@@ -2098,7 +2107,7 @@ void GuiBuilder::menuBarCallbackNewForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [=](const tgui::String& filename){
+    showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [this](const tgui::String& filename){
         createNewForm(filename);
     });
 }
@@ -2178,7 +2187,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
             buttonAdd->setEnabled(true);
     });
 
-    buttonAdd->onPress([=]{
+    buttonAdd->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         try
         {
             const tgui::String filename = newThemeEditBox->getText();
@@ -2198,7 +2207,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
         saveGuiBuilderState();
     });
 
-    buttonDelete->onPress([=]{
+    buttonDelete->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
         auto item = themesList->getSelectedItem();
         m_themes.erase(item);
         themesList->removeItem(item);
