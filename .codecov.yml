@@ -9,5 +9,6 @@ coverage:
     changes: off
 ignore:
 - tests/.*
+- gui-builder/.*
 - examples/.*
 - include/TGUI/extlibs/.*
