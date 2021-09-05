@@ -208,7 +208,7 @@ jobs:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
       SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
       SDL_TTF_INSTALL_DIR: ${{github.workspace}}/SDL_TTF_INSTALL
-      GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW
+      GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW_INSTALL
       SFML_VERSION: 2.5.1  # 2.5.0 has issue with mesa
       SDL_VERSION: 2.0.9
       SDL_TTF_VERSION: 2.0.15  # 2.0.14 has no cmake script
@@ -218,44 +218,33 @@ jobs:
       GCC_VERSION: 5
       CLANG_VERSION: '4.0'
     steps:
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        id: cache-deps
-        with:
-          path: |
-            ${{github.workspace}}/SFML_INSTALL
-            ${{github.workspace}}/SDL_INSTALL
-            ${{github.workspace}}/SDL_TTF_INSTALL
-            ${{github.workspace}}/GLFW_INSTALL
-          key: CACHE_LINUX_OLDEST_V1
-
       - name: Cache SFML
         uses: actions/cache@v2
         id: cache-sfml
         with:
-          path: ${{github.workspace}}/SFML_INSTALL
+          path: ${{env.SFML_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SFML_${{env.SFML_VERSION}}
 
       - name: Cache SDL
         uses: actions/cache@v2
         id: cache-sdl
         with:
-          path: ${{github.workspace}}/SDL_INSTALL
+          path: ${{env.SDL_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SDL_${{env.SDL_VERSION}}
 
       - name: Cache SDL_ttf
         uses: actions/cache@v2
         id: cache-sdl-ttf
         with:
-          path: ${{github.workspace}}/SDL_TTF_INSTALL
+          path: ${{env.SDL_TTF_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SDL_TTF_${{env.SDL_TTF_VERSION}}
 
       - name: Cache GLFW
         uses: actions/cache@v2
         id: cache-glfw
         with:
-          path: ${{github.workspace}}/GLFW_INSTALL
-          key: CACHE_LINUX_OLDEST_GLFW_${{env.GLFW_VERSION}}
+          path: ${{env.GLFW_INSTALL_DIR}}
+          key: CACHE_LINUX_OLDEST_GLFW_${{env.GLFW_VERSION}}_V2
 
       - name: Install build tools and dependencies
         run: |
