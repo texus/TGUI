@@ -193,7 +193,14 @@ jobs:
       - name: Run tests
         run: |
           cd $GITHUB_WORKSPACE/TGUI-build/tests
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GLES2
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_GLES2
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
 
       - name: Upload coverage reports to Codecov
         run: |

@@ -183,17 +183,20 @@ TEST_CASE("[Texture]")
     }
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    SECTION("Shader")
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
     {
-        tgui::Texture texture{"resources/image.png"};
-        REQUIRE(!texture.getShader());
+        SECTION("Shader")
+        {
+            tgui::Texture texture{"resources/image.png"};
+            REQUIRE(!texture.getShader());
 
-        sf::Shader shader;
-        texture.setShader(&shader);
-        REQUIRE(texture.getShader() == &shader);
+            sf::Shader shader;
+            texture.setShader(&shader);
+            REQUIRE(texture.getShader() == &shader);
 
-        texture.setShader(nullptr);
-        REQUIRE(!texture.getShader());
+            texture.setShader(nullptr);
+            REQUIRE(!texture.getShader());
+        }
     }
 #endif
 

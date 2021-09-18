@@ -42,93 +42,96 @@ namespace sf  // Anonymous namespace didn't work for Clang on macOS
 
 TEST_CASE("[Canvas]")
 {
-    tgui::Canvas::Ptr canvas = tgui::Canvas::create();
-    canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
-
-    SECTION("WidgetType")
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
     {
-        REQUIRE(canvas->getWidgetType() == "Canvas");
-    }
+        tgui::Canvas::Ptr canvas = tgui::Canvas::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
-    SECTION("constructor")
-    {
-        canvas = tgui::Canvas::create({200, 100});
-        REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
-    }
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "Canvas");
+        }
 
-    SECTION("view")
-    {
-        canvas = tgui::Canvas::create({200, 100});
+        SECTION("constructor")
+        {
+            canvas = tgui::Canvas::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
 
-        REQUIRE(canvas->getView() == sf::View({0, 0, 200, 100}));
-        REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+        SECTION("view")
+        {
+            canvas = tgui::Canvas::create({200, 100});
 
-        canvas->setView(sf::View({20, 10, 100, 50}));
-        REQUIRE(canvas->getView() == sf::View({20, 10, 100, 50}));
-        REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+            REQUIRE(canvas->getView() == sf::View({0, 0, 200, 100}));
+            REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
 
-        REQUIRE(canvas->getViewport() == tgui::IntRect(0, 0, 200, 100));
+            canvas->setView(sf::View({20, 10, 100, 50}));
+            REQUIRE(canvas->getView() == sf::View({20, 10, 100, 50}));
+            REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
 
-        sf::View view({20, 10, 100, 50});
-        view.setViewport({0.1f, 0.2f, 0.5f, 0.6f});
-        canvas->setView(view);
-        REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
-    }
+            REQUIRE(canvas->getViewport() == tgui::IntRect(0, 0, 200, 100));
 
-    SECTION("internal render texture")
-    {
-        canvas = tgui::Canvas::create({50, 50});
-        sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
+            sf::View view({20, 10, 100, 50});
+            view.setViewport({0.1f, 0.2f, 0.5f, 0.6f});
+            canvas->setView(view);
+            REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
+        }
 
-        canvas->setSize({70, 80});
-        canvas->setView(sf::View({20, 10, 100, 50}));
-        canvas->setPosition({10, 5});
+        SECTION("internal render texture")
+        {
+            canvas = tgui::Canvas::create({50, 50});
+            sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
 
-        // The address of the internal render texture never changes
-        REQUIRE(internalRenderTexture == &canvas->getRenderTexture());
-    }
+            canvas->setSize({70, 80});
+            canvas->setView(sf::View({20, 10, 100, 50}));
+            canvas->setPosition({10, 5});
 
-    testWidgetRenderer(canvas->getRenderer());
+            // The address of the internal render texture never changes
+            REQUIRE(internalRenderTexture == &canvas->getRenderTexture());
+        }
 
-    SECTION("Saving and loading from file")
-    {
-        REQUIRE_NOTHROW(canvas = tgui::Canvas::create({60, 40}));
+        testWidgetRenderer(canvas->getRenderer());
 
-        testSavingWidget("Canvas", canvas, false);
-    }
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::Canvas::create({60, 40}));
 
-    SECTION("Draw")
-    {
-        TEST_DRAW_INIT(200, 150, canvas)
+            testSavingWidget("Canvas", canvas, false);
+        }
 
-        tgui::WidgetRenderer renderer = tgui::RendererData::create();
-        renderer.setOpacity(0.7f);
-        canvas->setRenderer(renderer.getData());
+        SECTION("Draw")
+        {
+            TEST_DRAW_INIT(200, 150, canvas)
 
-        canvas->setSize({180, 140});
-        canvas->setPosition({10, 5});
+            tgui::WidgetRenderer renderer = tgui::RendererData::create();
+            renderer.setOpacity(0.7f);
+            canvas->setRenderer(renderer.getData());
 
-        sf::Texture texture;
-        texture.loadFromFile("resources/image.png");
+            canvas->setSize({180, 140});
+            canvas->setPosition({10, 5});
 
-        sf::Sprite sprite;
-        sprite.setTexture(texture);
-        sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
-        sprite.setPosition({15, 20});
+            sf::Texture texture;
+            texture.loadFromFile("resources/image.png");
 
-        std::vector<sf::Vertex> vertices = {
-                {{80, 90}, tgui::Color::Red},
-                {{80, 115}, tgui::Color::Red},
-                {{100, 90}, tgui::Color::Red},
-                {{100, 115}, tgui::Color::Red}
-            };
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
+            sprite.setPosition({15, 20});
 
-        canvas->clear(tgui::Color::Yellow);
-        canvas->draw(sprite);
-        canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip);
-        canvas->display();
+            std::vector<sf::Vertex> vertices = {
+                    {{80, 90}, tgui::Color::Red},
+                    {{80, 115}, tgui::Color::Red},
+                    {{100, 90}, tgui::Color::Red},
+                    {{100, 115}, tgui::Color::Red}
+                };
 
-        TEST_DRAW("Canvas.png")
+            canvas->clear(tgui::Color::Yellow);
+            canvas->draw(sprite);
+            canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip);
+            canvas->display();
+
+            TEST_DRAW("Canvas.png")
+        }
     }
 }
 

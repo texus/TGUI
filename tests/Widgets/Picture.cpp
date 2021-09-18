@@ -54,13 +54,16 @@ TEST_CASE("[Picture]")
         }
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-        SECTION("from sf::Texture")
+        if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
         {
-            sf::Texture texture;
-            texture.loadFromFile("resources/image.png");
+            SECTION("from sf::Texture")
+            {
+                sf::Texture texture;
+                texture.loadFromFile("resources/image.png");
 
-            REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
-            REQUIRE(picture->getRenderer()->getTexture().getId() == "");
+                REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
+                REQUIRE(picture->getRenderer()->getTexture().getId() == "");
+            }
         }
 #endif
 
