@@ -40,8 +40,10 @@ namespace tgui
 
     static GLuint createShaderProgram()
     {
-        // Select the vertex shader based on which GLES version is available
+        // Select the vertex and fragment shaders based on which GLES version is available.
+        // The version for both shaders should be the same (at least with some mesa drivers).
         const GLchar* vertexShaderSource;
+        const GLchar* fragmentShaderSource;
         if (TGUI_GLAD_GL_ES_VERSION_3_1)
         {
             vertexShaderSource =
@@ -56,6 +58,16 @@ namespace tgui
                 "    gl_Position = projectionMatrix * vec4(inPosition.x, inPosition.y, 0, 1);\n"
                 "    color = inColor;\n"
                 "    texCoord = inTexCoord;\n"
+                "}";
+            fragmentShaderSource =
+                "#version 310 es\n"
+                "precision mediump float;\n"
+                "uniform sampler2D uTexture;\n"
+                "in vec4 color;\n"
+                "in vec2 texCoord;\n"
+                "out vec4 outColor;\n"
+                "void main() {\n"
+                "    outColor = texture(uTexture, texCoord) * color;\n"
                 "}";
         }
         else if (TGUI_GLAD_GL_ES_VERSION_3_0)
@@ -73,6 +85,16 @@ namespace tgui
                 "    color = inColor;\n"
                 "    texCoord = inTexCoord;\n"
                 "}";
+            fragmentShaderSource =
+                "#version 300 es\n"
+                "precision mediump float;\n"
+                "uniform sampler2D uTexture;\n"
+                "in vec4 color;\n"
+                "in vec2 texCoord;\n"
+                "out vec4 outColor;\n"
+                "void main() {\n"
+                "    outColor = texture(uTexture, texCoord) * color;\n"
+                "}";
         }
         else // No GLES 3 support
         {
@@ -89,25 +111,6 @@ namespace tgui
                 "    color = inColor;\n"
                 "    texCoord = inTexCoord;\n"
                 "}";
-        }
-
-        // Select the fragment shader based on which GLES version is available
-        const GLchar* fragmentShaderSource;
-        if (TGUI_GLAD_GL_ES_VERSION_3_0)
-        {
-            fragmentShaderSource =
-                "#version 300 es\n"
-                "precision mediump float;\n"
-                "uniform sampler2D uTexture;\n"
-                "in vec4 color;\n"
-                "in vec2 texCoord;\n"
-                "out vec4 outColor;\n"
-                "void main() {\n"
-                "    outColor = texture(uTexture, texCoord) * color;\n"
-                "}";
-        }
-        else // No GLES 3 support
-        {
             fragmentShaderSource =
                 "#version 100\n"
                 "precision mediump float;\n"
@@ -154,7 +157,13 @@ namespace tgui
         GLint programLinked = GL_TRUE;
         TGUI_GL_CHECK(glGetProgramiv(programId, GL_LINK_STATUS, &programLinked));
         if (programLinked != GL_TRUE)
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders."};
+        {
+            GLchar errorMessage[512];
+            GLsizei errorMessageLength = 0;
+            glGetProgramInfoLog(programId, 512, &errorMessageLength, errorMessage);
+            const String errorMessageStr{errorMessage, static_cast<std::size_t>(errorMessageLength)};
+            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders. Error: '" + errorMessageStr + "'"};
+        }
 
         return programId;
     }
