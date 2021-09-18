@@ -96,18 +96,6 @@ namespace tgui
         if (TGUI_GLAD_GL_ES_VERSION_3_0)
         {
             fragmentShaderSource =
-                "#version 100\n"
-                "precision mediump float;\n"
-                "uniform sampler2D uTexture;\n"
-                "varying vec4 color;\n"
-                "varying vec2 texCoord;\n"
-                "void main() {\n"
-                "    gl_FragColor = texture2D(uTexture, texCoord) * color;\n"
-                "}";
-        }
-        else // No GLES 3 support
-        {
-            fragmentShaderSource =
                 "#version 300 es\n"
                 "precision mediump float;\n"
                 "uniform sampler2D uTexture;\n"
@@ -116,6 +104,18 @@ namespace tgui
                 "out vec4 outColor;\n"
                 "void main() {\n"
                 "    outColor = texture(uTexture, texCoord) * color;\n"
+                "}";
+        }
+        else // No GLES 3 support
+        {
+            fragmentShaderSource =
+                "#version 100\n"
+                "precision mediump float;\n"
+                "uniform sampler2D uTexture;\n"
+                "varying vec4 color;\n"
+                "varying vec2 texCoord;\n"
+                "void main() {\n"
+                "    gl_FragColor = texture2D(uTexture, texCoord) * color;\n"
                 "}";
         }
 
