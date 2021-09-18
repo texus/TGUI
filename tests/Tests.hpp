@@ -48,24 +48,38 @@
     #include <TGUI/Backend/SFML-Graphics.hpp>
 
     #define TEST_DRAW_INIT(width, height, widget) \
-                sf::RenderTexture target; \
-                target.create(width, height); \
-                tgui::Gui gui{target}; \
+                std::unique_ptr<tgui::BackendGui> guiPtr; \
+                std::unique_ptr<sf::RenderTexture> target; \
+                if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
+                { \
+                    target = std::make_unique<sf::RenderTexture>(); \
+                    target->create(width, height); \
+                    guiPtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                } \
+                else \
+                    guiPtr = std::make_unique<GuiNull>(); \
+                tgui::BackendGui& gui{*guiPtr}; \
                 gui.add(widget);
 
     #ifdef TGUI_ENABLE_DRAW_TESTS
         #define TEST_DRAW(filename) \
-                    target.clear({25, 130, 10}); \
-                    gui.draw(); \
-                    target.display(); \
-                    target.getTexture().copyToImage().saveToFile(filename); \
-                    compareImageFiles(filename, "expected/" filename);
+                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
+                    { \
+                        target->clear({25, 130, 10}); \
+                        gui.draw(); \
+                        target->display(); \
+                        target->getTexture().copyToImage().saveToFile(filename); \
+                        compareImageFiles(filename, "expected/" filename); \
+                    }
     #else
         #define TEST_DRAW(filename) \
-                    target.clear({25, 130, 10}); \
-                    gui.draw(); \
-                    target.display(); \
-                    target.getTexture().copyToImage().saveToFile(filename);
+                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
+                    { \
+                        target->clear({25, 130, 10}); \
+                        gui.draw(); \
+                        target->display(); \
+                        target->getTexture().copyToImage().saveToFile(filename); \
+                    }
     #endif
 #else
     // Drawing tests are currently unsupported in other backends
