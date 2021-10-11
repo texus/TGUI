@@ -1,0 +1,10 @@
+@media (prefers-color-scheme: dark) {
+    .directory .levels span {
+	    color: #1982d2;
+    }
+
+    address {
+	    font-style: normal;
+	    color: #2a4d99;
+    }
+}

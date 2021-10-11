@@ -28,6 +28,8 @@ EXCLUDE_SYMBOLS        = priv \
                          GuiContainer \
                          GuiResources
 
+HTML_EXTRA_STYLESHEET  = "@DOXYGEN_INPUT_DIR@/doc/doxygen-awesome.css" \
+                         "@DOXYGEN_INPUT_DIR@/doc/custom.css"
 HTML_HEADER            = "@DOXYGEN_INPUT_DIR@/doc/header.html"
 HTML_FOOTER            = "@DOXYGEN_INPUT_DIR@/doc/footer.html"
 
@@ -54,4 +56,5 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_FONT_BACKEND_SDL_TTF=1 \
                          TGUI_HAS_FONT_BACKEND_FREETYPE=1 \
 
+SHOW_NAMESPACES        = NO
 HIDE_UNDOC_RELATIONS   = NO
