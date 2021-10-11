@@ -19,6 +19,18 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Widgets" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Renderers" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/FreeType" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SDL_ttf" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SFML-Graphics" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/GLES2" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/GLFW" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SDL" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SFML" \
                          "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
 EXCLUDE                = "@DOXYGEN_INPUT_DIR@/include/TGUI/DefaultFont.hpp"
