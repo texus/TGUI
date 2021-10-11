@@ -21,6 +21,8 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend" \
                          "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
+EXCLUDE                = "@DOXYGEN_INPUT_DIR@/include/TGUI/DefaultFont.hpp"
+
 EXCLUDE_SYMBOLS        = priv \
                          DataIO \
                          TextureData \
@@ -54,7 +56,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
                          TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_FONT_BACKEND_SDL_TTF=1 \
-                         TGUI_HAS_FONT_BACKEND_FREETYPE=1 \
+                         TGUI_HAS_FONT_BACKEND_FREETYPE=1
 
 SHOW_NAMESPACES        = NO
 HIDE_UNDOC_RELATIONS   = NO
