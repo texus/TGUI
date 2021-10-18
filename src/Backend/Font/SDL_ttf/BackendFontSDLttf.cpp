@@ -143,7 +143,7 @@ namespace tgui
 
         glyph.advance = static_cast<float>(advance);
         glyph.bounds.left = static_cast<float>(minX);
-        glyph.bounds.top = static_cast<float>(-maxY);
+        glyph.bounds.top = static_cast<float>(-maxY) + 2*outlineThickness;
         glyph.bounds.width = static_cast<float>(maxX - minX);
         glyph.bounds.height = static_cast<float>(maxY - minY);
 
