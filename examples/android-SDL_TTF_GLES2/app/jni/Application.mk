@@ -1,1 +1,2 @@
-APP_STL := c++_shared   # We link to STL dynamically
+# We link to STL dynamically
+APP_STL := c++_shared

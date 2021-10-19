@@ -150,11 +150,15 @@ if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS)
         " - SDL_TTF_OPENGL3: SDL2 + OpenGL + SDL2_ttf\n"
         " - GLFW_OPENGL3: GLFW + OpenGL + FreeType\n")
 endif()
-if(TGUI_OS_LINUX) # Only linux because iOS currently isn't supported by our SDL and GLFW backends and Android SDL builds don't use CMake
-    list(APPEND TGUI_BACKEND_OPTIONS SDL_GLES2 SDL_TTF_GLES2 GLFW_GLES2)
+if(TGUI_OS_LINUX OR TGUI_OS_ANDROID)
+    list(APPEND TGUI_BACKEND_OPTIONS SDL_TTF_GLES2)
+    string(APPEND TGUI_BACKEND_OPTIONS_DESC
+        " - SDL_TTF_GLES2: SDL2 + OpenGL ES + SDL2_ttf\n")
+endif()
+if(TGUI_OS_LINUX)
+    list(APPEND TGUI_BACKEND_OPTIONS SDL_GLES2 GLFW_GLES2)
     string(APPEND TGUI_BACKEND_OPTIONS_DESC
         " - SDL_GLES2: SDL2 + OpenGL ES + FreeType\n"
-        " - SDL_TTF_GLES2: SDL2 + OpenGL ES + SDL2_ttf\n"
         " - GLFW_GLES2: GLFW + OpenGL ES + FreeType\n")
 endif()
 

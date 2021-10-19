@@ -112,19 +112,20 @@ Original FindSDL_ttf.cmake module:
 
 # SDL2 Library required
 if(NOT TARGET SDL2::SDL2)
-    find_package(SDL2 QUIET)
-endif()
-if(NOT SDL2_FOUND)
-  set(SDL2_TTF_SDL2_NOT_FOUND "Could NOT find SDL2 (SDL2 is required by SDL2_ttf).")
-  if(SDL2_ttf_FIND_REQUIRED)
-    message(FATAL_ERROR ${SDL2_TTF_SDL2_NOT_FOUND})
-  else()
+  find_package(SDL2 QUIET)
+
+  if(NOT SDL2_FOUND)
+    set(SDL2_TTF_SDL2_NOT_FOUND "Could NOT find SDL2 (SDL2 is required by SDL2_ttf).")
+    if(SDL2_ttf_FIND_REQUIRED)
+      message(FATAL_ERROR ${SDL2_TTF_SDL2_NOT_FOUND})
+    else()
       if(NOT SDL2_ttf_FIND_QUIETLY)
         message(STATUS ${SDL2_TTF_SDL2_NOT_FOUND})
       endif()
-    return()
+      return()
+    endif()
+    unset(SDL2_TTF_SDL2_NOT_FOUND)
   endif()
-  unset(SDL2_TTF_SDL2_NOT_FOUND)
 endif()
 
 

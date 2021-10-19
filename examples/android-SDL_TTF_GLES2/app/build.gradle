@@ -1,29 +1,25 @@
-def buildAsLibrary = project.hasProperty('BUILD_AS_LIBRARY');
-def buildAsApplication = !buildAsLibrary
-if (buildAsApplication) {
-    apply plugin: 'com.android.application'
-}
-else {
-    apply plugin: 'com.android.library'
-}
+apply plugin: 'com.android.application'
 
 android {
     ndkVersion '23.0.7599858'
     compileSdkVersion 31
     defaultConfig {
-        if (buildAsApplication) {
-            applicationId "eu.tgui.app"
-        }
+        applicationId "eu.tgui.app"
         minSdkVersion 24
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
+        ndk {
+            abiFilters 'arm64-v8a', 'x86_64'
+        }
         externalNativeBuild {
             ndkBuild {
                 arguments "APP_PLATFORM=android-24"
-                abiFilters 'arm64-v8a', 'x86_64'
                 cppFlags "-fexceptions -frtti -std=c++17"
             }
+            //cmake {
+            //    arguments "-DCMAKE_ANDROID_STL_TYPE=c++_static"
+            //}
         }
     }
     buildTypes {
@@ -40,23 +36,13 @@ android {
             ndkBuild {
                 path 'jni/Android.mk'
             }
+            //cmake {
+            //    path 'jni/CMakeLists.txt'
+            //}
         }
-       
     }
     lintOptions {
         abortOnError false
-    }
-    
-    if (buildAsLibrary) {
-        libraryVariants.all { variant ->
-            variant.outputs.each { output ->
-                def outputFile = output.outputFile
-                if (outputFile != null && outputFile.name.endsWith(".aar")) {
-                    def fileName = "org.libsdl.app.aar";
-                    output.outputFile = new File(outputFile.parent, fileName);
-                }
-            }
-        }
     }
 }
 

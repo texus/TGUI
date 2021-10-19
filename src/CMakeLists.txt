@@ -332,4 +332,6 @@ install(TARGETS tgui EXPORT TGUIConfigExport
 # This is because the order of install rules is undefined between directories.
 # Some related things changed in CMake 3.13, so once the minimum cmake version is increased we should check if the issue still exists.
 # Since the config files relies on variables that are only defined in this scope (via the backend include), caution is required when moving this.
-tgui_export_target(TGUIConfigExport)
+if (NOT TGUI_SKIP_EXPORT)
+  tgui_export_target(TGUIConfigExport)
+endif()
