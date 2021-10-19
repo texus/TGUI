@@ -123,7 +123,6 @@ function(tgui_export_target export_name)
         set(targets_config_filename TGUIStaticTargets.cmake)
     endif()
 
-    set(TGUI_BUILT_IN_MODULES_DIR "${PROJECT_SOURCE_DIR}/cmake/Modules")
     export(EXPORT ${export_name}
            FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
 
@@ -132,10 +131,10 @@ function(tgui_export_target export_name)
     else()
         set(config_package_location ${CMAKE_INSTALL_LIBDIR}/cmake/TGUI)
     endif()
+
     configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
         INSTALL_DESTINATION "${config_package_location}")
 
-    set(TGUI_BUILT_IN_MODULES_DIR "${CMAKE_INSTALL_PREFIX}/${config_package_location}")
     install(EXPORT ${export_name}
             FILE ${targets_config_filename}
             DESTINATION ${config_package_location})
@@ -148,12 +147,15 @@ function(tgui_export_target export_name)
     # Install the find modules when they are needed to find our dependencies
     if(TGUI_HAS_WINDOW_BACKEND_GLFW AND NOT TGUI_FOUND_GLFW_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/")
     endif()
     if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/")
     endif()
     if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/")
     endif()
 endfunction()
 
