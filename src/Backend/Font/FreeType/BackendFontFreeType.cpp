@@ -261,25 +261,30 @@ namespace tgui
 
         // Apply the bold style if requested and outlines are supported
         const FT_Pos boldWeight = 1 << 6;
-        if (bold && (glyphDesc->format == FT_GLYPH_FORMAT_OUTLINE))
+        const bool outlineSupport = (glyphDesc->format == FT_GLYPH_FORMAT_OUTLINE);
+        if (bold && outlineSupport)
         {
             FT_OutlineGlyph outlineGlyph = reinterpret_cast<FT_OutlineGlyph>(glyphDesc);
             FT_Outline_Embolden(&outlineGlyph->outline, boldWeight);
         }
 
         // Rasterize the glyph to a bitmap
+        // Warning: use bitmapGlyph->root instead of glyphDesc to access the glyph after this conversion
         if (FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, 0, 1) != 0)
         {
             FT_Done_Glyph(glyphDesc);
             return glyph;
         }
-        FT_Bitmap& bitmap = reinterpret_cast<FT_BitmapGlyph>(glyphDesc)->bitmap;
+        FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyphDesc);
+        FT_Bitmap& bitmap = bitmapGlyph->bitmap;
 
         // If bold was requested but the font didn't support outlines then apply bold here using a different (lower quality) method
-        if (bold && (glyphDesc->format != FT_GLYPH_FORMAT_OUTLINE))
+        // We have to cache the outline support bool because FT_Glyph_To_Bitmap changes format to FT_GLYPH_FORMAT_BITMAP.
+        if (bold && !outlineSupport)
             FT_Bitmap_Embolden(static_cast<FT_Library>(m_library), &bitmap, boldWeight, boldWeight);
 
-        glyph.advance = static_cast<float>(m_face->glyph->metrics.horiAdvance) / static_cast<float>(1 << 6);
+        // Bit shift is possible without loss because we use FT_LOAD_FORCE_AUTOHINT flag
+        glyph.advance = static_cast<float>(bitmapGlyph->root.advance.x >> 16);
         if (bold)
             glyph.advance += static_cast<float>(boldWeight) / static_cast<float>(1 << 6);
 
@@ -287,10 +292,10 @@ namespace tgui
         glyph.rsbDelta = static_cast<float>(m_face->glyph->rsb_delta);
 
         // Compute the glyph's bounding box
-        glyph.bounds.left   =  static_cast<float>(m_face->glyph->metrics.horiBearingX) / static_cast<float>(1 << 6);
-        glyph.bounds.top    = -static_cast<float>(m_face->glyph->metrics.horiBearingY) / static_cast<float>(1 << 6);
-        glyph.bounds.width  =  static_cast<float>(m_face->glyph->metrics.width)        / static_cast<float>(1 << 6) + (outlineThickness * 2);
-        glyph.bounds.height =  static_cast<float>(m_face->glyph->metrics.height)       / static_cast<float>(1 << 6) + (outlineThickness * 2);
+        glyph.bounds.left   =  bitmapGlyph->left;
+        glyph.bounds.top    = -bitmapGlyph->top;
+        glyph.bounds.width  =  bitmap.width;
+        glyph.bounds.height =  bitmap.rows;
 
         if ((bitmap.width == 0) || (bitmap.rows == 0))
         {

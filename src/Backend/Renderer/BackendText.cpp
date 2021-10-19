@@ -359,7 +359,7 @@ namespace tgui
                 float right  = glyph.bounds.left + glyph.bounds.width;
 
                 // Add the outline glyph to the vertices
-                addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, italicShear, m_outlineThickness);
+                addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, italicShear);
                 maxX = std::max(maxX, x + right - italicShear * top - m_outlineThickness);
             }
 
@@ -367,7 +367,7 @@ namespace tgui
             const auto& glyph = m_font->getGlyph(curChar, m_characterSize, isBold);
 
             // Add the glyph to the vertices
-            addGlyphQuad(*m_vertices, {x, y}, vertexFillColor, glyph, italicShear, 0);
+            addGlyphQuad(*m_vertices, {x, y}, vertexFillColor, glyph, italicShear);
 
             // Update the current bounds with the non outlined glyph bounds
             if (m_outlineThickness == 0)
@@ -411,7 +411,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float italicShear, float outlineThickness)
+    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float italicShear)
     {
         const float padding = 1.0;
 
@@ -425,12 +425,12 @@ namespace tgui
         const float u2 = glyph.textureRect.left + glyph.textureRect.width + padding;
         const float v2 = glyph.textureRect.top  + glyph.textureRect.height + padding;
 
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * top    - outlineThickness, position.y + top    - outlineThickness}, color, Vector2f{u1, v1});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * top    - outlineThickness, position.y + top    - outlineThickness}, color, Vector2f{u2, v1});
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom - outlineThickness, position.y + bottom - outlineThickness}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom - outlineThickness, position.y + bottom - outlineThickness}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * top    - outlineThickness, position.y + top    - outlineThickness}, color, Vector2f{u2, v1});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * bottom - outlineThickness, position.y + bottom - outlineThickness}, color, Vector2f{u2, v2});
+        vertices.emplace_back(Vector2f{position.x + left  - italicShear * top   , position.y + top   }, color, Vector2f{u1, v1});
+        vertices.emplace_back(Vector2f{position.x + right - italicShear * top   , position.y + top   }, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom, position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom, position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + right - italicShear * top   , position.y + top   }, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + right - italicShear * bottom, position.y + bottom}, color, Vector2f{u2, v2});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

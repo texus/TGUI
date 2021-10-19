@@ -65,7 +65,11 @@ namespace tgui
 
         FontGlyph glyph;
         glyph.advance = glyphSFML.advance;
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // outline is not corrected in bounds in SFML < 2.6
         glyph.bounds = {glyphSFML.bounds.left, glyphSFML.bounds.top, glyphSFML.bounds.width, glyphSFML.bounds.height};
+#else
+        glyph.bounds = {glyphSFML.bounds.left - outlineThickness, glyphSFML.bounds.top - outlineThickness, glyphSFML.bounds.width, glyphSFML.bounds.height};
+#endif
         glyph.textureRect = {glyphSFML.textureRect.left, glyphSFML.textureRect.top, glyphSFML.textureRect.width, glyphSFML.textureRect.height};
         return glyph;
     }
