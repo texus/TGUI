@@ -81,7 +81,7 @@ jobs:
         id: cache-sfml
         with:
           path: ${{env.SFML_INSTALL_DIR}}
-          key: CACHE_LINUX_SFML_LATEST_${{ steps.find-dependencies.outputs.sfml-revision }}
+          key: CACHE_LINUX_SFML_LATEST_${{ steps.find-dependencies.outputs.sfml-revision }}_v2
 
       - name: Cache SDL
         uses: actions/cache@v2
@@ -122,6 +122,8 @@ jobs:
           git clone --depth 1 $SFML_GITHUB_URL $GITHUB_WORKSPACE/SFML
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
+          sed -i 's/#define SFML_VERSION_MINOR 5/#define SFML_VERSION_MINOR 6/' ../SFML/include/SFML/Config.hpp
+          sed -i 's/#define SFML_VERSION_PATCH 1/#define SFML_VERSION_PATCH 0/' ../SFML/include/SFML/Config.hpp
           cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
           make -j2
           make install
