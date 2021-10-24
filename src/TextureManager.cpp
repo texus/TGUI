@@ -88,11 +88,9 @@ namespace tgui
             if (texture.getBackendTextureLoader()(*data->backendTexture, filename, smooth))
                 return data;
 #else
+            data->backendTexture->setSmooth(smooth);
             if (texture.getBackendTextureLoader()(*data->backendTexture, filename))
-            {
-                data->backendTexture->setSmooth(smooth);
                 return data;
-            }
 #endif
         }
 

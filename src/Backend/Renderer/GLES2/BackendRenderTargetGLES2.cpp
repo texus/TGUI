@@ -230,8 +230,7 @@ namespace tgui
 
         m_projectionTransform = Transform();
         m_projectionTransform.translate({-1 - (2.f * (view.left / view.width)), 1 + (2.f * (view.top / view.height))});
-        m_projectionTransform.scale({2.f / (m_targetSize.x * (viewport.width / m_targetSize.x)) * (viewport.width / view.width),
-                                     -2.f / (m_targetSize.y * (viewport.height / m_targetSize.y)) * (viewport.height / view.height)});
+        m_projectionTransform.scale({2.f / view.width, -2.f / view.height});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

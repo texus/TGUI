@@ -147,27 +147,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendGuiSDL::BackendGuiSDL(SDL_Window* window)
-    {
-        setWindow(window);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendGuiSDL::setWindow(SDL_Window* window)
-    {
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendGuiSDL requires system backend of type BackendSDL");
-
-        m_window = window;
-
-        getBackend()->attachGui(this);
-        std::static_pointer_cast<BackendSDL>(getBackend())->setGuiWindow(this, window);
-
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool BackendGuiSDL::convertEvent(const SDL_Event& eventSDL, Event& eventTGUI)
     {
         switch (eventSDL.type)
@@ -434,11 +413,25 @@ namespace tgui
 
             m_backendRenderTarget->clearScreen();
             draw();
-            SDL_GL_SwapWindow(m_window);
+            presentScreen(); // Call SDL_GL_SwapWindow or SDL_RenderPresent depending on the backend renderer
 
             refreshRequired = false;
             lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSDL::setGuiWindow(SDL_Window* window)
+    {
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendGuiSDL requires system backend of type BackendSDL");
+
+        m_window = window;
+
+        getBackend()->attachGui(this);
+        std::static_pointer_cast<BackendSDL>(getBackend())->setGuiWindow(this, window);
+
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

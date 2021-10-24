@@ -149,27 +149,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendGuiGLFW::BackendGuiGLFW(GLFWwindow* window)
-    {
-        setWindow(window);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendGuiGLFW::setWindow(GLFWwindow* window)
-    {
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendGLFW>(getBackend()), "BackendGuiGLFW requires system backend of type BackendGLFW");
-
-        m_window = window;
-
-        getBackend()->attachGui(this);
-        std::static_pointer_cast<BackendGLFW>(getBackend())->setGuiWindow(this, window);
-
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BackendGuiGLFW::windowFocusCallback(int focused)
     {
         const auto event = convertWindowFocusEvent(focused);
@@ -396,6 +375,20 @@ namespace tgui
             glfwWaitEventsTimeout(eventTimeoutSeconds);
             updateTime();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiGLFW::setGuiWindow(GLFWwindow* window)
+    {
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendGLFW>(getBackend()), "BackendGuiGLFW requires system backend of type BackendGLFW");
+
+        m_window = window;
+
+        getBackend()->attachGui(this);
+        std::static_pointer_cast<BackendGLFW>(getBackend())->setGuiWindow(this, window);
+
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

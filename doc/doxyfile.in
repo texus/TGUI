@@ -26,6 +26,7 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/GLES2" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/GLFW" \
@@ -64,6 +65,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_WINDOW_BACKEND_SDL=1 \
                          TGUI_HAS_WINDOW_BACKEND_GLFW=1 \
                          TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS=1 \
+                         TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER=1 \
                          TGUI_HAS_RENDERER_BACKEND_OPENGL3=1 \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
                          TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS=1 \

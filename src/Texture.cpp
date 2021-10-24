@@ -55,7 +55,7 @@ namespace tgui
 #ifdef TGUI_NEXT
             return backendTexture.load(imageSize, std::move(pixelPtr), smooth);
 #else
-            return backendTexture.load(imageSize, std::move(pixelPtr), true);
+            return backendTexture.load(imageSize, std::move(pixelPtr), backendTexture.isSmooth());
 #endif
         };
 

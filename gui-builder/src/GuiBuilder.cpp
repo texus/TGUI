@@ -470,7 +470,14 @@ bool GuiBuilder::loadGuiBuilderState()
         for (const auto& theme : node->propertyValuePairs["Themes"]->valueList)
         {
             const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
-            m_themes[deserializedTheme] = deserializedTheme;
+            try
+            {
+                m_themes[deserializedTheme] = {deserializedTheme};
+            }
+            catch (const tgui::Exception& e)
+            {
+                displayErrorMessage(U"Failed to import theme '" + deserializedTheme + U"', reason: " + e.what());
+            }
         }
     }
 

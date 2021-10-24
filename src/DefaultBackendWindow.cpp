@@ -32,6 +32,8 @@
     #include <TGUI/Backend/SFML-Graphics.hpp>
 #elif TGUI_HAS_BACKEND_SFML_OPENGL3
     #include <TGUI/Backend/SFML-OpenGL3.hpp>
+#elif TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <TGUI/Backend/SDL-Renderer.hpp>
 #elif TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
     #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
 #elif TGUI_HAS_BACKEND_SDL_TTF_GLES2
@@ -132,7 +134,7 @@ namespace tgui
         std::unique_ptr<Gui> m_gui;
     };
 
-#elif TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#elif TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
 
     class BackendWindowSDL : public DefaultBackendWindow
     {
@@ -141,26 +143,30 @@ namespace tgui
         {
             SDL_Init(SDL_INIT_VIDEO);
 
-#if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#if TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             TTF_Init();
 #endif
 
-#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-#else
+#if TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#elif TGUI_HAS_BACKEND_SDL_GLES || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 #endif
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                         width, height,
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+            m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+            m_gui = std::make_unique<Gui>(m_window, m_renderer);
+#else
             m_glContext = SDL_GL_CreateContext(m_window);
-
             m_gui = std::make_unique<Gui>(m_window);
+#endif
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
             m_windowOpen = true;
         }
@@ -169,13 +175,17 @@ namespace tgui
         {
             m_gui = nullptr; // Gui must be destroyed before destroying SDL window
 
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+            if (m_renderer)
+                SDL_DestroyRenderer(m_renderer);
+#else
             if (m_glContext)
                 SDL_GL_DeleteContext(m_glContext);
-
+#endif
             if (m_window)
                 SDL_DestroyWindow(m_window);
 
-#if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#if TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             TTF_Quit();
 #endif
             SDL_Quit();
@@ -209,7 +219,11 @@ namespace tgui
         {
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+            SDL_RenderPresent(m_renderer);
+#else
             SDL_GL_SwapWindow(m_window);
+#endif
         }
 
         void mainLoop() override
@@ -236,7 +250,11 @@ namespace tgui
 
     private:
         SDL_Window* m_window = nullptr;
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+        SDL_Renderer* m_renderer = nullptr;
+#else
         SDL_GLContext m_glContext = nullptr;
+#endif
         std::unique_ptr<Gui> m_gui;
         bool m_windowOpen = false;
     };
@@ -402,7 +420,7 @@ namespace tgui
     {
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
         return std::make_shared<BackendWindowSFML>(width, height, title);
-#elif TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#elif TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
         return std::make_shared<BackendWindowSDL>(width, height, title);
 #elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
         return std::make_shared<BackendWindowGLFW>(width, height, title);

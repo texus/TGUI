@@ -23,26 +23,30 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Backend/SDL-GLES2.hpp>
+#include <TGUI/Backend/SDL-Renderer.hpp>
+
+#include <SDL.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    inline namespace SDL_GLES2
+    inline namespace SDL_RENDERER
     {
-        void Gui::setWindow(SDL_Window* window)
+        void Gui::setWindow(SDL_Window* window, SDL_Renderer* renderer)
         {
             if (!isBackendSet())
             {
                 auto backend = std::make_shared<BackendSDL>();
-                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontFreetype>>());
-                backend->setRenderer(std::make_shared<BackendRendererGLES2>(SDL_GL_GetProcAddress));
+                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontSDLttf>>());
+                backend->setRenderer(std::make_shared<BackendRendererSDL>(renderer));
                 backend->setDestroyOnLastGuiDetatch(true);
                 setBackend(backend);
             }
 
-            m_backendRenderTarget = std::make_shared<BackendRenderTargetGLES2>();
+            m_backendRenderTarget = std::make_shared<BackendRenderTargetSDL>(renderer);
+
+            m_renderer = renderer;
             setGuiWindow(window);
         }
 
@@ -50,7 +54,7 @@ namespace tgui
 
         void Gui::presentScreen()
         {
-            SDL_GL_SwapWindow(m_window);
+            SDL_RenderPresent(m_renderer);
         }
     }
 

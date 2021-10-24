@@ -22,24 +22,24 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_BACKEND_SDL_TTF_OPENGL3_INCLUDE_HPP
-#define TGUI_BACKEND_SDL_TTF_OPENGL3_INCLUDE_HPP
+#ifndef TGUI_BACKEND_SDL_RENDERER_INCLUDE_HPP
+#define TGUI_BACKEND_SDL_RENDERER_INCLUDE_HPP
 
 #include <TGUI/Config.hpp>
-#if !TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-    #error "TGUI wasn't build with the SDL_TTF_OPENGL3 backend"
+#if !TGUI_HAS_BACKEND_SDL_RENDERER
+    #error "TGUI wasn't build with the SDL_RENDERER backend"
 #endif
 
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
 
 namespace tgui
 {
-    inline namespace SDL_TTF_OPENGL3
+    inline namespace SDL_RENDERER
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Gui class for SDL + OpenGL3 backend (using SDL_ttf for fonts)
+        /// @brief Gui class for SDL + SDL_ttf (using SDL_Renderer struct for rendering)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         class TGUI_API Gui : public BackendGuiSDL
         {
@@ -54,40 +54,41 @@ namespace tgui
 
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// @brief Constructor that immediately sets the window on which the gui should be drawn
+            /// @brief Constructor that immediately sets the window and renderer on which the gui should be drawn
             ///
-            /// @param window  The SDL window that will be used by the gui
+            /// @param window    The SDL window that will be used by the gui
+            /// @param renderer  The SDL renderer that will be used for rendering the gui on the window
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Gui(SDL_Window* window)
+            Gui(SDL_Window* window, SDL_Renderer* renderer)
             {
-                setWindow(window);
+                setWindow(window, renderer);
             }
 
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// @brief Sets the window on which the gui should be drawn
+            /// @brief Sets the window and renderer on which the gui should be drawn
             ///
             /// @param window  The SDL window that will be used by the gui
+            /// @param renderer  The SDL renderer that will be used for rendering the gui on the window
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            void setWindow(SDL_Window* window);
+            void setWindow(SDL_Window* window, SDL_Renderer* renderer);
 
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         protected:
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// @brief Shows the drawn content with SDL_GL_SwapWindow
+            /// @brief Shows the drawn content with SDL_RenderPresent
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void presentScreen() override;
+
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        protected:
+
+            SDL_Renderer* m_renderer = nullptr;
         };
     }
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    #if !TGUI_USE_GLES
-    using GuiSDL TGUI_DEPRECATED("GuiSDL was renamed to Gui ") = SDL_TTF_OPENGL3::Gui;
-    #endif
-#endif
-
 }
 
-#endif // TGUI_BACKEND_SDL_TTF_OPENGL3_INCLUDE_HPP
+#endif // TGUI_BACKEND_SDL_RENDERER_INCLUDE_HPP

@@ -46,7 +46,7 @@ To choose the architectures to build, change the abiFilters property in app/buil
 
 ### Building the example
 
-From inside the android-sdl folder, execute the following command to build everything. This will build any changes to SDL, TGUI and the example for all architectures and bundle everything into a single apk file.
+From inside the android/SDL_TTF_GLES2 folder, execute the following command to build everything. This will build any changes to SDL, TGUI and the example for all architectures and bundle everything into a single apk file.
 ```
 ./gradlew build
 ```

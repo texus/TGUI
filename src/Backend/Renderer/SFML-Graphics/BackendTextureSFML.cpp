@@ -58,7 +58,7 @@ namespace tgui
 
     void BackendTextureSFML::setSmooth(bool smooth)
     {
-        m_isSmooth = smooth;
+        BackendTexture::setSmooth(smooth);
         m_texture.setSmooth(smooth);
     }
 

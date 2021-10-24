@@ -121,11 +121,20 @@ macro(tgui_find_dependency_sdl)
             endif()
         endif()
 
+        # The version doesn't seem to always be defined (e.g. Ubuntu doesn't seem to have it while Arch Linux
+        # and the fallback FindSDL2.cmake module do provide the variable). So only check the version if we can.
         if(DEFINED SDL2_VERSION)
-            # The version doesn't seem to always be defined (e.g. Ubuntu doesn't seem to have it while Arch Linux
-            # and the fallback FindSDL2.cmake module do provide the variable). So only check the version if we can.
-            if (${SDL2_VERSION} VERSION_LESS "2.0.6")
-                message(FATAL_ERROR "SDL 2.0.6 or higher is required")
+            # The minimum SDL version for using the SDL_RENDERER backend renderer lies a lot higher than what
+            # the rest of the SDL code requires.
+            if (TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
+                # TODO: 2.0.17 is a development version. We can't check for 2.0.18 as it hasn't been released yet
+                if (${SDL2_VERSION} VERSION_LESS "2.0.17")
+                    message(FATAL_ERROR "SDL 2.0.17 or higher is required for SDL_RENDERER backend")
+                endif()
+            else()
+                if (${SDL2_VERSION} VERSION_LESS "2.0.6")
+                    message(FATAL_ERROR "SDL 2.0.6 or higher is required")
+                endif()
             endif()
         endif()
     endif()

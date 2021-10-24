@@ -22,35 +22,42 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Backend/SDL-Renderer.hpp>
+#include <TGUI/TGUI.hpp>
 
-#include <TGUI/Backend/GLFW-OpenGL3.hpp>
+bool runExample(tgui::BackendGui& gui);
 
-#define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
-#include <GLFW/glfw3.h>
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace tgui
+// We don't put this code in main() to make sure that all TGUI resources are destroyed before destroying SDL
+void run_application(SDL_Window* window, SDL_Renderer* renderer)
 {
-    inline namespace GLFW_OPENGL3
-    {
-        void Gui::setWindow(GLFWwindow* window)
-        {
-            if (!isBackendSet())
-            {
-                auto backend = std::make_shared<BackendGLFW>();
-                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontFreetype>>());
-                backend->setRenderer(std::make_shared<BackendRendererOpenGL3>(glfwGetProcAddress));
-                backend->setDestroyOnLastGuiDetatch(true);
-                setBackend(backend);
-            }
+    tgui::Gui gui(window, renderer);
+    if (!runExample(gui))
+        return;
 
-            m_backendRenderTarget = std::make_shared<BackendRenderTargetOpenGL3>();
-            setGuiWindow(window);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    gui.mainLoop();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Note that no error checking is performed on SDL initialization in this example code
+int main(int, char **)
+{
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)",
+                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                          800, 600,
+                                          SDL_WINDOW_SHOWN);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // SDL_ttf needs to be initialized before using TGUI
+    TTF_Init();
+
+    run_application(window, renderer);
+
+    // Note that all TGUI resources must be destroyed before SDL_ttf is cleaned up
+    TTF_Quit();
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
+}

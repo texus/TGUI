@@ -34,6 +34,36 @@ struct TestsWindowDefault : public TestsWindowBase
         tgui::SFML_OPENGL3::Gui gui{window};
     };
 #endif
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <TGUI/Backend/SDL-Renderer.hpp>
+    struct TestsWindowSdlRenderer : public TestsWindowBase
+    {
+        TestsWindowSdlRenderer()
+        {
+            SDL_Init(SDL_INIT_VIDEO);
+            TTF_Init();
+            window = SDL_CreateWindow(windowTitle,
+                                      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            gui = std::make_unique<tgui::SDL_RENDERER::Gui>(window, renderer);
+        }
+
+        ~TestsWindowSdlRenderer()
+        {
+            gui = nullptr;
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            TTF_Quit();
+            SDL_Quit();
+        }
+
+        SDL_Window* window = nullptr;
+        SDL_Renderer* renderer = nullptr;
+        std::unique_ptr<tgui::SDL_RENDERER::Gui> gui;
+    };
+#endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
     #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
     struct TestsWindowSdlTtfOpenGL3 : public TestsWindowBase
@@ -245,6 +275,10 @@ int main(int argc, char * argv[])
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
         if (selectedBackend == "SFML_OPENGL3")
             window = std::make_unique<TestsWindowSfmlOpenGL3>();
+#endif
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+        if (selectedBackend == "SDL_RENDERER")
+            window = std::make_unique<TestsWindowSdlRenderer>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
         if (selectedBackend == "SDL_TTF_OPENGL3")

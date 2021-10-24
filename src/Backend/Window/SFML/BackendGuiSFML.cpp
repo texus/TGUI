@@ -146,27 +146,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendGuiSFML::BackendGuiSFML(sf::Window& window)
-    {
-        setWindow(window);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendGuiSFML::setWindow(sf::Window& window)
-    {
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSFML>(getBackend()), "BackendGuiSFML requires system backend of type BackendSFML");
-
-        m_window = &window;
-
-        getBackend()->attachGui(this);
-        std::static_pointer_cast<BackendSFML>(getBackend())->setGuiWindow(this, m_window);
-
-        updateContainerSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool BackendGuiSFML::handleEvent(sf::Event sfmlEvent)
     {
         Event event;
@@ -387,6 +366,20 @@ namespace tgui
             default: // This event is not handled by TGUI
                 return false;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSFML::setGuiWindow(sf::Window& window)
+    {
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendSFML>(getBackend()), "BackendGuiSFML requires system backend of type BackendSFML");
+
+        m_window = &window;
+
+        getBackend()->attachGui(this);
+        std::static_pointer_cast<BackendSFML>(getBackend())->setGuiWindow(this, m_window);
+
+        updateContainerSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

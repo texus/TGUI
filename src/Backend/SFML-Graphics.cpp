@@ -31,6 +31,8 @@ namespace tgui
 {
     inline namespace SFML_GRAPHICS
     {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         void Gui::setWindow(sf::RenderWindow& renderWindow)
         {
             setWindow(static_cast<sf::Window&>(renderWindow));
@@ -48,7 +50,7 @@ namespace tgui
                 return;
             }
 
-            BackendGuiSFML::setWindow(window);
+            setGuiWindow(window);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +78,7 @@ namespace tgui
             m_backendRenderTarget = std::make_shared<BackendRenderTargetSFML>(target);
 
             if (m_window)
-                BackendGuiSFML::setWindow(*m_window);
+                setGuiWindow(*m_window);
             else
             {
                 // We don't have a window, so do the same as BackendGuiSFML::setWindow would have done but without associating

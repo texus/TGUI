@@ -43,7 +43,14 @@ namespace tgui
             }
 
             m_backendRenderTarget = std::make_shared<BackendRenderTargetOpenGL3>();
-            BackendGuiSDL::setWindow(window);
+            setGuiWindow(window);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void Gui::presentScreen()
+        {
+            SDL_GL_SwapWindow(m_window);
         }
     }
 

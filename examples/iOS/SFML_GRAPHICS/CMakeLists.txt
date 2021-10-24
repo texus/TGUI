@@ -8,4 +8,4 @@ tgui_add_example(ios_demo SOURCES main.cpp ${RESOURCES})
 
 # The app needs an identifier and signing to work correctly
 set_property(TARGET ios_demo PROPERTY XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
-set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.tgui.ios_demo")
+set(MACOSX_BUNDLE_GUI_IDENTIFIER "eu.tgui.ios_demo")

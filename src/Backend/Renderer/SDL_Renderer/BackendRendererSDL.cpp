@@ -23,35 +23,40 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Backend/SDL-GLES2.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#include <SDL.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    inline namespace SDL_GLES2
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendRendererSDL::BackendRendererSDL(SDL_Renderer* renderer) :
+        m_renderer{renderer}
     {
-        void Gui::setWindow(SDL_Window* window)
-        {
-            if (!isBackendSet())
-            {
-                auto backend = std::make_shared<BackendSDL>();
-                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontFreetype>>());
-                backend->setRenderer(std::make_shared<BackendRendererGLES2>(SDL_GL_GetProcAddress));
-                backend->setDestroyOnLastGuiDetatch(true);
-                setBackend(backend);
-            }
+        TGUI_ASSERT(m_renderer, "renderer passed to BackendRendererSDL can't be a nullptr");
+    }
 
-            m_backendRenderTarget = std::make_shared<BackendRenderTargetGLES2>();
-            setGuiWindow(window);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<BackendTexture> BackendRendererSDL::createTexture()
+    {
+        return std::make_shared<BackendTextureSDL>(m_renderer);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int BackendRendererSDL::getMaximumTextureSize()
+    {
+        if ((m_maxTextureSize == 0) && m_renderer)
+        {
+            SDL_RendererInfo info;
+            if (SDL_GetRendererInfo(m_renderer, &info) == 0)
+                m_maxTextureSize = std::min(info.max_texture_width, info.max_texture_height);
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void Gui::presentScreen()
-        {
-            SDL_GL_SwapWindow(m_window);
-        }
+        return static_cast<unsigned int>(m_maxTextureSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

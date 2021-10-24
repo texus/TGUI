@@ -182,6 +182,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_GLES2=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
@@ -197,6 +198,7 @@ jobs:
           cd $GITHUB_WORKSPACE/TGUI-build/tests
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_RENDERER
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GLES2
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_OPENGL3
@@ -643,7 +645,7 @@ jobs:
           mkdir $GITHUB_WORKSPACE/TGUI-build
           cd $GITHUB_WORKSPACE/TGUI-build
           cmake -DTGUI_BACKEND=Custom ../TGUI
-          cd $GITHUB_WORKSPACE/TGUI/examples/android-SDL_TTF_GLES2
+          cd $GITHUB_WORKSPACE/TGUI/examples/android/SDL_TTF_GLES2
           sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters '${ARCH_ABI}'/" app/build.gradle
           sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${NDK_VERSION}'/" app/build.gradle
           ln -s $GITHUB_WORKSPACE/SDL app/jni/SDL
@@ -710,7 +712,7 @@ jobs:
 
       - name: Build example
         run: |
-          cd $GITHUB_WORKSPACE/TGUI/examples/android-SFML_GRAPHICS
+          cd $GITHUB_WORKSPACE/TGUI/examples/android/SFML_GRAPHICS
           sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters '${ARCH_ABI}'/" app/build.gradle
           sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${NDK_VERSION}'/" app/build.gradle
           ./gradlew buildDebug

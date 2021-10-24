@@ -77,7 +77,6 @@ namespace tgui
         }
 
         m_textureSize = initialTextureSize;
-        m_textureUpToDate = false;
 
         m_fileSize = sizeInBytes;
         m_fileContents = std::move(data);
@@ -188,7 +187,7 @@ namespace tgui
                 }
 
                 // We will have to recreate the texture now that the pixels changed
-                m_texture = nullptr;
+                m_textureUpToDate = false;
             }
 
             SDL_FreeSurface(surface);
@@ -249,11 +248,15 @@ namespace tgui
 
     std::shared_ptr<BackendTexture> BackendFontSDLttf::getTexture(unsigned int)
     {
-        if (m_texture)
+        if (m_textureUpToDate)
             return m_texture;
 
-        m_texture = getBackend()->getRenderer()->createTexture();
+        if (!m_texture)
+            m_texture = getBackend()->getRenderer()->createTexture();
+
         m_texture->loadTextureOnly({m_textureSize, m_textureSize}, m_pixels.get(), m_isSmooth);
+
+        m_textureUpToDate = true;
         return m_texture;
     }
 

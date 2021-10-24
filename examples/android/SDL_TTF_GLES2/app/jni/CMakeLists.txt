@@ -3,12 +3,14 @@ project(tgui-example)
 
 set(TGUI_BACKEND SDL_TTF_GLES2)
 
-set(SDL2_DIR SDL-build)
-set(SDL2_TTF_DIR SDL_ttf-build)
+set(SDL2_BUILD_DIR SDL-build)
+set(SDL2_TTF_BUILD_DIR SDL_ttf-build)
+
+set(TGUI_ROOT_DIR "../../../../../")
 
 # Build SDL and SDL_ttf
-add_subdirectory(../../../../../SDL ${SDL2_DIR})
-add_subdirectory(../../../../../SDL_ttf ${SDL2_TTF_DIR})
+add_subdirectory("${TGUI_ROOT_DIR}/../SDL" ${SDL2_BUILD_DIR})
+add_subdirectory("${TGUI_ROOT_DIR}/../SDL_ttf" ${SDL2_TTF_BUILD_DIR})
 
 # Make sure TGUI can find SDL_ttf
 add_library(SDL2::SDL2_ttf ALIAS SDL2_ttf)
@@ -17,7 +19,7 @@ add_library(SDL2::SDL2_ttf ALIAS SDL2_ttf)
 set(TGUI_SKIP_EXPORT ON)
 
 # Build TGUI
-add_subdirectory(../../../../ TGUI-build)
+add_subdirectory("${TGUI_ROOT_DIR}" TGUI-build)
 
 # Create the libmain.so library that contains the application's c++ code
 add_library(main SHARED)

@@ -46,7 +46,7 @@ namespace tgui
             }
 
             m_backendRenderTarget = std::make_shared<BackendRenderTargetGLES2>();
-            BackendGuiGLFW::setWindow(window);
+            setGuiWindow(window);
         }
     }
 
