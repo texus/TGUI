@@ -51,8 +51,13 @@ namespace tgui
 
         BackendTexture::loadTextureOnly(size, pixels, smooth);
 
-        if (m_textureId == 0)
+        if (!reuseTexture)
+        {
+            if (m_textureId != 0)
+                TGUI_GL_CHECK(glDeleteTextures(1, &m_textureId));
+
             TGUI_GL_CHECK(glGenTextures(1, &m_textureId));
+        }
 
         GLint oldBoundTexture;
         TGUI_GL_CHECK(glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldBoundTexture));
