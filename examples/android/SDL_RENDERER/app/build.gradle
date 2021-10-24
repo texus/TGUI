@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+
+android {
+    ndkVersion '23.0.7599858'
+    compileSdkVersion 31
+    defaultConfig {
+        applicationId "eu.tgui.app"
+        minSdkVersion 24
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            abiFilters 'arm64-v8a', 'x86_64'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DCMAKE_ANDROID_STL_TYPE=c++_static"
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    if (!project.hasProperty('EXCLUDE_NATIVE_LIBS')) {
+        sourceSets.main {
+            jniLibs.srcDir 'libs'
+        }
+        externalNativeBuild {
+            cmake {
+                path 'jni/CMakeLists.txt'
+                version '3.21.3'
+            }
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+}

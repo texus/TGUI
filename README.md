@@ -2,7 +2,7 @@ TGUI - Texus' Graphical User Interface
 =======================================
 
 TGUI is a cross-platform modern c++ GUI library.  
-Although originally a library for SFML, it now also has backends for SDL and GLFW (using OpenGL for rendering).
+Although originally a library for SFML, it now also has backends for SDL and GLFW.
 
 For more information, take a look at the [website](https://tgui.eu).
 
@@ -18,7 +18,7 @@ OS support for each backend:
 |---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|
 | SFML\_GRAPHICS      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
 | SFML\_OPENGL3       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| SDL\_RENDERER       | :question:          | :heavy_check_mark:  | :question:          |                     |                     |
+| SDL\_RENDERER       | :question:          | :heavy_check_mark:  | :question:          | :heavy_check_mark: :question: |           |
 | SDL\_OPENGL3        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
 | SDL\_GLES2          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
 | SDL\_TTF\_OPENGL3   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
