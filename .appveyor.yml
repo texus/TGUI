@@ -33,10 +33,6 @@ environment:
       FAST_BUILD:     TRUE
       BUILD_FOLDER:   build-VS2015-Win64
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      SFML_PATH:      C:\SFML
-      SFML_VERSION:   2.5.1
-
 clone_depth: 3
 
 matrix:
@@ -45,7 +41,6 @@ matrix:
 cache:
   - C:\SFML-VS2017 -> .appveyor.yml
   - C:\SFML-VS2015 -> .appveyor.yml
-  - C:\SFML        -> .appveyor.yml
 
 
 install:
@@ -86,19 +81,6 @@ install:
       cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
       cmake --build . --target install --config %BUILD_TYPE% -- /m
     )
-  ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF "%APPVEYOR_REPO_BRANCH%" == "0.9" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
-    cd C:\ &&
-    appveyor-retry choco install doxygen.install &&
-    IF NOT EXIST %SFML_PATH% (
-      appveyor DownloadFile https://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-32-bit.zip -FileName SFML-Win32.zip &&
-      7z x SFML-Win32.zip > nul &&
-      mkdir %SFML_PATH%\Win32 &&
-      move SFML-%SFML_VERSION% %SFML_PATH%\Win32\ > nul &&
-      appveyor DownloadFile https://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-64-bit.zip -FileName SFML-Win64.zip &&
-      7z x SFML-Win64.zip > nul &&
-      mkdir %SFML_PATH%\Win64 &&
-      move SFML-%SFML_VERSION% %SFML_PATH%\Win64\ > nul
-    )
   )
 
 
@@ -118,61 +100,6 @@ build_script:
         cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
         tests.exe
       )
-    ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF "%APPVEYOR_REPO_BRANCH%" == "0.9" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
-      cd .. &&
-      mkdir build-Win32 &&
-      cd build-Win32 &&
-      cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Debug /m &&
-      mkdir ..\tgui\lib &&
-      move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-s-d.pdb ..\tgui\lib\ > nul &&
-      move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
-      move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.pdb ..\tgui\lib\ > nul &&
-      move doc\html ..\tgui\doc\ > nul &&
-      move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
-      cd .. &&
-      echo d | xcopy /s tgui TGUI-0.9-nightly > nul &&
-      7z a -tzip TGUI-0.9-nightly-vc16-32bit-for-SFML-%SFML_VERSION%.zip TGUI-0.9-nightly > nul &&
-      appveyor PushArtifact TGUI-0.9-nightly-vc16-32bit-for-SFML-%SFML_VERSION%.zip &&
-      rmdir /S /Q TGUI-0.9-nightly > nul &&
-      rmdir /S /Q tgui\doc\html > nul &&
-      rmdir /S /Q tgui\lib > nul &&
-      mkdir build-Win64 &&
-      cd build-Win64 &&
-      cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
-      msbuild tgui.sln /p:Configuration=Debug /m &&
-      mkdir ..\tgui\lib &&
-      move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-s-d.pdb ..\tgui\lib\ > nul &&
-      move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
-      move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
-      move lib\Debug\tgui-d.pdb ..\tgui\lib\ > nul &&
-      move doc\html ..\tgui\doc\ > nul &&
-      move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
-      cd .. &&
-      echo d | xcopy /s tgui TGUI-0.9-nightly > nul &&
-      7z a -tzip TGUI-0.9-nightly-vc16-64bit-for-SFML-%SFML_VERSION%.zip TGUI-0.9-nightly > nul &&
-      appveyor PushArtifact TGUI-0.9-nightly-vc16-64bit-for-SFML-%SFML_VERSION%.zip
     )
 
 
