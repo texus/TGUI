@@ -877,7 +877,7 @@ void Form::load()
     // Parse the file from memory
     auto rootNode = tgui::DataIO::parse(inStream);
 
-    // If the file was created with TGUI 0.8 then convert it into a valid TGUI 0.9 form
+    // If the file was created with TGUI 0.8 then convert it into a valid TGUI 0.9/0.10 form
     importOldForm(rootNode);
 
     // Turn all paths into absolute paths, using either the form file or the gui builder as base path

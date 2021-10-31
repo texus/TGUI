@@ -10,8 +10,8 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.9)](https://github.com/texus/TGUI/actions)
-[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.9/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.9)
+[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.10)](https://github.com/texus/TGUI/actions)
+[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.10/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.10)
 
 OS support for each backend:  
 |                     | Windows             | Linux               | macOS               | Android             | iOS                 |
@@ -45,7 +45,7 @@ Dependencies for each backend:
 Download
 --------
 
-You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.9): [Download ZIP](https://github.com/texus/TGUI/archive/0.9.zip)
+You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.10): [Download ZIP](https://github.com/texus/TGUI/archive/0.10.zip)
 
 Precompiled libraries for some compilers are available for each [release](https://github.com/texus/TGUI/releases).
 
@@ -53,9 +53,9 @@ Precompiled libraries for some compilers are available for each [release](https:
 Learn
 -----
 
-* [Tutorials](https://tgui.eu/tutorials/0.9)
-* [Documentation](https://tgui.eu/documentation/0.9)
-* [Examples](https://tgui.eu/examples/0.9)
+* [Tutorials](https://tgui.eu/tutorials/0.10)
+* [Documentation](https://tgui.eu/documentation/0.10)
+* [Examples](https://tgui.eu/examples/0.10)
 * [Forum](https://forum.tgui.eu)
 
 

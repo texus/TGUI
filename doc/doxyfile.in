@@ -1,7 +1,7 @@
 # Doxyfile 1.9.1
 
 PROJECT_NAME           = "TGUI"
-PROJECT_NUMBER         = 0.9-dev
+PROJECT_NUMBER         = 0.10-dev
 
 OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
 STRIP_FROM_INC_PATH    = "@DOXYGEN_INPUT_DIR@/include/"
