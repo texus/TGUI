@@ -72,7 +72,7 @@ jobs:
           bash <(curl -s https://codecov.io/bash) -p $GITHUB_WORKSPACE/TGUI-build -s $GITHUB_WORKSPACE/TGUI -a "-s $GITHUB_WORKSPACE/TGUI -pr"
 
   linux-sfml-minimum-supported-versions:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     env:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
     steps:
