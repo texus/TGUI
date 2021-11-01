@@ -1,5 +1,5 @@
-TGUI 0.9.2  (TBD)
------------------
+TGUI 0.9.2  (1 November 2021)
+-----------------------------
 
 - Arrow keys can now be used to navigate TreeView
 - Control/shift now affect using arrow keys in multi-select ListView
@@ -7,6 +7,7 @@ TGUI 0.9.2  (TBD)
 - String::split now takes an optional boolean to trim the returned values
 - Kerning calculation now takes bold text style into account (only if SFML >= 2.6)
 - Added setWidgetIndex and getWidgetIndex functions to container
+- Added String::contains function
 - saveWidgetsToFile now makes paths relative to the form path
 - Tool tips will no longer be displayed outside the window when close to the side
 - Exception is now thrown when loading a font fails
@@ -19,7 +20,6 @@ TGUI 0.9.2  (TBD)
 - Clipping in SDL backend was incorrect when view and viewport were changed
 - Opacity of color wheel wasn't set when making ColorPicker transparent
 
-
 TGUI 0.9.1  (12 February 2021)
 ------------------------------
 
@@ -31,6 +31,7 @@ TGUI 0.9.1  (12 February 2021)
 - Horizontal scrollbar can now depend on item width in ListView ([PR #147](https://github.com/texus/TGUI/pull/147))
 - Added support to copy selected ListView items to clipboard ([PR #148](https://github.com/texus/TGUI/pull/148))
 - Add setTextSize for SubwidgetContainer ([PR #149](https://github.com/texus/TGUI/pull/149))
+- Added SDL/OpenGL backend as alternative for default SFML backend
 - Rewrote signal system again, `b->connect("Pressed",...)` is now `b->onPress(...)`
 - Added new FileDialog widget
 - Added new ToggleButton widget
