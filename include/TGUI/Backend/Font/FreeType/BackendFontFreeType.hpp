@@ -105,9 +105,7 @@ namespace tgui
         /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) override;
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        using BackendFont::getKerning; // Import version without bold parameter
-#endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the line spacing

@@ -99,6 +99,7 @@ set(TEST_SOURCES
 # Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
 # Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
 # so this should only be enabled in places where the TGUI is build only once.
+# TODO: CMake 3.16 added support for unity builds, so we can replace this hacky method
 if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
     list(LENGTH TEST_SOURCES fileCount)
     if (TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)

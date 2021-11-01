@@ -22,11 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/SDL-Renderer.hpp>
 #include <TGUI/TGUI.hpp>
-
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <TGUI/Backend/SDL-Renderer.hpp>
 
 // The background image will rotate with the screen
 // TODO: This isn't working. We might not be receiving SDL_WINDOWEVENT_SIZE_CHANGED events.

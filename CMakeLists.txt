@@ -20,35 +20,11 @@
 # 3. This notice may not be removed or altered from any source distribution.
 ####################################################################################################
 
-# CMake's built-in Android support requires 3.7
-# Normally CMAKE_SYSTEM_NAME is still empty here, but for Android this value is set by the user to tell CMake to cross-compile.
-#
 # If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
 # When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
-#
-# These are the changed policies that we mostly care about:
-# - CMP0068 (3.9):  RPATH settings on macOS do not affect install_name.
-# - CMP0072 (3.11): FindOpenGL prefers GLVND by default when available.
-# - CMP0074 (3.12): find_package uses PackageName_ROOT variables.
-# - CMP0076 (3.13): target_sources() command converts relative paths to absolute.
-# - CMP0082 (3.14): Install rules from add_subdirectory() are interleaved with those in caller.
-# - CMP0091 (3.15): MSVC runtime library flags are selected by an abstraction.
-# - CMP0092 (3.15): MSVC warning flags are not in CMAKE_{C,CXX}_FLAGS by default.
-#
 # TODO: Investigate the effect of CMP0126 that was instroduced in CMake 3.21 (set(CACHE) does not remove a normal variable of the same name).
-#       Is our code fully compatible with the new behavior? If so then "3.20" below can be changed to "3.21".
-#
-# TODO TGUI_NEXT: Update minimum version to 3.16
-if(CMAKE_SYSTEM_NAME MATCHES "Android")
-    cmake_minimum_required(VERSION 3.7...3.20)
-else()
-    cmake_minimum_required(VERSION 3.5...3.20)
-endif()
-
-# TODO TGUI_NEXT
-if(${CMAKE_VERSION} VERSION_LESS "3.16")
-    message("Warning: CMake >= 3.16 will be required by future TGUI versions")
-endif()
+#       Is our code fully compatible with the new behavior? If so then "3.20" below can be changed to "3.22".
+cmake_minimum_required(VERSION 3.16...3.20)
 
 # Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -120,19 +96,6 @@ endif()
 
 if(TGUI_BACKEND)
     set(backend_provided TRUE)
-
-    if(TGUI_BACKEND STREQUAL "SFML")
-        set(TGUI_BACKEND SFML_GRAPHICS)
-        message(WARNING "TGUI_BACKEND should no longer be set to 'SFML', you should use 'SFML_GRAPHICS' instead")
-    elseif(TGUI_BACKEND STREQUAL "SDL")
-        if(TGUI_USE_GLES)
-            set(TGUI_BACKEND SDL_TTF_GLES2)
-            message(WARNING "TGUI_BACKEND should no longer be set to 'SDL', you should use 'SDL_TTF_GLES2' instead")
-        else()
-            set(TGUI_BACKEND SDL_TTF_OPENGL3)
-            message(WARNING "TGUI_BACKEND should no longer be set to 'SDL', you should use 'SDL_TTF_OPENGL3' instead")
-        endif()
-    endif()
 endif()
 
 # Construct a list of supported backends based on the platform
@@ -179,42 +142,20 @@ tgui_set_option(TGUI_BACKEND SFML_GRAPHICS STRING "Select a backend for renderin
 set_property(CACHE TGUI_BACKEND PROPERTY STRINGS Custom;${TGUI_BACKEND_OPTIONS})
 
 if(NOT backend_provided)
-    # For backwards compatibility we have to select SFML automatically without asking for a backend.
-    # So we only ask for a backend if SFML can't be found.
-    if(NOT DEFINED SFML_STATIC_LIBRARIES)
-        tgui_assign_bool(SFML_STATIC_LIBRARIES NOT TGUI_SHARED_LIBS)
-    endif()
-    if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
-        set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-        find_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
-    elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-        find_host_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
-    else()
-        find_package(SFML 2 CONFIG COMPONENTS graphics QUIET)
-    endif()
-
-    if(NOT SFML_PATH AND NOT SFML_DIR AND NOT SFML_FOUND)
-        # Remove the SFML_DIR propery that was created by find_package but which we won't need if we don't select SFML
-        unset(SFML_DIR CACHE)
-
-        message(FATAL_ERROR
-          " Please select a backend by setting the value of TGUI_BACKEND.\n"
-          " \n"
-          " The following backends are available:\n"
-          ${TGUI_BACKEND_OPTIONS_DESC}
-          " \n"
-          " SFML_GRAPHICS is the default and has been preselected, press configure again to continue with this backend.\n"
-          " Select 'Custom' if you wish to build TGUI with multiple or no backends.\n")
-    else()
-        message(STATUS "TGUI_BACKEND wasn't set, but SFML was found. Selecting SFML_GRAPHICS backend for backwards compatibility.")
-    endif()
+    message(FATAL_ERROR
+      " Please select a backend by setting the value of TGUI_BACKEND.\n"
+      " \n"
+      " The following backends are available:\n"
+      ${TGUI_BACKEND_OPTIONS_DESC}
+      " \n"
+      " SFML_GRAPHICS is the default and has been preselected, press configure again to continue with this backend.\n"
+      " Select 'Custom' if you wish to build TGUI with multiple or no backends.\n")
 endif()
 
 string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
 
 # Use c++17 by default on GCC >= 11
-# Note that we can't use VERSION_GREATER_EQUAL yet because it was only added in CMake 3.7
-if (TGUI_COMPILER_GCC AND (NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "11"))
+if (TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
     set(TGUI_DEFAULT_CXX_STANDARD "17")
 else() # Use c++14 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
@@ -289,21 +230,6 @@ if(TGUI_OS_ANDROID)
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 
-# Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using VC++ when using CMake < 3.15
-# This can't be done in the tgui_set_stdlib function because it is too late to change these variables by then.
-# In newer CMake versions we can do this properly in tgui_set_stdlib thanks to policy CMP0091.
-if(CMAKE_VERSION VERSION_LESS "3.15")
-    if(TGUI_USE_STATIC_STD_LIBS AND (TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
-        foreach(flag
-                CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-                CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-            if(${flag} MATCHES "/MD")
-                string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
-            endif()
-        endforeach()
-    endif()
-endif()
-
 # Add an option to choose whether PDB debug symbols should be generated for Visual Studio
 if(TGUI_COMPILER_MSVC)
     tgui_set_option(TGUI_GENERATE_PDB TRUE BOOL "True to generate PDB debug symbols, FALSE otherwise.")
@@ -347,7 +273,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQ
     tgui_find_dependency_sdl()
     target_link_libraries(tgui-gui-app-interface INTERFACE SDL2::SDL2main)
 elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2")
-    if(TGUI_OS_WINDOWS AND NOT CMAKE_VERSION VERSION_LESS "3.13") # VERSION_GREATER_EQUAL was only added in CMake 3.7
+    if(TGUI_OS_WINDOWS)
         if(TGUI_COMPILER_MSVC)
             target_link_options(tgui-gui-app-interface INTERFACE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
         else()
@@ -425,20 +351,10 @@ if(TGUI_GENERATE_PDB)
     # using single-configuration generators such as NMake Makefiles.
     # When using Linker PDB files (i.e. TGUI_SHARED_LIBS=FALSE), CMake 3.13 introduced a generator expression that helps us.
     # Linker PDB files are installed next to the dll file (where VS searches them) while compiler PDB files are placed next to the lib file.
-    # TODO: Find a reliable way to know whether the file has a "-d" postfix instead of trying to install both. OPTIONAL is also required for when config is Release.
     if(TGUI_SHARED_LIBS)
-        if(CMAKE_VERSION VERSION_LESS "3.13")
-            if (MSVC_IDE)
-                install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
-                install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-d.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
-            else()
-                install (FILES "${PROJECT_BINARY_DIR}/lib/tgui.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
-                install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-d.pdb" DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT devel OPTIONAL)
-            endif()
-        else()
-            install (FILES $<TARGET_PDB_FILE:tgui> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL COMPONENT devel)
-        endif()
+        install (FILES $<TARGET_PDB_FILE:tgui> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL COMPONENT devel)
     else()
+        # TODO: Find a reliable way to know whether the file has a "-d" postfix instead of trying to install both. OPTIONAL is also required when config is Release.
         if (MSVC_IDE)
             install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
             install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)

@@ -44,7 +44,7 @@ TEST_CASE("[Canvas]")
 {
     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
     {
-        tgui::Canvas::Ptr canvas = tgui::Canvas::create();
+        tgui::CanvasSFML::Ptr canvas = tgui::CanvasSFML::create();
         canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
         SECTION("WidgetType")
@@ -54,13 +54,13 @@ TEST_CASE("[Canvas]")
 
         SECTION("constructor")
         {
-            canvas = tgui::Canvas::create({200, 100});
+            canvas = tgui::CanvasSFML::create({200, 100});
             REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
         }
 
         SECTION("view")
         {
-            canvas = tgui::Canvas::create({200, 100});
+            canvas = tgui::CanvasSFML::create({200, 100});
 
             REQUIRE(canvas->getView() == sf::View({0, 0, 200, 100}));
             REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
@@ -79,7 +79,7 @@ TEST_CASE("[Canvas]")
 
         SECTION("internal render texture")
         {
-            canvas = tgui::Canvas::create({50, 50});
+            canvas = tgui::CanvasSFML::create({50, 50});
             sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
 
             canvas->setSize({70, 80});
@@ -94,7 +94,7 @@ TEST_CASE("[Canvas]")
 
         SECTION("Saving and loading from file")
         {
-            REQUIRE_NOTHROW(canvas = tgui::Canvas::create({60, 40}));
+            REQUIRE_NOTHROW(canvas = tgui::CanvasSFML::create({60, 40}));
 
             testSavingWidget("Canvas", canvas, false);
         }

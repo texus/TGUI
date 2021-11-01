@@ -41,22 +41,14 @@ namespace tgui
     bool Texture::m_defaultSmooth = true;
 
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
-#ifdef TGUI_NEXT
     Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTexture& backendTexture, const String& filename, bool smooth)
-#else
-    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTexture& backendTexture, const String& filename)
-#endif
         {
             Vector2u imageSize;
             auto pixelPtr = ImageLoader::loadFromFile(filename, imageSize);
             if (!pixelPtr)
                 return false;
 
-#ifdef TGUI_NEXT
             return backendTexture.load(imageSize, std::move(pixelPtr), smooth);
-#else
-            return backendTexture.load(imageSize, std::move(pixelPtr), backendTexture.isSmooth());
-#endif
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,23 +214,6 @@ namespace tgui
         loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr(), partRect, middleRect);
     }
 #endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    bool Texture::load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect, const UIntRect& middleRect)
-    {
-        try
-        {
-            loadFromPixelData(size, pixels, partRect, middleRect);
-            return true;
-        }
-        catch (const Exception&)
-        {
-            return false;
-        }
-    }
-#endif
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Texture::loadFromMemory(const std::uint8_t* fileData, std::size_t fileDataSize, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)

@@ -27,7 +27,6 @@
 #define TGUI_BACKEND_RENDERER_SFML_HPP
 
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 #include <memory>
@@ -42,14 +41,6 @@ namespace tgui
     class TGUI_API BackendRendererSFML : public BackendRenderer
     {
     public:
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates a new empty text object
-        /// @return Shared pointer to a new text object
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<BackendText> createText() override;
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new empty texture object

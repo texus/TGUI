@@ -397,10 +397,6 @@ namespace tgui
         }
 #endif
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        TGUI_DEPRECATED("Use toStdString instead") std::string toAnsiString() const;
-#endif
-
         std::string toStdString() const;
         std::wstring toWideString() const;
         std::u16string toUtf16() const;
@@ -408,18 +404,6 @@ namespace tgui
         {
             return m_string;
         }
-
-#if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-        std::u8string toUtf8() const
-        {
-            return utf::convertUtf32toUtf8(m_string);
-        }
-#elif !defined(TGUI_REMOVE_DEPRECATED_CODE)
-        TGUI_DEPRECATED("Use toStdString instead") std::string toUtf8() const
-        {
-            return toStdString();
-        }
-#endif
 
         String& assign(std::size_t count, char ch);
         String& assign(std::size_t count, wchar_t ch);
@@ -900,6 +884,8 @@ namespace tgui
 
         explicit operator std::u8string() const;
 
+        std::u8string toUtf8() const;
+
         String& assign(std::size_t count, char8_t ch);
         String& assign(const std::u8string& str);
         String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
@@ -1091,6 +1077,11 @@ namespace tgui
     inline String::operator std::u8string() const
     {
         return toUtf8();
+    }
+
+    inline std::u8string String::toUtf8() const
+    {
+        return utf::convertUtf32toUtf8(m_string);
     }
 
     inline String& String::assign(std::size_t count, char8_t ch)

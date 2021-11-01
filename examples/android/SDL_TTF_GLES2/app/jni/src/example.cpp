@@ -22,11 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/SDL-TTF-GLES2.hpp>
 #include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SDL-TTF-GLES2.hpp>
 
-#include <SDL.h>
-#include <SDL_ttf.h>
 #include <SDL_opengles2.h>
 
 // The background image will rotate with the screen

@@ -205,7 +205,7 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldBackendTextureLoader = tgui::Texture::getBackendTextureLoader();
 
-        auto func = [&](tgui::BackendTexture&, const tgui::String& filename) {
+        auto func = [&](tgui::BackendTexture&, const tgui::String& filename, bool) {
             REQUIRE(filename == "resources/image.png");
             count++;
             return true;
@@ -223,11 +223,11 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldTextureLoader = tgui::Texture::getTextureLoader();
 
-        auto func = [&](tgui::Texture& texture, const tgui::String& filename, bool) {
+        auto func = [&](tgui::Texture& texture, const tgui::String& filename, bool smooth) {
             REQUIRE(filename == "resources/image.png");
             auto data = std::make_shared<tgui::TextureData>();
             data->backendTexture = std::make_shared<tgui::BackendTexture>();
-            texture.getBackendTextureLoader()(*data->backendTexture, filename);
+            texture.getBackendTextureLoader()(*data->backendTexture, filename, smooth);
             count++;
             return data;
         };

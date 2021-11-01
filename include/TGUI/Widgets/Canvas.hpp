@@ -274,10 +274,6 @@ namespace tgui
         sf::RenderTexture m_renderTexture;
         Sprite m_sprite;
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    using Canvas = CanvasSFML;
 }
 
 #endif // TGUI_HAS_BACKEND_SFML_GRAPHICS

@@ -355,13 +355,7 @@ macro(tgui_add_dependency_freetype)
         endif()
     endif()
 
-    # FindFreetype only defines a target since CMake 3.10
-    if(TARGET Freetype::Freetype)
-        target_link_libraries(tgui PRIVATE Freetype::Freetype)
-    else()
-        target_include_directories(tgui PRIVATE ${FREETYPE_INCLUDE_DIRS})
-        target_link_libraries(tgui PRIVATE ${FREETYPE_LIBRARIES})
-    endif()
+    target_link_libraries(tgui PRIVATE Freetype::Freetype)
 endmacro()
 
 

@@ -300,20 +300,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    TTF_Font* BackendFontSDLttf::loadInternalFont(unsigned int characterSize) const
-    {
-        if (!m_fileContents || (m_fileSize == 0))
-            return nullptr;
-
-        SDL_RWops* handle = SDL_RWFromConstMem(m_fileContents.get(), static_cast<int>(m_fileSize));
-        if (!handle)
-            return nullptr;
-
-        return TTF_OpenFontRW(handle, 1, characterSize);
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::pair<int, int> BackendFontSDLttf::getUnderlineInfo(unsigned int characterSize)
     {

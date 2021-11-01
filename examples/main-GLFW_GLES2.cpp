@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/GLFW-GLES2.hpp>
 #include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/GLFW-GLES2.hpp>
 
 // Optional: include OpenGL ES functions via TGUI (which you can call AFTER creating the Gui object)
 // This will include a built-in GLAD header that defines all functions that exist in GLES 3.2 (and OpenGL 4.6)

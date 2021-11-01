@@ -45,15 +45,6 @@ macro(tgui_add_example target)
     target_link_libraries(${target} PRIVATE tgui tgui-gui-app-interface)
     tgui_set_global_compile_flags(${target})
     tgui_set_stdlib(${target})
-
-    # If we use CMake < 3.13 then we can't add link options to tgui-gui-app-interface and have to add them manually for each app
-    if(TGUI_OS_WINDOWS AND (${CMAKE_VERSION} VERSION_LESS "3.13") AND (${TGUI_DEFAULT_BACKEND} STREQUAL "GLFW_OPENGL3" OR ${TGUI_DEFAULT_BACKEND} STREQUAL "GLFW_GLES2"))
-        if(TGUI_COMPILER_MSVC)
-            target_link_options(${target} PRIVATE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
-        else()
-            target_link_options(${target} PRIVATE "-mwindow")
-        endif()
-    endif()
 endmacro()
 
 # Build the examples

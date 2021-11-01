@@ -59,12 +59,7 @@ function(tgui_set_global_compile_flags target)
     endif()
 
     set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
-    if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
-        set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON)
-        set_target_properties(${target} PROPERTIES CXX_STANDARD ${TGUI_CXX_STANDARD})
-    else() # CMake 3.8 or newer
-        target_compile_features(${target} PUBLIC cxx_std_${TGUI_CXX_STANDARD})
-    endif()
+    target_compile_features(${target} PUBLIC cxx_std_${TGUI_CXX_STANDARD})
 
     if(TGUI_USE_MULTI_PROCESSOR_COMPILATION)
         target_compile_options(${target} PRIVATE /MP)
@@ -93,14 +88,11 @@ function(tgui_set_stdlib target)
     endif()
 
     # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using Visual Studio.
-    # In CMake versions older than 3.15, this had to be done globally instead of per target, it would already be done earlier.
-    if(NOT ${CMAKE_VERSION} VERSION_LESS "3.15") # VERSION_GREATER_EQUAL was only added in CMake 3.7
-        if((TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
-            if(TGUI_USE_STATIC_STD_LIBS)
-                set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-            else()
-                set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-            endif()
+    if((TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
+        if(TGUI_USE_STATIC_STD_LIBS)
+            set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
         endif()
     endif()
 endfunction()
@@ -108,14 +100,9 @@ endfunction()
 # Generate a TGUIConfig.cmake file (and associated files)
 function(tgui_export_target export_name)
     include(CMakePackageConfigHelpers)
-    if(CMAKE_VERSION VERSION_LESS 3.11)
-        set(CVF_VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH})
-        configure_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfigVersion.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake" @ONLY)
-    else()
         write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
                                          VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
                                          COMPATIBILITY SameMinorVersion)
-    endif()
 
     if (TGUI_SHARED_LIBS)
         set(targets_config_filename TGUISharedTargets.cmake)

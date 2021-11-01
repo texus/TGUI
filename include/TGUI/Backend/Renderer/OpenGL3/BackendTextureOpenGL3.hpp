@@ -77,10 +77,6 @@ namespace tgui
 
         unsigned int m_textureId = 0;
     };
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using BackendTextureSDL TGUI_DEPRECATED("BackendTextureSDL was renamed to BackendTextureOpenGL3") = BackendTextureOpenGL3;
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,7 @@
 
 
 #include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 // The background image will rotate with the screen
 void setBackground(tgui::Gui& gui, sf::Vector2u screenSize)

@@ -159,10 +159,6 @@ namespace tgui
             sf::RenderTarget* m_target = nullptr;
         };
     }
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using GuiSFML TGUI_DEPRECATED("GuiSFML was renamed to Gui") = SFML_GRAPHICS::Gui;
-#endif
 }
 
 #endif // TGUI_BACKEND_SFML_GRAPHICS_INCLUDE_HPP

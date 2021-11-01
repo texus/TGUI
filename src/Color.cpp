@@ -40,27 +40,7 @@ namespace tgui
     const Color Color::Magenta    {255,   0, 255};
     const Color Color::Cyan       {  0, 255, 255};
     const Color Color::Transparent{  0,   0,   0,   0};
-#endif
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-    // This somehow gives a deprecated warning, while this is just the definition of the deprecated value
-    const std::map<String, Color> Color::colorMap =
-    {
-        {"black", Color::Black},
-        {"white", Color::White},
-        {"red", Color::Red},
-        {"yellow", Color::Yellow},
-        {"green", Color::Green},
-        {"cyan", Color::Cyan},
-        {"blue", Color::Blue},
-        {"magenta", Color::Magenta},
-        {"transparent", Color::Transparent}
-    };
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-#endif
-
-#if TGUI_COMPILED_WITH_CPP_VER < 20
     const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
     {
         {{U"black", Color::Black},

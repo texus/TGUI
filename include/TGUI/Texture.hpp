@@ -50,11 +50,7 @@ namespace tgui
     public:
 
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
-#ifdef TGUI_NEXT
         using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&, bool smooth)>;
-#else
-        using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&)>;
-#endif
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const String&, bool smooth)>;
 
 
@@ -174,20 +170,6 @@ namespace tgui
         void load(const sf::Texture& texture,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {});
-#endif
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the texture from an array of 32-bits RGBA pixels
-        ///
-        /// @param size       Width and height of the image to create
-        /// @param pixels     Pointer to array of size.x*size.y*4 bytes with RGBA pixels
-        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image
-        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        ///
-        /// @return True on success, false if the backend failed to create the texture
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use loadFromPixelData instead") bool load(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

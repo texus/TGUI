@@ -213,6 +213,7 @@ add_library(TGUI::TGUI ALIAS tgui)
 # Add the backends to the library.
 # Without the ability to call target_link_libraries in a subdirectory (which was only added in CMake 3.13 in policy CMP0079),
 # the code would be more complicated when using add_subdirectory. So we just avoid creating a new scope by using include.
+# TODO: We now require a newer CMake version, so we should be able to find a solution that uses add_subdirectory instead of include
 include(Backend/CMakeLists.txt)
 
 # Define either TGUI_STATIC or TGUI_DYNAMIC
@@ -302,11 +303,7 @@ if(TGUI_OS_MACOS AND TGUI_SHARED_LIBS)
     if(NOT CMAKE_SKIP_RPATH AND NOT CMAKE_SKIP_INSTALL_RPATH AND NOT CMAKE_INSTALL_RPATH AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH AND NOT CMAKE_INSTALL_NAME_DIR)
         set_target_properties(tgui PROPERTIES INSTALL_NAME_DIR "@rpath")
         if(NOT CMAKE_SKIP_BUILD_RPATH)
-            if(CMAKE_VERSION VERSION_LESS 3.9)
-                set_target_properties(tgui PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-            else()
-                set_target_properties(tgui PROPERTIES BUILD_WITH_INSTALL_NAME_DIR TRUE)
-            endif()
+            set_target_properties(tgui PROPERTIES BUILD_WITH_INSTALL_NAME_DIR TRUE)
         endif()
     endif()
 endif()
@@ -328,9 +325,8 @@ install(TARGETS tgui EXPORT TGUIConfigExport
 )
 
 # Generate the TGUIConfig.cmake file
-# This has to happen here instead of in the root CMakeLists.txt because otherwise it might try to write to the macOS framework before the framework is installed.
-# This is because the order of install rules is undefined between directories.
-# Some related things changed in CMake 3.13, so once the minimum cmake version is increased we should check if the issue still exists.
+# This had to happen here instead of in the root CMakeLists.txt because otherwise it might try to write to the macOS framework before the framework is installed.
+# TODO: CMake 3.13 fixed order of installation, so check if the issue still exists.
 # Since the config files relies on variables that are only defined in this scope (via the backend include), caution is required when moving this.
 if (NOT TGUI_SKIP_EXPORT)
   tgui_export_target(TGUIConfigExport)

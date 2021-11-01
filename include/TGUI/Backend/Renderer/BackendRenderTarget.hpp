@@ -58,30 +58,14 @@ namespace tgui
         /// @brief Select the color that will be used by clearScreen
         /// @param color  Background color of the window
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         virtual void setClearColor(const tgui::Color& color) = 0;
-#else
-        virtual void setClearColor(const tgui::Color& color) { (void)color; }
-#endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Clears the screen, called at the beginning of each frame when gui.mainLoop() is called
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         virtual void clearScreen() = 0;
-#else
-        virtual void clearScreen() {}
-#endif
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Informs the render target about which part of the window is used for rendering
-        ///
-        /// @param view     Defines which part of the gui is being shown
-        /// @param viewport Defines which part of the window is being rendered to
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use setView(view, viewport, targetSize) instead") virtual void setView(FloatRect view, FloatRect viewport);
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the render target about which part of the window is used for rendering
@@ -173,20 +157,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws one or more triangles (using the color that is specified in the vertices)
         ///
-        /// @param states       Render states to use for drawing
-        /// @param vertices     Pointer to first element in array of vertices
-        /// @param vertexCount  Amount of elements in the vertex array
-        /// @param indices      Pointer to first element in array of indices
-        /// @param indexCount   Amount of elements in the indices array
-        ///
-        /// If indices is a nullptr then vertexCount must be a multiple of 3 and each set of 3 vertices will be seen as a triangle.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use drawVertexArray instead") virtual void drawTriangles(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices = nullptr, std::size_t indexCount = 0);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draws one or more triangles (using the color that is specified in the vertices)
-        ///
         /// @param states        Render states to use for drawing
         /// @param vertices      Array of vertices
         /// @param indices       Optional array of indices
@@ -232,13 +202,9 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         virtual void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
                                      const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) = 0;
-#else
-        virtual void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                                     const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture);
-#endif
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
@@ -251,11 +217,7 @@ namespace tgui
         ///
         /// Both rectangles may be empty when nothing that will be drawn is going to be visible.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         virtual void updateClipping(FloatRect clipRect, FloatRect clipViewport) = 0;
-#else
-        virtual void updateClipping(FloatRect clipRect, FloatRect clipViewport) { (void)clipRect; (void)clipViewport; };
-#endif
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,10 +229,6 @@ namespace tgui
 
         std::vector<std::pair<FloatRect, FloatRect>> m_clipLayers;
     };
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using BackendRenderTargetBase TGUI_DEPRECATED("BackendRenderTargetBase was renamed to BackendRenderTarget") = BackendRenderTarget;
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

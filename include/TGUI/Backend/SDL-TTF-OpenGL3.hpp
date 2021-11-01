@@ -81,13 +81,6 @@ namespace tgui
             void presentScreen() override;
         };
     }
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    #if !TGUI_USE_GLES
-    using GuiSDL TGUI_DEPRECATED("GuiSDL was renamed to Gui ") = SDL_TTF_OPENGL3::Gui;
-    #endif
-#endif
-
 }
 
 #endif // TGUI_BACKEND_SDL_TTF_OPENGL3_INCLUDE_HPP

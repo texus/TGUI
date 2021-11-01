@@ -40,15 +40,6 @@ add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
 target_include_directories(gui-builder PRIVATE include)
 target_link_libraries(gui-builder PRIVATE tgui-gui-app-interface)
 
-# If we use CMake < 3.13 then we can't add link options to tgui-gui-app-interface and have to add them manually for each app
-if(TGUI_OS_WINDOWS AND (${CMAKE_VERSION} VERSION_LESS "3.13") AND (${TGUI_DEFAULT_BACKEND} STREQUAL "GLFW_OPENGL3" OR ${TGUI_DEFAULT_BACKEND} STREQUAL "GLFW_GLES2"))
-    if(TGUI_COMPILER_MSVC)
-        target_link_options(gui-builder PRIVATE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
-    else()
-        target_link_options(gui-builder PRIVATE "-mwindow")
-    endif()
-endif()
-
 tgui_set_global_compile_flags(gui-builder)
 tgui_set_stdlib(gui-builder)
 

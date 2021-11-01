@@ -125,13 +125,7 @@ namespace tgui
         indices[indices.size() - 5] = 0;
 
         // Draw the triangles
-#ifdef TGUI_NEXT
         renderTarget->drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
-#else
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        renderTarget->drawTriangles(states, vertices.data(), vertices.size(), indices.data(), indices.size());
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,22 +151,9 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
 
         // Draw the triangles
-#ifdef TGUI_NEXT
         renderTarget->drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
-#else
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        renderTarget->drawTriangles(states, vertices.data(), vertices.size(), indices.data(), indices.size());
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-#endif
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void BackendRenderTarget::setView(FloatRect, FloatRect)
-    {
-        TGUI_ASSERT(false, "This function should not be called. Always use the setView function with 3 parameters");
-    }
-#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTarget::setView(FloatRect view, FloatRect viewport, Vector2f targetSize)
@@ -274,8 +255,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         // 2--------------4 //
         //////////////////////
         const auto vertexColor = Vertex::Color(color);
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-#ifdef TGUI_NEXT
         const std::array<Vertex, 9> vertices = {{
             {{0, 0}, vertexColor},
             {{borders.getLeft(), 0}, vertexColor},
@@ -298,32 +277,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START
             7, 1, 8
         }};
         drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
-#else
-        drawTriangles(states,
-            {
-                {{0, 0}, vertexColor},
-                {{borders.getLeft(), 0}, vertexColor},
-                {{0, size.y}, vertexColor},
-                {{borders.getLeft(), size.y - borders.getBottom()}, vertexColor},
-                {{size.x, size.y}, vertexColor},
-                {{size.x - borders.getRight(), size.y - borders.getBottom()}, vertexColor},
-                {{size.x, 0}, vertexColor},
-                {{size.x - borders.getRight(), borders.getTop()}, vertexColor},
-                {{borders.getLeft(), borders.getTop()}, vertexColor}
-            },
-            {
-                0, 2, 1,
-                1, 2, 3,
-                2, 4, 3,
-                3, 4, 5,
-                4, 6, 5,
-                5, 6, 7,
-                6, 1, 7,
-                7, 1, 8
-            }
-        );
-#endif
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,8 +284,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     void BackendRenderTarget::drawFilledRect(const RenderStates& states, Vector2f size, Color color)
     {
         const auto vertexColor = Vertex::Color(color);
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-#ifdef TGUI_NEXT
         const std::array<Vertex, 4> vertices = {{
             {{0, 0}, vertexColor},
             {{0, size.y}, vertexColor},
@@ -344,21 +295,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START
             2, 1, 3
         }};
         drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
-#else
-        drawTriangles(states,
-            {
-                {{0, 0}, vertexColor},
-                {{0, size.y}, vertexColor},
-                {{size.x, 0}, vertexColor},
-                {{size.x, size.y}, vertexColor}
-            },
-            {
-                0, 1, 2,
-                2, 1, 3
-            }
-        );
-#endif
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,16 +353,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTarget::drawTriangles(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices, std::size_t indexCount)
-    {
-        drawVertexArray(states, vertices, vertexCount, indices, indexCount, nullptr);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BackendRenderTarget::drawTriangles(const RenderStates& states, std::initializer_list<Vertex> vertices, std::initializer_list<int> indices)
     {
-#ifdef TGUI_NEXT
         if (indices.size() == 0)
             drawVertexArray(states, vertices.begin(), vertices.size(), nullptr, 0, nullptr);
         else
@@ -434,27 +362,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             TGUI_ASSERT(indices.size() % 3 == 0, "BackendRenderTarget::drawTriangles requires that the number of indices is divisible by 3");
             drawVertexArray(states, vertices.begin(), vertices.size(), indices.begin(), indices.size(), nullptr);
         }
-#else
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        if (indices.size() == 0)
-            drawTriangles(states, vertices.begin(), vertices.size());
-        else
-        {
-            TGUI_ASSERT(indices.size() % 3 == 0, "BackendRenderTarget::drawTriangles requires that the number of indices is divisible by 3");
-            drawTriangles(states, vertices.begin(), vertices.size(), indices.begin(), indices.size());
-        }
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-#endif
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_NEXT
-    void BackendRenderTarget::drawVertexArray(const RenderStates&, const Vertex*, std::size_t,
-                         const int*, std::size_t, const std::shared_ptr<BackendTexture>&)
-    {
-        TGUI_ASSERT(false, "drawVertexArray should be overriden if drawTriangles isn't!");
-    }
-#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTarget::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)

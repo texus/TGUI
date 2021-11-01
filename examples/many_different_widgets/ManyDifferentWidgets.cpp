@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent example, the define can be removed in the future
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 
@@ -233,7 +232,7 @@ bool runExample(tgui::BackendGui& gui)
         sprite.setTexture(texture);
         sprite.setScale(200.f / texture.getSize().x, 140.f / texture.getSize().y);
 
-        auto canvas = tgui::Canvas::create({200, 140});
+        auto canvas = tgui::CanvasSFML::create({200, 140});
         canvas->setPosition(420, 430);
         canvas->clear();
         canvas->draw(sprite);

@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Container.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
@@ -66,22 +65,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void BackendRenderTargetSFML::setView(FloatRect view, FloatRect viewport)
-    {
-        BackendRenderTarget::setView(view, viewport, {static_cast<float>(m_target->getSize().x), static_cast<float>(m_target->getSize().y)});
-
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        m_view.setViewport({viewport.left / m_targetSize.x, viewport.top / m_targetSize.y,
-                            viewport.width / m_targetSize.x, viewport.height / m_targetSize.y});
-        m_view.setSize(view.width, view.height);
-        m_view.setCenter(view.left + (view.width / 2.f), view.top + (view.height / 2.f));
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BackendRenderTargetSFML::drawGui(const std::shared_ptr<RootContainer>& root)
     {
         if (!m_target || (m_targetSize.x == 0) || (m_targetSize.y == 0) || (m_viewRect.width <= 0) || (m_viewRect.height <= 0))
@@ -98,94 +81,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         m_target->setView(oldView);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void BackendRenderTargetSFML::addClippingLayer(const RenderStates& states, FloatRect rect)
-    {
-        BackendRenderTarget::addClippingLayer(states, rect);
-
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        const sf::View& oldView = m_clippingLayers.empty() ? m_view : m_clippingLayers.back().second;
-
-        const float* transformMatrix = states.transform.getMatrix();
-        if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
-         && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
-         && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
-        {
-            const FloatRect& oldClippingRect = m_clippingLayers.empty() ? m_viewRect : m_clippingLayers.back().first;
-            m_clippingLayers.push_back({oldClippingRect, oldView});
-            return;
-        }
-
-        Vector2f bottomRight{states.transform.transformPoint(rect.getPosition() + rect.getSize())};
-        Vector2f topLeft = states.transform.transformPoint(rect.getPosition());
-        const FloatRect clipRect = {topLeft, bottomRight - topLeft};
-
-        Vector2f viewTopLeft = topLeft;
-        Vector2f size = bottomRight - topLeft;
-
-        topLeft.x -= m_viewRect.left;
-        topLeft.y -= m_viewRect.top;
-        bottomRight.x -= m_viewRect.left;
-        bottomRight.y -= m_viewRect.top;
-
-        topLeft.x *= m_viewport.width / m_targetSize.x / m_viewRect.width;
-        topLeft.y *= m_viewport.height / m_targetSize.y / m_viewRect.height;
-        size.x *= m_viewport.width / m_targetSize.x / m_viewRect.width;
-        size.y *= m_viewport.height / m_targetSize.y / m_viewRect.height;
-
-        topLeft.x += m_viewport.left / m_targetSize.x;
-        topLeft.y += m_viewport.top / m_targetSize.y;
-
-        if (topLeft.x < oldView.getViewport().left)
-        {
-            size.x -= oldView.getViewport().left - topLeft.x;
-            viewTopLeft.x += (oldView.getViewport().left - topLeft.x) * (m_viewRect.width / (m_viewport.width / m_targetSize.x));
-            topLeft.x = oldView.getViewport().left;
-        }
-        if (topLeft.y < oldView.getViewport().top)
-        {
-            size.y -= oldView.getViewport().top - topLeft.y;
-            viewTopLeft.y += (oldView.getViewport().top - topLeft.y) * (m_viewRect.height / (m_viewport.height / m_targetSize.y));
-            topLeft.y = oldView.getViewport().top;
-        }
-
-        if (size.x > oldView.getViewport().left + oldView.getViewport().width - topLeft.x)
-            size.x = oldView.getViewport().left + oldView.getViewport().width - topLeft.x;
-        if (size.y > oldView.getViewport().top + oldView.getViewport().height - topLeft.y)
-            size.y = oldView.getViewport().top + oldView.getViewport().height - topLeft.y;
-
-        sf::View clippingView;
-        if ((size.x >= 0) && (size.y >= 0))
-        {
-            clippingView = sf::View{{std::round(viewTopLeft.x),
-                                     std::round(viewTopLeft.y),
-                                     std::round(size.x * m_viewRect.width / (m_viewport.width / m_targetSize.x)),
-                                     std::round(size.y * m_viewRect.height / (m_viewport.height / m_targetSize.y))}};
-            clippingView.setViewport({topLeft.x, topLeft.y, size.x, size.y});
-        }
-        else // The clipping area lies outside the viewport
-        {
-            clippingView = sf::View{{0, 0, 0, 0}};
-            clippingView.setViewport({0, 0, 0, 0});
-        }
-
-        m_clippingLayers.push_back({clipRect, clippingView});
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendRenderTargetSFML::removeClippingLayer()
-    {
-        BackendRenderTarget::removeClippingLayer();
-
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSFML::removeClippingLayer can't remove layer if there are none left");
-        m_clippingLayers.pop_back();
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-    }
-#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSFML::drawSprite(const RenderStates& states, const Sprite& sprite)
@@ -275,13 +170,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    sf::RenderStates BackendRenderTargetSFML::convertRenderStates(const RenderStates& states)
-    {
-        return convertRenderStates(states, nullptr);
-    }
-#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::RenderStates BackendRenderTargetSFML::convertRenderStates(const RenderStates& states, const std::shared_ptr<BackendTexture>& texture)

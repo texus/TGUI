@@ -33,20 +33,6 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS \
- && !defined(TGUI_SKIP_SFML_BACKEND_INCLUDE) \
- && !defined(TGUI_BACKEND_SFML_GRAPHICS_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_SFML_OPENGL3_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_GLFW_OPENGL3_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_GLFW_GLES2_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_SDL_OPENGL3_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_SDL_GLES2_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_SDL_TTF_OPENGL3_INCLUDE_HPP) \
- && !defined(TGUI_BACKEND_SDL_TTF_GLES2_INCLUDE_HPP)
-    #pragma message("Warning: SFML-Graphics backend is included automatically for backwards compatibility. It is adviced to include TGUI/Backend/SFML-Graphics.hpp (or another backend) before including TGUI/TGUI.hpp")
-    #include <TGUI/Backend/SFML-Graphics.hpp>
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_TGUI_HPP

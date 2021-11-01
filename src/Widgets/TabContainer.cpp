@@ -180,61 +180,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    void TabContainer::addPanel(Panel::Ptr ptr, const String& name, bool selectPanel)
-    {
-        auto size = getSizeLayout();
-        ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
-        ptr->setPosition({ bindLeft(m_tabs), bindBottom(m_tabs) });
-
-        m_panels.push_back(ptr);
-        m_tabs->add(name, selectPanel);
-        m_container->add(ptr);
-        if (selectPanel)
-            select(m_panels.size() - 1, false);
-        else
-            ptr->setVisible(false);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool TabContainer::insertPanel(Panel::Ptr ptr, const String& name, std::size_t index, bool selectPanel)
-    {
-        if (index > m_panels.size())
-            return false;
-
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
-        addPanel(ptr, name, selectPanel);
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
-
-        auto size = m_panels.size();
-        if (index != size)
-        {
-            std::swap(m_panels[index], m_panels[size - 1]);
-            if (!selectPanel)
-                m_index = static_cast<int>(size - 1);
-        }
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TabContainer::removePanel(Panel::Ptr ptr)
-    {
-        if (ptr != nullptr)
-        {
-            auto idx = getIndex(ptr);
-            if (idx != -1)
-            {
-                m_tabs->remove(idx);
-                m_container->remove(m_panels[idx]);
-                m_panels.erase(m_panels.begin() + idx);
-                select(m_tabs->getSelectedIndex());
-            }
-        }
-    }
-#endif
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TabContainer::select(std::size_t index, bool genEvents)
     {

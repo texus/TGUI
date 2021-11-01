@@ -71,16 +71,8 @@ namespace tgui
         ///
         /// This maximum size is defined by the graphics driver. Most likely this will return 8192 or 16384.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         virtual unsigned int getMaximumTextureSize() = 0;
-#else
-        virtual unsigned int getMaximumTextureSize() { return 8192; }
-#endif
     };
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using BackendRendererBase TGUI_DEPRECATED("BackendRendererBase was renamed to BackendRenderer") = BackendRenderer;
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

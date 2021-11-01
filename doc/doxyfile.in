@@ -70,7 +70,16 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
                          TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_FONT_BACKEND_SDL_TTF=1 \
-                         TGUI_HAS_FONT_BACKEND_FREETYPE=1
+                         TGUI_HAS_FONT_BACKEND_FREETYPE=1 \
+                         TGUI_HAS_BACKEND_SFML_GRAPHICS=1 \
+                         TGUI_HAS_BACKEND_SFML_OPENGL3=1 \
+                         TGUI_HAS_BACKEND_SDL_RENDERER=1 \
+                         TGUI_HAS_BACKEND_SDL_OPENGL3=1 \
+                         TGUI_HAS_BACKEND_SDL_GLES2=1 \
+                         TGUI_HAS_BACKEND_SDL_TTF_OPENGL3=1 \
+                         TGUI_HAS_BACKEND_SDL_TTF_GLES2=1 \
+                         TGUI_HAS_BACKEND_GLFW_OPENGL3=1 \
+                         TGUI_HAS_BACKEND_GLFW_GLES2=1
 
 SHOW_NAMESPACES        = NO
 HIDE_UNDOC_RELATIONS   = NO

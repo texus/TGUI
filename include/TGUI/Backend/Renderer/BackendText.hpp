@@ -197,11 +197,7 @@ namespace tgui
         std::shared_ptr<BackendFont> m_font;
 
         String m_string;
-#ifdef TGUI_NEXT
         unsigned int m_characterSize = getGlobalTextSize();
-#else
-        unsigned int m_characterSize = 32;
-#endif
         Color m_fillColor;
         Color m_outlineColor;
         float m_outlineThickness = 0;
@@ -212,11 +208,6 @@ namespace tgui
         std::shared_ptr<std::vector<Vertex>> m_outlineVertices;
         bool m_verticesNeedUpdate = true;
     };
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using BackendTextBase TGUI_DEPRECATED("BackendTextBase was renamed to BackendText") = BackendText;
-    using BackendTextSDL TGUI_DEPRECATED("BackendTextSDL was renamed to BackendText") = BackendText;
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

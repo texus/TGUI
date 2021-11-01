@@ -26,7 +26,6 @@
 #ifndef TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 #define TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 
-#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent code, the define can be removed in the future
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Filesystem.hpp>
 #include <TGUI/DefaultBackendWindow.hpp>

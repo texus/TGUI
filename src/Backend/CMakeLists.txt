@@ -21,20 +21,6 @@
 ####################################################################################################
 
 if(TGUI_BACKEND_UPPERCASE STREQUAL "CUSTOM")
-    # Check for TGUI_HAS_BACKEND_SFML and TGUI_HAS_BACKEND_SDL options for backwards compatibility
-    if(NOT DEFINED TGUI_HAS_BACKEND_SFML_GRAPHICS AND TGUI_HAS_BACKEND_SFML)
-        set(TGUI_HAS_BACKEND_SFML_GRAPHICS TRUE)
-        message(WARNING "TGUI_HAS_BACKEND_SFML should no longer be set, you should use TGUI_HAS_BACKEND_SFML_GRAPHICS instead")
-    endif()
-    if(NOT DEFINED TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 AND TGUI_HAS_BACKEND_SDL AND TGUI_USE_GLES)
-        set(TGUI_HAS_BACKEND_SDL_TTF_GLES2 TRUE)
-        message(WARNING "TGUI_HAS_BACKEND_SDL and TGUI_USE_GLES should no longer be set, you should use TGUI_HAS_BACKEND_SDL_TTF_GLES2 instead")
-    endif()
-    if(NOT DEFINED TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 AND TGUI_HAS_BACKEND_SDL AND NOT TGUI_USE_GLES)
-        set(TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 TRUE)
-        message(WARNING "TGUI_HAS_BACKEND_SDL should no longer be set, you should use TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 instead")
-    endif()
-
     if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS OR TGUI_OS_ANDROID OR TGUI_OS_IOS)
         tgui_set_option(TGUI_HAS_BACKEND_SFML_GRAPHICS FALSE BOOL "TRUE to build the SFML_GRAPHICS backend (uses sfml-graphics for everything)")
     endif()
@@ -223,7 +209,6 @@ if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)
     target_sources(tgui PRIVATE
         Backend/Renderer/SFML-Graphics/BackendRendererSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.cpp
-        Backend/Renderer/SFML-Graphics/BackendTextSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendTextureSFML.cpp
     )
 endif()
@@ -259,7 +244,6 @@ endif()
 if(TGUI_HAS_FONT_BACKEND_SDL_TTF)
     target_sources(tgui PRIVATE
         Backend/Font/SDL_ttf/BackendFontSDLttf.cpp
-        Backend/Font/SDL_ttf/FontCacheSDL.cpp
     )
 endif()
 if(TGUI_HAS_FONT_BACKEND_FREETYPE)

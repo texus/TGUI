@@ -62,6 +62,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
         ///
+        /// @param data         Moved pointer to the file data in memory
+        /// @param sizeInBytes  Size of the data to load, in bytes
+        ///
+        /// @return True if the font was loaded successfully, false otherwise
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads a font from memory
+        ///
         /// @param data         Pointer to the file data in memory
         /// @param sizeInBytes  Size of the data to load, in bytes
         ///
@@ -69,21 +80,7 @@ namespace tgui
         ///
         /// This function makes a copy of the data. Use the overload with a unique_ptr when possible to move instead of copy.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef TGUI_NEXT
         bool loadFromMemory(const void* data, std::size_t sizeInBytes);
-#else
-        virtual bool loadFromMemory(const void* data, std::size_t sizeInBytes);
-#endif
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads a font from memory
-        ///
-        /// @param data         Moved pointer to the file data in memory
-        /// @param sizeInBytes  Size of the data to load, in bytes
-        ///
-        /// @return True if the font was loaded successfully, false otherwise
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,26 +108,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) = 0;
 
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the kerning offset of two glyphs
-        ///
-        /// The kerning is an extra offset (negative) to apply between two glyphs when rendering them, to make the pair look
-        /// more "natural". For example, the pair "AV" have a special kerning to make them closer than other characters.
-        /// Most of the glyphs pairs have a kerning offset of zero, though.
-        ///
-        /// @param first         Unicode code point of the first character
-        /// @param second        Unicode code point of the second character
-        /// @param characterSize Size of the characters
-        ///
-        /// @return Kerning value for first and second, in pixels
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Extra bold argument should be added") virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize)
-        {
-            return getKerning(first, second, characterSize, false);
-        }
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the kerning offset of two glyphs
@@ -241,10 +218,6 @@ namespace tgui
 
         bool m_isSmooth = true;
     };
-
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
-    using BackendFontBase TGUI_DEPRECATED("BackendFontBase was renamed to BackendFont") = BackendFont;
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

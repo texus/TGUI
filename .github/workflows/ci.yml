@@ -65,8 +65,8 @@ jobs:
       SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
       SDL_TTF_INSTALL_DIR: ${{github.workspace}}/SDL_TTF_INSTALL
       GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW_INSTALL
-      CMAKE_VERSION: '3.21'
-      CMAKE_VERSION_PATCH: 1
+      CMAKE_VERSION: 3.21
+      CMAKE_VERSION_PATCH: 4
     steps:
       - name: Lookup dependency versions
         id: find-dependencies
@@ -224,10 +224,10 @@ jobs:
       SDL_VERSION: 2.0.9
       SDL_TTF_VERSION: 2.0.15  # 2.0.14 has no cmake script
       GLFW_VERSION: 3.2
-      CMAKE_VERSION: '3.10'  # 3.5 - 3.9 can't build SDL_ttf
-      CMAKE_VERSION_PATCH: 3
-      GCC_VERSION: 5
-      CLANG_VERSION: '4.0'
+      CMAKE_VERSION: 3.16
+      CMAKE_VERSION_PATCH: 0
+      GCC_VERSION: 6
+      CLANG_VERSION: '6.0'
     steps:
       - name: Cache SFML
         uses: actions/cache@v2
@@ -426,8 +426,8 @@ jobs:
     env:
       SDL_VERSION: 2.0.6
       SDL_TTF_VERSION: 2.0.14
-      CMAKE_VERSION: 3.8  # 3.5 and 3.6 didn't support VS2017, 3.7 doesn't have OpenGL::GL target
-      CMAKE_VERSION_PATCH: 2
+      CMAKE_VERSION: 3.17
+      CMAKE_VERSION_PATCH: 5
       MSVC_TOOLSET_VERSION: 141  # VS2017
       INSTALLED_VS_VERSION: Visual Studio 15 2017
     steps:
@@ -478,8 +478,8 @@ jobs:
       SFML_VERSION: 2.5.0
       GLFW_VERSION: 3.3.3
       FREETYPE_VERSION: 2.11.0
-      CMAKE_VERSION: 3.18
-      CMAKE_VERSION_PATCH: 6
+      CMAKE_VERSION: 3.19
+      CMAKE_VERSION_PATCH: 8
       MSVC_TOOLSET_VERSION: 142  # VS2019
       INSTALLED_VS_VERSION: Visual Studio 16 2019
     steps:

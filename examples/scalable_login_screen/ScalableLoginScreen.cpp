@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define TGUI_SKIP_SFML_BACKEND_INCLUDE // To prevent a warning in this backend-independent example, the define can be removed in the future
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 

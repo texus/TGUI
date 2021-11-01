@@ -102,12 +102,6 @@
 #cmakedefine01 TGUI_HAS_BACKEND_GLFW_OPENGL3
 #cmakedefine01 TGUI_HAS_BACKEND_GLFW_GLES2
 
-#ifndef TGUI_NEXT
-    #define TGUI_HAS_BACKEND_SFML TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #define TGUI_HAS_BACKEND_SDL  (TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2)
-    #cmakedefine01 TGUI_USE_GLES
-#endif
-
 // Some window backends (SFML < 2.6 and SDL) don't support diagonal mouse cursors on Linux in which case TGUI loads them directly with X11.
 // Settig this option to FALSE in CMake will remove the X11 dependency but will cause those cursors to not show up when using them.
 #cmakedefine01 TGUI_USE_X11
