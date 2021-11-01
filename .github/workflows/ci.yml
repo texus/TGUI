@@ -81,7 +81,7 @@ jobs:
         id: cache-sfml
         with:
           path: ${{github.workspace}}/SFML_INSTALL
-          key: CACHE_LINUX_SFML_2_5_0_V2
+          key: CACHE_LINUX_SFML_2_5_1_V2
 
       - name: Install dependencies
         run: |
@@ -95,11 +95,11 @@ jobs:
         with:
           path: TGUI
 
-      - name: Checkout SFML 2.5.0
+      - name: Checkout SFML 2.5.1
         uses: actions/checkout@v2
         with:
           repository: SFML/SFML
-          ref: 2.5.0
+          ref: 2.5.1
           path: SFML
 
       - name: Build SFML
