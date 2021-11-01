@@ -47,7 +47,7 @@ if(CMAKE_TOOLCHAIN_FILE AND CMAKE_TOOLCHAIN_FILE MATCHES "iOS.toolchain.cmake$" 
 endif()
 
 # Project name and version
-project(TGUI VERSION 0.10.1 LANGUAGES CXX)
+project(TGUI VERSION 0.10.0 LANGUAGES CXX)
 
 # Use the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
 include(GNUInstallDirs)
