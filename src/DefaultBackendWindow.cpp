@@ -112,9 +112,9 @@ namespace tgui
             m_window.display();
         }
 
-        void mainLoop() override
+        void mainLoop(Color clearColor) override
         {
-            m_gui->mainLoop();
+            m_gui->mainLoop(clearColor);
         }
 
         void setIcon(const String& filename) override
@@ -226,9 +226,9 @@ namespace tgui
 #endif
         }
 
-        void mainLoop() override
+        void mainLoop(Color clearColor) override
         {
-            m_gui->mainLoop();
+            m_gui->mainLoop(clearColor);
         }
 
         void setIcon(const String& filename) override
@@ -381,9 +381,9 @@ namespace tgui
             glfwSwapBuffers(m_window);
         }
 
-        void mainLoop() override
+        void mainLoop(Color clearColor) override
         {
-            m_gui->mainLoop();
+            m_gui->mainLoop(clearColor);
         }
 
         void setIcon(const String& filename) override

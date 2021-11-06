@@ -168,10 +168,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiSFML::mainLoop()
+    void BackendGuiSFML::mainLoop(Color clearColor)
     {
         if (!m_window)
             return;
+
+        m_backendRenderTarget->setClearColor(clearColor);
 
         // Helper function that calculates the amount of time to sleep, which is 10ms unless a timer will expire before this time
         const auto getTimerWakeUpTime = []{

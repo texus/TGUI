@@ -582,11 +582,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Give the gui control over the main loop
         ///
+        /// @param clearColor  background color of the window
+        ///
         /// This function is only intended in cases where your program only needs to respond to gui events.
         /// For multimedia applications, games, or other programs where you want a high framerate or do a lot of processing
         /// in the main loop, you should use your own main loop.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mainLoop() = 0;
+        virtual void mainLoop(Color clearColor = {240, 240, 240}) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

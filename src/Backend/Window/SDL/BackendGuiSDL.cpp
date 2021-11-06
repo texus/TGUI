@@ -344,9 +344,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiSDL::mainLoop()
+    void BackendGuiSDL::mainLoop(Color clearColor)
     {
         TGUI_ASSERT(m_window && m_backendRenderTarget, "BackendGuiSDL must be given an SDL_Window (either at construction or via setWindow function) before mainLoop() is called");
+
+        m_backendRenderTarget->setClearColor(clearColor);
 
         // Helper function that calculates the amount of time to sleep, which is 10ms unless a timer will expire before this time
         const auto getTimerWakeUpTime = []{

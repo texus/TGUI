@@ -322,9 +322,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::mainLoop()
+    void BackendGuiGLFW::mainLoop(Color clearColor)
     {
         TGUI_ASSERT(m_window && m_backendRenderTarget, "Gui must be given an GLFWwindow (either at construction or via setWindow function) before mainLoop() is called");
+
+        m_backendRenderTarget->setClearColor(clearColor);
 
         glfwSwapInterval(1);
         glfwSetWindowUserPointer(m_window, this);
