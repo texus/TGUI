@@ -32,7 +32,7 @@
 #include <string>
 #include <map>
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
     #include <SFML/Graphics/Color.hpp>
 #endif
 
@@ -88,7 +88,7 @@ namespace tgui
         {
         }
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from an sf::Color
         ///
@@ -158,7 +158,7 @@ namespace tgui
             return m_isSet;
         }
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts this object into an sf::Color object
         ///

@@ -182,7 +182,7 @@ public:
     }
 
     void draw() {}
-    void mainLoop() {}
+    void mainLoop(tgui::Color = {240, 240, 240}) {}
 };
 
 #endif // TGUI_TESTS_HPP

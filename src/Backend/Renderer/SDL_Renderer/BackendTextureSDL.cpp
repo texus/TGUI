@@ -137,6 +137,34 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendTextureSDL::replaceInternalTexture(SDL_Texture* texture)
+    {
+        if (m_texture)
+            SDL_DestroyTexture(m_texture);
+
+        m_texture = texture;
+        m_pixels = nullptr;
+
+        int width;
+        int height;
+        if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) == 0)
+            m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
+
+#if (SDL_MAJOR_VERSION > 2) \
+ || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+ || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+        SDL_ScaleMode scaleMode;
+        if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
+            m_isSmooth = (scaleMode != SDL_ScaleModeNearest);
+#else
+        // We have no way of knowing whether the texture was created with smoothing enabled or not.
+        // Except for some unrealistic edge cases it doesn't matter what we set the value to though.
+        m_isSmooth = (GetCurrentSDLScaleMode() != SDL_ScaleModeNearest);
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

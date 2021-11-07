@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

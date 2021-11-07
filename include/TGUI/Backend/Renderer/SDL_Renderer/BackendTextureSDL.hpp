@@ -84,6 +84,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Replaces the internal texture by a different one
+        ///
+        /// @param texture  Texture to copy
+        ///
+        /// This will remove the pixel data stored by this object and reset its smoothing and size based on the new texture.
+        ///
+        /// @warning Ownership of the texture is transferred by calling this function. The SDL_DestroyTexture function will be
+        ///          called when this object is destroyed and it should NOT be called by the caller of replaceInternalTexture.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void replaceInternalTexture(SDL_Texture* texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         SDL_Renderer* m_renderer = nullptr;

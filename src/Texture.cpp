@@ -31,6 +31,12 @@
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
 
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+    #include <SFML/Graphics/Texture.hpp>
+    #include <SFML/Graphics/Shader.hpp>
+#endif
+
 #include <memory>
 #include <cstdint>
 
@@ -59,7 +65,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     Texture::Texture(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middlePart)
     {
         load(texture, partRect, middlePart);
@@ -68,7 +74,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& other) :
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         m_shader          {other.m_shader},
 #endif
         m_data            {other.m_data},
@@ -86,7 +92,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(Texture&& other) noexcept :
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         m_shader          {std::move(other.m_shader)},
 #endif
         m_data            {std::move(other.m_data)},
@@ -118,7 +124,7 @@ namespace tgui
         {
             Texture temp{other};
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
             std::swap(m_shader,           temp.m_shader);
 #endif
             std::swap(m_data,             temp.m_data);
@@ -139,7 +145,7 @@ namespace tgui
     {
         if (this != &other)
         {
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
             m_shader           = std::move(other.m_shader);
 #endif
             m_data             = std::move(other.m_data);
@@ -201,9 +207,12 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     void Texture::load(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middleRect)
     {
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSFML>(getBackend()->getRenderer()),
+                    "Loading a texture from an sf::Texture is only supported when using the SFML-Graphics backend renderer");
+
         if (getData() && (m_destructCallback != nullptr))
         {
             m_destructCallback(getData());
@@ -309,7 +318,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     void Texture::setShader(sf::Shader* shader)
     {
         m_shader = shader;
@@ -363,7 +372,7 @@ namespace tgui
         return (m_id == right.m_id)
             && (!m_id.empty() || (m_data == right.m_data))
             && (m_middleRect == right.m_middleRect)
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
             && (m_shader == right.m_shader)
 #endif
             && (m_color == right.m_color);

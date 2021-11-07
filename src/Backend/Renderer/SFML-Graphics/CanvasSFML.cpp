@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/Canvas.hpp>
-
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+
 #include <cmath>
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-        ClickableWidget{other}
+        ClickableWidget  {other},
+        m_usedTextureSize{other.m_usedTextureSize},
+        m_backendTexture {other.m_backendTexture}
     {
         setSize(other.getSize());
     }
@@ -51,7 +53,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) :
-        ClickableWidget{std::move(other)}
+        ClickableWidget  {std::move(other)},
+        m_usedTextureSize{std::move(other.m_usedTextureSize)},
+        m_backendTexture {std::move(other.m_backendTexture)}
     {
         // sf::RenderTexture does not support move yet
         setSize(other.getSize());
@@ -64,6 +68,8 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(right);
+            m_usedTextureSize = right.m_usedTextureSize;
+            m_backendTexture = right.m_backendTexture;
             setSize(right.getSize());
         }
 
@@ -77,6 +83,8 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(std::move(right));
+            m_usedTextureSize = std::move(right.m_usedTextureSize);
+            m_backendTexture = std::move(right.m_backendTexture);
 
             // sf::RenderTexture does not support move yet
             setSize(right.getSize());
@@ -108,16 +116,15 @@ namespace tgui
 
     void CanvasSFML::setSize(const Layout2d& size)
     {
-        Vector2f newSize = size.getValue();
+        const Vector2f newSize = size.getValue();
 
         if ((newSize.x > 0) && (newSize.y > 0))
         {
-            if ((m_renderTexture.getSize().x < static_cast<unsigned int>(newSize.x)) || (m_renderTexture.getSize().y < static_cast<unsigned int>(newSize.y)))
-                m_renderTexture.create(static_cast<unsigned int>(newSize.x), static_cast<unsigned int>(newSize.y));
+            const Vector2u newTextureSize{newSize};
+            if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
+                m_renderTexture.create(newTextureSize.x, newTextureSize.y);
 
-            m_sprite.setSize(newSize);
-            clear();
-            display();
+            m_usedTextureSize = newTextureSize;
         }
 
         Widget::setSize(size);
@@ -148,14 +155,15 @@ namespace tgui
 
     IntRect CanvasSFML::getViewport() const
     {
-        return IntRect(m_renderTexture.getViewport(m_renderTexture.getView()));
+        const sf::IntRect rect = m_renderTexture.getViewport(m_renderTexture.getView());
+        return IntRect(rect.left, rect.top, rect.width, rect.height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void CanvasSFML::clear(Color color)
     {
-        m_renderTexture.clear(color);
+        m_renderTexture.clear({color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,29 +216,31 @@ namespace tgui
     {
         m_renderTexture.display();
 
-        const Vector2f& size = getSize();
-        const sf::Texture& texture = m_renderTexture.getTexture();
-        m_sprite.setTexture({texture, {0, 0, static_cast<unsigned int>(std::max(0.f, size.x)), static_cast<unsigned int>(std::max(0.f, size.y))}});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void CanvasSFML::rendererChanged(const String& property)
-    {
-        Widget::rendererChanged(property);
-
-        if ((property == "Opacity") || (property == "OpacityDisabled"))
-            m_sprite.setOpacity(m_opacityCached);
+        // Copy the texture of the render target
+        m_backendTexture->replaceInternalTexture(m_renderTexture.getTexture());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void CanvasSFML::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        if ((getSize().x <= 0) || (getSize().y <= 0))
+        const Vector2f size = getSize();
+        if ((size.x <= 0) || (size.y <= 0) || (m_usedTextureSize.x == 0) || (m_usedTextureSize.y == 0))
             return;
 
-        target.drawSprite(states, m_sprite);
+        const Vector2f textureSize{m_usedTextureSize};
+        const Vertex::Color vertexColor(Color::applyOpacity(Color::White, m_opacityCached));
+        const std::array<Vertex, 4> vertices = {{
+            {{0, 0}, vertexColor, {0, 0}},
+            {{size.x, 0}, vertexColor, {textureSize.x, 0}},
+            {{0, size.y}, vertexColor, {0, textureSize.y}},
+            {{size.x, size.y}, vertexColor, {textureSize.x, textureSize.y}},
+        }};
+        const std::array<int, 6> indices = {{
+            0, 2, 1,
+            1, 2, 3
+        }};
+        target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +252,5 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

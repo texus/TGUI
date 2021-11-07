@@ -23,14 +23,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_CANVAS_HPP
-#define TGUI_CANVAS_HPP
+#ifndef TGUI_CANVAS_SFML_HPP
+#define TGUI_CANVAS_SFML_HPP
 
 #include <TGUI/Config.hpp>
-
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
-
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
+
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -39,7 +39,31 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    /// CanvasSFML provides a way to directly render SFML contents on a widget
+    ///
+    /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom SFML rendering inbetween
+    /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasSFML widget.
+    ///
+    /// The canvas widget is essentially just a wrapper around sf::RenderTarget. You draw your SFML contents on top of the canvas
+    /// instead of on the window. The canvas is then added to the gui between the widgets where you want to rendering to appear.
+    ///
+    /// You can redraw the contents of the canvas at any time, but make sure to always start by calling clear() and end with
+    /// calling display().
+    ///
+    /// Example:
+    /// @code
+    /// sf::Sprite sprite;
+    /// sf::Text text;
+    ///
+    /// auto canvas = tgui::CanvasSFML::create({400, 300});
+    /// gui.add(canvas);
+    ///
+    /// canvas->clear();        // Clear the contents of the canvas
+    /// canvas->draw(sprite);   // Draw an image to the canvas
+    /// canvas->draw(text);     // Draw some text on the canvas
+    /// canvas->display();      // Save what was drawn on the canvas
+    /// @endcode
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API CanvasSFML : public ClickableWidget
     {
     public:
@@ -55,7 +79,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasSFML(const char* typeName = "Canvas", bool initRenderer = true);
+        CanvasSFML(const char* typeName = "CanvasSFML", bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,10 +231,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Updates the contents of the canvas
         ///
-        /// This function updates the canvas with what has been drawn so far. Like for windows, calling this
-        /// function is mandatory at the end of rendering. Not calling
-        /// it may leave the texture in an undefined state.
-        ///
+        /// @warning Calling this function is mandatory at the end of rendering.
+        ///          Not calling it may leave the texture in an undefined state.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void display();
 
@@ -251,15 +273,6 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Function called when one of the properties of the renderer is changed
-        ///
-        /// @param property  Name of the property that was changed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void rendererChanged(const String& property) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr clone() const override
@@ -272,12 +285,11 @@ namespace tgui
     protected:
 
         sf::RenderTexture m_renderTexture;
-        Sprite m_sprite;
+        Vector2u m_usedTextureSize;
+        std::shared_ptr<BackendTextureSFML> m_backendTexture = std::make_shared<BackendTextureSFML>();
     };
 }
 
-#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_CANVAS_HPP
+#endif // TGUI_CANVAS_SFML_HPP

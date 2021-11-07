@@ -28,7 +28,6 @@
 
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Renderers/ColorPickerRenderer.hpp>
 

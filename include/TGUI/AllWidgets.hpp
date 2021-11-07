@@ -29,7 +29,6 @@
 
 #include <TGUI/Widgets/BitmapButton.hpp>
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>

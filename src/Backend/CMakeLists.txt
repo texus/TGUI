@@ -210,6 +210,7 @@ if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)
         Backend/Renderer/SFML-Graphics/BackendRendererSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendTextureSFML.cpp
+        Backend/Renderer/SFML-Graphics/CanvasSFML.cpp
     )
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER)
@@ -217,6 +218,7 @@ if(TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER)
         Backend/Renderer/SDL_Renderer/BackendRendererSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendTextureSDL.cpp
+        Backend/Renderer/SDL_Renderer/CanvasSDL.cpp
     )
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_OPENGL3)

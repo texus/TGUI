@@ -161,7 +161,7 @@ namespace tgui
         /// @param vertices      Array of vertices
         /// @param indices       Optional array of indices
         ///
-        /// This function is provided for convenience and just calls the other drawTriangles function.
+        /// This function is provided for convenience and just calls the drawVertexArray function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawTriangles(const RenderStates& states, std::initializer_list<Vertex> vertices, std::initializer_list<int> indices = {});
 

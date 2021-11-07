@@ -28,7 +28,7 @@
 
 #include <TGUI/Vector2.hpp>
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
     #include <SFML/Graphics/Rect.hpp>
 #endif
 
@@ -63,7 +63,7 @@ namespace tgui
         {
         }
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the rectangle from an sf::Rect
         ///
@@ -155,7 +155,7 @@ namespace tgui
             return {width, height};
         }
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the Rect to an sf::Rect
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

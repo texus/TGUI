@@ -261,8 +261,6 @@ int main(int argc, char * argv[])
     if (session.applyCommandLine(argc, argv) != 0)
       return 1;
 
-    // Although the tests don't need a window, we some backends require it (e.g. OpenGL backends),
-    // and to not bother with the different backends in this code we simply always create a window.
     std::unique_ptr<TestsWindowBase> window;
     if (selectedBackend.empty())
         window = std::make_unique<TestsWindowDefault>();

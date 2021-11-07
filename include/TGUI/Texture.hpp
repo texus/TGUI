@@ -36,9 +36,12 @@
 #include <TGUI/Rect.hpp>
 #include <functional>
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #include <SFML/Graphics/Texture.hpp>
-    #include <SFML/Graphics/Shader.hpp>
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+    namespace sf
+    {
+        class Texture;
+        class Shader;
+    }
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +100,7 @@ namespace tgui
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
                 bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture from an existing sf::Texture
         ///
@@ -155,7 +158,7 @@ namespace tgui
                   const UIntRect& middleRect = {},
                   bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture from an existing sf::Texture
         ///
@@ -271,7 +274,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getColor() const;
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the shader used to draw the texture
         /// @param shader  New shader to use
@@ -427,7 +430,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         sf::Shader* m_shader = nullptr;
 #endif
 

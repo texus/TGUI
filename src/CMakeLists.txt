@@ -95,7 +95,6 @@ set(TGUI_SRC
     Widgets/BoxLayoutRatios.cpp
     Widgets/Button.cpp
     Widgets/ButtonBase.cpp
-    Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     Widgets/ChildWindow.cpp

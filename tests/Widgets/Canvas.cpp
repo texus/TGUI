@@ -25,23 +25,30 @@
 #include "Tests.hpp"
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 
-#include <TGUI/Widgets/Canvas.hpp>
-
-#include <SFML/Graphics/View.hpp>
-namespace sf  // Anonymous namespace didn't work for Clang on macOS
-{
-    bool operator==(const sf::View& left, const sf::View& right)
+    #include <SFML/Graphics/View.hpp>
+    namespace sf  // Anonymous namespace didn't work for Clang on macOS
     {
-        return left.getCenter() == right.getCenter()
-            && left.getSize() == right.getSize()
-            && left.getRotation() == right.getRotation()
-            && left.getViewport() == right.getViewport();
+        bool operator==(const sf::View& left, const sf::View& right)
+        {
+            return left.getCenter() == right.getCenter()
+                && left.getSize() == right.getSize()
+                && left.getRotation() == right.getRotation()
+                && left.getViewport() == right.getViewport();
+        }
     }
-}
+#endif
+
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+    #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#endif
 
 TEST_CASE("[Canvas]")
 {
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
     {
         tgui::CanvasSFML::Ptr canvas = tgui::CanvasSFML::create();
@@ -49,7 +56,7 @@ TEST_CASE("[Canvas]")
 
         SECTION("WidgetType")
         {
-            REQUIRE(canvas->getWidgetType() == "Canvas");
+            REQUIRE(canvas->getWidgetType() == "CanvasSFML");
         }
 
         SECTION("constructor")
@@ -96,7 +103,7 @@ TEST_CASE("[Canvas]")
         {
             REQUIRE_NOTHROW(canvas = tgui::CanvasSFML::create({60, 40}));
 
-            testSavingWidget("Canvas", canvas, false);
+            testSavingWidget("CanvasSFML", canvas, false);
         }
 
         SECTION("Draw")
@@ -133,6 +140,49 @@ TEST_CASE("[Canvas]")
             TEST_DRAW("Canvas.png")
         }
     }
-}
+#endif
 
-#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_BACKEND_SDL_RENDERER
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSDL>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasSDL::Ptr canvas = tgui::CanvasSDL::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasSDL");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasSDL::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
+
+        SECTION("internal texture target")
+        {
+            canvas = tgui::CanvasSDL::create({50, 50});
+            SDL_Texture* internalTextureTarget = canvas->getTextureTarget();
+
+            canvas->setSize({70, 80});
+
+            // The address of the texture target has changed with the resize
+            REQUIRE(internalTextureTarget != canvas->getTextureTarget());
+            internalTextureTarget = canvas->getTextureTarget();
+
+            // Changing the position has no impact on the internal texture
+            canvas->setPosition({10, 5});
+            REQUIRE(internalTextureTarget == canvas->getTextureTarget());
+        }
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasSDL::create({60, 40}));
+
+            testSavingWidget("CanvasSDL", canvas, false);
+        }
+    }
+#endif
+}
