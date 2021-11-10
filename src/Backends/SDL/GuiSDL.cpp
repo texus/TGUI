@@ -304,6 +304,7 @@ namespace tgui
                 // If event.tfinger.windowID (added in 2.0.12) differs from 0 then the coordinates are
                 // relative to the window, otherwise they are relative to the touch display itself.
                 eventTGUI.type = Event::Type::MouseButtonPressed;
+                eventTGUI.mouseButton.button = Event::MouseButton::Left;
                 eventTGUI.mouseButton.x = static_cast<int>(eventSDL.tfinger.x * m_windowSize.x);
                 eventTGUI.mouseButton.y = static_cast<int>(eventSDL.tfinger.y * m_windowSize.y);
                 return true;
@@ -321,6 +322,7 @@ namespace tgui
                 // If event.tfinger.windowID (added in 2.0.12) differs from 0 then the coordinates are
                 // relative to the window, otherwise they are relative to the touch display itself.
                 eventTGUI.type = Event::Type::MouseButtonReleased;
+                eventTGUI.mouseButton.button = Event::MouseButton::Left;
                 eventTGUI.mouseButton.x = static_cast<int>(eventSDL.tfinger.x * m_windowSize.x);
                 eventTGUI.mouseButton.y = static_cast<int>(eventSDL.tfinger.y * m_windowSize.y);
                 return true;

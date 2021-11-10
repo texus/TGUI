@@ -1,3 +1,9 @@
+TGUI 0.9.3  (TBD)
+-----------------
+
+- Touch events didn't work in SDL backend
+
+
 TGUI 0.9.2  (1 November 2021)
 -----------------------------
 
@@ -19,6 +25,7 @@ TGUI 0.9.2  (1 November 2021)
 - Modification time in FileDialog was empty when MinGW compiler was used
 - Clipping in SDL backend was incorrect when view and viewport were changed
 - Opacity of color wheel wasn't set when making ColorPicker transparent
+
 
 TGUI 0.9.1  (12 February 2021)
 ------------------------------
@@ -83,8 +90,8 @@ TGUI 0.9.1  (12 February 2021)
 - Binding left and top in layouts now works correctly when the origin is changed
 - Some other small changes that weren't added to the changelog
 
+
 Older Releases
 --------------
 
 See the website for changelogs of older releases: https://tgui.eu/changelog/
-
