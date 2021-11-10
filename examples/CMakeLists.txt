@@ -49,7 +49,7 @@ endmacro()
 
 # Build the examples
 if(TGUI_OS_IOS)
-    add_subdirectory(iOS/SFML_GRAPHICS)
+    add_subdirectory(iOS)
 else()
     add_subdirectory(many_different_widgets)
     add_subdirectory(scalable_login_screen)

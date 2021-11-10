@@ -94,6 +94,20 @@ else()
     endif()
 endif()
 
+# Use c++17 by default on GCC >= 11
+if (TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
+    set(TGUI_DEFAULT_CXX_STANDARD "17")
+else() # Use c++14 by default on all other compilers
+    set(TGUI_DEFAULT_CXX_STANDARD "14")
+endif()
+
+tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a c++ version equal or higher to this")
+
+# At least c++14 has to be used
+if(TGUI_CXX_STANDARD LESS "14")
+    message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
+endif()
+
 if(TGUI_BACKEND)
     set(backend_provided TRUE)
 endif()
@@ -109,7 +123,7 @@ if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS)
     list(APPEND TGUI_BACKEND_OPTIONS SFML_OPENGL3)
     string(APPEND TGUI_BACKEND_OPTIONS_DESC " - SFML_OPENGL3: sfml-window + OpenGL + FreeType\n")
 endif()
-if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS OR TGUI_OS_ANDROID)
+if(TGUI_OS_WINDOWS OR TGUI_OS_LINUX OR TGUI_OS_MACOS OR TGUI_OS_ANDROID OR TGUI_OS_IOS)
     list(APPEND TGUI_BACKEND_OPTIONS SDL_RENDERER)
     string(APPEND TGUI_BACKEND_OPTIONS_DESC " - SDL_RENDERER: SDL2 + SDL_ttf\n")
 endif()
@@ -153,20 +167,6 @@ if(NOT backend_provided)
 endif()
 
 string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
-
-# Use c++17 by default on GCC >= 11
-if (TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
-    set(TGUI_DEFAULT_CXX_STANDARD "17")
-else() # Use c++14 by default on all other compilers
-    set(TGUI_DEFAULT_CXX_STANDARD "14")
-endif()
-
-tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a c++ version equal or higher to this")
-
-# At least c++14 has to be used
-if(TGUI_CXX_STANDARD LESS "14")
-    message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
-endif()
 
 # Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)

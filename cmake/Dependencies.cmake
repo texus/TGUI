@@ -96,7 +96,9 @@ endfunction()
 macro(tgui_find_dependency_sdl)
     if(NOT TARGET SDL2::SDL2)
         # First try looking for an SDL config file, which will be found on Linux or when using vcpkg
-        tgui_try_find_sdl_config()
+        if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
+            tgui_try_find_sdl_config()
+        endif()
 
         if(TGUI_FOUND_SDL2_CONFIG)
             find_package(SDL2 CONFIG REQUIRED)
