@@ -13,32 +13,34 @@ Status
 [![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=0.10)](https://github.com/texus/TGUI/actions)
 [![Code coverage](https://codecov.io/gh/texus/TGUI/branch/0.10/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.10)
 
-OS support for each backend:  
-|                     | Windows             | Linux               | macOS               | Android             | iOS                 |
-|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|
-| SFML\_GRAPHICS      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
-| SFML\_OPENGL3       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| SDL\_RENDERER       | :question:          | :heavy_check_mark:  | :question:          | :heavy_check_mark: :question: | :question: |
-| SDL\_OPENGL3        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| SDL\_GLES2          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
-| SDL\_TTF\_OPENGL3   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| SDL\_TTF\_GLES2     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  |                     |
-| GLFW\_OPENGL3       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| GLFW\_GLES2         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+OS support for each backend:
+
+|                         | Windows             | Linux               | macOS               | Android             | iOS                 |
+|:------------------------|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
+| **SFML\_GRAPHICS**      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
+| **SFML\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
+| **SDL\_RENDERER**       | :question:          | :heavy_check_mark:  | :question:          | :heavy_check_mark: :question: | :question: |
+| **SDL\_OPENGL3**        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
+| **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
+| **SDL\_TTF\_OPENGL3**   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
+| **SDL\_TTF\_GLES2**     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  |                     |
+| **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
+| **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
 
 
-Dependencies for each backend:  
-|                     | Window backend        | Font backend            | Rendering backend       |
-|---------------------|-----------------------|-------------------------|-------------------------|
-| SFML\_GRAPHICS      | sfml-window  (>= 2.5) | sfml-graphics  (>= 2.5) | sfml-graphics  (>= 2.5) |
-| SFML\_OPENGL3       | sfml-window  (>= 2.5) | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
-| SDL\_RENDERER       | SDL2  (>= 2.0.17)     | SDL2_ttf  (>= 2.0.14)   | SDL2  (>= 2.0.17)       |
-| SDL\_OPENGL3        | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
-| SDL\_GLES2          | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
-| SDL\_TTF\_OPENGL3   | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL  (>= 3.3)        |
-| SDL\_TTF\_GLES2     | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL ES  (>= 2.0)     |
-| GLFW\_OPENGL3       | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
-| GLFW\_GLES2         | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+Dependencies for each backend:
+
+|                         | Window backend        | Font backend            | Rendering backend       |
+|:------------------------|:----------------------|:------------------------|:------------------------|
+| **SFML\_GRAPHICS**      | sfml-window  (>= 2.5) | sfml-graphics  (>= 2.5) | sfml-graphics  (>= 2.5) |
+| **SFML\_OPENGL3**       | sfml-window  (>= 2.5) | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
+| **SDL\_RENDERER**       | SDL2  (>= 2.0.17)     | SDL2_ttf  (>= 2.0.14)   | SDL2  (>= 2.0.17)       |
+| **SDL\_OPENGL3**        | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
+| **SDL\_GLES2**          | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+| **SDL\_TTF\_OPENGL3**   | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL  (>= 3.3)        |
+| **SDL\_TTF\_GLES2**     | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL ES  (>= 2.0)     |
+| **GLFW\_OPENGL3**       | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
+| **GLFW\_GLES2**         | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
 
 
 

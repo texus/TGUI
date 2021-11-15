@@ -155,6 +155,7 @@ TEST_CASE("[Panel]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("set object property")
@@ -163,6 +164,7 @@ TEST_CASE("[Panel]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("functions")
@@ -171,17 +173,20 @@ TEST_CASE("[Panel]")
                 renderer->setBorderColor({40, 50, 60});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
+                renderer->setRoundedBorderRadius(5);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("RoundedBorderRadius").getNumber() == 5);
 
             REQUIRE(renderer->getBackgroundColor() == tgui::Color(10, 20, 30));
             REQUIRE(renderer->getBorderColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
+            REQUIRE(renderer->getRoundedBorderRadius() == 5);
         }
 
         SECTION("textured")

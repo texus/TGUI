@@ -155,6 +155,7 @@ TEST_CASE("[BitmapButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", "Bold | Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", "StrikeThrough"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("set object property")
@@ -176,6 +177,7 @@ TEST_CASE("[BitmapButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("functions")
@@ -197,6 +199,7 @@ TEST_CASE("[BitmapButton]")
                 renderer->setTextStyleDown(tgui::TextStyle::Bold | tgui::TextStyle::Underlined);
                 renderer->setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
                 renderer->setBorders({1, 2, 3, 4});
+                renderer->setRoundedBorderRadius(5);
             }
 
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(20, 30, 40));
@@ -216,6 +219,7 @@ TEST_CASE("[BitmapButton]")
             REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("RoundedBorderRadius").getNumber() == 5);
 
             REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
             REQUIRE(renderer->getTextColorHover() == tgui::Color(30, 40, 50));
@@ -234,6 +238,7 @@ TEST_CASE("[BitmapButton]")
             REQUIRE(renderer->getTextStyleDown() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getTextStyleDisabled() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getRoundedBorderRadius() == 5);
         }
 
         SECTION("textured")

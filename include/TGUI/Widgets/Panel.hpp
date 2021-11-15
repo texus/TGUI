@@ -225,6 +225,8 @@ namespace tgui
         Color   m_backgroundColorCached;
         Sprite  m_spriteBackground;
 
+        float   m_roundedBorderRadius = 0;
+
         bool    m_rightMouseDown = false;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
