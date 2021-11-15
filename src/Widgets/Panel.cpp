@@ -226,6 +226,11 @@ namespace tgui
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
+
+        else if (property == "RoundedBorderRadius")
+        {
+            m_roundedBorderRadius = getSharedRenderer()->getRoundedBorderRadius();
+        }
         else if (property == "BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
@@ -266,20 +271,30 @@ namespace tgui
 
     void Panel::draw(BackendRenderTargetBase& target, RenderStates states) const
     {
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        }
-
-        // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
-        if (m_spriteBackground.isSet())
-            target.drawSprite(states, m_spriteBackground);
+
+        if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
+        {
+            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                        m_roundedBorderRadius, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+        }
         else
-            target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        {
+            // Draw the borders
+            if (m_bordersCached != Borders{0})
+            {
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            }
+
+            // Draw the background
+            if (m_spriteBackground.isSet())
+                target.drawSprite(states, m_spriteBackground);
+            else
+                target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
