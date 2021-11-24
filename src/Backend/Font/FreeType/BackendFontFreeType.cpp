@@ -292,10 +292,10 @@ namespace tgui
         glyph.rsbDelta = static_cast<float>(m_face->glyph->rsb_delta);
 
         // Compute the glyph's bounding box
-        glyph.bounds.left   =  bitmapGlyph->left;
-        glyph.bounds.top    = -bitmapGlyph->top;
-        glyph.bounds.width  =  bitmap.width;
-        glyph.bounds.height =  bitmap.rows;
+        glyph.bounds.left = static_cast<float>(bitmapGlyph->left);
+        glyph.bounds.top = static_cast<float>(-bitmapGlyph->top);
+        glyph.bounds.width = static_cast<float>(bitmap.width);
+        glyph.bounds.height = static_cast<float>(bitmap.rows);
 
         if ((bitmap.width == 0) || (bitmap.rows == 0))
         {
