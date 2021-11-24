@@ -98,7 +98,7 @@ namespace tgui
 
         float s = length(position);
 
-        float h = atan2(position.y, -position.x);
+        float h = std::atan2(position.y, -position.x);
 
         constexpr float Pi = 3.14159265359f;
 
@@ -694,6 +694,13 @@ namespace tgui
         m_value->onValueChange.disconnectAll();
         m_value->onValueChange(valueChangeFunc);
         valueChangeFunc(m_value->getValue());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr ColorPicker::clone() const
+    {
+        return std::make_shared<ColorPicker>(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

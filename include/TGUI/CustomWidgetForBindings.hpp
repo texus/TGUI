@@ -258,10 +258,7 @@ namespace tgui
         ///
         /// @warning This function should not be used as it won't function correctly because the binding object isn't changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr clone() const override
-        {
-            return std::make_shared<CustomWidgetForBindings>(*this);
-        }
+        Widget::Ptr clone() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

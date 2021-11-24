@@ -555,10 +555,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr clone() const override
-        {
-            return std::make_shared<EditBox>(*this);
-        }
+        Widget::Ptr clone() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -636,7 +633,7 @@ namespace tgui
         String m_displayedText; // Same as m_text unless a password char is set
 
         String m_regexString = U".*";
-        std::wregex m_regex = std::wregex{m_regexString.toWideString()};
+        std::wregex m_regex;
 
         // The text alignment
         Alignment     m_textAlignment = Alignment::Left;

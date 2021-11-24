@@ -40,35 +40,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Shared data used in renderer classes
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    struct RendererData
+    struct TGUI_API RendererData
     {
         RendererData() = default;
 
-        static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {})
-        {
-            auto data = std::make_shared<RendererData>();
-            data->propertyValuePairs = init;
-            return data;
-        }
+        static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
 
         /// @internal
-        static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode)
-        {
-            auto rendererData = std::make_shared<RendererData>();
-            rendererData->shared = false;
-
-            for (const auto& pair : rendererNode->propertyValuePairs)
-                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
-
-            for (const auto& nestedProperty : rendererNode->children)
-            {
-                std::stringstream ss;
-                DataIO::emit(nestedProperty, ss);
-                rendererData->propertyValuePairs[nestedProperty->name] = {String("{\n" + ss.str() + "}")};
-            }
-
-            return rendererData;
-        };
+        static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
 
         std::map<String, ObjectConverter> propertyValuePairs;
         std::unordered_map<const void*, std::function<void(const String& property)>> observers;

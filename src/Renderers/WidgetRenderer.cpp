@@ -30,6 +30,35 @@
 
 namespace tgui
 {
+    std::shared_ptr<RendererData> RendererData::create(const std::map<String, ObjectConverter>& init)
+    {
+        auto data = std::make_shared<RendererData>();
+        data->propertyValuePairs = init;
+        return data;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<RendererData> RendererData::createFromDataIONode(const DataIO::Node* rendererNode)
+    {
+        auto rendererData = std::make_shared<RendererData>();
+        rendererData->shared = false;
+
+        for (const auto& pair : rendererNode->propertyValuePairs)
+            rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
+
+        for (const auto& nestedProperty : rendererNode->children)
+        {
+            std::stringstream ss;
+            DataIO::emit(nestedProperty, ss);
+            rendererData->propertyValuePairs[nestedProperty->name] = {String("{\n" + ss.str() + "}")};
+        }
+
+        return rendererData;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_RENDERER_PROPERTY_BOOL(WidgetRenderer, TransparentTexture, false)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

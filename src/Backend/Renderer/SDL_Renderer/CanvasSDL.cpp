@@ -27,8 +27,6 @@
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
-#include <cmath>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -48,7 +46,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSDL::CanvasSDL(const CanvasSDL& other) :
-        ClickableWidget  {other}
+        ClickableWidget{other}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
                     "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
@@ -152,6 +150,13 @@ namespace tgui
     bool CanvasSDL::canGainFocus() const
     {
         return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr CanvasSDL::clone() const
+    {
+        return std::make_shared<CanvasSDL>(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

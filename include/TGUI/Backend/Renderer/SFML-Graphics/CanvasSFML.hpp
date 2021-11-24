@@ -45,7 +45,7 @@ namespace tgui
     /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasSFML widget.
     ///
     /// The canvas widget is essentially just a wrapper around sf::RenderTarget. You draw your SFML contents on top of the canvas
-    /// instead of on the window. The canvas is then added to the gui between the widgets where you want to rendering to appear.
+    /// instead of on the window. The canvas is then added to the gui between the widgets where you want the rendering to appear.
     ///
     /// You can redraw the contents of the canvas at any time, but make sure to always start by calling clear() and end with
     /// calling display().
@@ -275,10 +275,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr clone() const override
-        {
-            return std::make_shared<CanvasSFML>(*this);
-        }
+        Widget::Ptr clone() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

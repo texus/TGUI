@@ -41,7 +41,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, false}
+        ClickableWidget{typeName, false},
+        m_regex        {m_regexString.toWideString()}  // Not in header to speed up compilation
     {
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection.setFont(m_fontCached);
@@ -1622,6 +1623,13 @@ namespace tgui
             else
                 target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorCached, m_opacityCached));
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr EditBox::clone() const
+    {
+        return std::make_shared<EditBox>(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

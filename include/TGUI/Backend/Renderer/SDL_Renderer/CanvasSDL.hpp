@@ -44,7 +44,7 @@ namespace tgui
     /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasSDL widget.
     ///
     /// The canvas widget is essentially just a wrapper around a render target texture. You draw your SDL contents on top of the
-    /// canvas instead of on the window. The canvas is then added to the gui between the widgets where you want to rendering
+    /// canvas instead of on the window. The canvas is then added to the gui between the widgets where you want the rendering
     /// to appear.
     ///
     /// You can redraw the contents of the canvas at any time, but make sure to always start by calling SDL_SetRenderTarget
@@ -177,10 +177,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr clone() const override
-        {
-            return std::make_shared<CanvasSDL>(*this);
-        }
+        Widget::Ptr clone() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

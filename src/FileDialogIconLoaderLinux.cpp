@@ -80,8 +80,6 @@ namespace tgui
         void loadFileIcons();
 
     private:
-        unsigned int m_usageCount = 0;
-
         bool m_lookupTablesLoaded = false;
 
         bool m_magicInitialized = false;
