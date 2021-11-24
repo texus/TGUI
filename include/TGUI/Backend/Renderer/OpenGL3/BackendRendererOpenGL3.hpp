@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

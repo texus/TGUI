@@ -226,6 +226,7 @@ if(TGUI_HAS_RENDERER_BACKEND_OPENGL3)
         Backend/Renderer/OpenGL3/BackendRendererOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendTextureOpenGL3.cpp
+        Backend/Renderer/OpenGL3/CanvasOpenGL3.cpp
         Backend/Renderer/OpenGL.cpp
     )
 endif()
@@ -234,6 +235,7 @@ if(TGUI_HAS_RENDERER_BACKEND_GLES2)
         Backend/Renderer/GLES2/BackendRendererGLES2.cpp
         Backend/Renderer/GLES2/BackendRenderTargetGLES2.cpp
         Backend/Renderer/GLES2/BackendTextureGLES2.cpp
+        Backend/Renderer/GLES2/CanvasGLES2.cpp
         Backend/Renderer/OpenGL.cpp
     )
 endif()

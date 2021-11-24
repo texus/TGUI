@@ -24,31 +24,24 @@
 
 #include "Tests.hpp"
 
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
-    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 
-    #include <SFML/Graphics/View.hpp>
-    namespace sf  // Anonymous namespace didn't work for Clang on macOS
-    {
-        bool operator==(const sf::View& left, const sf::View& right)
-        {
-            return left.getCenter() == right.getCenter()
-                && left.getSize() == right.getSize()
-                && left.getRotation() == right.getRotation()
-                && left.getViewport() == right.getViewport();
-        }
-    }
-#endif
-
-#if TGUI_HAS_BACKEND_SDL_RENDERER
-    #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
-    #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
-#endif
-
-TEST_CASE("[Canvas]")
+#include <SFML/Graphics/View.hpp>
+namespace sf  // Anonymous namespace didn't work for Clang on macOS
 {
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    bool operator==(const sf::View& left, const sf::View& right)
+    {
+        return left.getCenter() == right.getCenter()
+            && left.getSize() == right.getSize()
+            && left.getRotation() == right.getRotation()
+            && left.getViewport() == right.getViewport();
+    }
+}
+
+TEST_CASE("[CanvasSFML]")
+{
     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
     {
         tgui::CanvasSFML::Ptr canvas = tgui::CanvasSFML::create();
@@ -140,9 +133,15 @@ TEST_CASE("[Canvas]")
             TEST_DRAW("Canvas.png")
         }
     }
+}
 #endif
 
-#if TGUI_HAS_BACKEND_SDL_RENDERER
+#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
+#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+
+TEST_CASE("[CanvasSDL]")
+{
     if (std::dynamic_pointer_cast<tgui::BackendRendererSDL>(tgui::getBackend()->getRenderer()))
     {
         tgui::CanvasSDL::Ptr canvas = tgui::CanvasSDL::create();
@@ -184,5 +183,73 @@ TEST_CASE("[Canvas]")
             testSavingWidget("CanvasSDL", canvas, false);
         }
     }
-#endif
 }
+#endif
+
+#if TGUI_HAS_BACKEND_OPENGL3
+#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+
+TEST_CASE("[CanvasOpenGL3]")
+{
+    if (std::dynamic_pointer_cast<tgui::BackendRendererOpenGL3>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasOpenGL3::Ptr canvas = tgui::CanvasOpenGL3::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasOpenGL3");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasOpenGL3::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasOpenGL3::create({60, 40}));
+
+            testSavingWidget("CanvasOpenGL3", canvas, false);
+        }
+    }
+}
+#endif
+
+#if TGUI_HAS_BACKEND_GLES2
+#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+
+TEST_CASE("[CanvasGLES2]")
+{
+    if (std::dynamic_pointer_cast<tgui::BackendRendererGLES2>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasGLES2::Ptr canvas = tgui::CanvasGLES2::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasGLES2");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasGLES2::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasGLES2::create({60, 40}));
+
+            testSavingWidget("CanvasGLES2", canvas, false);
+        }
+    }
+}
+#endif

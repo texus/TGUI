@@ -33,7 +33,7 @@ namespace tgui
 
     bool BackendTexture::load(Vector2u size, std::unique_ptr<std::uint8_t[]> pixels, bool smooth)
     {
-        TGUI_ASSERT(pixels, "load in BackendTexture doesn't accept a nullptr for pixels");
+        TGUI_ASSERT(pixels, "load in BackendTexture doesn't accept a nullptr for pixels, use loadTextureOnly instead");
 
         if (!loadTextureOnly(size, pixels.get(), smooth))
             return false;

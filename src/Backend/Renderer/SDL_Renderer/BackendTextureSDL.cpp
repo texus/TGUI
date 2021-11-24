@@ -110,7 +110,7 @@ namespace tgui
         }
 
         // Copy the pixels to the texture
-        if (m_texture)
+        if (m_texture && pixels)
             SDL_UpdateTexture(m_texture, nullptr, pixels, size.x * 4);
 
         return (m_texture != nullptr);

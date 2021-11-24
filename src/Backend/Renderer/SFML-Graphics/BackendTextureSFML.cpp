@@ -50,7 +50,9 @@ namespace tgui
                 return false;
         }
 
-        m_texture.update(pixels);
+        if (pixels)
+            m_texture.update(pixels);
+
         return true;
     }
 
