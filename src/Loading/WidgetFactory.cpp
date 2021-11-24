@@ -54,7 +54,7 @@ namespace tgui
 #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
         {"CanvasOpenGL3", std::make_shared<CanvasOpenGL3>},
 #endif
-#if TGUI_HAS_RENDERER_BACKEND_OPENGL3
+#if TGUI_HAS_RENDERER_BACKEND_GLES2
         {"CanvasGLES2", std::make_shared<CanvasGLES2>},
 #endif
         {"BitmapButton", std::make_shared<BitmapButton>},
