@@ -27,7 +27,7 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Container.hpp>
-#include <SDL.h>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 #include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

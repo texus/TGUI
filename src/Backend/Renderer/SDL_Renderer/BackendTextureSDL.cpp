@@ -25,7 +25,7 @@
 
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
-#include <SDL.h>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -32,7 +32,7 @@
 #include <SFML/Window/Clipboard.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)

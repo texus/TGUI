@@ -27,6 +27,7 @@
 #define TGUI_BACKEND_FONT_SDL_TTF_HPP
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 #include <SDL_ttf.h>
 #include <unordered_map>
 

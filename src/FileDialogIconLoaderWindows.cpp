@@ -27,7 +27,7 @@
 
 #if defined(TGUI_SYSTEM_WINDOWS)
 
-#include <TGUI/WindowsInclude.hpp>
+#include <TGUI/extlibs/IncludeWindows.hpp>
 
 #if defined(__has_include)
     #if __has_include (<shellapi.h>)

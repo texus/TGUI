@@ -25,11 +25,11 @@
 
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
-#include <SDL.h>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 #include <SDL_syswm.h>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11)

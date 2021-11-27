@@ -26,12 +26,21 @@
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 #include FT_BITMAP_H
 #include FT_STROKER_H
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
 
 #include <cmath>
 

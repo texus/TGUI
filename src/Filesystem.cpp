@@ -40,7 +40,7 @@
 
 #if !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
     #if defined(TGUI_SYSTEM_WINDOWS)
-        #include <TGUI/WindowsInclude.hpp>
+        #include <TGUI/extlibs/IncludeWindows.hpp>
     #else
         #include <sys/types.h> // stat
         #include <sys/stat.h> // stat

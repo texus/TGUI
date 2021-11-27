@@ -27,7 +27,7 @@
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 #include <TGUI/Timer.hpp>
 
-#include <SDL.h>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 
 #include <thread>
 

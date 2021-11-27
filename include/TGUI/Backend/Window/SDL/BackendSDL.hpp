@@ -28,7 +28,7 @@
 
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
-#include <SDL.h>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 #include <unordered_map>
 #include <map>
 
