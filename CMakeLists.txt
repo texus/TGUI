@@ -32,13 +32,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 # Set a default build type
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 
-# Initialize CMAKE_OSX_ARCHITECTURES for macOS if not provided by the user.
-# This variable has to be set before the call to project() and is ignored on non-Apple platforms.
-# On iOS the value will be overwritten by our toolchain.
-if(NOT CMAKE_OSX_ARCHITECTURES)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "macOS architecture to build. Possible values are 'x86_64', 'arm64' or 'x86_64;arm64' (to build for both)." FORCE)
-endif()
-
 # The iOS toolchain requires that we set the PLATFORM property. This has to be done before the project() call.
 if(CMAKE_TOOLCHAIN_FILE AND CMAKE_TOOLCHAIN_FILE MATCHES "iOS.toolchain.cmake$" AND NOT PLATFORM)
     tgui_set_option(PLATFORM OS64 STRING "Choose the architecture to build for (i.e. simulator or not)")
@@ -54,11 +47,6 @@ include(GNUInstallDirs)
 
 # Include the configuration file which identifies the OS and compiler
 include(${PROJECT_SOURCE_DIR}/cmake/Config.cmake)
-
-# Remove the CMAKE_OSX_ARCHITECTURES on non-Apple platforms
-if(NOT TGUI_OS_MACOS AND NOT TGUI_OS_IOS)
-    unset(CMAKE_OSX_ARCHITECTURES CACHE)
-endif()
 
 if(TGUI_OS_IOS)
     # On iOS, hide the APPLE, UNIX and IOS properties created by the toolchain
@@ -188,13 +176,6 @@ if(TGUI_OS_MACOS)
 
     # Add an option to build framework instead of dylib (release only)
     tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
-
-    # Only x86_64 or arm64 architectures are supported
-    foreach (arch IN LISTS CMAKE_OSX_ARCHITECTURES)
-        if (NOT (arch STREQUAL "x86_64" OR arch STREQUAL "arm64"))
-            message(FATAL_ERROR "Invalid arch ${arch}, only x86_64 and arm64 are supported")
-        endif()
-    endforeach()
 
     # Enable to use of RPATH according to CMake Policy CMP0042
     set(CMAKE_MACOSX_RPATH 1)
