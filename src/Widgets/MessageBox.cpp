@@ -44,7 +44,7 @@ namespace tgui
         setTextSize(getGlobalTextSize());
 
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
-        m_label->setTextSize(m_textSize);
+        m_label->setTextSize(m_textSizeCached);
 
         setClientSize({400, 150});
     }
@@ -181,14 +181,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::setTextSize(unsigned int size)
+    void MessageBox::updateTextSize()
     {
-        m_textSize = size;
-
-        m_label->setTextSize(size);
+        m_label->setTextSize(m_textSizeCached);
 
         for (auto& button : m_buttons)
-            button->setTextSize(m_textSize);
+            button->setTextSize(m_textSizeCached);
 
         rearrange();
     }
@@ -199,7 +197,7 @@ namespace tgui
     {
         auto button = Button::create(caption);
         button->setRenderer(getSharedRenderer()->getButton());
-        button->setTextSize(m_textSize);
+        button->setTextSize(m_textSizeCached);
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -229,15 +227,15 @@ namespace tgui
         // Calculate the button size
         if (m_fontCached)
         {
-            buttonWidth = 4.0f * Text::getLineHeight(m_fontCached, m_textSize);
-            buttonHeight = Text::getLineHeight(m_fontCached, m_textSize) * 1.25f;
+            buttonWidth = 4.0f * Text::getLineHeight(m_fontCached, m_textSizeCached);
+            buttonHeight = Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f;
 
             for (const auto& button : m_buttons)
             {
                 /// TODO: Implement a way to calculate text size without creating a text object?
                 Text tempText;
                 tempText.setFont(m_fontCached);
-                tempText.setCharacterSize(m_textSize);
+                tempText.setCharacterSize(m_textSizeCached);
                 tempText.setString(button->getText());
                 const float width = tempText.getSize().x;
                 if (buttonWidth < width * 10.0f / 9.0f)
@@ -319,25 +317,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::unique_ptr<DataIO::Node> MessageBox::save(SavingRenderersMap& renderers) const
-    {
-        auto node = ChildWindow::save(renderers);
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
-        // Label and buttons are saved indirectly by saving the child window
-        return node;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void MessageBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
         removeAllWidgets();
 
         ChildWindow::load(node, renderers);
-
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
         identifyLabelAndButtons();
     }

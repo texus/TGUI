@@ -248,8 +248,8 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f));
-            setSize({Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 10,
+            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 1.25f));
+            setSize({Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 10,
                      (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
     }
@@ -266,7 +266,6 @@ namespace tgui
         m_selectedItem                      {other.m_selectedItem},
         m_hoveredItem                       {other.m_hoveredItem},
         m_itemHeight                        {other.m_itemHeight},
-        m_requestedTextSize                 {other.m_requestedTextSize},
         m_maxRight                          {other.m_maxRight},
         m_iconBounds                        {other.m_iconBounds},
         m_verticalScrollbar                 {other.m_verticalScrollbar},
@@ -317,7 +316,6 @@ namespace tgui
             std::swap(m_selectedItem,                       temp.m_selectedItem);
             std::swap(m_hoveredItem,                        temp.m_hoveredItem);
             std::swap(m_itemHeight,                         temp.m_itemHeight);
-            std::swap(m_requestedTextSize,                  temp.m_requestedTextSize);
             std::swap(m_maxRight,                           temp.m_maxRight);
             std::swap(m_iconBounds,                         temp.m_iconBounds);
             std::swap(m_verticalScrollbar,                  temp.m_verticalScrollbar);
@@ -592,8 +590,8 @@ namespace tgui
     void TreeView::setItemHeight(unsigned int itemHeight)
     {
         m_itemHeight = itemHeight;
-        if (m_requestedTextSize == 0)
-            setTextSize(0);
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            updateTextSize();
 
         m_verticalScrollbar->setScrollAmount(m_itemHeight);
         m_horizontalScrollbar->setScrollAmount(m_itemHeight);
@@ -610,16 +608,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::setTextSize(unsigned int textSize)
+    void TreeView::updateTextSize()
     {
-        m_requestedTextSize = textSize;
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
-        if (textSize)
-            m_textSize = textSize;
-        else
-            m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
-
-        setTextSizeImpl(m_nodes, textSize);
+        setTextSizeImpl(m_nodes, m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1098,7 +1092,6 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         saveItems(node, m_nodes);
         return node;
     }
@@ -1111,8 +1104,6 @@ namespace tgui
 
         if (node->propertyValuePairs["ItemHeight"])
             setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
         loadItems(node, m_nodes, nullptr);
 
@@ -1211,7 +1202,7 @@ namespace tgui
         m_hoveredItem = -1;
         m_selectedItem = -1;
         m_visibleNodes.clear();
-        updateVisibleNodes(m_nodes, selectedNode, Text::getExtraHorizontalPadding(m_fontCached, m_textSize), 0);
+        updateVisibleNodes(m_nodes, selectedNode, Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), 0);
 
         if (oldHoveredItem >= 0)
         {
@@ -1407,7 +1398,7 @@ namespace tgui
         newNode->text.setFont(m_fontCached);
         newNode->text.setColor(m_textColorCached);
         newNode->text.setOpacity(m_opacityCached);
-        newNode->text.setCharacterSize(m_textSize);
+        newNode->text.setCharacterSize(m_textSizeCached);
         newNode->text.setString(text);
         newNode->expanded = true;
         newNode->parent = parent;

@@ -107,7 +107,7 @@ namespace tgui
         recalculateFillSize();
 
         // Recalculate the text size
-        setText(getText());
+        updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,32 +209,10 @@ namespace tgui
 
     void ProgressBar::setText(const String& text)
     {
-        // Set the new text
         m_textBack.setString(text);
         m_textFront.setString(text);
 
-        // Check if the text is auto sized
-        if (m_textSize == 0)
-        {
-            unsigned int textSize;
-            if (m_spriteFill.isSet())
-                textSize = Text::findBestTextSize(m_fontCached, m_spriteFill.getSize().y * 0.8f);
-            else
-                textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
-
-            m_textBack.setCharacterSize(textSize);
-
-            // Make the text smaller when it's too width
-            if (m_textBack.getSize().x > (getInnerSize().x * 0.85f))
-                m_textBack.setCharacterSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_textBack.getSize().x)));
-        }
-        else // When the text has a fixed size
-        {
-            // Set the text size
-            m_textBack.setCharacterSize(m_textSize);
-        }
-
-        m_textFront.setCharacterSize(m_textBack.getCharacterSize());
+        updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,22 +220,6 @@ namespace tgui
     const String& ProgressBar::getText() const
     {
         return m_textBack.getString();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ProgressBar::setTextSize(unsigned int size)
-    {
-        // Change the text size
-        m_textSize = size;
-        setText(getText());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ProgressBar::getTextSize() const
-    {
-        return m_textBack.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,7 +322,7 @@ namespace tgui
 
             m_textBack.setFont(m_fontCached);
             m_textFront.setFont(m_fontCached);
-            setText(getText());
+            updateTextSize();
         }
         else
             Widget::rendererChanged(property);
@@ -388,7 +350,6 @@ namespace tgui
         node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
         node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
         node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         return node;
     }
@@ -407,8 +368,6 @@ namespace tgui
             setValue(node->propertyValuePairs["Value"]->value.toInt());
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
         if (node->propertyValuePairs["FillDirection"])
         {
@@ -424,6 +383,29 @@ namespace tgui
             else
                 throw Exception{"Failed to parse FillDirection property, found unknown value '" + direction + "'."};
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ProgressBar::updateTextSize()
+    {
+        // Check if the text is auto sized
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+        {
+            if (m_spriteFill.isSet())
+                m_textSizeCached = Text::findBestTextSize(m_fontCached, m_spriteFill.getSize().y * 0.8f);
+            else
+                m_textSizeCached = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
+
+            m_textBack.setCharacterSize(m_textSizeCached);
+
+            // Make the text smaller when it's too width
+            if (m_textBack.getSize().x > (getInnerSize().x * 0.85f))
+                m_textSizeCached = static_cast<unsigned int>(m_textSizeCached * ((getInnerSize().x * 0.85f) / m_textBack.getSize().x));
+        }
+
+        m_textBack.setCharacterSize(m_textSizeCached);
+        m_textFront.setCharacterSize(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -184,8 +184,8 @@ namespace tgui
         }
 
         setTextSize(getGlobalTextSize());
-        setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSize) * 4) + (2 * m_distanceToSideCached));
-        setSize({"100%", Text::getLineHeight(m_fontCached, m_textSize) * 1.25f});
+        setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSizeCached) * 4) + (2 * m_distanceToSideCached));
+        setSize({"100%", Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -541,10 +541,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setTextSize(unsigned int size)
+    void MenuBar::updateTextSize()
     {
-        m_textSize = size;
-        setTextSizeImpl(m_menus, size);
+        setTextSizeImpl(m_menus, m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -821,7 +820,6 @@ namespace tgui
 
         saveMenus(node, m_menus);
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimumSubMenuWidth));
         if (m_invertedMenuDirection)
             node->propertyValuePairs["InvertedMenuDirection"] = std::make_unique<DataIO::ValueNode>("true");
@@ -835,8 +833,6 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["MinimumSubMenuWidth"])
             setMinimumSubMenuWidth(node->propertyValuePairs["MinimumSubMenuWidth"]->value.toFloat());
         if (node->propertyValuePairs["InvertedMenuDirection"])
@@ -904,7 +900,7 @@ namespace tgui
         newMenu.text.setFont(m_fontCached);
         newMenu.text.setColor(m_textColorCached);
         newMenu.text.setOpacity(m_opacityCached);
-        newMenu.text.setCharacterSize(m_textSize);
+        newMenu.text.setCharacterSize(m_textSizeCached);
         newMenu.text.setString(text);
         menus.push_back(std::move(newMenu));
     }

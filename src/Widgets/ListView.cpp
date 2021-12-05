@@ -46,7 +46,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f));
+            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
             setSize({m_itemHeight * 12,
                      getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
                      + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
@@ -923,17 +923,11 @@ namespace tgui
 
     void ListView::setItemHeight(unsigned int itemHeight)
     {
-        // Set the new heights
         m_itemHeight = itemHeight;
-        if (m_requestedTextSize == 0)
-        {
-            m_textSize = Text::findBestTextSize(m_fontCached, itemHeight * 0.8f);
-            for (auto& item : m_items)
-            {
-                for (auto& text : item.texts)
-                    text.setCharacterSize(m_textSize);
-            }
-        }
+
+        // Update the text size when auto-sizing
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            updateTextSize();
 
         updateVerticalScrollbarMaximum();
     }
@@ -947,30 +941,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::setTextSize(unsigned int textSize)
+    void ListView::updateTextSize()
     {
-        m_requestedTextSize = textSize;
-
-        if (textSize)
-            m_textSize = textSize;
-        else
-            m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
         for (auto& item : m_items)
         {
             for (auto& text : item.texts)
-                text.setCharacterSize(m_textSize);
+                text.setCharacterSize(m_textSizeCached);
         }
 
-        const unsigned int headerTextSize = getHeaderTextSize();
-        for (Column& column : m_columns)
-            column.text.setCharacterSize(headerTextSize);
+        if (!m_headerTextSize)
+        {
+            const unsigned int headerTextSize = getHeaderTextSize();
+            for (Column& column : m_columns)
+            {
+                column.text.setCharacterSize(headerTextSize);
+
+                if (column.designWidth == 0)
+                    column.width = calculateAutoColumnWidth(column.text);
+            }
+        }
 
         const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
         if (updatedLastColumnMaxItemWidth)
             updateHorizontalScrollbarMaximum();
 
-        m_horizontalScrollbar->setScrollAmount(m_textSize);
+        m_horizontalScrollbar->setScrollAmount(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -998,7 +996,7 @@ namespace tgui
         if (m_headerTextSize)
             return m_headerTextSize;
         else
-            return m_textSize;
+            return m_textSizeCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1671,30 +1669,21 @@ namespace tgui
                     text.setFont(m_fontCached);
             }
 
-            // Recalculate the text size with the new font
-            if (m_requestedTextSize == 0)
+            if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
             {
-                m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
-                for (auto& item : m_items)
-                {
-                    for (auto& text : item.texts)
-                        text.setCharacterSize(m_textSize);
-                }
-
-                if (!m_headerTextSize)
-                {
-                    for (auto& column : m_columns)
-                        column.text.setCharacterSize(m_textSize);
-                }
+                // Recalculate the text size with the new font
+                updateTextSize();
             }
-
-            // Recalculate the width of the columns if they depended on the header text
-            for (auto& column : m_columns)
+            else
             {
-                if (column.designWidth == 0)
-                    column.width = calculateAutoColumnWidth(column.text);
+                // Recalculate the width of the columns if they depended on the header text
+                for (auto& column : m_columns)
+                {
+                    if (column.designWidth == 0)
+                        column.width = calculateAutoColumnWidth(column.text);
+                }
+                updateHorizontalScrollbarMaximum();
             }
-            updateHorizontalScrollbarMaximum();
         }
         else
             Widget::rendererChanged(property);
@@ -1793,7 +1782,6 @@ namespace tgui
         node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
         node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_separatorWidth));
         node->propertyValuePairs["HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerSeparatorHeight));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         node->propertyValuePairs["ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showVerticalGridLines));
         node->propertyValuePairs["ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_expandLastColumn));
@@ -1865,8 +1853,6 @@ namespace tgui
             setSeparatorWidth(node->propertyValuePairs["SeparatorWidth"]->value.toInt());
         if (node->propertyValuePairs["HeaderSeparatorHeight"])
             setHeaderSeparatorHeight(node->propertyValuePairs["HeaderSeparatorHeight"]->value.toInt());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["ItemHeight"])
             setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
         if (node->propertyValuePairs["MultiSelect"])
@@ -1935,7 +1921,7 @@ namespace tgui
         text.setFont(m_fontCached);
         text.setColor(m_textColorCached);
         text.setOpacity(m_opacityCached);
-        text.setCharacterSize(m_textSize);
+        text.setCharacterSize(m_textSizeCached);
         text.setString(caption);
         return text;
     }
@@ -2104,7 +2090,7 @@ namespace tgui
         if (!m_columns.empty() && !m_expandLastColumn)
             return updatedLastColumnMaxItemWidth;
 
-        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
+        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
         if (m_columns.empty())
         {
             m_maxItemWidth = 0;
@@ -2306,7 +2292,7 @@ namespace tgui
         if (columnIndex >= item.texts.size())
             return 0;
 
-        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
+        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
         const float iconWidth = ((m_columns.empty() || m_columns.size() == 1) && columnIndex == 0 && item.icon.isSet()) ? item.icon.getSize().x + textPadding : 0;
         return item.texts[columnIndex].getSize().x + (textPadding * 2) + iconWidth;
     }
@@ -2461,8 +2447,8 @@ namespace tgui
             return;
 
         const unsigned int requiredItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
-        const float verticalTextOffset = (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSize)) / 2.0f;
-        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
+        const float verticalTextOffset = (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSizeCached)) / 2.0f;
+        const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
         const float columnHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
                                    - getCurrentHeaderHeight() - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 

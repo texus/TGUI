@@ -133,7 +133,7 @@ namespace tgui
         }
 
         setTitleButtons(ChildWindow::TitleButton::None);
-        Container::setTextSize(getGlobalTextSize());
+        setTextSize(getGlobalTextSize());
 
         auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(colorWheelSize * colorWheelSize * 4);
         for (unsigned int y = 0; y < colorWheelSize; ++y)

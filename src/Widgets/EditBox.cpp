@@ -119,7 +119,7 @@ namespace tgui
         m_paddingCached.updateParentSize(getSize());
 
         // Recalculate the text size when auto scaling
-        if (m_textSize == 0)
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
             updateTextSize();
 
         m_sprite.setSize(getInnerSize());
@@ -201,21 +201,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setTextSize(unsigned int size)
-    {
-        m_textSize = size;
-        updateTextSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int EditBox::getTextSize() const
-    {
-        return m_textFull.getCharacterSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::setPasswordCharacter(char32_t passwordChar)
     {
         m_passwordChar = passwordChar;
@@ -278,8 +263,6 @@ namespace tgui
         m_textAlignment = alignment;
 
         setText(getText());
-
-        //updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -890,8 +873,6 @@ namespace tgui
         if (!getSuffix().empty())
             node->propertyValuePairs["Suffix"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getSuffix()));
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
-
         return node;
     }
 
@@ -905,8 +886,6 @@ namespace tgui
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
         if (node->propertyValuePairs["DefaultText"])
             setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["DefaultText"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["MaximumCharacters"])
             setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toInt());
         if (node->propertyValuePairs["TextWidthLimited"])
@@ -1237,24 +1216,15 @@ namespace tgui
     void EditBox::updateTextSize()
     {
         // Check if the text is auto sized
-        if (m_textSize == 0)
-        {
-            m_textFull.setCharacterSize(Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f));
-            m_textSuffix.setCharacterSize(m_textFull.getCharacterSize());
-            m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
-            m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
-            m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
-            m_defaultText.setCharacterSize(m_textFull.getCharacterSize());
-        }
-        else // When the text has a fixed size
-        {
-            m_textFull.setCharacterSize(m_textSize);
-            m_textSuffix.setCharacterSize(m_textSize);
-            m_textBeforeSelection.setCharacterSize(m_textSize);
-            m_textSelection.setCharacterSize(m_textSize);
-            m_textAfterSelection.setCharacterSize(m_textSize);
-            m_defaultText.setCharacterSize(m_textSize);
-        }
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f);
+
+        m_textFull.setCharacterSize(m_textSizeCached);
+        m_textSuffix.setCharacterSize(m_textSizeCached);
+        m_textBeforeSelection.setCharacterSize(m_textSizeCached);
+        m_textSelection.setCharacterSize(m_textSizeCached);
+        m_textAfterSelection.setCharacterSize(m_textSizeCached);
+        m_defaultText.setCharacterSize(m_textSizeCached);
 
         // Check if there is a text width limit
         const float width = getVisibleEditBoxWidth();

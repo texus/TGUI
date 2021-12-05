@@ -58,7 +58,7 @@ namespace tgui
         m_down                        {other.m_down},
         m_state                       {other.m_state},
         m_autoSize                    {other.m_autoSize},
-        m_updatingSizeWhileSettingText{other.m_updatingSizeWhileSettingText},
+        m_updatingTextSize            {false},
         background                    {other.background},
         text                          {other.text},
         m_stylePropertiesNames        {},
@@ -79,7 +79,7 @@ namespace tgui
         m_down                        {std::move(other.m_down)},
         m_state                       {std::move(other.m_state)},
         m_autoSize                    {std::move(other.m_autoSize)},
-        m_updatingSizeWhileSettingText{std::move(other.m_updatingSizeWhileSettingText)},
+        m_updatingTextSize            {false},
         background                    {std::move(other.background)},
         text                          {std::move(other.text)},
         m_stylePropertiesNames        {},
@@ -103,7 +103,7 @@ namespace tgui
             m_down                         = other.m_down;
             m_state                        = other.m_state;
             m_autoSize                     = other.m_autoSize;
-            m_updatingSizeWhileSettingText = other.m_updatingSizeWhileSettingText;
+            m_updatingTextSize             = false;
             background                     = other.background;
             text                           = other.text;
             m_stylePropertiesNames         = {};
@@ -130,7 +130,7 @@ namespace tgui
             m_down                         = std::move(other.m_down);
             m_state                        = std::move(other.m_state);
             m_autoSize                     = std::move(other.m_autoSize);
-            m_updatingSizeWhileSettingText = std::move(other.m_updatingSizeWhileSettingText);
+            m_updatingTextSize             = false;
             background                     = std::move(other.background);
             text                           = std::move(other.text);
             m_stylePropertiesNames         = {};
@@ -199,52 +199,7 @@ namespace tgui
         m_string = caption;
         m_textComponent->setString(caption);
 
-        // Set the text size when the text has a fixed size
-        if (m_textSize != 0)
-        {
-            m_textComponent->setCharacterSize(m_textSize);
-            m_updatingSizeWhileSettingText = true;
-            updateSize();
-            m_updatingSizeWhileSettingText = false;
-        }
-
-        // Draw the text normally unless the height is more than double of the width
-        const Vector2f innerSize = m_backgroundComponent->getClientSize();
-        if (innerSize.y <= innerSize.x * 2)
-        {
-            // Auto size the text when necessary
-            if (m_textSize == 0)
-            {
-                const unsigned int textSize = Text::findBestTextSize(m_fontCached, innerSize.y * 0.8f);
-                m_textComponent->setCharacterSize(textSize);
-
-                // Make the text smaller when it's too width
-                if (m_textComponent->getSize().x > (innerSize.x * 0.85f))
-                    m_textComponent->setCharacterSize(static_cast<unsigned int>(textSize * ((innerSize.x * 0.85f) / m_textComponent->getSize().x)));
-            }
-        }
-        else // Place the text vertically
-        {
-            // The text is vertical
-            if (!m_string.empty())
-            {
-                m_textComponent->setString(m_string[0]);
-
-                for (unsigned int i = 1; i < m_string.length(); ++i)
-                    m_textComponent->setString(m_textComponent->getString() + "\n" + m_string[i]);
-            }
-
-            // Auto size the text when necessary
-            if (m_textSize == 0)
-            {
-                unsigned int textSize = Text::findBestTextSize(m_fontCached, innerSize.x * 0.8f);
-                m_textComponent->setCharacterSize(textSize);
-
-                // Make the text smaller when it's too high
-                if (m_textComponent->getSize().y > (innerSize.y * 0.85f))
-                    m_textComponent->setCharacterSize(static_cast<unsigned int>(textSize * innerSize.y * 0.85f / m_textComponent->getSize().y));
-            }
-        }
+        updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,22 +211,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonBase::setTextSize(unsigned int size)
+    void ButtonBase::updateTextSize()
     {
-        if (size != m_textSize)
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
         {
-            m_textSize = size;
+            // Auto-size the text
+            const Vector2f innerSize = m_backgroundComponent->getClientSize();
+            const unsigned int textSize = Text::findBestTextSize(m_fontCached, innerSize.y * 0.8f);
 
-            // Call setText to reposition the text
-            setText(getText());
+            // Make the text smaller when it's too width
+            if (m_textComponent->getSize().x > (innerSize.x * 0.85f))
+                m_textSizeCached = static_cast<unsigned int>(textSize * ((innerSize.x * 0.85f) / m_textComponent->getSize().x));
+            else
+                m_textSizeCached = textSize;
         }
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ButtonBase::getTextSize() const
-    {
-        return m_textComponent->getCharacterSize();
+        m_textComponent->setCharacterSize(m_textSizeCached);
+        m_updatingTextSize = true;
+        updateSize();
+        m_updatingTextSize = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -447,7 +405,7 @@ namespace tgui
             ClickableWidget::rendererChanged(property);
 
             m_textComponent->setFont(m_fontCached);
-            setText(getText());
+            updateTextSize();
         }
         else
             ClickableWidget::rendererChanged(property);
@@ -461,8 +419,6 @@ namespace tgui
 
         if (!m_string.empty())
             node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
-        if (m_textSize > 0)
-            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         // Don't store size when auto-sizing
         if (m_autoSize)
@@ -479,8 +435,6 @@ namespace tgui
 
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,9 +465,9 @@ namespace tgui
 
         m_backgroundComponent->setSize(getSize());
 
-        // Recalculate the text size (needed when auto-sizing or to update whether letters are placed horizontally or vertically)
-        if (!m_updatingSizeWhileSettingText)
-            setText(getText());
+        // Recalculate the text size (needed when auto-sizing)
+        if (!m_updatingTextSize)
+            updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

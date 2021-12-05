@@ -702,16 +702,21 @@ namespace tgui
         /// @brief Changes the character size of text in this widget if it uses text
         ///
         /// @param size  The new text size
+        ///
+        /// @warning This value isn't used when a text size is specified in the renderer.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTextSize(unsigned int size);
+        void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the character size of text in this widget
         ///
         /// @return The current text size
+        ///
+        /// @warning This returns the actual text size. If the renderer specifies a text size then the value returned by this
+        ///          function will be the one from the renderer and not the one provided when calling setTextSize.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int getTextSize() const;
+        unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1043,6 +1048,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the text size is changed (either by setTextSize or via the renderer)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updateTextSize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief This function is called when the mouse enters the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseEnteredWidget();
@@ -1083,7 +1094,7 @@ namespace tgui
 
         Layout2d m_position;
         Layout2d m_size;
-        unsigned int m_textSize = 0;
+        unsigned int m_textSize = 0; // This may be overwritten by the renderer, m_textSizeCached contains the actual text size
 
         Vector2f m_origin;
         Optional<Vector2f> m_rotationOrigin;
@@ -1146,6 +1157,7 @@ namespace tgui
         Font  m_fontCached = Font::getGlobalFont();
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
+        unsigned int m_textSizeCached = 0;
 
         Any m_userData;
         Cursor::Type m_mouseCursor = Cursor::Type::Arrow;

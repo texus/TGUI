@@ -147,11 +147,14 @@ namespace tgui
         m_multiSelect           {other.m_multiSelect},
         m_fileTypeFilters       {other.m_fileTypeFilters},
         m_selectedFileTypeFilter{other.m_selectedFileTypeFilter},
-        m_iconLoader            {other.m_iconLoader},
+        m_iconLoader            {FileDialogIconLoader::createInstance()},
         m_selectedFiles         {other.m_selectedFiles}
     {
         identifyChildWidgets();
         connectSignals();
+
+        // Update the file list (to refresh icons)
+        changePath(m_currentDirectory, false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,11 +211,14 @@ namespace tgui
             m_multiSelect = other.m_multiSelect;
             m_fileTypeFilters = other.m_fileTypeFilters;
             m_selectedFileTypeFilter = other.m_selectedFileTypeFilter;
-            m_iconLoader = other.m_iconLoader;
+            m_iconLoader = FileDialogIconLoader::createInstance();
             m_selectedFiles = other.m_selectedFiles;
 
             identifyChildWidgets();
             connectSignals();
+
+            // Update the file list (to refresh icons)
+            changePath(m_currentDirectory, false);
         }
 
         return *this;

@@ -99,10 +99,7 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        // If the text is auto sized then recalculate the size
-        if (m_textSize == 0)
-            setText(getText());
-
+        updateTextSize();
         updateTextureSizes();
     }
 
@@ -167,14 +164,7 @@ namespace tgui
 
     void RadioButton::setText(const String& text)
     {
-        // Set the new text
         m_text.setString(text);
-
-        // Set the text size
-        if (m_textSize == 0)
-            m_text.setCharacterSize(Text::findBestTextSize(m_fontCached, getSize().y * 0.8f));
-        else
-            m_text.setCharacterSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,21 +172,6 @@ namespace tgui
     const String& RadioButton::getText() const
     {
         return m_text.getString();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::setTextSize(unsigned int size)
-    {
-        m_textSize = size;
-        setText(getText());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int RadioButton::getTextSize() const
-    {
-        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +186,16 @@ namespace tgui
     bool RadioButton::isTextClickable() const
     {
         return m_allowTextClick;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RadioButton::updateTextSize()
+    {
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, getSize().y * 0.8f);
+
+        m_text.setCharacterSize(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,7 +439,7 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_text.setFont(m_fontCached);
-            setText(getText());
+            updateTextSize();
         }
         else
             Widget::rendererChanged(property);
@@ -473,7 +458,6 @@ namespace tgui
         if (!isTextClickable())
             node->propertyValuePairs["TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         return node;
     }
 
@@ -485,8 +469,6 @@ namespace tgui
 
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["TextClickable"])
             setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["TextClickable"]->value).getBool());
         if (node->propertyValuePairs["Checked"])

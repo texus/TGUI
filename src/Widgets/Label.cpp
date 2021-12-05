@@ -132,13 +132,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextSize(unsigned int size)
+    void Label::updateTextSize()
     {
-        if (size != m_textSize)
-        {
-            m_textSize = size;
-            rearrangeText();
-        }
+        rearrangeText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,7 +486,6 @@ namespace tgui
                 node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         return node;
     }
 
@@ -537,8 +532,6 @@ namespace tgui
 
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["MaximumTextWidth"])
             setMaximumTextWidth(node->propertyValuePairs["MaximumTextWidth"]->value.toFloat());
         if (node->propertyValuePairs["AutoSize"])
@@ -572,7 +565,7 @@ namespace tgui
         if (m_fontCached == nullptr)
             return;
 
-        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize, m_textStyleCached);
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached);
 
         // Show or hide the scrollbar
         if (m_autoSize)
@@ -612,7 +605,7 @@ namespace tgui
         }
 
         // Fit the text in the available space
-        String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
+        String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
@@ -620,9 +613,9 @@ namespace tgui
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
         const auto lineCount = std::count(string.begin(), string.end(), U'\n') + 1;
-        float requiredTextHeight = lineCount * m_fontCached.getLineSpacing(m_textSize)
-                                   + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached)
-                                   + Text::getExtraVerticalPadding(m_textSize);
+        float requiredTextHeight = lineCount * m_fontCached.getLineSpacing(m_textSizeCached)
+                                   + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached, m_textStyleCached)
+                                   + Text::getExtraVerticalPadding(m_textSizeCached);
 
         // Check if a scrollbar should be added
         if (!m_autoSize)
@@ -634,19 +627,19 @@ namespace tgui
                 if (maxWidth <= 0)
                     return;
 
-                string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & TextStyle::Bold);
+                string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
 
                 const auto newLineCount = std::count(string.begin(), string.end(), U'\n') + 1;
-                requiredTextHeight = newLineCount * m_fontCached.getLineSpacing(m_textSize)
-                                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached)
-                                     + Text::getExtraVerticalPadding(m_textSize);
+                requiredTextHeight = newLineCount * m_fontCached.getLineSpacing(m_textSizeCached)
+                                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached, m_textStyleCached)
+                                     + Text::getExtraVerticalPadding(m_textSizeCached);
             }
 
             m_scrollbar->setSize(m_scrollbar->getSize().x, static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
             m_scrollbar->setViewportSize(static_cast<unsigned int>(getSize().y - outline.getTop() - outline.getBottom()));
             m_scrollbar->setMaximum(static_cast<unsigned int>(requiredTextHeight));
             m_scrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop()});
-            m_scrollbar->setScrollAmount(m_textSize);
+            m_scrollbar->setScrollAmount(m_textSizeCached);
         }
 
         // Split the string in multiple lines
@@ -698,7 +691,7 @@ namespace tgui
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
                 const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
-                const float totalTextHeight = m_lines.size() * m_fontCached.getLineSpacing(m_textSize);
+                const float totalTextHeight = m_lines.size() * m_fontCached.getLineSpacing(m_textSizeCached);
 
                 if (!m_scrollbar->isShown() || (totalTextHeight < totalHeight))
                 {
@@ -711,7 +704,7 @@ namespace tgui
 
             if (m_horizontalAlignment == HorizontalAlignment::Left)
             {
-                const float lineSpacing = m_fontCached.getLineSpacing(m_textSize);
+                const float lineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
                 for (auto& line : m_lines)
                 {
                     line.setPosition(pos);
@@ -735,7 +728,7 @@ namespace tgui
                     else // if (m_horizontalAlignment == HorizontalAlignment::Right)
                         line.setPosition({pos.x + totalWidth - textWidth, pos.y});
 
-                    pos.y += m_fontCached.getLineSpacing(m_textSize);
+                    pos.y += m_fontCached.getLineSpacing(m_textSizeCached);
                 }
             }
         }

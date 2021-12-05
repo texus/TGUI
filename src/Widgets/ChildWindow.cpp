@@ -75,6 +75,182 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ChildWindow::ChildWindow(const ChildWindow& other) :
+        Container                          {other},
+        m_titleText                        {other.m_titleText},
+        m_draggingPosition                 {other.m_draggingPosition},
+        m_maximumSize                      {other.m_maximumSize},
+        m_minimumSize                      {other.m_minimumSize},
+        m_titleAlignment                   {other.m_titleAlignment},
+        m_titleButtons                     {other.m_titleButtons},
+        m_titleTextSize                    {other.m_titleTextSize},
+        m_currentChildWindowMouseCursor    {other.m_currentChildWindowMouseCursor},
+        m_closeButton                      {other.m_closeButton},
+        m_minimizeButton                   {other.m_minimizeButton},
+        m_maximizeButton                   {other.m_maximizeButton},
+        m_mouseDownOnTitleBar              {other.m_mouseDownOnTitleBar},
+        m_keepInParent                     {other.m_keepInParent},
+        m_positionLocked                   {other.m_positionLocked},
+        m_resizable                        {other.m_resizable},
+        m_resizeDirection                  {other.m_resizeDirection},
+        m_spriteTitleBar                   {other.m_spriteTitleBar},
+        m_spriteBackground                 {other.m_spriteBackground},
+        m_bordersCached                    {other.m_bordersCached},
+        m_borderColorCached                {other.m_borderColorCached},
+        m_borderColorFocusedCached         {other.m_borderColorFocusedCached},
+        m_titleColorCached                 {other.m_titleColorCached},
+        m_titleBarColorCached              {other.m_titleBarColorCached},
+        m_backgroundColorCached            {other.m_backgroundColorCached},
+        m_titleBarHeightCached             {other.m_titleBarHeightCached},
+        m_borderBelowTitleBarCached        {other.m_borderBelowTitleBarCached},
+        m_distanceToSideCached             {other.m_distanceToSideCached},
+        m_paddingBetweenButtonsCached      {other.m_paddingBetweenButtonsCached},
+        m_minimumResizableBorderWidthCached{other.m_minimumResizableBorderWidthCached},
+        m_showTextOnTitleButtonsCached     {other.m_showTextOnTitleButtonsCached}
+    {
+        // The inner size has changed since the container created the child widgets
+        for (auto& layout : m_boundSizeLayouts)
+            layout->recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindow::ChildWindow(ChildWindow&& other) noexcept :
+        Container                          {std::move(other)},
+        m_titleText                        {std::move(other.m_titleText)},
+        m_draggingPosition                 {std::move(other.m_draggingPosition)},
+        m_maximumSize                      {std::move(other.m_maximumSize)},
+        m_minimumSize                      {std::move(other.m_minimumSize)},
+        m_titleAlignment                   {std::move(other.m_titleAlignment)},
+        m_titleButtons                     {std::move(other.m_titleButtons)},
+        m_titleTextSize                    {std::move(other.m_titleTextSize)},
+        m_currentChildWindowMouseCursor    {std::move(other.m_currentChildWindowMouseCursor)},
+        m_closeButton                      {std::move(other.m_closeButton)},
+        m_minimizeButton                   {std::move(other.m_minimizeButton)},
+        m_maximizeButton                   {std::move(other.m_maximizeButton)},
+        m_mouseDownOnTitleBar              {std::move(other.m_mouseDownOnTitleBar)},
+        m_keepInParent                     {std::move(other.m_keepInParent)},
+        m_positionLocked                   {std::move(other.m_positionLocked)},
+        m_resizable                        {std::move(other.m_resizable)},
+        m_resizeDirection                  {std::move(other.m_resizeDirection)},
+        m_spriteTitleBar                   {std::move(other.m_spriteTitleBar)},
+        m_spriteBackground                 {std::move(other.m_spriteBackground)},
+        m_bordersCached                    {std::move(other.m_bordersCached)},
+        m_borderColorCached                {std::move(other.m_borderColorCached)},
+        m_borderColorFocusedCached         {std::move(other.m_borderColorFocusedCached)},
+        m_titleColorCached                 {std::move(other.m_titleColorCached)},
+        m_titleBarColorCached              {std::move(other.m_titleBarColorCached)},
+        m_backgroundColorCached            {std::move(other.m_backgroundColorCached)},
+        m_titleBarHeightCached             {std::move(other.m_titleBarHeightCached)},
+        m_borderBelowTitleBarCached        {std::move(other.m_borderBelowTitleBarCached)},
+        m_distanceToSideCached             {std::move(other.m_distanceToSideCached)},
+        m_paddingBetweenButtonsCached      {std::move(other.m_paddingBetweenButtonsCached)},
+        m_minimumResizableBorderWidthCached{std::move(other.m_minimumResizableBorderWidthCached)},
+        m_showTextOnTitleButtonsCached     {std::move(other.m_showTextOnTitleButtonsCached)}
+    {
+        // The inner size has changed since the container created the child widgets
+        for (auto& layout : m_boundSizeLayouts)
+            layout->recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindow& ChildWindow::operator= (const ChildWindow& other)
+    {
+        // Make sure it is not the same widget
+        if (this != &other)
+        {
+            Container::operator=(other);
+
+            m_titleText                         = other.m_titleText;
+            m_draggingPosition                  = other.m_draggingPosition;
+            m_maximumSize                       = other.m_maximumSize;
+            m_minimumSize                       = other.m_minimumSize;
+            m_titleAlignment                    = other.m_titleAlignment;
+            m_titleButtons                      = other.m_titleButtons;
+            m_titleTextSize                     = other.m_titleTextSize;
+            m_currentChildWindowMouseCursor     = other.m_currentChildWindowMouseCursor;
+            m_closeButton                       = other.m_closeButton;
+            m_minimizeButton                    = other.m_minimizeButton;
+            m_maximizeButton                    = other.m_maximizeButton;
+            m_mouseDownOnTitleBar               = other.m_mouseDownOnTitleBar;
+            m_keepInParent                      = other.m_keepInParent;
+            m_positionLocked                    = other.m_positionLocked;
+            m_resizable                         = other.m_resizable;
+            m_resizeDirection                   = other.m_resizeDirection;
+            m_spriteTitleBar                    = other.m_spriteTitleBar;
+            m_spriteBackground                  = other.m_spriteBackground;
+            m_bordersCached                     = other.m_bordersCached;
+            m_borderColorCached                 = other.m_borderColorCached;
+            m_borderColorFocusedCached          = other.m_borderColorFocusedCached;
+            m_titleColorCached                  = other.m_titleColorCached;
+            m_titleBarColorCached               = other.m_titleBarColorCached;
+            m_backgroundColorCached             = other.m_backgroundColorCached;
+            m_titleBarHeightCached              = other.m_titleBarHeightCached;
+            m_borderBelowTitleBarCached         = other.m_borderBelowTitleBarCached;
+            m_distanceToSideCached              = other.m_distanceToSideCached;
+            m_paddingBetweenButtonsCached       = other.m_paddingBetweenButtonsCached;
+            m_minimumResizableBorderWidthCached = other.m_minimumResizableBorderWidthCached;
+            m_showTextOnTitleButtonsCached      = other.m_showTextOnTitleButtonsCached;
+
+            // The inner size has changed since the container created the child widgets
+            for (auto& layout : m_boundSizeLayouts)
+                layout->recalculateValue();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindow& ChildWindow::operator= (ChildWindow&& other) noexcept
+    {
+        // Make sure it is not the same widget
+        if (this != &other)
+        {
+            Container::operator=(std::move(other));
+
+            m_titleText                         = std::move(other.m_titleText);
+            m_draggingPosition                  = std::move(other.m_draggingPosition);
+            m_maximumSize                       = std::move(other.m_maximumSize);
+            m_minimumSize                       = std::move(other.m_minimumSize);
+            m_titleAlignment                    = std::move(other.m_titleAlignment);
+            m_titleButtons                      = std::move(other.m_titleButtons);
+            m_titleTextSize                     = std::move(other.m_titleTextSize);
+            m_currentChildWindowMouseCursor     = std::move(other.m_currentChildWindowMouseCursor);
+            m_closeButton                       = std::move(other.m_closeButton);
+            m_minimizeButton                    = std::move(other.m_minimizeButton);
+            m_maximizeButton                    = std::move(other.m_maximizeButton);
+            m_mouseDownOnTitleBar               = std::move(other.m_mouseDownOnTitleBar);
+            m_keepInParent                      = std::move(other.m_keepInParent);
+            m_positionLocked                    = std::move(other.m_positionLocked);
+            m_resizable                         = std::move(other.m_resizable);
+            m_resizeDirection                   = std::move(other.m_resizeDirection);
+            m_spriteTitleBar                    = std::move(other.m_spriteTitleBar);
+            m_spriteBackground                  = std::move(other.m_spriteBackground);
+            m_bordersCached                     = std::move(other.m_bordersCached);
+            m_borderColorCached                 = std::move(other.m_borderColorCached);
+            m_borderColorFocusedCached          = std::move(other.m_borderColorFocusedCached);
+            m_titleColorCached                  = std::move(other.m_titleColorCached);
+            m_titleBarColorCached               = std::move(other.m_titleBarColorCached);
+            m_backgroundColorCached             = std::move(other.m_backgroundColorCached);
+            m_titleBarHeightCached              = std::move(other.m_titleBarHeightCached);
+            m_borderBelowTitleBarCached         = std::move(other.m_borderBelowTitleBarCached);
+            m_distanceToSideCached              = std::move(other.m_distanceToSideCached);
+            m_paddingBetweenButtonsCached       = std::move(other.m_paddingBetweenButtonsCached);
+            m_minimumResizableBorderWidthCached = std::move(other.m_minimumResizableBorderWidthCached);
+            m_showTextOnTitleButtonsCached      = std::move(other.m_showTextOnTitleButtonsCached);
+
+            // The inner size has changed since the container created the child widgets
+            for (auto& layout : m_boundSizeLayouts)
+                layout->recalculateValue();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     ChildWindow::Ptr ChildWindow::create(const String& title, unsigned int titleButtons)
     {
         auto window = std::make_shared<ChildWindow>();
@@ -866,23 +1042,35 @@ namespace tgui
         {
             m_titleText.setColor(getSharedRenderer()->getTitleColor());
         }
-        else if (property == "TextureTitleBar")
+        else if ((property == "TextureTitleBar") || (property == "TitleBarHeight"))
         {
-            m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
+            const float oldTitleBarHeight = m_titleBarHeightCached;
 
-            // If the title bar height is determined by the texture then update it (note that getTitleBarHeight has a non-trivial implementation)
-            m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
-            if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
+            if (property == "TextureTitleBar")
+            {
+                m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
+
+                // If the title bar height is determined by the texture then update it (note that getTitleBarHeight has a non-trivial implementation)
+                m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
+                if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
+                    updateTitleBarHeight();
+            }
+            else // if (property == "TitleBarHeight")
+            {
+                m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
                 updateTitleBarHeight();
+            }
+
+            if (oldTitleBarHeight != m_titleBarHeightCached)
+            {
+                // If the title bar changes in height then the inner size will also change
+                for (auto& layout : m_boundSizeLayouts)
+                    layout->recalculateValue();
+            }
         }
         else if (property == "TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
-        }
-        else if (property == "TitleBarHeight")
-        {
-            m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
-            updateTitleBarHeight();
         }
         else if (property == "BorderBelowTitleBar")
         {

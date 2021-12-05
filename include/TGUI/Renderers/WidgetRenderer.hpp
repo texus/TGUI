@@ -145,6 +145,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text size of the widget that is specified by the renderer
+        ///
+        /// @param size  The new text size to use
+        ///
+        /// If the text size is 0 (default) then the renderer won't overwrite the text size of the widget.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextSize(unsigned int size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns text size of the widget that is specified by the renderer
+        ///
+        /// By default, this function will return 0 which means the renderer isn't overwriting the text size of the widget.
+        /// Use the getTextSize() function of the widget itself (instead of the one from the renderer) to get the actual size.
+        ///
+        /// @return Text size of the widget or 0 if the renderer doesn't specify a text size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getTextSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether mouse events should be ignored on transparent parts of the texture of the widget in normal state
         ///
         /// @brief ignoreTransparentParts  Should mouse events on transparent texture parts be ignored?

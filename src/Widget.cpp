@@ -185,6 +185,7 @@ namespace tgui
         m_showAnimations               {other.m_showAnimations},
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached},
+        m_textSizeCached               {other.m_textSizeCached},
         m_mouseCursor                  {other.m_mouseCursor}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -232,6 +233,7 @@ namespace tgui
         m_showAnimations               {std::move(other.m_showAnimations)},
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)},
+        m_textSizeCached               {std::move(other.m_textSizeCached)},
         m_mouseCursor                  {std::move(other.m_mouseCursor)}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -292,6 +294,7 @@ namespace tgui
             m_showAnimations       = {};
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
+            m_textSizeCached       = other.m_textSizeCached;
             m_mouseCursor          = other.m_mouseCursor;
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -349,6 +352,7 @@ namespace tgui
             m_showAnimations       = std::move(other.m_showAnimations);
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
+            m_textSizeCached       = std::move(other.m_textSizeCached);
             m_mouseCursor          = std::move(other.m_mouseCursor);
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -498,6 +502,15 @@ namespace tgui
 
             for (auto& layout : m_boundSizeLayouts)
                 layout->recalculateValue();
+
+            // If the origin isn't in the top left then changing the size also changes the position of the widget.
+            // Note that getPosition() will still return the same value (hence we don't trigger onPositionChange), but if a
+            // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
+            if ((m_origin.x != 0) || (m_origin.y != 0))
+            {
+                for (auto& layout : m_boundPositionLayouts)
+                    layout->recalculateValue();
+            }
         }
     }
 
@@ -893,13 +906,20 @@ namespace tgui
     void Widget::setTextSize(unsigned int size)
     {
         m_textSize = size;
+
+        if (getSharedRenderer()->getTextSize())
+            m_textSizeCached = getSharedRenderer()->getTextSize();
+        else
+            m_textSizeCached = m_textSize;
+
+        updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int Widget::getTextSize() const
     {
-        return m_textSize;
+        return m_textSizeCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1214,6 +1234,15 @@ namespace tgui
             else
                 m_fontCached = Font::getGlobalFont();
         }
+        else if (property == "TextSize")
+        {
+            if (getSharedRenderer()->getTextSize())
+                m_textSizeCached = getSharedRenderer()->getTextSize();
+            else
+                m_textSizeCached = m_textSize;
+
+            updateTextSize();
+        }
         else if (property == "TransparentTexture")
         {
             m_transparentTextureCached = getSharedRenderer()->getTransparentTexture();
@@ -1290,6 +1319,8 @@ namespace tgui
             }
         }
 #endif
+        if (m_textSize != 0)
+            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         String mouseCursorStr;
         switch (m_mouseCursor)
@@ -1371,6 +1402,8 @@ namespace tgui
             m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["UserData"]->value).getString());
 #endif
         }
+        if (node->propertyValuePairs["TextSize"])
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
 
         if (node->propertyValuePairs["MouseCursor"])
         {
@@ -1458,6 +1491,12 @@ namespace tgui
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
                 return (child->name == "ToolTip") || (child->name == "Renderer");
             }), node->children.end());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::updateTextSize()
+    {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

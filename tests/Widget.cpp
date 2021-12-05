@@ -309,6 +309,21 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.8f, 0.7f));
     }
 
+    SECTION("TextSize")
+    {
+        widget->setTextSize(15);
+        REQUIRE(widget->getTextSize() == 15);
+
+        // Renderer overwrites widget property
+        widget->getRenderer()->setTextSize(20);
+        REQUIRE(widget->getTextSize() == 20);
+
+        widget->setTextSize(25);
+        REQUIRE(widget->getTextSize() == 20);
+        widget->getRenderer()->setTextSize(0);
+        REQUIRE(widget->getTextSize() == 25);
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();
@@ -373,6 +388,18 @@ TEST_CASE("[Widget]")
             GuiNull gui;
             gui.add(widget);
             REQUIRE(renderer->getFont() == nullptr);
+        }
+
+        SECTION("TextSize")
+        {
+            REQUIRE(renderer->getTextSize() == 0);
+
+            renderer->setTextSize(20);
+            REQUIRE(renderer->getTextSize() == 20);
+
+            auto pairs = renderer->getPropertyValuePairs();
+            REQUIRE(static_cast<unsigned int>(pairs["TextSize"].getNumber()) == renderer->getTextSize());
+            REQUIRE(static_cast<unsigned int>(renderer->getProperty("TextSize").getNumber()) == renderer->getTextSize());
         }
 
         SECTION("Non-existent property")

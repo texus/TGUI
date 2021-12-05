@@ -140,25 +140,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::setText(const String& caption)
-    {
-        m_string = caption;
-        m_textComponent->setString(caption);
-        if (m_textSize != 0)
-            m_textComponent->setCharacterSize(m_textSize);
-
-        if (m_autoSize && (m_textSize != 0))
-        {
-            m_updatingSizeWhileSettingText = true;
-            updateSize();
-            m_updatingSizeWhileSettingText = false;
-        }
-        else
-            updateComponentPositions();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BitmapButton::setImage(const Texture& image)
     {
         priv::dev::setOptionalPropertyValue(icon, image, priv::dev::ComponentState::Normal);

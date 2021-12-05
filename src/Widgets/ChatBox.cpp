@@ -42,9 +42,9 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
-                     Text::getLineHeight(m_fontCached, m_textSize) * 8
-                     + Text::getExtraVerticalPadding(m_textSize)
+            setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
+                     Text::getLineHeight(m_fontCached, m_textSizeCached) * 8
+                     + Text::getExtraVerticalPadding(m_textSizeCached)
                      + m_paddingCached.getTop() + m_paddingCached.getBottom()
                      + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
@@ -145,7 +145,7 @@ namespace tgui
         line.text.setColor(color);
         line.text.setStyle(style);
         line.text.setOpacity(m_opacityCached);
-        line.text.setCharacterSize(m_textSize);
+        line.text.setCharacterSize(m_textSizeCached);
         line.text.setString(text);
         line.text.setFont(m_fontCached);
 
@@ -251,13 +251,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTextSize(unsigned int size)
+    void ChatBox::updateTextSize()
     {
-        m_textSize = size;
-        m_scroll->setScrollAmount(size);
+        m_scroll->setScrollAmount(m_textSizeCached);
 
         for (auto& line : m_lines)
-            line.text.setCharacterSize(size);
+            line.text.setCharacterSize(m_textSizeCached);
 
         recalculateAllLines();
     }
@@ -442,7 +441,7 @@ namespace tgui
 
         // Update the maximum of the scrollbar
         const unsigned int oldMaximum = m_scroll->getMaximum();
-        m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight + Text::getExtraVerticalPadding(m_textSize)));
+        m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached)));
 
         // Scroll down to the last item when there is a scrollbar and it is at the bottom
         if (m_newLinesBelowOthers)
@@ -527,7 +526,6 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["TextColor"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textColor));
 
         if (m_textStyle != TextStyle::Regular)
@@ -573,8 +571,6 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["TextColor"])
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["TextColor"]->value).getColor());
         if (node->propertyValuePairs["TextStyle"])
@@ -643,11 +639,11 @@ namespace tgui
         target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - m_scroll->getSize().x,
                                               getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
-        states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSize), -static_cast<float>(m_scroll->getValue())});
+        states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scroll->getValue())});
 
         // Put the lines at the bottom of the chat box if needed
-        if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSize) < getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()))
-            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSize)});
+        if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()))
+            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSizeCached)});
 
         for (const auto& line : m_lines)
         {

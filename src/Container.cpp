@@ -379,15 +379,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setTextSize(unsigned int size)
+    void Container::updateTextSize()
     {
-        Widget::setTextSize(size);
+        if (m_textSizeCached == 0)
+            return;
 
-        if (size != 0)
-        {
-            for (const auto& widget : m_widgets)
-                widget->setTextSize(size);
-        }
+        for (const auto& widget : m_widgets)
+            widget->setTextSize(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1385,8 +1383,8 @@ namespace tgui
         if (m_opacityCached < 1)
             widgetPtr->setInheritedOpacity(m_opacityCached);
 
-        if (m_textSize != 0)
-            widgetPtr->setTextSize(m_textSize);
+        if (m_textSizeCached != 0)
+            widgetPtr->setTextSize(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

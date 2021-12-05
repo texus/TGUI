@@ -102,6 +102,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void WidgetRenderer::setTextSize(unsigned int size)
+    {
+        setProperty("TextSize", static_cast<float>(size));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int WidgetRenderer::getTextSize() const
+    {
+        auto it = m_data->propertyValuePairs.find("TextSize");
+        if (it != m_data->propertyValuePairs.end())
+            return static_cast<unsigned int>(it->second.getNumber());
+        else
+            return 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void WidgetRenderer::setProperty(const String& property, ObjectConverter&& value)
     {
         if (m_data->propertyValuePairs[property] == value)

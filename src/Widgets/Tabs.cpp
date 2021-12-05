@@ -44,7 +44,7 @@ namespace tgui
         }
 
         setTextSize(getGlobalTextSize());
-        setTabHeight(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom());
+        setTabHeight(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,22 +355,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::setTextSize(unsigned int size)
+    void Tabs::updateTextSize()
     {
-        if ((size == 0) || (m_requestedTextSize != size))
-        {
-            m_requestedTextSize = size;
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()) * 0.8f);
 
-            if (size == 0)
-                m_textSize = Text::findBestTextSize(m_fontCached, (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()) * 0.8f);
-            else
-                m_textSize = size;
+        for (auto& tab : m_tabs)
+            tab.text.setCharacterSize(m_textSizeCached);
 
-            for (auto& tab : m_tabs)
-                tab.text.setCharacterSize(m_textSize);
-
-            recalculateTabsWidth();
-        }
+        recalculateTabsWidth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,8 +374,8 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
 
         // Recalculate the size when the text is auto sizing
-        if (m_requestedTextSize == 0)
-            setTextSize(0);
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            updateTextSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -666,8 +659,8 @@ namespace tgui
                 tab.text.setFont(m_fontCached);
 
             // Recalculate the size when the text is auto sizing
-            if (m_requestedTextSize == 0)
-                setTextSize(0);
+            if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+                updateTextSize();
             else
                 recalculateTabsWidth();
         }
@@ -723,7 +716,6 @@ namespace tgui
             node->propertyValuePairs["TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSize().y));
         }
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
 
         return node;
@@ -766,8 +758,6 @@ namespace tgui
 
         if (node->propertyValuePairs["MaximumTabWidth"])
             setMaximumTabWidth(node->propertyValuePairs["MaximumTabWidth"]->value.toFloat());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["TabHeight"])
             setTabHeight(node->propertyValuePairs["TabHeight"]->value.toFloat());
         if (node->propertyValuePairs["Selected"])

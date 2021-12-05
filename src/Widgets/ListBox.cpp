@@ -43,8 +43,8 @@ namespace tgui
         }
 
         setTextSize(getGlobalTextSize());
-        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f));
-        setSize({Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 10,
+        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 1.25f));
+        setSize({Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 10,
                  (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
@@ -95,18 +95,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setPosition(const Layout2d& position)
-    {
-        Widget::setPosition(position);
-
-        for (std::size_t i = 0; i < m_items.size(); ++i)
-            m_items[i].text.setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].text.getSize().y) / 2.0f)});
-
-        m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
@@ -119,7 +107,7 @@ namespace tgui
         m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getInnerSize().y)});
         m_scroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
-        setPosition(m_position);
+        updateItemPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +130,7 @@ namespace tgui
         newItem.setColor(m_textColorCached);
         newItem.setOpacity(m_opacityCached);
         newItem.setStyle(m_textStyleCached);
-        newItem.setCharacterSize(m_textSize);
+        newItem.setCharacterSize(m_textSizeCached);
         newItem.setString(itemName);
         newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
 
@@ -260,7 +248,7 @@ namespace tgui
         m_items.erase(m_items.begin() + index);
 
         m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        setPosition(m_position);
+        updateItemPositions();
 
         return true;
     }
@@ -431,16 +419,17 @@ namespace tgui
     {
         // Set the new heights
         m_itemHeight = itemHeight;
-        if (m_requestedTextSize == 0)
+
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
         {
-            m_textSize = Text::findBestTextSize(m_fontCached, itemHeight * 0.8f);
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
             for (auto& item : m_items)
-                item.text.setCharacterSize(m_textSize);
+                item.text.setCharacterSize(m_textSizeCached);
         }
 
         m_scroll->setScrollAmount(m_itemHeight);
         m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        setPosition(m_position);
+        updateItemPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,19 +441,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setTextSize(unsigned int textSize)
+    void ListBox::updateTextSize()
     {
-        m_requestedTextSize = textSize;
-
-        if (textSize)
-            m_textSize = textSize;
-        else
-            m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
+        if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
         for (auto& item : m_items)
-            item.text.setCharacterSize(m_textSize);
+            item.text.setCharacterSize(m_textSizeCached);
 
-        setPosition(m_position);
+        updateItemPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,7 +466,7 @@ namespace tgui
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
 
             m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-            setPosition(m_position);
+            updateItemPositions();
         }
     }
 
@@ -843,14 +828,14 @@ namespace tgui
                 item.text.setFont(m_fontCached);
 
             // Recalculate the text size with the new font
-            if (m_requestedTextSize == 0)
+            if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
             {
-                m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
+                m_textSizeCached = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
                 for (auto& item : m_items)
-                    item.text.setCharacterSize(m_textSize);
+                    item.text.setCharacterSize(m_textSizeCached);
             }
 
-            setPosition(m_position);
+            updateItemPositions();
         }
         else
             Widget::rendererChanged(property);
@@ -892,7 +877,6 @@ namespace tgui
         if (m_selectedItem >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
 
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
 
@@ -938,8 +922,6 @@ namespace tgui
 
         if (node->propertyValuePairs["AutoScroll"])
             setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["ItemHeight"])
             setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
         if (node->propertyValuePairs["MaximumItems"])
@@ -954,6 +936,16 @@ namespace tgui
     {
         return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
                 std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::updateItemPositions()
+    {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+            m_items[i].text.setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].text.getSize().y) / 2.0f)});
+
+        m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1117,7 +1109,7 @@ namespace tgui
             }
 
             // Draw the items
-            states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSize, m_textStyleCached), 0});
+            states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached), 0});
             for (std::size_t i = firstItem; i < lastItem; ++i)
                 target.drawText(states, m_items[i].text);
 

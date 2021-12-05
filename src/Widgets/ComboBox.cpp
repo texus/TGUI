@@ -480,18 +480,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setTextSize(unsigned int textSize)
+    void ComboBox::updateTextSize()
     {
-        m_listBox->setTextSize(textSize);
-        m_text.setCharacterSize(m_listBox->getTextSize());
-        m_defaultText.setCharacterSize(m_listBox->getTextSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ComboBox::getTextSize() const
-    {
-        return m_listBox->getTextSize();
+        m_listBox->setTextSize(m_textSizeCached);
+        m_text.setCharacterSize(m_textSizeCached);
+        m_defaultText.setCharacterSize(m_textSizeCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -807,7 +800,6 @@ namespace tgui
         }
 
         node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsToDisplay()));
-        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getTextSize()));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumItems()));
         node->propertyValuePairs["ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
 
@@ -861,8 +853,6 @@ namespace tgui
 
         if (node->propertyValuePairs["ItemsToDisplay"])
             setItemsToDisplay(node->propertyValuePairs["ItemsToDisplay"]->value.toInt());
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
         if (node->propertyValuePairs["MaximumItems"])
             setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toInt());
         if (node->propertyValuePairs["SelectedItemIndex"])
