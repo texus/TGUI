@@ -32,7 +32,7 @@
 #endif
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp> // GetCommandLineW
+    #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
     #include <shellapi.h> // CommandLineToArgvW
 #endif
 

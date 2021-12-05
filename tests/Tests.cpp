@@ -27,7 +27,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 tgui::String getClipboardContents()

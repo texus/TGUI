@@ -26,7 +26,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/WindowsInclude.hpp>
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 TEST_CASE("[EditBox]")
