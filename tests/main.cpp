@@ -306,7 +306,7 @@ int main(int argc, char * argv[])
         if (!window)
         {
             std::cerr << "Backend parameter was provided but no matching backend was enabled TGUI\n";
-            throw std::runtime_error("Backend parameter was provided but no matching backend was enabled TGUI");
+            return 1;
         }
     }
 
