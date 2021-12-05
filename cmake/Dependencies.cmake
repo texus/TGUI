@@ -38,11 +38,11 @@ macro(tgui_find_dependency_sfml component optional_quiet)
             # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
             # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
             set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-            find_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${component})
+            find_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
         elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-            find_host_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${component})
+            find_host_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
         else()
-            find_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${component})
+            find_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
         endif()
 
         # Don't let SFML_DOC_DIR pollute the cmake entries, unless the variable was set by the user
