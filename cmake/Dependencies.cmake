@@ -309,14 +309,15 @@ macro(tgui_add_dependency_freetype)
                 # The static prebuilt libraries from FreeType are build with the /MT option, so we can only use them if TGUI_USE_STATIC_STD_LIBS is ON.
                 # This is why we will use the dll version by default, even when TGUI is being build statically.
                 if(TGUI_USE_STATIC_STD_LIBS)
+                    # Note that the 2.11.0 release used "vs2015-2019" while 2.11.1 uses "vs2015-2022". We only check for the latter
+                    # because 2.11.0 had a major bug that caused a segmentation fault when trying to use it. So that version won't work anyway.
                     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-                        set(expected_freetype_library_location "${FREETYPE_WINDOWS_BINARIES_PATH}/release static/vs2015-2019/win64/freetype.lib")
+                        set(expected_freetype_library_location "${FREETYPE_WINDOWS_BINARIES_PATH}/release static/vs2015-2022/win64/freetype.lib")
                     else()
-                        set(expected_freetype_library_location "${FREETYPE_WINDOWS_BINARIES_PATH}/release static/vs2015-2019/win32/freetype.lib")
+                        set(expected_freetype_library_location "${FREETYPE_WINDOWS_BINARIES_PATH}/release static/vs2015-2022/win32/freetype.lib")
                     endif()
                 else()
-                    # Search for the file structure that corresponds to the 2.11.0 release. We can't use that exact version since it
-                    # has a bug that causes a segmentation fault, but I assume future releases will have the same file structure.
+                    # Search for the file structure used since the 2.11 release
                     if(EXISTS "${FREETYPE_WINDOWS_BINARIES_PATH}/release dll/win64/freetype.lib")
                         if(CMAKE_SIZEOF_VOID_P EQUAL 8)
                             set(expected_freetype_library_location "${FREETYPE_WINDOWS_BINARIES_PATH}/release dll/win64/freetype.lib")
