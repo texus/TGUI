@@ -34,6 +34,12 @@ struct TestsWindowDefault : public TestsWindowBase
         tgui::SFML_OPENGL3::Gui gui{window};
     };
 #endif
+
+// If the program links to sfml-main then we shouldn't redefine "main" as "SDL_main"
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
+    #define SDL_MAIN_HANDLED
+#endif
+
 #if TGUI_HAS_BACKEND_SDL_RENDERER
     #include <TGUI/Backend/SDL-Renderer.hpp>
     struct TestsWindowSdlRenderer : public TestsWindowBase
