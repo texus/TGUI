@@ -379,10 +379,12 @@ jobs:
 
   #----------------------------------------
 
-  windows-sfml-graphics:
+  windows-sfml-sdl:
     runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.1
+      SDL_VERSION: 2.0.18
+      SDL_TTF_VERSION: 2.0.15
       MSVC_TOOLSET_VERSION: 143  # VS2022
       INSTALLED_VS_VERSION: Visual Studio 17 2022
     steps:
@@ -390,7 +392,11 @@ jobs:
         run: |
           cd ${env:GITHUB_WORKSPACE}
           C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
+          C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
+          7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
+          7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
@@ -406,6 +412,8 @@ jobs:
           cmake
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
+          -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
           -DCMAKE_BUILD_TYPE=Debug
@@ -414,22 +422,25 @@ jobs:
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
           -DTGUI_BUILD_TESTS=ON
-          -DTGUI_BACKEND=SFML_GRAPHICS
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           ../TGUI
 
           cmake --build . --config Debug
 
   #----------------------------------------
 
-  windows-sdl-ttf-opengl:
-    runs-on: windows-2016
+  windows-sdl-oldest:
+    runs-on: windows-2019
     env:
       SDL_VERSION: 2.0.6
       SDL_TTF_VERSION: 2.0.14
+      FREETYPE_VERSION: 2.6.5
       CMAKE_VERSION: 3.17
       CMAKE_VERSION_PATCH: 5
       MSVC_TOOLSET_VERSION: 141  # VS2017
-      INSTALLED_VS_VERSION: Visual Studio 15 2017
+      INSTALLED_VS_VERSION: Visual Studio 16 2019
     steps:
       - name: Install dependencies
         run: |
@@ -437,9 +448,11 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
           7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
@@ -456,6 +469,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T "v${env:MSVC_TOOLSET_VERSION}" -A Win32
           -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
           -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
+          -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
           -DCMAKE_BUILD_TYPE=Release
@@ -464,7 +478,9 @@ jobs:
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
           -DTGUI_BUILD_TESTS=ON
-          -DTGUI_BACKEND=SDL_TTF_OPENGL3
+          -DTGUI_BACKEND=Custom
+          -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           ../TGUI
 
           & "${env:GITHUB_WORKSPACE}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build . --config Release
@@ -477,7 +493,7 @@ jobs:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
       SFML_VERSION: 2.5.0
       GLFW_VERSION: 3.3.3
-      FREETYPE_VERSION: 2.11.0
+      FREETYPE_VERSION: 2.11.1
       CMAKE_VERSION: 3.19
       CMAKE_VERSION_PATCH: 8
       MSVC_TOOLSET_VERSION: 142  # VS2019
@@ -575,6 +591,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
@@ -600,6 +617,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
@@ -792,7 +810,7 @@ jobs:
   #       I've decided to just put the nightly build code in this file as well.
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/0.10'
-    needs: [linux, linux-latest, linux-oldest, windows-sfml-graphics, windows-sdl-ttf-opengl, windows-static-mt, macos, android-sdl-ttf-gles2, android-sfml-graphics, ios-sfml-graphics]
+    needs: [linux, linux-latest, linux-oldest, windows-sfml-sdl, windows-sdl-oldest, windows-static-mt, macos, android-sdl-ttf-gles2, android-sfml-graphics, ios-sfml-graphics]
     runs-on: windows-2016
     env:
       SFML_VERSION: 2.5.1

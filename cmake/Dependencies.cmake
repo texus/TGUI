@@ -129,9 +129,8 @@ macro(tgui_find_dependency_sdl)
             # The minimum SDL version for using the SDL_RENDERER backend renderer lies a lot higher than what
             # the rest of the SDL code requires.
             if (TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
-                # TODO: 2.0.17 is a development version. We can't check for 2.0.18 as it hasn't been released yet
-                if (${SDL2_VERSION} VERSION_LESS "2.0.17")
-                    message(FATAL_ERROR "SDL 2.0.17 or higher is required for SDL_RENDERER backend")
+                if (${SDL2_VERSION} VERSION_LESS "2.0.18")
+                    message(FATAL_ERROR "SDL 2.0.18 or higher is required for SDL_RENDERER backend")
                 endif()
             else()
                 if (${SDL2_VERSION} VERSION_LESS "2.0.6")
