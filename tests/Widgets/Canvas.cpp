@@ -127,7 +127,7 @@ TEST_CASE("[CanvasSFML]")
 
             canvas->clear(tgui::Color::Yellow);
             canvas->draw(sprite);
-            canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip);
+            canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TriangleStrip);
             canvas->display();
 
             TEST_DRAW("Canvas.png")
