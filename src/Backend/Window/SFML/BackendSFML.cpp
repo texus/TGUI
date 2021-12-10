@@ -88,8 +88,8 @@ namespace tgui
     {
         // Replace the cursor resource
         auto newCursor = std::make_unique<sf::Cursor>();
-        newCursor->loadFromPixels(pixels, size, hotspot);
-        updateMouseCursor(type, std::move(newCursor));
+        if (newCursor->loadFromPixels(pixels, size, hotspot))
+            updateMouseCursor(type, std::move(newCursor));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +285,7 @@ namespace tgui
         }
 
         auto cursor = std::make_unique<sf::Cursor>();
-        cursor->loadFromSystem(typeSFML);
+        (void)cursor->loadFromSystem(typeSFML);
         return cursor;
     }
 

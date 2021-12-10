@@ -163,7 +163,7 @@ namespace tgui
         std::u32string convertUtf8toUtf32(CharIt inputBegin, CharIt inputEnd)
         {
             std::u32string outStrUtf32;
-            outStrUtf32.reserve((inputEnd - inputBegin) + 1);
+            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
 
             auto it = inputBegin;
             while (it < inputEnd)

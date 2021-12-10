@@ -96,7 +96,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_CONSTEXPR float asSeconds() const
         {
-            return m_duration.count() / 1000000000.f;
+            return static_cast<float>(static_cast<double>(m_duration.count()) / 1000000000.0);
         }
 
 

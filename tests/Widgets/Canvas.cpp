@@ -111,7 +111,7 @@ TEST_CASE("[CanvasSFML]")
             canvas->setPosition({10, 5});
 
             sf::Texture texture;
-            texture.loadFromFile("resources/image.png");
+            REQUIRE(texture.loadFromFile("resources/image.png"));
 
             sf::Sprite sprite;
             sprite.setTexture(texture);

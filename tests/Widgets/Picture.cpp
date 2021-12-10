@@ -59,7 +59,7 @@ TEST_CASE("[Picture]")
             SECTION("from sf::Texture")
             {
                 sf::Texture texture;
-                texture.loadFromFile("resources/image.png");
+                REQUIRE(texture.loadFromFile("resources/image.png"));
 
                 REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
                 REQUIRE(picture->getRenderer()->getTexture().getId() == "");

@@ -121,7 +121,7 @@ namespace tgui
         {
             const Vector2u newTextureSize{newSize};
             if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
-                m_renderTexture.create(newTextureSize.x, newTextureSize.y);
+                (void)m_renderTexture.create(newTextureSize.x, newTextureSize.y);
 
             m_usedTextureSize = newTextureSize;
         }

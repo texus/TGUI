@@ -53,7 +53,7 @@
                 if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
                 { \
                     target = std::make_unique<sf::RenderTexture>(); \
-                    target->create(width, height); \
+                    (void)target->create(width, height); \
                     guiPtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
                 } \
                 else \
@@ -68,7 +68,7 @@
                         target->clear({25, 130, 10}); \
                         gui.draw(); \
                         target->display(); \
-                        target->getTexture().copyToImage().saveToFile(filename); \
+                        (void)target->getTexture().copyToImage().saveToFile(filename); \
                         compareImageFiles(filename, "expected/" filename); \
                     }
     #else
@@ -78,7 +78,7 @@
                         target->clear({25, 130, 10}); \
                         gui.draw(); \
                         target->display(); \
-                        target->getTexture().copyToImage().saveToFile(filename); \
+                        (void)target->getTexture().copyToImage().saveToFile(filename); \
                     }
     #endif
 #else
