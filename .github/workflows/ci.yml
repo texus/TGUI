@@ -811,11 +811,11 @@ jobs:
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/0.10'
     needs: [linux, linux-latest, linux-oldest, windows-sfml-sdl, windows-sdl-oldest, windows-static-mt, macos, android-sdl-ttf-gles2, android-sfml-graphics, ios-sfml-graphics]
-    runs-on: windows-2016
+    runs-on: windows-2019
     env:
       SFML_VERSION: 2.5.1
       MSVC_TOOLSET_VERSION: 141  # VS2017
-      INSTALLED_VS_VERSION: Visual Studio 15 2017
+      INSTALLED_VS_VERSION: Visual Studio 16 2019
     steps:
       - name: Install dependencies
         run: |
