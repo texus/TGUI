@@ -39,6 +39,7 @@ set(TEST_SOURCES
     Focus.cpp
     Font.cpp
     Layouts.cpp
+    MouseCursors.cpp
     Outline.cpp
     Sprite.cpp
     Signal.cpp
