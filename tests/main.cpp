@@ -8,13 +8,21 @@ const unsigned int windowWidth = 250;
 const unsigned int windowHeight = 100;
 const char* windowTitle = "TGUI Tests";
 
+tgui::BackendGui* globalGui = nullptr;  // Declared as extern in Tests.hpp
+
 struct TestsWindowBase
 {
     virtual ~TestsWindowBase() = default;
+    virtual tgui::BackendGui* getGui() const { return gui.get(); }
+
+protected:
+    std::unique_ptr<tgui::BackendGui> gui;
 };
 
 struct TestsWindowDefault : public TestsWindowBase
 {
+    tgui::BackendGui* getGui() const override { return window->getGui(); }
+
     std::shared_ptr<tgui::DefaultBackendWindow> window = tgui::DefaultBackendWindow::create(windowWidth, windowHeight, windowTitle);
 };
 
@@ -22,16 +30,24 @@ struct TestsWindowDefault : public TestsWindowBase
     #include <TGUI/Backend/SFML-Graphics.hpp>
     struct TestsWindowSfmlGraphics : public TestsWindowBase
     {
+        TestsWindowSfmlGraphics()
+        {
+            gui = std::make_unique<tgui::SFML_GRAPHICS::Gui>(window);
+        }
+
         sf::RenderWindow window{sf::VideoMode{windowWidth, windowHeight}, windowTitle};
-        tgui::SFML_GRAPHICS::Gui gui{window};
     };
 #endif
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
     #include <TGUI/Backend/SFML-OpenGL3.hpp>
     struct TestsWindowSfmlOpenGL3 : public TestsWindowBase
     {
+        TestsWindowSfmlOpenGL3()
+        {
+            gui = std::make_unique<tgui::SFML_OPENGL3::Gui>(window);
+        }
+
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
-        tgui::SFML_OPENGL3::Gui gui{window};
     };
 #endif
 
@@ -67,7 +83,6 @@ struct TestsWindowDefault : public TestsWindowBase
 
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
-        std::unique_ptr<tgui::SDL_RENDERER::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
@@ -100,7 +115,6 @@ struct TestsWindowDefault : public TestsWindowBase
 
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
-        std::unique_ptr<tgui::SDL_TTF_OPENGL3::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2
@@ -133,7 +147,6 @@ struct TestsWindowDefault : public TestsWindowBase
 
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
-        std::unique_ptr<tgui::SDL_TTF_GLES2::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_OPENGL3
@@ -164,7 +177,6 @@ struct TestsWindowDefault : public TestsWindowBase
 
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
-        std::unique_ptr<tgui::SDL_OPENGL3::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_GLES2
@@ -195,7 +207,6 @@ struct TestsWindowDefault : public TestsWindowBase
 
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
-        std::unique_ptr<tgui::SDL_GLES2::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3
@@ -224,7 +235,6 @@ struct TestsWindowDefault : public TestsWindowBase
         }
 
         GLFWwindow* window = nullptr;
-        std::unique_ptr<tgui::GLFW_OPENGL3::Gui> gui;
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_GLES2
@@ -252,7 +262,6 @@ struct TestsWindowDefault : public TestsWindowBase
         }
 
         GLFWwindow* window = nullptr;
-        std::unique_ptr<tgui::GLFW_GLES2::Gui> gui;
     };
 #endif
 
@@ -316,7 +325,11 @@ int main(int argc, char * argv[])
         }
     }
 
-    return session.run();
+    globalGui = window->getGui();
+
+    auto result = session.run();
+    globalGui = nullptr; // Don't keep a pointer to memory that will be destroyed soon
+    return result;
 }
 
 TEST_CASE("[Memory leak test]")

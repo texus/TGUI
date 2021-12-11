@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>

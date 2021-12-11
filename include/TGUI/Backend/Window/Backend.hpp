@@ -43,7 +43,8 @@ namespace tgui
 {
     class Backend;
     class BackendGui;
-
+    class BackendRenderer;
+    class BackendFontFactory;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks whether the backend differs from a nullptr

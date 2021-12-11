@@ -26,6 +26,12 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics/Texture.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#endif
 
 TEST_CASE("[Picture]")
 {

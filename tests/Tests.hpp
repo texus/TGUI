@@ -48,17 +48,18 @@
     #include <TGUI/Backend/SFML-Graphics.hpp>
 
     #define TEST_DRAW_INIT(width, height, widget) \
-                std::unique_ptr<tgui::BackendGui> guiPtr; \
+                tgui::BackendGui* guiPtr = globalGui; \
+                std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
                 std::unique_ptr<sf::RenderTexture> target; \
                 if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
                 { \
                     target = std::make_unique<sf::RenderTexture>(); \
                     (void)target->create(width, height); \
-                    guiPtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                    guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                    guiPtr = guiUniquePtr.get(); \
                 } \
-                else \
-                    guiPtr = std::make_unique<GuiNull>(); \
                 tgui::BackendGui& gui{*guiPtr}; \
+                gui.removeAllWidgets(); \
                 gui.add(widget);
 
     #ifdef TGUI_ENABLE_DRAW_TESTS
@@ -70,7 +71,9 @@
                         target->display(); \
                         (void)target->getTexture().copyToImage().saveToFile(filename); \
                         compareImageFiles(filename, "expected/" filename); \
-                    }
+                    } \
+                    else \
+                        gui.draw();
     #else
         #define TEST_DRAW(filename) \
                     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
@@ -79,15 +82,22 @@
                         gui.draw(); \
                         target->display(); \
                         (void)target->getTexture().copyToImage().saveToFile(filename); \
-                    }
+                    } \
+                    else \
+                        gui.draw();
     #endif
-#else
-    // Drawing tests are currently unsupported in other backends
+
+#else // Drawing tests are currently unsupported in other backends
+    // Note that the code here has to be equivalent to the case where TGUI_HAS_BACKEND_SFML_GRAPHICS is
+    // set but the BackendRendererSFML isn't being used at runtime.
     #define TEST_DRAW_INIT(width, height, widget) \
-                GuiNull gui; \
+                tgui::BackendGui& gui{*globalGui}; \
+                gui.removeAllWidgets(); \
                 gui.add(widget);
 
-    #define TEST_DRAW(filename)
+    // We draw to the window, without clearing or presenting it
+    #define TEST_DRAW(filename) \
+                gui.draw();
 #endif
 
 static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);
@@ -184,5 +194,7 @@ public:
     void draw() {}
     void mainLoop(tgui::Color = {240, 240, 240}) {}
 };
+
+extern tgui::BackendGui* globalGui;
 
 #endif // TGUI_TESTS_HPP

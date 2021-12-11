@@ -26,6 +26,12 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics/Shader.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#endif
 
 TEST_CASE("[Texture]")
 {
