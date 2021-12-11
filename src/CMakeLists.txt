@@ -315,6 +315,9 @@ endif()
 # Generate the Config.hpp header
 configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
+# Use a precompiled header to speed up compilation
+target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
+
 # Install library
 install(TARGETS tgui EXPORT TGUIConfigExport
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin

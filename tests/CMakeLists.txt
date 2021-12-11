@@ -147,6 +147,11 @@ if(TGUI_ENABLE_DRAW_TESTS)
     target_compile_definitions(tests PRIVATE TGUI_ENABLE_DRAW_TESTS)
 endif()
 
+# Use a precompiled header to speed up compilation.
+# We must exclude the main file since it contains the implementation of Catch.
+#target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")
+set_source_files_properties(main.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+
 # Copy the resources folder to the build directory to execute the tests without installing them
 add_custom_command(TARGET tests
                    POST_BUILD
