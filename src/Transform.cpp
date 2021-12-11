@@ -27,6 +27,10 @@
 #include <algorithm>
 #include <cmath>
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -152,7 +156,12 @@ namespace tgui
 
     Transform& Transform::rotate(float angle, const Vector2f& center)
     {
-        const float rad = angle * 3.141592654f / 180.f;
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    const float pi = std::numbers::pi_v<float>;
+#else
+    const float pi = 3.14159265359f;
+#endif
+        const float rad = angle * pi / 180.f;
         const float cos = std::cos(rad);
         const float sin = std::sin(rad);
         return combine({cos, -sin, center.x * (1 - cos) + center.y * sin,

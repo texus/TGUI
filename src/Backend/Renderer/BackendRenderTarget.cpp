@@ -29,6 +29,10 @@
 #include <array>
 #include <cmath>
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -37,10 +41,14 @@ namespace tgui
 
     static std::vector<Vector2f> drawCircleHelperGetPoints(int nrPoints, float radius, float offset)
     {
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        const float twoPi = 2.f * std::numbers::pi_v<float>;
+#else
+        const float twoPi = 2.f * 3.14159265359f;
+#endif
         std::vector<Vector2f> points;
         points.reserve(nrPoints);
 
-        const float twoPi = 2.f * 3.14159265358979f;
         for (int i = 0; i < nrPoints; ++i)
         {
             points.emplace_back(offset + radius + (radius * std::cos(twoPi * i / nrPoints)),
@@ -54,10 +62,14 @@ namespace tgui
 
     static std::vector<Vector2f> drawRoundedRectHelperGetPoints(const int nrCornerPoints, const Vector2f& size, float radius, float offset)
     {
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        const float twoPi = 2.f * std::numbers::pi_v<float>;
+#else
+        const float twoPi = 2.f * 3.14159265359f;
+#endif
         std::vector<Vector2f> points;
         points.reserve(nrCornerPoints * 4);
 
-        const float twoPi = 2.f * 3.14159265358979f;
         const int nrPointsInCircle = 4 * (nrCornerPoints - 1);
 
         // Top right corner

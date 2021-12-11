@@ -26,12 +26,14 @@
 #include <TGUI/Widgets/Knob.hpp>
 #include <cmath>
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace
 {
-    const float pi = 3.14159265358979f;
-
     bool compareFloats(float x, float y)
     {
         return (std::abs(x - y) < 0.0000001f);
@@ -328,6 +330,11 @@ namespace tgui
             }
             else
             {
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+                const float pi = std::numbers::pi_v<float>;
+#else
+                const float pi = 3.14159265359f;
+#endif
                 m_angle = std::atan2(centerPosition.y - pos.y, pos.x - centerPosition.x) * 180.0f / pi;
                 if (m_angle < 0)
                     m_angle += 360;
@@ -586,6 +593,11 @@ namespace tgui
         }
         else
         {
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+            const float pi = std::numbers::pi_v<float>;
+#else
+            const float pi = 3.14159265359f;
+#endif
             const float radius = innerSize / 10.0f;
             states.transform.translate({(innerSize / 2.0f) - radius + (std::cos(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f),
                                         (innerSize / 2.0f) - radius + (-std::sin(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f)});

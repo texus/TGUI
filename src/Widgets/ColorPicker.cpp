@@ -28,6 +28,10 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <cmath>
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -92,6 +96,12 @@ namespace tgui
          * gl_FragColor.a = 1.0;
          */
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        const float pi = std::numbers::pi_v<float>;
+#else
+        const float pi = 3.14159265359f;
+#endif
+
         auto length = [](Vector2f x) {
             return std::sqrt(x.x * x.x + x.y * x.y);
         };
@@ -100,9 +110,7 @@ namespace tgui
 
         float h = std::atan2(position.y, -position.x);
 
-        constexpr float Pi = 3.14159265359f;
-
-        h /= 2.f * Pi;
+        h /= 2.f * pi;
         h += 0.5f;
 
         return Color::applyOpacity(hsv2rgb(h, s, v), a);

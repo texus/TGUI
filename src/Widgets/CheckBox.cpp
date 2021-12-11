@@ -26,6 +26,10 @@
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <cmath>
 
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -272,7 +276,11 @@ namespace tgui
 
             if (m_checked)
             {
-                const float pi = 3.14159265358979f;
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+                const float pi = std::numbers::pi_v<float>;
+#else
+                const float pi = 3.14159265359f;
+#endif
                 const Vertex::Color checkColor = Vertex::Color(getCurrentCheckColor());
                 const Vector2f size = getInnerSize();
                 const float lineThickness = std::min(size.x, size.y) / 5;
