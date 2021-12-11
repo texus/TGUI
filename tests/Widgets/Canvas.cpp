@@ -186,7 +186,7 @@ TEST_CASE("[CanvasSDL]")
 }
 #endif
 
-#if TGUI_HAS_BACKEND_OPENGL3
+#if TGUI_HAS_RENDERER_BACKEND_OPENGL3
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 
@@ -220,7 +220,7 @@ TEST_CASE("[CanvasOpenGL3]")
 }
 #endif
 
-#if TGUI_HAS_BACKEND_GLES2
+#if TGUI_HAS_RENDERER_BACKEND_GLES2
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
 
