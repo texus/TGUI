@@ -81,6 +81,14 @@ namespace tgui
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
         }
 
+        ~BackendWindowSFML()
+        {
+            // Make sure the window is closed before destroying the gui. This is necessary when mouse cursors are changed,
+            // because the mouse cursor (which is destroyed with the gui) has to live longer than the window.
+            // If this is not done, tests on Linux will print a BadCursor error in the terminal, but otherwise work fine.
+            close();
+        }
+
         BackendGui* getGui() const override
         {
             return m_gui.get();

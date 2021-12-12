@@ -35,6 +35,14 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SFML_GRAPHICS::Gui>(window);
         }
 
+        ~TestsWindowSfmlGraphics()
+        {
+            // Close the window before destroying the gui to prevent potential issues with the mouse cursor.
+            window.close();
+
+            gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
+        }
+
         sf::RenderWindow window{sf::VideoMode{windowWidth, windowHeight}, windowTitle};
     };
 #endif
@@ -45,6 +53,14 @@ struct TestsWindowDefault : public TestsWindowBase
         TestsWindowSfmlOpenGL3()
         {
             gui = std::make_unique<tgui::SFML_OPENGL3::Gui>(window);
+        }
+
+        ~TestsWindowSfmlOpenGL3()
+        {
+            // Close the window before destroying the gui to prevent potential issues with the mouse cursor.
+            window.close();
+
+            gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
         }
 
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
