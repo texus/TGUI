@@ -249,7 +249,7 @@ namespace tgui
             {
                 // Ignore synthetic mouse events that SDL generates for touches on mobile platforms,
                 // because we handle them ourselves in the SDL_FINGERDOWN and SDL_FINGERUP events.
-                if (eventSDL.motion.which == static_cast<std::uint32_t>(-1))
+                if (eventSDL.button.which == static_cast<std::uint32_t>(-1))
                     return false;
 
                 switch (eventSDL.button.button)
