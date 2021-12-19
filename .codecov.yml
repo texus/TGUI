@@ -1,6 +1,4 @@
 comment: false
-codecov:
-  branch: "0.9"
 coverage:
   range: 60...100
   status:

@@ -27,7 +27,7 @@ jobs:
       - name: Build SFML
         run: |
           mkdir -p $SFML_INSTALL_DIR
-          git clone --depth 1 https://github.com/SFML/SFML $GITHUB_WORKSPACE/SFML
+          git clone --depth 1 --branch "2.6.x" https://github.com/SFML/SFML $GITHUB_WORKSPACE/SFML
           cd $GITHUB_WORKSPACE/SFML
           if [[ ! -d "$SFML_INSTALL_DIR/lib" || ! -f "$SFML_INSTALL_DIR/revision_cache" || `git rev-parse HEAD` != `cat "$SFML_INSTALL_DIR/revision_cache"` ]]; then
             if [[ ! -d "$SFML_INSTALL_DIR/lib" ]]; then
