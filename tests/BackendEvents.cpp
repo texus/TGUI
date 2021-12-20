@@ -707,9 +707,9 @@ TEST_CASE("[Backend events]")
             {
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_TEXTINPUT;
-                eventSDL.text.text[0] = 0xE2;
-                eventSDL.text.text[1] = 0x9C;
-                eventSDL.text.text[2] = 0x85;
+                eventSDL.text.text[0] = static_cast<char>(static_cast<unsigned char>(0xE2));
+                eventSDL.text.text[1] = static_cast<char>(static_cast<unsigned char>(0x9C));
+                eventSDL.text.text[2] = static_cast<char>(static_cast<unsigned char>(0x85));
                 eventSDL.text.text[3] = '\0';
 
                 tgui::Event eventTGUI;
