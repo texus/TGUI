@@ -309,7 +309,7 @@ namespace tgui
 
         if (button == GLFW_MOUSE_BUTTON_LEFT)
             event.mouseButton.button = Event::MouseButton::Left;
-        else if (button == GLFW_MOUSE_BUTTON_LEFT)
+        else if (button == GLFW_MOUSE_BUTTON_RIGHT)
             event.mouseButton.button = Event::MouseButton::Right;
         else
             event.mouseButton.button = Event::MouseButton::Middle;
