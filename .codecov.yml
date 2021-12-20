@@ -1,8 +1,7 @@
 comment: false
-codecov:
-  branch: "0.10"
 coverage:
-  range: 60...100
+  range: 50...90
+  round: nearest
   status:
     project: off
     patch: off
