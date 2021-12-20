@@ -834,7 +834,6 @@ TEST_CASE("[Backend events]")
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_FINGERDOWN;
                 eventSDL.tfinger.touchId = 1;
-                eventSDL.tfinger.windowID = 0;
                 eventSDL.tfinger.x = 200.f / windowSize.x;
                 eventSDL.tfinger.y = 150.f / windowSize.y;
 
@@ -954,7 +953,6 @@ TEST_CASE("[Backend events]")
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
                 eventSDL.type = SDL_FINGERDOWN;
                 eventSDL.tfinger.touchId = 1;
-                eventSDL.tfinger.windowID = 0;
                 eventSDL.tfinger.x = 100.f / windowSize.x;
                 eventSDL.tfinger.y = 260.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);
