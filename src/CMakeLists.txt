@@ -142,7 +142,13 @@ endif()
 # Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
 # Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
 # so this should only be enabled in places where the TGUI is build only once.
+# For CMake 3.18 and newer, TGUI supports the CMAKE_UNITY_BUILD option and this code should no longer be used.
 if(TGUI_OPTIMIZE_SINGLE_BUILD)
+    if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
+        # The only reason this code still exists is so that the CI can continue to do unity builds with an
+        # older CMake version. Once the CMake version is updated, we should fail here to prevent keeping the old code.
+        message(FATAL_ERROR "TGUI_OPTIMIZE_SINGLE_BUILD has been replaced with CMAKE_UNITY_BUILD")
+    endif()
     list(LENGTH TGUI_SRC fileCount)
     if(TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
         set(threads ${TGUI_OPTIMIZE_SINGLE_BUILD_THREADS})
@@ -197,6 +203,49 @@ else()
     set_target_properties(tgui PROPERTIES RELEASE_POSTFIX -s)
     set_target_properties(tgui PROPERTIES MINSIZEREL_POSTFIX -s)
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
+endif()
+
+if (${CMAKE_VERSION} VERSION_LESS "3.18")
+    # We don't support using CMAKE_UNITY_BUILD in CMake < 3.18 (because we need UNITY_BUILD_MODE)
+    set_target_properties(tgui PROPERTIES UNITY_BUILD OFF)
+else()
+    # We manually group files together since we need to keep the different backends separate from each other.
+    # Since grouping some files requires manually grouping ALL files, we have to manually create batches here.
+    set_target_properties(tgui PROPERTIES UNITY_BUILD_MODE GROUP)
+
+    if(UNITY_BUILD_BATCH_SIZE)
+        set(batch_size ${UNITY_BUILD_BATCH_SIZE})
+    else()
+        set(batch_size 8)
+    endif()
+
+    # Reduce size of batches if we have sufficient cores
+    include(ProcessorCount)
+    ProcessorCount(nr_threads)
+    if (NOT nr_threads EQUAL 0)
+        list(LENGTH TGUI_SRC file_count)
+        math(EXPR max_batch_size "${file_count} / ${nr_threads}")
+        if (max_batch_size EQUAL 1)
+            # Disable unity build if we have more threads than files
+            set_target_properties(tgui PROPERTIES UNITY_BUILD OFF)
+        endif()
+        if (max_batch_size LESS batch_size)
+            set(batch_size ${max_batch_size})
+        endif()
+    endif()
+
+    set(batch_id 1)
+    set(files_in_bucket 0)
+    math(EXPR file_count_minus_one "${file_count} - 1")
+    foreach(i RANGE 0 ${file_count_minus_one})
+        list(GET TGUI_SRC ${i} input_file)
+        set_source_files_properties(${input_file} PROPERTIES UNITY_GROUP "batch-${batch_id}")
+        math(EXPR files_in_bucket "${files_in_bucket} + 1")
+        if (files_in_bucket GREATER_EQUAL batch_size)
+            set(files_in_bucket 0)
+            math(EXPR batch_id "${batch_id} + 1")
+        endif()
+    endforeach()
 endif()
 
 if(TGUI_OS_LINUX)

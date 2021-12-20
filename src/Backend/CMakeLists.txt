@@ -187,57 +187,69 @@ endif()
 
 # Build the required backends
 if(TGUI_HAS_WINDOW_BACKEND_SFML)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Window/SFML/BackendGuiSFML.cpp
         Backend/Window/SFML/BackendSFML.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "WINDOW_BACKEND_SFML")
 endif()
 if(TGUI_HAS_WINDOW_BACKEND_SDL)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Window/SDL/BackendGuiSDL.cpp
         Backend/Window/SDL/BackendSDL.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "WINDOW_BACKEND_SDL")
 endif()
 if(TGUI_HAS_WINDOW_BACKEND_GLFW)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Window/GLFW/BackendGuiGLFW.cpp
         Backend/Window/GLFW/BackendGLFW.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "WINDOW_BACKEND_GLFW")
 endif()
 
 if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Renderer/SFML-Graphics/BackendRendererSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendTextureSFML.cpp
         Backend/Renderer/SFML-Graphics/CanvasSFML.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "RENDERER_BACKEND_SFML_GRAPHICS")
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Renderer/SDL_Renderer/BackendRendererSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendTextureSDL.cpp
         Backend/Renderer/SDL_Renderer/CanvasSDL.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "RENDERER_BACKEND_SDL_RENDERER")
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_OPENGL3)
-    target_sources(tgui PRIVATE
+    set(new_tgui_backend_sources
         Backend/Renderer/OpenGL3/BackendRendererOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendTextureOpenGL3.cpp
         Backend/Renderer/OpenGL3/CanvasOpenGL3.cpp
-        Backend/Renderer/OpenGL.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources} Backend/Renderer/OpenGL.cpp)
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "RENDERER_BACKEND_OPENGL3")
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_GLES2)
-    target_sources(tgui PRIVATE
-        Backend/Renderer/GLES2/BackendRendererGLES2.cpp
-        Backend/Renderer/GLES2/BackendRenderTargetGLES2.cpp
-        Backend/Renderer/GLES2/BackendTextureGLES2.cpp
-        Backend/Renderer/GLES2/CanvasGLES2.cpp
-        Backend/Renderer/OpenGL.cpp
+    set(new_tgui_backend_sources
+            Backend/Renderer/GLES2/BackendRendererGLES2.cpp
+            Backend/Renderer/GLES2/BackendRenderTargetGLES2.cpp
+            Backend/Renderer/GLES2/BackendTextureGLES2.cpp
+            Backend/Renderer/GLES2/CanvasGLES2.cpp
     )
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources} Backend/Renderer/OpenGL.cpp)
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "RENDERER_BACKEND_GLES2")
 endif()
 
 if(TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS)

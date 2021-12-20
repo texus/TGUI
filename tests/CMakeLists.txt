@@ -153,6 +153,7 @@ endif()
 # We must exclude the main file since it contains the implementation of Catch.
 target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")
 set_source_files_properties(main.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+set_source_files_properties(main.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 
 # Copy the resources folder to the build directory to execute the tests without installing them
 add_custom_command(TARGET tests
