@@ -30,6 +30,7 @@ set(TEST_SOURCES
     CompareFiles.cpp
     AbsoluteOrRelativeValue.cpp
     Animation.cpp
+    BackendEvents.cpp
     Clipboard.cpp
     Clipping.cpp
     Color.cpp

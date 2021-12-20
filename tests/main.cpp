@@ -3,9 +3,10 @@
 
 #include <TGUI/TextureManager.hpp>
 #include <TGUI/DefaultBackendWindow.hpp>
+#include <TGUI/Timer.hpp>
 
-const unsigned int windowWidth = 250;
-const unsigned int windowHeight = 100;
+const unsigned int windowWidth = 400;
+const unsigned int windowHeight = 300;
 const char* windowTitle = "TGUI Tests";
 
 tgui::BackendGui* globalGui = nullptr;  // Declared as extern in Tests.hpp
@@ -14,6 +15,7 @@ struct TestsWindowBase
 {
     virtual ~TestsWindowBase() = default;
     virtual tgui::BackendGui* getGui() const { return gui.get(); }
+    virtual void close() = 0;
 
 protected:
     std::unique_ptr<tgui::BackendGui> gui;
@@ -22,6 +24,7 @@ protected:
 struct TestsWindowDefault : public TestsWindowBase
 {
     tgui::BackendGui* getGui() const override { return window->getGui(); }
+    void close() override { window->close(); }
 
     std::shared_ptr<tgui::DefaultBackendWindow> window = tgui::DefaultBackendWindow::create(windowWidth, windowHeight, windowTitle);
 };
@@ -43,6 +46,11 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
         }
 
+        void close() override
+        {
+            window.close();
+        }
+
         sf::RenderWindow window{sf::VideoMode{windowWidth, windowHeight}, windowTitle};
     };
 #endif
@@ -61,6 +69,11 @@ struct TestsWindowDefault : public TestsWindowBase
             window.close();
 
             gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
+        }
+
+        void close() override
+        {
+            window.close();
         }
 
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
@@ -97,6 +110,13 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_Quit();
         }
 
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
+        }
+
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
     };
@@ -127,6 +147,13 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_DestroyWindow(window);
             TTF_Quit();
             SDL_Quit();
+        }
+
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
         }
 
         SDL_Window* window = nullptr;
@@ -161,6 +188,13 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_Quit();
         }
 
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
+        }
+
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
     };
@@ -189,6 +223,13 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_GL_DeleteContext(glContext);
             SDL_DestroyWindow(window);
             SDL_Quit();
+        }
+
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
         }
 
         SDL_Window* window = nullptr;
@@ -221,6 +262,13 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_Quit();
         }
 
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
+        }
+
         SDL_Window* window = nullptr;
         SDL_GLContext glContext = nullptr;
     };
@@ -250,6 +298,11 @@ struct TestsWindowDefault : public TestsWindowBase
             glfwTerminate();
         }
 
+        void close() override
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+
         GLFWwindow* window = nullptr;
     };
 #endif
@@ -275,6 +328,11 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = nullptr;
             glfwDestroyWindow(window);
             glfwTerminate();
+        }
+
+        void close() override
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
 
         GLFWwindow* window = nullptr;
@@ -343,7 +401,19 @@ int main(int argc, char * argv[])
 
     globalGui = window->getGui();
 
+    // Run the tests
     auto result = session.run();
+
+    // Execute the main loop for a short moment
+    // The first timer will be triggered immediately and will start the second timer which will
+    // be triggered after rendering the first frame. The second timer closes the window.
+    tgui::Timer::scheduleCallback([w=window.get()]{
+        tgui::Timer::scheduleCallback([w]{
+            w->close();
+        });
+    });
+    globalGui->mainLoop();
+
     globalGui = nullptr; // Don't keep a pointer to memory that will be destroyed soon
     return result;
 }
