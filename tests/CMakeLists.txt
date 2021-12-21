@@ -101,8 +101,13 @@ set(TEST_SOURCES
 # Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
 # Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
 # so this should only be enabled in places where the TGUI is build only once.
-# TODO: CMake 3.16 added support for unity builds, so we can replace this hacky method
-if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
+# For CMake 3.18 and newer, TGUI supports the CMAKE_UNITY_BUILD option and this code should no longer be used.
+if (TGUI_OPTIMIZE_SINGLE_BUILD)
+    if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
+        # The only reason this code still exists is so that the CI can continue to do unity builds with an
+        # older CMake version. Once the CMake version is updated, we should fail here to prevent keeping the old code.
+        message(FATAL_ERROR "TGUI_OPTIMIZE_SINGLE_BUILD has been replaced with CMAKE_UNITY_BUILD")
+    endif()
     list(LENGTH TEST_SOURCES fileCount)
     if (TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
         set(threads ${TGUI_OPTIMIZE_SINGLE_BUILD_THREADS})
@@ -138,10 +143,17 @@ add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
+# Enable unity build by default
+if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+    set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
+endif()
+
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)
 
 if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
+    # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
+    # because the new batching doesn't result in such huge object files.
     target_compile_options(tests PRIVATE /bigobj)
 endif()
 

@@ -213,6 +213,11 @@ else()
     # Since grouping some files requires manually grouping ALL files, we have to manually create batches here.
     set_target_properties(tgui PROPERTIES UNITY_BUILD_MODE GROUP)
 
+    # Enable unity build by default
+    if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+        set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
+    endif()
+
     if(UNITY_BUILD_BATCH_SIZE)
         set(batch_size ${UNITY_BUILD_BATCH_SIZE})
     else()
@@ -275,6 +280,8 @@ tgui_set_global_compile_flags(tgui)
 tgui_set_stdlib(tgui)
 
 if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
+    # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
+    # because the new batching doesn't result in such huge object files.
     target_compile_options(tgui PRIVATE /bigobj)
 endif()
 
