@@ -33,7 +33,6 @@ struct TabsProperties : WidgetProperties
 {
     // TODO: TabsVisible
     // TODO: TabsEnabled
-    // TODO: AutoSize (and TabHeight)?
 
     void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
     {
@@ -54,6 +53,10 @@ struct TabsProperties : WidgetProperties
         }
         else if (property == "MaximumTabWidth")
             tabs->setMaximumTabWidth(value.toFloat());
+        else if (property == "TabHeight")
+            tabs->setTabHeight(value.toFloat());
+        else if (property == "AutoSize")
+            tabs->setAutoSize(parseBoolean(value, false));
         else if (property == "TextSize")
             tabs->setTextSize(value.toUInt());
         else
@@ -72,6 +75,8 @@ struct TabsProperties : WidgetProperties
         pair.first["Tabs"] = {"List<String>", serializeList(tabTexts)};
         pair.first["Selected"] = {"Int", tgui::String::fromNumber(tabs->getSelectedIndex())};
         pair.first["MaximumTabWidth"] = {"Float", tgui::String::fromNumber(tabs->getMaximumTabWidth())};
+        pair.first["TabHeight"] = {"Float", tgui::String::fromNumber(tabs->getSize().y)};
+        pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(tabs->getAutoSize())};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(tabs->getTextSize())};
 
         const auto renderer = tabs->getSharedRenderer();
