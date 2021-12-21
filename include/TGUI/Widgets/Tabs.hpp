@@ -316,7 +316,7 @@ namespace tgui
         ///
         /// @param height  Height of the tabs
         ///
-        /// When the tabs are auto-sizing, this function allows changing the width of the tabs without setting a fixed width
+        /// When the tabs are auto-sizing, this function allows changing the height of the tabs without setting a fixed width
         /// like calling setSize would do.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
