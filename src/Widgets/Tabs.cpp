@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Optional.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +36,7 @@ namespace tgui
     Tabs::Tabs(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
+        m_distanceToSideCached = std::round(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f);
 
         if (initRenderer)
         {
