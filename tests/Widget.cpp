@@ -309,6 +309,27 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getRotationOrigin() == tgui::Vector2f(0.8f, 0.7f));
     }
 
+    SECTION("WidgetName")
+    {
+        auto w1 = tgui::ClickableWidget::create();
+        auto w2 = tgui::ClickableWidget::create();
+        auto w3 = tgui::ClickableWidget::create();
+
+        REQUIRE(w1->getWidgetName() == "");
+
+        w1->setWidgetName("Nr_1");
+        w2->setWidgetName("Nr_2");
+        REQUIRE(w1->getWidgetName() == "Nr_1");
+        REQUIRE(w2->getWidgetName() == "Nr_2");
+
+        auto container = tgui::Panel::create();
+        container->add(w1);
+        container->add(w2, "NewName");
+
+        REQUIRE(w1->getWidgetName() == "Nr_1");
+        REQUIRE(w2->getWidgetName() == "NewName");
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();

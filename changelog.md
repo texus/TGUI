@@ -4,6 +4,7 @@ TGUI 0.9.3  (TBD)
 - Added RoundedBorderRadius property to Panel renderer
 - Touch events didn't work in SDL backend
 - Default DistanceToSide in Tabs is now rounded to nearest integer
+- Adding widget to container no longer overwrites name if no name is given
 
 
 TGUI 0.9.2  (1 November 2021)
