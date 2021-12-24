@@ -847,7 +847,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::moveWithAnimation(sf::Vector2f position, Duration duration)
+    void Widget::moveWithAnimation(Vector2f position, Duration duration)
     {
         m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), position, duration,
             [this]{ onAnimationFinish.emit(this, AnimationType::Move); }
@@ -856,7 +856,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::resizeWithAnimation(sf::Vector2f size, Duration duration)
+    void Widget::resizeWithAnimation(Vector2f size, Duration duration)
     {
         m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), getSize(), size, duration,
             [this]{ onAnimationFinish.emit(this, AnimationType::Resize); }
