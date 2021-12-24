@@ -56,7 +56,7 @@ namespace tgui
     class GuiBase;
     class Container;
 
-    enum class ShowAnimationType;
+    enum class ShowEffectType;
     namespace priv
     {
         class Animation;
@@ -482,10 +482,10 @@ namespace tgui
         ///
         /// Usage example:
         /// @code
-        /// widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, std::chrono::milliseconds(500));
+        /// widget->showWithEffect(tgui::ShowEffectType::SlideFromLeft, std::chrono::milliseconds(500));
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void showWithEffect(ShowAnimationType type, Duration duration);
+        void showWithEffect(ShowEffectType type, Duration duration);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,10 +503,10 @@ namespace tgui
         ///
         /// Usage example:
         /// @code
-        /// widget->hideWithEffect(tgui::ShowAnimationType::SlideToRight, std::chrono::milliseconds(500));
+        /// widget->hideWithEffect(tgui::ShowEffectType::SlideToRight, std::chrono::milliseconds(500));
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void hideWithEffect(ShowAnimationType type, Duration duration);
+        void hideWithEffect(ShowEffectType type, Duration duration);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,13 +1066,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f  onPositionChange = {"PositionChanged"};         //!< The position of the widget changed. Optional parameter: new position
-        SignalVector2f  onSizeChange     = {"SizeChanged"};             //!< The size of the widget changed. Optional parameter: new size
-        Signal          onFocus          = {"Focused"};                 //!< The widget was focused
-        Signal          onUnfocus        = {"Unfocused"};               //!< The widget was unfocused
-        Signal          onMouseEnter     = {"MouseEntered"};            //!< The mouse entered the widget
-        Signal          onMouseLeave     = {"MouseLeft"};               //!< The mouse left the widget
-        SignalAnimation onAnimationFinish = {"AnimationFinished"};      //!< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
+        SignalVector2f   onPositionChange   = {"PositionChanged"};         //!< The position of the widget changed. Optional parameter: new position
+        SignalVector2f   onSizeChange       = {"SizeChanged"};             //!< The size of the widget changed. Optional parameter: new size
+        Signal           onFocus            = {"Focused"};                 //!< The widget was focused
+        Signal           onUnfocus          = {"Unfocused"};               //!< The widget was unfocused
+        Signal           onMouseEnter       = {"MouseEntered"};            //!< The mouse entered the widget
+        Signal           onMouseLeave       = {"MouseLeft"};               //!< The mouse left the widget
+        TGUI_DEPRECATED("onAnimationFinish was renamed to onShowEffectFinish") SignalShowEffect onAnimationFinish  = {"AnimationFinished"};
+        SignalShowEffect onShowEffectFinish = {"ShowEffectFinished"};      //!< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,8 @@ TGUI 0.9.3  (TBD)
 - Touch events didn't work in SDL backend
 - Default DistanceToSide in Tabs is now rounded to nearest integer
 - Adding widget to container no longer overwrites name if no name is given
+- Renamed onAnimationFinish to onShowEffectFinish
+- Renamed ShowAnimationType to ShowEffectType
 
 
 TGUI 0.9.2  (1 November 2021)

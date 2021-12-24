@@ -40,7 +40,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Type of animation to show/hide widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    enum class ShowAnimationType
+    enum class ShowEffectType
     {
         Fade,          //!< Fade widget in or out
         Scale,         //!< Shrink to the center of the widget to hide or grow from its center to show
@@ -54,6 +54,9 @@ namespace tgui
         SlideFromTop = SlideToBottom, //!< Slide from top to show or to the bottom to hide
         SlideFromBottom = SlideToTop  //!< Slide from bottom to show or to the top to hide
     };
+
+    using ShowAnimationType TGUI_DEPRECATED("ShowAnimationType was renamed to ShowEffectType") = ShowEffectType;
+
 
     namespace priv
     {

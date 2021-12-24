@@ -39,7 +39,7 @@ namespace tgui
 
     namespace
     {
-        void finishExistingConflictingAnimations(std::vector<std::shared_ptr<priv::Animation>>& animations, ShowAnimationType type)
+        void finishExistingConflictingAnimations(std::vector<std::shared_ptr<priv::Animation>>& animations, ShowEffectType type)
         {
             // Only one animation of each type can be played at the same type. If e.g. a fade animation was already in progress
             // when starting a new one, the old animation is finished immediately.
@@ -48,9 +48,9 @@ namespace tgui
             while (animIt != animations.end())
             {
                 auto& animation = *animIt;
-                if (((type == ShowAnimationType::Fade) && (animation->getType() == priv::Animation::Type::Fade))
-                 || ((type == ShowAnimationType::Scale) && (animation->getType() == priv::Animation::Type::Resize))
-                 || ((type != ShowAnimationType::Fade) && (animation->getType() == priv::Animation::Type::Move)))
+                if (((type == ShowEffectType::Fade) && (animation->getType() == priv::Animation::Type::Fade))
+                 || ((type == ShowEffectType::Scale) && (animation->getType() == priv::Animation::Type::Resize))
+                 || ((type != ShowEffectType::Fade) && (animation->getType() == priv::Animation::Type::Move)))
                 {
                     animation->finish();
                     animIt = animations.erase(animIt);
@@ -130,7 +130,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     Widget::Widget(const char* typeName, bool initRenderer) :
         m_type(typeName)
     {
@@ -366,7 +366,7 @@ namespace tgui
 
         return *this;
     }
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::setRenderer(std::shared_ptr<RendererData> rendererData)
@@ -602,8 +602,8 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::showWithEffect(ShowAnimationType type, Duration duration)
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
+    void Widget::showWithEffect(ShowEffectType type, Duration duration)
     {
         setVisible(true);
 
@@ -618,7 +618,7 @@ namespace tgui
 
         switch (type)
         {
-            case ShowAnimationType::Fade:
+            case ShowEffectType::Fade:
             {
                 // Start from fully transparent, unless a fade animation was already playing
                 float animStartOpacity = startOpacity;
@@ -632,32 +632,32 @@ namespace tgui
                     duration *= (startOpacity / endOpacity);
 
                 m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), animStartOpacity, endOpacity, duration,
-                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                 break;
             }
-            case ShowAnimationType::Scale:
+            case ShowEffectType::Scale:
             {
                 // TODO: Use setScale instead of setSize
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
                 m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, getSize(), duration,
-                                                                                   TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                   TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                 setPosition(getPosition() + (getSize() / 2.f));
                 setSize(0, 0);
                 break;
             }
-            case ShowAnimationType::SlideFromLeft:
+            case ShowEffectType::SlideFromLeft:
             {
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration,
-                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                 setPosition({-getFullSize().x, getPosition().y});
                 break;
             }
-            case ShowAnimationType::SlideFromRight:
+            case ShowEffectType::SlideFromRight:
             {
                 if (getParent())
                 {
                     m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration,
-                                                                                     TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                     TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                     setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
                 }
                 else
@@ -667,19 +667,19 @@ namespace tgui
 
                 break;
             }
-            case ShowAnimationType::SlideFromTop:
+            case ShowEffectType::SlideFromTop:
             {
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration,
-                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                 TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                 setPosition({getPosition().x, -getFullSize().y});
                 break;
             }
-            case ShowAnimationType::SlideFromBottom:
+            case ShowEffectType::SlideFromBottom:
             {
                 if (getParent())
                 {
                     m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration,
-                                                                                     TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); }));
+                                                                                     TGUI_LAMBDA_CAPTURE_EQ_THIS{onAnimationFinish.emit(this, type, true); onShowEffectFinish.emit(this, type, true); }));
                     setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
                 }
                 else
@@ -694,7 +694,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::hideWithEffect(ShowAnimationType type, Duration duration)
+    void Widget::hideWithEffect(ShowEffectType type, Duration duration)
     {
         // We store the state the widget is currently in. In the event another animation was already playing, we should try to
         // use the current state to start our animation at, but this is not the state that the widget should end at. We must
@@ -709,7 +709,7 @@ namespace tgui
 
         switch (type)
         {
-            case ShowAnimationType::Fade:
+            case ShowEffectType::Fade:
             {
                 const float endOpacity = getInheritedOpacity(); // Value to reset to after widget is hidden
 
@@ -718,24 +718,24 @@ namespace tgui
                     duration *= (startOpacity / endOpacity);
 
                 m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), startOpacity, 0.f, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setInheritedOpacity(endOpacity); onAnimationFinish.emit(this, type, false); }));
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setInheritedOpacity(endOpacity); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 break;
             }
-            case ShowAnimationType::Scale:
+            case ShowEffectType::Scale:
             {
                 // TODO: Use setScale instead of setSize
                 const auto size = getSize();
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration));
                 m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); setSize(size); onAnimationFinish.emit(this, type, false); }));
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); setSize(size); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 break;
             }
-            case ShowAnimationType::SlideToRight:
+            case ShowEffectType::SlideToRight:
             {
                 if (getParent())
                 {
                     m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); }));
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 }
                 else
                 {
@@ -744,18 +744,18 @@ namespace tgui
 
                 break;
             }
-            case ShowAnimationType::SlideToLeft:
+            case ShowEffectType::SlideToLeft:
             {
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); }));
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 break;
             }
-            case ShowAnimationType::SlideToBottom:
+            case ShowEffectType::SlideToBottom:
             {
                 if (getParent())
                 {
                     m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); }));
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 }
                 else
                 {
@@ -764,15 +764,15 @@ namespace tgui
 
                 break;
             }
-            case ShowAnimationType::SlideToTop:
+            case ShowEffectType::SlideToTop:
             {
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); }));
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS{ setVisible(false); setPosition(position); onAnimationFinish.emit(this, type, false); onShowEffectFinish.emit(this, type, false); }));
                 break;
             }
         }
     }
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::setVisible(bool visible)
@@ -1173,7 +1173,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     Signal& Widget::getSignal(String signalName)
     {
         if (signalName == onPositionChange.getName())
@@ -1190,10 +1190,12 @@ namespace tgui
             return onMouseLeave;
         else if (signalName == onAnimationFinish.getName())
             return onAnimationFinish;
+        else if (signalName == onShowEffectFinish.getName())
+            return onShowEffectFinish;
 
         throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
     }
-
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::rendererChanged(const String& property)

@@ -50,10 +50,10 @@ TEST_CASE("[Signal]")
         REQUIRE(widget->onMouseLeave.connect([](){}) == ++id);
         REQUIRE(widget->onMouseLeave.connectEx([](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
-        REQUIRE(widget->onAnimationFinish([](){}) == ++id);
-        REQUIRE(widget->onAnimationFinish([](tgui::ShowAnimationType){}) == ++id);
-        REQUIRE(widget->onAnimationFinish([](bool){}) == ++id);
-        REQUIRE(widget->onAnimationFinish([](tgui::ShowAnimationType, bool){}) == ++id);
+        REQUIRE(widget->onShowEffectFinish([](){}) == ++id);
+        REQUIRE(widget->onShowEffectFinish([](tgui::ShowEffectType){}) == ++id);
+        REQUIRE(widget->onShowEffectFinish([](bool){}) == ++id);
+        REQUIRE(widget->onShowEffectFinish([](tgui::ShowEffectType, bool){}) == ++id);
 
         REQUIRE_THROWS_AS(widget->getSignal("SomeInvalidSignal"), tgui::Exception);
 
