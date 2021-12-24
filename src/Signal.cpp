@@ -132,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalAnimation::emit(const Widget* widget, ShowAnimationType type, bool visible)
+    bool SignalAnimation::emit(const Widget* widget, ShowEffectType type, bool visible)
     {
         if (m_handlers.empty())
             return false;

@@ -661,18 +661,18 @@ namespace tgui
     /// @brief Signal to which the user can subscribe to get callbacks from
     ///
     /// Optional unbound parameters:
-    /// - ShowAnimationType
+    /// - ShowEffectType
     /// - bool (true for showing and false for hiding)
-    /// - ShowAnimationType, bool
+    /// - ShowEffectType, bool
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API SignalAnimation : public Signal
+    class TGUI_API SignalShowEffect : public Signal
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalAnimation(String&& name) :
+        SignalShowEffect(String&& name) :
             Signal{std::move(name), 2}
         {
         }
@@ -711,15 +711,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param func  Callback function that has an unbound ShowAnimationType as last parameter
+        /// @param func  Callback function that has an unbound ShowEffectType as last parameter
         /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowAnimationType)>>::value>* = nullptr>
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowEffectType)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowAnimationType>(1)); });
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowEffectType>(1)); });
         }
 
 
@@ -741,15 +741,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param func  Callback function that has an ShowAnimationType and bool (showing widget or not) as two last parameters
+        /// @param func  Callback function that has an ShowEffectType and bool (showing widget or not) as two last parameters
         /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowAnimationType, bool)>>::value>* = nullptr>
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowEffectType, bool)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowAnimationType>(1), dereferenceParam<bool>(2)); });
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<ShowEffectType>(1), dereferenceParam<bool>(2)); });
         }
 
 
@@ -762,11 +762,13 @@ namespace tgui
         ///
         /// @return True when a callback function was executed, false when there weren't any connected callback functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, ShowAnimationType type, bool visible);
+        bool emit(const Widget* widget, ShowEffectType type, bool visible);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
+
+    using SignalAnimation TGUI_DEPRECATED("SignalAnimation was renamed to SignalShowEffect") = SignalShowEffect;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
