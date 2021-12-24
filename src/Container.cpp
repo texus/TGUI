@@ -289,7 +289,8 @@ namespace tgui
         TGUI_ASSERT(widgetPtr != nullptr, "Can't add nullptr to container");
 
         m_widgets.push_back(widgetPtr);
-        widgetPtr->setWidgetName(widgetName);
+        if (!widgetName.empty())
+            widgetPtr->setWidgetName(widgetName);
 
         widgetAdded(widgetPtr);
     }
