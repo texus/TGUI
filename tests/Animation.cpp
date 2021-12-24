@@ -37,7 +37,8 @@ static bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
         && std::abs(left.y - right.y) < 0.0001f;
 }
 
-TEST_CASE("[Animation]") {
+TEST_CASE("[Animation]")
+{
     tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
@@ -48,8 +49,10 @@ TEST_CASE("[Animation]") {
     parent->setSize(480, 360);
     parent->add(widget);
 
-    SECTION("Show/Hide with effects") {
-        SECTION("Widget becomes visible when effect starts") {
+    SECTION("Show/Hide with effects")
+    {
+        SECTION("Widget becomes visible when effect starts")
+        {
             widget->setVisible(false);
             REQUIRE(!widget->isVisible());
             widget->showWithEffect(tgui::ShowEffectType::Scale, std::chrono::milliseconds(250));
@@ -60,7 +63,8 @@ TEST_CASE("[Animation]") {
             REQUIRE(widget->isVisible());
         }
 
-        SECTION("Widget is still visible when effect starts") {
+        SECTION("Widget is still visible when effect starts")
+        {
             REQUIRE(widget->isVisible());
             widget->hideWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(250));
             REQUIRE(widget->isVisible());
@@ -70,15 +74,18 @@ TEST_CASE("[Animation]") {
             REQUIRE(!widget->isVisible());
         }
 
-        SECTION("Time can go past the animation end") {
+        SECTION("Time can go past the animation end")
+        {
             widget->showWithEffect(tgui::ShowEffectType::SlideFromLeft, std::chrono::milliseconds(250));
             widget->updateTime(std::chrono::milliseconds(500));
             REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
         }
 
-        SECTION("showWithEffect") {
-            SECTION("Fade") {
+        SECTION("showWithEffect")
+        {
+            SECTION("Fade")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(300));
                 REQUIRE(widget->getInheritedOpacity() == 0);
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -87,7 +94,8 @@ TEST_CASE("[Animation]") {
                 REQUIRE(widget->getInheritedOpacity() == 0.9f);
             }
 
-            SECTION("Scale") {
+            SECTION("Scale")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::Scale, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(90, 30));
                 REQUIRE(widget->getSize() == tgui::Vector2f(0, 0));
@@ -99,7 +107,8 @@ TEST_CASE("[Animation]") {
                 REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
             }
 
-            SECTION("SlideFromLeft") {
+            SECTION("SlideFromLeft")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromLeft, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(-120, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -108,7 +117,8 @@ TEST_CASE("[Animation]") {
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
 
-            SECTION("SlideFromTop") {
+            SECTION("SlideFromTop")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromTop, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, -30));
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -117,7 +127,8 @@ TEST_CASE("[Animation]") {
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
 
-            SECTION("SlideFromRight") {
+            SECTION("SlideFromRight")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromRight, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(480, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -126,7 +137,8 @@ TEST_CASE("[Animation]") {
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
 
-            SECTION("SlideFromBottom") {
+            SECTION("SlideFromBottom")
+            {
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromBottom, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 360));
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -142,15 +154,18 @@ TEST_CASE("[Animation]") {
             REQUIRE(widget->getInheritedOpacity() == 0.9f);
         }
 
-        SECTION("hideWithEffect") {
-            SECTION("Fade") {
+        SECTION("hideWithEffect")
+        {
+            SECTION("Fade")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(300));
                 REQUIRE(widget->getInheritedOpacity() == 0.9f);
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(compareOpacity(widget->getInheritedOpacity(), 0.6f));
             }
 
-            SECTION("Scale") {
+            SECTION("Scale")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::Scale, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
@@ -159,28 +174,32 @@ TEST_CASE("[Animation]") {
                 REQUIRE(compareVector2f(widget->getSize(), {80, 20}));
             }
 
-            SECTION("SlideToRight") {
+            SECTION("SlideToRight")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToRight, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(compareVector2f(widget->getPosition(), {30+((480-30)/3.f), 15}));
             }
 
-            SECTION("SlideToBottom") {
+            SECTION("SlideToBottom")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToBottom, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(compareVector2f(widget->getPosition(), {30, 15+((360-15)/3.f)}));
             }
 
-            SECTION("SlideToLeft") {
+            SECTION("SlideToLeft")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToLeft, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(compareVector2f(widget->getPosition(), {30.f-((120.f+30.f)/3.f), 15}));
             }
 
-            SECTION("SlideToTop") {
+            SECTION("SlideToTop")
+            {
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToTop, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
@@ -201,6 +220,26 @@ TEST_CASE("[Animation]") {
             REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
             REQUIRE(widget->getInheritedOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
+        }
+
+        SECTION("moveWithAnimation")
+        {
+            widget->moveWithAnimation({230, 25}, 300);
+            REQUIRE(widget->getPosition() == tgui::Vector2f{30, 15}); // Hasn't moved yet
+            widget->updateTime(std::chrono::milliseconds(150));
+            REQUIRE(widget->getPosition() == tgui::Vector2f{130, 20}); // Halfway
+            widget->updateTime(std::chrono::milliseconds(150));
+            REQUIRE(widget->getPosition() == tgui::Vector2f{230, 25}); // Finished
+        }
+
+        SECTION("resizeWithAnimation")
+        {
+            widget->resizeWithAnimation({60, 60}, 300);
+            REQUIRE(widget->getSize() == tgui::Vector2f{120, 30}); // Hasn't resized yet
+            widget->updateTime(std::chrono::milliseconds(150));
+            REQUIRE(widget->getSize() == tgui::Vector2f{90, 45}); // Halfway
+            widget->updateTime(std::chrono::milliseconds(150));
+            REQUIRE(widget->getSize() == tgui::Vector2f{60, 60}); // Finished
         }
 
         SECTION("isAnimationPlaying")

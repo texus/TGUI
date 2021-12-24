@@ -50,6 +50,9 @@ TEST_CASE("[Signal]")
         REQUIRE(widget->onMouseLeave.connect([](){}) == ++id);
         REQUIRE(widget->onMouseLeave.connectEx([](tgui::Widget::Ptr, tgui::String){}) == ++id);
 
+        REQUIRE(widget->onAnimationFinish([](){}) == ++id);
+        REQUIRE(widget->onAnimationFinish([](tgui::AnimationType){}) == ++id);
+
         REQUIRE(widget->onShowEffectFinish([](){}) == ++id);
         REQUIRE(widget->onShowEffectFinish([](tgui::ShowEffectType){}) == ++id);
         REQUIRE(widget->onShowEffectFinish([](bool){}) == ++id);

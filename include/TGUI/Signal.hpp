@@ -768,7 +768,84 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
-    using SignalAnimation TGUI_DEPRECATED("SignalAnimation was renamed to SignalShowEffect") = SignalShowEffect;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - AnimationType
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalAnimationType : public Signal
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalAnimationType(String&& name) :
+            Signal{std::move(name), 1}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound AnimationType as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., AnimationType)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<AnimationType>(1)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget  Widget that is triggering the signal
+        /// @param type    Type of the animation
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, AnimationType type);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

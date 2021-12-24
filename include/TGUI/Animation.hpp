@@ -38,7 +38,7 @@ namespace tgui
     class Widget;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Type of animation to show/hide widget
+    /// @brief Type of effect to show/hide widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum class ShowEffectType
     {
@@ -55,7 +55,16 @@ namespace tgui
         SlideFromBottom = SlideToTop  //!< Slide from bottom to show or to the top to hide
     };
 
-    using ShowAnimationType TGUI_DEPRECATED("ShowAnimationType was renamed to ShowEffectType") = ShowEffectType;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Type of animation
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    enum class AnimationType
+    {
+        Move,       //!< Position is being changed
+        Resize,     //!< Size is being changed
+        Opacity,    //!< Opacity is being changed
+    };
 
 
     namespace priv
@@ -65,32 +74,24 @@ namespace tgui
         class TGUI_API Animation
         {
         public:
-            enum class Type
-            {
-                None = 0,
-                Move = 1,
-                Resize = 2,
-                Fade = 4
-            };
 
             // Move constructor has to be explicitly declared since this class has a destructor
-            Animation() = default;
             Animation(const Animation&) = default;
             Animation(Animation&&) = default;
             Animation& operator=(const Animation&) = default;
             Animation& operator=(Animation&&) = default;
             virtual ~Animation() = default;
 
-            Type getType() const;
+            AnimationType getType() const;
 
             virtual bool update(Duration elapsedTime) = 0;
             virtual void finish();
 
         protected:
-            Animation(Type type, std::shared_ptr<Widget> widget, Duration duration, std::function<void()> finishedCallback);
+            Animation(AnimationType type, std::shared_ptr<Widget> widget, Duration duration, std::function<void()> finishedCallback);
 
         protected:
-            Type m_type = Type::None;
+            AnimationType m_type;
             std::shared_ptr<Widget> m_widget;
 
             Duration m_totalDuration;

@@ -510,6 +510,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Moves the widget from its current position to the given position, over a given duration
+        ///
+        /// @param position  Final position of the widget
+        /// @param duration  How long before the widget reaches its final position
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void moveWithAnimation(sf::Vector2f position, Duration duration);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Resizes the widget from its current size to the given size, over a given duration
+        ///
+        /// @param size      Final size of the widget
+        /// @param duration  How long before the widget reaches its final size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void resizeWithAnimation(sf::Vector2f size, Duration duration);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Shows or hides a widget
         /// @param visible  Is the widget visible?
         ///
@@ -1077,15 +1095,21 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f   onPositionChange   = {"PositionChanged"};         //!< The position of the widget changed. Optional parameter: new position
-        SignalVector2f   onSizeChange       = {"SizeChanged"};             //!< The size of the widget changed. Optional parameter: new size
-        Signal           onFocus            = {"Focused"};                 //!< The widget was focused
-        Signal           onUnfocus          = {"Unfocused"};               //!< The widget was unfocused
-        Signal           onMouseEnter       = {"MouseEntered"};            //!< The mouse entered the widget
-        Signal           onMouseLeave       = {"MouseLeft"};               //!< The mouse left the widget
-        TGUI_DEPRECATED("onAnimationFinish was renamed to onShowEffectFinish") SignalShowEffect onAnimationFinish  = {"AnimationFinished"};
-        SignalShowEffect onShowEffectFinish = {"ShowEffectFinished"};      //!< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
+        SignalVector2f      onPositionChange   = {"PositionChanged"};         //!< The position of the widget changed. Optional parameter: new position
+        SignalVector2f      onSizeChange       = {"SizeChanged"};             //!< The size of the widget changed. Optional parameter: new size
+        Signal              onFocus            = {"Focused"};                 //!< The widget was focused
+        Signal              onUnfocus          = {"Unfocused"};               //!< The widget was unfocused
+        Signal              onMouseEnter       = {"MouseEntered"};            //!< The mouse entered the widget
+        Signal              onMouseLeave       = {"MouseLeft"};               //!< The mouse left the widget
+        SignalShowEffect    onShowEffectFinish = {"ShowEffectFinished"};      //!< A show or hide effect finished. Optional parameters: effect type, new widget visibility or both
 
+        /// @brief An animation has finished
+        ///
+        /// Animations are started by calling showWithEffect, hideWithEffect, moveWithAnimation and resizeWithAnimation.
+        /// The showWithEffect and hideWithEffect functions also trigger the onShowEffectFinish signal when the effect ends.
+        ///
+        /// Optional parameter: animation type
+        SignalAnimationType onAnimationFinish  = {"AnimationFinished"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
