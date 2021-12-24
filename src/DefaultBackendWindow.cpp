@@ -212,6 +212,12 @@ namespace tgui
         void close() override
         {
             m_windowOpen = false;
+
+            // We send a quit event in case we are using the main loop of the gui.
+            // We can't put a boolean in the mainLoop function of this class because it could be called directly on the gui object
+            SDL_Event event;
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
         }
 
         bool pollEvent(Event& event) override
