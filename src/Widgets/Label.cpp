@@ -720,8 +720,6 @@ namespace tgui
             }
             else // Center or Right alignment
             {
-                const float totalWidth = getSize().x - outline.getLeft() - outline.getRight() - 2*textOffset;
-
                 for (auto& line : m_lines)
                 {
                     std::size_t lastChar = line.getString().length();
@@ -731,9 +729,9 @@ namespace tgui
                     const float textWidth = line.findCharacterPos(lastChar).x;
 
                     if (m_horizontalAlignment == HorizontalAlignment::Center)
-                        line.setPosition({pos.x + ((totalWidth - textWidth) / 2.f), pos.y});
+                        line.setPosition({pos.x + ((maxWidth - textWidth) / 2.f), pos.y});
                     else // if (m_horizontalAlignment == HorizontalAlignment::Right)
-                        line.setPosition({pos.x + totalWidth - textWidth, pos.y});
+                        line.setPosition({pos.x + maxWidth - textWidth, pos.y});
 
                     pos.y += m_fontCached.getLineSpacing(m_textSize);
                 }
