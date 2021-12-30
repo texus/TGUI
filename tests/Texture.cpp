@@ -62,6 +62,8 @@ TEST_CASE("[Texture]")
             SECTION("constructor")
             {
                 REQUIRE_NOTHROW(tgui::Texture("resources/image.png"));
+                REQUIRE_NOTHROW(tgui::Texture("resources/image.bmp"));
+                REQUIRE_NOTHROW(tgui::Texture("resources/image.jpg"));
 
                 tgui::Texture texture{"resources/image.png"};
                 REQUIRE(texture.getId() == "resources/image.png");
@@ -76,7 +78,7 @@ TEST_CASE("[Texture]")
             SECTION("load")
             {
                 tgui::Texture texture;
-                texture.load("resources/image.png", {10, 5, 40, 30}, {6, 5, 28, 20});
+                REQUIRE_NOTHROW(texture.load("resources/image.png", {10, 5, 40, 30}, {6, 5, 28, 20}));
                 REQUIRE(texture.getId() == "resources/image.png");
                 REQUIRE(texture.getData() != nullptr);
                 REQUIRE(texture.getData()->backendTexture != nullptr);

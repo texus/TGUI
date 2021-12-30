@@ -28,7 +28,8 @@
 
 static void compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
 {
-    REQUIRE(left.x == Approx(right.x) && left.y == Approx(right.y));
+    REQUIRE(left.x == Approx(right.x).margin(0.000001f));
+    REQUIRE(left.y == Approx(right.y).margin(0.000001f));
 }
 
 TEST_CASE("[Animation]")
