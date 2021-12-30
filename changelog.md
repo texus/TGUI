@@ -7,6 +7,7 @@ TGUI 0.9.3  (TBD)
 - Adding widget to container no longer overwrites name if no name is given
 - Renamed onAnimationFinish to onShowEffectFinish
 - Renamed ShowAnimationType to ShowEffectType
+- Loading BMP files didn't work
 
 
 TGUI 0.9.2  (1 November 2021)
