@@ -445,6 +445,7 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_spriteBackground.setOpacity(m_opacityCached);
+            m_scrollbar->setInheritedOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
                 line.setOpacity(m_opacityCached);
