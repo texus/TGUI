@@ -8,6 +8,7 @@ TGUI 0.9.3  (TBD)
 - Renamed onAnimationFinish to onShowEffectFinish
 - Renamed ShowAnimationType to ShowEffectType
 - Loading BMP files didn't work
+- Scrollbar in Label didn't inherit opacity
 
 
 TGUI 0.9.2  (1 November 2021)
