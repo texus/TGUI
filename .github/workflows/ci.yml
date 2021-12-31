@@ -381,7 +381,7 @@ jobs:
 
   #----------------------------------------
 
-  windows-sfml-sdl:
+  windows-sfml-sdl:  # Setup technically not allowed, SFML_GRAPHICS and SDL_RENDERER have conflicting FreeType dependencies
     runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.1
@@ -432,7 +432,7 @@ jobs:
 
   #----------------------------------------
 
-  windows-sdl-oldest:
+  windows-sdl-oldest:  # Setup technically not allowed, SDL_OPENGL3 and SDL_TTF_OPENGL3 have conflicting FreeType dependencies
     runs-on: windows-2019
     env:
       SDL_VERSION: 2.0.6

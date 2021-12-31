@@ -554,13 +554,28 @@ namespace tgui
         }
 
         // Normalize the texture coordinates
-        if (m_texture.getData()->backendTexture)
+        if (m_texture.getData()->svgImage)
+        {
+            const Vector2f svgTextureSize{std::round(getSize().x), std::round(getSize().y)};
+            if ((svgTextureSize.x != 0) && (svgTextureSize.y != 0))
+            {
+                for (auto& vertex : m_vertices)
+                {
+                    vertex.texCoords.x /= svgTextureSize.x;
+                    vertex.texCoords.y /= svgTextureSize.y;
+                }
+            }
+        }
+        else if (m_texture.getData()->backendTexture)
         {
             const Vector2f backendTextureSize{m_texture.getData()->backendTexture->getSize()};
-            for (auto& vertex : m_vertices)
+            if ((backendTextureSize.x != 0) && (backendTextureSize.y != 0))
             {
-                vertex.texCoords.x /= backendTextureSize.x;
-                vertex.texCoords.y /= backendTextureSize.y;
+                for (auto& vertex : m_vertices)
+                {
+                    vertex.texCoords.x /= backendTextureSize.x;
+                    vertex.texCoords.y /= backendTextureSize.y;
+                }
             }
         }
     }

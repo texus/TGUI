@@ -369,7 +369,7 @@ namespace tgui
     void BackendRenderTarget::drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3)
     {
         std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};
-        drawVertexArray(states, vertices.begin(), vertices.size(), nullptr, 0, nullptr);
+        drawVertexArray(states, vertices.data(), vertices.size(), nullptr, 0, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
