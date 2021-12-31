@@ -960,19 +960,19 @@ namespace tgui
 
             if (m_verticalScroll)
             {
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{m_arrowUp.width / 5, m_arrowUp.height * 4/5}, arrowVertexColor},
                     {{m_arrowUp.width / 2, m_arrowUp.height / 5}, arrowVertexColor},
                     {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
-                });
+                );
             }
             else // Spin button lies horizontal
             {
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{m_arrowUp.width * 4/5, m_arrowUp.height / 5}, arrowVertexColor},
                     {{m_arrowUp.width / 5, m_arrowUp.height / 2}, arrowVertexColor},
                     {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
-                });
+                );
             }
         }
 
@@ -1036,19 +1036,19 @@ namespace tgui
 
             if (m_verticalScroll)
             {
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
                     {{m_arrowDown.width / 2, m_arrowDown.height * 4/5}, arrowVertexColor},
                     {{m_arrowDown.width * 4/5, m_arrowDown.height / 5}, arrowVertexColor}
-                });
+                );
             }
             else // Spin button lies horizontal
             {
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
                     {{m_arrowDown.width * 4/5, m_arrowDown.height / 2}, arrowVertexColor},
                     {{m_arrowDown.width / 5, m_arrowDown.height * 4/5}, arrowVertexColor}
-                });
+                );
             }
         }
     }

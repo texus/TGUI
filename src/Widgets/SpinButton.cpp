@@ -455,21 +455,21 @@ namespace tgui
             {
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor},
                     {{arrowSize.x / 2, arrowSize.y / 5}, arrowVertexColor},
                     {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
-                });
+                );
             }
             else // Spin button lies horizontal
             {
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor},
                     {{arrowSize.x / 5, arrowSize.y / 2}, arrowVertexColor},
                     {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
-                });
+                );
             }
         }
 
@@ -521,21 +521,21 @@ namespace tgui
             {
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
                     {{arrowSize.x / 2, arrowSize.y * 4/5}, arrowVertexColor},
                     {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor}
-                });
+                );
             }
             else // Spin button lies horizontal
             {
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
                     {{arrowSize.x * 4/5, arrowSize.y / 2}, arrowVertexColor},
                     {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor}
-                });
+                );
             }
         }
     }

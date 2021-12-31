@@ -289,22 +289,21 @@ namespace tgui
                 const Vector2f rightPoint = {0.86f * size.x, 0.28f * size.y};
                 const float x = (lineThickness / 2.f) * std::cos(pi / 4.f);
                 const float y = (lineThickness / 2.f) * std::sin(pi / 4.f);
-                target.drawTriangles(states,
-                    {
-                        {{leftPoint.x - x, leftPoint.y + y}, checkColor},
-                        {{leftPoint.x + x, leftPoint.y - y}, checkColor},
-                        {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
-                        {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
-                        {{rightPoint.x + x, rightPoint.y + y}, checkColor},
-                        {{rightPoint.x - x, rightPoint.y - y}, checkColor}
-                    },
-                    {
-                        0, 1, 2,
-                        1, 2, 3,
-                        2, 3, 4,
-                        3, 4, 5
-                    }
-                );
+                const std::array<Vertex, 6> vertices = {{
+                    {{leftPoint.x - x, leftPoint.y + y}, checkColor},
+                    {{leftPoint.x + x, leftPoint.y - y}, checkColor},
+                    {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
+                    {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
+                    {{rightPoint.x + x, rightPoint.y + y}, checkColor},
+                    {{rightPoint.x - x, rightPoint.y - y}, checkColor}
+                }};
+                const std::array<int, 3*4> indices = {{
+                    0, 1, 2,
+                    1, 2, 3,
+                    2, 3, 4,
+                    3, 4, 5
+                }};
+                target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
             }
         }
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});

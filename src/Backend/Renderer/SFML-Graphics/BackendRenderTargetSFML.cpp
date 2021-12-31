@@ -114,11 +114,21 @@ namespace tgui
         sfStates.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
         sfStates.shader = sprite.getTexture().getShader();
 
+        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
         const std::vector<Vertex>& vertices = sprite.getVertices();
         const std::vector<int>& indices = sprite.getIndices();
         std::vector<Vertex> triangleVertices(indices.size());
         for (unsigned int i = 0; i < indices.size(); ++i)
-            triangleVertices[i] = vertices[indices[i]];
+        {
+            triangleVertices[i].position.x = vertices[indices[i]].position.x;
+            triangleVertices[i].position.y = vertices[indices[i]].position.y;
+            triangleVertices[i].color.red = vertices[indices[i]].color.red;
+            triangleVertices[i].color.green = vertices[indices[i]].color.green;
+            triangleVertices[i].color.blue = vertices[indices[i]].color.blue;
+            triangleVertices[i].color.alpha = vertices[indices[i]].color.alpha;
+            triangleVertices[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
+            triangleVertices[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+        }
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
@@ -130,23 +140,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSFML::drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetSFML::drawVertexArray(const RenderStates& states, const Vertex* vertices,
+        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
+        // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
+        // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+
+        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
 
         if (indices)
         {
-            std::vector<Vertex> triangleVertices(indexCount);
-            for (unsigned int i = 0; i < indexCount; ++i)
-                triangleVertices[i] = vertices[indices[i]];
+            auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indexCount);
+            for (std::size_t i = 0; i < indexCount; ++i)
+            {
+                verticesSFML[i].position.x = vertices[indices[i]].position.x;
+                verticesSFML[i].position.y = vertices[indices[i]].position.y;
+                verticesSFML[i].color.red = vertices[indices[i]].color.red;
+                verticesSFML[i].color.green = vertices[indices[i]].color.green;
+                verticesSFML[i].color.blue = vertices[indices[i]].color.blue;
+                verticesSFML[i].color.alpha = vertices[indices[i]].color.alpha;
+                verticesSFML[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
+                verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+            }
 
-            const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
-            m_target->draw(sfmlVertices, indexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
         }
         else // There are no indices
         {
-            const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(vertices);
-            m_target->draw(sfmlVertices, vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(vertexCount);
+            for (std::size_t i = 0; i < vertexCount; ++i)
+            {
+                verticesSFML[i].position.x = vertices[i].position.x;
+                verticesSFML[i].position.y = vertices[i].position.y;
+                verticesSFML[i].color.red = vertices[i].color.red;
+                verticesSFML[i].color.green = vertices[i].color.green;
+                verticesSFML[i].color.blue = vertices[i].color.blue;
+                verticesSFML[i].color.alpha = vertices[i].color.alpha;
+                verticesSFML[i].texCoords.x = vertices[i].texCoords.x * textureSize.x;
+                verticesSFML[i].texCoords.y = vertices[i].texCoords.y * textureSize.y;
+            }
+
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
         }
     }
 

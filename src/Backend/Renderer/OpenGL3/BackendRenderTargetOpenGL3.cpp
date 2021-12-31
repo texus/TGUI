@@ -34,8 +34,6 @@
 
 namespace tgui
 {
-    static const GLsizei NrVertexElements = 8; // position (2) + color (4) + texture coordinate (2)
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     static GLuint createShaderProgram()
@@ -223,6 +221,8 @@ namespace tgui
         TGUI_GL_CHECK(glScissor(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glUseProgram(m_shaderProgram));
         TGUI_GL_CHECK(glBindVertexArray(m_vertexArray));
+        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer));
+        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer));
 
         // Don't make any assumptions about the currently set texture
         m_currentTexture = nullptr;
@@ -236,6 +236,8 @@ namespace tgui
         // Restore the old state
         TGUI_GL_CHECK(glBindVertexArray(0));
         TGUI_GL_CHECK(glUseProgram(0));
+        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
         TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
 
         if (oldScissorEnabled)
@@ -254,12 +256,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetOpenGL3::drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                                                     const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetOpenGL3::drawVertexArray(const RenderStates& states, const Vertex* vertices,
+        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
-        if (!indices)
-            indexCount = vertexCount;
-
         // Change the bound texture if it changed
         if (m_currentTexture != texture)
         {
@@ -277,55 +276,10 @@ namespace tgui
             }
         }
 
-        /// TODO: We would be able to use the "verices" member directly (or bulk-memcpy when batching) if we didn't have to rescale here.
-        ///       Color should be passed as GL_UNSIGNED_BYTE instead of GL_FLOAT (which also reduces vertex data size).
-        ///       Texture coordinates would need to be stored as normalized (but this prevents memcpy in SFML backend). SFML seems to use legacy texture matrix to auto-convert coords.
-        // Construct the array of vertices
-        std::vector<GLfloat> vertexData;
-        vertexData.reserve(NrVertexElements * vertexCount);
-        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
-        for (std::size_t i = 0; i < vertexCount; ++i)
-        {
-            const auto& vertex = vertices[i];
-            vertexData.push_back(vertex.position.x);
-            vertexData.push_back(vertex.position.y);
-            vertexData.push_back(vertex.color.red / 255.f);
-            vertexData.push_back(vertex.color.green / 255.f);
-            vertexData.push_back(vertex.color.blue / 255.f);
-            vertexData.push_back(vertex.color.alpha / 255.f);
-            vertexData.push_back(vertex.texCoords.x / textureSize.x);
-            vertexData.push_back(vertex.texCoords.y / textureSize.y);
-        }
-
-        // Create the array of indices
-        auto indexData = MakeUniqueForOverwrite<GLuint[]>(indexCount);
-        if (indices)
-        {
-            for (std::size_t i = 0; i < indexCount; ++i)
-                indexData[i] = static_cast<GLuint>(indices[i]);
-        }
-        else // Generate index buffer with sequential values 0, 1, 2, 3, ...
-            std::iota(&indexData[0], &indexData[0] + indexCount, 0);
-
-        // Load the data into the vertex buffer
-        TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer));
-        if (vertexData.size() > m_vertexBufferSize)
-        {
-            TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(GLfloat), vertexData.data(), GL_STREAM_DRAW));
-            m_vertexBufferSize = vertexData.size();
-        }
-        else
-            TGUI_GL_CHECK(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexData.size() * sizeof(GLfloat), vertexData.data()));
-
-        // Load the data into the index buffer
-        TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer));
-        if (indexCount > m_indexBufferSize)
-        {
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), indexData.get(), GL_STREAM_DRAW));
-            m_indexBufferSize = indexCount;
-        }
-        else
-            TGUI_GL_CHECK(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexCount * sizeof(GLuint), indexData.get()));
+        // Load the data into the vertex buffer. After some experimenting, orphaning the buffer and allocating a new one each time
+        // was (suprisingly) faster than creating a larger buffer and only writing to non-overlapping ranges within a frame.
+        // Batch rendering (and re-arranging draw calls to be better batchable) would be much faster though.
+        TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_DYNAMIC_DRAW));
 
         Transform finalTransform = states.transform;
         finalTransform.roundPosition(); // Avoid blurry texts
@@ -333,7 +287,15 @@ namespace tgui
 
         glUniformMatrix4fv(m_projectionMatrixShaderUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
 
-        TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, NULL));
+        if (indices)
+        {
+            // Load the data into the index buffer
+            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), indices, GL_STREAM_DRAW));
+
+            TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0));
+        }
+        else // No indices were given, all vertices need to be drawn in the order they were provided
+            TGUI_GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertexCount)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,11 +333,12 @@ namespace tgui
         TGUI_GL_CHECK(glEnableVertexAttribArray(2)); // TexCoord
 
         // Position is stored as x,y in the first 2 floats
-        // Color is stored as r,g,b,a in the next 4 floats
+        // Color is stored as r,g,b,a in the next 4 bytes
         // Texture coordinate is stored as u,v in the last 2 floats
-        TGUI_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(0)));
-        TGUI_GL_CHECK(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(2 * sizeof(GLfloat))));
-        TGUI_GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, NrVertexElements * sizeof(GLfloat), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat))));
+        static_assert(sizeof(Vertex) == 8 + 4 + 8);
+        TGUI_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0)));
+        TGUI_GL_CHECK(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8)));
+        TGUI_GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8 + 4)));
 
         TGUI_GL_CHECK(glBindVertexArray(0));
 

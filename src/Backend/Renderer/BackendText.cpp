@@ -407,6 +407,27 @@ namespace tgui
         const float height = (nrLines * lineSpacing) + (lineHeight - lineSpacing);
 
         m_size = {maxX, height};
+
+        // Normalize the texture coordinates
+        const auto texture = m_font->getTexture(m_characterSize);
+        if (texture)
+        {
+            const Vector2f textureSize{texture->getSize()};
+
+            for (auto& vertex : *m_vertices)
+            {
+                vertex.texCoords.x /= textureSize.x;
+                vertex.texCoords.y /= textureSize.y;
+            }
+            if (m_outlineVertices)
+            {
+                for (auto& vertex : *m_outlineVertices)
+                {
+                    vertex.texCoords.x /= textureSize.x;
+                    vertex.texCoords.y /= textureSize.y;
+                }
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

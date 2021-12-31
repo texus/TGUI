@@ -115,8 +115,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSDL::drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                                                 const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetSDL::drawVertexArray(const RenderStates& states, const Vertex* vertices,
+        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
         SDL_Texture* textureSDL = nullptr;
         if (texture)
@@ -124,8 +124,6 @@ namespace tgui
             TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSDL>(texture), "BackendRenderTargetSDL requires textures of type BackendTextureSDL");
             textureSDL = std::static_pointer_cast<BackendTextureSDL>(texture)->getInternalTexture();
         }
-
-        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
 
         Transform finalTransform = states.transform;
         finalTransform.roundPosition(); // Avoid blurry texts
@@ -141,8 +139,8 @@ namespace tgui
             verticesSDL[i].color.g = vertices[i].color.green;
             verticesSDL[i].color.b = vertices[i].color.blue;
             verticesSDL[i].color.a = vertices[i].color.alpha;
-            verticesSDL[i].tex_coord.x = vertices[i].texCoords.x / textureSize.x;
-            verticesSDL[i].tex_coord.y = vertices[i].texCoords.y / textureSize.y;
+            verticesSDL[i].tex_coord.x = vertices[i].texCoords.x;
+            verticesSDL[i].tex_coord.y = vertices[i].texCoords.y;
         }
 
         SDL_RenderGeometry(m_renderer, textureSDL, verticesSDL.data(), static_cast<int>(vertexCount), indices, static_cast<int>(indexCount));

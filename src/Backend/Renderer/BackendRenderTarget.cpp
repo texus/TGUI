@@ -105,7 +105,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static void drawBordersAroundShape(BackendRenderTarget* renderTarget, const RenderStates& states, const std::vector<Vector2f>& outerPoints, const std::vector<Vector2f>& innerPoints, const Color& color)
+    static void drawBordersAroundShape(BackendRenderTarget* renderTarget, const RenderStates& states,
+                                       const std::vector<Vector2f>& outerPoints, const std::vector<Vector2f>& innerPoints, const Color& color)
     {
         TGUI_ASSERT(outerPoints.size() == innerPoints.size(), "Inner and outer ring of cicle border should have the same amount of points");
 
@@ -365,15 +366,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTarget::drawTriangles(const RenderStates& states, std::initializer_list<Vertex> vertices, std::initializer_list<int> indices)
+    void BackendRenderTarget::drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3)
     {
-        if (indices.size() == 0)
-            drawVertexArray(states, vertices.begin(), vertices.size(), nullptr, 0, nullptr);
-        else
-        {
-            TGUI_ASSERT(indices.size() % 3 == 0, "BackendRenderTarget::drawTriangles requires that the number of indices is divisible by 3");
-            drawVertexArray(states, vertices.begin(), vertices.size(), indices.begin(), indices.size(), nullptr);
-        }
+        std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};
+        drawVertexArray(states, vertices.begin(), vertices.size(), nullptr, 0, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

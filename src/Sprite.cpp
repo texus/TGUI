@@ -552,6 +552,17 @@ namespace tgui
                 vertex.texCoords.y += static_cast<float>(m_texture.getPartRect().top);
             }
         }
+
+        // Normalize the texture coordinates
+        if (m_texture.getData()->backendTexture)
+        {
+            const Vector2f backendTextureSize{m_texture.getData()->backendTexture->getSize()};
+            for (auto& vertex : m_vertices)
+            {
+                vertex.texCoords.x /= backendTextureSize.x;
+                vertex.texCoords.y /= backendTextureSize.y;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1032,11 +1032,11 @@ namespace tgui
             else
                 arrowVertexColor = Vertex::Color(m_arrowColorCached);
 
-            target.drawTriangles(states, {
+            target.drawTriangle(states,
                 {{arrowSize / 5, arrowSize / 4}, arrowVertexColor},
                 {{arrowSize / 2, arrowSize * 3/4}, arrowVertexColor},
                 {{arrowSize * 4/5, arrowSize / 4}, arrowVertexColor}
-            });
+            );
         }
 
         // Draw the selected item

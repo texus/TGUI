@@ -155,15 +155,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draws one or more triangles (using the color that is specified in the vertices)
+        /// @brief Draws a single triangles (using the color that is specified in the vertices)
         ///
-        /// @param states        Render states to use for drawing
-        /// @param vertices      Array of vertices
-        /// @param indices       Optional array of indices
+        /// @param states  Render states to use for drawing
+        /// @param point1  First point of the triangle
+        /// @param point2  Second point of the triangle
+        /// @param point3  Third point of the triangle
         ///
-        /// This function is provided for convenience and just calls the drawVertexArray function.
+        /// To draw multiple triangles at once, optionally with a texture, use the drawVertexArray function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawTriangles(const RenderStates& states, std::initializer_list<Vertex> vertices, std::initializer_list<int> indices = {});
+        virtual void drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

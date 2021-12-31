@@ -1460,11 +1460,11 @@ namespace tgui
                 else
                     arrowVertexColor = Vertex::Color(Color::applyOpacity(m_textColorCached, m_opacityCached));
 
-                target.drawTriangles(states, {
+                target.drawTriangle(states,
                     {{0, 0}, arrowVertexColor},
                     {{arrowWidth, arrowHeight / 2.f}, arrowVertexColor},
                     {{0, arrowHeight}, arrowVertexColor}
-                });
+                );
 
                 states.transform = textTransform;
             }
