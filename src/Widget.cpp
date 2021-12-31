@@ -851,8 +851,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::moveWithAnimation(Vector2f position, Duration duration)
+    void Widget::moveWithAnimation(Layout2d position, Duration duration)
     {
+        position.x.connectWidget(this, true, nullptr);
+        position.y.connectWidget(this, false, nullptr);
+
         m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), position, duration,
             [this]{ onAnimationFinish.emit(this, AnimationType::Move); }
         ));
@@ -860,8 +863,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::resizeWithAnimation(Vector2f size, Duration duration)
+    void Widget::resizeWithAnimation(Layout2d size, Duration duration)
     {
+        size.x.connectWidget(this, true, nullptr);
+        size.y.connectWidget(this, false, nullptr);
+
         m_showAnimations.push_back(std::make_shared<priv::ResizeAnimation>(shared_from_this(), getSize(), size, duration,
             [this]{ onAnimationFinish.emit(this, AnimationType::Resize); }
         ));
