@@ -59,7 +59,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback) :
+        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
             Animation {AnimationType::Move, widget, duration, finishedCallback},
             m_startPos{start},
             m_endPos  {end}
@@ -77,7 +77,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setPosition(m_startPos + ((m_elapsedTime / m_totalDuration) * (m_endPos - m_startPos)));
+            m_widget->setPosition(m_startPos + ((m_elapsedTime / m_totalDuration) * (m_endPos.getValue() - m_startPos)));
             return false;
         }
 
@@ -91,7 +91,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, Duration duration, std::function<void()> finishedCallback) :
+        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
             Animation  {AnimationType::Resize, widget, duration, finishedCallback},
             m_startSize{start},
             m_endSize  {end}
@@ -109,7 +109,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setSize(m_startSize + ((m_elapsedTime / m_totalDuration) * (m_endSize - m_startSize)));
+            m_widget->setSize(m_startSize + ((m_elapsedTime / m_totalDuration) * (m_endSize.getValue() - m_startSize)));
             return false;
         }
 
