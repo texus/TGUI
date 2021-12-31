@@ -9,6 +9,7 @@ TGUI 0.9.3  (TBD)
 - Renamed ShowAnimationType to ShowEffectType
 - Loading BMP files didn't work
 - Scrollbar in Label didn't inherit opacity
+- showWithEffect/hideWithEffect didn't work properly is position was percentage
 
 
 TGUI 0.9.2  (1 November 2021)
