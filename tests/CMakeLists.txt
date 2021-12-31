@@ -145,7 +145,7 @@ target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
 # Enable unity build by default
 if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
-    set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
+    set_target_properties(tests PROPERTIES UNITY_BUILD ON)
 endif()
 
 tgui_set_global_compile_flags(tests)
