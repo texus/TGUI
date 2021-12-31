@@ -377,7 +377,7 @@ namespace tgui
         // Position is stored as x,y in the first 2 floats
         // Color is stored as r,g,b,a in the next 4 bytes
         // Texture coordinate is stored as u,v in the last 2 floats
-        static_assert(sizeof(Vertex) == 8 + 4 + 8);
+        static_assert(sizeof(Vertex) == 8 + 4 + 8, "Size of tgui::Vertex has to match the data");
         TGUI_GL_CHECK(glVertexAttribPointer(m_positionShaderLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0)));
         TGUI_GL_CHECK(glVertexAttribPointer(m_colorShaderLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8)));
         TGUI_GL_CHECK(glVertexAttribPointer(m_texCoordShaderLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8 + 4)));
