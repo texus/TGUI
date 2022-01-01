@@ -195,6 +195,7 @@ namespace tgui
     protected:
 
         std::shared_ptr<BackendFont> m_font;
+        BackendTexture* m_lastFontTexture = nullptr;
 
         String m_string;
         unsigned int m_characterSize = getGlobalTextSize();

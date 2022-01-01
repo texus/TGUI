@@ -238,12 +238,19 @@ namespace tgui
         if (!m_font)
             return data;
 
-        if (m_verticesNeedUpdate)
-            updateVertices();
-
         auto texture = m_font->getTexture(m_characterSize);
         if (!texture)
             return data;
+
+        // If the font texture changes then we need to update the texture coordinates
+        if (texture.get() != m_lastFontTexture)
+        {
+            m_lastFontTexture = texture.get();
+            m_verticesNeedUpdate = true;
+        }
+
+        if (m_verticesNeedUpdate)
+            updateVertices();
 
         if (m_outlineVertices && !m_outlineVertices->empty())
             data.emplace_back(texture, m_outlineVertices);
