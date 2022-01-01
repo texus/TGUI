@@ -250,7 +250,13 @@ namespace tgui
         }
 
         if (m_verticesNeedUpdate)
+        {
             updateVertices();
+
+            // It is possible that the texture changes during the update
+            texture = m_font->getTexture(m_characterSize);
+            m_lastFontTexture = texture.get();
+        }
 
         if (m_outlineVertices && !m_outlineVertices->empty())
             data.emplace_back(texture, m_outlineVertices);
