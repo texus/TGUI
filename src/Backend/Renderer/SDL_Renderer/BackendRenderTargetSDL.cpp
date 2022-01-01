@@ -137,16 +137,12 @@ namespace tgui
             verticesSDL[i].position.y = transformedPosition.y;
         }
 
-        static_assert(sizeof(Vertex) == 8 + 4 + 8, "Size of tgui::Vertex has to match the data");
-        const float* xy = reinterpret_cast<const float*>(verticesSDL.data());
-        const int* color = reinterpret_cast<const int*>(reinterpret_cast<const std::uint8_t*>(verticesSDL.data()) + 8);
-        const float* uv = reinterpret_cast<const float*>(reinterpret_cast<const std::uint8_t*>(verticesSDL.data()) + 8 + 4);
-        SDL_RenderGeometryRaw(m_renderer, textureSDL,
-                              xy, sizeof(Vertex),
-                              color, sizeof(Vertex),
-                              uv, sizeof(Vertex),
-                              static_cast<int>(vertexCount),
-                              indices, static_cast<int>(indexCount), 4);
+        // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
+        // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
+        static_assert(sizeof(Vertex) == sizeof(SDL_Vertex), "SDL_Vertex requires same memory layout as tgui::Vertex for cast to work");
+        SDL_RenderGeometry(m_renderer, textureSDL,
+                           reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()), static_cast<int>(vertexCount),
+                           indices, static_cast<int>(indexCount));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
