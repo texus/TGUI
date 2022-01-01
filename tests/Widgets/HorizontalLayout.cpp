@@ -142,6 +142,7 @@ TEST_CASE("[HorizontalLayout]")
 
     SECTION("Saving and loading from file")
     {
+        std::shared_ptr<tgui::RendererData> oldButtonRenderer = tgui::Theme::getDefault()->getRendererNoThrow("Button");
         tgui::Theme::getDefault()->addRenderer("Button", std::make_shared<tgui::RendererData>());
 
         layout->add(tgui::Button::create("Hello"));
@@ -149,5 +150,8 @@ TEST_CASE("[HorizontalLayout]")
         layout->add(tgui::Button::create("Hi"), 3, "Button2");
 
         testSavingWidget("HorizontalLayout", layout, false);
+
+        // Restore the default theme which is also accessed by other tests
+        tgui::Theme::getDefault()->addRenderer("Button", oldButtonRenderer);
     }
 }

@@ -58,7 +58,8 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
         }
     }
 
-    double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
+    const double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
+    INFO("Filename: " + filename1.toStdString());
     REQUIRE(diffPercentage < 1.75);
 }
 

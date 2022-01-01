@@ -115,6 +115,9 @@ TEST_CASE("[Theme]")
                 // Changing the renderer of one label affects the look of the other one
                 label1->getSharedRenderer()->setTextColor("yellow");
                 REQUIRE(label2->getSharedRenderer()->getTextColor() == tgui::Color::Yellow);
+
+                // We messed with the default theme, so reset it to not affect other tests
+                tgui::Theme::setDefault(nullptr);
             }
 
             SECTION("Using getRenderer")
