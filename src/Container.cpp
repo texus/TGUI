@@ -1062,6 +1062,8 @@ namespace tgui
             }
         }
 
+        const auto oldWidgetBelowMouse = m_widgetBelowMouse.get();
+
         // Check if the mouse is on top of a widget
         Widget::Ptr widget = mouseOnWhichWidget(mousePos);
         if (widget != nullptr)
@@ -1070,6 +1072,12 @@ namespace tgui
             widget->mouseMoved(transformMousePos(widget, mousePos));
             return true;
         }
+
+        // If there used to be a widget below the mouse but the mouse is no longer on any widget then we will still mark this
+        // event as handled by TGUI. In backends that only redraw when handleEvent returns true, this is required to update the
+        // widget now that it is no longer in hover state.
+        if (!m_widgetBelowMouse && oldWidgetBelowMouse)
+            return true;
 
         return false;
     }
