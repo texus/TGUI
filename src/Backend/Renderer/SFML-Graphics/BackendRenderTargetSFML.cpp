@@ -168,20 +168,14 @@ namespace tgui
         }
         else // There are no indices
         {
-            auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(vertexCount);
+            auto verticesSFML = std::vector<Vertex>(vertices, vertices + vertexCount);
             for (std::size_t i = 0; i < vertexCount; ++i)
             {
-                verticesSFML[i].position.x = vertices[i].position.x;
-                verticesSFML[i].position.y = vertices[i].position.y;
-                verticesSFML[i].color.red = vertices[i].color.red;
-                verticesSFML[i].color.green = vertices[i].color.green;
-                verticesSFML[i].color.blue = vertices[i].color.blue;
-                verticesSFML[i].color.alpha = vertices[i].color.alpha;
-                verticesSFML[i].texCoords.x = vertices[i].texCoords.x * textureSize.x;
-                verticesSFML[i].texCoords.y = vertices[i].texCoords.y * textureSize.y;
+                verticesSFML[i].texCoords.x *= textureSize.x;
+                verticesSFML[i].texCoords.y *= textureSize.y;
             }
 
-            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.data()), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
         }
     }
 

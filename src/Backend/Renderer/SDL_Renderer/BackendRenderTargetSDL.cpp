@@ -129,21 +129,24 @@ namespace tgui
         finalTransform.roundPosition(); // Avoid blurry texts
         finalTransform = m_projectionTransform * finalTransform;
 
-        std::vector<SDL_Vertex> verticesSDL(vertexCount);
+        std::vector<Vertex> verticesSDL(vertices, vertices + vertexCount);
         for (std::size_t i = 0; i < vertexCount; ++i)
         {
             const Vector2f transformedPosition = finalTransform.transformPoint(vertices[i].position);
             verticesSDL[i].position.x = transformedPosition.x;
             verticesSDL[i].position.y = transformedPosition.y;
-            verticesSDL[i].color.r = vertices[i].color.red;
-            verticesSDL[i].color.g = vertices[i].color.green;
-            verticesSDL[i].color.b = vertices[i].color.blue;
-            verticesSDL[i].color.a = vertices[i].color.alpha;
-            verticesSDL[i].tex_coord.x = vertices[i].texCoords.x;
-            verticesSDL[i].tex_coord.y = vertices[i].texCoords.y;
         }
 
-        SDL_RenderGeometry(m_renderer, textureSDL, verticesSDL.data(), static_cast<int>(vertexCount), indices, static_cast<int>(indexCount));
+        static_assert(sizeof(Vertex) == 8 + 4 + 8, "Size of tgui::Vertex has to match the data");
+        const float* xy = reinterpret_cast<const float*>(verticesSDL.data());
+        const int* color = reinterpret_cast<const int*>(reinterpret_cast<const std::uint8_t*>(verticesSDL.data()) + 8);
+        const float* uv = reinterpret_cast<const float*>(reinterpret_cast<const std::uint8_t*>(verticesSDL.data()) + 8 + 4);
+        SDL_RenderGeometryRaw(m_renderer, textureSDL,
+                              xy, sizeof(Vertex),
+                              color, sizeof(Vertex),
+                              uv, sizeof(Vertex),
+                              static_cast<int>(vertexCount),
+                              indices, static_cast<int>(indexCount), 4);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
