@@ -313,6 +313,16 @@ namespace tgui
                 if (widget != nullptr)
                     return widget;
             }
+            else
+            {
+                SubwidgetContainer* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(m_widgets[i].get());
+                if (subWidgetContainer)
+                {
+                    Widget::Ptr widget = subWidgetContainer->getContainer()->get(widgetName);
+                    if (widget != nullptr)
+                        return widget;
+                }
+            }
         }
 
         return nullptr;
