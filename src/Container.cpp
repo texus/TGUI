@@ -299,17 +299,31 @@ namespace tgui
 
     Widget::Ptr Container::get(const String& widgetName) const
     {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        // First search for direct children
+        for (const auto& child : m_widgets)
         {
-            if (m_widgets[i]->getWidgetName() == widgetName)
-                return m_widgets[i];
+            if (child->getWidgetName() == widgetName)
+                return child;
         }
 
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        // If no widget was found then search recursively
+        for (const auto& child : m_widgets)
         {
-            if (m_widgets[i]->isContainer())
+            if (child->isContainer())
             {
-                Widget::Ptr widget = std::static_pointer_cast<Container>(m_widgets[i])->get(widgetName);
+                Widget::Ptr widget = std::static_pointer_cast<Container>(child)->get(widgetName);
+                if (widget != nullptr)
+                    return widget;
+            }
+        }
+
+        // If we still couldn't find it then check if there are any SubwidgetContainer widgets and search their subwidgets
+        for (const auto& child : m_widgets)
+        {
+            auto subWidgetContainer = dynamic_cast<const SubwidgetContainer*>(child.get());
+            if (subWidgetContainer)
+            {
+                Widget::Ptr widget = subWidgetContainer->getContainer()->get(widgetName);
                 if (widget != nullptr)
                     return widget;
             }
