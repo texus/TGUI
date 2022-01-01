@@ -88,6 +88,39 @@ TEST_CASE("[Container]")
             REQUIRE(container->get<tgui::Label>("w4") == widget4); // indirect child
         }
 
+        SECTION("Recursive search")
+        {
+            container->removeAllWidgets();
+
+            auto child1 = tgui::Panel::create();
+            auto child2 = tgui::Panel::create();
+            auto child21 = tgui::Panel::create();
+            auto child211 = tgui::Button::create();
+            auto child22 = tgui::Panel::create();
+            auto child221 = tgui::TabContainer::create();
+            container->add(child1, "1");
+            container->add(child2, "2");
+            child2->add(child21, "21");
+            child21->add(child211, "211");
+            child2->add(child22, "22");
+            child22->add(child221, "221");
+
+            child221->addTab("Tab1");
+            child221->addTab("Tab2");
+            auto tab3 = child221->addTab("Tab3");
+            child221->addTab("Tab4");
+            auto child22131 = tgui::SpinButton::create();
+            tab3->add(child22131, "22131");
+
+            REQUIRE(container->get("1") == child1);
+            REQUIRE(container->get("2") == child2);
+            REQUIRE(container->get("21") == child21);
+            REQUIRE(container->get("211") == child211);
+            REQUIRE(container->get("22") == child22);
+            REQUIRE(container->get("221") == child221);
+            REQUIRE(container->get("22131") == child22131);
+        }
+
         SECTION("reusing name")
         {
             container->removeAllWidgets();
