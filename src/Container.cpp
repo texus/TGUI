@@ -409,6 +409,9 @@ namespace tgui
 
     void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
+        auto oldTheme = tgui::Theme::getDefault();
+        tgui::Theme::setDefault(nullptr);
+
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
         if (!getResourcePath().isEmpty())
@@ -432,6 +435,8 @@ namespace tgui
         }
 
         loadWidgetsFromNodeTree(rootNode, replaceExisting);
+
+        tgui::Theme::setDefault(oldTheme);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
