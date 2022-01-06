@@ -63,17 +63,17 @@ TEST_CASE("[CanvasSFML]")
         {
             canvas = tgui::CanvasSFML::create({200, 100});
 
-            REQUIRE(canvas->getView() == sf::View({0, 0, 200, 100}));
-            REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+            REQUIRE(canvas->getView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
+            REQUIRE(canvas->getDefaultView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
 
-            canvas->setView(sf::View({20, 10, 100, 50}));
-            REQUIRE(canvas->getView() == sf::View({20, 10, 100, 50}));
-            REQUIRE(canvas->getDefaultView() == sf::View({0, 0, 200, 100}));
+            canvas->setView(sf::View(sf::FloatRect{{20, 10}, {100, 50}}));
+            REQUIRE(canvas->getView() == sf::View(sf::FloatRect{{20, 10}, {100, 50}}));
+            REQUIRE(canvas->getDefaultView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
 
             REQUIRE(canvas->getViewport() == tgui::IntRect(0, 0, 200, 100));
 
-            sf::View view({20, 10, 100, 50});
-            view.setViewport({0.1f, 0.2f, 0.5f, 0.6f});
+            sf::View view(sf::FloatRect{{20, 10}, {100, 50}});
+            view.setViewport({{0.1f, 0.2f}, {0.5f, 0.6f}});
             canvas->setView(view);
             REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
         }
@@ -84,7 +84,7 @@ TEST_CASE("[CanvasSFML]")
             sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
 
             canvas->setSize({70, 80});
-            canvas->setView(sf::View({20, 10, 100, 50}));
+            canvas->setView(sf::View(sf::FloatRect{{20, 10}, {100, 50}}));
             canvas->setPosition({10, 5});
 
             // The address of the internal render texture never changes

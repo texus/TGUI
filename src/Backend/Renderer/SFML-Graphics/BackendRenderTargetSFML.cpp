@@ -185,16 +185,16 @@ namespace tgui
     {
         if ((clipViewport.width > 0) && (clipViewport.height > 0))
         {
-            sf::View newView{{std::round(clipRect.left), std::round(clipRect.top),
-                              std::round(clipRect.width), std::round(clipRect.height)}};
-            newView.setViewport({clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y,
-                                 clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y});
+            sf::View newView{{{std::round(clipRect.left), std::round(clipRect.top)},
+                              {std::round(clipRect.width), std::round(clipRect.height)}}};
+            newView.setViewport({{clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y},
+                                 {clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y}});
             m_target->setView(newView);
         }
         else // Clip the entire window
         {
-            sf::View clippingView{{0, 0, 0, 0}};
-            clippingView.setViewport({0, 0, 0, 0});
+            sf::View clippingView{{{0, 0}, {0, 0}}};
+            clippingView.setViewport({{0, 0}, {0, 0}});
             m_target->setView(clippingView);
         }
     }
