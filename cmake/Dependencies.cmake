@@ -50,9 +50,12 @@ macro(tgui_find_dependency_sfml component optional_quiet)
                 if (NOT SFML_FOUND)
                     set(SFML_DIR ${sfml_dir_original})
                     find_host_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+                else()
+                    # The failed find_package(SFML 3) call changed the CACHE entry, so reset it too.
+                    # Otherwise seaching sfml-main from the root cmake script fails later on.
+                    set(SFML_DIR ${SFML_DIR} CACHE PATH "Path to SFMLConfig.cmake" FORCE)
                 endif()
             endif()
-
         else()
             if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
                 # Search for SFML in the android NDK (if no other directory is specified).
@@ -71,6 +74,10 @@ macro(tgui_find_dependency_sfml component optional_quiet)
                 if (NOT SFML_FOUND)
                     set(SFML_DIR ${sfml_dir_original})
                     find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+                else()
+                    # The failed find_package(SFML 3) call changed the CACHE entry, so reset it too.
+                    # Otherwise seaching sfml-main from the root cmake script fails later on.
+                    set(SFML_DIR ${SFML_DIR} CACHE PATH "Path to SFMLConfig.cmake" FORCE)
                 endif()
             endif()
         endif()
