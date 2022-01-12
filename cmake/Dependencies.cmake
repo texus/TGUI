@@ -22,7 +22,8 @@
 
 # Find SFML, but don't add it as a dependency to TGUI (used for e.g. building the examples and Gui Builder)
 macro(tgui_find_dependency_sfml component optional_quiet)
-    if(NOT TARGET sfml-${component})
+    string(TOLOWER ${component} lowercase_component)
+    if(NOT TARGET SFML::${component} AND NOT TARGET sfml-${lowercase_component})
         # Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
         if(NOT DEFINED SFML_STATIC_LIBRARIES)
             tgui_assign_bool(SFML_STATIC_LIBRARIES NOT TGUI_SHARED_LIBS)
@@ -33,16 +34,38 @@ macro(tgui_find_dependency_sfml component optional_quiet)
             message(FATAL_ERROR "Linking statically to SFML isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SFML library by setting SFML_STATIC_LIBRARIES to FALSE.")
         endif()
 
-        if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
-            # Search for SFML in the android NDK (if no other directory is specified).
-            # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
-            # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
-            set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-            find_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
-        elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-            find_host_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
+        # Quietly try to find SFML 3 first. If found then we search it again but without the QUIET flag so that it can print
+        # information about the found version. If not found then fall back to SFML 2. If neither version is found then search
+        # for SFML 3 again so that the warnings shows information about the failure with both versions.
+        if(TGUI_OS_IOS)
+            # Use the find_host_package macro from the toolchain on iOS
+            find_host_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
+            if(SFML_FOUND)
+                find_host_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+            else()
+                find_host_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${lowercase_component})
+                if (NOT SFML_FOUND)
+                    find_host_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+                endif()
+            endif()
+
         else()
-            find_package(SFML CONFIG ${optional_quiet} COMPONENTS ${component})
+            if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
+                # Search for SFML in the android NDK (if no other directory is specified).
+                # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
+                # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
+                set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
+            endif()
+
+            find_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
+            if(SFML_FOUND)
+                find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+            else()
+                find_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${lowercase_component})
+                if (NOT SFML_FOUND)
+                    find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
+                endif()
+            endif()
         endif()
 
         # Don't let SFML_DOC_DIR pollute the cmake entries, unless the variable was set by the user
@@ -58,7 +81,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
                 "Set SFML_DIR to the directory containing SFMLConfig.cmake (usually something like SFML_ROOT/lib/cmake/SFML)\n")
         endif()
 
-        if (${SFML_VERSION} VERSION_LESS "2.5.0")
+        if (SFML_VERSION VERSION_LESS "2.5.0")
             message(FATAL_ERROR "SFML 2.5 or higher is required")
         endif()
     endif()
@@ -69,7 +92,12 @@ macro(tgui_add_dependency_sfml component)
     tgui_find_dependency_sfml(${component} "")
 
     # Link to SFML and set include and library search directories
-    target_link_libraries(tgui PUBLIC sfml-${component})
+    if (SFML_VERSION VERSION_GREATER_EQUAL 3)
+        target_link_libraries(tgui PUBLIC SFML::${component})
+    else()
+        string(TOLOWER ${component} lowercase_component)
+        target_link_libraries(tgui PUBLIC sfml-${lowercase_component})
+    endif()
 endmacro()
 
 

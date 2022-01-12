@@ -150,9 +150,9 @@ tgui_assign_bool(TGUI_HAS_FONT_BACKEND_FREETYPE
 
 # Find and add dependencies
 if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS OR TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS)
-    tgui_add_dependency_sfml(graphics)
+    tgui_add_dependency_sfml(Graphics)
 elseif(TGUI_HAS_WINDOW_BACKEND_SFML)
-    tgui_add_dependency_sfml(window)
+    tgui_add_dependency_sfml(Window)
 endif()
 if(TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_FONT_BACKEND_SDL_TTF)
     tgui_add_dependency_sdl()
