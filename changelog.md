@@ -1,5 +1,5 @@
-TGUI 0.9.3  (TBD)
------------------
+TGUI 0.9.3  (15 January 2022)
+-----------------------------
 
 - Added RoundedBorderRadius property to Panel renderer
 - Touch events didn't work in SDL backend
