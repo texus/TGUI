@@ -177,7 +177,7 @@ TextArea {
     Scrollbar = &Scrollbar;
 }
 
-Tooltip {
+ToolTip {
     TextColor       = rgb(255, 255, 255, 215);
     BackgroundColor = rgb(180, 180, 180, 215);
     BorderColor     = rgb(240, 240, 240, 215);
