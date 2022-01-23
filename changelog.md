@@ -1,3 +1,9 @@
+TGUI 0.9.4  (TBD)
+-----------------
+
+- Default theme no longer affects loading widgets from file
+
+
 TGUI 0.9.3  (15 January 2022)
 -----------------------------
 

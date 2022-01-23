@@ -161,7 +161,15 @@ TextArea {
     Scrollbar                   = &Scrollbar;
 }
 
+// "Tooltip" is deprecated for "ToolTip"
 Tooltip {
+    TextColor       = rgb(100, 100, 100);
+    BackgroundColor = rgb(210, 210, 210);
+    BorderColor     = rgb(255, 255, 255);
+    Borders         = (1, 1, 1, 1);
+    Padding         = (2, 2, 2, 2);
+}
+ToolTip {
     TextColor       = rgb(100, 100, 100);
     BackgroundColor = rgb(210, 210, 210);
     BorderColor     = rgb(255, 255, 255);
