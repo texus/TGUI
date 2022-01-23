@@ -144,7 +144,7 @@
             return it->second.getRenderer(); \
         else \
         { \
-            const auto& renderer = Theme::getDefault()->getRendererNoThrow(RENDERER); \
+            const auto& renderer = tgui::Theme::getDefault()->getRendererNoThrow(RENDERER); \
             m_data->propertyValuePairs[tgui::String(#NAME)] = {renderer ? renderer : DEFAULT}; \
             return renderer; \
         } \
