@@ -134,7 +134,10 @@ namespace tgui
 
         // Scroll down when auto-scrolling is enabled
         if (m_autoScroll && (m_scroll->getViewportSize() < m_scroll->getMaximum()))
+        {
             m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
+            triggerOnScroll();
+        }
 
         // Create the new item
         Text newItem;
@@ -197,9 +200,15 @@ namespace tgui
 
         // Move the scrollbar
         if (m_selectedItem * getItemHeight() < m_scroll->getValue())
+        {
             m_scroll->setValue(m_selectedItem * getItemHeight());
+            triggerOnScroll();
+        }
         else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
+        {
             m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getViewportSize());
+            triggerOnScroll();
+        }
 
         return true;
     }
@@ -261,6 +270,7 @@ namespace tgui
 
         m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         setPosition(m_position);
+        triggerOnScroll();
 
         return true;
     }
@@ -277,6 +287,7 @@ namespace tgui
         m_items.clear();
 
         m_scroll->setMaximum(0);
+        triggerOnScroll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,6 +452,7 @@ namespace tgui
         m_scroll->setScrollAmount(m_itemHeight);
         m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         setPosition(m_position);
+        triggerOnScroll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,6 +494,7 @@ namespace tgui
 
             m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             setPosition(m_position);
+            triggerOnScroll();
         }
     }
 
@@ -539,6 +552,7 @@ namespace tgui
     void ListBox::setScrollbarValue(unsigned int value)
     {
         m_scroll->setValue(value);
+        triggerOnScroll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -572,6 +586,7 @@ namespace tgui
         if (m_scroll->isMouseOnWidget(pos))
         {
             m_scroll->leftMousePressed(pos);
+            triggerOnScroll();
         }
         else
         {
@@ -625,6 +640,7 @@ namespace tgui
         }
 
         m_scroll->leftMouseReleased(pos - getPosition());
+        triggerOnScroll();
 
         Widget::leftMouseReleased(pos);
     }
@@ -644,6 +660,7 @@ namespace tgui
         if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->isMouseOnWidget(pos))
         {
             m_scroll->mouseMoved(pos);
+            triggerOnScroll();
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
@@ -682,6 +699,7 @@ namespace tgui
         if (m_scroll->isShown())
         {
             m_scroll->mouseWheelScrolled(delta, pos - getPosition());
+            triggerOnScroll();
 
             // Update on which item the mouse is hovering
             mouseMoved(pos);
@@ -709,6 +727,7 @@ namespace tgui
     {
         Widget::leftMouseButtonNoLongerDown();
         m_scroll->leftMouseButtonNoLongerDown();
+        triggerOnScroll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -739,6 +758,8 @@ namespace tgui
             return onMouseRelease;
         else if (signalName == onDoubleClick.getName())
             return onDoubleClick;
+        else if (signalName == onScroll.getName())
+            return onScroll;
         else
             return Widget::getSignal(std::move(signalName));
     }
@@ -1065,6 +1086,18 @@ namespace tgui
 
             updateSelectedAndHoveringItemColorsAndStyle();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::triggerOnScroll()
+    {
+        const unsigned int currentScrollbarValue = m_scroll->getValue();
+        if (currentScrollbarValue == m_lastScrollbarValue)
+            return;
+
+        m_lastScrollbarValue = currentScrollbarValue;
+        onScroll.emit(this, currentScrollbarValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

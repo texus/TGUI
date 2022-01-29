@@ -52,6 +52,9 @@ TEST_CASE("[ListBox]")
         listBox->onDoubleClick([](int){});
         listBox->onDoubleClick([](tgui::String){});
         listBox->onDoubleClick([](tgui::String, tgui::String){});
+
+        listBox->onScroll([](){});
+        listBox->onScroll([](unsigned int){});
     }
 
     SECTION("WidgetType")
