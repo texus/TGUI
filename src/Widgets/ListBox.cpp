@@ -737,12 +737,12 @@ namespace tgui
         Widget::keyPressed(event);
         if (event.code == Event::KeyboardKey::Up && (m_selectedItem > 0))
         {
-            updateSelectedItem(m_selectedItem - 1);
+            setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem - 1));
         }
         else if ((event.code == Event::KeyboardKey::Down)
               && (m_selectedItem >= 0) && (static_cast<std::size_t>(m_selectedItem + 1) < m_items.size()))
         {
-            updateSelectedItem(m_selectedItem + 1);
+            setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem + 1));
         }
     }
 
