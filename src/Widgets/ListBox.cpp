@@ -477,6 +477,11 @@ namespace tgui
             // Remove the items that passed the limitation
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
 
+            if (m_hoveringItem >= static_cast<int>(maximumItems))
+                updateHoveringItem(-1);
+            if (m_selectedItem >= static_cast<int>(maximumItems))
+                updateSelectedItem(-1);
+
             m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updateItemPositions();
             triggerOnScroll();
