@@ -7,6 +7,7 @@ TGUI 0.10.1  (TBD)
 - Added SDL\_Renderer backend (SDL + SDL\_ttf)
 - Added moveWithAnimation and resizeWithAnimation functions to Widget
 - TextSize can now also be set in theme file
+- Tool tips are now shown on disabled widgets by default
 
 
 Older Releases

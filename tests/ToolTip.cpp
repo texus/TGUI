@@ -30,8 +30,8 @@
 
 TEST_CASE("[ToolTip]")
 {
-    tgui::Duration oldInitialDelay = tgui::ToolTip::getInitialDelay();
-    tgui::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
+    const tgui::Duration oldInitialDelay = tgui::ToolTip::getInitialDelay();
+    const tgui::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
 
     SECTION("InitialDelay")
     {
@@ -43,6 +43,15 @@ TEST_CASE("[ToolTip]")
     {
         tgui::ToolTip::setDistanceToMouse({5, 5});
         REQUIRE(tgui::ToolTip::getDistanceToMouse() == tgui::Vector2f(5, 5));
+    }
+
+    SECTION("ShowOnDisabledWidget")
+    {
+        REQUIRE(tgui::ToolTip::getShowOnDisabledWidget());
+        tgui::ToolTip::setShowOnDisabledWidget(false);
+        REQUIRE(!tgui::ToolTip::getShowOnDisabledWidget());
+        tgui::ToolTip::setShowOnDisabledWidget(true);
+        REQUIRE(tgui::ToolTip::getShowOnDisabledWidget());
     }
 
     SECTION("Setting tool tip of widget")
