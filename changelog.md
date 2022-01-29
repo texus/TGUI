@@ -4,6 +4,7 @@ TGUI 0.9.4  (TBD)
 - Default theme no longer affects loading widgets from file
 - Added TextAlignment property to ListBox
 - Added onScroll signal to ListBox
+- Added option to show tool tips on disabled widgets
 - Up and down keys in ListBox now move scrollbar if needed
 - ListBox::setMaximumItems didn't reset selected item when removed
 - Fixed issue with renderer property within custom renderer outside tgui namespace

@@ -974,8 +974,7 @@ namespace tgui
         if (!isMouseOnWidget(mousePos))
             return nullptr;
 
-        // We shouldn't show tooltips when dragging something (dragging would be halted if mouseOnWhichWidget were called while
-        // the mouse is no longer on the widget itself.
+        // We shouldn't show tooltips when dragging something
         if (m_widgetWithLeftMouseDown && (m_widgetWithLeftMouseDown->isDraggableWidget() || m_widgetWithLeftMouseDown->isContainer()))
             return nullptr;
 
@@ -983,8 +982,8 @@ namespace tgui
 
         mousePos -= getPosition() + getChildWidgetsOffset();
 
-        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
-        if (widget)
+        Widget::Ptr widget = getWidgetBelowMouse(mousePos);
+        if (widget && (widget->isEnabled() || ToolTip::getShowOnDisabledWidget()))
         {
             toolTip = widget->askToolTip(transformMousePos(widget, mousePos));
             if (toolTip)
@@ -1084,7 +1083,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of a widget
-        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+        Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
         if (widget != nullptr)
         {
             // Send the event to the widget
@@ -1100,7 +1099,7 @@ namespace tgui
     bool Container::processMousePressEvent(Event::MouseButton button, Vector2f mousePos)
     {
         // Check if the mouse is on top of a widget
-        Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+        Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
         if (widget)
         {
             if (button == Event::MouseButton::Left)
@@ -1141,7 +1140,7 @@ namespace tgui
 
     bool Container::processMouseReleaseEvent(Event::MouseButton button, Vector2f mousePos)
     {
-        Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
+        Widget::Ptr widgetBelowMouse = updateWidgetBelowMouse(mousePos);
         if (widgetBelowMouse != nullptr)
             widgetBelowMouse->mouseReleased(button, transformMousePos(widgetBelowMouse, mousePos));
 
@@ -1166,7 +1165,7 @@ namespace tgui
     bool Container::processMouseWheelScrollEvent(float delta, Vector2f pos)
     {
         // Send the event to the widget below the mouse
-        Widget::Ptr widget = mouseOnWhichWidget(pos);
+        Widget::Ptr widget = updateWidgetBelowMouse(pos);
         if (widget != nullptr)
             return widget->mouseWheelScrolled(delta, transformMousePos(widget, pos));
 
@@ -1257,9 +1256,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::mouseOnWhichWidget(Vector2f mousePos)
+    Widget::Ptr Container::getWidgetBelowMouse(Vector2f mousePos) const
     {
-        Widget::Ptr widgetBelowMouse = nullptr;
         for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
             auto& widget = *it;
@@ -1269,11 +1267,19 @@ namespace tgui
             if (!widget->isMouseOnWidget(transformMousePos(widget, mousePos)))
                 continue;
 
-            if (widget->isEnabled())
-                widgetBelowMouse = widget;
-
-            break;
+            return widget;
         }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Container::updateWidgetBelowMouse(Vector2f mousePos)
+    {
+        Widget::Ptr widgetBelowMouse = getWidgetBelowMouse(mousePos);
+        if (widgetBelowMouse && !widgetBelowMouse->isEnabled())
+            widgetBelowMouse = nullptr;
 
         // If the mouse is on a different widget, tell the old widget that the mouse has left
         if (m_widgetBelowMouse && (widgetBelowMouse != m_widgetBelowMouse))
