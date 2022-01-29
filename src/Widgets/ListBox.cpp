@@ -493,6 +493,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setTextAlignment(TextAlignment alignment)
+    {
+        m_textAlignment = alignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ListBox::TextAlignment ListBox::getTextAlignment() const
+    {
+        return m_textAlignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::contains(const String& itemStr) const
     {
         return std::find_if(m_items.begin(), m_items.end(), [itemStr](const Item& item){ return item.text.getString() == itemStr; }) != m_items.end();
@@ -877,6 +891,11 @@ namespace tgui
         if (m_selectedItem >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
 
+        if (m_textAlignment == TextAlignment::Center)
+            node->propertyValuePairs["TextAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+        else if (m_textAlignment == TextAlignment::Right)
+            node->propertyValuePairs["TextAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
 
@@ -918,6 +937,17 @@ namespace tgui
         {
             if (node->propertyValuePairs["ItemIds"])
                 throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+        }
+
+        if (node->propertyValuePairs["TextAlignment"])
+        {
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["TextAlignment"]->value).getString();
+            if (alignment == "Right")
+                setTextAlignment(TextAlignment::Right);
+            else if (alignment == "Center")
+                setTextAlignment(TextAlignment::Center);
+            else if (alignment != "Left")
+                throw Exception{"Failed to parse TextAlignment property, found unknown value."};
         }
 
         if (node->propertyValuePairs["AutoScroll"])
@@ -1109,9 +1139,33 @@ namespace tgui
             }
 
             // Draw the items
-            states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached), 0});
-            for (std::size_t i = firstItem; i < lastItem; ++i)
-                target.drawText(states, m_items[i].text);
+            if (m_textAlignment == ListBox::TextAlignment::Right)
+            {
+                const float textPadding = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached);
+                for (std::size_t i = firstItem; i < lastItem; ++i)
+                {
+                    const float textWidth = m_items[i].text.getSize().x;
+                    states.transform.translate({maxItemWidth - textPadding - textWidth, 0});
+                    target.drawText(states, m_items[i].text);
+                    states.transform.translate({-maxItemWidth + textPadding + textWidth, 0});
+                }
+            }
+            else if (m_textAlignment == ListBox::TextAlignment::Center)
+            {
+                for (std::size_t i = firstItem; i < lastItem; ++i)
+                {
+                    const float textWidth = m_items[i].text.getSize().x;
+                    states.transform.translate({(maxItemWidth - textWidth) / 2.f, 0});
+                    target.drawText(states, m_items[i].text);
+                    states.transform.translate({-(maxItemWidth - textWidth) / 2.f, 0});
+                }
+            }
+            else // m_textAlignment == ListBox::TextAlignment::Left
+            {
+                states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached), 0});
+                for (std::size_t i = firstItem; i < lastItem; ++i)
+                    target.drawText(states, m_items[i].text);
+            }
 
             target.removeClippingLayer();
         }
