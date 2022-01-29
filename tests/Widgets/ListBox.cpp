@@ -437,6 +437,41 @@ TEST_CASE("[ListBox]")
             mousePressed({40, 52});
             REQUIRE(listBox->getSelectedItemIndex() == 4);
         }
+
+        SECTION("Arrow keys")
+        {
+            tgui::Event::KeyEvent downKeyEvent;
+            downKeyEvent.code = tgui::Event::KeyboardKey::Down;
+            downKeyEvent.alt = false;
+            downKeyEvent.control = false;
+            downKeyEvent.shift = false;
+            downKeyEvent.system = false;
+
+            tgui::Event::KeyEvent upKeyEvent;
+            upKeyEvent.code = tgui::Event::KeyboardKey::Up;
+
+            listBox->setSelectedItemByIndex(2);
+            listBox->setAutoScroll(false);
+            listBox->addItem("Item 4");
+
+            REQUIRE(listBox->getScrollbarValue() == 0);
+            listBox->keyPressed(downKeyEvent);
+            REQUIRE(listBox->getScrollbarValue() > 0);
+            REQUIRE(listBox->getSelectedItemIndex() == 3);
+
+            listBox->keyPressed(upKeyEvent);
+            listBox->keyPressed(upKeyEvent);
+            REQUIRE(listBox->getScrollbarValue() > 0);
+            REQUIRE(listBox->getSelectedItemIndex() == 1);
+
+            listBox->keyPressed(upKeyEvent);
+            REQUIRE(listBox->getScrollbarValue() == 0);
+            REQUIRE(listBox->getSelectedItemIndex() == 0);
+
+            // Arrow up while already at the top doesn't change anything
+            listBox->keyPressed(upKeyEvent);
+            REQUIRE(listBox->getSelectedItemIndex() == 0);
+        }
     }
 
     testWidgetRenderer(listBox->getRenderer());
