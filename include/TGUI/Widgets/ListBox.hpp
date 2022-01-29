@@ -663,6 +663,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Checks whether the scrollbar value was changed and emit the onScroll event if it did
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void triggerOnScroll();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called every frame with the time passed since the last frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool updateTime(Duration elapsedTime) override;
@@ -681,6 +687,7 @@ namespace tgui
         SignalItem onMousePress   = {"MousePressed"};   //!< The mouse went down on an item. Optional parameter: selected item or its index
         SignalItem onMouseRelease = {"MouseReleased"};  //!< The mouse was released on one of the items. Optional parameter: selected item or its index
         SignalItem onDoubleClick  = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item or its index
+        SignalUInt onScroll       = {"Scrolled"};       //!< The list was scrolled. Optional parameter: new value of scrollbar
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,6 +715,7 @@ namespace tgui
 
         // When there are too many items a scrollbar will be shown
         CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
+        unsigned int m_lastScrollbarValue = 0;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
