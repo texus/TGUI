@@ -302,6 +302,17 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getAutoScroll());
     }
 
+    SECTION("TextAlignment")
+    {
+        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Left);
+        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Center);
+        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Center);
+        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Right);
+        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Right);
+        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Left);
+        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Left);
+    }
+
     testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {
@@ -727,6 +738,18 @@ TEST_CASE("[ListBox]")
                     }
                 }
             }
+        }
+
+        SECTION("TextAlignment::Right")
+        {
+            listBox->setTextAlignment(tgui::ListBox::TextAlignment::Right);
+            TEST_DRAW("ListBox_TextAlignmentRight.png")
+        }
+
+        SECTION("TextAlignment::Center")
+        {
+            listBox->setTextAlignment(tgui::ListBox::TextAlignment::Center);
+            TEST_DRAW("ListBox_TextAlignmentCenter.png")
         }
     }
 }
