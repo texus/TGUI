@@ -489,6 +489,11 @@ namespace tgui
         // Check if we already passed the limit
         if ((m_maxItems > 0) && (m_maxItems < m_items.size()))
         {
+            if (m_hoveringItem >= static_cast<int>(maximumItems))
+                updateHoveringItem(-1);
+            if (m_selectedItem >= static_cast<int>(maximumItems))
+                updateSelectedItem(-1);
+
             // Remove the items that passed the limitation
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
 

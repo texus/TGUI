@@ -284,8 +284,10 @@ TEST_CASE("[ListBox]")
         listBox->addItem("Item 3");
         listBox->addItem("Item 4");
         listBox->addItem("Item 5");
+        listBox->setSelectedItemByIndex(4);
         REQUIRE(listBox->getItemCount() == 5);
         listBox->setMaximumItems(3);
+        REQUIRE(listBox->getSelectedItemIndex() == -1);
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 1");
         REQUIRE(listBox->getItems()[2] == "Item 3");
