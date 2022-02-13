@@ -392,6 +392,19 @@ TEST_CASE("[TextArea]")
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::X, true, false));
                 REQUIRE(textArea->getText() == "ADEFGHIJKLMNOPQRSTUVWXYZXYZ");
                 REQUIRE(getClipboardContents() == "BC");
+
+                textArea->setReadOnly(true);
+                textArea->setText("12345");
+
+                // Pasting to read-only text area does nothing
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::V, true, false));
+                REQUIRE(textArea->getText() == "12345");
+
+                // Cutting from read-only text area just copies the selection
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::A, true, false));
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::X, true, false));
+                REQUIRE(textArea->getText() == "12345");
+                REQUIRE(getClipboardContents() == "12345");
             }
 
             SECTION("Pressing tab")
