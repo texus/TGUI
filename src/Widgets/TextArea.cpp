@@ -1181,20 +1181,19 @@ namespace tgui
 
     void TextArea::cutSelectedTextToClipboard()
     {
-        const std::size_t selStart = getSelectionStart();
-        const std::size_t selEnd = getSelectionEnd();
-        if (selStart <= selEnd)
-            getBackend()->setClipboard(m_text.substr(selStart, selEnd - selStart));
-        else
-            getBackend()->setClipboard(m_text.substr(selEnd, selStart - selEnd));
+        copySelectedTextToClipboard();
 
-        deleteSelectedCharacters();
+        if (!m_readOnly)
+            deleteSelectedCharacters();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::pasteTextFromClipboard()
     {
+        if (m_readOnly)
+            return;
+
         const String& clipboardContents = getBackend()->getClipboard();
 
         // Only continue pasting if you actually have to do something
