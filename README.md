@@ -19,7 +19,7 @@ OS support for each backend:
 |:------------------------|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
 | **SFML\_GRAPHICS**      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
 | **SFML\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| **SDL\_RENDERER**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: | :question: |
+| **SDL\_RENDERER**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: | :heavy_check_mark: :question: |
 | **SDL\_OPENGL3**        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
 | **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
 | **SDL\_TTF\_OPENGL3**   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
