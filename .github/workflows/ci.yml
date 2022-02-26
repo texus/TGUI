@@ -773,15 +773,16 @@ jobs:
           cd $GITHUB_WORKSPACE/TGUI-build
 
           cmake
-          -G "Unix Makefiles"
-          -DCMAKE_TOOLCHAIN_FILE=../TGUI/cmake/toolchains/iOS.toolchain.cmake
-          -DPLATFORM=OS64
-          -DDEPLOYMENT_TARGET=14.4
+          -GXcode
+          -DCMAKE_SYSTEM_NAME=iOS
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=14.4
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/TGUI_INSTALL
           -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=20
-          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BACKEND=SFML_GRAPHICS
           ../TGUI
 
