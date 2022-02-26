@@ -784,9 +784,10 @@ jobs:
           -DTGUI_CXX_STANDARD=20
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BACKEND=SFML_GRAPHICS
+          -DFreeType_LIB=$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a
           ../TGUI
 
-          make -j3
+          cmake --build . --config Release --target install
 
   #----------------------------------------
 
