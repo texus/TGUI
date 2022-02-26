@@ -782,7 +782,7 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=20
-          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_EXAMPLES=OFF
           -DTGUI_BACKEND=SFML_GRAPHICS
           -DFreeType_LIB=$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a
           ../TGUI
