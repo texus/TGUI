@@ -32,13 +32,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 # Set a default build type
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 
-# The iOS toolchain requires that we set the PLATFORM property. This has to be done before the project() call.
-if(CMAKE_TOOLCHAIN_FILE AND CMAKE_TOOLCHAIN_FILE MATCHES "iOS.toolchain.cmake$" AND NOT PLATFORM)
-    tgui_set_option(PLATFORM OS64 STRING "Choose the architecture to build for (i.e. simulator or not)")
-    set_property(CACHE PLATFORM PROPERTY STRINGS OS64;SIMULATOR64;SIMULATORARM64)
-    set(PLATFORM OS64)
-endif()
-
 # Project name and version
 project(TGUI VERSION 0.10.0 LANGUAGES CXX)
 
@@ -49,14 +42,6 @@ include(GNUInstallDirs)
 include(${PROJECT_SOURCE_DIR}/cmake/Config.cmake)
 
 if(TGUI_OS_IOS)
-    # On iOS, hide the APPLE, UNIX and IOS properties created by the toolchain
-    unset(APPLE CACHE)
-    unset(UNIX CACHE)
-    unset(IOS CACHE)
-    set(APPLE TRUE)
-    set(UNIX TRUE)
-    set(IOS TRUE)
-
     # SFML currently doesn't detect iOS in SFMLConfigDependencies.cmake when CMAKE_SYSTEM_NAME isn't Darwin,
     # but luckily they don't have an error case so we just manually set the option about which OS was detected.
     set(FIND_SFML_OS_IOS 1)

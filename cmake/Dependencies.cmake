@@ -34,51 +34,31 @@ macro(tgui_find_dependency_sfml component optional_quiet)
             message(FATAL_ERROR "Linking statically to SFML isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SFML library by setting SFML_STATIC_LIBRARIES to FALSE.")
         endif()
 
+        if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
+            # Search for SFML in the android NDK (if no other directory is specified).
+            # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
+            # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
+            set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
+        endif()
+
         # Quietly try to find SFML 3 first. If found then we search it again but without the QUIET flag so that it can print
         # information about the found version. If not found then fall back to SFML 2. If neither version is found then search
         # for SFML 3 again so that the warnings shows information about the failure with both versions.
         # Note that find_package resets SFML_DIR on failure, so we need to reset it when we attempt another search.
-        if(TGUI_OS_IOS)
-            # Use the find_host_package macro from the toolchain on iOS
-            set(sfml_dir_original ${SFML_DIR})
-            find_host_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
-            if(SFML_FOUND)
-                find_host_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
-            else()
-                set(SFML_DIR ${sfml_dir_original})
-                find_host_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${lowercase_component})
-                if (NOT SFML_FOUND)
-                    set(SFML_DIR ${sfml_dir_original})
-                    find_host_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
-                else()
-                    # The failed find_package(SFML 3) call changed the CACHE entry, so reset it too.
-                    # Otherwise seaching sfml-main from the root cmake script fails later on.
-                    set(SFML_DIR ${SFML_DIR} CACHE PATH "Path to SFMLConfig.cmake" FORCE)
-                endif()
-            endif()
+        set(sfml_dir_original ${SFML_DIR})
+        find_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
+        if(SFML_FOUND)
+            find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
         else()
-            if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
-                # Search for SFML in the android NDK (if no other directory is specified).
-                # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
-                # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
-                set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
-            endif()
-
-            set(sfml_dir_original ${SFML_DIR})
-            find_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
-            if(SFML_FOUND)
+            set(SFML_DIR ${sfml_dir_original})
+            find_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${lowercase_component})
+            if (NOT SFML_FOUND)
+                set(SFML_DIR ${sfml_dir_original})
                 find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
             else()
-                set(SFML_DIR ${sfml_dir_original})
-                find_package(SFML 2 CONFIG ${optional_quiet} COMPONENTS ${lowercase_component})
-                if (NOT SFML_FOUND)
-                    set(SFML_DIR ${sfml_dir_original})
-                    find_package(SFML 3 CONFIG ${optional_quiet} COMPONENTS ${component})
-                else()
-                    # The failed find_package(SFML 3) call changed the CACHE entry, so reset it too.
-                    # Otherwise seaching sfml-main from the root cmake script fails later on.
-                    set(SFML_DIR ${SFML_DIR} CACHE PATH "Path to SFMLConfig.cmake" FORCE)
-                endif()
+                # The failed find_package(SFML 3) call changed the CACHE entry, so reset it too.
+                # Otherwise seaching sfml-main from the root cmake script fails later on.
+                set(SFML_DIR ${SFML_DIR} CACHE PATH "Path to SFMLConfig.cmake" FORCE)
             endif()
         endif()
 
