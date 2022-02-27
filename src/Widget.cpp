@@ -1078,6 +1078,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::finishAllAnimations()
+    {
+        for (auto& animation : m_showAnimations)
+            animation->finish();
+
+        m_showAnimations.clear();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Widget::canGainFocus() const
     {
         return m_enabled && m_visible && m_focusable;
@@ -1111,6 +1121,11 @@ namespace tgui
         m_parentGui = parent ? parent->getParentGui() : nullptr;
         if (m_parent == parent)
             return;
+
+        // When removing the widget from its parent, all animations are aborted.
+        // This prevents memory leaks when a widget is removed while it is still playing an animation.
+        if (!parent)
+            finishAllAnimations();
 
         if (!parent)
             SignalManager::getSignalManager()->remove(this);

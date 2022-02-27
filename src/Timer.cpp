@@ -160,8 +160,9 @@ namespace tgui
         auto activeTimers = m_activeTimers; // The callback could start and stop timers, so we need to operate on a copy
         for (auto& timer : activeTimers)
         {
-            timer->m_remainingDuration -= elapsedTime;
-            if (timer->m_remainingDuration <= Duration())
+            if (timer->m_remainingDuration > elapsedTime)
+                timer->m_remainingDuration -= elapsedTime;
+            else
             {
                 timerTriggered = true;
                 timer->m_callback();
