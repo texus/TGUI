@@ -558,6 +558,39 @@ namespace tgui
             ChildWindow::keyPressed(event);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void FileDialog::textEntered(char32_t key)
+    {
+        // We will only search through the list view if no other widget was focused. Pass the event to the focused widget otherwise.
+        if (m_focusedWidget && (m_focusedWidget != m_listView))
+        {
+            ChildWindow::textEntered(key);
+            return;
+        }
+
+        // We currently only search for the typed character. In the future we should remember previously typed characters too.
+        const String searchStr{key};
+
+        // Select the first item in the list view that starts with the search string (case-insensitive), starting the
+        // search from the currently selected item.
+        const std::size_t startIndex = static_cast<std::size_t>(std::max(0, m_listView->getSelectedItemIndex()));
+        const std::size_t itemCount = m_listView->getItemCount();
+        for (std::size_t i = 0; i < itemCount; ++i)
+        {
+            const std::size_t index = (startIndex + i) % itemCount;
+            const String& item = m_listView->getItem(index);
+            if (item.empty() || (item.length() < searchStr.length()))
+                continue;
+
+            if (item.startsWithIgnoreCase(searchStr))
+            {
+                m_listView->setSelectedItem(index);
+                break;
+            }
+        }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool FileDialog::updateTime(Duration elapsedTime)
