@@ -6,6 +6,7 @@ TGUI 0.10.1  (TBD)
 - Added GLFW/OpenGL backend (glfw3 + OpenGL >= 3.3 or GLES >= 2.0)
 - Added SDL\_Renderer backend (SDL + SDL\_ttf)
 - Added moveWithAnimation and resizeWithAnimation functions to Widget
+- Added case-insensitive variants of startsWith and endsWith to String
 - TextSize can now also be set in theme file
 - Tool tips are now shown on disabled widgets by default
 

@@ -38,6 +38,17 @@ namespace tgui
 {
     const decltype(std::u32string::npos) String::npos = std::u32string::npos;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
+        if (char1 == char2)
+            return true;
+        else if ((char1 < 128) && (char2 < 128))
+            return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
+        else
+            return false;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool isWhitespace(char character)
@@ -207,14 +218,7 @@ namespace tgui
 
     bool String::equalIgnoreCase(const String& other) const
     {
-        return std::equal(m_string.begin(), m_string.end(), other.begin(), other.end(), [](char32_t char1, char32_t char2){
-            if (char1 == char2)
-                return true;
-            else if ((char1 < 128) && (char2 < 128))
-                return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
-            else
-                return false;
-        });
+        return std::equal(m_string.begin(), m_string.end(), other.begin(), other.end(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,12 +233,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool String::startsWithIgnoreCase(const String& substring) const
+    {
+        if (substring.length() > length())
+            return false;
+
+        return std::equal(m_string.begin(), m_string.begin() + substring.length(), substring.begin(), substring.end(), &compareCharIgnoreCase);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool String::endsWith(const String& substring) const
     {
         if (substring.length() <= length())
             return compare(length() - substring.length(), substring.length(), substring) == 0;
         else
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool String::endsWithIgnoreCase(const String& substring) const
+    {
+        if (substring.length() > length())
+            return false;
+
+        return std::equal(m_string.begin() + length() - substring.length(), m_string.end(), substring.begin(), substring.end(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
