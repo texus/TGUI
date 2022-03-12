@@ -2170,6 +2170,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
 
     auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
     auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
+    auto buttonBrowse = editThemesWindow->get<tgui::Button>("ButtonBrowse");
     auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
     auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
 
@@ -2185,6 +2186,8 @@ void GuiBuilder::menuBarCallbackEditThemes()
             buttonDelete->setEnabled(false);
         else
             buttonDelete->setEnabled(true);
+
+        newThemeEditBox->setText(item);
     });
 
     newThemeEditBox->onTextChange([=](tgui::String text){
@@ -2221,6 +2224,24 @@ void GuiBuilder::menuBarCallbackEditThemes()
         buttonDelete->setEnabled(false);
         initProperties();
         saveGuiBuilderState();
+    });
+
+    buttonBrowse->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+        auto fileDialog = tgui::FileDialog::create("Select theme file", "Select");
+        fileDialog->setFileMustExist(true);
+
+        if (!newThemeEditBox->getText().empty())
+        {
+            const auto inputPath = tgui::Filesystem::Path(newThemeEditBox->getText());
+            fileDialog->setPath((tgui::getResourcePath() / inputPath).getParentPath().getNormalForm());
+            fileDialog->setFilename(inputPath.getFilename());
+        }
+        openWindowWithFocus(fileDialog);
+
+        fileDialog->onFileSelect([newThemeEditBox](const std::vector<tgui::Filesystem::Path>& selectedFiles){
+            if (!selectedFiles.empty())
+                newThemeEditBox->setText(selectedFiles[0].asString());
+        });
     });
 }
 
