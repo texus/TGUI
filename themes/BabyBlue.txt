@@ -7,6 +7,12 @@ Button {
     TextColor    = rgb(100, 100, 100);
 }
 
+BitmapButton {
+    Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
+    TextureHover = "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
+    TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
+    TextColor    = rgb(100, 100, 100);
+}
 
 ChatBox {
     BackgroundColor = rgb(210, 210, 210);
