@@ -31,7 +31,7 @@ android {
         externalNativeBuild {
             cmake {
                 path 'jni/CMakeLists.txt'
-                version '3.21.3'
+                version '3.22.2'
             }
         }
     }

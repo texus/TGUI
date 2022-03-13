@@ -26,7 +26,6 @@
 #include <TGUI/Backend/SDL-Renderer.hpp>
 
 // The background image will rotate with the screen
-// TODO: This isn't working. We might not be receiving SDL_WINDOWEVENT_SIZE_CHANGED events.
 void setBackground(tgui::BackendGui& gui, tgui::Vector2f screenSize)
 {
     gui.get("Landscape")->setSize(screenSize.x, screenSize.y);
@@ -75,6 +74,7 @@ bool runExample(tgui::BackendGui& gui)
     gui.onViewChange([guiPtr=&gui](tgui::FloatRect view){
         setBackground(*guiPtr, view.getSize());
     });
+
     return true;
 }
 
@@ -92,11 +92,12 @@ int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    // TGUI requires a window created with the SDL_WINDOW_OPENGL flag and an OpenGL context
+    // TGUI requires a window created with the SDL_WINDOW_OPENGL flag and an OpenGL context.
+    // SDL_WINDOW_RESIZABLE is needed to support screen rotations.
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
-                                          SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+                                          SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
