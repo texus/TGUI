@@ -22,9 +22,7 @@
 
 # If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
 # When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
-# TODO: Investigate the effect of CMP0126 that was instroduced in CMake 3.21 (set(CACHE) does not remove a normal variable of the same name).
-#       Is our code fully compatible with the new behavior? If so then "3.20" below can be changed to "3.22".
-cmake_minimum_required(VERSION 3.16...3.20)
+cmake_minimum_required(VERSION 3.16...3.23)
 
 # Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
