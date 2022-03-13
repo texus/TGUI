@@ -223,8 +223,8 @@ namespace tgui
 #ifdef TGUI_SYSTEM_ANDROID
     std::unique_ptr<std::uint8_t[]> BackendSDL::readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const
     {
-        JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-        jobject activity = (jobject)SDL_AndroidGetActivity();
+        JNIEnv* env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+        jobject activity = static_cast<jobject>(SDL_AndroidGetActivity());
         jclass clazz = env->GetObjectClass(activity);
 
         jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
