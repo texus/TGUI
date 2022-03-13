@@ -156,8 +156,8 @@ namespace tgui
         inputRect.w = static_cast<int>(rect.width);
         inputRect.h = static_cast<int>(rect.height);
 
-        SDL_StartTextInput();
         SDL_SetTextInputRect(&inputRect);
+        SDL_StartTextInput();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
