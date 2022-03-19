@@ -7,6 +7,7 @@ TGUI 0.10.1  (TBD)
 - Added SDL\_Renderer backend (SDL + SDL\_ttf)
 - Added moveWithAnimation and resizeWithAnimation functions to Widget
 - Added case-insensitive variants of startsWith and endsWith to String
+- ClientSize of ChildWindow can now be a layout instead of only a constant
 - Typing in FileDialog now selects the first file starting with the typed letter
 - TextSize can now also be set in theme file
 - Tool tips are now shown on disabled widgets by default

@@ -348,12 +348,13 @@ namespace tgui
 
     Layout::Layout(const Layout& other) :
         m_value          {other.m_value},
-        m_parent         {other.m_parent},
+        m_parent         {nullptr},
         m_operation      {other.m_operation},
         m_leftOperand    {other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr},
         m_rightOperand   {other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr},
         m_boundWidget    {other.m_boundWidget},
-        m_boundString    {other.m_boundString}
+        m_boundString    {other.m_boundString},
+        m_connectedWidgetCallback{nullptr}
     {
         // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
         if (!m_boundString.empty())
@@ -371,7 +372,8 @@ namespace tgui
         m_leftOperand    {std::move(other.m_leftOperand)},
         m_rightOperand   {std::move(other.m_rightOperand)},
         m_boundWidget    {other.m_boundWidget},
-        m_boundString    {std::move(other.m_boundString)}
+        m_boundString    {std::move(other.m_boundString)},
+        m_connectedWidgetCallback{std::move(m_connectedWidgetCallback)}
     {
         resetPointers();
     }
@@ -385,12 +387,13 @@ namespace tgui
             unbindLayout();
 
             m_value           = other.m_value;
-            m_parent          = other.m_parent;
+            m_parent          = nullptr;
             m_operation       = other.m_operation;
             m_leftOperand     = other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr;
             m_rightOperand    = other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr;
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = other.m_boundString;
+            m_connectedWidgetCallback = nullptr;
 
             // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
             if (!m_boundString.empty())
@@ -417,6 +420,7 @@ namespace tgui
             m_rightOperand    = std::move(other.m_rightOperand);
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = std::move(other.m_boundString);
+            m_connectedWidgetCallback = std::move(m_connectedWidgetCallback);
 
             resetPointers();
         }
@@ -429,6 +433,20 @@ namespace tgui
     Layout::~Layout()
     {
         unbindLayout();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::replaceValue(const Layout& value)
+    {
+        // Copy the layout, but keep the original parent
+        const auto oldParent = m_parent;
+        *this = value;
+        m_parent = oldParent;
+
+        // Inform the parent that the value of the layout has changed
+        if (m_parent)
+            m_parent->recalculateValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -703,6 +721,20 @@ namespace tgui
                     m_connectedWidgetCallback();
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout* Layout::getLeftOperand() const
+    {
+        return m_leftOperand ? m_leftOperand.get() : nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout* Layout::getRightOperand() const
+    {
+        return m_rightOperand ? m_rightOperand.get() : nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

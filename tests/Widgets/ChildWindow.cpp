@@ -115,6 +115,41 @@ TEST_CASE("[ChildWindow]")
         REQUIRE(childWindow->getSize() == tgui::Vector2f(400, 300));
     }
 
+    SECTION("ClientSize")
+    {
+        childWindow->getRenderer()->setTitleBarHeight(20);
+        childWindow->getRenderer()->setBorders({1, 2, 4, 8});
+        childWindow->getRenderer()->setBorderBelowTitleBar(2);
+
+        SECTION("setClientSize")
+        {
+            childWindow->setClientSize({300, 250});
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(300, 250));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(305, 282));
+
+            // Client size remains fixed when setClientSize was used
+            childWindow->getRenderer()->setTitleBarHeight(15);
+            childWindow->getRenderer()->setBorders({8, 4, 2, 1});
+            childWindow->getRenderer()->setBorderBelowTitleBar(1);
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(300, 250));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(310, 271));
+        }
+
+        SECTION("setSize")
+        {
+            childWindow->setSize({300, 250});
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(295, 218));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(300, 250));
+
+            // Client size changes
+            childWindow->getRenderer()->setTitleBarHeight(15);
+            childWindow->getRenderer()->setBorders({8, 4, 2, 1});
+            childWindow->getRenderer()->setBorderBelowTitleBar(1);
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(290, 229));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(300, 250));
+        }
+    }
+
     SECTION("Title")
     {
         REQUIRE(childWindow->getTitle() == "");

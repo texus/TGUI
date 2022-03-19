@@ -59,6 +59,8 @@ namespace tgui
 
         setTitleTextSize(getGlobalTextSize());
         m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
+        if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
+            m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
 
         if (initRenderer)
         {
@@ -386,10 +388,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setClientSize(Vector2f size)
+    void ChildWindow::setClientSize(const Layout2d& size)
     {
-        setSize({size.x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                 size.y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached});
+        m_decorationLayoutX = nullptr;
+        m_decorationLayoutY = nullptr;
+
+        const Vector2f decorationSize = {m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                                         m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
+
+        setSize(size + decorationSize);
+
+        // Keep a pointer to the layout containing the decoration size. If the decoration changes then we need to update this layout
+        m_decorationLayoutX = m_size.x.getRightOperand();
+        m_decorationLayoutY = m_size.y.getRightOperand();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1036,6 +1047,12 @@ namespace tgui
         if (property == "Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
+
+            if (m_decorationLayoutX && (m_decorationLayoutX == m_size.x.getRightOperand()))
+                m_decorationLayoutX->replaceValue(m_bordersCached.getLeft() + m_bordersCached.getRight());
+            if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
+                m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+
             setSize(m_size);
         }
         else if (property == "TitleColor")
@@ -1063,6 +1080,9 @@ namespace tgui
 
             if (oldTitleBarHeight != m_titleBarHeightCached)
             {
+                if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
+                    m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+
                 // If the title bar changes in height then the inner size will also change
                 for (auto& layout : m_boundSizeLayouts)
                     layout->recalculateValue();
@@ -1075,6 +1095,8 @@ namespace tgui
         else if (property == "BorderBelowTitleBar")
         {
             m_borderBelowTitleBarCached = getSharedRenderer()->getBorderBelowTitleBar();
+            if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
+                m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
         }
         else if (property == "DistanceToSide")
         {

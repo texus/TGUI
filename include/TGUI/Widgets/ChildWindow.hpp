@@ -180,7 +180,7 @@ namespace tgui
         ///
         /// This sets the size of the child window excluding the title bar and the borders.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setClientSize(Vector2f size);
+        void setClientSize(const Layout2d& size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,6 +563,8 @@ namespace tgui
         Vector2f       m_draggingPosition;
         Vector2f       m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
         Vector2f       m_minimumSize    = {0, 0};
+        Layout*        m_decorationLayoutX = nullptr;
+        Layout*        m_decorationLayoutY = nullptr;
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
         unsigned int   m_titleButtons   = TitleButton::Close;
         unsigned int   m_titleTextSize  = 0;
