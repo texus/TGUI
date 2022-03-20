@@ -395,7 +395,11 @@ namespace tgui
                     break;
                 }
                 else if (curChar == U'\r')
-                    continue; // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
+                {
+                    // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
+                    index++;
+                    continue;
+                }
                 else if (curChar == U'\t')
                     charWidth = font.getGlyph(' ', textSize, bold).advance * 4;
                 else

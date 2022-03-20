@@ -131,8 +131,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::setText(const String& text)
+    void TextArea::setText(String text)
     {
+        // Don't allow the text to contain carriage returns
+        text.replace('\r', U"");
+
         // Remove all the excess characters when a character limit is set
         if ((m_maxChars > 0) && (text.length() > m_maxChars))
             m_text = text.toUtf32().substr(0, m_maxChars);
@@ -146,9 +149,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::addText(const String& text)
+    void TextArea::addText(String text)
     {
-        setText(m_text + text);
+        setText(m_text + std::move(text));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -717,6 +720,10 @@ namespace tgui
         if (m_readOnly)
             return;
 
+        // Don't allow carriage return characters, they only cause trouble
+        if (key == '\r')
+            return;
+
         // Make sure we don't exceed our maximum characters limit
         if ((m_maxChars > 0) && (m_text.length() + 1 > m_maxChars))
             return;
@@ -1194,7 +1201,10 @@ namespace tgui
         if (m_readOnly)
             return;
 
-        const String& clipboardContents = getBackend()->getClipboard();
+        String clipboardContents = getBackend()->getClipboard();
+
+        // Remove carriage returns from the string, as they cause issues
+        clipboardContents.replace('\r', U"");
 
         // Only continue pasting if you actually have to do something
         if ((m_selStart != m_selEnd) || (clipboardContents != ""))

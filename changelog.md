@@ -1,6 +1,12 @@
 TGUI 0.10.1  (TBD)
 ------------------
 
+- Filter CR in TextArea to prevent issues when pasting CRLF on Windows
+
+
+TGUI 0.10-beta (19 March 2022)
+------------------------------
+
 - Existing backends were rewritten
 - Added SFML/OpenGL backend (sfml-window + OpenGL >= 3.3)
 - Added GLFW/OpenGL backend (glfw3 + OpenGL >= 3.3 or GLES >= 2.0)

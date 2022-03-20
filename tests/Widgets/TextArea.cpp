@@ -85,6 +85,10 @@ TEST_CASE("[TextArea]")
 
         textArea->addText("\n\tText");
         REQUIRE(textArea->getText() == "World\n\tText");
+
+        // Carriage returns are removed from the text
+        textArea->setText("A\r\nB\n\r\n\nC\r\rD");
+        REQUIRE(textArea->getText() == U"A\nB\n\n\nCD");
     }
 
     SECTION("DefaultText")
