@@ -641,6 +641,10 @@ void Form::selectParent()
     if (!m_selectedWidget)
         return;
 
+    // If we were dragging a widget then stop the drag
+    m_draggingWidget = false;
+    m_draggingSelectionSquare = nullptr;
+
     // If the widget was added directly to the form then select the form
     if (m_selectedWidget->ptr->getParent() == m_widgetsContainer.get())
     {
