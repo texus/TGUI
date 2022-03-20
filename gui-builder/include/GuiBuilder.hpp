@@ -132,6 +132,7 @@ private:
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
+    tgui::Panel::Ptr m_foregroundPanel = nullptr;
 
     std::map<tgui::String, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;

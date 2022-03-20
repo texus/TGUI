@@ -297,7 +297,7 @@ void GuiBuilder::mainLoop()
             }
             else if (event.type == tgui::Event::Type::MouseButtonReleased)
             {
-                if (m_selectedForm)
+                if (m_selectedForm && !m_foregroundPanel)
                 {
                     if (event.mouseButton.button == tgui::Event::MouseButton::Left)
                         m_selectedForm->mouseReleased();
@@ -1365,12 +1365,14 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
         m_gui->remove(window);
         m_gui->remove(panel);
         m_gui->setTabKeyUsageEnabled(tabUsageEnabled);
+        m_foregroundPanel = nullptr;
     };
 
     panel->onClick(closeWindow);
     window->onClose(closeWindow);
     window->onEscapeKeyPress(closeWindow);
 
+    m_foregroundPanel = panel;
     return window;
 }
 
