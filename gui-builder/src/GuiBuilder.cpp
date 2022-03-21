@@ -1740,7 +1740,10 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         listBox->onItemSelect([=]{
             const int index = listBox->getSelectedItemIndex();
             if (index >= 0)
+            {
                 buttonRemove->setEnabled(true);
+                editBox->setText(listBox->getSelectedItem());
+            }
             else
                 buttonRemove->setEnabled(false);
 
