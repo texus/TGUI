@@ -56,6 +56,35 @@ ChildWindow {
     }
 }
 
+ColorPicker {
+    TextureTitleBar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31) Smooth;
+    TitleColor             = rgb(100, 100, 100);
+    BackgroundColor        = rgb(230, 230, 230);
+    BorderColor            = White;
+    Borders                = (2, 0, 2, 2);
+    DistanceToSide         = 3;
+    PaddingBetweenButtons  = 1;
+    ShowTextOnTitleButtons = false;
+
+    CloseButton = {
+        Texture      = "BabyBlue.png" Part(96, 2, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(123, 2, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(150, 2, 25, 25) Smooth;
+    }
+
+    MaximizeButton = {
+        Texture      = "BabyBlue.png" Part(2, 90, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(29, 90, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(56, 90, 25, 25) Smooth;
+    }
+
+    MinimizeButton = {
+        Texture      = "BabyBlue.png" Part(83, 90, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(110, 90, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(137, 90, 25, 25) Smooth;
+    }
+}
+
 ComboBox {
     TextureArrow     = "BabyBlue.png" Part(177, 2, 20, 26) Smooth;
     BackgroundColor  = rgb(210, 210, 210);
@@ -74,12 +103,57 @@ EditBox {
     Padding                     = (14, 4, 14, 4);
 }
 
+FileDialog {
+    TextureTitleBar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31) Smooth;
+    TitleColor             = rgb(100, 100, 100);
+    BackgroundColor        = rgb(230, 230, 230);
+    BorderColor            = White;
+    Borders                = (2, 0, 2, 2);
+    DistanceToSide         = 3;
+    PaddingBetweenButtons  = 1;
+    ShowTextOnTitleButtons = false;
+
+    CloseButton = {
+        Texture      = "BabyBlue.png" Part(96, 2, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(123, 2, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(150, 2, 25, 25) Smooth;
+    }
+
+    MaximizeButton = {
+        Texture      = "BabyBlue.png" Part(2, 90, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(29, 90, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(56, 90, 25, 25) Smooth;
+    }
+
+    MinimizeButton = {
+        Texture      = "BabyBlue.png" Part(83, 90, 25, 25) Smooth;
+        TextureHover = "BabyBlue.png" Part(110, 90, 25, 25) Smooth;
+        TextureDown  = "BabyBlue.png" Part(137, 90, 25, 25) Smooth;
+    }
+
+    Button = &Button;
+    EditBox = &EditBox;
+    ListView = &ListView;
+    FilenameLabel = &Label;
+    FileTypeComboBox = &ComboBox;
+}
+
 Label {
     TextColor = rgb(100, 100, 100);
     Scrollbar = &Scrollbar;
 }
 
 ListBox {
+    BackgroundColor         = rgb(210, 210, 210);
+    TextColor               = rgb(100, 100, 100);
+    SelectedBackgroundColor = rgb(190, 225, 235);
+    SelectedTextColor       = rgb(150, 150, 150);
+    BorderColor             = White;
+    Borders                 = (2, 2, 2, 2);
+    Scrollbar               = &Scrollbar;
+}
+
+ListView {
     BackgroundColor         = rgb(210, 210, 210);
     TextColor               = rgb(100, 100, 100);
     SelectedBackgroundColor = rgb(190, 225, 235);
