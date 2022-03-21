@@ -224,6 +224,7 @@ namespace tgui
                     {"RangeSlider", RendererData::create({{"Borders", Borders{1}},
                                                           {"BorderColor", Color{60, 60, 60}},
                                                           {"BorderColorHover", Color::Black},
+                                                          {"SelectedTrackColor", Color{0, 110, 255}},
                                                           {"TrackColor", Color{245, 245, 245}},
                                                           {"TrackColorHover", Color{255, 255, 255}},
                                                           {"ThumbColor", Color{245, 245, 245}},
