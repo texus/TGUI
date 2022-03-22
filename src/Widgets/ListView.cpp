@@ -1727,6 +1727,9 @@ namespace tgui
                 itemNode->propertyValuePairs["Texts"] = std::make_unique<DataIO::ValueNode>(textsList);
             }
 
+            if (item.icon.isSet())
+                itemNode->propertyValuePairs["Icon"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(item.icon.getTexture()));
+
             node->children.push_back(std::move(itemNode));
         }
 
@@ -1838,7 +1841,10 @@ namespace tgui
             for (const auto& item : childNode->propertyValuePairs["Texts"]->valueList)
                 itemRow.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
 
-            addItem(itemRow);
+            const std::size_t index = addItem(itemRow);
+
+            if (childNode->propertyValuePairs["Icon"])
+                setItemIcon(index, Deserializer::deserialize(ObjectConverter::Type::Texture, childNode->propertyValuePairs["Icon"]->value).getTexture());
         }
 
         if (node->propertyValuePairs["AutoScroll"])
