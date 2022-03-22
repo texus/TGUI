@@ -395,9 +395,9 @@ namespace tgui
 
                 Texture texture;
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-                texture.loadFromBase64(std::string_view(encodedData.begin() + dataIndex, encodedData.end()), partRect, middleRect, smooth);
+                texture.loadFromBase64(std::string_view(encodedData.data() + dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
 #else
-                texture.loadFromBase64(encodedData.substr(dataIndex, encodedData.size() - dataIndex), partRect, middleRect, smooth);
+                texture.loadFromBase64(encodedData.substr(dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
 #endif
                 return texture;
             }
