@@ -25,6 +25,7 @@
 
 #include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
+#include <TGUI/Base64.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/TextureManager.hpp>
@@ -257,6 +258,14 @@ namespace tgui
 
         m_id = "";
         setTextureData(data, partRect, middleRect);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::loadFromBase64(CharStringView imageAsBase64, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)
+    {
+        const std::vector<std::uint8_t> fileData = base64Decode(std::move(imageAsBase64));
+        loadFromMemory(fileData.data(), fileData.size(), partRect, middleRect, smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

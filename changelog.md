@@ -1,6 +1,8 @@
 TGUI 0.10.1  (TBD)
 ------------------
 
+- Textures can now be loaded from base64 string
+- ListView icons can also be saved in form file
 - Filter CR in TextArea to prevent issues when pasting CRLF on Windows
 
 

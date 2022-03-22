@@ -206,6 +206,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the texture from a base64 string
+        ///
+        /// @param imageAsBase64  Character array with the base64-encoded image (the entire file, not just the pixel data)
+        /// @param partRect       Load only part of the texture. Don't pass this parameter if you want to load the full image
+        /// @param middleRect     Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth         Enable smoothing on the texture
+        ///
+        /// Note that imageAsBase64 is just the base64 data (of the entire file), it should NOT start with a prefix like "data:".
+        ///
+        /// @throw Exception when loading failed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void loadFromBase64(CharStringView imageAsBase64, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the id that was used to load the texture (for the default loader, the id is the filename)
         ///
         /// @return Id of the texture

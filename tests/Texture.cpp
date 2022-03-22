@@ -50,6 +50,10 @@ TEST_CASE("[Texture]")
                 REQUIRE_THROWS_AS(tgui::Texture("NonExistent.png"), tgui::Exception);
                 REQUIRE_THROWS_AS(texture.load("NonExistent.png"), tgui::Exception);
             }
+            SECTION("loadFromBase64")
+            {
+                REQUIRE_THROWS_AS(texture.loadFromBase64("aW52YWxpZA=="), tgui::Exception);
+            }
 
             REQUIRE(texture.getId() == "");
             REQUIRE(texture.getData() == nullptr);
@@ -87,6 +91,32 @@ TEST_CASE("[Texture]")
                 REQUIRE(texture.getMiddleRect() == tgui::UIntRect(6, 5, 28, 20));
                 REQUIRE(texture.isSmooth() == true);
             }
+        }
+
+        SECTION("loadFromBase64")
+        {
+            tgui::Texture texture;
+            texture.loadFromBase64("iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9bpSI"
+                "VB+sH4pChumhBVMRRq1CECqFWaNXB5NIvaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIm5uToouU+L+k0CLGg+N+vLv3uHsH+Gslpppt44CqWUYyH"
+                "hPSmVUh+IoQ+tGLPoxKzNTnRDEBz/F1Dx9f76I8y/vcn6NLyZoM8AnEs0w3LOIN4ulNS+e8TxxmBUkhPiceM+iCxI9cl11+45x32M8zw0YqOU8"
+                "cJhbyLSy3MCsYKvEUcURRNcr3p11WOG9xVksV1rgnf2Eoq60sc53mEOJYxBJECJBRQRElWIjSqpFiIkn7MQ//oOMXySWTqwhGjgWUoUJy/OB/8"
+                "LtbMzc54SaFYkD7i21/DAPBXaBete3vY9uunwCBZ+BKa/rLNWDmk/RqU4scAd3bwMV1U5P3gMsdYOBJlwzJkQI0/bkc8H5G35QBem6BzjW3t8Y"
+                "+Th+AFHWVuAEODoGRPGWve7y7o7W3f880+vsBmyVyt7MJ+VMAAAAGYktHRACTALMA7AFBCKUAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNR"
+                "QflDBcVMRvUtg1zAAACG0lEQVQ4y63VzY8MYRDH8U/3zOxkmMFgDYkQEsGGuIoDN/4B4eJPEyd/ghMHR3GSiJcsDoi16exKs73LvOxuO2zNpnX"
+                "Gy0EllZ48/dS363l+VTWJGdbrDxIcQR89zMWrEdbxBatFnpX12GQG7ChO4DzS2t4y/Cs+4l2RZ2szgb3+oIlTAbtA0qdszQBOkGMZq3iDpWm2z"
+                "UrAKVzB4R0v57EnIFMY/EAbDXRibRhwjcoxz+A0jmGAeRzEAewL34tWJNLAFjbRnut0v46HG6NmCBDHnGZnPgR5jAd4Fplcwg1crhx/E0nCt15"
+                "/8KIZai4EYB6H4ve9Is/u1jR7iqe9/uAObkWGI6xhP9ppBKdxlD3o4vEM2K4VeXYfT2J/q1INrTQA0wsv4+UDf7eHtThopqFY3Z79A/DljPJrp"
+                "P6PTQteinGtY7ZDzb/ZQi3DBNspioBMomjXcf0fgFdj/yTiYdJod7pJFPK0+hs42+500/Fw4/lvhsfNAGbRIdv4jOXmzkLygXIuYK24j9u9/uA"
+                "4HlUEWCC5RnkpQCuR5SusF3k2bBZ5Vvb6g3fRYlPFx/HVi+GVuyp/xGBYCeingL7Z7eXxcGPU7nQnkd1Wpa2KGFVVzwP0He9jbbHIs1F92izF1"
+                "DgX82Wtol69PFp4HdDFeP52wO7DyejNXUryK3Qc1fC2yLPNP07syl9AO0Z/M+q1lNhW2sSkyLPhrNifn2O2xjCyiUUAAAAASUVORK5CYII=",
+                {2, 1, 6, 5}, {1, 2, 4, 1}, false);
+            REQUIRE(texture.getId() == "");
+            REQUIRE(texture.getData() != nullptr);
+            REQUIRE(texture.getData()->backendTexture != nullptr);
+            REQUIRE(texture.getPartRect() == tgui::UIntRect(2, 1, 6, 5));
+            REQUIRE(texture.getImageSize() == tgui::Vector2u(6, 5));
+            REQUIRE(texture.getMiddleRect() == tgui::UIntRect(1, 2, 4, 1));
+            REQUIRE(texture.isSmooth() == false);
         }
     }
 

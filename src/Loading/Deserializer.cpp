@@ -292,94 +292,114 @@ namespace tgui
             if (value.empty() || value.equalIgnoreCase("none"))
                 return Texture{};
 
+            String filename;
+            UIntRect partRect;
+            UIntRect middleRect;
+            bool smooth = tgui::Texture::getDefaultSmooth();
+
             // If there are no quotes then the value just contains a filename
             if (value[0] != '"')
-                return Texture{value};
-
-            String::const_iterator c = value.begin();
-            ++c; // Skip the opening quote
-
-            String filename;
-            char32_t prev = U'\0';
-
-            // Look for the end quote
-            bool filenameFound = false;
-            while (c != value.end())
+                filename = value;
+            else
             {
-                if ((*c != U'"') || (prev == U'\\'))
+                String::const_iterator c = value.begin();
+                ++c; // Skip the opening quote
+
+                // Look for the end quote
+                char32_t prev = U'\0';
+                bool filenameFound = false;
+                while (c != value.end())
                 {
-                    prev = *c;
-                    filename.push_back(*c);
-                    ++c;
+                    if ((*c != U'"') || (prev == U'\\'))
+                    {
+                        prev = *c;
+                        filename.push_back(*c);
+                        ++c;
+                    }
+                    else
+                    {
+                        ++c;
+                        filenameFound = true;
+                        break;
+                    }
                 }
-                else
+
+                if (!filenameFound)
+                    throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find the closing quote of the filename."};
+
+                // There may be optional parameters
+                while (removeWhitespace(value, c))
                 {
-                    ++c;
-                    filenameFound = true;
-                    break;
+                    String word;
+                    auto openingBracketPos = value.find(U'(', c - value.begin());
+                    if (openingBracketPos != String::npos)
+                        word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
+                    else
+                    {
+                        const String& smoothParam = value.substr(c - value.begin()).trim();
+                        if (smoothParam.equalIgnoreCase("smooth"))
+                        {
+                            smooth = true;
+                            break;
+                        }
+                        else if (smoothParam.equalIgnoreCase("nosmooth"))
+                        {
+                            smooth = false;
+                            break;
+                        }
+                        else
+                            throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
+                    }
+
+                    if (word.empty())
+                        throw Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
+
+                    bool rectRequiresFourValues = true;
+                    UIntRect* rect = nullptr;
+                    if (word.equalIgnoreCase("part"))
+                    {
+                        rect = &partRect;
+                        std::advance(c, 4);
+                    }
+                    else if (word.equalIgnoreCase("middle"))
+                    {
+                        rectRequiresFourValues = false;
+                        rect = &middleRect;
+                        std::advance(c, 6);
+                    }
+                    else
+                        throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
+
+                    auto closeBracketPos = value.find(U')', c - value.begin());
+                    if (closeBracketPos != String::npos)
+                    {
+                        if (!readUIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect, rectRequiresFourValues))
+                            throw Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
+                    }
+                    else
+                        throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
+
+                    std::advance(c, closeBracketPos - (c - value.begin()) + 1);
                 }
             }
 
-            if (!filenameFound)
-                throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find the closing quote of the filename."};
-
-            // There may be optional parameters
-            UIntRect partRect;
-            UIntRect middleRect;
-            bool smooth = true;
-
-            while (removeWhitespace(value, c))
+            // Check if the texture is provided as a base64-encoded string
+            if (filename.startsWith(U"data:"))
             {
-                String word;
-                auto openingBracketPos = value.find(U'(', c - value.begin());
-                if (openingBracketPos != String::npos)
-                    word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
-                else
-                {
-                    const String& smoothParam = value.substr(c - value.begin()).trim();
-                    if (smoothParam.equalIgnoreCase("smooth"))
-                    {
-                        smooth = true;
-                        break;
-                    }
-                    else if (smoothParam.equalIgnoreCase("nosmooth"))
-                    {
-                        smooth = false;
-                        break;
-                    }
-                    else
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
-                }
+                const auto foundIndex = filename.find(U";base64,");
+                if (foundIndex == tgui::String::npos)
+                    throw Exception{"Failed to deserialize texture '" + value + "'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
 
-                if (word.empty())
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
+                const auto dataIndex = foundIndex + 8;
+                const std::string& encodedData = filename.toStdString();
 
-                bool rectRequiresFourValues = true;
-                UIntRect* rect = nullptr;
-                if (word.equalIgnoreCase("part"))
-                {
-                    rect = &partRect;
-                    std::advance(c, 4);
-                }
-                else if (word.equalIgnoreCase("middle"))
-                {
-                    rectRequiresFourValues = false;
-                    rect = &middleRect;
-                    std::advance(c, 6);
-                }
-                else
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
-
-                auto closeBracketPos = value.find(U')', c - value.begin());
-                if (closeBracketPos != String::npos)
-                {
-                    if (!readUIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect, rectRequiresFourValues))
-                        throw Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
-                }
-                else
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
-
-                std::advance(c, closeBracketPos - (c - value.begin()) + 1);
+                Texture texture;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+                texture.loadFromBase64(std::string_view(encodedData.begin() + dataIndex, encodedData.end()), partRect, middleRect, smooth);
+#else
+                texture.loadFromBase64(encodedData.substr(dataIndex, encodedData.size() - dataIndex), partRect, middleRect, smooth);
+#endif
+                return texture;
             }
 
             return Texture{filename, partRect, middleRect, smooth};

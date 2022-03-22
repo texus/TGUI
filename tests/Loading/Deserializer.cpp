@@ -173,6 +173,16 @@ TEST_CASE("[Deserializer]")
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(7, 4)").getTexture();
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(7, 4, 36, 42));
 
+        texture = tgui::Deserializer::deserialize(Type::Texture, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==").getTexture();
+        REQUIRE(texture.getData() != nullptr);
+        REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 5, 5));
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 5, 5));
+        REQUIRE(texture.isSmooth());
+
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\" NoSmooth").getTexture();
+        REQUIRE(texture.getData() != nullptr);
+        REQUIRE(!texture.isSmooth());
+
         texture = tgui::Deserializer::deserialize(Type::Texture, "none").getTexture();
         REQUIRE(texture.getData() == nullptr);
 

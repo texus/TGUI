@@ -22,6 +22,7 @@
 
 set(TGUI_SRC
     Animation.cpp
+    Base64.cpp
     Color.cpp
     Components.cpp
     Container.cpp
