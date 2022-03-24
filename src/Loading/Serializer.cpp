@@ -27,6 +27,26 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Exception.hpp>
+#include <TGUI/Base64.hpp>
+
+#if defined(__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wunused-function"
+#elif defined (_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4505) // Unreferenced local function
+#endif
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_STATIC
+#define STBI_WRITE_NO_STDIO
+#include <TGUI/extlibs/stb/stb_image_write.h>
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined (_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -169,10 +189,31 @@ namespace tgui
         String serializeTexture(ObjectConverter&& value)
         {
             Texture texture = value.getTexture();
-            if (texture.getId().empty())
+            if (!texture.getData())
                 return "None";
 
-            String result = "\"" + texture.getId() + "\"";
+            String result;
+            if (!texture.getId().empty())
+                result = "\"" + texture.getId() + "\"";
+            else
+            {
+                if (!texture.getData()->backendTexture || !texture.getData()->backendTexture->getPixels())
+                    return "None";
+
+                // We don't have a filename for the image, so save it as base64
+                const Vector2u imageSize = texture.getData()->backendTexture->getSize();
+                const std::uint8_t* pixels = texture.getData()->backendTexture->getPixels();
+
+                int dataLength = 0;
+                unsigned char* pngData = stbi_write_png_to_mem(static_cast<const unsigned char*>(pixels),
+                    static_cast<int>(imageSize.x * 4), static_cast<int>(imageSize.x), static_cast<int>(imageSize.y), 4, &dataLength);
+                if (!pngData)
+                    return "None";
+
+                result = "\"data:image/png;base64," + base64Encode(pngData, dataLength) + "\"";
+                STBIW_FREE(pngData);
+            }
+
             if (texture.getData()->backendTexture)
             {
                 const UIntRect& partRect = texture.getPartRect();
