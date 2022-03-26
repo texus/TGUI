@@ -227,18 +227,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ColorPicker::ColorPicker(const ColorPicker &other) :
-            ChildWindow{other},
-            onColorChange{other.onColorChange},
-            onOkPress{other.onOkPress},
-            m_colorWheelTexture{other.m_colorWheelTexture},
-            m_colorWheelSprite{other.m_colorWheelSprite},
-            m_red{nullptr},
-            m_green{nullptr},
-            m_blue{nullptr},
-            m_alpha{nullptr},
-            m_value{nullptr},
-            m_last{nullptr},
-            m_current{nullptr}
+        ChildWindow{other},
+        onColorChange{other.onColorChange},
+        onOkPress{other.onOkPress},
+        m_colorWheelTexture{other.m_colorWheelTexture},
+        m_colorWheelSprite{other.m_colorWheelSprite},
+        m_red{nullptr},
+        m_green{nullptr},
+        m_blue{nullptr},
+        m_alpha{nullptr},
+        m_value{nullptr},
+        m_last{nullptr},
+        m_current{nullptr}
     {
         identifyButtonsAndConnect();
     }
@@ -246,18 +246,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ColorPicker::ColorPicker(ColorPicker &&other) :
-            ChildWindow{std::move(other)},
-            onColorChange{std::move(other.onColorChange)},
-            onOkPress{std::move(other.onOkPress)},
-            m_colorWheelTexture{std::move(other.m_colorWheelTexture)},
-            m_colorWheelSprite{std::move(other.m_colorWheelSprite)},
-            m_red{nullptr},
-            m_green{nullptr},
-            m_blue{nullptr},
-            m_alpha{nullptr},
-            m_value{nullptr},
-            m_last{nullptr},
-            m_current{nullptr}
+        ChildWindow{std::move(other)},
+        onColorChange{std::move(other.onColorChange)},
+        onOkPress{std::move(other.onOkPress)},
+        m_colorWheelTexture{std::move(other.m_colorWheelTexture)},
+        m_colorWheelSprite{std::move(other.m_colorWheelSprite)},
+        m_red{nullptr},
+        m_green{nullptr},
+        m_blue{nullptr},
+        m_alpha{nullptr},
+        m_value{nullptr},
+        m_last{nullptr},
+        m_current{nullptr}
     {
         identifyButtonsAndConnect();
     }
@@ -530,7 +530,7 @@ namespace tgui
             const auto &renderer = getSharedRenderer()->getButton();
 
             get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setRenderer(renderer);
-            get<Button>("#TGUI_INTERNAL$ColorPickerOk#")->setRenderer(renderer);
+            get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setRenderer(renderer);
             get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setRenderer(renderer);
         }
         else if (property == "Label")

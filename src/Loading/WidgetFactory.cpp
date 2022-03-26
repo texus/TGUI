@@ -63,6 +63,7 @@ namespace tgui
         {"CheckBox", std::make_shared<CheckBox>},
         {"ChildWindow", std::make_shared<ChildWindow>},
         {"ClickableWidget", std::make_shared<ClickableWidget>},
+        {"ColorPicker", std::make_shared<ColorPicker>},
         {"ComboBox", std::make_shared<ComboBox>},
         {"EditBox", std::make_shared<EditBox>},
         {"FileDialog", std::make_shared<FileDialog>},

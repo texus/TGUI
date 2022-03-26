@@ -46,10 +46,10 @@ TEST_CASE("[Mouse cursors]")
             tgui::Cursor::Type::NotAllowed
         }};
 
-        bool customCursors;
+        bool customCursors = false;
         SECTION("System cursors")
         {
-            customCursors = false;
+            // In this case, customCursors remains false
         }
         SECTION("Custom cursors")
         {

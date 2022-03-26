@@ -43,11 +43,6 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getWidgetType() == "FileDialog");
     }
 
-    SECTION("WidgetType")
-    {
-        REQUIRE(dialog->getWidgetType() == "FileDialog");
-    }
-
     SECTION("Path")
     {
         SECTION("String")
@@ -70,7 +65,7 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getFilename() == "Config.txt");
     }
 
-    SECTION("Filename")
+    SECTION("FileTypeFilters")
     {
         REQUIRE(dialog->getFileTypeFiltersIndex() == 0);
         REQUIRE(dialog->getFileTypeFilters().size() == 1);
