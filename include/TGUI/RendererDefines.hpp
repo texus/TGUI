@@ -151,7 +151,10 @@
     } \
     void CLASS::set##NAME(std::shared_ptr<tgui::RendererData> renderer) \
     { \
-        setProperty(tgui::String(#NAME), {renderer}); \
+        if (renderer) \
+            setProperty(tgui::String(#NAME), {renderer}); \
+        else \
+            setProperty(tgui::String(#NAME), {RendererData::create()}); \
     }
 
 #define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \
