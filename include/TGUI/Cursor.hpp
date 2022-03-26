@@ -57,6 +57,8 @@ namespace tgui
             SizeBottomRight,        //!< Bottom-right arrow on Linux, double arrow cursor going from top-left to bottom-right on Windows and
             SizeBottomLeft,         //!< Bottom-left arrow on Linux, double arrow cursor going from bottom-left to top-right on Windows and macOS
             SizeTopRight,           //!< Top-right arrow on Linux, double arrow cursor going from bottom-left to top-right on Windows and macOS
+            SizeHorizontal,         //!< Horizontal double arrow cursor
+            SizeVertical,           //!< Vertical double arrow cursor
             Crosshair,              //!< Crosshair cursor
             Help,                   //!< Help cursor
             NotAllowed              //!< Action not allowed cursor

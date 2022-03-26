@@ -273,6 +273,12 @@ namespace tgui
             typeSFML = sf::Cursor::Type::SizeTopRight;
             break;
 #endif
+        case Cursor::Type::SizeHorizontal:
+            typeSFML = sf::Cursor::Type::SizeHorizontal;
+            break;
+        case Cursor::Type::SizeVertical:
+            typeSFML = sf::Cursor::Type::SizeVertical;
+            break;
         case Cursor::Type::Crosshair:
             typeSFML = sf::Cursor::Type::Cross;
             break;

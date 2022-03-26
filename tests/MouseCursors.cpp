@@ -29,7 +29,7 @@ TEST_CASE("[Mouse cursors]")
 {
     SECTION("All cursor types")
     {
-        std::array<tgui::Cursor::Type, 14> cursors = {{
+        std::array<tgui::Cursor::Type, 16> cursors = {{
             tgui::Cursor::Type::Arrow,
             tgui::Cursor::Type::Text,
             tgui::Cursor::Type::Hand,
@@ -41,6 +41,8 @@ TEST_CASE("[Mouse cursors]")
             tgui::Cursor::Type::SizeBottomRight,
             tgui::Cursor::Type::SizeBottomLeft,
             tgui::Cursor::Type::SizeTopRight,
+            tgui::Cursor::Type::SizeHorizontal,
+            tgui::Cursor::Type::SizeVertical,
             tgui::Cursor::Type::Crosshair,
             tgui::Cursor::Type::Help,
             tgui::Cursor::Type::NotAllowed

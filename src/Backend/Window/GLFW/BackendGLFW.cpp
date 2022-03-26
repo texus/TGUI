@@ -188,10 +188,12 @@ namespace tgui
             break;
         case Cursor::Type::SizeLeft:
         case Cursor::Type::SizeRight:
+        case Cursor::Type::SizeHorizontal:
             typeGLFW = GLFW_RESIZE_EW_CURSOR;
             break;
         case Cursor::Type::SizeTop:
         case Cursor::Type::SizeBottom:
+        case Cursor::Type::SizeVertical:
             typeGLFW = GLFW_RESIZE_NS_CURSOR;
             break;
         case Cursor::Type::SizeBottomRight:
@@ -230,10 +232,12 @@ namespace tgui
             break;
         case Cursor::Type::SizeLeft:
         case Cursor::Type::SizeRight:
+        case Cursor::Type::SizeHorizontal:
             typeGLFW = GLFW_HRESIZE_CURSOR;
             break;
         case Cursor::Type::SizeTop:
         case Cursor::Type::SizeBottom:
+        case Cursor::Type::SizeVertical:
             typeGLFW = GLFW_VRESIZE_CURSOR;
             break;
         case Cursor::Type::Crosshair:

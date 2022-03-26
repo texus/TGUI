@@ -1439,6 +1439,8 @@ namespace tgui
             case Cursor::Type::SizeTopLeft:     mouseCursorStr = "SizeTopLeft"; break;
             case Cursor::Type::SizeBottomLeft:  mouseCursorStr = "SizeBottomLeft"; break;
             case Cursor::Type::SizeTopRight:    mouseCursorStr = "SizeTopRight"; break;
+            case Cursor::Type::SizeHorizontal:  mouseCursorStr = "SizeHorizontal"; break;
+            case Cursor::Type::SizeVertical:    mouseCursorStr = "SizeVertical"; break;
             case Cursor::Type::Crosshair:       mouseCursorStr = "Crosshair"; break;
             case Cursor::Type::Help:            mouseCursorStr = "Help"; break;
             case Cursor::Type::NotAllowed:      mouseCursorStr = "NotAllowed"; break;
@@ -1532,6 +1534,10 @@ namespace tgui
                 m_mouseCursor = Cursor::Type::SizeBottomLeft;
             else if (cursorStr == "SizeTopRight")
                 m_mouseCursor = Cursor::Type::SizeTopRight;
+            else if (cursorStr == "SizeHorizontal")
+                m_mouseCursor = Cursor::Type::SizeHorizontal;
+            else if (cursorStr == "SizeVertical")
+                m_mouseCursor = Cursor::Type::SizeVertical;
             else if (cursorStr == "Crosshair")
                 m_mouseCursor = Cursor::Type::Crosshair;
             else if (cursorStr == "Help")

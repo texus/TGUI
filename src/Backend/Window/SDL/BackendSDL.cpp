@@ -268,10 +268,12 @@ namespace tgui
             break;
         case Cursor::Type::SizeLeft:
         case Cursor::Type::SizeRight:
+        case Cursor::Type::SizeHorizontal:
             typeSDL = SDL_SYSTEM_CURSOR_SIZEWE;
             break;
         case Cursor::Type::SizeTop:
         case Cursor::Type::SizeBottom:
+        case Cursor::Type::SizeVertical:
             typeSDL = SDL_SYSTEM_CURSOR_SIZENS;
             break;
         case Cursor::Type::SizeBottomRight:
