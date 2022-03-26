@@ -69,10 +69,21 @@
 include(CMakeFindDependencyMacro)
 
 if(NOT DEFINED TGUI_STATIC_LIBRARIES)
-    if(@TGUI_SHARED_LIBS@)
-        set(TGUI_STATIC_LIBRARIES FALSE)
+    # If TGUI_STATIC_LIBRARIES is undefined then fall back to TGUI_SHARED_LIBS
+    if(DEFINED TGUI_SHARED_LIBS)
+        if(TGUI_SHARED_LIBS)
+            set(TGUI_STATIC_LIBRARIES FALSE)
+        else()
+            set(TGUI_STATIC_LIBRARIES TRUE)
+        endif()
     else()
-        set(TGUI_STATIC_LIBRARIES TRUE)
+        # If TGUI_SHARED_LIBS is also undefined then fall back to whatever the value was when TGUI was build.
+        # If libraries were only build for a single configuration then this will be the correct value.
+        if(@TGUI_SHARED_LIBS@)
+            set(TGUI_STATIC_LIBRARIES FALSE)
+        else()
+            set(TGUI_STATIC_LIBRARIES TRUE)
+        endif()
     endif()
 endif()
 
