@@ -31,7 +31,9 @@
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
 #   pragma GCC diagnostic ignored "-Wunused-function"
+#   pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #elif defined (_MSC_VER)
 #   pragma warning(push)
 #   pragma warning(disable: 4505) // Unreferenced local function
