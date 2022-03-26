@@ -406,7 +406,11 @@ namespace tgui
                     charWidth = font.getGlyph(curChar, textSize, bold).advance;
 
                 const float kerning = font.getKerning(prevChar, curChar, textSize, bold);
-                if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
+                const bool isWhitespace = (curChar == U' ') || (curChar == U'\t');
+
+                // We add the character to the line, unless a non-whitespace character exceeds the line length.
+                // We don't break on whitespace characters because having a space at the beginning of the line looks wrong.
+                if ((maxWidth == 0) || isWhitespace || (width + charWidth + kerning <= maxWidth))
                 {
                     width += kerning + charWidth;
                     index++;
