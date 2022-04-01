@@ -470,6 +470,15 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->getMultiSelect());
     }
 
+    SECTION("ResizableColumns")
+    {
+        REQUIRE(!listView->getResizableColumns());
+        listView->setResizableColumns(true);
+        REQUIRE(listView->getResizableColumns());
+        listView->setResizableColumns(false);
+        REQUIRE(!listView->getResizableColumns());
+    }
+
     SECTION("CopyToClipboard")
     {
         tgui::Event::KeyEvent event;
@@ -699,6 +708,43 @@ TEST_CASE("[ListView]")
             mousePressed({40, 110});
             mouseReleased({40, 110});
             REQUIRE(listView->getSelectedItemIndex() == -1);
+        }
+
+        SECTION("Resizing column")
+        {
+            listView->setHeaderHeight(20);
+            listView->addColumn("Col 1", 50);
+            listView->addColumn("Col 2", 100);
+
+            listView->setHorizontalScrollbarValue(10);
+            listView->getRenderer()->setBorders({2});
+            listView->setSeparatorWidth(1);
+
+            SECTION("Resizing allowed")
+            {
+                listView->setResizableColumns(true);
+
+                mouseMoved({52, 35});
+                mousePressed({52, 35});
+                mouseMoved({62, 35});
+                mouseReleased({62, 35});
+
+                REQUIRE(listView->getColumnWidth(0) == 60);
+                REQUIRE(listView->getColumnWidth(1) == 100);
+            }
+
+            SECTION("Resizing blocked")
+            {
+                listView->setResizableColumns(false);
+
+                mouseMoved({52, 35});
+                mousePressed({52, 35});
+                mouseMoved({62, 35});
+                mouseReleased({62, 35});
+
+                REQUIRE(listView->getColumnWidth(0) == 50);
+                REQUIRE(listView->getColumnWidth(1) == 100);
+            }
         }
     }
 

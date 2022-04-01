@@ -79,6 +79,8 @@ struct ListViewProperties : WidgetProperties
             listView->setShowHorizontalGridLines(parseBoolean(value, false));
         else if (property == "ExpandLastColumn")
             listView->setExpandLastColumn(parseBoolean(value, false));
+        else if (property == "ResizableColumns")
+            listView->setResizableColumns(parseBoolean(value, false));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -101,6 +103,7 @@ struct ListViewProperties : WidgetProperties
         pair.first["ShowVerticalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowVerticalGridLines())};
         pair.first["ShowHorizontalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowHorizontalGridLines())};
         pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};
+        pair.first["ResizableColumns"] = {"Bool", tgui::Serializer::serialize(listView->getResizableColumns())};
 
         const auto renderer = listView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

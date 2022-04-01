@@ -2,6 +2,7 @@ TGUI 0.10.1  (TBD)
 ------------------
 
 - Textures can now be loaded from base64 string
+- ListView columns can now be resizable
 - ListView icons can also be saved in form file
 - Added SizeHorizontal and SizeVertical mouse cursors
 - Word-wrapped lines can longer begin with whitespace

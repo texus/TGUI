@@ -25,7 +25,12 @@
 
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 #include <cmath>
+
+#if TGUI_HAS_WINDOW_BACKEND_SFML
+    #include <SFML/Config.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -132,6 +137,8 @@ namespace tgui
         updateLastColumnMaxItemWidth();
         updateHorizontalScrollbarMaximum();
 
+        m_resizingColumn = 0;
+
         return m_columns.size()-1;
     }
 
@@ -205,6 +212,8 @@ namespace tgui
 
         updateLastColumnMaxItemWidth();
         updateHorizontalScrollbarMaximum();
+
+        m_resizingColumn = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1245,6 +1254,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::setResizableColumns(bool resizable)
+    {
+        m_resizableColumns = resizable;
+        m_resizingColumn = 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getResizableColumns() const
+    {
+        return m_resizableColumns;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListView::isMouseOnWidget(Vector2f pos) const
     {
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
@@ -1266,7 +1290,11 @@ namespace tgui
         {
             m_horizontalScrollbar->leftMousePressed(pos);
         }
-
+        // Check if a border between two columns was clicked
+        else if (m_resizableColumns && findBorderBelowMouse(pos, m_resizingColumn, m_resizingColumnPixelOffset))
+        {
+            updateHoveredItem(-1);
+        }
         // Check if an item was clicked
         else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
                            getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
@@ -1305,7 +1333,6 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
-
         // Check if the header was clicked
         else if ((getCurrentHeaderHeight() > 0)
               && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
@@ -1372,8 +1399,46 @@ namespace tgui
         const int oldHoveredItem = m_hoveredItem;
         updateHoveredItem(-1);
 
+        bool mouseOnResizableBorder = false;
+
+        // Check if we are currently resizing one of the columns
+        if (m_resizingColumn > 0)
+        {
+            assert(m_resizableColumns && m_mouseDown);
+            assert(m_resizingColumn <= m_columns.size());
+
+            const float separatorWidth = getTotalSeparatorWidth();
+            float borderCenterX = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
+            for (std::size_t i = 0; i < m_resizingColumn; ++i)
+                borderCenterX += m_columns[i].width + separatorWidth;
+            borderCenterX -= separatorWidth / 2.f;
+
+            const float sizeDiff = pos.x - borderCenterX - m_resizingColumnPixelOffset;
+            float newWidth = std::round(m_columns[m_resizingColumn-1].width + sizeDiff);
+
+            // Don't allow columns that are so small that we can't tell on which border the mouse is standing anymore.
+            // If we allow 1 pixel columns then findBorderBelowMouse should be improved to not pick the first border it finds
+            // but also check other borders and see which one is closest to the mouse.
+            if (newWidth < 5)
+                newWidth = 5;
+
+            m_columns[m_resizingColumn-1].width = newWidth;
+            mouseOnResizableBorder = true;
+
+            const auto oldScrollbarValue = m_horizontalScrollbar->getValue();
+            updateHorizontalScrollbarMaximum();
+
+            // When shrinking a column while the scrollbar is at the maximum value, the scrollbar value and maximum change while the column is resized.
+            // In this case, the column shrinks from the left side while the right side stays stationary. This causes the mouse to no longer be on the border.
+            // If we ignore this (which Windows explorer seems to do) then for every pixel the mouse moves, the faster the column starts shrinking.
+            // In Windows explorer this is a smaller issue because columns have a high minimum width, but for TGUI this causes the resized column to
+            // very quickly end up only having a width of a few pixels. To counter this, we remember the shifted offset. The downside is that the mouse cursor
+            // start drifting away from the border which it is resizing, but the advantage is that the column resizes linearly with the mouse movement.
+            if (m_horizontalScrollbar->getValue() != oldScrollbarValue)
+                m_resizingColumnPixelOffset += (static_cast<float>(m_horizontalScrollbar->getValue()) - static_cast<float>(oldScrollbarValue));
+        }
         // Check if the mouse event should go to the scrollbar
-        if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos))
+        else if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos))
         {
             m_verticalScrollbar->mouseMoved(pos);
         }
@@ -1386,8 +1451,16 @@ namespace tgui
             m_verticalScrollbar->mouseNoLongerOnWidget();
             m_horizontalScrollbar->mouseNoLongerOnWidget();
 
+            if (m_resizableColumns && !m_mouseDown && !m_verticalScrollbar->isMouseDown() && !m_horizontalScrollbar->isMouseDown())
+            {
+                std::size_t columnIndex;
+                float borderPixelOffset;
+                mouseOnResizableBorder = findBorderBelowMouse(pos, columnIndex, borderPixelOffset);
+            }
+
             // Find out on which item the mouse is hovered
-            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+            if (!mouseOnResizableBorder
+             && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
                           m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                           getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
@@ -1398,7 +1471,7 @@ namespace tgui
                     m_possibleDoubleClick = false;
 
                 // If the mouse is held down then select the item below the mouse
-                if ((m_hoveredItem != oldHoveredItem) && m_mouseDown && !m_verticalScrollbar->isMouseDown())
+                if ((m_hoveredItem != oldHoveredItem) && m_mouseDown && !m_verticalScrollbar->isMouseDown() && !m_horizontalScrollbar->isMouseDown())
                 {
                     const bool mouseOnSelectedItem = (m_selectedItems.find(m_hoveredItem) != m_selectedItems.end());
                     if (m_multiSelect)
@@ -1421,6 +1494,15 @@ namespace tgui
                         updateSelectedItem(m_hoveredItem);
                 }
             }
+        }
+
+        // Update the mouse cursor
+        const Cursor::Type wantedCursor = mouseOnResizableBorder ? Cursor::Type::SizeHorizontal : m_mouseCursor;
+        if (m_currentListViewMouseCursor != wantedCursor)
+        {
+            m_currentListViewMouseCursor = wantedCursor;
+            if (m_parentGui)
+                m_parentGui->requestMouseCursor(wantedCursor);
         }
     }
 
@@ -1468,6 +1550,7 @@ namespace tgui
         m_verticalScrollbar->leftMouseButtonNoLongerDown();
         m_horizontalScrollbar->leftMouseButtonNoLongerDown();
         m_mouseOnHeaderIndex = -1;
+        m_resizingColumn = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1781,6 +1864,7 @@ namespace tgui
                 node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
+        node->propertyValuePairs["ResizableColumns"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_resizableColumns));
         node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
         node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
         node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_separatorWidth));
@@ -1849,6 +1933,8 @@ namespace tgui
 
         if (node->propertyValuePairs["AutoScroll"])
             setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
+        if (node->propertyValuePairs["ResizableColumns"])
+            setResizableColumns(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ResizableColumns"]->value).getBool());
         if (node->propertyValuePairs["HeaderVisible"])
             setHeaderVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["HeaderVisible"]->value).getBool());
         if (node->propertyValuePairs["HeaderHeight"])
@@ -1909,6 +1995,47 @@ namespace tgui
             else
                 throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + "'."};
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::mouseEnteredWidget()
+    {
+#if TGUI_HAS_WINDOW_BACKEND_SFML && (SFML_VERSION_MAJOR == 2) && (SFML_VERSION_MINOR < 6)
+        if (m_resizableColumns && (m_mouseCursor != Cursor::Type::Arrow))
+        {
+            // Widget::mouseEnteredWidget() can't be called from here because of a bug in SFML < 2.6.
+            // Calling the function from the base class would set the mouse cursor that was requested. If the mouse is on top
+            // of a border between columns then we need to replace it with a resize cursor afterwards. These cursor changes would
+            // occus out of order though, causing the wrong cursor to show up when the mouse enters a border from the outside.
+            m_mouseHover = true;
+            onMouseEnter.emit(this);
+            m_currentListViewMouseCursor = Cursor::Type::Arrow;
+            return;
+        }
+#endif
+
+        Widget::mouseEnteredWidget();
+
+        // If the list view has a custom mouse cursor then the Widget::mouseEnteredWidget() would have switched to it.
+        // We should recheck whether the mouse is on top of the borders to change it back into a resize arrow if needed.
+        // The check would be called after mouseEnteredWidget() anyway, so we just make sure that the code realizes that
+        // the mouse cursor has been changed by resetting the state.
+        m_currentListViewMouseCursor = m_mouseCursor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::mouseLeftWidget()
+    {
+        if (m_currentListViewMouseCursor != Cursor::Type::Arrow)
+        {
+            m_currentListViewMouseCursor = Cursor::Type::Arrow;
+            if (m_parentGui)
+                m_parentGui->requestMouseCursor(Cursor::Type::Arrow);
+        }
+
+        Widget::mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2335,6 +2462,61 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListView::findBorderBelowMouse(Vector2f pos, std::size_t& columnIndex, float& pixelOffset) const
+    {
+        // The mouse can't be between two columns when it is on the outline of the list view
+        if (!FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                       m_bordersCached.getTop() + m_paddingCached.getTop(),
+                       getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                       getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+            return false;
+
+        const float margin = 3; // Mouse does not have to be exactly on the border
+        const float headerHeight = getCurrentHeaderHeight();
+        const bool mouseOnHeader = (pos.y < m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight);
+
+        // If there are no vertical grid lines then we can't resize when the mouse is below the header
+        if (!mouseOnHeader && (!m_showVerticalGridLines || (m_gridLinesWidth == 0)))
+            return false;
+
+        const float separatorWidth = mouseOnHeader ? m_separatorWidth : m_gridLinesWidth;
+        const float totalSeparatorWidth = getTotalSeparatorWidth();
+
+        // Define an area to check the mouse cursor against. The left position of the area is changed later.
+        FloatRect borderArea;
+        if (mouseOnHeader)
+        {
+            borderArea = FloatRect{0, m_bordersCached.getTop() + m_paddingCached.getTop(),
+                                   m_separatorWidth + 2*margin, headerHeight};
+        }
+        else // Mouse is on the items, not on the header
+        {
+            borderArea = FloatRect{0, m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight,
+                                   m_gridLinesWidth + 2*margin, getInnerSize().y - headerHeight};
+        }
+
+        const std::size_t expandedColumn = m_expandLastColumn ? m_columns.size()-1 : std::numeric_limits<std::size_t>::max();
+        float x = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
+        for (std::size_t i = 0; i < m_columns.size(); ++i)
+        {
+            x += m_columns[i].width;
+            borderArea.left = x + (totalSeparatorWidth - separatorWidth) / 2.f - margin;
+
+            if ((i != expandedColumn) && borderArea.contains(pos))
+            {
+                columnIndex = i + 1;
+                pixelOffset = pos.x - (x + totalSeparatorWidth / 2.f);
+                return true;
+            }
+
+            x += totalSeparatorWidth;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::updateScrollbars()
     {
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
@@ -2665,7 +2847,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawHeaderText(target, headerStates, availableWidth - columnLeftPos, headerHeight, col);
+                    drawHeaderText(target, headerStates, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos), headerHeight, col);
                 else
                 {
                     drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
