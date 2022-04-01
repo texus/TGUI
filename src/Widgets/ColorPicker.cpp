@@ -529,9 +529,14 @@ namespace tgui
         {
             const auto &renderer = getSharedRenderer()->getButton();
 
-            get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setRenderer(renderer);
-            get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setRenderer(renderer);
-            get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setRenderer(renderer);
+            // During loading from file, the renderer is loaded before the child widgets are loaded.
+            // In this exceptional case, we shouldn't try to set the renderer. The buttons will have their renderer in the form file anyway.
+            if (get("#TGUI_INTERNAL$ColorPickerOK#"))
+            {
+                get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setRenderer(renderer);
+                get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setRenderer(renderer);
+                get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setRenderer(renderer);
+            }
         }
         else if (property == "Label")
         {
