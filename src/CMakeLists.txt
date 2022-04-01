@@ -272,6 +272,8 @@ include(Backend/CMakeLists.txt)
 
 # Define either TGUI_STATIC or TGUI_DYNAMIC
 if(TGUI_SHARED_LIBS)
+    # The TGUI_DYNAMIC define is practically never needed. It would only be required in a project that dynamically
+    # links to TGUI without an SFML backend, while linking to a static SFML library in the project itself.
     target_compile_definitions(tgui PUBLIC TGUI_DYNAMIC)
 else()
     target_compile_definitions(tgui PUBLIC TGUI_STATIC)
