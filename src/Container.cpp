@@ -1432,29 +1432,6 @@ namespace tgui
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
                     continue;
 
-                // Skip absolute paths
-                if (pair.second->value[0] != '"')
-                {
-                #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[0] == '/') || (pair.second->value[0] == '\\') || ((pair.second->value.size() > 1) && (pair.second->value[1] == ':')))
-                #else
-                    if (pair.second->value[0] == '/')
-                #endif
-                        continue;
-                }
-                else // The filename is between quotes
-                {
-                    if (pair.second->value.size() <= 1)
-                        continue;
-
-                #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[1] == '/') || (pair.second->value[1] == '\\') || ((pair.second->value.size() > 2) && (pair.second->value[2] == ':')))
-                #else
-                    if (pair.second->value[1] == '/')
-                #endif
-                        continue;
-                }
-
                 String filename;
                 if (pair.second->value[0] != '"')
                     filename = pair.second->value;
@@ -1465,6 +1442,17 @@ namespace tgui
                     TGUI_ASSERT(endQuotePos != String::npos, "End quote must exist in Container::injectFormFilePath, DataIO could not accept the value otherwise");
                     filename = pair.second->value.substr(1, endQuotePos - 1);
                 }
+
+                // Skip absolute paths
+                if (filename[0] == '/')
+                    continue;
+#ifdef TGUI_SYSTEM_WINDOWS
+                if ((filename[0] == '\\') || ((filename.size() > 1) && (filename[1] == ':')))
+                    continue;
+#endif
+                // Skip embedded data
+                if (filename.startsWith("data:"))
+                    continue;
 
                 // If this image already appeared in the form file, then we already know whether it exists or not,
                 // and we would have already warned if it is located in the wrong folder.

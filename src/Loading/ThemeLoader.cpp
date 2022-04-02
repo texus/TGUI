@@ -60,15 +60,18 @@ namespace tgui
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
                     continue;
 
-                // Insert the path into the filename unless the filename is already an absolute path.
+                // Insert the path into the filename unless the filename is already an absolute path or if the data is embedded.
                 // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
                 if (pair.second->value[0] != '"')
                 {
-                #ifdef TGUI_SYSTEM_WINDOWS
+                    if (pair.second->value.startsWith("data:"))
+                        continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
                     if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
-                #else
+#else
                     if (pair.second->value[0] != '/')
-                #endif
+#endif
                         pair.second->value = path + pair.second->value;
                 }
                 else // The filename is between quotes
@@ -76,11 +79,14 @@ namespace tgui
                     if (pair.second->value.size() <= 1)
                         continue;
 
-                #ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value.size() >= 7) && (pair.second->value.substr(1, 5) == "data:"))
+                        continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
                     if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
-                #else
+#else
                     if (pair.second->value[1] != '/')
-                #endif
+#endif
                         pair.second->value = '"' + path + pair.second->value.substr(1);
                 }
             }
