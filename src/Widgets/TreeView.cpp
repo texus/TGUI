@@ -1110,6 +1110,9 @@ namespace tgui
         // Remove the 'Item' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
             [](const std::unique_ptr<DataIO::Node>& child){ return child->name == "Item"; }), node->children.end());
+
+        // Update the visible nodes
+        markNodesDirty();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
