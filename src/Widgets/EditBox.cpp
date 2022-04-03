@@ -748,6 +748,9 @@ namespace tgui
             m_textSelection.setStyle(style);
             m_textSuffix.setStyle(style);
             m_textFull.setStyle(style);
+
+            // The width of the text can be different, which requires the text to be realigned if it was centered or right-aligned
+            updateTextSize();
         }
         else if (property == "DefaultTextStyle")
         {
