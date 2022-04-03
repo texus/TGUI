@@ -1,13 +1,13 @@
 // Theme based on http://dribbble.com/shots/635698-UI-Kit-Baby-Blue
 
-Button {
+BitmapButton {
     Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureHover = "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextColor    = rgb(100, 100, 100);
 }
 
-BitmapButton {
+Button {
     Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureHover = "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
@@ -138,6 +138,13 @@ FileDialog {
     FileTypeComboBox = &ComboBox;
 }
 
+Knob {
+    BackgroundColor         = rgb(210, 210, 210);
+    ThumbColor              = rgb(100, 100, 100);
+    BorderColor             = White;
+    Borders                 = (2, 2, 2, 2);
+}
+
 Label {
     TextColor = rgb(100, 100, 100);
     Scrollbar = &Scrollbar;
@@ -205,11 +212,25 @@ RadioButton {
     TextColor        = rgb(100, 100, 100);
 }
 
+RangeSlider {
+    TextureTrack = "BabyBlue.png" Part(38, 2, 30, 20) Middle(10, 0, 10, 20) Smooth;
+    TextureThumb = "BabyBlue.png" Part(84, 40, 17, 38) Smooth;
+}
+
+ScrollablePanel {
+    BackgroundColor = rgb(230, 230, 230);
+    Scrollbar       = &Scrollbar;
+}
+
 Scrollbar {
     TextureTrack     = "BabyBlue.png" Part(432, 2, 16, 32) Smooth;
     TextureThumb     = "BabyBlue.png" Part(414, 2, 16, 32) Smooth;
     TextureArrowUp   = "BabyBlue.png" Part(2, 2, 16, 16) Smooth;
     TextureArrowDown = "BabyBlue.png" Part(20, 2, 16, 16) Smooth;
+}
+
+SeparatorLine {
+    Color = White;
 }
 
 Slider {
@@ -247,4 +268,20 @@ ToolTip {
     BorderColor     = rgb(255, 255, 255);
     Borders         = (1, 1, 1, 1);
     Padding         = (2, 2, 2, 2);
+}
+
+ToggleButton {
+    Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
+    TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
+    TextColor    = rgb(100, 100, 100);
+}
+
+TreeView {
+    BackgroundColor         = rgb(210, 210, 210);
+    TextColor               = rgb(100, 100, 100);
+    SelectedBackgroundColor = rgb(190, 225, 235);
+    SelectedTextColor       = rgb(150, 150, 150);
+    BorderColor             = White;
+    Borders                 = (2, 2, 2, 2);
+    Scrollbar               = &Scrollbar;
 }

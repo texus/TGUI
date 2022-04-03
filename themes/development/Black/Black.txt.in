@@ -1,4 +1,4 @@
-Button {
+BitmapButton {
     Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
     TextureHover    = ${ButtonBackgroundHover} Middle(10, 0) Smooth;
     TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
@@ -7,7 +7,7 @@ Button {
     TextColorHover  = rgb(250, 250, 250);
 }
 
-BitmapButton {
+Button {
     Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
     TextureHover    = ${ButtonBackgroundHover} Middle(10, 0) Smooth;
     TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
@@ -138,6 +138,13 @@ FileDialog {
     FileTypeComboBox = &ComboBox;
 }
 
+Knob {
+    BackgroundColor = rgb( 80,  80,  80);
+    ThumbColor      = rgb(190, 190, 190);
+    BorderColor     = Black;
+    Borders         = (2, 2, 2, 2);
+}
+
 Label {
     TextColor = rgb(190, 190, 190);
     Scrollbar = &Scrollbar;
@@ -216,6 +223,17 @@ RadioButton {
     TextColorHover          = rgb(250, 250, 250);
 }
 
+RangeSlider {
+    TextureTrack      = ${SliderTrack} Middle(0, 15) Smooth;
+    TextureTrackHover = ${SliderTrackHover} Middle(0, 15) Smooth;
+    TextureThumb      = ${SliderThumb} Smooth;
+}
+
+ScrollablePanel {
+    BackgroundColor = rgb(80, 80, 80);
+    Scrollbar       = &Scrollbar;
+}
+
 Scrollbar {
     TextureTrack          = ${ScrollbarTrack} Smooth;
     TextureTrackHover     = ${ScrollbarTrackHover} Smooth;
@@ -225,6 +243,10 @@ Scrollbar {
     TextureArrowUpHover   = ${ArrowUpHover} Middle(0, 0, 20, 19) Smooth;
     TextureArrowDown      = ${ArrowDown} Middle(0, 1, 20, 19) Smooth;
     TextureArrowDownHover = ${ArrowDownHover} Middle(0, 1, 20, 19) Smooth;
+}
+
+SeparatorLine {
+    Color = Black;
 }
 
 Slider {
@@ -265,4 +287,24 @@ ToolTip {
     BorderColor     = Black;
     Borders         = (1, 1, 1, 1);
     Padding         = (2, 2, 2, 2);
+}
+
+ToggleButton {
+    Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
+    TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
+    TextColor       = rgb(190, 190, 190);
+    TextColorHover  = rgb(250, 250, 250);
+}
+
+TreeView {
+    BackgroundColor              = rgb( 80,  80,  80);
+    TextColor                    = rgb(190, 190, 190);
+    TextColorHover               = rgb(250, 250, 250);
+    BackgroundColorHover         = rgb(100, 100, 100);
+    SelectedBackgroundColor      = rgb( 10, 110, 255);
+    SelectedBackgroundColorHover = rgb(30, 150, 255);
+    SelectedTextColor            = White;
+    BorderColor                  = Black;
+    Borders                      = (1, 1, 1, 1);
+    Scrollbar                    = &Scrollbar;
 }
