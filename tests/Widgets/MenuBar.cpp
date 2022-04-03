@@ -212,6 +212,40 @@ TEST_CASE("[MenuBar]")
         }
     }
 
+    SECTION("Renaming menus")
+    {
+        menuBar->addMenu("File");
+        menuBar->addMenuItem("Load");
+        menuBar->addMenuItem("Save");
+        menuBar->addMenu("Edit");
+        menuBar->addMenuItem("Undo");
+        menuBar->addMenuItem("Redo");
+        menuBar->addMenuItem("Copy");
+        menuBar->addMenuItem("Paste");
+        menuBar->addMenuItem({"This", "is", "an experiment"});
+        menuBar->addMenuItem({"This", "is", "a test"});
+
+        // Rename a menu
+        REQUIRE(menuBar->getMenus()[1].text == "Edit");
+        REQUIRE(menuBar->changeMenuItem({"Edit"}, "EDIT"));
+        REQUIRE(menuBar->getMenus()[1].text == "EDIT");
+
+        // We can't access the menu items with the old name
+        REQUIRE(!menuBar->changeMenuItem({"Edit", "Redo"}, "REDO"));
+        REQUIRE(menuBar->getMenus()[1].menuItems[1].text == "Redo");
+
+        // Rename a menu item
+        REQUIRE(menuBar->changeMenuItem({"EDIT", "Copy"}, "COPY"));
+        REQUIRE(menuBar->getMenus()[1].menuItems[2].text == "COPY");
+
+        // Rename a menu item in a sub menu
+        REQUIRE(menuBar->changeMenuItem({"This", "is", "a test"}, "THE test"));
+        REQUIRE(menuBar->getMenus()[2].menuItems[0].menuItems[1].text == "THE test");
+
+        // We can't rename something that doesn't exist
+        REQUIRE(!menuBar->changeMenuItem({"This", "won't", "work"}, "Just testing"));
+    }
+
     SECTION("Disabling menus")
     {
         menuBar->addMenu("M1");

@@ -282,6 +282,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text of an existing menu item
+        ///
+        /// @param menu  Hierarchy of the menu items, starting with the menu and ending with menu item that is to be renamed
+        /// @param text  The new text written on this menu item
+        ///
+        /// @return True when the menu item was renamed, false when the menu item was not found
+        ///
+        /// @code
+        /// menuBar->addMenu("File");
+        /// menuBar->addMenuItem("Load");
+        /// menuBar->changeMenuItem({"File", "Load"}, "Load file");
+        /// @endcode
+        ///
+        /// This function can also be used to rename menus, by passing a hierarchy with only one element.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeMenuItem(const std::vector<String>& hierarchy, const String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all menus
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllMenus();
@@ -565,7 +584,11 @@ namespace tgui
         const Menu* findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const;
 
         /// @internal
-        /// Search for the menu item specified in the hierarchy.
+        /// Search for the menu item specified in the hierarchy and return a pointer to it.
+        Menu* findMenuItem(const std::vector<String>& hierarchy);
+
+        /// @internal
+        /// Search for the menu item specified in the hierarchy and return a read-only pointer to it.
         const Menu* findMenuItem(const std::vector<String>& hierarchy) const;
 
         /// @internal

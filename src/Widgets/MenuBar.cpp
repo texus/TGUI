@@ -393,6 +393,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool MenuBar::changeMenuItem(const std::vector<String>& hierarchy, const String& text)
+    {
+        if (hierarchy.empty())
+            return false;
+
+        auto* menu = findMenuItem(hierarchy);
+        if (!menu)
+            return false;
+
+        menu->text.setString(text);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::removeAllMenus()
     {
         m_menus.clear();
@@ -909,6 +924,8 @@ namespace tgui
 
     MenuBar::Menu* MenuBar::findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents)
     {
+        assert(hierarchy.size() >= 2);
+
         for (auto& menu : menus)
         {
             if (menu.text.getString() != hierarchy[parentIndex])
@@ -936,6 +953,8 @@ namespace tgui
 
     const MenuBar::Menu* MenuBar::findMenu(const std::vector<String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const
     {
+        assert(hierarchy.size() >= 2);
+
         for (auto& menu : menus)
         {
             if (menu.text.getString() != hierarchy[parentIndex])
@@ -952,16 +971,54 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    MenuBar::Menu* MenuBar::findMenuItem(const std::vector<String>& hierarchy)
+    {
+        if (hierarchy.empty())
+            return nullptr;
+
+        std::vector<Menu>* menuItems;
+        if (hierarchy.size() == 1)
+            menuItems = &m_menus;
+        else
+        {
+            auto* menu = findMenu(hierarchy, 0, m_menus, false);
+            if (!menu)
+                return nullptr;
+
+            menuItems = &menu->menuItems;
+        }
+
+        for (auto& menuItem : *menuItems)
+        {
+            if (menuItem.text.getString() != hierarchy.back())
+                continue;
+
+            return &menuItem;
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const MenuBar::Menu* MenuBar::findMenuItem(const std::vector<String>& hierarchy) const
     {
-        if (hierarchy.size() < 2)
+        if (hierarchy.empty())
             return nullptr;
 
-        const auto* menu = findMenu(hierarchy, 0, m_menus);
-        if (!menu)
-            return nullptr;
+        const std::vector<Menu>* menuItems;
+        if (hierarchy.size() == 1)
+            menuItems = &m_menus;
+        else
+        {
+            const auto* menu = findMenu(hierarchy, 0, m_menus);
+            if (!menu)
+                return nullptr;
 
-        for (auto& menuItem : menu->menuItems)
+            menuItems = &menu->menuItems;
+        }
+
+        for (auto& menuItem : *menuItems)
         {
             if (menuItem.text.getString() != hierarchy.back())
                 continue;
