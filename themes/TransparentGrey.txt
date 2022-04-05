@@ -138,6 +138,7 @@ ListView {
     BackgroundColorHover = rgba(190, 190, 190, 215);
     SelectedBackgroundColor = rgba(0, 110, 200, 130);
     SelectedTextColor = rgba(255, 255, 255, 245);
+    HeaderBackgroundColor = rgb(160, 160, 160, 215);
     TextColor = rgba(255, 255, 255, 215);
     TextColorHover = rgba(255, 255, 255, 235);
     BorderColor = rgba(240, 240, 240, 215);

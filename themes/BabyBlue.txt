@@ -163,6 +163,7 @@ ListBox {
 ListView {
     BackgroundColor         = rgb(210, 210, 210);
     TextColor               = rgb(100, 100, 100);
+    HeaderBackgroundColor   = rgb(185, 185, 185);
     SelectedBackgroundColor = rgb(190, 225, 235);
     SelectedTextColor       = rgb(150, 150, 150);
     BorderColor             = White;
