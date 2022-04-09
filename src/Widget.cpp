@@ -783,7 +783,18 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         // If the widget is hiden while still focused then it must be unfocused
         if (!visible)
+        {
             setFocused(false);
+
+            // If we were still interacting with the widget then stop doing so
+            if (m_mouseHover)
+                mouseNoLongerOnWidget();
+
+            if (m_mouseDown)
+                leftMouseButtonNoLongerDown();
+
+            rightMouseButtonNoLongerDown();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
