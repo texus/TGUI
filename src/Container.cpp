@@ -927,15 +927,15 @@ namespace tgui
 
     void Container::mouseNoLongerOnWidget()
     {
-        if (m_mouseHover)
-        {
-            mouseLeftWidget();
+        if (!m_mouseHover)
+            return;
 
-            if (m_widgetBelowMouse)
-            {
-                m_widgetBelowMouse->mouseNoLongerOnWidget();
-                m_widgetBelowMouse = nullptr;
-            }
+        mouseLeftWidget();
+
+        if (m_widgetBelowMouse)
+        {
+            m_widgetBelowMouse->mouseNoLongerOnWidget();
+            m_widgetBelowMouse = nullptr;
         }
     }
 
