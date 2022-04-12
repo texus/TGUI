@@ -319,7 +319,7 @@ TEST_CASE("[RangeSlider]")
         slider->setSelectionEnd(35);
         slider->setStep(5);
 
-        testSavingWidget("RangeSlider", slider, false);
+        testSavingWidget("RangeSlider", slider);
     }
 
     SECTION("Draw")

@@ -374,7 +374,7 @@ TEST_CASE("[TreeView]")
         treeView->setItemHeight(30);
         treeView->setTextSize(25);
 
-        testSavingWidget("TreeView", treeView, false);
+        testSavingWidget("TreeView", treeView);
     }
 
     // TODO: Draw

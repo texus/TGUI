@@ -46,27 +46,7 @@ struct SpinControlProperties : WidgetProperties
         else if (property == "DecimalPlaces")
             spinControl->setDecimalPlaces(value.toUInt());
         else
-        {
-            bool isButtonProperty = m_buttonProperties.count(property);
-            bool isTextProperty = m_textProperties.count(property);
-
-            if (isButtonProperty)
-            {
-                if (property.find("Buttons") == 0)
-                {
-                    spinControl->getSpinButtonRenderer()->setProperty(property.substr(7), value);
-                    return;
-                }
-                else
-                    spinControl->getSpinButtonRenderer()->setProperty(property, value);
-            }
-
-            if (isTextProperty)
-                spinControl->getSpinTextRenderer()->setProperty(property, value);
-
-            if(!isButtonProperty && !isTextProperty)
-                WidgetProperties::updateProperty(widget, property, value);
-        }
+            WidgetProperties::updateProperty(widget, property, value);
     }
 
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
@@ -81,44 +61,44 @@ struct SpinControlProperties : WidgetProperties
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(spinControl->getDecimalPlaces())};
 
         const auto buttonRenderer = spinControl->getSpinButtonSharedRenderer();
-        pair.second["ButtonsBorders"] = {"Outline", tgui::Serializer::serialize(buttonRenderer->getBorders())};
-        pair.second["BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(buttonRenderer->getBorderBetweenArrows())};
-        pair.second["ButtonsBackgroundColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColor())};
-        pair.second["ButtonsBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColorHover())};
-        pair.second["ArrowColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColor())};
-        pair.second["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColorHover())};
-        pair.second["ButtonsBorderColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBorderColor())};
-        pair.second["TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUp())};
-        pair.second["TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUpHover())};
-        pair.second["TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDown())};
-        pair.second["TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDownHover())};
+        pair.second["SpinButton.ButtonsBorders"] = {"Outline", tgui::Serializer::serialize(buttonRenderer->getBorders())};
+        pair.second["SpinButton.BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(buttonRenderer->getBorderBetweenArrows())};
+        pair.second["SpinButton.ButtonsBackgroundColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColor())};
+        pair.second["SpinButton.ButtonsBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColorHover())};
+        pair.second["SpinButton.ArrowColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColor())};
+        pair.second["SpinButton.ArrowColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColorHover())};
+        pair.second["SpinButton.ButtonsBorderColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBorderColor())};
+        pair.second["SpinButton.TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUp())};
+        pair.second["SpinButton.TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUpHover())};
+        pair.second["SpinButton.TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDown())};
+        pair.second["SpinButton.TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDownHover())};
 
         const auto textRenderer = spinControl->getSpinTextSharedRenderer();
-        pair.second["Padding"] = {"Outline", textRenderer->getPadding().toString()};
-        pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(textRenderer->getCaretWidth())};
-        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColor())};
-        pair.second["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorDisabled())};
-        pair.second["TextColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorFocused())};
-        pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextColor())};
-        pair.second["SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextBackgroundColor())};
-        pair.second["DefaultTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getDefaultTextColor())};
-        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColor())};
-        pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorHover())};
-        pair.second["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorDisabled())};
-        pair.second["BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorFocused())};
-        pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColor())};
-        pair.second["CaretColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorHover())};
-        pair.second["CaretColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorFocused())};
-        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColor())};
-        pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorHover())};
-        pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorDisabled())};
-        pair.second["BorderColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorFocused())};
-        pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTexture())};
-        pair.second["TextureHover"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureHover())};
-        pair.second["TextureDisabled"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureDisabled())};
-        pair.second["TextureFocused"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureFocused())};
-        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(textRenderer->getTextStyle())};
-        pair.second["DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(textRenderer->getDefaultTextStyle())};
+        pair.second["SpinText.Padding"] = {"Outline", textRenderer->getPadding().toString()};
+        pair.second["SpinText.CaretWidth"] = {"Float", tgui::String::fromNumber(textRenderer->getCaretWidth())};
+        pair.second["SpinText.TextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColor())};
+        pair.second["SpinText.TextColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorDisabled())};
+        pair.second["SpinText.TextColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorFocused())};
+        pair.second["SpinText.SelectedTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextColor())};
+        pair.second["SpinText.SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextBackgroundColor())};
+        pair.second["SpinText.DefaultTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getDefaultTextColor())};
+        pair.second["SpinText.BackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColor())};
+        pair.second["SpinText.BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorHover())};
+        pair.second["SpinText.BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorDisabled())};
+        pair.second["SpinText.BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorFocused())};
+        pair.second["SpinText.CaretColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColor())};
+        pair.second["SpinText.CaretColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorHover())};
+        pair.second["SpinText.CaretColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorFocused())};
+        pair.second["SpinText.BorderColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColor())};
+        pair.second["SpinText.BorderColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorHover())};
+        pair.second["SpinText.BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorDisabled())};
+        pair.second["SpinText.BorderColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorFocused())};
+        pair.second["SpinText.Texture"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTexture())};
+        pair.second["SpinText.TextureHover"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureHover())};
+        pair.second["SpinText.TextureDisabled"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureDisabled())};
+        pair.second["SpinText.TextureFocused"] = {"Texture", tgui::Serializer::serialize(textRenderer->getTextureFocused())};
+        pair.second["SpinText.TextStyle"] = {"TextStyle", tgui::Serializer::serialize(textRenderer->getTextStyle())};
+        pair.second["SpinText.DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(textRenderer->getDefaultTextStyle())};
         return pair;
     }
 

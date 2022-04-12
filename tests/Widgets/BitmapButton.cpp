@@ -297,7 +297,7 @@ TEST_CASE("[BitmapButton]")
         button->setImage("resources/image.png");
         button->setImageScaling(0.8f);
 
-        testSavingWidget("BitmapButton", button, false);
+        testSavingWidget("BitmapButton", button);
     }
 
     SECTION("Draw")

@@ -208,6 +208,6 @@ TEST_CASE("[tabContainer]")
 
     SECTION("Saving and loading from file")
     {
-        testSavingWidget("TabContainer", tabContainer, false);
+        testSavingWidget("TabContainer", tabContainer);
     }
 }

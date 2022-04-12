@@ -179,9 +179,97 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SubwidgetContainer::rendererChanged(const String& property)
+    {
+        // If the property matches the name of a child widget then the value should be a renderer object to be passed to that widget
+        for (const auto& widget : m_container->getWidgets())
+        {
+            const String& name = widget->getWidgetName();
+            if (!name.empty() && (name == property))
+            {
+                auto propertyValue = getSharedRenderer()->getProperty(property);
+                if (propertyValue.getType() != ObjectConverter::Type::None)
+                    widget->setRenderer(propertyValue.getRenderer());
+                else
+                    widget->setRenderer(tgui::Theme::getDefault()->getRendererNoThrow(widget->getWidgetType()));
+
+                return;
+            }
+        }
+
+        // If the property starts with "WidgetName." then the part behind the dot is the property name for that widget
+        const auto dotPos = property.find(U'.');
+        if (dotPos != String::npos)
+        {
+            const String& nameToSearch = property.substr(0, dotPos);
+            const String& propertyForChild = property.substr(dotPos + 1);
+            for (const auto& widget : m_container->getWidgets())
+            {
+                const String& name = widget->getWidgetName();
+                if (!name.empty() && (name == nameToSearch))
+                {
+                    widget->getRenderer()->setProperty(propertyForChild, getSharedRenderer()->getProperty(property));
+                    return;
+                }
+            }
+        }
+
+        Widget::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<DataIO::Node> SubwidgetContainer::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
+
+        // Find the renderer node
+        std::vector<std::unique_ptr<DataIO::Node>>::iterator rendererNodeIt;
+        const String& rendererName = renderers.at(this).second; // Empty if the renderer isn't shared
+        if (rendererName.empty()) // We can't check renderers.at(this).first as Widget::save moved the value
+        {
+            // If the renderer has no name then it isn't shared and we should find the renderer among the child nodes
+            rendererNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
+                return child->name == "Renderer";
+            });
+            TGUI_ASSERT(rendererNodeIt != node->children.end(), "SubwidgetContainer relies on Widget::save saving the renderer");
+        }
+        else // The renderer is shared with other widgets, we need to look for it in global scope
+        {
+            DataIO::Node* rootNode = node.get();
+            while (rootNode->parent)
+                rootNode = node->parent;
+
+            rendererNodeIt = std::find_if(rootNode->children.begin(), rootNode->children.end(), [&](const std::unique_ptr<DataIO::Node>& child){
+                return child->name == "Renderer" + rendererName;
+            });
+            TGUI_ASSERT(rendererNodeIt != rootNode->children.end(), "SubwidgetContainer relies on the renderer being saved already");
+        }
+
+        // Remove all renderer properties that were specified for subwidgets, as they will be saved as part of the child widget
+        for (const auto& widget : m_container->getWidgets())
+        {
+            const String& widgetName = widget->getWidgetName();
+            if (widgetName.empty())
+                continue;
+
+            auto& propertyValuePairs = (*rendererNodeIt)->propertyValuePairs;
+            auto propertyIt = propertyValuePairs.begin();
+            while (propertyIt != propertyValuePairs.end())
+            {
+                // Search for properties that either match the widget name or start with the name followed by a dot
+                if ((!propertyIt->first.startsWith(widgetName))
+                 || ((propertyIt->first.length() > widgetName.length()) && (propertyIt->first[widgetName.length()] != U'.'))
+                 || (propertyIt->first != widgetName))
+                {
+                    ++propertyIt;
+                    continue;
+                }
+
+                propertyIt = propertyValuePairs.erase(propertyIt);
+            }
+        }
+
         node->children.emplace_back(m_container->save(renderers));
         return node;
     }

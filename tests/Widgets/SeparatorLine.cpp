@@ -78,8 +78,7 @@ TEST_CASE("[SeparatorLine]")
     SECTION("Saving and loading from file")
     {
         separator->setSize({2, 100});
-        separator->getRenderer()->setColor(tgui::Color::Red);
 
-        testSavingWidget("SeparatorLine", separator, false);
+        testSavingWidget("SeparatorLine", separator);
     }
 }

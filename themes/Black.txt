@@ -265,6 +265,15 @@ SpinButton {
     BorderBetweenArrows    = 0;
 }
 
+SpinControl {
+    SpinButton = &SpinButton;
+    SpinText = &EditBox;
+}
+
+TabContainer {
+    Tabs = &Tabs;
+}
+
 Tabs {
     TextureTab         = "Black.png" Part(0, 546, 60, 32) Middle(16, 0) Smooth;
     TextureSelectedTab = "Black.png" Part(62, 546, 60, 32) Middle(16, 0) Smooth;

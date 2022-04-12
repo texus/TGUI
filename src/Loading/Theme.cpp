@@ -253,6 +253,8 @@ namespace tgui
                                                          {"ArrowColor", Color{60, 60, 60}},
                                                          {"ArrowColorHover", Color::Black},
                                                          {"BorderBetweenArrows", 2.f}})},
+                    {"SpinControl", RendererData::create({})},
+                    {"TabContainer", RendererData::create({})},
                     {"Tabs", RendererData::create({{"Borders", Borders{1}},
                                                    {"BorderColor", Color::Black},
                                                    {"TextColor", Color{60, 60, 60}},

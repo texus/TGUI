@@ -239,6 +239,15 @@ SpinButton {
     BorderBetweenArrows = 1;
 }
 
+SpinControl {
+    SpinButton = &SpinButton;
+    SpinText = &EditBox;
+}
+
+TabContainer {
+    Tabs = &Tabs;
+}
+
 Tabs {
     BackgroundColor = rgba(180, 180, 180, 215);
     SelectedBackgroundColor = rgba(0, 110, 200, 130);

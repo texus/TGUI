@@ -244,6 +244,15 @@ SpinButton {
     TextureArrowDown = "BabyBlue.png" Part(20, 2, 16, 16) Smooth;
 }
 
+SpinControl {
+    SpinButton = &SpinButton;
+    SpinText = &EditBox;
+}
+
+TabContainer {
+    Tabs = &Tabs;
+}
+
 Tabs {
     TextureTab         = "BabyBlue.png" Part(450, 2, 44, 36) Middle(4, 3, 36, 30) Smooth;
     TextureSelectedTab = "BabyBlue.png" Part(2, 40, 44, 36) Middle(4, 3, 36, 30) Smooth;

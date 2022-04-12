@@ -172,6 +172,6 @@ TEST_CASE("[spinControl]")
         spinControl->setValue(20);
         spinControl->setStep(5);
 
-        testSavingWidget("SpinControl", spinControl, false);
+        testSavingWidget("SpinControl", spinControl);
     }
 }

@@ -293,7 +293,7 @@ TEST_CASE("[ScrollablePanel]")
 
         SECTION("Save entire panel")
         {
-            testSavingWidget("ScrollablePanel", panel, false);
+            testSavingWidget("ScrollablePanel", panel);
         }
     }
 

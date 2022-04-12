@@ -359,7 +359,7 @@ TEST_CASE("[ToggleButton]")
         button->setTextSize(25);
         button->setDown(true);
 
-        testSavingWidget("ToggleButton", button, false);
+        testSavingWidget("ToggleButton", button);
     }
 
     // TODO: Draw tests

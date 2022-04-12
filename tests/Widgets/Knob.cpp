@@ -234,7 +234,7 @@ TEST_CASE("[Knob]")
         knob->setMaximum(50);
         knob->setValue(20);
 
-        testSavingWidget("Knob", knob, false);
+        testSavingWidget("Knob", knob);
     }
 
     SECTION("Draw")

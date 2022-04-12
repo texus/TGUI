@@ -265,6 +265,15 @@ SpinButton {
     BorderBetweenArrows    = 0;
 }
 
+SpinControl {
+    SpinButton = &SpinButton;
+    SpinText = &EditBox;
+}
+
+TabContainer {
+    Tabs = &Tabs;
+}
+
 Tabs {
     TextureTab         = ${TabBackground} Middle(16, 0) Smooth;
     TextureSelectedTab = ${TabBackgroundSelected} Middle(16, 0) Smooth;
