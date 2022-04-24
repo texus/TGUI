@@ -109,10 +109,8 @@ namespace tgui
         /// @param font             Font of the text
         /// @param textSize         The text size
         /// @param bold             Should the text be bold?
-        /// @param dropLeadingSpace Should a single space at the beginning of a line be removed?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static String wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace = true);
+        static String wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1254,7 +1254,7 @@ namespace tgui
             if (maxLineWidth <= 0)
                 return;
 
-            string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSizeCached, false, false);
+            string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSizeCached, false);
         }
 
         // Store the current selection position when we are keeping the selection

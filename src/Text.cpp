@@ -371,7 +371,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String Text::wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace)
+    String Text::wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold)
     {
         if (font == nullptr)
             return U"";
@@ -441,20 +441,6 @@ namespace tgui
                     // The word can't be split but there is no other choice, it does not fit on the line
                     if ((index - oldIndex) <= wordWrapCorrection)
                         index = indexWithoutWordWrap;
-                }
-            }
-
-            // If the next line starts with just a space, then the space need not be visible
-            if (dropLeadingSpace)
-            {
-                if ((index < text.length()) && (text[index] == ' '))
-                {
-                    if ((index == 0) || (!isWhitespace(text[index-1])))
-                    {
-                        // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
-                        if (((index + 1 < text.length()) && (!isWhitespace(text[index + 1]))) || (index + 1 == text.length()))
-                            index++;
-                    }
                 }
             }
 
