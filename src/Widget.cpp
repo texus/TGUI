@@ -1133,6 +1133,9 @@ namespace tgui
         if (m_parent == parent)
             return;
 
+        if (m_focused)
+            setFocused(false);
+
         // When removing the widget from its parent, all animations are aborted.
         // This prevents memory leaks when a widget is removed while it is still playing an animation.
         if (!parent)
