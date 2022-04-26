@@ -122,6 +122,8 @@ struct ListViewProperties : WidgetProperties
         pair.second["SeparatorColor"] = {"Color", tgui::Serializer::serialize(renderer->getSeparatorColor())};
         pair.second["GridLinesColor"] = {"Color", tgui::Serializer::serialize(renderer->getGridLinesColor())};
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
+        pair.second["TextureHeaderBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureHeaderBackground())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         return pair;
     }
 

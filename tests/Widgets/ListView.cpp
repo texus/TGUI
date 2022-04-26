@@ -843,6 +843,36 @@ TEST_CASE("[ListView]")
             REQUIRE(renderer->getScrollbar()->propertyValuePairs["TrackColor"].getColor() == tgui::Color::Red);
             REQUIRE(renderer->getScrollbar()->propertyValuePairs["ThumbColor"].getColor() == tgui::Color::Blue);
         }
+
+        SECTION("textured")
+        {
+            tgui::Texture textureHeaderBackground("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
+            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureHeaderBackground", tgui::Serializer::serialize(textureHeaderBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+            }
+
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureHeaderBackground", textureHeaderBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+            }
+
+            SECTION("functions")
+            {
+                renderer->setTextureHeaderBackground(textureHeaderBackground);
+                renderer->setTextureBackground(textureBackground);
+            }
+
+            REQUIRE(renderer->getProperty("TextureHeaderBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+
+            REQUIRE(renderer->getTextureHeaderBackground().getData() == textureHeaderBackground.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
+        }
     }
 
     SECTION("Saving and loading from file")

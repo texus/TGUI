@@ -116,7 +116,7 @@ namespace tgui
         m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
         updateScrollbars();
 
-        setPosition(m_position);
+        m_spriteBackground.setSize(getInnerSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1641,6 +1641,14 @@ namespace tgui
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
+        else if (property == "TextureHeaderBackground")
+        {
+            m_spriteHeaderBackground.setTexture(getSharedRenderer()->getTextureHeaderBackground());
+        }
+        else if (property == "TextureBackground")
+        {
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
+        }
         else if (property == "TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
@@ -1727,6 +1735,9 @@ namespace tgui
 
             m_verticalScrollbar->setInheritedOpacity(m_opacityCached);
             m_horizontalScrollbar->setInheritedOpacity(m_opacityCached);
+
+            m_spriteHeaderBackground.setOpacity(m_opacityCached);
+            m_spriteBackground.setOpacity(m_opacityCached);
 
             for (auto& column : m_columns)
                 column.text.setOpacity(m_opacityCached);
@@ -2553,6 +2564,13 @@ namespace tgui
         // If the scrollbar was at the bottom then keep it at the bottom if it changes due to a different viewport size
         if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
             m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
+
+        // Update the size of the header texture (in case there will be one).
+        // The size depends on many values, but updateScrollbars() is called when any of them are changed.
+        float headerWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        if (m_verticalScrollbar->isShown())
+            headerWidth -= m_verticalScrollbar->getSize().x;
+        m_spriteHeaderBackground.setSize({headerWidth, getCurrentHeaderHeight()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2728,7 +2746,10 @@ namespace tgui
         }
 
         // Draw the background
-        target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        if (m_spriteBackground.isSet())
+            target.drawSprite(states, m_spriteBackground);
+        else if (m_backgroundColorCached != Color::Transparent)
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         const unsigned int totalItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
 
@@ -2765,7 +2786,9 @@ namespace tgui
         {
             // We deliberately draw behind the header separator to make sure it has the same color as
             // the column separator when the color is semi-transparent.
-            if (m_headerBackgroundColorCached.isSet())
+            if (m_spriteHeaderBackground.isSet())
+                target.drawSprite(states, m_spriteHeaderBackground);
+            else if (m_headerBackgroundColorCached.isSet())
                 target.drawFilledRect(states, {availableWidth, totalHeaderHeight}, Color::applyOpacity(m_headerBackgroundColorCached, m_opacityCached));
 
             // Draw the separator line between the header and the contents

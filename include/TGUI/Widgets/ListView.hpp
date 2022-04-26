@@ -1101,6 +1101,9 @@ namespace tgui
         int m_possibleDoubleClick = false; // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_autoScroll = true; // Should the list view scroll to the bottom when a new item is added?
 
+        Sprite m_spriteHeaderBackground;
+        Sprite m_spriteBackground;
+
         // Cached renderer properties
         Borders   m_bordersCached;
         Borders   m_paddingCached;
