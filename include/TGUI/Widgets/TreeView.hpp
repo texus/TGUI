@@ -488,6 +488,7 @@ namespace tgui
         bool m_possibleDoubleClick = false;
         int m_doubleClickNodeIndex = -1;
 
+        Sprite    m_spriteBackground;
         Sprite    m_spriteBranchExpanded;
         Sprite    m_spriteBranchCollapsed;
         Sprite    m_spriteLeaf;

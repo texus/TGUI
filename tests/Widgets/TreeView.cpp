@@ -326,12 +326,14 @@ TEST_CASE("[TreeView]")
 
         SECTION("textured")
         {
+            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
             tgui::Texture textureBranchExpanded("resources/TreeView/Expanded.png");
             tgui::Texture textureBranchCollapsed("resources/TreeView/Collapsed.png");
             tgui::Texture textureLeaf("resources/TreeView/Leaf.png");
 
             SECTION("set serialized property")
             {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBranchExpanded", tgui::Serializer::serialize(textureBranchExpanded)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBranchCollapsed", tgui::Serializer::serialize(textureBranchCollapsed)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureLeaf", tgui::Serializer::serialize(textureLeaf)));
@@ -339,6 +341,7 @@ TEST_CASE("[TreeView]")
 
             SECTION("set object property")
             {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBranchExpanded", textureBranchExpanded));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBranchCollapsed", textureBranchCollapsed));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureLeaf", textureLeaf));
@@ -346,15 +349,18 @@ TEST_CASE("[TreeView]")
 
             SECTION("functions")
             {
+                renderer->setTextureBackground(textureBackground);
                 renderer->setTextureBranchExpanded(textureBranchExpanded);
                 renderer->setTextureBranchCollapsed(textureBranchCollapsed);
                 renderer->setTextureLeaf(textureLeaf);
             }
 
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureBranchExpanded").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureBranchCollapsed").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureLeaf").getTexture().getData() != nullptr);
 
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
             REQUIRE(renderer->getTextureBranchExpanded().getData() == textureBranchExpanded.getData());
             REQUIRE(renderer->getTextureBranchCollapsed().getData() == textureBranchCollapsed.getData());
             REQUIRE(renderer->getTextureLeaf().getData() == textureLeaf.getData());

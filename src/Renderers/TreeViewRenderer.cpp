@@ -43,6 +43,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(TreeViewRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TreeViewRenderer, SelectedTextColorHover, {})
 
+    TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureBranchExpanded)
     TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureBranchCollapsed)
     TGUI_RENDERER_PROPERTY_TEXTURE(TreeViewRenderer, TextureLeaf)

@@ -397,6 +397,8 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
+        m_spriteBackground.setSize(getInnerSize());
+
         markNodesDirty();
     }
 
@@ -648,7 +650,13 @@ namespace tgui
 
     bool TreeView::isMouseOnWidget(Vector2f pos) const
     {
-        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
+        {
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+                return true;
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1001,6 +1009,10 @@ namespace tgui
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
+        else if (property == "TextureBackground")
+        {
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
+        }
         else if (property == "TextureBranchExpanded")
         {
             m_spriteBranchExpanded.setTexture(getSharedRenderer()->getTextureBranchExpanded());
@@ -1070,6 +1082,7 @@ namespace tgui
 
             setTextOpacityImpl(m_nodes, m_opacityCached);
 
+            m_spriteBackground.setOpacity(m_opacityCached);
             m_spriteBranchExpanded.setOpacity(m_opacityCached);
             m_spriteBranchCollapsed.setOpacity(m_opacityCached);
             m_spriteLeaf.setOpacity(m_opacityCached);
@@ -1261,133 +1274,135 @@ namespace tgui
             states.transform.translate(m_bordersCached.getOffset());
         }
 
-        target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        // Draw the background
+        if (m_spriteBackground.isSet())
+            target.drawSprite(states, m_spriteBackground);
+        else
+            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
+        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        if (m_verticalScrollbar->isShown())
+            maxItemWidth -= m_verticalScrollbar->getSize().x;
+
+        target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+            {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+
+        int firstNode = 0;
+        int lastNode = static_cast<int>(m_visibleNodes.size());
+        if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
-            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
-            if (m_verticalScrollbar->isShown())
-                maxItemWidth -= m_verticalScrollbar->getSize().x;
+            firstNode = static_cast<int>(m_verticalScrollbar->getValue() / m_itemHeight);
+            lastNode = static_cast<int>((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / m_itemHeight);
 
-            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
-
-            int firstNode = 0;
-            int lastNode = static_cast<int>(m_visibleNodes.size());
-            if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
-            {
-                firstNode = static_cast<int>(m_verticalScrollbar->getValue() / m_itemHeight);
-                lastNode = static_cast<int>((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / m_itemHeight);
-
-                // Show another item when the scrollbar is standing between two items
-                if ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) % m_itemHeight != 0)
-                    ++lastNode;
-            }
-
-            states.transform.translate({m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(), m_paddingCached.getTop() - m_verticalScrollbar->getValue()});
-
-            // Draw the background of the selected item
-            if ((m_selectedItem >= firstNode) && (m_selectedItem < lastNode))
-            {
-                states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
-
-                const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
-                if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
-                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
-                else
-                    target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
-
-                states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_selectedItem * static_cast<float>(m_itemHeight)});
-            }
-
-            // Draw the background of the item on which the mouse is standing
-            if ((m_hoveredItem >= firstNode) && (m_hoveredItem < lastNode) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
-            {
-                states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
-                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-                states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
-            }
-
-            // Draw the icons
-            for (int i = firstNode; i < lastNode; ++i)
-            {
-                auto statesForIcon = states;
-                const float iconPadding = (m_iconBounds.x / 4.f);
-                const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[i]->depth);
-                statesForIcon.transform.translate({std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f))});
-
-                // Draw an icon for the leaf node if a texture is set
-                if (m_visibleNodes[i]->nodes.empty())
-                {
-                    if (m_spriteLeaf.isSet())
-                        target.drawSprite(statesForIcon, m_spriteLeaf);
-                }
-                else // Branch node
-                {
-                    if (m_spriteLeaf.isSet() || m_spriteBranchExpanded.isSet() || m_spriteBranchCollapsed.isSet())
-                    {
-                        const Sprite* iconSprite = nullptr;
-                        if (m_visibleNodes[i]->expanded)
-                        {
-                            if (m_spriteBranchExpanded.isSet())
-                                iconSprite = &m_spriteBranchExpanded;
-                            else if (m_spriteBranchCollapsed.isSet())
-                                iconSprite = &m_spriteBranchCollapsed;
-                            else
-                                iconSprite = &m_spriteLeaf;
-                        }
-                        else // Collapsed node
-                        {
-                            if (m_spriteBranchCollapsed.isSet())
-                                iconSprite = &m_spriteBranchCollapsed;
-                            else if (m_spriteBranchExpanded.isSet())
-                                iconSprite = &m_spriteBranchExpanded;
-                            else
-                                iconSprite = &m_spriteLeaf;
-                        }
-
-                        target.drawSprite(statesForIcon, *iconSprite);
-                    }
-                    else // No textures are used
-                    {
-                        Color iconColor = m_textColorCached;
-                        if (i == m_selectedItem)
-                        {
-                            if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
-                                iconColor = m_selectedTextColorHoverCached;
-                            else if (m_selectedTextColorCached.isSet())
-                                iconColor = m_selectedTextColorCached;
-                        }
-                        if ((i == m_hoveredItem) && (m_selectedItem != m_hoveredItem))
-                        {
-                            if (m_textColorHoverCached.isSet())
-                                iconColor = m_textColorHoverCached;
-                        }
-
-                        const float thickness = std::max(1.f, std::round(m_itemHeight / 10.f));
-                        if (m_visibleNodes[i]->expanded)
-                        {
-                            // Draw "-"
-                            statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
-                            target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
-                        }
-                        else // Collapsed node
-                        {
-                            // Draw "+"
-                            statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
-                            target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
-                            statesForIcon.transform.translate({(m_iconBounds.x - thickness) / 2.f, -(m_iconBounds.y - thickness) / 2.f});
-                            target.drawFilledRect(statesForIcon, {thickness, m_iconBounds.y}, Color::applyOpacity(iconColor, m_opacityCached));
-                        }
-                    }
-                }
-            }
-
-            // Draw the texts
-            for (int i = firstNode; i < lastNode; ++i)
-                target.drawText(states, m_visibleNodes[i]->text);
-
-            target.removeClippingLayer();
+            // Show another item when the scrollbar is standing between two items
+            if ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) % m_itemHeight != 0)
+                ++lastNode;
         }
+
+        states.transform.translate({m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(), m_paddingCached.getTop() - m_verticalScrollbar->getValue()});
+
+        // Draw the background of the selected item
+        if ((m_selectedItem >= firstNode) && (m_selectedItem < lastNode))
+        {
+            states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
+
+            const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
+            if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
+                target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
+            else
+                target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
+
+            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_selectedItem * static_cast<float>(m_itemHeight)});
+        }
+
+        // Draw the background of the item on which the mouse is standing
+        if ((m_hoveredItem >= firstNode) && (m_hoveredItem < lastNode) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
+        {
+            states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
+            target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
+            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
+        }
+
+        // Draw the icons
+        for (int i = firstNode; i < lastNode; ++i)
+        {
+            auto statesForIcon = states;
+            const float iconPadding = (m_iconBounds.x / 4.f);
+            const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[i]->depth);
+            statesForIcon.transform.translate({std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f))});
+
+            // Draw an icon for the leaf node if a texture is set
+            if (m_visibleNodes[i]->nodes.empty())
+            {
+                if (m_spriteLeaf.isSet())
+                    target.drawSprite(statesForIcon, m_spriteLeaf);
+            }
+            else // Branch node
+            {
+                if (m_spriteLeaf.isSet() || m_spriteBranchExpanded.isSet() || m_spriteBranchCollapsed.isSet())
+                {
+                    const Sprite* iconSprite = nullptr;
+                    if (m_visibleNodes[i]->expanded)
+                    {
+                        if (m_spriteBranchExpanded.isSet())
+                            iconSprite = &m_spriteBranchExpanded;
+                        else if (m_spriteBranchCollapsed.isSet())
+                            iconSprite = &m_spriteBranchCollapsed;
+                        else
+                            iconSprite = &m_spriteLeaf;
+                    }
+                    else // Collapsed node
+                    {
+                        if (m_spriteBranchCollapsed.isSet())
+                            iconSprite = &m_spriteBranchCollapsed;
+                        else if (m_spriteBranchExpanded.isSet())
+                            iconSprite = &m_spriteBranchExpanded;
+                        else
+                            iconSprite = &m_spriteLeaf;
+                    }
+
+                    target.drawSprite(statesForIcon, *iconSprite);
+                }
+                else // No textures are used
+                {
+                    Color iconColor = m_textColorCached;
+                    if (i == m_selectedItem)
+                    {
+                        if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                            iconColor = m_selectedTextColorHoverCached;
+                        else if (m_selectedTextColorCached.isSet())
+                            iconColor = m_selectedTextColorCached;
+                    }
+                    if ((i == m_hoveredItem) && (m_selectedItem != m_hoveredItem))
+                    {
+                        if (m_textColorHoverCached.isSet())
+                            iconColor = m_textColorHoverCached;
+                    }
+
+                    const float thickness = std::max(1.f, std::round(m_itemHeight / 10.f));
+                    if (m_visibleNodes[i]->expanded)
+                    {
+                        // Draw "-"
+                        statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
+                        target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
+                    }
+                    else // Collapsed node
+                    {
+                        // Draw "+"
+                        statesForIcon.transform.translate({0, (m_iconBounds.y - thickness) / 2.f});
+                        target.drawFilledRect(statesForIcon, {m_iconBounds.x, thickness}, Color::applyOpacity(iconColor, m_opacityCached));
+                        statesForIcon.transform.translate({(m_iconBounds.x - thickness) / 2.f, -(m_iconBounds.y - thickness) / 2.f});
+                        target.drawFilledRect(statesForIcon, {thickness, m_iconBounds.y}, Color::applyOpacity(iconColor, m_opacityCached));
+                    }
+                }
+            }
+        }
+
+        // Draw the texts
+        for (int i = firstNode; i < lastNode; ++i)
+            target.drawText(states, m_visibleNodes[i]->text);
+
+        target.removeClippingLayer();
 
         m_horizontalScrollbar->draw(target, statesForScrollbars);
         m_verticalScrollbar->draw(target, statesForScrollbars);

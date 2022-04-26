@@ -63,6 +63,7 @@ struct TreeViewProperties : WidgetProperties
         pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
         pair.second["SelectedTextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColorHover())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["TextureBranchExpanded"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBranchExpanded())};
         pair.second["TextureBranchCollapsed"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBranchCollapsed())};
         pair.second["TextureLeaf"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureLeaf())};
