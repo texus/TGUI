@@ -46,6 +46,10 @@ namespace tgui
     {
         m_container->setParentGui(nullptr);
 
+        // Destroy the container and its widgets before destroying the backend.
+        // This solves issues such as TextArea still accessing the backend when it gets unfocused (by removing it from its parent).
+        m_container = nullptr;
+
         if (isBackendSet())
             getBackend()->detatchGui(this);
     }
