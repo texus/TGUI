@@ -1064,19 +1064,10 @@ namespace tgui
             const float oldTitleBarHeight = m_titleBarHeightCached;
 
             if (property == "TextureTitleBar")
-            {
                 m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
 
-                // If the title bar height is determined by the texture then update it (note that getTitleBarHeight has a non-trivial implementation)
-                m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
-                if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
-                    updateTitleBarHeight();
-            }
-            else // if (property == "TitleBarHeight")
-            {
-                m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
-                updateTitleBarHeight();
-            }
+            m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
+            updateTitleBarHeight();
 
             if (oldTitleBarHeight != m_titleBarHeightCached)
             {
