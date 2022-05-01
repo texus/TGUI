@@ -33,12 +33,12 @@ namespace tgui
 
     ButtonBase::ButtonBase(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false},
+        m_textPosition{RelativeValue(0.5f), RelativeValue(0.5f)},
+        m_textOrigin{0.5f, 0.5f},
         m_backgroundComponent{std::make_shared<priv::dev::BackgroundComponent>(&background)},
         m_textComponent{std::make_shared<priv::dev::TextComponent>(&text)}
     {
         initComponents();
-
-        m_textComponent->setPositionAlignment(priv::dev::PositionAlignment::Center);
 
         if (initRenderer)
         {
@@ -98,6 +98,8 @@ namespace tgui
     {
         if (&other != this)
         {
+            text.style.disconnectCallback(m_textStyleChangedCallbackId);
+
             ClickableWidget::operator=(other);
             m_string                       = other.m_string;
             m_down                         = other.m_down;
@@ -125,6 +127,8 @@ namespace tgui
     {
         if (&other != this)
         {
+            text.style.disconnectCallback(m_textStyleChangedCallbackId);
+
             ClickableWidget::operator=(other);
             m_string                       = std::move(other.m_string);
             m_down                         = std::move(other.m_down);
@@ -144,6 +148,13 @@ namespace tgui
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ButtonBase::~ButtonBase()
+    {
+        text.style.disconnectCallback(m_textStyleChangedCallbackId);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +222,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ButtonBase::setTextPosition(Vector2<AbsoluteOrRelativeValue> position, Vector2f origin)
+    {
+        m_textPosition = position;
+        m_textOrigin = origin;
+        updateTextPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ButtonBase::updateTextSize()
     {
         if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
@@ -230,6 +250,8 @@ namespace tgui
         m_updatingTextSize = true;
         updateSize();
         m_updatingTextSize = false;
+
+        updateTextPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -389,6 +411,7 @@ namespace tgui
         else if (property == "TextOutlineThickness")
         {
             m_textComponent->setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
+            updateTextPosition();
         }
         else if (property == "TextOutlineColor")
         {
@@ -472,6 +495,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ButtonBase::updateTextPosition()
+    {
+        const Outline& borders = m_backgroundComponent->getBorders();
+        m_textPosition.x.updateParentSize(getSize().x - borders.getLeft() - borders.getRight());
+        m_textPosition.y.updateParentSize(getSize().y - borders.getTop() - borders.getBottom());
+
+        m_textComponent->setPosition({m_textPosition.x.getValue() - m_textOrigin.x * m_textComponent->getSize().x,
+                                      m_textPosition.y.getValue() - m_textOrigin.y * m_textComponent->getSize().y});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ButtonBase::initComponents()
     {
         TGUI_ASSERT(m_stylePropertiesNames.empty() && m_stylePropertiesGlobalNames.empty() && m_namedComponents.empty(),
@@ -498,6 +533,10 @@ namespace tgui
 
         m_backgroundComponent->addComponent(m_textComponent);
         addComponent(m_backgroundComponent);
+
+        m_textStyleChangedCallbackId = text.style.connectCallback([this]{
+            updateTextPosition();
+        });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

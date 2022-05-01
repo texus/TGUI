@@ -68,8 +68,6 @@ namespace tgui
     {
         if (&other != this)
         {
-            text.style.disconnectCallback(m_textStyleChangedCallbackId);
-
             Button::operator=(other);
             icon = other.icon;
             m_imageComponent = std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon);
@@ -87,8 +85,6 @@ namespace tgui
     {
         if (&other != this)
         {
-            text.style.disconnectCallback(m_textStyleChangedCallbackId);
-
             Button::operator=(std::move(other));
             icon = std::move(other.icon);
             m_imageComponent = std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon);
@@ -98,13 +94,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    BitmapButton::~BitmapButton()
-    {
-        text.style.disconnectCallback(m_textStyleChangedCallbackId);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,15 +135,11 @@ namespace tgui
 
         if (image.getData())
         {
-            m_textComponent->setPositionAlignment(priv::dev::PositionAlignment::None);
             m_imageComponent->setSize(Vector2f{image.getImageSize()});
             m_imageComponent->setVisible(true);
         }
         else
-        {
-            m_textComponent->setPositionAlignment(priv::dev::PositionAlignment::Center);
             m_imageComponent->setVisible(false);
-        }
 
         updateSize();
     }
@@ -255,7 +240,7 @@ namespace tgui
             recalculateGlyphSize();
         }
 
-        updateComponentPositions();
+        updateTextPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,29 +267,32 @@ namespace tgui
         m_stylePropertiesNames.emplace(m_type + U".Icon", &icon);
         m_namedComponents.emplace("Icon", m_imageComponent);
 
-        m_textStyleChangedCallbackId = text.style.connectCallback([this]{
-            updateComponentPositions();
-        });
-
         m_backgroundComponent->addComponent(m_imageComponent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BitmapButton::updateComponentPositions()
+    void BitmapButton::updateTextPosition()
     {
         if (!m_imageComponent->isVisible())
-            return;
+            return Button::updateTextPosition();
 
         const Vector2f innerSize = m_backgroundComponent->getClientSize();
         const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
-        float contentsWidth = m_imageComponent->getSize().x;
+        Vector2f contentSize = m_imageComponent->getSize();
         if (!m_string.empty())
-            contentsWidth += distanceBetweenTextAndImage + m_textComponent->getSize().x;
+        {
+            contentSize.x += distanceBetweenTextAndImage + m_textComponent->getSize().x;
+            contentSize.y = std::max(contentSize.y, m_textComponent->getSize().y);
+        }
 
-        m_imageComponent->setPosition({(innerSize.x - contentsWidth) / 2.f, (innerSize.y - m_imageComponent->getSize().y) / 2.f});
-        m_textComponent->setPosition({m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
-                                      m_imageComponent->getPosition().y + (m_imageComponent->getSize().y - m_textComponent->getLineHeight()) / 2.f});
+        m_textPosition.x.updateParentSize(innerSize.x);
+        m_textPosition.y.updateParentSize(innerSize.y);
+
+        m_imageComponent->setPosition({m_textPosition.x.getValue() - m_textOrigin.x * contentSize.x,
+                                       m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_imageComponent->getSize().y) / 2.f});
+        m_textComponent->setPosition({m_imageComponent->getPosition().x + distanceBetweenTextAndImage + m_imageComponent->getSize().x,
+                                      m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_textComponent->getSize().y) / 2.f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

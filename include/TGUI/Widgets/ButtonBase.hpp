@@ -76,6 +76,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ButtonBase& operator=(ButtonBase&&);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ~ButtonBase();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
@@ -126,6 +131,26 @@ namespace tgui
         /// @return Text that is drawn on top of the button
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const String& getText() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the position of the caption text
+        ///
+        /// @param position  Position of the text within the button (position can be both relative or absolute)
+        /// @param origin    Origin that determines which part of the text is placed at the given position
+        ///
+        /// The position consists of x and y components which are either a constant (e.g. 5) or a percentage string (e.g. "5%").
+        /// The origin consists of x and y components with values between 0 (left/top) and 1 (right/bottom).
+        ///
+        /// The default text position is centered in the button, i.e. ({"50%", "50%"}, {0.5f, 0.5f})
+        ///
+        /// Example that places the left side of the text at 10% of the button width and places the vertical center of the text
+        /// at 25px from the top of the button:
+        /// @code
+        /// button->setTextPosition({"10%", 25}, {0, 0.5f});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextPosition(Vector2<AbsoluteOrRelativeValue> position, Vector2f origin);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,6 +252,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Called whenever the text position might need to be updated
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updateTextPosition();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initComponents();
@@ -255,8 +286,13 @@ namespace tgui
         bool   m_autoSize = true;
         bool   m_updatingTextSize = false; // Internal variable so that updateSize knows that it is called from updateTextSize
 
+        Vector2<AbsoluteOrRelativeValue> m_textPosition;
+        Vector2f m_textOrigin;
+
         priv::dev::StylePropertyBackground background;
         priv::dev::StylePropertyText text;
+
+        std::uint64_t m_textStyleChangedCallbackId = 0;
 
         // These maps must be declared AFTER the style properties
         std::map<String, priv::dev::StylePropertyBase*> m_stylePropertiesNames;

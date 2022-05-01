@@ -5,6 +5,7 @@ TGUI 0.10.0  (TBD)
 - Textures can now be loaded from base64 string
 - ListView columns can now be resizable
 - ListView icons can also be saved in form file
+- Position of text in buttons can now be changed
 - Added changeMenuItem function to MenuBar to change the text of a menu
 - Added SizeHorizontal and SizeVertical mouse cursors
 - Word-wrapped lines no longer begin with whitespace
