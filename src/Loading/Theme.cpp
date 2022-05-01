@@ -339,7 +339,7 @@ namespace tgui
         for (auto& pair : m_renderers)
         {
             auto& renderer = pair.second;
-            const auto oldData = renderer;
+            const auto oldDataPropertyValuePairs = renderer->propertyValuePairs;
 
             if (!m_themeLoader->canLoad(m_primary, pair.first))
                 continue;
@@ -352,9 +352,9 @@ namespace tgui
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
             // Tell the widgets that were using this renderer about all the updated properties, both new ones and old ones that were now reset to their default value
-            auto oldIt = oldData->propertyValuePairs.begin();
+            auto oldIt = oldDataPropertyValuePairs.begin();
             auto newIt = renderer->propertyValuePairs.begin();
-            while (oldIt != oldData->propertyValuePairs.end() && newIt != renderer->propertyValuePairs.end())
+            while (oldIt != oldDataPropertyValuePairs.end() && newIt != renderer->propertyValuePairs.end())
             {
                 if (oldIt->first < newIt->first)
                 {
@@ -379,7 +379,7 @@ namespace tgui
                     }
                 }
             }
-            while (oldIt != oldData->propertyValuePairs.end())
+            while (oldIt != oldDataPropertyValuePairs.end())
             {
                 for (const auto& observer : renderer->observers)
                     observer.second(oldIt->first);
