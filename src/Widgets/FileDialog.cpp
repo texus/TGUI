@@ -604,7 +604,9 @@ namespace tgui
 
         const int oldSelectedItem = m_listView->getSelectedItemIndex();
         sortFilesInListView();
-        m_listView->setSelectedItem(oldSelectedItem);
+        if (oldSelectedItem >= 0)
+            m_listView->setSelectedItem(static_cast<std::size_t>(oldSelectedItem));
+
         return true;
     }
 
@@ -965,8 +967,8 @@ namespace tgui
 
             if (m_multiSelect && (m_listView->getSelectedItemIndices().size() > 1))
                 m_editBoxFilename->setText(U"");
-            else if (m_selectingDirectory || !m_listView->getItemData<bool>(itemIndex))
-                m_editBoxFilename->setText(m_listView->getItem(itemIndex));
+            else if (m_selectingDirectory || !m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
+                m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
         });
         m_listView->onHeaderClick([this](int itemIndex){
             TGUI_ASSERT(itemIndex >= 0, "Can't click on list view header that doesn't exist");
@@ -984,22 +986,22 @@ namespace tgui
             if (itemIndex < 0)
                 return;
 
-            if (m_listView->getItemData<bool>(itemIndex))
+            if (m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
             {
 #ifdef TGUI_SYSTEM_WINDOWS
                 if (m_currentDirectory.asString().empty())
                 {
-                    changePath(Filesystem::Path(m_listView->getItem(itemIndex)), true);
+                    changePath(Filesystem::Path(m_listView->getItem(static_cast<std::size_t>(itemIndex))), true);
                     return;
                 }
 #endif
-                changePath(m_currentDirectory / m_listView->getItem(itemIndex), true);
+                changePath(m_currentDirectory / m_listView->getItem(static_cast<std::size_t>(itemIndex)), true);
                 if (m_selectingDirectory)
                     m_editBoxFilename->setText(U"");
             }
             else
             {
-                m_editBoxFilename->setText(m_listView->getItem(itemIndex));
+                m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
                 filesSelected({m_currentDirectory / Filesystem::Path(m_editBoxFilename->getText())});
             }
         });

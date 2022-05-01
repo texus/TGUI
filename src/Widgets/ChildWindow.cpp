@@ -1258,7 +1258,7 @@ namespace tgui
 
         if (node->propertyValuePairs["TitleButtons"])
         {
-            int decodedTitleButtons = TitleButton::None;
+            unsigned int decodedTitleButtons = TitleButton::None;
             std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs["TitleButtons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
