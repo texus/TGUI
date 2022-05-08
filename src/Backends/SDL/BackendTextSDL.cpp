@@ -284,7 +284,10 @@ namespace tgui
             return lineTexture;
         }
 
-#if TGUI_USE_GLES
+        // For OpenGL ES we must convert the surface to RGBA.
+        // This isn't needed for OpenGL as long as we specify the correct image format and type,
+        // but text rendering broke at some point and we now perform the conversion anyway so that
+        // we know for certain what the exact surface format is.
         const GLenum imageFormat = GL_RGBA;
         SDL_Surface* surface = nullptr;
         SDL_Surface* surfaceBGRA = TTF_RenderUTF8_Blended(font, line.c_str(), color);
@@ -293,10 +296,7 @@ namespace tgui
             surface = SDL_ConvertSurfaceFormat(surfaceBGRA, SDL_PIXELFORMAT_RGBA32, 0);
             SDL_FreeSurface(surfaceBGRA);
         }
-#else
-        const GLenum imageFormat = GL_BGRA;
-        SDL_Surface* surface = TTF_RenderUTF8_Blended(font, line.c_str(), color);
-#endif
+
         if (!surface)
         {
             lineTexture.bounding = SDL_Rect{0, 0, 0, 0};
