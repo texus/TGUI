@@ -1,12 +1,3 @@
-BitmapButton {
-    Texture         = "Black.png" Part(50, 22, 45, 50) Middle(10, 0) Smooth;
-    TextureHover    = "Black.png" Part(0, 126, 45, 50) Middle(10, 0) Smooth;
-    TextureDown     = "Black.png" Part(0, 74, 45, 50) Middle(10, 0) Smooth;
-    TextureFocused  = "Black.png" Part(47, 74, 45, 50) Middle(10, 0) Smooth;
-    TextColor       = rgb(190, 190, 190);
-    TextColorHover  = rgb(250, 250, 250);
-}
-
 Button {
     Texture         = "Black.png" Part(50, 22, 45, 50) Middle(10, 0) Smooth;
     TextureHover    = "Black.png" Part(0, 126, 45, 50) Middle(10, 0) Smooth;
@@ -15,6 +6,8 @@ Button {
     TextColor       = rgb(190, 190, 190);
     TextColorHover  = rgb(250, 250, 250);
 }
+
+BitmapButton : Button {}
 
 ChatBox {
     TextureBackground = "Black.png" Part(0, 22, 48, 48) Middle(16) Smooth;
@@ -59,31 +52,7 @@ ChildWindow {
     };
 }
 
-ColorPicker {
-    TextureTitleBar        = "Black.png" Part(0, 580, 75, 25) Middle(25, 0) Smooth;
-    TitleColor             = rgb(190, 190, 190);
-    BackgroundColor        = rgb( 80,  80,  80);
-    BorderColor            = Black;
-    Borders                = (1, 1, 1, 1);
-    DistanceToSide         = 5;
-    PaddingBetweenButtons  = 2;
-    ShowTextOnTitleButtons = false;
-    CloseButton = {
-        Texture       = "Black.png" Part(34, 212, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(68, 212, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(51, 212, 15, 15) Smooth;
-    };
-    MaximizeButton = {
-        Texture       = "Black.png" Part(0, 330, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(34, 330, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(17, 330, 15, 15) Smooth;
-    };
-    MinimizeButton = {
-        Texture       = "Black.png" Part(81, 330, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(0, 347, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(98, 330, 15, 15) Smooth;
-    };
-}
+ColorPicker : ChildWindow {}
 
 ComboBox {
     TextureBackground     = "Black.png" Part(0, 22, 48, 48) Middle(16) Smooth;
@@ -107,30 +76,7 @@ EditBox {
     Padding                     = (6, 4, 6, 4);
 }
 
-FileDialog {
-    TextureTitleBar        = "Black.png" Part(0, 580, 75, 25) Middle(25, 0) Smooth;
-    TitleColor             = rgb(190, 190, 190);
-    BackgroundColor        = rgb( 80,  80,  80);
-    BorderColor            = Black;
-    Borders                = (1, 1, 1, 1);
-    DistanceToSide         = 5;
-    PaddingBetweenButtons  = 2;
-    ShowTextOnTitleButtons = false;
-    CloseButton = {
-        Texture       = "Black.png" Part(34, 212, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(68, 212, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(51, 212, 15, 15) Smooth;
-    };
-    MaximizeButton = {
-        Texture       = "Black.png" Part(0, 330, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(34, 330, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(17, 330, 15, 15) Smooth;
-    };
-    MinimizeButton = {
-        Texture       = "Black.png" Part(81, 330, 15, 15) Smooth;
-        TextureHover  = "Black.png" Part(0, 347, 15, 15) Smooth;
-        TextureDown   = "Black.png" Part(98, 330, 15, 15) Smooth;
-    };
+FileDialog : ChildWindow {
     Button = &Button;
     EditBox = &EditBox;
     ListView = &ListView;
@@ -186,21 +132,9 @@ MenuBar {
     DistanceToSide                = 5;
 }
 
-MessageBox {
-    TextColor       = rgb(190, 190, 190);
-    Button          = &Button;
-
-    TextureTitleBar = "Black.png" Part(0, 580, 75, 25) Middle(25, 0) Smooth;
-    TitleColor      = rgb(190, 190, 190);
-    BackgroundColor = rgb( 80,  80,  80);
-    BorderColor     = Black;
-    Borders         = (1, 1, 1, 1);
-    DistanceToSide  = 5;
-    CloseButton     = {
-                        Texture       = "Black.png" Part(34, 212, 15, 15) Smooth;
-                        TextureHover  = "Black.png" Part(68, 212, 15, 15) Smooth;
-                        TextureDown   = "Black.png" Part(51, 212, 15, 15) Smooth;
-                      };
+MessageBox : ChildWindow {
+    TextColor = rgb(190, 190, 190);
+    Button = &Button;
 }
 
 Panel {
@@ -223,12 +157,6 @@ RadioButton {
     TextureCheckedFocused   = "Black.png" Part(0, 431, 32, 32) Smooth;
     TextColor               = rgb(190, 190, 190);
     TextColorHover          = rgb(250, 250, 250);
-}
-
-RangeSlider {
-    TextureTrack      = "Black.png" Part(76, 499, 20, 45) Middle(0, 15) Smooth;
-    TextureTrackHover = "Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
-    TextureThumb      = "Black.png" Part(44, 499, 30, 30) Smooth;
 }
 
 ScrollablePanel {
@@ -256,6 +184,8 @@ Slider {
     TextureTrackHover = "Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
     TextureThumb      = "Black.png" Part(44, 499, 30, 30) Smooth;
 }
+
+RangeSlider : Slider {}
 
 SpinButton {
     TextureArrowUp        = "Black.png" Part(44, 0, 20, 20) Middle(0, 0, 20, 19) Smooth;
@@ -307,15 +237,4 @@ ToggleButton {
     TextColorHover  = rgb(250, 250, 250);
 }
 
-TreeView {
-    TextureBackground            = "Black.png" Part(0, 22, 48, 48) Middle(16) Smooth;
-    TextColor                    = rgb(190, 190, 190);
-    TextColorHover               = rgb(250, 250, 250);
-    BackgroundColorHover         = rgb(100, 100, 100);
-    SelectedBackgroundColor      = rgb( 10, 110, 255);
-    SelectedBackgroundColorHover = rgb(30, 150, 255);
-    SelectedTextColor            = White;
-    BorderColor                  = Black;
-    Padding                      = (3, 3, 3, 3);
-    Scrollbar                    = &Scrollbar;
-}
+TreeView : ListBox {}

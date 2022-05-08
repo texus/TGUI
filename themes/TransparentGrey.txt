@@ -1,14 +1,3 @@
-BitmapButton {
-    BackgroundColor = rgba(180, 180, 180, 215);
-    BackgroundColorHover = rgba(190, 190, 190, 215);
-    BackgroundColorDown = rgba(150, 150, 150, 215);
-    TextColor = rgba(255, 255, 255, 215);
-    TextColorHover = rgba(255, 255, 255, 235);
-    TextColorDown = rgba(255, 255, 255, 235);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-}
-
 Button {
     BackgroundColor = rgba(180, 180, 180, 215);
     BackgroundColorHover = rgba(190, 190, 190, 215);
@@ -19,6 +8,8 @@ Button {
     BorderColor = rgba(240, 240, 240, 215);
     Borders = (1, 1, 1, 1);
 }
+
+BitmapButton : Button {}
 
 ChatBox {
     BackgroundColor = rgba(180, 180, 180, 215);
@@ -52,19 +43,7 @@ ChildWindow {
     MinimizeButton = &Button;
 }
 
-ColorPicker {
-    TitleColor = rgba(255, 255, 255, 215);
-    TitleBarColor = rgba(170, 170, 170, 215);
-    BackgroundColor = rgba(180, 180, 180, 215);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-    DistanceToSide = 3;
-    PaddingBetweenButtons = 1;
-    ShowTextOnTitleButtons = true;
-    CloseButton = &Button;
-    MaximizeButton = &Button;
-    MinimizeButton = &Button;
-}
+ColorPicker : ChildWindow {}
 
 ComboBox {
     BackgroundColor = rgba(180, 180, 180, 215);
@@ -90,18 +69,7 @@ EditBox {
     Borders = (1, 1, 1, 1);
 }
 
-FileDialog {
-    TitleColor = rgba(255, 255, 255, 215);
-    TitleBarColor = rgba(170, 170, 170, 215);
-    BackgroundColor = rgba(180, 180, 180, 215);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-    DistanceToSide = 3;
-    PaddingBetweenButtons = 1;
-    ShowTextOnTitleButtons = true;
-    CloseButton = &Button;
-    MaximizeButton = &Button;
-    MinimizeButton = &Button;
+FileDialog : ChildWindow {
     Button = &Button;
     EditBox = &EditBox;
     ListView = &ListView;
@@ -133,17 +101,8 @@ ListBox {
     Scrollbar = &Scrollbar;
 }
 
-ListView {
-    BackgroundColor = rgba(180, 180, 180, 215);
-    BackgroundColorHover = rgba(190, 190, 190, 215);
-    SelectedBackgroundColor = rgba(0, 110, 200, 130);
-    SelectedTextColor = rgba(255, 255, 255, 245);
+ListView : ListBox {
     HeaderBackgroundColor = rgb(160, 160, 160, 215);
-    TextColor = rgba(255, 255, 255, 215);
-    TextColorHover = rgba(255, 255, 255, 235);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-    Scrollbar = &Scrollbar;
 }
 
 MenuBar {
@@ -189,15 +148,6 @@ RadioButton {
     Borders = (1, 1, 1, 1);
 }
 
-RangeSlider {
-    TrackColor = rgba(160, 160, 160, 215);
-    TrackColorHover = rgba(170, 170, 170, 215);
-    ThumbColor = rgba(160, 160, 160, 215);
-    ThumbColorHover = rgba(170, 170, 170, 215);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-}
-
 ScrollablePanel {
     BackgroundColor = rgba(180, 180, 180, 215);
     Scrollbar = &Scrollbar;
@@ -228,6 +178,8 @@ Slider {
     BorderColor = rgba(240, 240, 240, 215);
     Borders = (1, 1, 1, 1);
 }
+
+RangeSlider : Slider {}
 
 SpinButton {
     BackgroundColor = rgba(160, 160, 160, 215);
@@ -288,14 +240,4 @@ ToggleButton {
     Borders = (1, 1, 1, 1);
 }
 
-TreeView {
-    BackgroundColor = rgba(180, 180, 180, 215);
-    BackgroundColorHover = rgba(190, 190, 190, 215);
-    SelectedBackgroundColor = rgba(0, 110, 200, 130);
-    SelectedTextColor = rgba(255, 255, 255, 245);
-    TextColor = rgba(255, 255, 255, 215);
-    TextColorHover = rgba(255, 255, 255, 235);
-    BorderColor = rgba(240, 240, 240, 215);
-    Borders = (1, 1, 1, 1);
-    Scrollbar = &Scrollbar;
-}
+TreeView : ListBox {}

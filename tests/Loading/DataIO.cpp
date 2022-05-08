@@ -78,6 +78,12 @@ TEST_CASE("[DataIO]")
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
+        SECTION("Inheritance")
+        {
+            std::stringstream input("n1 { a = 1; b = 2; n11 { c = 3; } }\nn2 : n1 { b = 20; }");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
         SECTION("Name with special characters")
         {
             std::stringstream input("\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n = \"\\\\\\\"Value\\\"\\\\\"; }");
@@ -202,6 +208,24 @@ TEST_CASE("[DataIO]")
         SECTION("Found empty value")
         {
             std::stringstream input("{ Property = ; ");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
+        }
+
+        SECTION("Expected name of base section to inherit from after ':'")
+        {
+            std::stringstream input("name : {}");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
+        }
+
+        SECTION("Failed to find base section 'subsection' to inherit from")
+        {
+            std::stringstream input("name : subsection {}");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
+        }
+
+        SECTION("Expected '{' after specifying base section to inherit from")
+        {
+            std::stringstream input("subsection {}\nname : subsection and other text {}");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
     }

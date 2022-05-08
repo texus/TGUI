@@ -1,12 +1,3 @@
-BitmapButton {
-    Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
-    TextureHover    = ${ButtonBackgroundHover} Middle(10, 0) Smooth;
-    TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
-    TextureFocused  = ${ButtonBackgroundFocused} Middle(10, 0) Smooth;
-    TextColor       = rgb(190, 190, 190);
-    TextColorHover  = rgb(250, 250, 250);
-}
-
 Button {
     Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
     TextureHover    = ${ButtonBackgroundHover} Middle(10, 0) Smooth;
@@ -15,6 +6,8 @@ Button {
     TextColor       = rgb(190, 190, 190);
     TextColorHover  = rgb(250, 250, 250);
 }
+
+BitmapButton : Button {}
 
 ChatBox {
     TextureBackground = ${Background} Middle(16) Smooth;
@@ -59,31 +52,7 @@ ChildWindow {
     };
 }
 
-ColorPicker {
-    TextureTitleBar        = ${TitleBar} Middle(25, 0) Smooth;
-    TitleColor             = rgb(190, 190, 190);
-    BackgroundColor        = rgb( 80,  80,  80);
-    BorderColor            = Black;
-    Borders                = (1, 1, 1, 1);
-    DistanceToSide         = 5;
-    PaddingBetweenButtons  = 2;
-    ShowTextOnTitleButtons = false;
-    CloseButton = {
-        Texture       = ${CloseButton} Smooth;
-        TextureHover  = ${CloseButtonHover} Smooth;
-        TextureDown   = ${CloseButtonDown} Smooth;
-    };
-    MaximizeButton = {
-        Texture       = ${MaximizeButton} Smooth;
-        TextureHover  = ${MaximizeButtonHover} Smooth;
-        TextureDown   = ${MaximizeButtonDown} Smooth;
-    };
-    MinimizeButton = {
-        Texture       = ${MinimizeButton} Smooth;
-        TextureHover  = ${MinimizeButtonHover} Smooth;
-        TextureDown   = ${MinimizeButtonDown} Smooth;
-    };
-}
+ColorPicker : ChildWindow {}
 
 ComboBox {
     TextureBackground     = ${Background} Middle(16) Smooth;
@@ -107,30 +76,7 @@ EditBox {
     Padding                     = (6, 4, 6, 4);
 }
 
-FileDialog {
-    TextureTitleBar        = ${TitleBar} Middle(25, 0) Smooth;
-    TitleColor             = rgb(190, 190, 190);
-    BackgroundColor        = rgb( 80,  80,  80);
-    BorderColor            = Black;
-    Borders                = (1, 1, 1, 1);
-    DistanceToSide         = 5;
-    PaddingBetweenButtons  = 2;
-    ShowTextOnTitleButtons = false;
-    CloseButton = {
-        Texture       = ${CloseButton} Smooth;
-        TextureHover  = ${CloseButtonHover} Smooth;
-        TextureDown   = ${CloseButtonDown} Smooth;
-    };
-    MaximizeButton = {
-        Texture       = ${MaximizeButton} Smooth;
-        TextureHover  = ${MaximizeButtonHover} Smooth;
-        TextureDown   = ${MaximizeButtonDown} Smooth;
-    };
-    MinimizeButton = {
-        Texture       = ${MinimizeButton} Smooth;
-        TextureHover  = ${MinimizeButtonHover} Smooth;
-        TextureDown   = ${MinimizeButtonDown} Smooth;
-    };
+FileDialog : ChildWindow {
     Button = &Button;
     EditBox = &EditBox;
     ListView = &ListView;
@@ -186,21 +132,9 @@ MenuBar {
     DistanceToSide                = 5;
 }
 
-MessageBox {
-    TextColor       = rgb(190, 190, 190);
-    Button          = &Button;
-
-    TextureTitleBar = ${TitleBar} Middle(25, 0) Smooth;
-    TitleColor      = rgb(190, 190, 190);
-    BackgroundColor = rgb( 80,  80,  80);
-    BorderColor     = Black;
-    Borders         = (1, 1, 1, 1);
-    DistanceToSide  = 5;
-    CloseButton     = {
-                        Texture       = ${CloseButton} Smooth;
-                        TextureHover  = ${CloseButtonHover} Smooth;
-                        TextureDown   = ${CloseButtonDown} Smooth;
-                      };
+MessageBox : ChildWindow {
+    TextColor = rgb(190, 190, 190);
+    Button = &Button;
 }
 
 Panel {
@@ -223,12 +157,6 @@ RadioButton {
     TextureCheckedFocused   = ${RadioButtonCheckedFocused} Smooth;
     TextColor               = rgb(190, 190, 190);
     TextColorHover          = rgb(250, 250, 250);
-}
-
-RangeSlider {
-    TextureTrack      = ${SliderTrack} Middle(0, 15) Smooth;
-    TextureTrackHover = ${SliderTrackHover} Middle(0, 15) Smooth;
-    TextureThumb      = ${SliderThumb} Smooth;
 }
 
 ScrollablePanel {
@@ -256,6 +184,8 @@ Slider {
     TextureTrackHover = ${SliderTrackHover} Middle(0, 15) Smooth;
     TextureThumb      = ${SliderThumb} Smooth;
 }
+
+RangeSlider : Slider {}
 
 SpinButton {
     TextureArrowUp        = ${ArrowUp} Middle(0, 0, 20, 19) Smooth;
@@ -307,15 +237,4 @@ ToggleButton {
     TextColorHover  = rgb(250, 250, 250);
 }
 
-TreeView {
-    TextureBackground            = "Black.png" Part(0, 22, 48, 48) Middle(16) Smooth;
-    TextColor                    = rgb(190, 190, 190);
-    TextColorHover               = rgb(250, 250, 250);
-    BackgroundColorHover         = rgb(100, 100, 100);
-    SelectedBackgroundColor      = rgb( 10, 110, 255);
-    SelectedBackgroundColorHover = rgb(30, 150, 255);
-    SelectedTextColor            = White;
-    BorderColor                  = Black;
-    Padding                      = (3, 3, 3, 3);
-    Scrollbar                    = &Scrollbar;
-}
+TreeView : ListBox {}

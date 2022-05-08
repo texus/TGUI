@@ -54,6 +54,23 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Node
         {
+            Node() = default;
+            Node(Node&&) = default;
+            Node& operator=(const Node&) = delete; // Not implemented because current code has no use for it
+            Node& operator=(Node&&) = default;
+
+            Node(const Node& other) :
+                parent{other.parent},
+                children{},
+                propertyValuePairs{},
+                name{other.name}
+            {
+                for (const auto& child : other.children)
+                    children.push_back(std::make_unique<Node>(*child));
+                for (const auto& pair : other.propertyValuePairs)
+                    propertyValuePairs[pair.first] = std::make_unique<ValueNode>(*pair.second);
+            }
+
             Node* parent = nullptr;
             std::vector<std::unique_ptr<Node>> children;
             std::map<String, std::unique_ptr<ValueNode>> propertyValuePairs;
