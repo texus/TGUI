@@ -242,13 +242,6 @@ TEST_CASE("[FileDialog]")
         renderer->setBackgroundColor({255, 99, 71});
         renderer->setArrowsOnNavigationButtonsVisible(false);
 
-        // The file dialog contains multiple buttons and 2 edit boxes which share renderers with each other.
-        // This causes the renderers to be saved outside of the FileDialog section so that the widgets can refer to it.
-        // Unfortunately, the order in which the global renderers are saved is undefined and we compare the files
-        // literally to check if the output is the same. This is why we make a small change to the internal renderer
-        // of a single edit box here, this makes sure only the button renderer is stored outside the FileDialog.
-        dialog->get("#TGUI_INTERNAL$EditBoxFilename#")->getRenderer()->setOpacity(0.9f);
-
         testSavingWidget("FileDialog", dialog, false);
     }
 }

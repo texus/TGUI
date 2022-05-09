@@ -98,24 +98,6 @@ TEST_CASE("[ColorPicker]")
         // Since we compare saved files byte for byte, we have to make the close button visible to keep them identical.
         colorPicker->setTitleButtons(tgui::ChildWindow::TitleButton::Close);
 
-        // The color picker contains multiple similar widgets which share renderers with each other.
-        // This causes the renderers to be saved outside of the ColorPicker section so that the widgets can refer to it.
-        // Unfortunately, the order in which the global renderers are saved is undefined and we compare the files
-        // literally to check if the output is the same. This is why we make a small change to the internal renderer
-        // of several widgets here, this makes sure only the label renderer is stored outside the FileDialog.
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerReset#")->getRenderer()->setOpacity(0.99f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerOK#")->getRenderer()->setOpacity(0.98f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerCancel#")->getRenderer()->setOpacity(0.97f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerRedBox#")->getRenderer()->setOpacity(0.96f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerGreenBox#")->getRenderer()->setOpacity(0.95f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerBlueBox#")->getRenderer()->setOpacity(0.94f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerAlphaBox#")->getRenderer()->setOpacity(0.93f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerRed#")->getRenderer()->setOpacity(0.92f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerGreen#")->getRenderer()->setOpacity(0.91f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerBlue#")->getRenderer()->setOpacity(0.90f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerAlpha#")->getRenderer()->setOpacity(0.89f);
-        colorPicker->get("#TGUI_INTERNAL$ColorPickerValue#")->getRenderer()->setOpacity(0.88f);
-
         colorPicker->setColor(tgui::Color::Blue);
         testSavingWidget("ColorPicker", colorPicker, false);
     }
