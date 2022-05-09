@@ -43,25 +43,38 @@ namespace tgui
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void getAllRenderers(std::map<RendererData*, std::vector<const Widget*>>& renderers, const Container* container)
+        void getAllRenderers(std::vector<RendererData*>& orderedRenderers, std::map<RendererData*, std::vector<const Widget*>>& rendererToWidgetsMap, const Container* container)
         {
+            const auto addRenderer = [&](RendererData* rendererData, const Widget* widget){
+                auto it = rendererToWidgetsMap.find(rendererData);
+                if (it != rendererToWidgetsMap.end())
+                    it->second.push_back(widget);
+                else
+                {
+                    // Add the renderer to the orderedRenderers list when it occurs the first time.
+                    // This allows renderers to be saved in order of appearance instead of in a random order.
+                    rendererToWidgetsMap[rendererData].push_back(widget);
+                    orderedRenderers.push_back(rendererData);
+                }
+            };
+
             for (const auto& child : container->getWidgets())
             {
-                renderers[child->getSharedRenderer()->getData().get()].push_back(child.get());
+                addRenderer(child->getSharedRenderer()->getData().get(), child.get());
 
                 if (child->getToolTip())
-                    renderers[child->getToolTip()->getSharedRenderer()->getData().get()].push_back(child->getToolTip().get());
+                    addRenderer(child->getToolTip()->getSharedRenderer()->getData().get(), child->getToolTip().get());
 
                 Container* childContainer = dynamic_cast<Container*>(child.get());
                 if (childContainer)
-                    getAllRenderers(renderers, childContainer);
+                    getAllRenderers(orderedRenderers, rendererToWidgetsMap, childContainer);
                 else
                 {
                     SubwidgetContainer* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
                     if (subWidgetContainer)
                     {
-                        renderers[subWidgetContainer->getContainer()->getSharedRenderer()->getData().get()].push_back(subWidgetContainer->getContainer());
-                        getAllRenderers(renderers, subWidgetContainer->getContainer());
+                        addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(), subWidgetContainer->getContainer());
+                        getAllRenderers(orderedRenderers, rendererToWidgetsMap, subWidgetContainer->getContainer());
                     }
                 }
             }
@@ -539,25 +552,29 @@ namespace tgui
     {
         auto rootNode = std::make_unique<DataIO::Node>();
 
-        std::map<RendererData*, std::vector<const Widget*>> renderers;
-        getAllRenderers(renderers, this);
+        std::vector<RendererData*> orderedRenderers;
+        std::map<RendererData*, std::vector<const Widget*>> rendererToWidgetsMap;
+        getAllRenderers(orderedRenderers, rendererToWidgetsMap, this);
 
         unsigned int id = 0;
         SavingRenderersMap renderersMap;
-        for (const auto& renderer : renderers)
+        for (const auto& renderer : orderedRenderers)
         {
+            assert(rendererToWidgetsMap.find(renderer) != rendererToWidgetsMap.end());
+            const auto& widgetsUsingRenderer = rendererToWidgetsMap[renderer];
+
             // The renderer can remain inside the widget if it is not shared, so provide the node to be included inside the widget
-            if (renderer.second.size() == 1)
+            if (widgetsUsingRenderer.size() == 1)
             {
-                renderersMap[renderer.second[0]] = {saveRenderer(renderer.first, "Renderer"), ""};
+                renderersMap[widgetsUsingRenderer[0]] = {saveRenderer(renderer, "Renderer"), ""};
                 continue;
             }
 
             // When the widget is shared, only provide the id instead of the node itself
             ++id;
             const String idStr = String::fromNumber(id);
-            rootNode->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
-            for (const auto& child : renderer.second)
+            rootNode->children.push_back(saveRenderer(renderer, "Renderer." + idStr));
+            for (const auto& child : widgetsUsingRenderer)
                 renderersMap[child] = std::make_pair(nullptr, idStr); // Did not compile with VS2015 Update 2 when using braces
         }
 

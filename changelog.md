@@ -6,6 +6,7 @@ TGUI 0.9.4  (TBD)
 - Added onScroll signal to ListBox
 - Added option to show tool tips on disabled widgets
 - Up and down keys in ListBox now move scrollbar if needed
+- Renderers shared in form files no longer save in random order
 - Pasting still worked in TextArea when it was read-only
 - ListBox::setMaximumItems didn't reset selected item when removed
 - Fixed issue with renderer property within custom renderer outside tgui namespace
