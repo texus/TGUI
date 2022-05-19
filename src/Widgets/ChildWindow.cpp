@@ -477,6 +477,9 @@ namespace tgui
             m_titleText.setCharacterSize(m_titleTextSize);
         else
             m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
+
+        // Reposition the title text
+        updateTitleBarHeight();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
