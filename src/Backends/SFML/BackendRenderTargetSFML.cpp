@@ -34,15 +34,16 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
+
     BackendRenderTargetSFML::BackendRenderTargetSFML(sf::RenderTarget& target) :
         m_target(&target)
     {
     }
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::RenderTarget* BackendRenderTargetSFML::getTarget() const
@@ -57,12 +58,10 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         BackendRenderTargetBase::setView(view, viewport, {static_cast<float>(m_target->getSize().x), static_cast<float>(m_target->getSize().y)});
 
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
         m_view.setViewport({viewport.left / m_targetSize.x, viewport.top / m_targetSize.y,
                             viewport.width / m_targetSize.x, viewport.height / m_targetSize.y});
         m_view.setSize(view.width, view.height);
         m_view.setCenter(view.left + (view.width / 2.f), view.top + (view.height / 2.f));
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 #endif
 
@@ -90,7 +89,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         BackendRenderTargetBase::addClippingLayer(states, rect);
 
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
         const sf::View& oldView = m_clippingLayers.empty() ? m_view : m_clippingLayers.back().second;
 
         const float* transformMatrix = states.transform.getMatrix();
@@ -157,7 +155,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START
         }
 
         m_clippingLayers.push_back({clipRect, clippingView});
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,10 +163,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         BackendRenderTargetBase::removeClippingLayer();
 
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
         TGUI_ASSERT(!m_clippingLayers.empty(), "BackendRenderTargetSFML::removeClippingLayer can't remove layer if there are none left");
         m_clippingLayers.pop_back();
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,5 +295,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
