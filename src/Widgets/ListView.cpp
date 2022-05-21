@@ -1407,7 +1407,7 @@ namespace tgui
             assert(m_resizableColumns && m_mouseDown);
             assert(m_resizingColumn <= m_columns.size());
 
-            const float separatorWidth = getTotalSeparatorWidth();
+            const unsigned int separatorWidth = getTotalSeparatorWidth();
             float borderCenterX = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
             for (std::size_t i = 0; i < m_resizingColumn; ++i)
                 borderCenterX += m_columns[i].width + separatorWidth;
@@ -2490,8 +2490,8 @@ namespace tgui
         if (!mouseOnHeader && (!m_showVerticalGridLines || (m_gridLinesWidth == 0)))
             return false;
 
-        const float separatorWidth = mouseOnHeader ? m_separatorWidth : m_gridLinesWidth;
-        const float totalSeparatorWidth = getTotalSeparatorWidth();
+        const unsigned int separatorWidth = mouseOnHeader ? m_separatorWidth : m_gridLinesWidth;
+        const unsigned int totalSeparatorWidth = getTotalSeparatorWidth();
 
         // Define an area to check the mouse cursor against. The left position of the area is changed later.
         FloatRect borderArea;

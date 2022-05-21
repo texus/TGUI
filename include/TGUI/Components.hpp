@@ -239,7 +239,7 @@ namespace dev
         void unsetValue(ComponentState state)
         {
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-            m_propertyData &= ~static_cast<std::uint64_t>(1 << static_cast<std::uint8_t>(state));
+            m_propertyData &= ~(static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state));
             m_globalValues.erase(baseIndex + static_cast<std::uint8_t>(state));
 
             MessageBroker::sendEvent(m_messageTopicId);
