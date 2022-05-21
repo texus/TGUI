@@ -31,6 +31,8 @@ int main()
 {
 #ifdef TGUI_SYSTEM_IOS
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "TGUI example (SFML-Graphics)");
+#elif SFML_VERSION_MAJOR >= 3
+    sf::RenderWindow window(sf::VideoMode{{800, 600}}, "TGUI example (SFML-Graphics)");
 #else
     sf::RenderWindow window({800, 600}, "TGUI example (SFML-Graphics)");
 #endif

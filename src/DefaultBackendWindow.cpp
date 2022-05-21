@@ -66,15 +66,17 @@ namespace tgui
     public:
         BackendWindowSFML(unsigned int width, unsigned int height, const String& title)
         {
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
-            m_window.create({width, height}, title.toStdString());
-#else
             sf::ContextSettings settings;
+#if !TGUI_HAS_BACKEND_SFML_GRAPHICS
             settings.majorVersion = 3;
             settings.minorVersion = 3;
             settings.attributeFlags = sf::ContextSettings::Attribute::Core;
+#endif
 
-            m_window.create({width, height}, title.toStdString(), sf::Style::Default, settings);
+#if SFML_VERSION_MAJOR >= 3
+            m_window.create(sf::VideoMode{{width, height}}, title.toStdString(), sf::Style::Default, settings);
+#else
+            m_window.create(sf::VideoMode{width, height}, title.toStdString(), sf::Style::Default, settings);
 #endif
 
             m_gui = std::make_unique<Gui>(m_window);
@@ -130,7 +132,11 @@ namespace tgui
             Vector2u iconSize;
             auto pixelPtr = ImageLoader::loadFromFile((tgui::getResourcePath() / filename).asString(), iconSize);
             if (pixelPtr)
+#if SFML_VERSION_MAJOR >= 3
+                m_window.setIcon({iconSize.x, iconSize.y}, pixelPtr.get());
+#else
                 m_window.setIcon(iconSize.x, iconSize.y, pixelPtr.get());
+#endif
         }
 
     private:

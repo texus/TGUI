@@ -47,20 +47,37 @@
     #include <SFML/Graphics/RenderTexture.hpp>
     #include <TGUI/Backend/SFML-Graphics.hpp>
 
-    #define TEST_DRAW_INIT(width, height, widget) \
-                tgui::BackendGui* guiPtr = globalGui; \
-                std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
-                std::unique_ptr<sf::RenderTexture> target; \
-                if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
-                { \
-                    target = std::make_unique<sf::RenderTexture>(); \
-                    (void)target->create(width, height); \
-                    guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
-                    guiPtr = guiUniquePtr.get(); \
-                } \
-                tgui::BackendGui& gui{*guiPtr}; \
-                gui.removeAllWidgets(); \
-                gui.add(widget);
+    #if SFML_VERSION_MAJOR >= 3
+        #define TEST_DRAW_INIT(width, height, widget) \
+                    tgui::BackendGui* guiPtr = globalGui; \
+                    std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
+                    std::unique_ptr<sf::RenderTexture> target; \
+                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
+                    { \
+                        target = std::make_unique<sf::RenderTexture>(); \
+                        (void)target->create({width, height}); \
+                        guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                        guiPtr = guiUniquePtr.get(); \
+                    } \
+                    tgui::BackendGui& gui{*guiPtr}; \
+                    gui.removeAllWidgets(); \
+                    gui.add(widget);
+    #else
+        #define TEST_DRAW_INIT(width, height, widget) \
+                    tgui::BackendGui* guiPtr = globalGui; \
+                    std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
+                    std::unique_ptr<sf::RenderTexture> target; \
+                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
+                    { \
+                        target = std::make_unique<sf::RenderTexture>(); \
+                        (void)target->create(width, height); \
+                        guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                        guiPtr = guiUniquePtr.get(); \
+                    } \
+                    tgui::BackendGui& gui{*guiPtr}; \
+                    gui.removeAllWidgets(); \
+                    gui.add(widget);
+    #endif
 
     #ifdef TGUI_ENABLE_DRAW_TESTS
         #define TEST_DRAW(filename) \

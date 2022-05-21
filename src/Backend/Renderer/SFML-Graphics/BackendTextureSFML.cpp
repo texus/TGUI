@@ -46,7 +46,11 @@ namespace tgui
 
         if (Vector2u{m_texture.getSize()} != size)
         {
+#if SFML_VERSION_MAJOR >= 3
+            if (!m_texture.create({size.x, size.y}))
+#else
             if (!m_texture.create(size.x, size.y))
+#endif
                 return false;
         }
 

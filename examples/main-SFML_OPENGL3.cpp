@@ -35,7 +35,11 @@ int main()
     settings.majorVersion = 3;
     settings.minorVersion = 3;
 
+#if SFML_VERSION_MAJOR >= 3
+    sf::Window window(sf::VideoMode{{800, 600}}, "TGUI example (SFML-OpenGL3)", sf::Style::Default, settings);
+#else
     sf::Window window({800, 600}, "TGUI example (SFML-OpenGL3)", sf::Style::Default, settings);
+#endif
 
     tgui::Gui gui(window);
     if (!runExample(gui))

@@ -121,7 +121,11 @@ namespace tgui
         {
             const Vector2u newTextureSize{newSize};
             if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
-                (void)m_renderTexture.create(newTextureSize.x, newTextureSize.y);
+#if SFML_VERSION_MAJOR >= 3
+                (void)m_renderTexture.create({newTextureSize.x, newTextureSize.y});
+#else
+                m_renderTexture.create(newTextureSize.x, newTextureSize.y);
+#endif
 
             m_usedTextureSize = newTextureSize;
         }

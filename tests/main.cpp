@@ -51,7 +51,11 @@ struct TestsWindowDefault : public TestsWindowBase
             window.close();
         }
 
+    #if SFML_VERSION_MAJOR >= 3
+        sf::RenderWindow window{sf::VideoMode{{windowWidth, windowHeight}}, windowTitle};
+    #else
         sf::RenderWindow window{sf::VideoMode{windowWidth, windowHeight}, windowTitle};
+    #endif
     };
 #endif
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
@@ -76,7 +80,11 @@ struct TestsWindowDefault : public TestsWindowBase
             window.close();
         }
 
+    #if SFML_VERSION_MAJOR >= 3
+        sf::Window window{sf::VideoMode{{windowWidth, windowHeight}}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
+    #else
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
+    #endif
     };
 #endif
 
