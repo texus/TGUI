@@ -703,9 +703,9 @@ namespace tgui
                 }
             }
 
-            if (m_horizontalAlignment == HorizontalAlignment::Left)
+            const float lineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
+            if ((m_horizontalAlignment == HorizontalAlignment::Left) || (m_autoSize && (maxWidth == 0)))
             {
-                const float lineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
                 for (auto& line : m_lines)
                 {
                     line.setPosition(pos);
@@ -727,7 +727,7 @@ namespace tgui
                     else // if (m_horizontalAlignment == HorizontalAlignment::Right)
                         line.setPosition({pos.x + maxWidth - textWidth, pos.y});
 
-                    pos.y += m_fontCached.getLineSpacing(m_textSizeCached);
+                    pos.y += lineSpacing;
                 }
             }
         }
