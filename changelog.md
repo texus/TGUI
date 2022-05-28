@@ -12,6 +12,7 @@ TGUI 0.9.4  (TBD)
 - Fixed issue with renderer property within custom renderer outside tgui namespace
 - Widget could remain in hover state after hiding it
 - Fixed broken text rendering in SDL/OpenGL backend
+- List of ComboBox did not use the font set in the ComboBox
 
 
 TGUI 0.9.3  (15 January 2022)
