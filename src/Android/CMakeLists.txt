@@ -32,7 +32,9 @@ target_compile_definitions(tgui-activity PRIVATE ${NAME_UPPER}_EXPORTS)
 set_target_properties(tgui-activity PROPERTIES DEBUG_POSTFIX -d)
 
 # Hide public symbols by default (exported ones are explicitly marked)
-target_compile_options(tgui-activity PRIVATE -fvisibility=hidden)
+set_target_properties(tgui-activity PROPERTIES
+                      CXX_VISIBILITY_PRESET hidden
+                      VISIBILITY_INLINES_HIDDEN YES)
 
 if (CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
     target_compile_definitions(tgui-activity PRIVATE STL_LIBRARY=${CMAKE_ANDROID_STL_TYPE})

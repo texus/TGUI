@@ -308,7 +308,9 @@ endif()
 
 # Hide public symbols by default (exported ones are explicitly marked)
 if(NOT TGUI_OS_WINDOWS AND TGUI_SHARED_LIBS)
-    target_compile_options(tgui PRIVATE -fvisibility=hidden)
+    set_target_properties(tgui PROPERTIES
+                          CXX_VISIBILITY_PRESET hidden
+                          VISIBILITY_INLINES_HIDDEN YES)
 endif()
 
 # For Visual Studio on Windows, export debug symbols (PDB files) to lib directory (in Debug and RelWithDebInfo configurations)
