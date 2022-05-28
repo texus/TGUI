@@ -946,8 +946,8 @@ namespace tgui
             m_listBox->setInheritedFont(m_fontCached);
         if (m_opacityCached != m_listBox->getInheritedOpacity())
             m_listBox->setInheritedOpacity(m_opacityCached);
-        if (m_textSizeCached != m_listBox->getTextSize())
-            m_listBox->setTextSize(m_textSizeCached);
+        if (m_textSize != m_listBox->getTextSize())
+            m_listBox->setTextSize(m_textSize);
 
         m_listBox->setFocused(true);
     }
