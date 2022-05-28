@@ -930,6 +930,15 @@ namespace tgui
             m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
 
         container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
+
+        // Adding the list box to the container might have altered it, so make sure it still inherits the properties of the combo box
+        if (m_fontCached != m_listBox->getInheritedFont())
+            m_listBox->setInheritedFont(m_fontCached);
+        if (m_opacityCached != m_listBox->getInheritedOpacity())
+            m_listBox->setInheritedOpacity(m_opacityCached);
+        if (m_textSizeCached != m_listBox->getTextSize())
+            m_listBox->setTextSize(m_textSizeCached);
+
         m_listBox->setFocused(true);
     }
 
