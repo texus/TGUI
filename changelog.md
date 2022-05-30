@@ -10,6 +10,7 @@ TGUI 0.9.4  (TBD)
 - Pasting still worked in TextArea when it was read-only
 - ListBox::setMaximumItems didn't reset selected item when removed
 - Fixed issue with renderer property within custom renderer outside tgui namespace
+- Parsing invalid UTF-8 character could trigger a debug assert in Visual Studio
 - Widget could remain in hover state after hiding it
 - Fixed broken text rendering in SDL/OpenGL backend
 - List of ComboBox did not use the font set in the ComboBox

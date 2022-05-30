@@ -113,16 +113,16 @@ namespace tgui
             };
 
             // decode the character
-            std::uint8_t trailingBytes = trailingMap[static_cast<std::uint8_t>(*inputCharIt) - 128];
+            const std::uint8_t trailingBytes = trailingMap[static_cast<std::uint8_t>(*inputCharIt) - 128];
             const std::uint32_t offset = offsetsMap[trailingBytes];
-            if (inputCharIt + trailingBytes < inputEndIt)
+            const auto remainingBytes = std::distance(inputCharIt, inputEndIt) - 1;
+            if (remainingBytes >= static_cast<decltype(remainingBytes)>(trailingBytes))
             {
                 char32_t outputChar = 0;
-                while (trailingBytes > 0)
+                for (std::uint8_t i = 0; i < trailingBytes; ++i)
                 {
                     outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
                     outputChar <<= 6;
-                    --trailingBytes;
                 }
 
                 outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
