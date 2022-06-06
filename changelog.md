@@ -14,6 +14,7 @@ TGUI 0.9.4  (TBD)
 - Widget could remain in hover state after hiding it
 - Fixed broken text rendering in SDL/OpenGL backend
 - List of ComboBox did not use the font set in the ComboBox
+- Keeping child window inside parent didn't take origin into account
 
 
 TGUI 0.9.3  (15 January 2022)
