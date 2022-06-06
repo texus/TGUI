@@ -303,26 +303,30 @@ namespace tgui
 
     void ChildWindow::setPosition(const Layout2d& position)
     {
-        float x = position.getValue().x;
-        float y = position.getValue().y;
-
-        if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0)
-         && ((y < 0) || (y > m_parent->getSize().y - getSize().y) || (x < 0) || (x > m_parent->getSize().x - getSize().x)))
+        Layout2d containerPos = position;
+        if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0))
         {
-            if (y < 0)
-                y = 0;
-            else if (y > m_parent->getSize().y - getSize().y)
-                y = std::max(0.f, m_parent->getSize().y - getSize().y);
+            const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
+            float x = position.getValue().x - origin.x;
+            float y = position.getValue().y - origin.y;
 
-            if (x < 0)
-                x = 0;
-            else if (x > m_parent->getSize().x - getSize().x)
-                x = std::max(0.f, m_parent->getSize().x - getSize().x);
+            if ((y < 0) || (y > m_parent->getSize().y - getSize().y) || (x < 0) || (x > m_parent->getSize().x - getSize().x))
+            {
+                if (y < 0)
+                    y = 0;
+                else if (y > m_parent->getSize().y - getSize().y)
+                    y = std::max(0.f, m_parent->getSize().y - getSize().y);
 
-            Container::setPosition({x, y});
+                if (x < 0)
+                    x = 0;
+                else if (x > m_parent->getSize().x - getSize().x)
+                    x = std::max(0.f, m_parent->getSize().x - getSize().x);
+
+                containerPos = {x + origin.x, y + origin.y};
+            }
         }
-        else
-            Container::setPosition(position);
+
+        Container::setPosition(containerPos);
 
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
@@ -811,19 +815,22 @@ namespace tgui
         // Check if you are dragging the child window
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
+            const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
+            const Vector2f topLeftPos = getPosition() - origin;
+
             // Move the child window, but don't allow the dragging position to leave the screen
             Vector2f newPosition;
-            if (getPosition().x + pos.x <= 0)
-                newPosition.x = -m_draggingPosition.x + 1;
-            else if (m_parent && getPosition().x + pos.x >= m_parent->getSize().x)
-                newPosition.x = m_parent->getSize().x - m_draggingPosition.x - 1;
+            if (topLeftPos.x + pos.x <= 0)
+                newPosition.x = -m_draggingPosition.x + origin.x + 1;
+            else if (m_parent && topLeftPos.x + pos.x >= m_parent->getSize().x)
+                newPosition.x = m_parent->getSize().x - m_draggingPosition.x + origin.x - 1;
             else
                 newPosition.x = getPosition().x + (pos.x - m_draggingPosition.x);
 
-            if (getPosition().y + pos.y <= 0)
-                newPosition.y = -m_draggingPosition.y + 1;
-            else if (m_parent && getPosition().y + pos.y >= m_parent->getSize().y)
-                newPosition.y = m_parent->getSize().y - m_draggingPosition.y - 1;
+            if (topLeftPos.y + pos.y <= 0)
+                newPosition.y = -m_draggingPosition.y + origin.y + 1;
+            else if (m_parent && topLeftPos.y + pos.y >= m_parent->getSize().y)
+                newPosition.y = m_parent->getSize().y - m_draggingPosition.y + origin.y - 1;
             else
                 newPosition.y = getPosition().y + (pos.y - m_draggingPosition.y);
 
