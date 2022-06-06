@@ -259,6 +259,10 @@ namespace tgui
         if (oldDepthEnabled)
             TGUI_GL_CHECK(glDisable(GL_DEPTH_TEST));
 
+        const GLboolean oldCullingEnabled = glIsEnabled(GL_CULL_FACE);
+        if (oldCullingEnabled)
+            TGUI_GL_CHECK(glDisable(GL_CULL_FACE));
+
         GLint oldClipRect[4];
         const GLboolean oldScissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
         if (oldScissorEnabled)
@@ -302,6 +306,8 @@ namespace tgui
         else
             TGUI_GL_CHECK(glDisable(GL_SCISSOR_TEST));
 
+        if (oldCullingEnabled)
+            TGUI_GL_CHECK(glEnable(GL_CULL_FACE));
         if (oldDepthEnabled)
             TGUI_GL_CHECK(glEnable(GL_DEPTH_TEST));
 
