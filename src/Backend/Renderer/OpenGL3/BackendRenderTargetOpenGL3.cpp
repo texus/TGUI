@@ -204,6 +204,10 @@ namespace tgui
             TGUI_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         }
 
+        const GLboolean oldDepthEnabled = glIsEnabled(GL_DEPTH_TEST);
+        if (oldDepthEnabled)
+            TGUI_GL_CHECK(glDisable(GL_DEPTH_TEST));
+
         GLint oldClipRect[4];
         const GLboolean oldScissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
         if (oldScissorEnabled)
@@ -244,6 +248,9 @@ namespace tgui
             TGUI_GL_CHECK(glScissor(oldClipRect[0], oldClipRect[1], oldClipRect[2], oldClipRect[3]));
         else
             TGUI_GL_CHECK(glDisable(GL_SCISSOR_TEST));
+
+        if (oldDepthEnabled)
+            TGUI_GL_CHECK(glEnable(GL_DEPTH_TEST));
 
         if (oldBlendEnabled)
         {
