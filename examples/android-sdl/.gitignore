@@ -1,6 +1,8 @@
 /local.properties
+/.idea
 /.gradle
 /app/.externalNativeBuild
+/app/.cxx
 /app/build
 /app/jni/SDL
 /app/jni/SDL_image
