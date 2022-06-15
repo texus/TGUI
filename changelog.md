@@ -1,5 +1,5 @@
-TGUI 0.9.4  (TBD)
------------------
+TGUI 0.9.4  (15 June 2022)
+--------------------------
 
 - Default theme no longer affects loading widgets from file
 - Added TextAlignment property to ListBox
