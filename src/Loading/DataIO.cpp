@@ -420,6 +420,12 @@ namespace tgui
                     if (!error.empty())
                         return error;
                 }
+                else if (stream.peek() == ':')
+                {
+                    const String error = parseInheritance(stream, sectionNode, word);
+                    if (!error.empty())
+                        return error;
+                }
                 else
                     return "Expected '{' or '=', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
             }
