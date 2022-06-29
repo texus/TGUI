@@ -408,15 +408,15 @@ namespace tgui
                 }
 
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
-                if (stream.peek() == '{')
+                if (stream.peek() == '=')
                 {
-                    const String error = parseSection(stream, sectionNode, word);
+                    const String error = parseKeyValue(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
-                else if (stream.peek() == '=')
+                else if (stream.peek() == '{')
                 {
-                    const String error = parseKeyValue(stream, sectionNode, word);
+                    const String error = parseSection(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
@@ -503,10 +503,10 @@ namespace tgui
             }
 
             REMOVE_WHITESPACE_AND_COMMENTS(true)
-            if (stream.peek() == '{')
-                return parseSection(stream, root, word);
-            else if (stream.peek() == '=')
+            if (stream.peek() == '=')
                 return parseKeyValue(stream, root, word);
+            else if (stream.peek() == '{')
+                return parseSection(stream, root, word);
             else if (stream.peek() == ':')
                 return parseInheritance(stream, root, word);
             else
