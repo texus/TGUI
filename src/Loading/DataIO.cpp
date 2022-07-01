@@ -369,6 +369,68 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        String parseInheritance(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const String& sectionName)
+        {
+            // Read the colon from the stream
+            char chr;
+            stream.read(&chr, 1);
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
+
+            String baseSectionName = readWord(stream);
+            if (baseSectionName.empty())
+                return "Expected name of base section to inherit from after ':'.";
+
+            const DataIO::Node* parentNode = node.get();
+            const DataIO::Node* baseSectionNode = nullptr;
+            while (!baseSectionNode && parentNode)
+            {
+                for (const auto& prevSections : parentNode->children)
+                {
+                    if (prevSections->name != baseSectionName)
+                        continue;
+
+                    baseSectionNode = prevSections.get();
+                    break;
+                }
+
+                parentNode = parentNode->parent;
+            }
+
+            if (!baseSectionNode)
+                return "Failed to find base section '" + baseSectionName + "' to inherit from.";
+
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
+            if (stream.peek() != '{')
+                return "Expected '{' after specifying base section to inherit from.";
+
+            const auto& error = parseSection(stream, node, sectionName);
+            if (!error.empty())
+                return error;
+
+            auto& sectionNode = node->children.back(); // This node was added by parseSection
+
+            // Copy properties that aren't overwritten
+            for (const auto& pair : baseSectionNode->propertyValuePairs)
+            {
+                const String& propertyName = pair.first;
+                if (sectionNode->propertyValuePairs.find(propertyName) == sectionNode->propertyValuePairs.end())
+                    sectionNode->propertyValuePairs[propertyName] = std::make_unique<DataIO::ValueNode>(*pair.second);
+            }
+
+            // Copy children that aren't overwritten
+            for (const auto& baseChildNode : baseSectionNode->children)
+            {
+                const auto it = std::find_if(sectionNode->children.begin(), sectionNode->children.end(),
+                    [&](const std::unique_ptr<DataIO::Node>& childNode){ return childNode->name == baseChildNode->name; });
+                if (it == sectionNode->children.end())
+                    sectionNode->children.push_back(std::make_unique<DataIO::Node>(*baseChildNode));
+            }
+
+            return "";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         String parseSection(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const String& sectionName)
         {
             // Create a new node for this section
@@ -420,66 +482,17 @@ namespace tgui
                     if (!error.empty())
                         return error;
                 }
+                else if (stream.peek() == ':')
+                {
+                    const String error = parseInheritance(stream, sectionNode, word);
+                    if (!error.empty())
+                        return error;
+                }
                 else
-                    return "Expected '{' or '=', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
+                    return "Expected '{', '=' or ':', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
             }
 
             return "Found EOF while reading section.";
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        String parseInheritance(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const String& sectionName)
-        {
-            // Read the colon from the stream
-            char chr;
-            stream.read(&chr, 1);
-            REMOVE_WHITESPACE_AND_COMMENTS(true)
-
-            String baseSectionName = readWord(stream);
-            if (baseSectionName.empty())
-                return "Expected name of base section to inherit from after ':'.";
-
-            const DataIO::Node* baseSectionNode = nullptr;
-            for (const auto& prevSections : node->children)
-            {
-                if (prevSections->name != baseSectionName)
-                    continue;
-
-                baseSectionNode = prevSections.get();
-            }
-
-            if (!baseSectionNode)
-                return "Failed to find base section '" + baseSectionName + "' to inherit from.";
-
-            REMOVE_WHITESPACE_AND_COMMENTS(true)
-            if (stream.peek() != '{')
-                return "Expected '{' after specifying base section to inherit from.";
-
-            const auto& error = parseSection(stream, node, sectionName);
-            if (!error.empty())
-                return error;
-
-            auto& sectionNode = node->children.back(); // This node was added by parseSection
-
-            // Copy properties that aren't overwritten
-            for (const auto& pair : baseSectionNode->propertyValuePairs)
-            {
-                const String& propertyName = pair.first;
-                if (sectionNode->propertyValuePairs.find(propertyName) == sectionNode->propertyValuePairs.end())
-                    sectionNode->propertyValuePairs[propertyName] = std::make_unique<DataIO::ValueNode>(*pair.second);
-            }
-
-            // Copy children that aren't overwritten
-            for (const auto& baseChildNode : baseSectionNode->children)
-            {
-                const auto it = std::find_if(sectionNode->children.begin(), sectionNode->children.end(),
-                    [&](const std::unique_ptr<DataIO::Node>& childNode){ return childNode->name == baseChildNode->name; });
-                if (it == sectionNode->children.end())
-                    sectionNode->children.push_back(std::make_unique<DataIO::Node>(*baseChildNode));
-            }
-
-            return "";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,7 +517,7 @@ namespace tgui
             else if (stream.peek() == ':')
                 return parseInheritance(stream, root, word);
             else
-                return "Expected '{' or '=', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
+                return "Expected '{', '=' or ':', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
