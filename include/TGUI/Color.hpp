@@ -122,6 +122,10 @@ namespace tgui
         }
 
 
+#if defined (_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 26495) // Ignore "Variable is uninitialized" warning to surpress incorrect code analysis
+#endif
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from a string
         ///
@@ -133,7 +137,9 @@ namespace tgui
             Color{priv::constructColorFromString(string)}
         {
         }
-
+#if defined (_MSC_VER)
+#   pragma warning(pop)
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from a string
