@@ -1,3 +1,10 @@
+TGUI 0.9.5  (17 July 2022)
+--------------------------
+
+- Fixed Gui Builder crash when creating or loading any form
+- Fixed crash when position of ChildWindow depends on its size
+
+
 TGUI 0.9.4  (15 June 2022)
 --------------------------
 
