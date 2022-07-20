@@ -324,6 +324,26 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getTextSize() == 25);
     }
 
+    SECTION("UserData")
+    {
+        REQUIRE(!widget->hasUserData());
+        REQUIRE_THROWS_AS(widget->getUserData<int>(), std::bad_cast);
+
+        widget->setUserData(5);
+        REQUIRE(widget->hasUserData());
+        REQUIRE(widget->getUserData<int>() == 5);
+        REQUIRE_THROWS_AS(widget->getUserData<std::string>(), std::bad_cast);
+
+        widget->setUserData(std::string("Hello"));
+        REQUIRE(widget->hasUserData());
+        REQUIRE(widget->getUserData<std::string>() == "Hello");
+        REQUIRE_THROWS_AS(widget->getUserData<int>(), std::bad_cast);
+
+        widget->setUserData({});
+        REQUIRE(!widget->hasUserData());
+        REQUIRE_THROWS_AS(widget->getUserData<std::string>(), std::bad_cast);
+    }
+
     SECTION("WidgetName")
     {
         auto w1 = tgui::ClickableWidget::create();

@@ -68,6 +68,11 @@ namespace tgui
         {
         }
 
+        bool has_value() const noexcept
+        {
+            return ptr != nullptr;
+        }
+
         template<class U>
         bool is() const
         {

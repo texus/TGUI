@@ -8,6 +8,7 @@ TGUI 0.10.0  (TBD)
 - Position of text in buttons can now be changed
 - Added changeMenuItem function to MenuBar to change the text of a menu
 - Added SizeHorizontal and SizeVertical mouse cursors
+- Added hasUserData to Widget
 - Theme files now support inheritance between sections
 - Word-wrapped lines no longer begin with whitespace
 - Filter CR in TextArea to prevent issues when pasting CRLF on Windows
