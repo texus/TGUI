@@ -289,9 +289,9 @@ namespace tgui
         const Vertex::Color vertexFillColor(m_fillColor);
         const Vertex::Color vertexOutlineColor(m_outlineColor);
 
-        const bool isBold              = static_cast<unsigned int>(m_style) & TextStyle::Bold;
-        const bool isUnderlined        = static_cast<unsigned int>(m_style) & TextStyle::Underlined;
-        const bool isStrikeThrough     = static_cast<unsigned int>(m_style) & TextStyle::StrikeThrough;
+        const bool isBold              = (static_cast<unsigned int>(m_style) & TextStyle::Bold) != 0;
+        const bool isUnderlined        = (static_cast<unsigned int>(m_style) & TextStyle::Underlined) != 0;
+        const bool isStrikeThrough     = (static_cast<unsigned int>(m_style) & TextStyle::StrikeThrough) != 0;
         const float italicShear        = (static_cast<unsigned int>(m_style) & TextStyle::Italic) ? 0.20944f : 0.f; // 12 degrees in radians
         const float underlineOffset    = m_font->getUnderlinePosition(m_characterSize);
         const float underlineThickness = m_font->getUnderlineThickness(m_characterSize);
