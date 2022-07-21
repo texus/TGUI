@@ -189,7 +189,8 @@ namespace tgui
         sf::Event event;
         bool refreshRequired = true;
         std::chrono::steady_clock::time_point lastRenderTime;
-        while (m_window->isOpen())
+        bool windowOpen = m_window->isOpen();
+        while (windowOpen)
         {
             bool eventProcessed = false;
             while (true)
@@ -201,7 +202,10 @@ namespace tgui
 
                     if (event.type == sf::Event::Closed)
                     {
-                        m_window->close();
+                        // We don't call m_window->close() as it would destroy the OpenGL context, which will cause messages to be
+                        // printed in the terminal later when we try to destroy our backend renderer (which tries to clean up OpenGL resources).
+                        // The close function will be called by the window destructor.
+                        windowOpen = false;
                         eventProcessed = true;
                     }
                     else if (event.type == sf::Event::Resized)
@@ -218,6 +222,9 @@ namespace tgui
 
                 std::this_thread::sleep_for(std::chrono::nanoseconds(getTimerWakeUpTime()));
             }
+
+            if (!windowOpen)
+                break;
 
             refreshRequired = true;
 
