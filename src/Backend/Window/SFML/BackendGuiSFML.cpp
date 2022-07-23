@@ -190,7 +190,7 @@ namespace tgui
         bool refreshRequired = true;
         std::chrono::steady_clock::time_point lastRenderTime;
         bool windowOpen = m_window->isOpen();
-        while (windowOpen)
+        while (m_window->isOpen()) // Don't just check windowOpen, user code can also call window.close()
         {
             bool eventProcessed = false;
             while (true)
