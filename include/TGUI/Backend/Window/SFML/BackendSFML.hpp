@@ -144,6 +144,20 @@ namespace tgui
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destroys any leaked cursors
+        ///
+        /// Proper cleanup of TGUI resources requires that the gui is destroyed before the SFML window.
+        /// Unfortunately, SFML requires the cursor lifetime to exceed that of the window.
+        /// To not end up with crashes or warnings in the terminal, TGUI may leak one cursor per window. This cursor won't be
+        /// destroyed properly before the end of the program. You may call this function after both the Gui and SFML window
+        /// have been destroyed to properly cleanup the leaked cursor.
+        ///
+        /// @warning This should not be called while the SFML window is still open.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void cleanupLeakedCursors();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +189,8 @@ namespace tgui
 
         std::unordered_map<BackendGui*, GuiResources> m_guis;
         std::map<Cursor::Type, std::unique_ptr<sf::Cursor>> m_mouseCursors;  /// We can't use unordered_map with enum class in GCC < 6
+
+        static std::vector<std::unique_ptr<sf::Cursor>> m_leakedCursors;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

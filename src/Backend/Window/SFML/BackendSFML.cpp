@@ -56,6 +56,8 @@
 
 namespace tgui
 {
+    std::vector<std::unique_ptr<sf::Cursor>> BackendSFML::m_leakedCursors;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendSFML::setGuiWindow(BackendGui* gui, sf::Window* window)
@@ -75,6 +77,17 @@ namespace tgui
 
     void BackendSFML::detatchGui(BackendGui* gui)
     {
+        // Proper cleanup of TGUI resources requires that the gui is destroyed before the SFML window.
+        // Unfortunately, SFML requires the cursor lifetime to exceed that of the window.
+        // We are creating a memory leak here to allow cursors to exist long enough.
+        if (m_guis[gui].window && m_mouseCursors[m_guis[gui].mouseCursor])
+        {
+            auto cursor = std::make_unique<sf::Cursor>();
+            (void)cursor->loadFromSystem(sf::Cursor::Type::Arrow);
+            m_guis[gui].window->setMouseCursor(*cursor);
+            m_leakedCursors.push_back(std::move(cursor));
+        }
+
         // Don't check if it existed, detach is called for every gui while attached is only called for properly initialized guis
         m_guis.erase(gui);
 
@@ -378,6 +391,13 @@ namespace tgui
 
         // Pass the cursor to SFML to set it while the mouse is on top of the window
         window->setMouseCursor(*m_mouseCursors[type]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendSFML::cleanupLeakedCursors()
+    {
+        m_leakedCursors.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

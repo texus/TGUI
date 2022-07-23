@@ -40,10 +40,9 @@ struct TestsWindowDefault : public TestsWindowBase
 
         ~TestsWindowSfmlGraphics()
         {
-            // Close the window before destroying the gui to prevent potential issues with the mouse cursor.
+            gui = nullptr; // Destroy the gui before the window
             window.close();
-
-            gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
+            tgui::BackendSFML::cleanupLeakedCursors();
         }
 
         void close() override
@@ -69,10 +68,9 @@ struct TestsWindowDefault : public TestsWindowBase
 
         ~TestsWindowSfmlOpenGL3()
         {
-            // Close the window before destroying the gui to prevent potential issues with the mouse cursor.
+            gui = nullptr; // Destroy the gui before the window
             window.close();
-
-            gui = nullptr; // Destroy the gui before the window (for good practice, this is not required)
+            tgui::BackendSFML::cleanupLeakedCursors();
         }
 
         void close() override
