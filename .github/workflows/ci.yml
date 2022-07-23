@@ -738,7 +738,7 @@ jobs:
   #----------------------------------------
 
   ios-sfml-graphics:
-    runs-on: macos-10.15
+    runs-on: macos-12
     env:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
       SFML_VERSION: 2.5.1
