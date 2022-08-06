@@ -327,9 +327,9 @@ TEST_CASE("[TreeView]")
         SECTION("textured")
         {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            tgui::Texture textureBranchExpanded("resources/TreeView/Expanded.png");
-            tgui::Texture textureBranchCollapsed("resources/TreeView/Collapsed.png");
-            tgui::Texture textureLeaf("resources/TreeView/Leaf.png");
+            tgui::Texture textureBranchExpanded("resources/TreeViewExpanded.png");
+            tgui::Texture textureBranchCollapsed("resources/TreeViewCollapsed.png");
+            tgui::Texture textureLeaf("resources/TreeViewLeaf.png");
 
             SECTION("set serialized property")
             {

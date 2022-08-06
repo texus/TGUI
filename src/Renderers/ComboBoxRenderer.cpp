@@ -34,9 +34,9 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(ComboBoxRenderer, Padding)
 
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColor, Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColorDisabled, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColor, Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColorDisabled, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, DefaultTextColor, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColorHover, {})

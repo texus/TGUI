@@ -192,8 +192,8 @@ TEST_CASE("[Knob]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Knob/Back.png");
-            tgui::Texture textureForeground("resources/Knob/Front.png");
+            tgui::Texture textureBackground("resources/KnobBack.png");
+            tgui::Texture textureForeground("resources/KnobFront.png");
 
             SECTION("set serialized property")
             {
