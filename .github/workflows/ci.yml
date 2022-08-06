@@ -385,8 +385,8 @@ jobs:
     runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.1
-      SDL_VERSION: 2.0.18
-      SDL_TTF_VERSION: 2.0.15
+      SDL_VERSION: 2.0.22
+      SDL_TTF_VERSION: 2.20.0
       MSVC_TOOLSET_VERSION: 143  # VS2022
       INSTALLED_VS_VERSION: Visual Studio 17 2022
     steps:
@@ -394,8 +394,8 @@ jobs:
         run: |
           cd ${env:GITHUB_WORKSPACE}
           C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
-          C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
-          C:\msys64\usr\bin\wget.exe -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL/releases/download/release-${env:SDL_VERSION}/SDL2-devel-${env:SDL_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL_ttf/releases/download/release-${env:SDL_TTF_VERSION}/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
@@ -629,7 +629,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SDL_VERSION: 2.0.14
-      SDL_TTF_VERSION: 2.0.15
+      SDL_TTF_VERSION: 2.0.18
       NDK_VERSION: 23.0.7599858
       ARCH_ABI: arm64-v8a
     steps:
@@ -649,7 +649,7 @@ jobs:
           mkdir $GITHUB_WORKSPACE/SDL
           mkdir $GITHUB_WORKSPACE/SDL_TTF
           wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/tags/release-$SDL_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL
-          wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/archive/refs/tags/release-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL_TTF
+          wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/releases/download/release-$SDL_TTF_VERSION/SDL2_ttf-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL_TTF
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
