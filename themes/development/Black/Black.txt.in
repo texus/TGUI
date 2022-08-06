@@ -1,17 +1,21 @@
+TextColor         = rgb(190, 190, 190);
+TextColorHover    = rgb(250, 250, 250);
+SelectedTextColor = White;
+BorderColor       = Black;
+BackgroundColor   = rgb(80,  80,  80);
+BackgroundColorHover = rgb(100, 100, 100);
+SelectedBackgroundColor = rgb(10, 110, 255);
+SelectedBackgroundColorHover = rgb(30, 150, 255);
+
 Button {
     Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
     TextureHover    = ${ButtonBackgroundHover} Middle(10, 0) Smooth;
     TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
     TextureFocused  = ${ButtonBackgroundFocused} Middle(10, 0) Smooth;
-    TextColor       = rgb(190, 190, 190);
-    TextColorHover  = rgb(250, 250, 250);
 }
-
-BitmapButton : Button {}
 
 ChatBox {
     TextureBackground = ${Background} Middle(16) Smooth;
-    Scrollbar         = &Scrollbar;
     Padding           = (3, 3, 3, 3);
 }
 
@@ -22,15 +26,10 @@ CheckBox {
     TextureCheckedHover     = ${CheckBoxCheckedHover} Smooth;
     TextureUncheckedFocused = ${CheckBoxUncheckedFocused} Smooth;
     TextureCheckedFocused   = ${CheckBoxCheckedFocused} Smooth;
-    TextColor               = rgb(190, 190, 190);
-    TextColorHover          = rgb(250, 250, 250);
 }
 
 ChildWindow {
     TextureTitleBar        = ${TitleBar} Middle(25, 0) Smooth;
-    TitleColor             = rgb(190, 190, 190);
-    BackgroundColor        = rgb( 80,  80,  80);
-    BorderColor            = Black;
     Borders                = (1, 1, 1, 1);
     DistanceToSide         = 5;
     PaddingBetweenButtons  = 2;
@@ -52,15 +51,11 @@ ChildWindow {
     };
 }
 
-ColorPicker : ChildWindow {}
-
 ComboBox {
-    TextureBackground     = ${Background} Middle(16) Smooth;
-    TextureArrow          = ${ComboBoxArrow} Smooth;
-    TextureArrowHover     = ${ComboBoxArrowHover} Smooth;
-    TextColor             = rgb(190, 190, 190);
-    Padding               = (3, 3, 3, 3);
-    ListBox               = &ListBox;
+    TextureBackground = ${Background} Middle(16) Smooth;
+    TextureArrow      = ${ComboBoxArrow} Smooth;
+    TextureArrowHover = ${ComboBoxArrowHover} Smooth;
+    Padding           = (3, 3, 3, 3);
 }
 
 EditBox {
@@ -68,83 +63,36 @@ EditBox {
     TextureHover   = ${EditBoxBackgroundHover} Middle(15, 0) Smooth;
     TextureFocused = ${EditBoxBackgroundFocused} Middle(15, 0) Smooth;
 
-    TextColor                   = rgb(190, 190, 190);
-    SelectedTextColor           = White;
-    SelectedTextBackgroundColor = rgb( 10, 110, 255);
-    DefaultTextColor            = rgb(120, 120, 120);
-    CaretColor                  = rgb(110, 110, 255);
-    Padding                     = (6, 4, 6, 4);
-}
-
-FileDialog : ChildWindow {
-    Button = &Button;
-    EditBox = &EditBox;
-    ListView = &ListView;
-    FilenameLabel = &Label;
-    FileTypeComboBox = &ComboBox;
+    DefaultTextColor = rgb(120, 120, 120);
+    CaretColor       = rgb(110, 110, 255);
+    Padding          = (6, 4, 6, 4);
 }
 
 Knob {
-    BackgroundColor = rgb( 80,  80,  80);
-    ThumbColor      = rgb(190, 190, 190);
-    BorderColor     = Black;
-    Borders         = (2, 2, 2, 2);
-}
-
-Label {
-    TextColor = rgb(190, 190, 190);
-    Scrollbar = &Scrollbar;
+    Borders = (2, 2, 2, 2);
 }
 
 ListBox {
-    TextureBackground            = ${Background} Middle(16) Smooth;
-    TextColor                    = rgb(190, 190, 190);
-    TextColorHover               = rgb(250, 250, 250);
-    BackgroundColorHover         = rgb(100, 100, 100);
-    SelectedBackgroundColor      = rgb( 10, 110, 255);
-    SelectedBackgroundColorHover = rgb(30, 150, 255);
-    SelectedTextColor            = White;
-    Padding                      = (3, 3, 3, 3);
-    Scrollbar                    = &Scrollbar;
+    TextureBackground = ${Background} Middle(16) Smooth;
+    Padding           = (3, 3, 3, 3);
 }
 
 ListView {
-    TextColor                    = rgb(190, 190, 190);
-    TextColorHover               = rgb(250, 250, 250);
-    HeaderBackgroundColor        = rgb( 95,  95,  95);
-    HeaderTextColor              = rgb(210, 210, 210);
-    BackgroundColor              = rgb( 80,  80,  80);
-    BackgroundColorHover         = rgb(100, 100, 100);
-    SelectedBackgroundColor      = rgb( 10, 110, 255);
-    SelectedBackgroundColorHover = rgb(30, 150, 255);
-    SelectedTextColor            = White;
-    BorderColor                  = Black;
-    Borders                      = (1, 1, 1, 1);
-    Scrollbar                    = &Scrollbar;
+    HeaderBackgroundColor = rgb( 95,  95,  95);
+    HeaderTextColor       = rgb(210, 210, 210);
+    Borders               = (1, 1, 1, 1);
 }
 
 MenuBar {
     TextureBackground             = ${MenuBarMenu} Middle(2, 2) NoSmooth;
     TextureItemBackground         = ${MenuBarItem} Middle(2, 0, 4, 2) NoSmooth;
     TextureSelectedItemBackground = ${MenuBarItemSelected} Middle(2, 2) NoSmooth;
-    TextColor                     = rgb(190, 190, 190);
-    SelectedTextColor             = White;
     DistanceToSide                = 5;
-}
-
-MessageBox : ChildWindow {
-    TextColor = rgb(190, 190, 190);
-    Button = &Button;
-}
-
-Panel {
-    BackgroundColor = rgb(80, 80, 80);
 }
 
 ProgressBar {
     TextureBackground = ${ProgressBarBackground} Middle(20, 0) Smooth;
     TextureFill       = ${ProgressBarForeground} Middle(16, 0) Smooth;
-    TextColor         = rgb(190, 190, 190);
     TextColorFilled   = rgb(250, 250, 250);
 }
 
@@ -155,13 +103,6 @@ RadioButton {
     TextureCheckedHover     = ${RadioButtonCheckedHover} Smooth;
     TextureUncheckedFocused = ${RadioButtonUncheckedFocused} Smooth;
     TextureCheckedFocused   = ${RadioButtonCheckedFocused} Smooth;
-    TextColor               = rgb(190, 190, 190);
-    TextColorHover          = rgb(250, 250, 250);
-}
-
-ScrollablePanel {
-    BackgroundColor = rgb(80, 80, 80);
-    Scrollbar       = &Scrollbar;
 }
 
 Scrollbar {
@@ -175,17 +116,11 @@ Scrollbar {
     TextureArrowDownHover = ${ArrowDownHover} Middle(0, 1, 20, 19) Smooth;
 }
 
-SeparatorLine {
-    Color = Black;
-}
-
 Slider {
     TextureTrack      = ${SliderTrack} Middle(0, 15) Smooth;
     TextureTrackHover = ${SliderTrackHover} Middle(0, 15) Smooth;
     TextureThumb      = ${SliderThumb} Smooth;
 }
-
-RangeSlider : Slider {}
 
 SpinButton {
     TextureArrowUp        = ${ArrowUp} Middle(0, 0, 20, 19) Smooth;
@@ -195,46 +130,25 @@ SpinButton {
     BorderBetweenArrows    = 0;
 }
 
-SpinControl {
-    SpinButton = &SpinButton;
-    SpinText = &EditBox;
-}
-
-TabContainer {
-    Tabs = &Tabs;
-}
-
 Tabs {
     TextureTab         = ${TabBackground} Middle(16, 0) Smooth;
     TextureSelectedTab = ${TabBackgroundSelected} Middle(16, 0) Smooth;
-    TextColor          = rgb(190, 190, 190);
-    SelectedTextColor  = White;
     DistanceToSide     = 8;
 }
 
 TextArea {
-    TextureBackground           = ${Background} Middle(16) Smooth;
-    TextColor                   = rgb(190, 190, 190);
-    SelectedTextColor           = White;
-    SelectedTextBackgroundColor = rgb( 10, 110, 255);
-    CaretColor                  = rgb(110, 110, 255);
-    Padding                     = (3, 3, 3, 3);
-    Scrollbar                   = &Scrollbar;
+    TextureBackground = ${Background} Middle(16) Smooth;
+    CaretColor        = rgb(110, 110, 255);
+    Padding           = (3, 3, 3, 3);
 }
 
 ToolTip {
-    TextColor       = rgb(190, 190, 190);
-    BackgroundColor = rgb( 80,  80,  80);
-    BorderColor     = Black;
+    BackgroundColor = rgb(80, 80, 80);
     Borders         = (1, 1, 1, 1);
     Padding         = (2, 2, 2, 2);
 }
 
 ToggleButton {
-    Texture         = ${ButtonBackground} Middle(10, 0) Smooth;
-    TextureDown     = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
-    TextColor       = rgb(190, 190, 190);
-    TextColorHover  = rgb(250, 250, 250);
+    Texture     = ${ButtonBackground} Middle(10, 0) Smooth;
+    TextureDown = ${ButtonBackgroundDown} Middle(10, 0) Smooth;
 }
-
-TreeView : ListBox {}

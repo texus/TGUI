@@ -73,7 +73,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ButtonBase::ButtonBase(ButtonBase&& other) :
+    ButtonBase::ButtonBase(ButtonBase&& other) noexcept :
         ClickableWidget               {std::move(other)},
         m_string                      {std::move(other.m_string)},
         m_down                        {std::move(other.m_down)},
@@ -123,7 +123,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ButtonBase& ButtonBase::operator=(ButtonBase&& other)
+    ButtonBase& ButtonBase::operator=(ButtonBase&& other) noexcept
     {
         if (&other != this)
         {
@@ -176,13 +176,6 @@ namespace tgui
     ButtonRenderer* ButtonBase::getRenderer()
     {
         return aurora::downcast<ButtonRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ButtonRenderer* ButtonBase::getRenderer() const
-    {
-        return aurora::downcast<const ButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

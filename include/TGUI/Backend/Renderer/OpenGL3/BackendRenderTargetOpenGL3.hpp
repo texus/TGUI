@@ -79,6 +79,8 @@ namespace tgui
         /// @brief Draws the gui and all of its widgets
         ///
         /// @param root  Root container that holds all widgets in the gui
+        ///
+        /// GL_BLEND, GL_DEPTH_TEST, GL_CULL_FACE and GL_SCISSOR_TEST are temporarily changed but restored at the end of this function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawGui(const std::shared_ptr<RootContainer>& root) override;
 

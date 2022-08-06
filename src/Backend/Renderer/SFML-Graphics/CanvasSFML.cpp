@@ -51,7 +51,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML::CanvasSFML(CanvasSFML&& other) :
+    CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
         ClickableWidget  {std::move(other)},
         m_usedTextureSize{std::move(other.m_usedTextureSize)},
         m_backendTexture {std::move(other.m_backendTexture)}
@@ -77,7 +77,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML& CanvasSFML::operator= (CanvasSFML&& right)
+    CanvasSFML& CanvasSFML::operator= (CanvasSFML&& right) noexcept
     {
         if (this != &right)
         {

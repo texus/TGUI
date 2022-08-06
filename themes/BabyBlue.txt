@@ -1,32 +1,29 @@
 // Theme based on http://dribbble.com/shots/635698-UI-Kit-Baby-Blue
 
+TextColor = rgb(100, 100, 100);
+BackgroundColor = rgb(210, 210, 210);
+SelectedTextColor = rgb(150, 150, 150);
+SelectedBackgroundColor = rgb(190, 225, 235);
+BorderColor = White;
+
 Button {
     Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureHover = "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
-    TextColor    = rgb(100, 100, 100);
 }
 
-BitmapButton : Button {}
-
 ChatBox {
-    BackgroundColor = rgb(210, 210, 210);
-    BorderColor     = White;
-    Borders         = (2, 2, 2, 2);
-    Scrollbar       = &Scrollbar;
+    Borders = (2, 2, 2, 2);
 }
 
 CheckBox {
     TextureChecked   = "BabyBlue.png" Part(48, 40, 34, 36) Smooth;
     TextureUnchecked = "BabyBlue.png" Part(381, 2, 31, 31) Smooth;
-    TextColor        = rgb(100, 100, 100);
 }
 
 ChildWindow {
     TextureTitleBar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31) Smooth;
-    TitleColor             = rgb(100, 100, 100);
     BackgroundColor        = rgb(230, 230, 230);
-    BorderColor            = White;
     Borders                = (2, 0, 2, 2);
     DistanceToSide         = 3;
     PaddingBetweenButtons  = 1;
@@ -51,69 +48,27 @@ ChildWindow {
     }
 }
 
-ColorPicker : ChildWindow {}
-
 ComboBox {
-    TextureArrow     = "BabyBlue.png" Part(177, 2, 20, 26) Smooth;
-    BackgroundColor  = rgb(210, 210, 210);
-    TextColor        = rgb(100, 100, 100);
-    BorderColor      = White;
-    Borders          = (2, 2, 2, 2);
-    ListBox          = &ListBox;
+    TextureArrow = "BabyBlue.png" Part(177, 2, 20, 26) Smooth;
+    Borders      = (2, 2, 2, 2);
 }
 
 EditBox {
-    Texture                     = "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48) Smooth;
-    TextColor                   = rgb(100, 100, 100);
-    SelectedTextColor           = rgb(150, 150, 150);
-    SelectedTextBackgroundColor = rgb(190, 225, 235);
-    CaretColor                  = rgb(145, 180, 190);
-    Padding                     = (14, 4, 14, 4);
-}
-
-FileDialog : ChildWindow {
-    Button = &Button;
-    EditBox = &EditBox;
-    ListView = &ListView;
-    FilenameLabel = &Label;
-    FileTypeComboBox = &ComboBox;
+    Texture    = "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48) Smooth;
+    CaretColor = rgb(145, 180, 190);
+    Padding    = (14, 4, 14, 4);
 }
 
 Knob {
-    BackgroundColor         = rgb(210, 210, 210);
-    ThumbColor              = rgb(100, 100, 100);
-    BorderColor             = White;
-    Borders                 = (2, 2, 2, 2);
-}
-
-Label {
-    TextColor = rgb(100, 100, 100);
-    Scrollbar = &Scrollbar;
+    Borders = (2, 2, 2, 2);
 }
 
 ListBox {
-    BackgroundColor         = rgb(210, 210, 210);
-    TextColor               = rgb(100, 100, 100);
-    SelectedBackgroundColor = rgb(190, 225, 235);
-    SelectedTextColor       = rgb(150, 150, 150);
-    BorderColor             = White;
-    Borders                 = (2, 2, 2, 2);
-    Scrollbar               = &Scrollbar;
+    Borders = (2, 2, 2, 2);
 }
-
-ListView : ListBox {}
 
 MenuBar {
-    BackgroundColor         = rgb(210, 210, 210);
-    TextColor               = rgb(100, 100, 100);
-    SelectedBackgroundColor = rgb(190, 225, 235);
-    SelectedTextColor       = rgb(150, 150, 150);
-    DistanceToSide          = 5;
-}
-
-MessageBox : ChildWindow {
-    Button    = &Button;
-    TextColor = rgb(100, 100, 100);
+    DistanceToSide = 5;
 }
 
 Panel {
@@ -123,18 +78,15 @@ Panel {
 ProgressBar {
     TextureBackground  = "BabyBlue.png" Part(221, 2, 30, 30) Middle(10, 0, 10, 30) Smooth;
     TextureFill        = "BabyBlue.png" Part(70, 2, 24, 24) Middle(7, 0, 7, 24) Smooth;
-    TextColor          = rgb(100, 100, 100);
 }
 
 RadioButton {
     TextureChecked   = "BabyBlue.png" Part(253, 2, 30, 30) Smooth;
     TextureUnchecked = "BabyBlue.png" Part(285, 2, 30, 30) Smooth;
-    TextColor        = rgb(100, 100, 100);
 }
 
 ScrollablePanel {
     BackgroundColor = rgb(230, 230, 230);
-    Scrollbar       = &Scrollbar;
 }
 
 Scrollbar {
@@ -144,54 +96,29 @@ Scrollbar {
     TextureArrowDown = "BabyBlue.png" Part(20, 2, 16, 16) Smooth;
 }
 
-SeparatorLine {
-    Color = White;
-}
-
 Slider {
     TextureTrack = "BabyBlue.png" Part(38, 2, 30, 20) Middle(10, 0, 10, 20) Smooth;
     TextureThumb = "BabyBlue.png" Part(84, 40, 17, 38) Smooth;
 }
-
-RangeSlider : Slider {}
 
 SpinButton {
     TextureArrowUp   = "BabyBlue.png" Part(2, 2, 16, 16) Smooth;
     TextureArrowDown = "BabyBlue.png" Part(20, 2, 16, 16) Smooth;
 }
 
-SpinControl {
-    SpinButton = &SpinButton;
-    SpinText = &EditBox;
-}
-
-TabContainer {
-    Tabs = &Tabs;
-}
-
 Tabs {
     TextureTab         = "BabyBlue.png" Part(450, 2, 44, 36) Middle(4, 3, 36, 30) Smooth;
     TextureSelectedTab = "BabyBlue.png" Part(2, 40, 44, 36) Middle(4, 3, 36, 30) Smooth;
-    TextColor          = rgb(100, 100, 100);
-    SelectedTextColor  = rgb(150, 150, 150);
     DistanceToSide     = 5;
 }
 
 TextArea {
-    BackgroundColor             = rgb(210, 210, 210);
-    TextColor                   = rgb(100, 100, 100);
-    SelectedTextColor           = rgb(150, 150, 150);
-    SelectedTextBackgroundColor = rgb(190, 225, 235);
-    CaretColor                  = rgb(145, 180, 190);
-    BorderColor                 = White;
-    Borders                     = (2, 2, 2, 2);
-    Scrollbar                   = &Scrollbar;
+    CaretColor = rgb(145, 180, 190);
+    Borders    = (2, 2, 2, 2);
 }
 
 ToolTip {
-    TextColor       = rgb(100, 100, 100);
     BackgroundColor = rgb(210, 210, 210);
-    BorderColor     = rgb(255, 255, 255);
     Borders         = (1, 1, 1, 1);
     Padding         = (2, 2, 2, 2);
 }
@@ -199,7 +126,4 @@ ToolTip {
 ToggleButton {
     Texture      = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
     TextureDown  = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60) Smooth;
-    TextColor    = rgb(100, 100, 100);
 }
-
-TreeView : ListBox {}

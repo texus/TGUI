@@ -174,51 +174,63 @@ namespace tgui
         m_colorWheelSprite.setTexture(m_colorWheelTexture);
         pixels = nullptr;
 
-        Container::add(Label::create("R"), "#TGUI_INTERNAL$ColorPickerLR#");
-        Container::add(m_red, "#TGUI_INTERNAL$ColorPickerRed#");
+        m_red->setVerticalScroll(false);
+        m_green->setVerticalScroll(false);
+        m_blue->setVerticalScroll(false);
+        m_alpha->setVerticalScroll(false);
+        m_red->setWidth(200);
+        m_green->setWidth(200);
+        m_blue->setWidth(200);
+        m_alpha->setWidth(200);
+
+        add(Label::create("R"), "#TGUI_INTERNAL$ColorPickerLR#");
+        add(m_red, "#TGUI_INTERNAL$ColorPickerRed#");
         auto redBox = EditBox::create();
         redBox->setSize(50, 20);
         redBox->setInputValidator(EditBox::Validator::Int);
-        Container::add(redBox, "#TGUI_INTERNAL$ColorPickerRedBox#");
+        add(redBox, "#TGUI_INTERNAL$ColorPickerRedBox#");
 
-        Container::add(Label::create("G"), "#TGUI_INTERNAL$ColorPickerLG#");
-        Container::add(m_green, "#TGUI_INTERNAL$ColorPickerGreen#");
+        add(Label::create("G"), "#TGUI_INTERNAL$ColorPickerLG#");
+        add(m_green, "#TGUI_INTERNAL$ColorPickerGreen#");
         auto greenBox = EditBox::create();
         greenBox->setSize(50, 20);
         greenBox->setInputValidator(EditBox::Validator::Int);
-        Container::add(greenBox, "#TGUI_INTERNAL$ColorPickerGreenBox#");
+        add(greenBox, "#TGUI_INTERNAL$ColorPickerGreenBox#");
 
-        Container::add(Label::create("B"), "#TGUI_INTERNAL$ColorPickerLB#");
-        Container::add(m_blue, "#TGUI_INTERNAL$ColorPickerBlue#");
+        add(Label::create("B"), "#TGUI_INTERNAL$ColorPickerLB#");
+        add(m_blue, "#TGUI_INTERNAL$ColorPickerBlue#");
         auto blueBox = EditBox::create();
         blueBox->setSize(50, 20);
         blueBox->setInputValidator(EditBox::Validator::Int);
-        Container::add(blueBox, "#TGUI_INTERNAL$ColorPickerBlueBox#");
+        add(blueBox, "#TGUI_INTERNAL$ColorPickerBlueBox#");
 
-        Container::add(Label::create("A"), "#TGUI_INTERNAL$ColorPickerLA#");
-        Container::add(m_alpha, "#TGUI_INTERNAL$ColorPickerAlpha#");
+        add(Label::create("A"), "#TGUI_INTERNAL$ColorPickerLA#");
+        add(m_alpha, "#TGUI_INTERNAL$ColorPickerAlpha#");
         auto alphaBox = EditBox::create();
         alphaBox->setSize(50, 20);
         alphaBox->setInputValidator(EditBox::Validator::Int);
-        Container::add(alphaBox, "#TGUI_INTERNAL$ColorPickerAlphaBox#");
+        add(alphaBox, "#TGUI_INTERNAL$ColorPickerAlphaBox#");
 
-        Container::add(m_value, "#TGUI_INTERNAL$ColorPickerValue#");
+        add(m_value, "#TGUI_INTERNAL$ColorPickerValue#");
         m_value->setValue(m_value->getMaximum());
         m_value->setVerticalScroll(true);
+        m_value->setHeight(200);
 
-        Container::add(Label::create("Last:"), "#TGUI_INTERNAL$ColorPickerLabelLast#");
-        Container::add(m_last, "#TGUI_INTERNAL$ColorPickerLast#");
-        Container::add(Label::create("Current:"), "#TGUI_INTERNAL$ColorPickerLabelCurrent#");
-        Container::add(m_current, "#TGUI_INTERNAL$ColorPickerCurrent#");
+        add(Label::create("Last:"), "#TGUI_INTERNAL$ColorPickerLabelLast#");
+        add(m_last, "#TGUI_INTERNAL$ColorPickerLast#");
+        add(Label::create("Current:"), "#TGUI_INTERNAL$ColorPickerLabelCurrent#");
+        add(m_current, "#TGUI_INTERNAL$ColorPickerCurrent#");
 
         m_current->getRenderer()->setBackgroundColor(Color::Black);
         m_last->getRenderer()->setBackgroundColor(Color::Black);
+        m_current->getRenderer()->setBorders({0});
+        m_last->getRenderer()->setBorders({0});
 
-        Container::add(Button::create("Reset"), "#TGUI_INTERNAL$ColorPickerReset#");
-        Container::add(Button::create("OK"), "#TGUI_INTERNAL$ColorPickerOK#");
-        Container::add(Button::create("Cancel"), "#TGUI_INTERNAL$ColorPickerCancel#");
+        add(Button::create("Reset"), "#TGUI_INTERNAL$ColorPickerReset#");
+        add(Button::create("OK"), "#TGUI_INTERNAL$ColorPickerOK#");
+        add(Button::create("Cancel"), "#TGUI_INTERNAL$ColorPickerCancel#");
 
-        ChildWindow::setClientSize({535, 220});
+        ChildWindow::setClientSize({535, 200 + get("#TGUI_INTERNAL$ColorPickerOK#")->getSize().y});
 
         rearrange();
         identifyButtonsAndConnect();
@@ -341,13 +353,6 @@ namespace tgui
     ColorPickerRenderer *ColorPicker::getRenderer()
     {
         return aurora::downcast<ColorPickerRenderer *>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ColorPickerRenderer *ColorPicker::getRenderer() const
-    {
-        return aurora::downcast<const ColorPickerRenderer *>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,9 +551,7 @@ namespace tgui
             {
                 auto label = std::dynamic_pointer_cast<Label>(it);
                 if (label)
-                {
                     label->setRenderer(renderer);
-                }
             }
         }
         else if (property == "Slider")

@@ -25,7 +25,7 @@
 
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/Global.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -117,7 +117,9 @@ namespace tgui
                                                        {"Padding", Padding{0}},
                                                        {"BorderColor", Color::Black},
                                                        {"TextColor", Color{60, 60, 60}},
+                                                       {"TextColorDisabled", Color{125, 125, 125}},
                                                        {"BackgroundColor", Color{245, 245, 245}},
+                                                       {"BackgroundColorDisabled", Color{230, 230, 230}},
                                                        {"ArrowColor", Color{60, 60, 60}},
                                                        {"ArrowColorHover", Color::Black},
                                                        {"ArrowBackgroundColor", Color{245, 245, 245}},
@@ -303,11 +305,210 @@ namespace tgui
                                                        {"SelectedBackgroundColorHover", Color{30, 150, 255}}})},
                     {"VerticalLayout", RendererData::create({})}
                };
+
+                for (auto& pair : m_renderers)
+                    pair.second->connectedTheme = this;
             }
         };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<String, String> Theme::m_rendererInheritanceParents = {
+        {"BitmapButton", "Button"},
+        {"CheckBox", "RadioButton"},
+        {"ColorPicker", "ChildWindow"},
+        {"FileDialog", "ChildWindow"},
+        {"ListView", "ListBox"},
+        {"MessageBox", "ChildWindow"},
+        {"RangeSlider", "Slider"},
+        {"ScrollablePanel", "Panel"},
+        {"ToggleButton", "Button"},
+        {"TreeView", "ListBox"},
+    };
+
+    std::map<String, std::map<String, String>> Theme::m_rendererDefaultSubwidgets = {
+        {"ChatBox", {{"Scrollbar", ""}}},
+        {"ChildWindow", {{"CloseButton", "Button"}}},
+        {"ColorPicker", {{"Button", ""}, {"Label", ""}, {"Slider", ""}}},
+        {"ComboBox", {{"ListBox", ""}}},
+        {"FileDialog", {{"Button", ""}, {"EditBox", ""}, {"ListView", ""}, {"FilenameLabel", "Label"}, {"FileTypeComboBox", "ComboBox"}}},
+        {"Label", {{"Scrollbar", ""}}},
+        {"ListBox", {{"Scrollbar", ""}}},
+        {"ListView", {{"Scrollbar", ""}}},
+        {"MessageBox", {{"Button", ""}}},
+        {"ScrollablePanel", {{"Scrollbar", ""}}},
+        {"SpinControl", {{"SpinButton", ""}, {"SpinText", "EditBox"}}},
+        {"TextArea", {{"Scrollbar", ""}}},
+        {"TreeView", {{"Scrollbar", ""}}},
+    };
+
+    std::map<String, std::map<String, String>> Theme::m_rendererInheritedGlobalProperties = {
+        {"", {
+            {"BorderColor", "TextColor"},
+            {"ArrowColor", "TextColor"},
+            {"ArrowBackgroundColor", "BackgroundColor"},
+        }},
+        {"Button", {
+            {"TextColor", ""},
+            {"TextColorHover", ""},
+            {"TextColorDisabled", ""},
+            {"BackgroundColor", ""},
+            {"BackgroundColorHover", ""},
+            {"BackgroundColorDisabled", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"ChatBox", {
+            {"BackgroundColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+            {"ScrollbarWidth", ""},
+        }},
+        {"ChildWindow", {
+            {"BackgroundColor", ""},
+            {"TitleColor", "TextColor"},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"ComboBox", {
+            {"TextColor", ""},
+            {"TextColorDisabled", ""},
+            {"BackgroundColor", ""},
+            {"BackgroundColorDisabled", ""},
+            {"ArrowBackgroundColor", ""},
+            {"ArrowBackgroundColorHover", ""},
+            {"ArrowBackgroundColorDisabled", ""},
+            {"ArrowColor", ""},
+            {"ArrowColorHover", ""},
+            {"ArrowColorDisabled", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"EditBox", {
+            {"TextColor", ""},
+            {"TextColorDisabled", ""},
+            {"SelectedTextColor", ""},
+            {"SelectedTextBackgroundColor", "SelectedBackgroundColor"},
+            {"BackgroundColor", ""},
+            {"BackgroundColorHover", ""},
+            {"BackgroundColorDisabled", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"Knob", {
+            {"ThumbColor", "TextColor"},
+            {"BackgroundColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"Label", {
+            {"TextColor", ""},
+            {"BorderColor", ""},
+            {"ScrollbarWidth", ""},
+            // BackgroundColor and Borders are not inherited, because the default label should be simple
+        }},
+        {"ListBox", {
+            {"BackgroundColor", ""},
+            {"BackgroundColorHover", ""},
+            {"TextColor", ""},
+            {"TextColorHover", ""},
+            {"SelectedBackgroundColor", ""},
+            {"SelectedBackgroundColorHover", ""},
+            {"SelectedTextColor", ""},
+            {"SelectedTextColorHover", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+            {"ScrollbarWidth", ""},
+        }},
+        {"MenuBar", {
+            {"BackgroundColor", ""},
+            {"SelectedBackgroundColor", ""},
+            {"TextColor", ""},
+            {"SelectedTextColor", ""},
+            {"SeparatorColor", "BorderColor"},
+        }},
+        {"Panel", {
+            {"BackgroundColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"ProgressBar", {
+            {"BackgroundColor", ""},
+            {"FillColor", "SelectedBackgroundColor"},
+            {"TextColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"RadioButton", {
+            {"TextColor", ""},
+            {"TextColorHover", ""},
+            {"TextColorDisabled", ""},
+            {"BackgroundColor", ""},
+            {"BackgroundColorHover", ""},
+            {"BackgroundColorDisabled", ""},
+            {"CheckColor", "TextColor"},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"RangeSlider", {
+            {"SelectedTrackColor", "SelectedBackgroundColor"},
+            {"SelectedTrackColorHover", "SelectedBackgroundColorHover"},
+        }},
+        {"ScrollablePanel", {
+            {"BackgroundColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+            {"ScrollbarWidth", ""},
+        }},
+        {"Scrollbar", {
+            {"TrackColor", "BackgroundColor"},
+            {"ThumbColor", "ArrowColor"},
+            {"ArrowBackgroundColor", ""},
+            {"ArrowBackgroundColorHover", ""},
+            {"ArrowColor", ""},
+            {"ArrowColorHover", ""},
+        }},
+        {"SeparatorLine", {
+            {"Color", "BorderColor"},
+        }},
+        {"Slider", {
+            {"TrackColor", "BackgroundColor"},
+            {"ThumbColor", "ArrowColor"},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"SpinButton", {
+            {"BackgroundColor", ""},
+            {"BackgroundColorHover", ""},
+            {"ArrowColor", ""},
+            {"ArrowColorHover", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"Tabs", {
+            {"BackgroundColor", ""},
+            {"SelectedBackgroundColor", ""},
+            {"TextColor", ""},
+            {"SelectedTextColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
+        }},
+        {"TextArea", {
+            {"BackgroundColor", ""},
+            {"TextColor", ""},
+            {"SelectedTextColor", ""},
+            {"SelectedTextBackgroundColor", "SelectedBackgroundColor"},
+            {"CaretColor", "TextColor"},
+            {"BorderColor", ""},
+            {"Borders", ""},
+            {"ScrollbarWidth", ""},
+        }},
+        {"ToggleButton", {
+            {"TextColorDown", "SelectedTextColor"},
+            {"BackgroundColorDown", "SelectedBackgroundColor"},
+        }},
+    };
 
     std::shared_ptr<Theme> Theme::m_defaultTheme = nullptr;
     std::shared_ptr<BaseThemeLoader> Theme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
@@ -317,8 +518,90 @@ namespace tgui
     Theme::Theme(const String& primary) :
         m_primary(primary)
     {
-        if (!primary.empty())
-            m_themeLoader->preload(primary);
+        if (primary.empty())
+            return;
+
+        m_themeLoader->preload(primary);
+
+        // Load the global properties
+        const auto& globalProperties = m_themeLoader->getGlobalProperties(m_primary);
+        for (const auto& property : globalProperties)
+            m_globalProperties[property.first] = ObjectConverter(property.second);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme::~Theme()
+    {
+        for (auto& pair : m_renderers)
+        {
+            if (pair.second->connectedTheme == this)
+                pair.second->connectedTheme = nullptr;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme::Theme(const Theme& other) :
+        m_renderers       {},
+        m_globalProperties{other.m_globalProperties},
+        m_primary         {other.m_primary}
+    {
+        for (auto& pair : other.m_renderers)
+        {
+            auto data = std::make_shared<RendererData>(*pair.second);
+            data->observers = {};
+            data->connectedTheme = this;
+            data->shared = true;
+            m_renderers[pair.first] = data;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme::Theme(Theme&& other) noexcept :
+        m_renderers       {std::move(other.m_renderers)},
+        m_globalProperties{std::move(other.m_globalProperties)},
+        m_primary         {std::move(other.m_primary)}
+    {
+        for (auto& pair : m_renderers)
+            pair.second->connectedTheme = this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme& Theme::operator= (const Theme& other)
+    {
+        if (this != &other)
+        {
+            Theme temp(other);
+
+            std::swap(m_renderers,        temp.m_renderers);
+            std::swap(m_globalProperties, temp.m_globalProperties);
+            std::swap(m_primary,          temp.m_primary);
+
+            for (auto& pair : m_renderers)
+                pair.second->connectedTheme = this;
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme& Theme::operator= (Theme&& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_renderers = std::move(other.m_renderers);
+            m_globalProperties = std::move(other.m_globalProperties);
+            m_primary = std::move(other.m_primary);
+
+            for (auto& pair : m_renderers)
+                pair.second->connectedTheme = this;
+        }
+
+        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,64 +618,30 @@ namespace tgui
         m_primary = primary;
         m_themeLoader->preload(primary);
 
-        // Update the existing renderers
+        // Load the new global properties
+        m_globalProperties.clear();
+        const auto& globalProperties = m_themeLoader->getGlobalProperties(m_primary);
+        for (const auto& property : globalProperties)
+            m_globalProperties[property.first] = ObjectConverter(property.second);
+
+        // Update the existing widgets that were using renderers from this theme
         for (auto& pair : m_renderers)
         {
-            auto& renderer = pair.second;
-            const auto oldDataPropertyValuePairs = renderer->propertyValuePairs;
-
             if (!m_themeLoader->canLoad(m_primary, pair.first))
                 continue;
 
-            auto& properties = m_themeLoader->load(m_primary, pair.first);
+            auto& renderer = pair.second;
+            const auto& properties = m_themeLoader->load(m_primary, pair.first);
+            auto observers = std::move(renderer->observers);
 
-            // Update the property-value pairs of the renderer
-            renderer->propertyValuePairs = std::map<String, ObjectConverter>{};
+            renderer = RendererData::create();
+            renderer->observers = std::move(observers);
+            renderer->connectedTheme = this;
             for (const auto& property : properties)
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
-            // Tell the widgets that were using this renderer about all the updated properties, both new ones and old ones that were now reset to their default value
-            auto oldIt = oldDataPropertyValuePairs.begin();
-            auto newIt = renderer->propertyValuePairs.begin();
-            while (oldIt != oldDataPropertyValuePairs.end() && newIt != renderer->propertyValuePairs.end())
-            {
-                if (oldIt->first < newIt->first)
-                {
-                    // Update values that no longer exist in the new renderer and are now reset to the default value
-                    for (const auto& observer : renderer->observers)
-                        observer.second(oldIt->first);
-
-                    ++oldIt;
-                }
-                else
-                {
-                    // Update changed and new properties
-                    for (const auto& observer : renderer->observers)
-                        observer.second(newIt->first);
-
-                    if (newIt->first < oldIt->first)
-                        ++newIt;
-                    else
-                    {
-                        ++oldIt;
-                        ++newIt;
-                    }
-                }
-            }
-            while (oldIt != oldDataPropertyValuePairs.end())
-            {
-                for (const auto& observer : renderer->observers)
-                    observer.second(oldIt->first);
-
-                ++oldIt;
-            }
-            while (newIt != renderer->propertyValuePairs.end())
-            {
-                for (const auto& observer : renderer->observers)
-                    observer.second(newIt->first);
-
-                ++newIt;
-            }
+            for (auto& observer : renderer->observers)
+                observer->setRenderer(renderer);
         }
     }
 
@@ -406,6 +655,7 @@ namespace tgui
             return it->second;
 
         m_renderers[id] = RendererData::create();
+        m_renderers[id]->connectedTheme = this;
         auto& properties = m_themeLoader->load(m_primary, id);
         for (const auto& property : properties)
             m_renderers[id]->propertyValuePairs[property.first] = ObjectConverter(property.second);
@@ -422,10 +672,11 @@ namespace tgui
         if (it != m_renderers.end())
             return it->second;
 
-        m_renderers[id] = RendererData::create();
-
         if (!m_themeLoader->canLoad(m_primary, id))
             return nullptr;
+
+        m_renderers[id] = RendererData::create();
+        m_renderers[id]->connectedTheme = this;
 
         auto& properties = m_themeLoader->load(m_primary, id);
         for (const auto& property : properties)
@@ -436,9 +687,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ObjectConverter Theme::getGlobalProperty(const String& property)
+    {
+        auto propertyIt = m_globalProperties.find(property);
+        if (propertyIt != m_globalProperties.end())
+            return propertyIt->second;
+        else
+            return {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Theme::addRenderer(const String& id, std::shared_ptr<RendererData> renderer)
     {
+        if (!renderer)
+            renderer = RendererData::create();
+
+        auto existingRendererIt = m_renderers.find(id);
+        if (existingRendererIt != m_renderers.end())
+        {
+            if (existingRendererIt->second->connectedTheme == this)
+                existingRendererIt->second->connectedTheme = nullptr;
+        }
+
         m_renderers[id] = renderer;
+        m_renderers[id]->connectedTheme = this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,6 +721,9 @@ namespace tgui
         auto it = m_renderers.find(id);
         if (it != m_renderers.end())
         {
+            if (it->second->connectedTheme == this)
+                it->second->connectedTheme = nullptr;
+
             m_renderers.erase(it);
             return true;
         }
@@ -505,6 +781,48 @@ namespace tgui
             m_defaultTheme = std::make_shared<DefaultTheme>();
 
         return m_defaultTheme;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::addRendererInheritanceParent(const String& widgetType, const String& parentType)
+    {
+        m_rendererInheritanceParents[widgetType] = parentType;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    String Theme::getRendererInheritanceParent(const String& widgetType)
+    {
+        return m_rendererInheritanceParents[widgetType];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::addRendererDefaultSubwidget(const String& widgetType, const String& property, const String& propertyWidgetType)
+    {
+        m_rendererDefaultSubwidgets[widgetType][property] = propertyWidgetType;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<String, String> Theme::getRendererDefaultSubwidgets(const String& widgetType)
+    {
+        return m_rendererDefaultSubwidgets[widgetType];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::addRendererInheritedGlobalProperty(const String& widgetType, const String& property, const String& globalProperty)
+    {
+        m_rendererInheritedGlobalProperties[widgetType][property] = globalProperty;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<String, String> Theme::getRendererInheritedGlobalProperties(const String& widgetType)
+    {
+        return m_rendererInheritedGlobalProperties[widgetType];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

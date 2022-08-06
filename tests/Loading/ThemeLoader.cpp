@@ -125,7 +125,6 @@ TEST_CASE("[ThemeLoader]")
 
             auto& cache1 = propertyCache["resources/ThemeSpecialCases.txt"];
             auto& cache2 = propertyCache["resources/ThemeButton1.txt"];
-            REQUIRE(cache1.size() == 4);
             REQUIRE(cache1["Button1"].size() == 1);
             REQUIRE(cache1["Button1"]["TextColor"] == "rgb(255, 0, 0)");
             REQUIRE(cache1["Name.With.Dots"].size() == 2);
@@ -135,7 +134,6 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(cache1["SpecialChars.{}=:;/*#//\t\\\""]["TextColor"] == "rgba(,,,)");
             REQUIRE(cache1["label"].size() == 1);
             REQUIRE(cache1["label"]["TextColor"] == "rgb(0, 0, 255)");
-            REQUIRE(cache2.size() == 1);
             REQUIRE(cache2["Button1"].size() == 1);
             REQUIRE(cache2["Button1"]["TextColor"] == "rgb(255, 255, 0)");
 
@@ -167,7 +165,6 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(loader->getPropertiesCache().size() == 1);
 
             auto& cache = loader->getPropertiesCache()["resources/ThemeSpecialCases.txt"];
-            REQUIRE(cache.size() == 4);
             REQUIRE(cache["Button1"].size() == 1);
             REQUIRE(cache["Button1"]["TextColor"] == "rgb(255, 0, 0)");
             REQUIRE(cache["Name.With.Dots"].size() == 2);

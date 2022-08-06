@@ -70,7 +70,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) :
+    ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) noexcept :
         Panel                       {std::move(other)},
         m_contentSize               {std::move(other.m_contentSize)},
         m_mostBottomRightPosition   {std::move(other.m_mostBottomRightPosition)},
@@ -118,7 +118,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel& ScrollablePanel::operator= (ScrollablePanel&& other)
+    ScrollablePanel& ScrollablePanel::operator= (ScrollablePanel&& other) noexcept
     {
         if (this != &other)
         {
@@ -181,13 +181,6 @@ namespace tgui
     ScrollablePanelRenderer* ScrollablePanel::getRenderer()
     {
         return aurora::downcast<ScrollablePanelRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ScrollablePanelRenderer* ScrollablePanel::getRenderer() const
-    {
-        return aurora::downcast<const ScrollablePanelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -365,7 +365,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout::Layout(Layout&& other) :
+    Layout::Layout(Layout&& other) noexcept :
         m_value          {std::move(other.m_value)},
         m_parent         {std::move(other.m_parent)},
         m_operation      {other.m_operation},
@@ -407,7 +407,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout& Layout::operator=(Layout&& other)
+    Layout& Layout::operator=(Layout&& other) noexcept
     {
         if (this != &other)
         {

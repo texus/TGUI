@@ -53,7 +53,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BitmapButton::BitmapButton(BitmapButton&& other) :
+    BitmapButton::BitmapButton(BitmapButton&& other) noexcept :
         Button               (std::move(other)),
         icon                 (std::move(other.icon)),
         m_imageComponent     (std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
@@ -81,7 +81,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BitmapButton& BitmapButton::operator=(BitmapButton&& other)
+    BitmapButton& BitmapButton::operator=(BitmapButton&& other) noexcept
     {
         if (&other != this)
         {

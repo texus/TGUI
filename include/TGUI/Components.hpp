@@ -175,7 +175,7 @@ namespace dev
             m_propertyData = baseIndex | oldStoredStates;
         }
 
-        StyleProperty(StyleProperty&& other) :
+        StyleProperty(StyleProperty&& other) noexcept :
             m_defaultValue  {std::move(other.m_defaultValue)},
             m_propertyData  {std::move(other.m_propertyData)},
             m_messageTopicId{std::move(other.m_messageTopicId)},
@@ -205,7 +205,7 @@ namespace dev
             return *this;
         }
 
-        StyleProperty& operator=(StyleProperty&& other)
+        StyleProperty& operator=(StyleProperty&& other) noexcept
         {
             if (&other != this)
             {

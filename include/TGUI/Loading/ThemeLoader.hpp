@@ -61,6 +61,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the global property-value pairs from the theme
+        ///
+        /// @param primary  Primary parameter of the loader
+        ///
+        /// For the default loader, the primary parameter is the filename while the secondary parameter is the section name.
+        ///
+        /// @return Map of property-value pairs
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<String, String> getGlobalProperties(const String& primary);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the property-value pairs from the theme
         ///
         /// @param primary    Primary parameter of the loader
@@ -68,7 +80,7 @@ namespace tgui
         ///
         /// For the default loader, the primary parameter is the filename while the secondary parameter is the section name.
         ///
-        /// @return Map op property-value pairs
+        /// @return Map of property-value pairs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const std::map<String, String>& load(const String& primary, const String& secondary) = 0;
 
@@ -99,7 +111,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Resolves references to sections
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node) const;
+        void resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections,
+                               const std::map<String, String>& globalProperties,
+                               const std::unique_ptr<DataIO::Node>& node) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +140,16 @@ namespace tgui
         /// @exception Exception when finding syntax errors in the file
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void preload(const String& filename) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the global property-value pairs from the theme
+        ///
+        /// @param filename  Filename of the theme file to load
+        ///
+        /// @return Map of property-value pairs
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::map<String, String> getGlobalProperties(const String& filename) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +182,9 @@ namespace tgui
         ///
         /// @param filename  File to remove from cache.
         ///                  If no filename is given, the entire cache is cleared.
+        ///
+        /// The first time a filename is loaded, its contents is fully cached. If this function isn't called then loading the
+        /// same file will only read the cache instead of reading the file from disk again.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void flushCache(const String& filename = "");
 
@@ -178,6 +205,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
         static std::map<String, std::map<String, std::map<String, String>>> m_propertiesCache;
+        static std::map<String, std::map<String, String>> m_globalPropertiesCache;
     };
 
 

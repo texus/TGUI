@@ -80,7 +80,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::ComboBox(ComboBox&& other) :
+    ComboBox::ComboBox(ComboBox&& other) noexcept :
         Widget                           {std::move(other)},
         onItemSelect                     {std::move(other.onItemSelect)},
         m_nrOfItemsToDisplay             {std::move(other.m_nrOfItemsToDisplay)},
@@ -138,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox& ComboBox::operator= (ComboBox&& other)
+    ComboBox& ComboBox::operator= (ComboBox&& other) noexcept
     {
         if (this != &other)
         {
@@ -202,13 +202,6 @@ namespace tgui
     ComboBoxRenderer* ComboBox::getRenderer()
     {
         return aurora::downcast<ComboBoxRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const ComboBoxRenderer* ComboBox::getRenderer() const
-    {
-        return aurora::downcast<const ComboBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

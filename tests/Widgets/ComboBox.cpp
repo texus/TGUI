@@ -459,7 +459,7 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == tgui::TextStyle::Italic);
 
-            REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 2);
+            REQUIRE(renderer->getListBox()->propertyValuePairs.size() >= 2);  // Also contains Scrollbar from default White theme
             REQUIRE(renderer->getListBox()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Red);
             REQUIRE(renderer->getListBox()->propertyValuePairs["TextColor"].getColor() == tgui::Color::Blue);
         }

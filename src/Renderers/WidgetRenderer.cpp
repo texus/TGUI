@@ -25,11 +25,43 @@
 
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/RendererDefines.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RendererData::RendererData(const RendererData& other) :
+        propertyValuePairs{other.propertyValuePairs},
+        observers{other.observers},
+        connectedTheme{nullptr},
+        themePropertiesInherited{false},
+        shared{false}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RendererData& RendererData::operator=(const RendererData& other)
+    {
+        if (this != &other)
+        {
+            RendererData temp(other);
+
+            std::swap(propertyValuePairs,       temp.propertyValuePairs);
+            std::swap(observers,                temp.observers);
+            std::swap(connectedTheme,           temp.connectedTheme);
+            std::swap(themePropertiesInherited, temp.themePropertiesInherited);
+            std::swap(shared,                   temp.shared);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::shared_ptr<RendererData> RendererData::create(const std::map<String, ObjectConverter>& init)
     {
         auto data = std::make_shared<RendererData>();
@@ -131,7 +163,7 @@ namespace tgui
         try
         {
             for (const auto& observer : m_data->observers)
-                observer.second(property);
+                observer->rendererChangedCallback(property);
         }
         catch (const Exception&)
         {
@@ -160,16 +192,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::subscribe(const void* id, const std::function<void(const String& property)>& function)
+    void WidgetRenderer::subscribe(Widget* widget)
     {
-        m_data->observers[id] = function;
+        m_data->observers.insert(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::unsubscribe(const void* id)
+    void WidgetRenderer::unsubscribe(Widget* widget)
     {
-        m_data->observers.erase(id);
+        m_data->observers.erase(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +224,8 @@ namespace tgui
     {
         auto data = std::make_shared<RendererData>(*m_data);
         data->observers = {};
+        data->connectedTheme = nullptr;
+        data->shared = false;
         return data;
     }
 

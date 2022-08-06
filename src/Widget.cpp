@@ -137,7 +137,7 @@ namespace tgui
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<WidgetRenderer>();
-            m_renderer->subscribe(this, m_rendererChangedCallback);
+            m_renderer->subscribe(this);
         }
     }
 
@@ -193,12 +193,12 @@ namespace tgui
         m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
         m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-        m_renderer->subscribe(this, m_rendererChangedCallback);
+        m_renderer->subscribe(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Widget(Widget&& other) :
+    Widget::Widget(Widget&& other) noexcept :
         enable_shared_from_this<Widget>{std::move(other)},
         onPositionChange               {std::move(other.onPositionChange)},
         onSizeChange                   {std::move(other.onSizeChange)},
@@ -242,7 +242,7 @@ namespace tgui
         m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
         other.m_renderer->unsubscribe(&other);
-        m_renderer->subscribe(this, m_rendererChangedCallback);
+        m_renderer->subscribe(this);
 
         other.m_renderer = nullptr;
 
@@ -302,7 +302,7 @@ namespace tgui
             m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
             m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-            m_renderer->subscribe(this, m_rendererChangedCallback);
+            m_renderer->subscribe(this);
         }
 
         return *this;
@@ -310,7 +310,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget& Widget::operator=(Widget&& other)
+    Widget& Widget::operator=(Widget&& other) noexcept
     {
         if (this != &other)
         {
@@ -360,7 +360,7 @@ namespace tgui
             m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
             m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-            m_renderer->subscribe(this, m_rendererChangedCallback);
+            m_renderer->subscribe(this);
 
             other.m_renderer = nullptr;
 
@@ -378,12 +378,94 @@ namespace tgui
         if (rendererData == nullptr)
             rendererData = RendererData::create();
 
+        // Fill in default and inherited properties in the renderer when it was loaded from a theme
+        if (rendererData->connectedTheme && !rendererData->themePropertiesInherited)
+        {
+            std::vector<String> parentTypes;
+            String widgetType = getWidgetType();
+            while (!widgetType.empty())
+            {
+                widgetType = tgui::Theme::getRendererInheritanceParent(widgetType);
+                if (!widgetType.empty())
+                    parentTypes.push_back(widgetType);
+            }
+
+            // If there are no properties then check if we need to inherit them.
+            // We do this because the theme has empty sections for widgets that weren't specified. If the theme does specify
+            // widget properties then the inheritance should also be specified inside the theme file and the inheritance
+            // would have already copied the properties before this code is reached.
+            if (rendererData->propertyValuePairs.empty())
+            {
+                // Copy the properties of the first parent that isn't empty as well
+                for (const String& parentType : parentTypes)
+                {
+                    auto parentRenderer = rendererData->connectedTheme->getRendererNoThrow(parentType);
+                    if (!parentRenderer || parentRenderer->propertyValuePairs.empty())
+                        continue;
+
+                    rendererData->propertyValuePairs = parentRenderer->propertyValuePairs;
+                    break;
+                }
+            }
+
+            parentTypes.insert(parentTypes.begin(), getWidgetType());
+            const auto& globalRelationMap = Theme::getRendererInheritedGlobalProperties("");
+            for (const String& parentType : parentTypes)
+            {
+                // Check if we should automatically link to other widgets, e.g. a widget with a scrollbar should
+                // use the scrollbar defined by the theme if it isn't explicitly specified for the widget.
+                const auto& defaultSubwidgetsMap = Theme::getRendererDefaultSubwidgets(parentType);
+                for (const auto& pair : defaultSubwidgetsMap)
+                {
+                    if (rendererData->propertyValuePairs.find(pair.first) != rendererData->propertyValuePairs.end())
+                        continue;
+
+                    const String& subwidgetType = pair.second.empty() ? pair.first : pair.second;
+                    auto subwidgetRenderer = rendererData->connectedTheme->getRendererNoThrow(subwidgetType);
+                    if (!subwidgetRenderer)
+                        continue;
+
+                    rendererData->propertyValuePairs[pair.first] = ObjectConverter{subwidgetRenderer};
+                }
+
+                // Copy global values for unspecified parameters
+                const auto& globalPropertiesMap = Theme::getRendererInheritedGlobalProperties(parentType);
+                for (const auto& pair : globalPropertiesMap)
+                {
+                    if (rendererData->propertyValuePairs.find(pair.first) != rendererData->propertyValuePairs.end())
+                        continue;
+
+                    const String& propertyName = pair.second.empty() ? pair.first : pair.second;
+                    const auto& property = rendererData->connectedTheme->getGlobalProperty(propertyName);
+                    if (property.getType() != ObjectConverter::Type::None)
+                    {
+                        rendererData->propertyValuePairs[pair.first] = property;
+                        continue;
+                    }
+
+                    // Global properties can inherit from each other (e.g. border color defaults to text color)
+                    auto propertyNameIt = globalRelationMap.find(propertyName);
+                    if (propertyNameIt == globalRelationMap.end())
+                        continue;
+
+                    const auto& globalProperty = rendererData->connectedTheme->getGlobalProperty(propertyNameIt->second);
+                    if (globalProperty.getType() != ObjectConverter::Type::None)
+                    {
+                        rendererData->propertyValuePairs[pair.first] = globalProperty;
+                        continue;
+                    }
+                }
+            }
+
+            rendererData->themePropertiesInherited = true;
+        }
+
         std::shared_ptr<RendererData> oldData = m_renderer->getData();
 
         // Update the data
         m_renderer->unsubscribe(this);
         m_renderer->setData(rendererData);
-        m_renderer->subscribe(this, m_rendererChangedCallback);
+        m_renderer->subscribe(this);
         rendererData->shared = true;
 
         // Tell the widget about all the updated properties, both new ones and old ones that were now reset to their default value
@@ -440,30 +522,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const WidgetRenderer* Widget::getRenderer() const
-    {
-        if (m_renderer->getData()->shared)
-        {
-            m_renderer->unsubscribe(this);
-            m_renderer->setData(m_renderer->clone());
-            m_renderer->subscribe(this, m_rendererChangedCallback);
-            m_renderer->getData()->shared = false;
-        }
-
-        // You should not be allowed to call setters on the renderer when the widget is const
-        return m_renderer.get();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     WidgetRenderer* Widget::getRenderer()
     {
         if (m_renderer->getData()->shared)
         {
             m_renderer->unsubscribe(this);
             m_renderer->setData(m_renderer->clone());
-            m_renderer->subscribe(this, m_rendererChangedCallback);
-            m_renderer->getData()->shared = false;
+            m_renderer->subscribe(this);
         }
 
         return m_renderer.get();

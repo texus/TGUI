@@ -30,19 +30,24 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
-#include <unordered_map>
+#include <unordered_set>
 #include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    class Theme;
+    class Widget;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Shared data used in renderer classes
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API RendererData
     {
         RendererData() = default;
+        RendererData(const RendererData& other);
+        RendererData& operator=(const RendererData& other);
 
         static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
 
@@ -50,7 +55,9 @@ namespace tgui
         static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
 
         std::map<String, ObjectConverter> propertyValuePairs;
-        std::unordered_map<const void*, std::function<void(const String& property)>> observers;
+        std::unordered_set<Widget*> observers;
+        Theme* connectedTheme = nullptr;
+        bool themePropertiesInherited = false;
         bool shared = true;
     };
 
@@ -223,20 +230,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Subscribes a callback function to changes in the renderer
         ///
-        /// @param id       Unique identifier for this callback function so that you can unsubscribe it later
-        /// @param function Callback function to call when the renderer changes
-        ///
+        /// @param widget  The widget that should to be alerted when the renderer changes
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void subscribe(const void* id, const std::function<void(const String& property)>& function);
+        void subscribe(Widget* widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Subscribes a callback function to changes in the renderer
         ///
-        /// @param id  Unique identifier used when subscribing the callback function
-        ///
+        /// @param widget  The widget that used to be alerted when the renderer changed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unsubscribe(const void* id);
+        void unsubscribe(Widget* widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

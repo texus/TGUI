@@ -25,7 +25,7 @@
 
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Global.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
 
 #include <sstream>
 #include <fstream>
@@ -42,11 +42,19 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::map<String, std::map<String, std::map<String, String>>> DefaultThemeLoader::m_propertiesCache;
+    std::map<String, std::map<String, String>> DefaultThemeLoader::m_globalPropertiesCache;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BaseThemeLoader::preload(const String&)
     {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<String, String> BaseThemeLoader::getGlobalProperties(const String&)
+    {
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +106,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseThemeLoader::resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node) const
+    void BaseThemeLoader::resolveReferences(std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections,
+                                            const std::map<String, String>& globalProperties,
+                                            const std::unique_ptr<DataIO::Node>& node) const
     {
         for (const auto& pair : node->propertyValuePairs)
         {
@@ -108,10 +118,20 @@ namespace tgui
                 const String name = Deserializer::deserialize(ObjectConverter::Type::String, pair.second->value.substr(1)).getString();
                 const auto sectionsIt = sections.find(name);
                 if (sectionsIt == sections.end())
+                {
+                    // We couldn't find a sections, so check if this is a reference to a global value
+                    const auto globalPropertyIt = globalProperties.find(name);
+                    if (globalPropertyIt != globalProperties.end())
+                    {
+                        pair.second->value = globalPropertyIt->second;
+                        continue;
+                    }
+
                     throw Exception{"Undefined reference to '" + name + "' encountered."};
+                }
 
                 // Resolve references recursively
-                resolveReferences(sections, sectionsIt->second);
+                resolveReferences(sections, globalProperties, sectionsIt->second);
 
                 // Make a copy of the section
                 std::stringstream ss;
@@ -121,7 +141,7 @@ namespace tgui
         }
 
         for (const auto& child : node->children)
-            resolveReferences(sections, child);
+            resolveReferences(sections, globalProperties, child);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,13 +151,13 @@ namespace tgui
     {
         if (filename != "")
         {
-            auto propertiesCacheIt = m_propertiesCache.find(filename);
-            if (propertiesCacheIt != m_propertiesCache.end())
-                m_propertiesCache.erase(propertiesCacheIt);
+            m_propertiesCache.erase(filename);
+            m_globalPropertiesCache.erase(filename);
         }
         else
         {
             m_propertiesCache.clear();
+            m_globalPropertiesCache.clear();
         }
     }
 
@@ -155,8 +175,8 @@ namespace tgui
             if (!root)
                 throw Exception{"DefaultThemeLoader::preload failed to load file, readFile returned nullptr."};
 
-            if (root->propertyValuePairs.size() != 0)
-                throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
+            for (const auto& pair : root->propertyValuePairs)
+                m_globalPropertiesCache[filename][pair.first] = pair.second->value;
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
             std::map<String, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
@@ -167,7 +187,11 @@ namespace tgui
             }
 
             // Resolve references to sections
-            resolveReferences(sections, root);
+            resolveReferences(sections, m_globalPropertiesCache[filename], root);
+
+            // Create empty sections for all widget types
+            for (const auto& widgetType : WidgetFactory::getWidgetTypes())
+                m_propertiesCache[filename][widgetType] = {};
 
             // Cache all propery value pairs
             for (const auto& section : sections)
@@ -185,6 +209,14 @@ namespace tgui
                 }
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<String, String> DefaultThemeLoader::getGlobalProperties(const String& filename)
+    {
+        preload(filename);
+        return m_globalPropertiesCache[filename];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -211,7 +211,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MenuBar::MenuBar(MenuBar&& other) :
+    MenuBar::MenuBar(MenuBar&& other) noexcept :
         Widget                         {std::move(other)},
         m_menus                        {std::move(other.m_menus)},
         m_menuWidgetPlaceholder        {std::make_shared<MenuBarMenuPlaceholder>(this)},
@@ -259,7 +259,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MenuBar& MenuBar::operator=(MenuBar&& other)
+    MenuBar& MenuBar::operator=(MenuBar&& other) noexcept
     {
         if (this != &other)
         {
@@ -319,13 +319,6 @@ namespace tgui
     MenuBarRenderer* MenuBar::getRenderer()
     {
         return aurora::downcast<MenuBarRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const MenuBarRenderer* MenuBar::getRenderer() const
-    {
-        return aurora::downcast<const MenuBarRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

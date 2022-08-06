@@ -62,7 +62,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::MessageBox(MessageBox&& other) :
+    MessageBox::MessageBox(MessageBox&& other) noexcept :
         ChildWindow      {std::move(other)},
         onButtonPress    {std::move(other.onButtonPress)},
         m_loadedThemeFile{std::move(other.m_loadedThemeFile)},
@@ -93,7 +93,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox& MessageBox::operator= (MessageBox&& other)
+    MessageBox& MessageBox::operator= (MessageBox&& other) noexcept
     {
         if (this != &other)
         {
@@ -154,13 +154,6 @@ namespace tgui
     MessageBoxRenderer* MessageBox::getRenderer()
     {
         return aurora::downcast<MessageBoxRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const MessageBoxRenderer* MessageBox::getRenderer() const
-    {
-        return aurora::downcast<const MessageBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

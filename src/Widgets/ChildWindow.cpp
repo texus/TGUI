@@ -294,13 +294,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const ChildWindowRenderer* ChildWindow::getRenderer() const
-    {
-        return aurora::downcast<const ChildWindowRenderer*>(Widget::getRenderer());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::setPosition(const Layout2d& position)
     {
         if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0))
@@ -531,8 +524,12 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Maximize)
         {
+            auto buttonRenderer = getSharedRenderer()->getMaximizeButton();
+            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                buttonRenderer = getSharedRenderer()->getCloseButton();
+
             m_maximizeButton->setVisible(true);
-            m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
+            m_maximizeButton->setRenderer(buttonRenderer);
             m_maximizeButton->setInheritedOpacity(m_opacityCached);
 
             if (m_showTextOnTitleButtonsCached)
@@ -545,8 +542,12 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Minimize)
         {
+            auto buttonRenderer = getSharedRenderer()->getMinimizeButton();
+            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                buttonRenderer = getSharedRenderer()->getCloseButton();
+
             m_minimizeButton->setVisible(true);
-            m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
+            m_minimizeButton->setRenderer(buttonRenderer);
             m_minimizeButton->setInheritedOpacity(m_opacityCached);
 
             if (m_showTextOnTitleButtonsCached)
@@ -1131,7 +1132,11 @@ namespace tgui
         {
             if (m_maximizeButton->isVisible())
             {
-                m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
+                auto buttonRenderer = getSharedRenderer()->getMaximizeButton();
+                if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                    buttonRenderer = getSharedRenderer()->getCloseButton();
+
+                m_maximizeButton->setRenderer(buttonRenderer);
                 m_maximizeButton->setInheritedOpacity(m_opacityCached);
             }
 
@@ -1141,7 +1146,11 @@ namespace tgui
         {
             if (m_minimizeButton->isVisible())
             {
-                m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
+                auto buttonRenderer = getSharedRenderer()->getMinimizeButton();
+                if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                    buttonRenderer = getSharedRenderer()->getCloseButton();
+
+                m_minimizeButton->setRenderer(buttonRenderer);
                 m_minimizeButton->setInheritedOpacity(m_opacityCached);
             }
 

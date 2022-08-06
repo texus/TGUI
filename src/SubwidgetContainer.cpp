@@ -268,6 +268,23 @@ namespace tgui
 
                 propertyIt = propertyValuePairs.erase(propertyIt);
             }
+
+            auto& children = (*rendererNodeIt)->children;
+            auto childIt = children.begin();
+            while (childIt != children.end())
+            {
+                // Search for children that either match the widget name or start with the name followed by a dot
+                const auto& childName = (*childIt)->name;
+                if ((!childName.startsWith(widgetName))
+                 || ((childName.length() > widgetName.length()) && (childName[widgetName.length()] != U'.'))
+                 || (childName != widgetName))
+                {
+                    ++childIt;
+                    continue;
+                }
+
+                childIt = children.erase(childIt);
+            }
         }
 
         node->children.emplace_back(m_container->save(renderers));
