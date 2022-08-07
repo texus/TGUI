@@ -415,7 +415,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
-          -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
+          -Dsdl2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_SHARED_LIBS=ON

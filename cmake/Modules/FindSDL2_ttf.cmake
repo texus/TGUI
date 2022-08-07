@@ -43,7 +43,7 @@ This module defines the following 'IMPORTED' target:
 
 ::
 
-  SDL2::TTF (and the SDL2::SDL2_ttf alias)
+  SDL2::TTF (and the SDL2_ttf::SDL2_ttf alias)
     The SDL2_ttf library, if found.
     Have SDL2::SDL2 as a link dependency.
 
@@ -55,8 +55,8 @@ This module will set the following variables in your project:
 
   SDL2_TTF_LIBRARIES, the name of the library to link against
   SDL2_TTF_INCLUDE_DIRS, where to find the headers
-  SDL2_TTF_FOUND, if false, do not try to link against
-  SDL2_TTF_VERSION - human-readable string containing the version of SDL2_ttf
+  SDL2_ttf_FOUND, if false, do not try to link against
+  sdl2_ttf_VERSION - human-readable string containing the version of SDL2_ttf
 
 
 
@@ -205,18 +205,19 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_ttf
                                   REQUIRED_VARS SDL2_TTF_LIBRARIES SDL2_TTF_INCLUDE_DIRS
                                   VERSION_VAR SDL2_TTF_VERSION)
 
+set(sdl2_ttf_VERSION ${SDL2_TTF_VERSION})  # SDL_ttf config file uses sdl2_ttf_VERSION, so we want to provide the same name
 
 mark_as_advanced(SDL2_TTF_NO_DEFAULT_PATH
                  SDL2_TTF_LIBRARY
                  SDL2_TTF_INCLUDE_DIR)
 
-if(SDL2_TTF_FOUND AND NOT SDL2_TTF_PATH)
+if(SDL2_ttf_FOUND AND NOT SDL2_TTF_PATH)
     mark_as_advanced(FORCE SDL2_TTF_PATH)
 else()
     mark_as_advanced(CLEAR SDL2_TTF_PATH)
 endif()
 
-if(SDL2_TTF_FOUND)
+if(SDL2_ttf_FOUND)
 
   # Fix for "ld: can't map file, errno=22" error when linking framework on macOS
   if(APPLE AND SDL2_TTF_LIBRARY MATCHES "SDL2_ttf.framework$" AND EXISTS "${SDL2_TTF_LIBRARY}/SDL2_ttf")
@@ -231,6 +232,20 @@ if(SDL2_TTF_FOUND)
                           INTERFACE_INCLUDE_DIRECTORIES "${SDL2_TTF_INCLUDE_DIR}"
                           INTERFACE_LINK_LIBRARIES SDL2::SDL2)
 
+    # SDL2_ttf::SDL2_ttf is the target that is now used in the official SDL2_ttf config file,
+    # so this is the name that has to be used from now on.
+    if(${CMAKE_VERSION} VERSION_LESS "3.18")
+      # We can't make an ALIAS in CMake < 3.18
+      add_library(SDL2_ttf::SDL2_ttf UNKNOWN IMPORTED)
+      set_target_properties(SDL2_ttf::SDL2_ttf PROPERTIES
+                            IMPORTED_LOCATION "${SDL2_TTF_LIBRARY}"
+                            INTERFACE_INCLUDE_DIRECTORIES "${SDL2_TTF_INCLUDE_DIR}"
+                            INTERFACE_LINK_LIBRARIES SDL2::SDL2)
+    else()
+      add_library(SDL2_ttf::SDL2_ttf ALIAS SDL2::TTF)
+    endif()
+
+    # We used to link to SDL2::SDL2_ttf in TGUI, so keep this around for compatibility
     if(${CMAKE_VERSION} VERSION_LESS "3.18")
       # We can't make an ALIAS in CMake < 3.18
       add_library(SDL2::SDL2_ttf UNKNOWN IMPORTED)

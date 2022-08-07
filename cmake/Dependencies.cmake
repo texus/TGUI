@@ -242,46 +242,44 @@ macro(tgui_add_dependency_glfw)
 endmacro()
 
 
-# Check if we can find SDL_ttf with a config file, or whether we need to use our FindSDL2_ttf.cmake file
+# Check if we can find SDL_ttf with a config file (2.20.0 or newer), or whether we need to use our FindSDL2_ttf.cmake file
 function(tgui_try_find_sdl_ttf_config)
-    find_package(sdl2-ttf CONFIG QUIET)
-    if(SDL2_TTF_FOUND)
+    find_package(sdl2_ttf CONFIG QUIET)
+    if(SDL2_ttf_FOUND AND TARGET SDL2_ttf::SDL2_ttf)
         set(TGUI_FOUND_SDL2_TTF_CONFIG TRUE PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL2_TTF_CONFIG FALSE PARENT_SCOPE)
-
-        # Don't keep the sdl2-ttf_DIR variable around if we aren't going to use it
-        if(NOT sdl2-ttf_DIR)
-            unset(sdl2-ttf_DIR CACHE)
-        endif()
     endif()
 endfunction()
 
 # Find SDL_ttf and add it as a dependency
 macro(tgui_add_dependency_sdl_ttf)
-    if(NOT TARGET SDL2::SDL2_ttf)
-        # First try looking for an SDL2_ttf config file that will probably only be found when using vcpkg
+    if(NOT TARGET SDL2_ttf::SDL2_ttf)
+        # First try looking for an SDL2_ttf config file
         tgui_try_find_sdl_ttf_config()
 
         if(TGUI_FOUND_SDL2_TTF_CONFIG)
-            find_package(sdl2-ttf CONFIG REQUIRED)
+            find_package(sdl2_ttf CONFIG REQUIRED)
         else()
             if(TGUI_OS_WINDOWS)
                 find_package(SDL2_ttf)
-                if(NOT SDL2_TTF_FOUND)
+                if(NOT SDL2_ttf_FOUND)
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2_ttf.\n"
-                            "Set SDL2_TTF_PATH to the root folder of the Development Libraries that you downloaded from https://libsdl.org/projects/SDL_ttf/ \n")
+                            "For SDL2_ttf >= 2.20, set sdl2_ttf_DIR to the directory containing sdl2_ttf-config.cmake.\n"
+                            "For older versions, if you downloaded SDL2_ttf-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL_ttf/releases then set SDL2_TTF_PATH to the root directory.\n")
                 endif()
             elseif(TGUI_OS_MACOS)
                 find_package(SDL2_ttf)
 
-                if(SDL2_TTF_FOUND)
+                if(SDL2_ttf_FOUND)
                     # If found automatically (e.g. when installed via brew) then don't keep the SDL2_TTF_PATH variable
                     if(NOT SDL2_TTF_PATH)
                         unset(SDL2_TTF_PATH CACHE)
                     endif()
                 else()
+                    # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting sdl2_ttf_DIR instead of using our own SDL2_TTF_PATH.
+                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to sdl2_ttf_DIR exactly.
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2_ttf.\n"
                             "Set SDL2_TTF_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2_ttf.framework file.\n")
@@ -290,17 +288,22 @@ macro(tgui_add_dependency_sdl_ttf)
                 # On Linux we should always find SDL2_ttf automatically when it has been installed
                 find_package(SDL2_ttf REQUIRED)
             endif()
+
+            # Remove the empty sdl2_ttf_DIR variable if we found SDL_ttf via the alternative way
+            if(NOT sdl2_ttf_DIR)
+                unset(sdl2_ttf_DIR CACHE)
+            endif()
         endif()
 
-        if(DEFINED SDL2_TTF_VERSION)
-            if (${SDL2_TTF_VERSION} VERSION_LESS "2.0.14")
+        if(DEFINED sdl2_ttf_VERSION)
+            if (${sdl2_ttf_VERSION} VERSION_LESS "2.0.14")
                 message(FATAL_ERROR "SDL_ttf 2.0.14 or higher is required")
             endif()
         endif()
     endif()
 
     if(TGUI_SHARED_LIBS)
-        get_target_property(sdl_ttf_target_type SDL2::SDL2_ttf TYPE)
+        get_target_property(sdl_ttf_target_type SDL2_ttf::SDL2_ttf TYPE)
         if (sdl_ttf_target_type STREQUAL "STATIC_LIBRARY")
             # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
             message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
@@ -309,7 +312,7 @@ macro(tgui_add_dependency_sdl_ttf)
 
     # Link to SDL_ttf and set include and library search directories.
     # Public dependency because user has to call TTF_Init and TTF_Quit
-    target_link_libraries(tgui PUBLIC SDL2::SDL2_ttf)
+    target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
 endmacro()
 
 
