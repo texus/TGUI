@@ -880,114 +880,114 @@ namespace tgui
         std::size_t find_last_not_of(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        friend bool operator==(const String& left, const String& right);
-        friend bool operator!=(const String& left, const String& right);
-        friend bool operator<(const String& left, const String& right);
-        friend bool operator<=(const String& left, const String& right);
-        friend bool operator>(const String& left, const String& right);
-        friend bool operator>=(const String& left, const String& right);
-        friend String operator+(const String& left, const String& right);
-        friend String operator+(const String& left, String&& right);
-        friend String operator+(String&& left, const String& right);
-        friend String operator+(String&& left, String&& right);
+        inline friend bool operator==(const String& left, const String& right);
+        inline friend bool operator!=(const String& left, const String& right);
+        inline friend bool operator<(const String& left, const String& right);
+        inline friend bool operator<=(const String& left, const String& right);
+        inline friend bool operator>(const String& left, const String& right);
+        inline friend bool operator>=(const String& left, const String& right);
+        inline friend String operator+(const String& left, const String& right);
+        inline friend String operator+(const String& left, String&& right);
+        inline friend String operator+(String&& left, const String& right);
+        inline friend String operator+(String&& left, String&& right);
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-        String(const std::u8string& str);
-        String(char8_t utfChar);
-        String(const char8_t* str);
-        String(std::size_t count, char8_t ch);
-        String(const std::u8string& str, std::size_t pos);
-        String(const std::u8string& str, std::size_t pos, std::size_t count);
-        String(const char8_t* str, std::size_t count);
-        String(std::initializer_list<char8_t> chars);
-        String(std::u8string::const_iterator first, std::u8string::const_iterator last);
+        inline String(const std::u8string& str);
+        inline String(char8_t utfChar);
+        inline String(const char8_t* str);
+        inline String(std::size_t count, char8_t ch);
+        inline String(const std::u8string& str, std::size_t pos);
+        inline String(const std::u8string& str, std::size_t pos, std::size_t count);
+        inline String(const char8_t* str, std::size_t count);
+        inline String(std::initializer_list<char8_t> chars);
+        inline String(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        explicit operator std::u8string() const;
+        inline explicit operator std::u8string() const;
 
-        std::u8string toUtf8() const;
+        inline std::u8string toUtf8() const;
 
-        String& assign(std::size_t count, char8_t ch);
-        String& assign(const std::u8string& str);
-        String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
-        String& assign(std::u8string&& str);
-        String& assign(const char8_t* str, std::size_t count);
-        String& assign(const char8_t* str);
-        String& assign(std::initializer_list<char8_t> chars);
-        String& assign(std::u8string::const_iterator first, std::u8string::const_iterator last);
+        inline String& assign(std::size_t count, char8_t ch);
+        inline String& assign(const std::u8string& str);
+        inline String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
+        inline String& assign(std::u8string&& str);
+        inline String& assign(const char8_t* str, std::size_t count);
+        inline String& assign(const char8_t* str);
+        inline String& assign(std::initializer_list<char8_t> chars);
+        inline String& assign(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        String& insert(std::size_t index, std::size_t count, char8_t ch);
-        String& insert(std::size_t index, const std::u8string& str);
-        String& insert(std::size_t index, const std::u8string& str, std::size_t pos, std::size_t count = npos);
-        String& insert(std::size_t index, const char8_t* str, std::size_t count);
-        String& insert(std::size_t index, const char8_t* str);
-        iterator insert(const_iterator pos, char8_t ch);
-        iterator insert(const_iterator pos, std::size_t count, char8_t ch);
-        iterator insert(const_iterator pos, std::initializer_list<char8_t> chars);
-        iterator insert(const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last);
+        inline String& insert(std::size_t index, std::size_t count, char8_t ch);
+        inline String& insert(std::size_t index, const std::u8string& str);
+        inline String& insert(std::size_t index, const std::u8string& str, std::size_t pos, std::size_t count = npos);
+        inline String& insert(std::size_t index, const char8_t* str, std::size_t count);
+        inline String& insert(std::size_t index, const char8_t* str);
+        inline iterator insert(const_iterator pos, char8_t ch);
+        inline iterator insert(const_iterator pos, std::size_t count, char8_t ch);
+        inline iterator insert(const_iterator pos, std::initializer_list<char8_t> chars);
+        inline iterator insert(const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        String& append(std::size_t count, char8_t ch);
-        String& append(const std::u8string& str);
-        String& append(const std::u8string& str, std::size_t pos, std::size_t count = npos);
-        String& append(const char8_t* str, std::size_t count);
-        String& append(const char8_t* str);
-        String& append(std::initializer_list<char8_t> chars);
-        String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
+        inline String& append(std::size_t count, char8_t ch);
+        inline String& append(const std::u8string& str);
+        inline String& append(const std::u8string& str, std::size_t pos, std::size_t count = npos);
+        inline String& append(const char8_t* str, std::size_t count);
+        inline String& append(const char8_t* str);
+        inline String& append(std::initializer_list<char8_t> chars);
+        inline String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        int compare(const std::u8string& str) const noexcept;
-        int compare(std::size_t pos1, std::size_t count1, const std::u8string& str) const;
-        int compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos) const;
-        int compare(const char8_t* s) const;
-        int compare(std::size_t pos1, std::size_t count1, const char8_t* s) const;
-        int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
+        inline int compare(const std::u8string& str) const noexcept;
+        inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str) const;
+        inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos) const;
+        inline int compare(const char8_t* s) const;
+        inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s) const;
+        inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
 
-        String& replace(std::size_t pos, std::size_t count, const std::u8string& str);
-        String& replace(const_iterator first, const_iterator last, const std::u8string& str);
-        String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
-        String& replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2);
-        String& replace(std::size_t pos, std::size_t count, const char8_t* cstr, std::size_t count2);
-        String& replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2);
-        String& replace(std::size_t pos, std::size_t count, const char8_t* cstr);
-        String& replace(const_iterator first, const_iterator last, const char8_t* cstr);
-        String& replace(std::size_t pos, std::size_t count, std::size_t count2, char8_t ch);
-        String& replace(const_iterator first, const_iterator last, std::size_t count2, char8_t ch);
-        String& replace(const_iterator first, const_iterator last, std::initializer_list<char8_t> chars);
+        inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str);
+        inline String& replace(const_iterator first, const_iterator last, const std::u8string& str);
+        inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
+        inline String& replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2);
+        inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr, std::size_t count2);
+        inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2);
+        inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr);
+        inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr);
+        inline String& replace(std::size_t pos, std::size_t count, std::size_t count2, char8_t ch);
+        inline String& replace(const_iterator first, const_iterator last, std::size_t count2, char8_t ch);
+        inline String& replace(const_iterator first, const_iterator last, std::initializer_list<char8_t> chars);
 
-        void resize(std::size_t count, char8_t ch);
+        inline void resize(std::size_t count, char8_t ch);
 
-        bool contains(char8_t c) const noexcept;
-        bool contains(const char8_t* s) const noexcept;
+        inline bool contains(char8_t c) const noexcept;
+        inline bool contains(const char8_t* s) const noexcept;
 
-        std::size_t find(const std::u8string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t find(const char8_t* s, std::size_t pos = 0) const;
-        std::size_t find(char8_t ch, std::size_t pos = 0) const noexcept;
+        inline std::size_t find(const std::u8string& str, std::size_t pos = 0) const noexcept;
+        inline std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t find(const char8_t* s, std::size_t pos = 0) const;
+        inline std::size_t find(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        std::size_t find_first_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t find_first_of(const char8_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_of(char8_t ch, std::size_t pos = 0) const noexcept;
+        inline std::size_t find_first_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
+        inline std::size_t find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t find_first_of(const char8_t* s, std::size_t pos = 0) const;
+        inline std::size_t find_first_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        std::size_t find_first_not_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t find_first_not_of(const char8_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_not_of(char8_t ch, std::size_t pos = 0) const noexcept;
+        inline std::size_t find_first_not_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
+        inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos = 0) const;
+        inline std::size_t find_first_not_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        std::size_t rfind(const std::u8string& str, std::size_t pos = npos) const noexcept;
-        std::size_t rfind(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t rfind(const char8_t* s, std::size_t pos = npos) const;
-        std::size_t rfind(char8_t ch, std::size_t pos = npos) const noexcept;
+        inline std::size_t rfind(const std::u8string& str, std::size_t pos = npos) const noexcept;
+        inline std::size_t rfind(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t rfind(const char8_t* s, std::size_t pos = npos) const;
+        inline std::size_t rfind(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        std::size_t find_last_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t find_last_of(const char8_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_of(char8_t ch, std::size_t pos = npos) const noexcept;
+        inline std::size_t find_last_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
+        inline std::size_t find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t find_last_of(const char8_t* s, std::size_t pos = npos) const;
+        inline std::size_t find_last_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        std::size_t find_last_not_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        std::size_t find_last_not_of(const char8_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
+        inline std::size_t find_last_not_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
+        inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos = npos) const;
+        inline std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        //friend std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str);
+        //inline friend std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str);
 #endif
     };
 
