@@ -566,7 +566,8 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          brew install sfml sdl2 sdl2_ttf glfw
+          brew install sfml sdl2 glfw
+          brew install --HEAD sdl2_ttf
 
       - name: Checkout TGUI
         uses: actions/checkout@v2
