@@ -34,6 +34,7 @@ namespace tgui
         SubwidgetContainer{typeName, initRenderer}
     {
         m_tabs = Tabs::create();
+        m_tabs->setWidth("100%");
         m_container->add(m_tabs, "Tabs");
         init();
     }
@@ -91,7 +92,6 @@ namespace tgui
     {
         SubwidgetContainer::setSize(size);
 
-        m_tabs->setWidth(size.x);
         for (auto& ptr : m_panels)
             ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
     }
@@ -110,10 +110,12 @@ namespace tgui
     {
         auto panel = Panel::create();
         panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
-        panel->setPosition({bindLeft(m_tabs), bindBottom(m_tabs)});
+        layoutPanel(panel);
 
         m_panels.push_back(panel);
         m_tabs->add(name, selectPanel);
+        layoutTabs();
+
         m_container->add(panel);
         if (selectPanel)
             select(m_panels.size() - 1, false);
@@ -132,10 +134,11 @@ namespace tgui
 
         auto panel = Panel::create();
         panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
-        panel->setPosition({bindLeft(m_tabs), bindBottom(m_tabs)});
+        layoutPanel(panel);
 
         m_panels.insert(m_panels.begin() + index, panel);
         m_tabs->insert(index, name, selectPanel);
+        layoutTabs();
 
         m_container->add(panel);
         m_container->setWidgetIndex(panel, index);
@@ -173,9 +176,12 @@ namespace tgui
             return false;
 
         m_tabs->remove(index);
+        layoutTabs();
+
+        if ((std::size_t)m_tabs->getSelectedIndex() >= m_panels.size() - 1)
+            select(m_panels.size() - 2);
         m_container->remove(m_panels[index]);
         m_panels.erase(m_panels.begin() + index);
-        select(m_tabs->getSelectedIndex());
         return true;
     }
 
@@ -264,6 +270,77 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TabContainer::setTabAlign(TabAlignment align)
+    {
+        if (m_tabAlign == align)
+            return;
+
+        m_tabAlign = align;
+
+        layoutTabs();
+
+        for (std::size_t i = 0; i < m_panels.size(); i++)
+            layoutPanel(m_panels[i]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabContainer::layoutTabs()
+    {
+        if (m_tabAlign == TabAlign::Top || m_tabAlign == TabAlign::TopFixedWidth)
+        {
+            m_tabs->setPosition(0.0f, 0.0f);
+            if (m_tabAlign == TabAlign::Top)
+                m_tabs->setWidth("100%");
+            else
+                m_tabs->setWidth(bindNumberOfTabs(m_tabs, m_tabFixedSize));
+        }
+        else
+        {
+            tgui::Layout layoutY(tgui::Layout::Operation::Minus,
+                                 std::make_unique<Layout>(tgui::Layout::Operation::BindingInnerHeight, m_container.get()),
+                                 std::make_unique<Layout>(tgui::Layout::Operation::BindingHeight, m_tabs.get()));
+            m_tabs->setPosition(0.0f, layoutY);
+            if (m_tabAlign == TabAlign::Bottom)
+                m_tabs->setWidth("100%");
+            else
+                m_tabs->setWidth(bindNumberOfTabs(m_tabs, m_tabFixedSize));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabContainer::layoutPanel(Panel::Ptr panel)
+    {
+        if (m_tabAlign == TabAlign::Top || m_tabAlign == TabAlign::TopFixedWidth)
+            panel->setPosition(0.0f, bindBottom(m_tabs));
+        else
+            panel->setPosition(0.0f, Layout{tgui::Layout::Operation::BindingTop, m_container.get()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabAlignment TabContainer::getTabAlign() const
+    {
+        return m_tabAlign;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabContainer::setTabFixedSize(float fixedSize)
+    {
+        m_tabFixedSize = fixedSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float TabContainer::getTabFixedSize()
+    {
+        return m_tabFixedSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool TabContainer::changeTabText(std::size_t index, const String& text)
     {
         return m_tabs->changeText(index, text);
@@ -277,6 +354,8 @@ namespace tgui
 
         m_index = -1;
         m_tabs = m_container->get<Tabs>("Tabs");
+        auto tabAlign = m_tabAlign;
+        m_tabAlign = TabAlignment(TabAlign::Top);
 
         auto widgets = m_container->getWidgets();
         m_panels.resize(widgets.size() - 1);
@@ -285,9 +364,10 @@ namespace tgui
         {
             m_panels[i - 1] = std::static_pointer_cast<Panel>(widgets[i]);
             m_panels[i - 1]->setSize({ size.x , size.y - m_tabs->getSize().y });
-            m_panels[i - 1]->setPosition({ bindLeft(m_tabs), bindBottom(m_tabs) });
+            m_panels[i - 1]->setPosition({ 0.0f, bindBottom(m_tabs) });
         }
 
+        setTabAlign(tabAlign);
         select(m_tabs->getSelectedIndex());
         init();
     }
