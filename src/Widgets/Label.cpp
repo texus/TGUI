@@ -323,10 +323,7 @@ namespace tgui
     bool Label::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (!m_autoSize && m_scrollbar->isShown())
-        {
-            m_scrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            return true;
-        }
+            return m_scrollbar->mouseWheelScrolled(delta, pos - getPosition());
 
         return false;
     }

@@ -679,17 +679,17 @@ namespace tgui
 
     bool ListBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_scroll->isShown())
-        {
-            m_scroll->mouseWheelScrolled(delta, pos - getPosition());
-            triggerOnScroll();
+        if (!m_scroll->isShown())
+            return false;
 
-            // Update on which item the mouse is hovering
-            mouseMoved(pos);
-            return true;
-        }
+        if (!m_scroll->mouseWheelScrolled(delta, pos - getPosition()))
+            return false;
 
-        return false;
+        triggerOnScroll();
+
+        // Update on which item the mouse is hovering
+        mouseMoved(pos);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -832,23 +832,23 @@ namespace tgui
 
     bool TreeView::mouseWheelScrolled(float delta, Vector2f pos)
     {
+        bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || keyboard::isShiftPressed()))
         {
-            m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos);
-            return true;
+            scrollbarMoved = m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
         else if (m_verticalScrollbar->isShown())
         {
-            m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos);
-            return true;
+            scrollbarMoved = m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
-        else
-            return false;
+
+        if (scrollbarMoved)
+            mouseMoved(pos);
+
+        return scrollbarMoved;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

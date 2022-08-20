@@ -1503,23 +1503,23 @@ namespace tgui
 
     bool ListView::mouseWheelScrolled(float delta, Vector2f pos)
     {
+        bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || keyboard::isShiftPressed()))
         {
-            m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos); // Update on which item the mouse is hovered
-            return true;
+            scrollbarMoved = m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
         else if (m_verticalScrollbar->isShown())
         {
-            m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos); // Update on which item the mouse is hovered
-            return true;
+            scrollbarMoved = m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
 
-        return false;
+        if (scrollbarMoved)
+            mouseMoved(pos); // Update on which item the mouse is hovered
+
+        return scrollbarMoved;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
