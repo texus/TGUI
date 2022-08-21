@@ -2863,7 +2863,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawHeaderText(target, headerStates, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos), headerHeight, col);
+                    drawHeaderText(target, headerStates, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos), headerHeight, col);
                 else
                 {
                     drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
@@ -2899,7 +2899,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawColumn(target, states, firstItem, lastItem, col, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos));
+                    drawColumn(target, states, firstItem, lastItem, col, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos));
                 else
                 {
                     drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
