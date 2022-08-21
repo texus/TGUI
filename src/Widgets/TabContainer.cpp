@@ -270,21 +270,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::setTabAlign(TabAlignment align)
-    {
-        if (m_tabAlign == align)
-            return;
-
-        m_tabAlign = align;
-
-        layoutTabs();
-
-        for (std::size_t i = 0; i < m_panels.size(); i++)
-            layoutPanel(m_panels[i]);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TabContainer::layoutTabs()
     {
         if (m_tabAlign == TabAlign::Top || m_tabAlign == TabAlign::TopFixedWidth)
@@ -324,6 +309,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TabContainer::setTabAlign(TabAlignment align)
+    {
+        if (m_tabAlign == align)
+            return;
+
+        m_tabAlign = align;
+
+        layoutTabs();
+
+        for (std::size_t i = 0; i < m_panels.size(); i++)
+            layoutPanel(m_panels[i]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TabAlignment TabContainer::getTabAlign() const
     {
         return m_tabAlign;
@@ -338,7 +338,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float TabContainer::getTabFixedSize()
+    float TabContainer::getTabFixedSize() const
     {
         return m_tabFixedSize;
     }

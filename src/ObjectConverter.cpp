@@ -151,7 +151,7 @@ namespace tgui
         if (m_type == Type::String)
         {
             m_value = Deserializer::deserialize(ObjectConverter::Type::TabAlign, m_string).getTabAlign();
-            m_type = Type::TextStyle;
+            m_type = Type::TabAlign;
         }
 
         return m_value.get<TabAlignment>();
