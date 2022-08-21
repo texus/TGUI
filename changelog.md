@@ -9,6 +9,7 @@ TGUI 0.10.0  (TBD)
 - Added changeMenuItem function to MenuBar to change the text of a menu
 - Added SizeHorizontal and SizeVertical mouse cursors
 - Added hasUserData to Widget
+- Added LabelAlignment and ButtonAlignment to MessageBox
 - Theme files now support global properties
 - Theme files now support inheritance between sections
 - Word-wrapped lines no longer begin with whitespace
