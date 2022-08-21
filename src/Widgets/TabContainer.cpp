@@ -293,7 +293,9 @@ namespace tgui
             if (m_tabAlign == TabAlign::Top)
                 m_tabs->setWidth("100%");
             else
-                m_tabs->setWidth(bindNumberOfTabs(m_tabs, m_tabFixedSize));
+                m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
+                                        std::make_unique<Layout>(Layout::Operation::BindingNumberOfChildren, m_tabs.get()),
+                                        std::make_unique<Layout>(m_tabFixedSize)});
         }
         else
         {
@@ -304,7 +306,9 @@ namespace tgui
             if (m_tabAlign == TabAlign::Bottom)
                 m_tabs->setWidth("100%");
             else
-                m_tabs->setWidth(bindNumberOfTabs(m_tabs, m_tabFixedSize));
+                m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
+                                        std::make_unique<Layout>(Layout::Operation::BindingNumberOfChildren, m_tabs.get()),
+                                        std::make_unique<Layout>(m_tabFixedSize)});
         }
     }
 

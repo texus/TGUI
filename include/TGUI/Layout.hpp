@@ -485,9 +485,6 @@ namespace tgui
 
         /// @brief Bind to the number of children of the container widget
         TGUI_API Layout bindNumberOfChildren(std::shared_ptr<Container> container, const Layout& factor);
-
-        /// @brief Bind to the number of tabs of the tabs widget
-        TGUI_API Layout bindNumberOfTabs(std::shared_ptr<Tabs> tabs, const Layout& factor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

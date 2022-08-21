@@ -249,8 +249,12 @@ namespace tgui
 
             if (align == TabAlign::Top)
                 return "Top";
-            else
+            else if (align == TabAlign::TopFixedWidth)
+                return "TopFixedWidth";
+            else if (align == TabAlign::Bottom)
                 return "Bottom";
+            else
+                return "BottomFixedWidth";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

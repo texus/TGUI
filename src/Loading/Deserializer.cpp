@@ -413,8 +413,12 @@ namespace tgui
 
             if (align.equalIgnoreCase("top"))
                 defaultTabAlign |= TabAlign::Top;
+            else if (align.equalIgnoreCase("topfixedwidth"))
+                defaultTabAlign |= TabAlign::TopFixedWidth;
             else if (align.equalIgnoreCase("bottom"))
                 defaultTabAlign |= TabAlign::Bottom;
+            else if (align.equalIgnoreCase("bottomfixedwidth"))
+                defaultTabAlign |= TabAlign::BottomFixedWidth;
 
             return TabAlignment(defaultTabAlign);
         }
