@@ -407,24 +407,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ObjectConverter deserializeTabAlign(const String& align)
-        {
-            unsigned int defaultTabAlign = TabAlign::Top;
-
-            if (align.equalIgnoreCase("top"))
-                defaultTabAlign |= TabAlign::Top;
-            else if (align.equalIgnoreCase("topfixedwidth"))
-                defaultTabAlign |= TabAlign::TopFixedWidth;
-            else if (align.equalIgnoreCase("bottom"))
-                defaultTabAlign |= TabAlign::Bottom;
-            else if (align.equalIgnoreCase("bottomfixedwidth"))
-                defaultTabAlign |= TabAlign::BottomFixedWidth;
-
-            return TabAlignment(defaultTabAlign);
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         ObjectConverter deserializeTextStyle(const String& style)
         {
             unsigned int decodedStyle = TextStyle::Regular;
@@ -482,7 +464,6 @@ namespace tgui
             {ObjectConverter::Type::String, deserializeString},
             {ObjectConverter::Type::Number, deserializeNumber},
             {ObjectConverter::Type::Outline, deserializeOutline},
-            {ObjectConverter::Type::TabAlign, deserializeTabAlign},
             {ObjectConverter::Type::Texture, deserializeTexture},
             {ObjectConverter::Type::TextStyle, deserializeTextStyle},
             {ObjectConverter::Type::RendererData, deserializeRendererData}
