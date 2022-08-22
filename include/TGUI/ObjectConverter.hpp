@@ -27,7 +27,6 @@
 #define TGUI_OBJECT_CONVERTER_HPP
 
 
-#include <TGUI/TabAlignment.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <TGUI/Variant.hpp>
 #include <TGUI/Outline.hpp>
@@ -57,7 +56,6 @@ namespace tgui
             String,
             Number,
             Outline,
-            TabAlign,
             Texture,
             TextStyle,
             RendererData
@@ -178,30 +176,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a single tab alignment for later retrieval
-        ///
-        /// @param align  Tab alignment to store
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(TabAlign align) :
-            m_type {Type::TabAlign},
-            m_value{TabAlignment(align)}
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a tab alignment for later retrieval
-        ///
-        /// @param align  Tab alignment to store
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(TabAlignment align) :
-            m_type {Type::TabAlign},
-            m_value{align}
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Stores a single text style for later retrieval
         ///
         /// @param style  Text style to store
@@ -313,17 +287,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved tab alignment
-        ///
-        /// @return Saved tab alignment
-        ///
-        /// This function will assert when something other than a tab alignment was saved
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const TabAlignment& getTabAlign();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves the saved text style
         ///
         /// @return Saved text style
@@ -374,7 +337,7 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-        Variant<String, Font, Color, Outline, bool, float, TabAlignment, Texture, TextStyles, std::shared_ptr<RendererData>> m_value;
+        Variant<String, Font, Color, Outline, bool, float, Texture, TextStyles, std::shared_ptr<RendererData>> m_value;
 
         bool m_serialized = false;
         String m_string;

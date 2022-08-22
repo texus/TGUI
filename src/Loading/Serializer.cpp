@@ -243,22 +243,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        String serializeTabAlign(ObjectConverter&& value)
-        {
-            const unsigned int align = value.getTabAlign();
-
-            if (align == TabAlign::Top)
-                return "Top";
-            else if (align == TabAlign::TopFixedWidth)
-                return "TopFixedWidth";
-            else if (align == TabAlign::Bottom)
-                return "Bottom";
-            else
-                return "BottomFixedWidth";
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         String serializeTextStyle(ObjectConverter&& value)
         {
             const unsigned int style = value.getTextStyle();
@@ -322,7 +306,6 @@ namespace tgui
             {ObjectConverter::Type::String, serializeString},
             {ObjectConverter::Type::Number, serializeNumber},
             {ObjectConverter::Type::Outline, serializeOutline},
-            {ObjectConverter::Type::TabAlign, serializeTabAlign},
             {ObjectConverter::Type::Texture, serializeTexture},
             {ObjectConverter::Type::TextStyle, serializeTextStyle},
             {ObjectConverter::Type::RendererData, serializeRendererData}

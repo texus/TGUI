@@ -143,22 +143,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const TabAlignment& ObjectConverter::getTabAlign()
-    {
-        TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::TabAlign || m_type == Type::String, "ObjectConverter must contain tab alignment or serialized object to retrieve its tab alignment");
-
-        if (m_type == Type::String)
-        {
-            m_value = Deserializer::deserialize(ObjectConverter::Type::TabAlign, m_string).getTabAlign();
-            m_type = Type::TabAlign;
-        }
-
-        return m_value.get<TabAlignment>();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     const TextStyles& ObjectConverter::getTextStyle()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");

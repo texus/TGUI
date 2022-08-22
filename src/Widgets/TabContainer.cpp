@@ -178,10 +178,17 @@ namespace tgui
         m_tabs->remove(index);
         layoutTabs();
 
+        bool needsSelect = false;
         if ((std::size_t)m_tabs->getSelectedIndex() >= m_panels.size() - 1)
             select(m_panels.size() - 2);
+        else
+            needsSelect = true;
+
         m_container->remove(m_panels[index]);
         m_panels.erase(m_panels.begin() + index);
+        if (needsSelect == true)
+            select(m_tabs->getSelectedIndex());
+
         return true;
     }
 
@@ -272,10 +279,10 @@ namespace tgui
 
     void TabContainer::layoutTabs()
     {
-        if (m_tabAlign == TabAlign::Top || m_tabAlign == TabAlign::TopFixedWidth)
+        if (m_tabAlign == TabContainer::TabAlign::Top)
         {
             m_tabs->setPosition(0.0f, 0.0f);
-            if (m_tabAlign == TabAlign::Top)
+            if (m_tabFixedSize <= 0.0f)
                 m_tabs->setWidth("100%");
             else
                 m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
@@ -288,7 +295,7 @@ namespace tgui
                                  std::make_unique<Layout>(tgui::Layout::Operation::BindingInnerHeight, m_container.get()),
                                  std::make_unique<Layout>(tgui::Layout::Operation::BindingHeight, m_tabs.get()));
             m_tabs->setPosition(0.0f, layoutY);
-            if (m_tabAlign == TabAlign::Bottom)
+            if (m_tabFixedSize <= 0.0f)
                 m_tabs->setWidth("100%");
             else
                 m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
@@ -301,7 +308,7 @@ namespace tgui
 
     void TabContainer::layoutPanel(Panel::Ptr panel)
     {
-        if (m_tabAlign == TabAlign::Top || m_tabAlign == TabAlign::TopFixedWidth)
+        if (m_tabAlign == TabContainer::TabAlign::Top)
             panel->setPosition(0.0f, bindBottom(m_tabs));
         else
             panel->setPosition(0.0f, Layout{tgui::Layout::Operation::BindingTop, m_container.get()});
@@ -324,7 +331,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabAlignment TabContainer::getTabAlign() const
+    TabContainer::TabAlignment TabContainer::getTabAlign() const
     {
         return m_tabAlign;
     }
@@ -333,7 +340,12 @@ namespace tgui
 
     void TabContainer::setTabFixedSize(float fixedSize)
     {
+        if (m_tabFixedSize == fixedSize)
+            return;
+
         m_tabFixedSize = fixedSize;
+
+        layoutTabs();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,14 +364,44 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> TabContainer::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (m_tabAlign == tgui::TabContainer::TabAlign::Top)
+            node->propertyValuePairs["TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
+        else
+            node->propertyValuePairs["TabAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
+
+        node->propertyValuePairs["TabFixedSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_tabFixedSize));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TabContainer::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         SubwidgetContainer::load(node, renderers);
 
+        // Buffer the value to apply it after child widget creation with default align.
+        auto tabAlign = tgui::TabContainer::TabAlign::Top;
+        if (node->propertyValuePairs["TabAlignment"])
+        {
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["TabAlignment"]->value).getString();
+            if (alignment == "Bottom")
+                tabAlign = tgui::TabContainer::TabAlign::Bottom;
+            else if (alignment != "Top")
+                throw Exception{"Failed to parse TabAlignment property, found unknown value."};
+        }
+
+        // Buffer the value to apply it after child widget creation with default size.
+        float tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TabFixedSize"]->value).getNumber();
+
         m_index = -1;
         m_tabs = m_container->get<Tabs>("Tabs");
-        auto tabAlign = m_tabAlign;
         m_tabAlign = TabAlignment(TabAlign::Top);
+        m_tabFixedSize = 0.0f;
 
         auto widgets = m_container->getWidgets();
         m_panels.resize(widgets.size() - 1);
@@ -372,6 +414,7 @@ namespace tgui
         }
 
         setTabAlign(tabAlign);
+        setTabFixedSize(tabFixedSize);
         select(m_tabs->getSelectedIndex());
         init();
     }
