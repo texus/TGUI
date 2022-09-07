@@ -10,6 +10,7 @@ TGUI 0.10.0  (TBD)
 - Added SizeHorizontal and SizeVertical mouse cursors
 - Added hasUserData to Widget
 - Added LabelAlignment and ButtonAlignment to MessageBox
+- Added ScrollbarValue to Label
 - Theme files now support global properties
 - Theme files now support inheritance between sections
 - Word-wrapped lines no longer begin with whitespace
