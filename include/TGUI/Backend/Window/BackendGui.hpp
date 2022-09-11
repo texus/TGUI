@@ -619,7 +619,7 @@ namespace tgui
         Duration m_tooltipTime;
         bool m_tooltipPossible = false;
         Vector2f m_toolTipRelativePos;
-        Vector2f m_lastMousePos;
+        Vector2i m_lastMousePos;
 
         Vector2i m_windowSize;
         RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};
