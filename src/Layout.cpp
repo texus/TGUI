@@ -373,7 +373,7 @@ namespace tgui
         m_rightOperand   {std::move(other.m_rightOperand)},
         m_boundWidget    {other.m_boundWidget},
         m_boundString    {std::move(other.m_boundString)},
-        m_connectedWidgetCallback{std::move(m_connectedWidgetCallback)}
+        m_connectedWidgetCallback{std::move(other.m_connectedWidgetCallback)}
     {
         resetPointers();
     }
@@ -420,7 +420,7 @@ namespace tgui
             m_rightOperand    = std::move(other.m_rightOperand);
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = std::move(other.m_boundString);
-            m_connectedWidgetCallback = std::move(m_connectedWidgetCallback);
+            m_connectedWidgetCallback = std::move(other.m_connectedWidgetCallback);
 
             resetPointers();
         }
