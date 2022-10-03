@@ -316,7 +316,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::setTabAlign(TabAlignment align)
+    void TabContainer::setTabAlignment(TabAlign align)
     {
         if (m_tabAlign == align)
             return;
@@ -331,7 +331,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabContainer::TabAlignment TabContainer::getTabAlign() const
+    TabContainer::TabAlign TabContainer::getTabAlignment() const
     {
         return m_tabAlign;
     }
@@ -400,7 +400,7 @@ namespace tgui
 
         m_index = -1;
         m_tabs = m_container->get<Tabs>("Tabs");
-        m_tabAlign = TabAlignment(TabAlign::Top);
+        m_tabAlign = TabAlign::Top;
         m_tabFixedSize = 0.0f;
 
         auto widgets = m_container->getWidgets();
@@ -413,7 +413,7 @@ namespace tgui
             m_panels[i - 1]->setPosition({ 0.0f, bindBottom(m_tabs) });
         }
 
-        setTabAlign(tabAlign);
+        setTabAlignment(tabAlign);
         setTabFixedSize(tabFixedSize);
         select(m_tabs->getSelectedIndex());
         init();

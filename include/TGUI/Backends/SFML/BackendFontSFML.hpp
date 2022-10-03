@@ -23,105 +23,104 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_TAB_ALIGNMENT_HPP
-#define TGUI_TAB_ALIGNMENT_HPP
+#ifndef TGUI_BACKEND_FONT_SFML_HPP
+#define TGUI_BACKEND_FONT_SFML_HPP
 
-#include <TGUI/String.hpp>
-#include <string>
+#include <TGUI/BackendFont.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Enumeration of the tab alignments
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    enum TabAlign
-    {
-        Top              = 0,      //!< Tabs use the complete width and are above panes
-        TopFixedWidth    = 1 << 0, //!< Tabs use fixed width multiplied with tab count and are above panes
-        Bottom           = 1 << 1, //!< Tabs use the complete width and are below panes
-        BottomFixedWidth = 1 << 2, //!< Tabs use fixed width multiplied with tab count and are below panes
-    };
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Wrapper for tab alignment
-    ///
-    /// Implicit converter for parameters. A function taking a TabAlignment as parameter can be given either a
-    /// tgui::TabAlign or a string representation as argument.
+    /// @brief Font implementation that makes use of SFML
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API TabAlignment
+    class TGUI_API BackendFontSFML : public BackendFontBase
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the object with default tab alignment (tgui::TabAlign::Top)
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TabAlignment() :
-            m_tabAlign(tgui::TabAlign::Top)
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the object from one tgui::TabAlign::Alignment enum members
+        /// @brief Loads a font from a file
         ///
-        /// @param align  Tab alignment to set
+        /// @param filename  Filename of the font to load
         ///
-        /// @code
-        /// TabAlignment align, one value of tgui::TabAlign;
-        /// @endcode
+        /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TabAlignment(unsigned int align) :
-            m_tabAlign(align)
-        {
-        }
+        bool loadFromFile(const String& filename) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the object from a string representing of the tab alignment
+        /// @brief Loads a font from memory
         ///
-        /// @param string  String to be deserialized as tab alignment
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TabAlignment(const String& string);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the object from a string representing of the tab alignment
+        /// @param data         Pointer to the file data in memory
+        /// @param sizeInBytes  Size of the data to load, in bytes
         ///
-        /// @param string  String to be deserialized as tab alignment
+        /// @return True if the font was loaded successfully, false otherwise
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool loadFromMemory(const void* data, std::size_t sizeInBytes) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve a glyph of the font
         ///
-        /// @code
-        /// TabAlignment align{"Bottom"};
-        /// @endcode
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TabAlignment(const char* string);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Converts this object into an unsigned int
+        /// If the font is a bitmap font, not all character sizes might be available. If the glyph is not available at the
+        /// requested size, an empty glyph is returned.
         ///
-        /// @return The tab alignment stored in this object
+        /// @param codePoint        Unicode code point of the character to get
+        /// @param characterSize    Reference character size
+        /// @param bold             Retrieve the bold version or the regular one?
+        /// @param outlineThickness Thickness of outline (when != 0 the glyph will not be filled)
+        ///
+        /// @return The glyph corresponding to codePoint and characterSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR operator unsigned int() const
-        {
-            return m_tabAlign;
-        }
+        FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+        /// @brief Returns the kerning offset of two glyphs
+        ///
+        /// The kerning is an extra offset (negative) to apply between two glyphs when rendering them, to make the pair look
+        /// more "natural". For example, the pair "AV" have a special kerning to make them closer than other characters.
+        /// Most of the glyphs pairs have a kerning offset of zero, though.
+        ///
+        /// @param first         Unicode code point of the first character
+        /// @param second        Unicode code point of the second character
+        /// @param characterSize Size of the characters
+        /// @param bold          Are the glyphs bold or regular?
+        ///
+        /// @return Kerning value for first and second, in pixels
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) override;
+        using BackendFontBase::getKerning; // Import version without bold parameter
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores the tab alignment represented by this object
+        /// @brief Returns the line spacing
+        ///
+        /// Line spacing is the vertical offset to apply between two consecutive lines of text.
+        ///
+        /// @param characterSize Size of the characters
+        ///
+        /// @return Line spacing, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int m_tabAlign;
+        float getLineSpacing(unsigned int characterSize) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a reference to the internal SFML font
+        /// @return Reference to internal font
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Font& getInternalFont();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        sf::Font m_font;
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TAB_ALIGNMENT_HPP
+#endif // TGUI_BACKEND_FONT_SFML_HPP

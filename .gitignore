@@ -16,3 +16,13 @@ CmakeSettings.json
 CombinedSources*.cpp
 .DS_Store
 *~
+
+obj/
+
+TGUI-SFML-OpenGL3.cbp
+
+TGUI-SFML-OpenGL3.depend
+
+TGUI-SFML-OpenGL3.layout
+
+bin/
