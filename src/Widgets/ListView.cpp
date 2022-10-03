@@ -445,10 +445,10 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
+        Item& item = m_items[index];
+
         if (m_columns.empty() || m_expandLastColumn)
         {
-            Item& item = m_items[index];
-
             const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
 
             item.texts.clear();
@@ -462,12 +462,24 @@ namespace tgui
         }
         else
         {
-            Item& item = m_items[index];
             item.texts.clear();
             item.texts.reserve(itemTexts.size());
             for (const auto& text : itemTexts)
                 item.texts.push_back(createText(text));
         }
+
+        // Update the text color in case the changed item was selected
+        if (m_selectedItems.find(index) != m_selectedItems.end())
+        {
+            if ((static_cast<int>(index) == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                setItemColor(index, m_selectedTextColorHoverCached);
+            else if (m_selectedTextColorCached.isSet())
+                setItemColor(index, m_selectedTextColorCached);
+            else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
+                setItemColor(m_hoveredItem, m_textColorHoverCached);
+        }
+        else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
+            setItemColor(m_hoveredItem, m_textColorHoverCached);
 
         return true;
     }
@@ -479,10 +491,10 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
+        Item& item = m_items[index];
+
         if ((m_columns.empty() || column == m_columns.size() - 1) && (m_columns.empty() || m_expandLastColumn))
         {
-            Item& item = m_items[index];
-
             const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
 
             if (column >= item.texts.size())
@@ -496,12 +508,24 @@ namespace tgui
         }
         else
         {
-            Item& item = m_items[index];
             if (column >= item.texts.size())
                 item.texts.resize(column + 1);
 
             item.texts[column] = createText(itemText);
         }
+
+        // Update the text color in case the changed item was selected
+        if (m_selectedItems.find(index) != m_selectedItems.end())
+        {
+            if ((static_cast<int>(index) == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                setItemColor(index, m_selectedTextColorHoverCached);
+            else if (m_selectedTextColorCached.isSet())
+                setItemColor(index, m_selectedTextColorCached);
+            else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
+                setItemColor(m_hoveredItem, m_textColorHoverCached);
+        }
+        else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
+            setItemColor(m_hoveredItem, m_textColorHoverCached);
 
         return true;
     }
@@ -1503,23 +1527,23 @@ namespace tgui
 
     bool ListView::mouseWheelScrolled(float delta, Vector2f pos)
     {
+        bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || keyboard::isShiftPressed()))
         {
-            m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos); // Update on which item the mouse is hovered
-            return true;
+            scrollbarMoved = m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
         else if (m_verticalScrollbar->isShown())
         {
-            m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos); // Update on which item the mouse is hovered
-            return true;
+            scrollbarMoved = m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
 
-        return false;
+        if (scrollbarMoved)
+            mouseMoved(pos); // Update on which item the mouse is hovered
+
+        return scrollbarMoved;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2863,7 +2887,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawHeaderText(target, headerStates, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos), headerHeight, col);
+                    drawHeaderText(target, headerStates, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos), headerHeight, col);
                 else
                 {
                     drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
@@ -2899,7 +2923,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawColumn(target, states, firstItem, lastItem, col, std::max(m_columns[col].maxItemWidth, availableWidth - columnLeftPos));
+                    drawColumn(target, states, firstItem, lastItem, col, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos));
                 else
                 {
                     drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);

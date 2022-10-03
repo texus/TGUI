@@ -928,36 +928,36 @@ jobs:
       - name: Create package (SFML_GRAPHICS, x86)
         run: |
           cd ${env:GITHUB_WORKSPACE}
-          echo d | xcopy /s TGUI TGUI-0.10-nightly
-          mkdir TGUI-0.10-nightly\lib
-          move TGUI-build-static-x86\lib\Release\tgui-s.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x86\lib\Debug\tgui-s-d.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x86\lib\Debug\tgui-s-d.pdb TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Release\tgui.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Release\tgui.dll TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.dll TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.pdb TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x86\doc\html TGUI-0.10-nightly\doc\
-          7z a -tzip TGUI-0.10-nightly-VisualStudio-32bit-for-SFML-${env:SFML_VERSION}.zip TGUI-0.10-nightly
-          Remove-Item TGUI-0.10-nightly -Recurse -Force -Confirm:$false
+          echo d | xcopy /s TGUI TGUI-1.0-nightly
+          mkdir TGUI-1.0-nightly\lib
+          move TGUI-build-static-x86\lib\Release\tgui-s.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x86\lib\Debug\tgui-s-d.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x86\lib\Debug\tgui-s-d.pdb TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Release\tgui.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Release\tgui.dll TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.dll TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.pdb TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x86\doc\html TGUI-1.0-nightly\doc\
+          7z a -tzip TGUI-1.0-nightly-VisualStudio-32bit-for-SFML-${env:SFML_VERSION}.zip TGUI-1.0-nightly
+          Remove-Item TGUI-1.0-nightly -Recurse -Force -Confirm:$false
 
       - name: Create package (SFML_GRAPHICS, x64)
         run: |
           cd ${env:GITHUB_WORKSPACE}
-          echo d | xcopy /s TGUI TGUI-0.10-nightly
-          mkdir TGUI-0.10-nightly\lib
-          move TGUI-build-static-x64\lib\Release\tgui-s.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x64\lib\Debug\tgui-s-d.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x64\lib\Debug\tgui-s-d.pdb TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Release\tgui.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Release\tgui.dll TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.lib TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.dll TGUI-0.10-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.pdb TGUI-0.10-nightly\lib\
-          move TGUI-build-static-x64\doc\html TGUI-0.10-nightly\doc\
-          7z a -tzip TGUI-0.10-nightly-VisualStudio-64bit-for-SFML-${env:SFML_VERSION}.zip TGUI-0.10-nightly
-          Remove-Item TGUI-0.10-nightly -Recurse -Force -Confirm:$false
+          echo d | xcopy /s TGUI TGUI-1.0-nightly
+          mkdir TGUI-1.0-nightly\lib
+          move TGUI-build-static-x64\lib\Release\tgui-s.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x64\lib\Debug\tgui-s-d.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x64\lib\Debug\tgui-s-d.pdb TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Release\tgui.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Release\tgui.dll TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.lib TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.dll TGUI-1.0-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.pdb TGUI-1.0-nightly\lib\
+          move TGUI-build-static-x64\doc\html TGUI-1.0-nightly\doc\
+          7z a -tzip TGUI-1.0-nightly-VisualStudio-64bit-for-SFML-${env:SFML_VERSION}.zip TGUI-1.0-nightly
+          Remove-Item TGUI-1.0-nightly -Recurse -Force -Confirm:$false
 
       - name: Publish
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -967,4 +967,4 @@ jobs:
           prerelease: true
           title: "Nightly build"
           files: |
-            TGUI-0.10-nightly-*.zip
+            TGUI-1.0-nightly-*.zip

@@ -55,9 +55,9 @@ Precompiled libraries for some compilers are available for each [release](https:
 Learn
 -----
 
-* [Tutorials](https://tgui.eu/tutorials/0.10)
-* [Documentation](https://tgui.eu/documentation/0.10)
-* [Examples](https://tgui.eu/examples/0.10)
+* [Tutorials](https://tgui.eu/tutorials/1.0/)
+* [Documentation](https://tgui.eu/documentation/1.0/)
+* [Examples](https://tgui.eu/examples/1.0/)
 * [Forum](https://forum.tgui.eu)
 
 

@@ -180,6 +180,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::setScrollbarValue(unsigned int value)
+    {
+        m_scrollbar->setValue(value);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Label::getScrollbarValue() const
+    {
+        return m_scrollbar->getValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::setAutoSize(bool autoSize)
     {
         if (m_autoSize == autoSize)
@@ -323,10 +337,7 @@ namespace tgui
     bool Label::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (!m_autoSize && m_scrollbar->isShown())
-        {
-            m_scrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            return true;
-        }
+            return m_scrollbar->mouseWheelScrolled(delta, pos - getPosition());
 
         return false;
     }

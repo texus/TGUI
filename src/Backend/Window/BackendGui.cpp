@@ -113,11 +113,20 @@ namespace tgui
             {
                 Vector2f mouseCoords;
                 if (event.type == Event::Type::MouseMoved)
+                {
+                    m_lastMousePos = {event.mouseMove.x, event.mouseMove.y};
                     mouseCoords = mapPixelToView(event.mouseMove.x, event.mouseMove.y);
+                }
                 else if (event.type == Event::Type::MouseWheelScrolled)
+                {
+                    m_lastMousePos = {event.mouseWheel.x, event.mouseWheel.y};
                     mouseCoords = mapPixelToView(event.mouseWheel.x, event.mouseWheel.y);
+                }
                 else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
+                {
+                    m_lastMousePos = {event.mouseButton.x, event.mouseButton.y};
                     mouseCoords = mapPixelToView(event.mouseButton.x, event.mouseButton.y);
+                }
 
                 // If a tooltip is visible then hide it now
                 if (m_visibleToolTip != nullptr)
@@ -132,7 +141,6 @@ namespace tgui
                 // Reset the data for the tooltip since the mouse has moved
                 m_tooltipTime = {};
                 m_tooltipPossible = true;
-                m_lastMousePos = mouseCoords;
 
                 if (event.type == Event::Type::MouseMoved)
                     return m_container->processMouseMoveEvent(mouseCoords);
@@ -508,7 +516,8 @@ namespace tgui
             m_tooltipTime += elapsedTime;
             if (m_tooltipTime >= ToolTip::getInitialDelay())
             {
-                Widget::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
+                const Vector2f lastMousePos = mapPixelToView(m_lastMousePos.x, m_lastMousePos.y);
+                Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
                 if (tooltip)
                 {
                     m_visibleToolTip = tooltip;
@@ -518,7 +527,7 @@ namespace tgui
                     m_toolTipRelativePos = tooltip->getPosition();
 
                     // Convert the relative tool tip position in an absolute one
-                    Vector2f pos = m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition();
+                    Vector2f pos = lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition();
 
                     // Don't display the tool tip outside the window, unless it doesn't fit at all
                     if (pos.x + tooltip->getSize().x > m_view.getLeft() + m_view.getWidth())

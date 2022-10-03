@@ -100,9 +100,8 @@ function(tgui_try_find_sdl_config)
     find_package(SDL2 CONFIG QUIET)
 
     # Not all SDL config file are created equal. On ubuntu 20.04 it doesn't seem to create a target yet.
-    # If the config file doesn't provide both the SDL2::SDL2 and SDL2::SDL2main targets then we will
-    # ignore it and still fall back to our own FindSDL2.cmake file.
-    if(SDL2_FOUND AND TARGET SDL2::SDL2 AND TARGET SDL2::SDL2main)
+    # If no target exists then fall back to our own FindSDL2.cmake file.
+    if(SDL2_FOUND AND TARGET SDL2::SDL2)
         set(TGUI_FOUND_SDL2_CONFIG TRUE PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL2_CONFIG FALSE PARENT_SCOPE)
