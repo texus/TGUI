@@ -218,12 +218,10 @@ namespace tgui
             return false;
         }
 
-        if (m_selectedTab >= 0)
-            m_tabs[m_selectedTab].text.setColor(m_textColorCached);
-
         // Select the tab
         m_selectedTab = static_cast<int>(index);
         m_tabs[m_selectedTab].text.setColor(m_selectedTextColorCached);
+        updateTextColors();
 
         // Send the callback
         onTabSelect.emit(this, m_tabs[index].text.getString());
@@ -236,7 +234,7 @@ namespace tgui
     {
         if (m_selectedTab >= 0)
         {
-            m_tabs[m_selectedTab].text.setColor(m_textColorCached);
+            updateTextColors();
             m_selectedTab = -1;
         }
     }
@@ -448,6 +446,8 @@ namespace tgui
     {
         Widget::mouseMoved(pos);
 
+        const int oldHoveringTab = m_hoveringTab;
+
         pos -= getPosition();
         m_hoveringTab = -1;
         float width = m_bordersCached.getLeft() / 2.f;
@@ -469,6 +469,9 @@ namespace tgui
                 break;
             }
         }
+
+        if (m_hoveringTab != oldHoveringTab)
+            updateTextColors();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,7 +480,11 @@ namespace tgui
     {
         Widget::mouseNoLongerOnWidget();
 
-        m_hoveringTab = -1;
+        if (m_hoveringTab >= 0)
+        {
+            m_hoveringTab = -1;
+            updateTextColors();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -583,6 +583,8 @@ namespace tgui
 
     bool Scrollbar::mouseWheelScrolled(float delta, Vector2f pos)
     {
+        const auto oldValue = m_value;
+
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);
         else
@@ -592,7 +594,8 @@ namespace tgui
         if (isMouseOnWidget(pos - getPosition()))
             mouseMoved(pos - getPosition());
 
-        return true;
+        // Return true unless the scrollbar was already at the top or bottom and you are trying to scroll past it
+        return (m_value != oldValue) || ((oldValue != 0) && (oldValue != m_maximum - m_viewportSize));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

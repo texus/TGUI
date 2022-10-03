@@ -139,8 +139,8 @@ namespace tgui
         const std::array<Vertex, 4> vertices = {{
             {{0, 0}, vertexColor, {0, 0}},
             {{size.x, 0}, vertexColor, {normalizedTextureSize.x, 0}},
-            {{0, size.y}, vertexColor, {0, normalizedTextureSize.y}},
-            {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, normalizedTextureSize.y}},
+            {{0, size.y}, vertexColor, {0, -normalizedTextureSize.y}},
+            {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, -normalizedTextureSize.y}},
         }};
         const std::array<int, 6> indices = {{
             0, 2, 1,

@@ -208,6 +208,7 @@ TEST_CASE("[Container]")
 
     SECTION("Change z-order")
     {
+        widget2->removeAllWidgets();
         container->removeAllWidgets();
 
         // moveWidgetForward and moveWidgetBackward will return list size when widget hasn't been added yet

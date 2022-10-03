@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/MessageBox.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +48,7 @@ namespace tgui
         m_label->setTextSize(m_textSizeCached);
 
         setClientSize({400, 150});
+        m_autoSize = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +57,10 @@ namespace tgui
         ChildWindow      {other},
         onButtonPress    {other.onButtonPress},
         m_loadedThemeFile{other.m_loadedThemeFile},
-        m_buttonClassName{other.m_buttonClassName}
+        m_buttonClassName{other.m_buttonClassName},
+        m_autoSize       {other.m_autoSize},
+        m_labelAlignment {other.m_labelAlignment},
+        m_buttonAlignment{other.m_buttonAlignment}
     {
         identifyLabelAndButtons();
     }
@@ -67,6 +72,9 @@ namespace tgui
         onButtonPress    {std::move(other.onButtonPress)},
         m_loadedThemeFile{std::move(other.m_loadedThemeFile)},
         m_buttonClassName{std::move(other.m_buttonClassName)},
+        m_autoSize       {std::move(other.m_autoSize)},
+        m_labelAlignment {std::move(other.m_labelAlignment)},
+        m_buttonAlignment{std::move(other.m_buttonAlignment)},
         m_buttons        {std::move(other.m_buttons)},
         m_label          {std::move(other.m_label)}
     {
@@ -84,6 +92,9 @@ namespace tgui
             onButtonPress     = other.onButtonPress;
             m_loadedThemeFile = other.m_loadedThemeFile;
             m_buttonClassName = other.m_buttonClassName;
+            m_autoSize        = other.m_autoSize;
+            m_labelAlignment  = other.m_labelAlignment;
+            m_buttonAlignment = other.m_buttonAlignment;
 
             identifyLabelAndButtons();
         }
@@ -102,6 +113,9 @@ namespace tgui
             onButtonPress     = std::move(other.onButtonPress);
             m_loadedThemeFile = std::move(other.m_loadedThemeFile);
             m_buttonClassName = std::move(other.m_buttonClassName);
+            m_autoSize        = std::move(other.m_autoSize);
+            m_labelAlignment  = std::move(other.m_labelAlignment);
+            m_buttonAlignment = std::move(other.m_buttonAlignment);
             m_buttons         = std::move(other.m_buttons);
             m_label           = std::move(other.m_label);
 
@@ -154,6 +168,42 @@ namespace tgui
     MessageBoxRenderer* MessageBox::getRenderer()
     {
         return aurora::downcast<MessageBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::setSize(const Layout2d& size)
+    {
+        // Provide a way to re-enable auto-size after a manual size was previously provided
+        if ((size.x.isConstant() && size.x.getValue() == 0) && (size.y.isConstant() && size.y.getValue() == 0))
+        {
+            m_autoSize = true;
+            rearrange();
+            return;
+        }
+
+        ChildWindow::setSize(size);
+
+        m_autoSize = false;
+        rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::setClientSize(const Layout2d& size)
+    {
+        // Provide a way to re-enable auto-size after a manual size was previously provided
+        if ((size.x.isConstant() && size.x.getValue() == 0) && (size.y.isConstant() && size.y.getValue() == 0))
+        {
+            m_autoSize = true;
+            rearrange();
+            return;
+        }
+
+        ChildWindow::setClientSize(size);
+
+        m_autoSize = false;
+        rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,6 +262,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MessageBox::setLabelAlignment(Alignment labelAlignment)
+    {
+        m_labelAlignment = labelAlignment;
+        rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MessageBox::Alignment MessageBox::getLabelAlignment() const
+    {
+        return m_labelAlignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::setButtonAlignment(Alignment buttonAlignment)
+    {
+        m_buttonAlignment = buttonAlignment;
+        rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MessageBox::Alignment MessageBox::getButtonAlignment() const
+    {
+        return m_buttonAlignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MessageBox::rearrange()
     {
         float buttonWidth = 120;
@@ -237,7 +317,7 @@ namespace tgui
         }
 
         // Calculate the space needed for the buttons
-        const float distance = buttonHeight * 2.0f / 3.0f;
+        const float distance = std::round(buttonHeight * 2.0f / 3.0f);
         float buttonsAreaWidth = distance;
         for (auto& button : m_buttons)
         {
@@ -253,19 +333,55 @@ namespace tgui
             size.x = buttonsAreaWidth;
 
         // Set the size of the window
-        setClientSize(size);
+        if (m_autoSize)
+        {
+            setClientSize(size);
+            m_autoSize = true;
+        }
 
         // Set the text on the correct position
-        m_label->setPosition({distance, distance});
+        if (m_labelAlignment == Alignment::Left)
+        {
+            m_label->setPosition({distance, distance});
+        }
+        else if (m_labelAlignment == Alignment::Right)
+        {
+            m_label->setPosition({getClientSize().x - distance - m_label->getSize().x, distance});
+        }
+        else // if (m_labelAlignment == Alignment::Center)
+        {
+            m_label->setPosition({(getClientSize().x - m_label->getSize().x) / 2.f, distance});
+        }
 
         // Set the buttons on the correct position
-        float leftPosition = 0;
-        const float topPosition = 2*distance + m_label->getSize().y;
-        for (auto& button : m_buttons)
+        const float topPosition = getClientSize().y - distance - buttonHeight;
+        if (m_buttonAlignment == Alignment::Left)
         {
-            leftPosition += distance + ((size.x - buttonsAreaWidth) / (m_buttons.size()+1));
-            button->setPosition({leftPosition, topPosition});
-            leftPosition += button->getSize().x;
+            float leftPosition = distance;
+            for (auto& button : m_buttons)
+            {
+                button->setPosition({leftPosition, topPosition});
+                leftPosition += button->getSize().x + distance;
+            }
+        }
+        else if (m_buttonAlignment == Alignment::Right)
+        {
+            float leftPosition = getClientSize().x;
+            for (auto& button : m_buttons)
+            {
+                leftPosition -= distance + button->getSize().x;
+                button->setPosition({leftPosition, topPosition});
+            }
+        }
+        else // if (m_buttonAlignment == Alignment::Center)
+        {
+            float leftPosition = 0;
+            for (auto& button : m_buttons)
+            {
+                leftPosition += distance + ((getClientSize().x - buttonsAreaWidth) / (m_buttons.size()+1));
+                button->setPosition({leftPosition, topPosition});
+                leftPosition += button->getSize().x;
+            }
         }
     }
 
@@ -310,12 +426,66 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> MessageBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Container::save(renderers);
+
+        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoSize));
+
+        if (m_labelAlignment == Alignment::Left)
+            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
+        else if (m_labelAlignment == Alignment::Center)
+            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+        else if (m_labelAlignment == Alignment::Right)
+            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+
+        if (m_buttonAlignment == Alignment::Left)
+            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
+        else if (m_buttonAlignment == Alignment::Center)
+            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+        else if (m_buttonAlignment == Alignment::Right)
+            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MessageBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
         removeAllWidgets();
 
         ChildWindow::load(node, renderers);
+
+        if (node->propertyValuePairs["AutoSize"])
+            m_autoSize = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool();
+        else
+            m_autoSize = true;
+
+        if (node->propertyValuePairs["LabelAlignment"])
+        {
+            if (node->propertyValuePairs["LabelAlignment"]->value == "Left")
+                setLabelAlignment(Alignment::Left);
+            else if (node->propertyValuePairs["LabelAlignment"]->value == "Center")
+                setLabelAlignment(Alignment::Center);
+            else if (node->propertyValuePairs["LabelAlignment"]->value == "Right")
+                setLabelAlignment(Alignment::Right);
+            else
+                throw Exception{"Failed to parse LabelAlignment property. Only the values Left, Center and Right are correct."};
+        }
+
+        if (node->propertyValuePairs["ButtonAlignment"])
+        {
+            if (node->propertyValuePairs["ButtonAlignment"]->value == "Left")
+                setButtonAlignment(Alignment::Left);
+            else if (node->propertyValuePairs["ButtonAlignment"]->value == "Center")
+                setButtonAlignment(Alignment::Center);
+            else if (node->propertyValuePairs["ButtonAlignment"]->value == "Right")
+                setButtonAlignment(Alignment::Right);
+            else
+                throw Exception{"Failed to parse ButtonAlignment property. Only the values Left, Center and Right are correct."};
+        }
 
         identifyLabelAndButtons();
     }

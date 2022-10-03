@@ -544,21 +544,23 @@ namespace tgui
                 return true; // A child widget swallowed the event
         }
 
+        bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
                 || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
                 || keyboard::isShiftPressed()))
         {
-            m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos);
+            scrollbarMoved = m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
         else if (m_verticalScrollbar->isShown())
         {
-            m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
-            mouseMoved(pos);
+            scrollbarMoved = m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
         }
 
-        return true; // We swallowed the event
+        if (scrollbarMoved)
+            mouseMoved(pos);
+
+        return scrollbarMoved;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
