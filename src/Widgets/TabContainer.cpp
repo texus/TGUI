@@ -400,8 +400,8 @@ namespace tgui
 
         m_index = -1;
         m_tabs = m_container->get<Tabs>("Tabs");
-        m_tabAlign = TabAlign::Top;
-        m_tabFixedSize = 0.0f;
+        auto tabAlign = m_tabAlign;
+        m_tabAlign = TabAlignment(TabAlign::Top);
 
         auto widgets = m_container->getWidgets();
         m_panels.resize(widgets.size() - 1);
@@ -413,8 +413,7 @@ namespace tgui
             m_panels[i - 1]->setPosition({ 0.0f, bindBottom(m_tabs) });
         }
 
-        setTabAlignment(tabAlign);
-        setTabFixedSize(tabFixedSize);
+        setTabAlign(tabAlign);
         select(m_tabs->getSelectedIndex());
         init();
     }
