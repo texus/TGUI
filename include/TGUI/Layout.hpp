@@ -40,6 +40,7 @@ namespace tgui
     class BackendGui;
     class Widget;
     class Container;
+    class Tabs;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Class to store the left, top, width or height of a widget
@@ -68,6 +69,7 @@ namespace tgui
             BindingHeight,
             BindingInnerWidth,
             BindingInnerHeight,
+            BindingNumberOfChildren,
             BindingString
         };
 
@@ -480,6 +482,9 @@ namespace tgui
 
         /// @brief Bind to the maximum value of two layouts
         TGUI_API Layout bindMax(const Layout& value1, const Layout& value2);
+
+        /// @brief Bind to the number of children of the container widget
+        TGUI_API Layout bindNumberOfChildren(std::shared_ptr<Container> container, const Layout& factor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,7 @@
 
 #include <TGUI/Layout.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +109,8 @@ namespace tgui
                  || (partAfterDot == U"iw") || (partAfterDot == U"innerwidth") // width inside the container
                  || (partAfterDot == U"ih") || (partAfterDot == U"innerheight") // height inside the container
                  || (partAfterDot == U"pos") || (partAfterDot == U"position")
-                 || (partAfterDot == U"size") || (partAfterDot == U"innersize"))
+                 || (partAfterDot == U"size") || (partAfterDot == U"innersize")
+                 || (partAfterDot == U"numberofchildren"))
                 {
                     // We can't search for the referenced widget yet as no widget is connected to the widget yet, so store the string for future parsing
                     m_boundString = expression;
@@ -297,10 +299,12 @@ namespace tgui
         TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
                || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-               || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+               || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight)
+               || (m_operation == Operation::BindingNumberOfChildren),
             "Layout constructor with bound widget must be called with an operation that involves the widget"
         );
 
+        // Try to resolve the code duplicate within recalculateValue()!
         if (m_operation == Operation::BindingPosX)
             m_value = m_boundWidget->getPosition().x;
         else if (m_operation == Operation::BindingPosY)
@@ -324,6 +328,18 @@ namespace tgui
             const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
             if (boundContainer)
                 m_value = boundContainer->getInnerSize().y;
+        }
+        else if (m_operation == Operation::BindingNumberOfChildren)
+        {
+            const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
+            if (boundContainer)
+                m_value = boundContainer->getWidgets().size();
+            else
+            {
+                const auto* boundTabs = dynamic_cast<Tabs*>(boundWidget);
+                if (boundTabs)
+                    m_value = boundTabs->getTabsCount();
+            }
         }
 
         resetPointers();
@@ -518,7 +534,8 @@ namespace tgui
                 if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
                  || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                  || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                 || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight))
+                 || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight)
+                 || (m_operation == Operation::BindingNumberOfChildren))
                 {
                     TGUI_ASSERT(m_boundWidget != nullptr, "There has to be a bound widget with this operation type");
                     const String boundWidgetName = m_boundWidget->getWidgetName();
@@ -541,10 +558,12 @@ namespace tgui
                         return boundWidgetName + U".height";
                     else if (m_operation == Operation::BindingInnerWidth)
                         return boundWidgetName + U".innerwidth";
+                    else if (m_operation == Operation::BindingInnerHeight)
+                        return boundWidgetName + U".innerheight";
                     else
                     {
-                        TGUI_ASSERT(m_operation == Operation::BindingInnerHeight, "Operation can't be anything other than BindingInnerHeight here");
-                        return boundWidgetName + U".innerheight";
+                        TGUI_ASSERT(m_operation == Operation::BindingNumberOfChildren, "Operation can't be anything other than BindingNumberOfChildren here");
+                        return boundWidgetName + U".numberofchildren";
                     }
                 }
 
@@ -564,7 +583,8 @@ namespace tgui
             TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
                    || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight)
+                   || (m_operation == Operation::BindingNumberOfChildren),
                 "Layout with bound widget should have an operation that involves the widget"
             );
 
@@ -592,7 +612,8 @@ namespace tgui
             TGUI_ASSERT((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
                    || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
                    || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight)
+                   || (m_operation == Operation::BindingNumberOfChildren),
                 "Layout with bound widget should have an operation that involves the widget"
             );
 
@@ -647,6 +668,7 @@ namespace tgui
     {
         const float oldValue = m_value;
 
+        // Try to resolve the code duplicate within ctr()!
         switch (m_operation)
         {
             case Operation::Value:
@@ -702,6 +724,19 @@ namespace tgui
                 const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
                 if (boundContainer)
                     m_value = boundContainer->getInnerSize().y;
+                break;
+            }
+            case Operation::BindingNumberOfChildren:
+            {
+                const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
+                if (boundContainer)
+                    m_value = boundContainer->getWidgets().size();
+                else
+                {
+                    const auto* boundTabs = dynamic_cast<Tabs*>(m_boundWidget);
+                    if (boundTabs)
+                        m_value = boundTabs->getTabsCount();
+                }
                 break;
             }
             case Operation::BindingString:
@@ -796,6 +831,11 @@ namespace tgui
         else if (expression == "ih" || expression == "innerheight")
         {
             m_operation = Operation::BindingInnerHeight;
+            m_boundWidget = widget;
+        }
+        else if (expression == "noc" || expression == "numberofchildren")
+        {
+            m_operation = Operation::BindingNumberOfChildren;
             m_boundWidget = widget;
         }
         else if (expression == "size")
@@ -1082,6 +1122,15 @@ namespace tgui
         Layout bindMax(const Layout& value1, const Layout& value2)
         {
             return Layout{Layout::Operation::Maximum, std::make_unique<Layout>(value1), std::make_unique<Layout>(value2)};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindNumberOfChildren(Container::Ptr container, const Layout& factor)
+        {
+            return Layout{Layout::Operation::Multiplies,
+                          std::make_unique<Layout>(Layout::Operation::BindingNumberOfChildren, container.get()),
+                          std::make_unique<Layout>(factor)};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
