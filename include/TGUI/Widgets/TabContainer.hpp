@@ -50,15 +50,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Enumeration of the tab alignments for tabs, used in TabContainer
+        /// @brief Enumeration of the tab alignments for tabs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TabAlign
         {
-            Top              = 0,      //!< Tabs use the complete width and are above panes
-            Bottom           = 1 << 0  //!< Tabs use the complete width and are below panes
+            Top    = 0,      //!< Tabs are above panes
+            Bottom = 1 << 0  //!< Tabs are below panes
         };
 
-    
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Constructor
@@ -171,9 +171,8 @@ namespace tgui
         /// @brief Sets selection to panel
         ///
         /// @param index Index of panel to select
-        /// @param genEvents To emit or not signals of selection change.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void select(std::size_t index, bool genEvents = true);
+        void select(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,9 +310,7 @@ namespace tgui
 
         void init(); // Helper function that initializes the widget when constructing a new widget or loading one from a file
 
-
         void layoutTabs(); // Helper function that sets position and size of the tabs according to the tab alignment
-
 
         void layoutPanel(Panel::Ptr panel); // Helper function that sets position of a panel according to the tab alignment
 
@@ -334,7 +331,7 @@ namespace tgui
 
         std::vector<Panel::Ptr> m_panels; // Stores the tab panels.
 
-        int m_index = -1; // Stores the selected tab index.
+        Panel::Ptr m_selectedPanel = nullptr;  // Stores the panel belonging to the selected tab
 
         Tabs::Ptr m_tabs; // Stores the tabs.
 

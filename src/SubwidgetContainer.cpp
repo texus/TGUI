@@ -41,8 +41,8 @@ namespace tgui
 
     void SubwidgetContainer::setSize(const Layout2d& size)
     {
-        m_container->setSize(size);
         Widget::setSize(size);
+        m_container->setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,7 +309,10 @@ namespace tgui
 
         Widget::load(node, renderers);
         if (node->children.size() == 1)
+        {
             m_container->load(node->children[0], renderers);
+            m_container->setSize(getSize());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

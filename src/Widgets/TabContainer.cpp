@@ -34,7 +34,6 @@ namespace tgui
         SubwidgetContainer{typeName, initRenderer}
     {
         m_tabs = Tabs::create();
-        m_tabs->setWidth("100%");
         m_container->add(m_tabs, "Tabs");
         init();
     }
@@ -92,8 +91,10 @@ namespace tgui
     {
         SubwidgetContainer::setSize(size);
 
-        for (auto& ptr : m_panels)
-            ptr->setSize({ size.x , size.y - m_tabs->getSize().y });
+        for (auto& panel : m_panels)
+            panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
+
+        layoutTabs();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,12 +114,12 @@ namespace tgui
         layoutPanel(panel);
 
         m_panels.push_back(panel);
-        m_tabs->add(name, selectPanel);
+        m_tabs->add(name, false);
         layoutTabs();
 
-        m_container->add(panel);
+        m_container->add(panel, name);
         if (selectPanel)
-            select(m_panels.size() - 1, false);
+            select(m_panels.size() - 1);
         else
             panel->setVisible(false);
 
@@ -137,20 +138,16 @@ namespace tgui
         layoutPanel(panel);
 
         m_panels.insert(m_panels.begin() + index, panel);
-        m_tabs->insert(index, name, selectPanel);
+        m_tabs->insert(index, name, false);
         layoutTabs();
 
         m_container->add(panel);
-        m_container->setWidgetIndex(panel, index);
+        m_container->setWidgetIndex(panel, index + 1); // Plus one because first widget is Tabs
 
         if (selectPanel)
-            select(m_panels.size() - 1, false);
+            select(index);
         else
-        {
             panel->setVisible(false);
-            if (static_cast<int>(index) <= m_index)
-                ++m_index;
-        }
 
         return panel;
     }
@@ -178,43 +175,44 @@ namespace tgui
         m_tabs->remove(index);
         layoutTabs();
 
-        bool needsSelect = false;
-        if ((std::size_t)m_tabs->getSelectedIndex() >= m_panels.size() - 1)
-            select(m_panels.size() - 2);
-        else
-            needsSelect = true;
-
         m_container->remove(m_panels[index]);
         m_panels.erase(m_panels.begin() + index);
-        if (needsSelect == true)
+
+        if (m_tabs->getSelectedIndex() != -1)
             select(m_tabs->getSelectedIndex());
+        else
+        {
+            // Select the last tab when the selected tab is removed
+            if (!m_panels.empty())
+                select(m_panels.size() - 1);
+            else
+                m_selectedPanel = nullptr;
+        }
 
         return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::select(std::size_t index, bool genEvents)
+    void TabContainer::select(std::size_t index)
     {
-        if (index >= m_panels.size() || index == static_cast<std::size_t>(m_index))
+        if ((index >= m_panels.size()) || (m_selectedPanel == m_panels[index]))
             return;
 
-        if (genEvents)
-        {
-            bool isVetoed = false;
-            onSelectionChanging.emit(this, static_cast<int>(index), &isVetoed);
-            if (isVetoed)
-                return;
-        }
+        bool isVetoed = false;
+        onSelectionChanging.emit(this, static_cast<int>(index), &isVetoed);
+        if (isVetoed)
+            return;
 
-        if (m_index != -1)
-            m_panels[m_index]->setVisible(false);
+        if (m_selectedPanel)
+            m_selectedPanel->setVisible(false);
 
-        m_index = static_cast<int>(index);
-        m_tabs->select(index);
         m_panels[index]->setVisible(true);
-        if (genEvents)
-            onSelectionChanged.emit(this, m_index);
+        m_selectedPanel = m_panels[index];
+
+        m_tabs->select(index);
+
+        onSelectionChanged.emit(this, static_cast<int>(index));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +226,7 @@ namespace tgui
 
     int TabContainer::getIndex(Panel::Ptr ptr)
     {
-        for (std::size_t i = 0; i < m_panels.size(); i++)
+        for (std::size_t i = 0; i < m_panels.size(); ++i)
         {
             if (m_panels[i] == ptr)
                 return static_cast<int>(i);
@@ -241,14 +239,14 @@ namespace tgui
 
     Panel::Ptr TabContainer::getSelected()
     {
-        return getPanel(m_index);
+        return m_selectedPanel;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     int TabContainer::getSelectedIndex() const
     {
-        return m_index;
+        return m_tabs->getSelectedIndex();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,29 +277,15 @@ namespace tgui
 
     void TabContainer::layoutTabs()
     {
-        if (m_tabAlign == TabContainer::TabAlign::Top)
-        {
-            m_tabs->setPosition(0.0f, 0.0f);
-            if (m_tabFixedSize <= 0.0f)
-                m_tabs->setWidth("100%");
-            else
-                m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
-                                        std::make_unique<Layout>(Layout::Operation::BindingNumberOfChildren, m_tabs.get()),
-                                        std::make_unique<Layout>(m_tabFixedSize)});
-        }
+        if (m_tabFixedSize > 0.0f)
+            m_tabs->setWidth(m_tabFixedSize * getPanelCount());
         else
-        {
-            tgui::Layout layoutY(tgui::Layout::Operation::Minus,
-                                 std::make_unique<Layout>(tgui::Layout::Operation::BindingInnerHeight, m_container.get()),
-                                 std::make_unique<Layout>(tgui::Layout::Operation::BindingHeight, m_tabs.get()));
-            m_tabs->setPosition(0.0f, layoutY);
-            if (m_tabFixedSize <= 0.0f)
-                m_tabs->setWidth("100%");
-            else
-                m_tabs->setWidth(Layout{Layout::Operation::Multiplies,
-                                        std::make_unique<Layout>(Layout::Operation::BindingNumberOfChildren, m_tabs.get()),
-                                        std::make_unique<Layout>(m_tabFixedSize)});
-        }
+            m_tabs->setWidth(getSize().x);
+
+        if (m_tabAlign == TabContainer::TabAlign::Top)
+            m_tabs->setPosition(0.0f, 0.0f);
+        else
+            m_tabs->setPosition(0.0f, getSize().y - m_tabs->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,7 +295,7 @@ namespace tgui
         if (m_tabAlign == TabContainer::TabAlign::Top)
             panel->setPosition(0.0f, bindBottom(m_tabs));
         else
-            panel->setPosition(0.0f, Layout{tgui::Layout::Operation::BindingTop, m_container.get()});
+            panel->setPosition(0.0f, 0.0f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +350,7 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> TabContainer::save(SavingRenderersMap& renderers) const
     {
-        auto node = Widget::save(renderers);
+        auto node = SubwidgetContainer::save(renderers);
 
         if (m_tabAlign == tgui::TabContainer::TabAlign::Top)
             node->propertyValuePairs["TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
@@ -398,18 +382,24 @@ namespace tgui
         // Buffer the value to apply it after child widget creation with default size.
         float tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TabFixedSize"]->value).getNumber();
 
-        m_index = -1;
+        m_panels.clear();
+        m_selectedPanel = nullptr;
+
         m_tabs = m_container->get<Tabs>("Tabs");
         m_tabAlign = TabAlign::Top;
+        if (!m_tabs)
+            throw Exception{"Failed to find Tabs child when loading TabContainer"};
 
         auto widgets = m_container->getWidgets();
-        m_panels.resize(widgets.size() - 1);
-        auto size = getSizeLayout();
-        for (std::size_t i = 1; i < widgets.size(); i++)
+        for (std::size_t i = 0; i < widgets.size(); i++)
         {
-            m_panels[i - 1] = std::static_pointer_cast<Panel>(widgets[i]);
-            m_panels[i - 1]->setSize({ size.x , size.y - m_tabs->getSize().y });
-            m_panels[i - 1]->setPosition({ 0.0f, bindBottom(m_tabs) });
+            auto panel = std::dynamic_pointer_cast<Panel>(widgets[i]);
+            if (!panel)
+                continue;
+
+            panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
+            layoutPanel(panel);
+            m_panels.push_back(panel);
         }
 
         // Apply buffered values.
@@ -423,11 +413,9 @@ namespace tgui
 
     void TabContainer::init()
     {
+        layoutTabs();
         m_tabs->onTabSelect([this](){
-            auto cur = m_tabs->getSelectedIndex();
-            select(cur);
-            if (m_tabs->getSelectedIndex() != m_index)
-                m_tabs->select(m_index);
+            select(m_tabs->getSelectedIndex());
         });
     }
 
