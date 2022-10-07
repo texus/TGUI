@@ -59,6 +59,8 @@ namespace tgui
         m_state                       {other.m_state},
         m_autoSize                    {other.m_autoSize},
         m_updatingTextSize            {false},
+        m_textPosition                {other.m_textPosition},
+        m_textOrigin                  {other.m_textOrigin},
         background                    {other.background},
         text                          {other.text},
         m_stylePropertiesNames        {},
@@ -80,6 +82,8 @@ namespace tgui
         m_state                       {std::move(other.m_state)},
         m_autoSize                    {std::move(other.m_autoSize)},
         m_updatingTextSize            {false},
+        m_textPosition                {std::move(other.m_textPosition)},
+        m_textOrigin                  {std::move(other.m_textOrigin)},
         background                    {std::move(other.background)},
         text                          {std::move(other.text)},
         m_stylePropertiesNames        {},
@@ -106,6 +110,8 @@ namespace tgui
             m_state                        = other.m_state;
             m_autoSize                     = other.m_autoSize;
             m_updatingTextSize             = false;
+            m_textPosition                 = other.m_textPosition;
+            m_textOrigin                   = other.m_textOrigin;
             background                     = other.background;
             text                           = other.text;
             m_stylePropertiesNames         = {};
@@ -135,6 +141,8 @@ namespace tgui
             m_state                        = std::move(other.m_state);
             m_autoSize                     = std::move(other.m_autoSize);
             m_updatingTextSize             = false;
+            m_textPosition                 = std::move(other.m_textPosition);
+            m_textOrigin                   = std::move(other.m_textOrigin);
             background                     = std::move(other.background);
             text                           = std::move(other.text);
             m_stylePropertiesNames         = {};
