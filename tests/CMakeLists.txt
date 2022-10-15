@@ -138,7 +138,7 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD)
     endif()
 endif()
 
-set(TEST_SOURCES ${TEST_SOURCES} main.cpp) # Main file has to be last and can't be part of unity build
+list(APPEND TEST_SOURCES main.cpp) # Main file has to be last and can't be part of unity build
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -173,7 +173,8 @@ add_custom_command(TARGET tests
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/tests/expected" "$<TARGET_FILE_DIR:tests>/expected"
                    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/tests/resources" "$<TARGET_FILE_DIR:tests>/resources"
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/themes" "$<TARGET_FILE_DIR:tests>/resources")
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/themes" "$<TARGET_FILE_DIR:tests>/resources"
+                   VERBATIM)
 
 set(target_install_dir "${TGUI_MISC_INSTALL_PREFIX}/tests")
 

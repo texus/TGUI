@@ -76,13 +76,10 @@ endfunction()
 
 # Set the appropriate standard library on each platform for the given target
 function(tgui_set_stdlib target)
-    # Use libc++ on macOS
+    # Make sure Xcode uses libc++ on macOS. This should no longer be needed for Xcode 13.3 (released March 2022) or newer.
     if(TGUI_OS_MACOS)
         if(${CMAKE_GENERATOR} MATCHES "Xcode")
             set_property(TARGET ${target} PROPERTY XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-        else()
-            target_compile_options(${target} PRIVATE "-stdlib=libc++")
-            target_link_libraries(${target} PRIVATE "-stdlib=libc++")
         endif()
     endif()
 
@@ -142,15 +139,15 @@ function(tgui_export_target export_name)
     # Install the find modules when they are needed to find our dependencies
     if(TGUI_HAS_WINDOW_BACKEND_GLFW AND NOT TGUI_FOUND_GLFW_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/")
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()
     if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/")
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()
     if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/")
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()
 endfunction()
 
@@ -193,7 +190,8 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
         # We are merely setting triggers here, the actual copying only happens after building or when installing.
         foreach(file_to_copy ${files_to_copy})
             add_custom_command(TARGET ${target} POST_BUILD
-                               COMMAND ${CMAKE_COMMAND} -E copy "${file_to_copy}" "${post_build_destination}")
+                               COMMAND ${CMAKE_COMMAND} -E copy "${file_to_copy}" "${post_build_destination}"
+                               VERBATIM)
 
             install(FILES "${file_to_copy}"
                     DESTINATION "${install_destination}"

@@ -33,7 +33,7 @@ tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug
 # Project name and version
 project(TGUI VERSION 0.10.0 LANGUAGES CXX)
 
-# Use the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html)
+# Use the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html)
 include(GNUInstallDirs)
 
 # Include the configuration file which identifies the OS and compiler
@@ -315,8 +315,8 @@ endif()
 
 # Install include files
 if(NOT TGUI_BUILD_FRAMEWORK)
-    install(DIRECTORY include
-            DESTINATION .
+    install(DIRECTORY include/
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
             COMPONENT devel
             FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
 endif()
@@ -332,11 +332,11 @@ if(TGUI_GENERATE_PDB)
     else()
         # TODO: Find a reliable way to know whether the file has a "-d" postfix instead of trying to install both. OPTIONAL is also required when config is Release.
         if (MSVC_IDE)
-            install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
-            install (FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install(FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install(FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
         else()
-            install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
-            install (FILES "${PROJECT_BINARY_DIR}/lib/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install(FILES "${PROJECT_BINARY_DIR}/lib/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
+            install(FILES "${PROJECT_BINARY_DIR}/lib/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
         endif()
     endif()
 endif()
