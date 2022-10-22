@@ -128,7 +128,7 @@ endif()
 # Search for SDL_ttf when a backend requires it
 if(@TGUI_HAS_FONT_BACKEND_SDL_TTF@)
     if(@TGUI_FOUND_SDL2_TTF_CONFIG@)
-        find_dependency(sdl2_ttf CONFIG)
+        find_dependency(SDL2_ttf CONFIG)
     else()
         find_dependency(SDL2_ttf)
     endif()

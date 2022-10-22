@@ -99,9 +99,9 @@ endmacro()
 function(tgui_try_find_sdl_config)
     find_package(SDL2 CONFIG QUIET)
 
-    # Not all SDL config file are created equal. On ubuntu 20.04 it doesn't seem to create a target yet.
+    # Not all SDL config file are created equal. On ubuntu 20.04 a config file existed but it didn't create a target yet.
     # If no target exists then fall back to our own FindSDL2.cmake file.
-    if(SDL2_FOUND AND TARGET SDL2::SDL2)
+    if(SDL2_FOUND AND (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
         set(TGUI_FOUND_SDL2_CONFIG TRUE PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL2_CONFIG FALSE PARENT_SCOPE)
@@ -115,7 +115,7 @@ endfunction()
 
 # Find SDL, but don't add it as a dependency to TGUI (used for e.g. building the examples and Gui Builder)
 macro(tgui_find_dependency_sdl)
-    if(NOT TARGET SDL2::SDL2)
+    if(NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static)
         # First try looking for an SDL config file, which will be found on Linux or when using vcpkg
         if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
             tgui_try_find_sdl_config()
@@ -166,16 +166,36 @@ endmacro()
 macro(tgui_add_dependency_sdl)
     tgui_find_dependency_sdl()
 
-    if(TGUI_SHARED_LIBS)
-        get_target_property(sdl_target_type SDL2::SDL2 TYPE)
-        if (sdl_target_type STREQUAL "STATIC_LIBRARY")
-            # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-            message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
-        endif()
+    # Link to SDL and set include and library search directories.
+    # TGUI_USE_STATIC_SDL allows explicitly chosing how SDL is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+    if(TGUI_USE_STATIC_SDL AND NOT TARGET SDL2::SDL2-static)
+        # If the user explicitly asks for a static target then it must exist
+        message(FATAL_ERROR "Couldn't link to SDL2::SDL2-static, no such target exists")
     endif()
+    if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS))
+        if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL)
+            # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+            message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+        endif()
+        if(TARGET SDL2::SDL2-static)
+            target_link_libraries(tgui PUBLIC SDL2::SDL2-static)
+        else()
+            # If no static version was found then fall back to a shared library
+            message(STATUS "Using shared SDL2 lib because static target didn't exist")
+            target_link_libraries(tgui PUBLIC SDL2::SDL2)
+        endif()
+    else() # Linking dynamically
+        if(TGUI_SHARED_LIBS)
+            # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
+            get_target_property(sdl_target_type SDL2::SDL2 TYPE)
+            if (TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
+            endif()
+        endif()
 
-    # Link to SDL and set include and library search directories
-    target_link_libraries(tgui PUBLIC SDL2::SDL2)
+        target_link_libraries(tgui PUBLIC SDL2::SDL2)
+    endif()
 endmacro()
 
 
@@ -243,8 +263,8 @@ endmacro()
 
 # Check if we can find SDL_ttf with a config file (2.20.0 or newer), or whether we need to use our FindSDL2_ttf.cmake file
 function(tgui_try_find_sdl_ttf_config)
-    find_package(sdl2_ttf CONFIG QUIET)
-    if(SDL2_ttf_FOUND AND TARGET SDL2_ttf::SDL2_ttf)
+    find_package(SDL2_ttf CONFIG QUIET)
+    if(SDL2_ttf_FOUND AND (TARGET SDL2_ttf::SDL2_ttf OR TARGET SDL2_ttf::SDL2_ttf-static))
         set(TGUI_FOUND_SDL2_TTF_CONFIG TRUE PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL2_TTF_CONFIG FALSE PARENT_SCOPE)
@@ -253,12 +273,12 @@ endfunction()
 
 # Find SDL_ttf and add it as a dependency
 macro(tgui_add_dependency_sdl_ttf)
-    if(NOT TARGET SDL2_ttf::SDL2_ttf)
+    if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
         # First try looking for an SDL2_ttf config file
         tgui_try_find_sdl_ttf_config()
 
         if(TGUI_FOUND_SDL2_TTF_CONFIG)
-            find_package(sdl2_ttf CONFIG REQUIRED)
+            find_package(SDL2_ttf CONFIG REQUIRED)
         else()
             if(TGUI_OS_WINDOWS)
                 find_package(SDL2_ttf)
@@ -301,17 +321,36 @@ macro(tgui_add_dependency_sdl_ttf)
         endif()
     endif()
 
-    if(TGUI_SHARED_LIBS)
-        get_target_property(sdl_ttf_target_type SDL2_ttf::SDL2_ttf TYPE)
-        if (sdl_ttf_target_type STREQUAL "STATIC_LIBRARY")
-            # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-            message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
-        endif()
+    # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
+    # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+    if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+        # If the user explicitly asks for a static target then it must exist
+        message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
     endif()
+    if(TGUI_USE_STATIC_SDL_TTF OR (NOT DEFINED TGUI_USE_STATIC_SDL_TTF AND NOT TGUI_SHARED_LIBS))
+        if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL_TTF)
+            # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+            message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL_TTF to FALSE.")
+        endif()
+        if(TARGET SDL2_ttf::SDL2_ttf-static)
+            target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf-static)
+        else()
+            # If no static version was found then fall back to a shared library
+            message(STATUS "Using shared SDL2_ttf lib because static target didn't exist")
+            target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
+        endif()
+    else() # Linking dynamically
+        if(TGUI_SHARED_LIBS)
+            # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
+            get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
+            if (TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
+            endif()
+        endif()
 
-    # Link to SDL_ttf and set include and library search directories.
-    # Public dependency because user has to call TTF_Init and TTF_Quit
-    target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
+        target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
+    endif()
 endmacro()
 
 
