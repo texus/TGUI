@@ -285,7 +285,7 @@ macro(tgui_add_dependency_sdl_ttf)
                 if(NOT SDL2_ttf_FOUND)
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2_ttf.\n"
-                            "For SDL2_ttf >= 2.20, set sdl2_ttf_DIR to the directory containing sdl2_ttf-config.cmake.\n"
+                            "For SDL2_ttf >= 2.20, set SDL2_ttf_DIR to the directory containing sdl2_ttf-config.cmake.\n"
                             "For older versions, if you downloaded SDL2_ttf-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL_ttf/releases then set SDL2_TTF_PATH to the root directory.\n")
                 endif()
             elseif(TGUI_OS_MACOS)
@@ -297,8 +297,8 @@ macro(tgui_add_dependency_sdl_ttf)
                         unset(SDL2_TTF_PATH CACHE)
                     endif()
                 else()
-                    # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting sdl2_ttf_DIR instead of using our own SDL2_TTF_PATH.
-                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to sdl2_ttf_DIR exactly.
+                    # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting SDL2_ttf_DIR instead of using our own SDL2_TTF_PATH.
+                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_ttf_DIR exactly.
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2_ttf.\n"
                             "Set SDL2_TTF_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2_ttf.framework file.\n")
@@ -308,9 +308,9 @@ macro(tgui_add_dependency_sdl_ttf)
                 find_package(SDL2_ttf REQUIRED)
             endif()
 
-            # Remove the empty sdl2_ttf_DIR variable if we found SDL_ttf via the alternative way
-            if(NOT sdl2_ttf_DIR)
-                unset(sdl2_ttf_DIR CACHE)
+            # Remove the empty SDL2_ttf_DIR variable if we found SDL_ttf via the alternative way
+            if(NOT SDL2_ttf_DIR)
+                unset(SDL2_ttf_DIR CACHE)
             endif()
         endif()
 

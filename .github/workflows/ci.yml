@@ -15,7 +15,7 @@ jobs:
           sudo apt-get -y install g++-$GCC_VERSION libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -78,28 +78,28 @@ jobs:
           echo "::set-output name=glfw-revision::$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)"
 
       - name: Cache SFML
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sfml
         with:
           path: ${{env.SFML_INSTALL_DIR}}
           key: CACHE_LINUX_SFML_LATEST_${{ steps.find-dependencies.outputs.sfml-revision }}_v2
 
       - name: Cache SDL
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sdl
         with:
           path: ${{env.SDL_INSTALL_DIR}}
           key: CACHE_LINUX_SDL_LATEST_${{ steps.find-dependencies.outputs.sdl-revision }}
 
       - name: Cache SDL_ttf
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sdl-ttf
         with:
           path: ${{env.SDL_TTF_INSTALL_DIR}}
           key: CACHE_LINUX_SDL_TTF_LATEST_${{ steps.find-dependencies.outputs.sdl-ttf-revision }}
 
       - name: Cache GLFW
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-glfw
         with:
           path: ${{env.GLFW_INSTALL_DIR}}
@@ -112,7 +112,7 @@ jobs:
           sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -216,7 +216,7 @@ jobs:
   #----------------------------------------
 
   linux-oldest:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       SFML_INSTALL_DIR: ${{github.workspace}}/SFML_INSTALL
       SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
@@ -228,32 +228,32 @@ jobs:
       GLFW_VERSION: 3.2
       CMAKE_VERSION: 3.16
       CMAKE_VERSION_PATCH: 0
-      GCC_VERSION: 6
+      GCC_VERSION: 7
       CLANG_VERSION: '6.0'
     steps:
       - name: Cache SFML
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sfml
         with:
           path: ${{env.SFML_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SFML_${{env.SFML_VERSION}}
 
       - name: Cache SDL
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sdl
         with:
           path: ${{env.SDL_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SDL_${{env.SDL_VERSION}}
 
       - name: Cache SDL_ttf
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sdl-ttf
         with:
           path: ${{env.SDL_TTF_INSTALL_DIR}}
           key: CACHE_LINUX_OLDEST_SDL_TTF_${{env.SDL_TTF_VERSION}}
 
       - name: Cache GLFW
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-glfw
         with:
           path: ${{env.GLFW_INSTALL_DIR}}
@@ -267,7 +267,7 @@ jobs:
           sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -385,8 +385,8 @@ jobs:
     runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.1
-      SDL_VERSION: 2.0.22
-      SDL_TTF_VERSION: 2.20.0
+      SDL_VERSION: 2.24.1
+      SDL_TTF_VERSION: 2.20.1
       MSVC_TOOLSET_VERSION: 143  # VS2022
       INSTALLED_VS_VERSION: Visual Studio 17 2022
     steps:
@@ -401,7 +401,7 @@ jobs:
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -414,8 +414,8 @@ jobs:
           cmake
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
-          -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
-          -Dsdl2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
+          -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
+          -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_SHARED_LIBS=ON
@@ -456,7 +456,7 @@ jobs:
           7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -501,7 +501,7 @@ jobs:
       INSTALLED_VS_VERSION: Visual Studio 16 2019
     steps:
       - name: Cache SFML
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sfml
         with:
           path: ${{github.workspace}}/SFML_INSTALL
@@ -528,7 +528,7 @@ jobs:
           7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -569,7 +569,7 @@ jobs:
           brew install sfml sdl2 sdl2_ttf glfw
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -635,7 +635,7 @@ jobs:
     steps:
       - name: Cache NDK
         id: cache-ndk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
           key: CACHE_NDK_${{env.NDK_VERSION}}
@@ -652,7 +652,7 @@ jobs:
           wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/releases/download/release-$SDL_TTF_VERSION/SDL2_ttf-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SDL_TTF
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -680,7 +680,7 @@ jobs:
     steps:
       - name: Cache NDK with SFML
         id: cache-ndk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
           key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}
@@ -701,7 +701,7 @@ jobs:
           make install
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -744,7 +744,7 @@ jobs:
       SFML_VERSION: 2.5.1
     steps:
       - name: Cache SFML
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-sfml
         with:
           path: ${{github.workspace}}/SFML_INSTALL
@@ -762,7 +762,7 @@ jobs:
           cmake --build . --config Debug --target install
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
@@ -827,7 +827,7 @@ jobs:
           7z x SFML-${env:SFML_VERSION}-windows-vc15-64-bit.zip -o"x64"
 
       - name: Checkout TGUI
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: TGUI
 
