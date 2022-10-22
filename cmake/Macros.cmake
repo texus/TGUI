@@ -21,19 +21,17 @@
 ####################################################################################################
 
 # Macro that helps defining an option.
-# This code has some subtle differences compared to just calling "set(${var} ${default} CACHE ${type} ${docstring})":
-# - If a normal (non-cache) variable already exists (e.g. for overwriting settings with TGUI in subdirectory),
+# This code has a subtle difference compared to just calling "set(${var} ${default} CACHE ${type} ${docstring})":
+#   If a normal (non-cache) variable already exists (e.g. for overwriting settings with TGUI in subdirectory),
 #   then the cache variable is initialized with the value of the normal variable instead of the default value.
 #   When re-running, the cache variable will always be reset to the explicitly set normal value. This is probably
 #   better than keep showing the wrong value in the user interface and silently working with another value.
-# - If the variable didn't exist yet then in CMake >= 3.21 then this creates both a normal and a cache variable.
-#   This is a side-effect and not by design, we only care about the cache variable being created.
-# - When this macro is executed, the normal and cache variable are always in sync (if a normal variable exists).
 macro(tgui_set_option var default type docstring)
     if(NOT DEFINED ${var})
-        set(${var} ${default})
+        set(${var} ${default} CACHE ${type} ${docstring} FORCE)
+    else()
+        set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
     endif()
-    set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
 endmacro()
 
 # Macro to set a variable based on a boolean expression

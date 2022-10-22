@@ -50,13 +50,14 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 # Add an option for choosing the build type (shared or static)
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
-    if(DEFINED BUILD_SHARED_LIBS)
-        set(TGUI_DEFAULT_SHARED_LIBS ${BUILD_SHARED_LIBS})
-    else()
-        set(TGUI_DEFAULT_SHARED_LIBS TRUE)
-    endif()
+    # If TGUI_SHARED_LIBS is explicitly set then it overrules BUILD_SHARED_LIBS, otherwise honor the global setting
+    if(NOT DEFINED TGUI_SHARED_LIBS)
+        if(NOT DEFINED BUILD_SHARED_LIBS)
+            option(BUILD_SHARED_LIBS "ON to build a shared (dynamic) library, OFF to build a static library" ON)
+        endif()
 
-    tgui_set_option(TGUI_SHARED_LIBS ${TGUI_DEFAULT_SHARED_LIBS} BOOL "TRUE to build TGUI as a shared (dynamic) library, FALSE to build it as a static library")
+        set(TGUI_SHARED_LIBS ${BUILD_SHARED_LIBS})
+    endif()
 else()
     if(TGUI_OS_IOS)
         set(TGUI_SHARED_LIBS FALSE)
@@ -141,7 +142,7 @@ string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
 
 # Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)
-    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use the standard libraries as DLLs. This is NOT the option that you need to build TGUI statically, for that you just need to set TGUI_SHARED_LIBS to FALSE.")
+    option(TGUI_USE_STATIC_STD_LIBS "TRUE to statically link to the standard libraries, FALSE to use the standard libraries as DLLs. This is NOT the option that you need to build TGUI statically, for that you just need to set TGUI_SHARED_LIBS to FALSE." FALSE)
     mark_as_advanced(TGUI_USE_STATIC_STD_LIBS)
 
     # Building TGUI as a dynamic library but linking statically to the standard library is not valid
@@ -151,14 +152,14 @@ if(TGUI_OS_WINDOWS)
 endif()
 
 if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND (CMAKE_GENERATOR MATCHES "Visual Studio"))
-    tgui_set_option(TGUI_USE_MULTI_PROCESSOR_COMPILATION TRUE BOOL "Use /MP to speed up compilation of the TGUI library by using all cores")
+    option(TGUI_USE_MULTI_PROCESSOR_COMPILATION "Use /MP to speed up compilation of the TGUI library by using all cores" ON)
 endif()
 
 # macOS-specific options
 if(TGUI_OS_MACOS)
 
     # Add an option to build framework instead of dylib (release only)
-    tgui_set_option(TGUI_BUILD_FRAMEWORK ${TGUI_SHARED_LIBS} BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
+    option(TGUI_BUILD_FRAMEWORK "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS" ${TGUI_SHARED_LIBS})
 
     # Enable to use of RPATH according to CMake Policy CMP0042
     set(CMAKE_MACOSX_RPATH 1)
@@ -196,7 +197,7 @@ endif()
 
 # Add an option to choose whether PDB debug symbols should be generated for Visual Studio
 if(TGUI_COMPILER_MSVC)
-    tgui_set_option(TGUI_GENERATE_PDB TRUE BOOL "True to generate PDB debug symbols, FALSE otherwise.")
+    option(TGUI_GENERATE_PDB "True to generate PDB debug symbols, FALSE otherwise." TRUE)
 endif()
 
 # Set the path for the libraries
@@ -220,7 +221,8 @@ if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUA
             target_link_libraries(tgui-console-app-interface INTERFACE sfml-main)
         endif()
     endif()
-elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_RENDERER"
+       OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
     if (TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
@@ -242,7 +244,8 @@ if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUA
             target_link_libraries(tgui-gui-app-interface INTERFACE sfml-main)
         endif()
     endif()
-elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
+elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_RENDERER"
+       OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
     if (TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
@@ -262,7 +265,7 @@ endif()
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
     tgui_assign_bool(TGUI_DEFAULT_BUILD_GUI_BUILDER TGUI_DEFAULT_BACKEND)
 
-    tgui_set_option(TGUI_BUILD_GUI_BUILDER ${TGUI_DEFAULT_BUILD_GUI_BUILDER} BOOL "TRUE to build the GUI Builder")
+    option(TGUI_BUILD_GUI_BUILDER "TRUE to build the GUI Builder" ${TGUI_DEFAULT_BUILD_GUI_BUILDER})
     if(TGUI_BUILD_GUI_BUILDER)
         add_subdirectory("${PROJECT_SOURCE_DIR}/gui-builder")
     endif()
@@ -270,7 +273,7 @@ endif()
 
 # Optionally build the examples
 if(NOT TGUI_OS_ANDROID)
-    tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
+    option(TGUI_BUILD_EXAMPLES "TRUE to build the TGUI examples, FALSE to ignore them" FALSE)
     if(TGUI_BUILD_EXAMPLES)
         add_subdirectory(examples)
     endif()
@@ -278,14 +281,14 @@ endif()
 
 # Optionally build the tests
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
-    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
+    option(TGUI_BUILD_TESTS "TRUE to build the TGUI tests" FALSE)
     if(TGUI_BUILD_TESTS)
         add_subdirectory(tests)
     endif()
 endif()
 
 # Optionally build the documentation
-tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
+option(TGUI_BUILD_DOC "TRUE to generate the API documentation, FALSE to ignore it" FALSE)
 if(TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
@@ -303,8 +306,7 @@ mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
 
 # Install pkg-config files by default on Linux (and BSD)
 tgui_assign_bool(TGUI_INSTALL_PKGCONFIG_DEFAULT TGUI_OS_LINUX)
-
-tgui_set_option(TGUI_INSTALL_PKGCONFIG_FILES ${TGUI_INSTALL_PKGCONFIG_DEFAULT} BOOL "TRUE to automatically install pkg-config files so other projects can find TGUI")
+option(TGUI_INSTALL_PKGCONFIG_FILES "TRUE to automatically install pkg-config files so other projects can find TGUI" ${TGUI_INSTALL_PKGCONFIG_DEFAULT})
 
 if (TGUI_INSTALL_PKGCONFIG_FILES)
     tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
