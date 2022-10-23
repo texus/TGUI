@@ -70,9 +70,7 @@ namespace tgui
             setSize({400, 300});
         }
 
-        m_maximizeButton->onPress([this]{ onMaximize.emit(this); });
-        m_minimizeButton->onPress([this]{ onMinimize.emit(this); });
-        m_closeButton->onPress([this]{ close(); });
+        connectTitleButtonCallbacks();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +111,8 @@ namespace tgui
         // The inner size has changed since the container created the child widgets
         for (auto& layout : m_boundSizeLayouts)
             layout->recalculateValue();
+
+        connectTitleButtonCallbacks();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +153,8 @@ namespace tgui
         // The inner size has changed since the container created the child widgets
         for (auto& layout : m_boundSizeLayouts)
             layout->recalculateValue();
+
+        connectTitleButtonCallbacks();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +200,8 @@ namespace tgui
             // The inner size has changed since the container created the child widgets
             for (auto& layout : m_boundSizeLayouts)
                 layout->recalculateValue();
+
+            connectTitleButtonCallbacks();
         }
 
         return *this;
@@ -246,6 +250,8 @@ namespace tgui
             // The inner size has changed since the container created the child widgets
             for (auto& layout : m_boundSizeLayouts)
                 layout->recalculateValue();
+
+            connectTitleButtonCallbacks();
         }
 
         return *this;
@@ -1435,6 +1441,20 @@ namespace tgui
     Widget::Ptr ChildWindow::clone() const
     {
         return std::make_shared<ChildWindow>(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::connectTitleButtonCallbacks()
+    {
+        // Disconnecting is required when calling this function from the move constructor or move assignment operator
+        m_maximizeButton->onPress.disconnectAll();
+        m_minimizeButton->onPress.disconnectAll();
+        m_closeButton->onPress.disconnectAll();
+
+        m_maximizeButton->onPress([this]{ onMaximize.emit(this); });
+        m_minimizeButton->onPress([this]{ onMinimize.emit(this); });
+        m_closeButton->onPress([this]{ close(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
