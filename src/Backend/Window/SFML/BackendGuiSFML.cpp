@@ -399,7 +399,7 @@ namespace tgui
         if (!m_window)
             return;
 
-        m_windowSize = {static_cast<int>(m_window->getSize().x), static_cast<int>(m_window->getSize().y)};
+        m_framebufferSize = {static_cast<int>(m_window->getSize().x), static_cast<int>(m_window->getSize().y)};
 
         BackendGui::updateContainerSize();
     }

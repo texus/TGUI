@@ -401,7 +401,7 @@ namespace tgui
         if (!m_window)
             return;
 
-        glfwGetFramebufferSize(m_window, &m_windowSize.x, &m_windowSize.y);
+        glfwGetFramebufferSize(m_window, &m_framebufferSize.x, &m_framebufferSize.y);
 
         BackendGui::updateContainerSize();
     }

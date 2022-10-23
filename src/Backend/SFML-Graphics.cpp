@@ -96,7 +96,7 @@ namespace tgui
             if (!m_target)
                 return;
 
-            m_windowSize = {static_cast<int>(m_target->getSize().x), static_cast<int>(m_target->getSize().y)};
+            m_framebufferSize = {static_cast<int>(m_target->getSize().x), static_cast<int>(m_target->getSize().y)};
 
             // Call the base function directly on BackendGui and not BackendGuiSFML!
             BackendGui::updateContainerSize();

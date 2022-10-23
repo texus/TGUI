@@ -558,12 +558,12 @@ namespace tgui
 
     void BackendGui::updateContainerSize()
     {
-        m_viewport.updateParentSize({static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y)});
+        m_viewport.updateParentSize({static_cast<float>(m_framebufferSize.x), static_cast<float>(m_framebufferSize.y)});
         m_view.updateParentSize({m_viewport.getWidth(), m_viewport.getHeight()});
 
         // If a render target was created already then inform it about the size change
         if (m_backendRenderTarget)
-            m_backendRenderTarget->setView(m_view.getRect(), m_viewport.getRect(), {static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y)});
+            m_backendRenderTarget->setView(m_view.getRect(), m_viewport.getRect(), {static_cast<float>(m_framebufferSize.x), static_cast<float>(m_framebufferSize.y)});
 
         m_container->setSize(Vector2f{m_view.getWidth(), m_view.getHeight()});
 

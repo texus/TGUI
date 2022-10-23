@@ -445,6 +445,7 @@ namespace tgui
             return;
 
         SDL_GetWindowSize(m_window, &m_windowSize.x, &m_windowSize.y);
+        updateFramebufferSize();
 
         BackendGui::updateContainerSize();
     }
