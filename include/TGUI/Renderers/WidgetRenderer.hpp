@@ -69,10 +69,11 @@ namespace tgui
     {
     public:
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        WidgetRenderer() = default;
+        WidgetRenderer() = default; //!< Default constructor
+        WidgetRenderer(const WidgetRenderer&); //!< Copy constructor
+        WidgetRenderer(WidgetRenderer&&) = default; //!< Default move constructor
+        WidgetRenderer& operator=(const WidgetRenderer&); //!< Copy assignment operator
+        WidgetRenderer& operator=(WidgetRenderer&&) = default; //!< Default move assignment operator
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -115,6 +115,33 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetRenderer::WidgetRenderer(const WidgetRenderer& other) :
+        m_data{other.m_data}
+    {
+        // We have to mark the data as shared, so that changing the accessing the renderer later will create a copy instead
+        // of changing both the new and old widget.
+        m_data->shared = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetRenderer& WidgetRenderer::operator=(const WidgetRenderer& other)
+    {
+        if (this != &other)
+        {
+            m_data = other.m_data;
+
+            // We have to mark the data as shared, so that changing the accessing the renderer later will create a copy instead
+            // of changing both the new and old widget.
+            m_data->shared = true;
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void WidgetRenderer::setFont(Font font)
     {
