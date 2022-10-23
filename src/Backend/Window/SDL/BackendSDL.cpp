@@ -336,8 +336,12 @@ namespace tgui
     {
         TGUI_ASSERT(window != nullptr, "BackendSDL::updateShownMouseCursor requires a valid window");
 
+        // On Linux we use directional resize arrows, because SDL has poor support for diagonal resize arrows on Linux.
+        // Prior to SDL 2.24, an icon with 4 arrows (typically used e.g. when moving a window while pressing alt) was displayed for diagonal resizing.
+        // As of SDL 2.24, it uses an arrow pointing NW or NE. This is already much better, even though the arrow points on the wrong direction
+        // for bottom corners. Having two-sided arrows for horizontal/vertical, but having a direction arrow for diagonal looks out of place though.
+        // So we will continue to bypass SDL and use directional arrows in all directions.
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11)
-        // On Linux we use directional resize arrows, but SDL has no support for them
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
@@ -346,12 +350,10 @@ namespace tgui
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
                 SDL_SysWMinfo sysInfo;
-                SDL_VERSION(&sysInfo.version);
-                if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11))
+                SDL_VERSION(&sysInfo.version); // We must fill in the version before calling SDL_GetWindowWMInfo
+                if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11) && sysInfo.info.x11.display)
                 {
                     auto* displayX11 = sysInfo.info.x11.display;
-                    if (!displayX11)
-                        return;
 
                     unsigned int shapeX11;
                     if (type == Cursor::Type::SizeLeft)
@@ -379,9 +381,8 @@ namespace tgui
                     }
 
                     XFlush(displayX11);
+                    return;
                 }
-
-                return;
             }
         }
 #else
