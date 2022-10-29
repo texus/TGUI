@@ -457,7 +457,6 @@ macro(tgui_add_dependency_x11)
 
     if(TGUI_USE_X11)
         find_package(X11 REQUIRED)
-        target_include_directories(tgui PRIVATE ${X11_INCLUDE_DIR})
-        target_link_libraries(tgui PRIVATE ${X11_X11_LIB})
+        target_link_libraries(tgui PRIVATE X11::X11)
     endif()
 endmacro()
