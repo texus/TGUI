@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <cassert>
 #include <cmath>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML

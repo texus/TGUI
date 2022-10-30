@@ -909,14 +909,14 @@ namespace tgui
                 {
                     if (m_visibleNodes[i].get() == m_visibleNodes[selectedItemIdx]->parent)
                     {
-                        updateSelectedItem(i);
+                        updateSelectedItem(static_cast<int>(i));
                         break;
                     }
                 }
             }
             else if (m_selectedItem > 0)
             {
-                unsigned int nodeIndex = 0;
+                std::size_t nodeIndex = 0;
                 for (std::size_t i = 0; i < m_nodes.size(); ++i)
                 {
                     if (m_nodes[i] == m_visibleNodes[selectedItemIdx])
@@ -931,7 +931,7 @@ namespace tgui
                 {
                     if (m_visibleNodes[i] == m_nodes[nodeIndex - 1])
                     {
-                        updateSelectedItem(i);
+                        updateSelectedItem(static_cast<int>(i));
                         break;
                     }
                 }

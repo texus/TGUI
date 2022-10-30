@@ -182,12 +182,12 @@ namespace tgui
         // Move the scrollbar
         if (index * getItemHeight() < m_scroll->getValue())
         {
-            m_scroll->setValue(index * getItemHeight());
+            m_scroll->setValue(static_cast<unsigned int>(index) * getItemHeight());
             triggerOnScroll();
         }
         else if ((index + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
         {
-            m_scroll->setValue((index + 1) * getItemHeight() - m_scroll->getViewportSize());
+            m_scroll->setValue((static_cast<unsigned int>(index) + 1) * getItemHeight() - m_scroll->getViewportSize());
             triggerOnScroll();
         }
 

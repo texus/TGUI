@@ -26,6 +26,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Widget.hpp>
+#include <cassert>
 #include <array>
 #include <cmath>
 

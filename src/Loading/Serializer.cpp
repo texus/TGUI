@@ -28,6 +28,7 @@
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
+#include <cassert>
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
