@@ -727,8 +727,8 @@ namespace tgui
 
             const std::size_t caretPosition = getSelectionEnd();
 
-            m_text.insert(m_text.begin() + caretPosition, key);
-            m_lines[m_selEnd.y].insert(m_lines[m_selEnd.y].begin() + m_selEnd.x, key);
+            m_text.insert(caretPosition, 1, key);
+            m_lines[m_selEnd.y].insert(m_selEnd.x, 1, key);
 
             // Increment the caret position, unless you type a newline at the start of a line while that line only existed due to word wrapping
             if ((key != U'\n') || (m_selEnd.x > 0) || (m_selEnd.y == 0) || m_lines[m_selEnd.y-1].empty() || (m_text[caretPosition-1] == U'\n'))
@@ -1863,7 +1863,7 @@ namespace tgui
         if (node->propertyValuePairs["DefaultText"])
             setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["DefaultText"]->value).getString());
         if (node->propertyValuePairs["MaximumCharacters"])
-            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toInt());
+            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toUInt());
         if (node->propertyValuePairs["ReadOnly"])
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ReadOnly"]->value).getBool());
 

@@ -32,6 +32,7 @@
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wold-style-cast"
+#   pragma GCC diagnostic ignored "-Wsign-conversion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
 #   pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #elif defined (_MSC_VER)
@@ -151,23 +152,23 @@ namespace tgui
             if (!encodingRequired)
                 return result;
 
-            auto replace = [&](char from, char to)
+            auto replace = [&](char32_t from, char32_t to)
                 {
                     std::size_t pos = 0;
                     while ((pos = result.find(from, pos)) != String::npos)
                     {
                         result[pos] = to;
-                        result.insert(pos, 1, '\\');
+                        result.insert(pos, 1, U'\\');
                         pos += 2;
                     }
                 };
 
-            replace('\\', '\\');
-            replace('\"', '\"');
-            replace('\v', 'v');
-            replace('\t', 't');
-            replace('\n', 'n');
-            replace('\0', '0');
+            replace(U'\\', U'\\');
+            replace(U'\"', U'\"');
+            replace(U'\v', U'v');
+            replace(U'\t', U't');
+            replace(U'\n', U'n');
+            replace(U'\0', U'0');
 
             return "\"" + result + "\"";
         }
@@ -212,7 +213,8 @@ namespace tgui
                 if (!pngData)
                     return "None";
 
-                result = "\"data:image/png;base64," + base64Encode(pngData, dataLength) + "\"";
+                assert(dataLength >= 0); // Length is always positive, but returned as a signed int
+                result = "\"data:image/png;base64," + base64Encode(pngData, static_cast<std::size_t>(dataLength)) + "\"";
                 STBIW_FREE(pngData);
             }
 

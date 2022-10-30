@@ -261,7 +261,7 @@ namespace tgui
         if (oldBlendEnabled)
         {
             if ((oldBlendSrc != GL_SRC_ALPHA) || (oldBlendDst != GL_ONE_MINUS_SRC_ALPHA))
-                TGUI_GL_CHECK(glBlendFunc(oldBlendSrc, oldBlendDst));
+                TGUI_GL_CHECK(glBlendFunc(static_cast<GLenum>(oldBlendSrc), static_cast<GLenum>(oldBlendDst)));
         }
         else
             TGUI_GL_CHECK(glDisable(GL_BLEND));
@@ -270,7 +270,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetOpenGL3::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
         // Change the bound texture if it changed
         if (m_currentTexture != texture)
@@ -292,7 +292,7 @@ namespace tgui
         // Load the data into the vertex buffer. After some experimenting, orphaning the buffer and allocating a new one each time
         // was (suprisingly) faster than creating a larger buffer and only writing to non-overlapping ranges within a frame.
         // Batch rendering (and re-arranging draw calls to be better batchable) would be much faster though.
-        TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_DYNAMIC_DRAW));
+        TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertexCount * sizeof(Vertex)), vertices, GL_DYNAMIC_DRAW));
 
         Transform finalTransform = states.transform;
         finalTransform.roundPosition(); // Avoid blurry texts
@@ -303,7 +303,7 @@ namespace tgui
         if (indices)
         {
             // Load the data into the index buffer
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), indices, GL_STREAM_DRAW));
+            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
 
             TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0));
         }

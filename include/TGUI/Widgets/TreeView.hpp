@@ -57,7 +57,7 @@ namespace tgui
         struct Node
         {
             Text text;
-            unsigned depth = 0;
+            unsigned int depth = 0;
             bool expanded = true;
             Node* parent = nullptr;
             std::vector<std::shared_ptr<Node>> nodes;

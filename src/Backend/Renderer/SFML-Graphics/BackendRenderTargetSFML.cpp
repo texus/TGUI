@@ -116,7 +116,7 @@ namespace tgui
 
         const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
         const std::vector<Vertex>& vertices = sprite.getVertices();
-        const std::vector<int>& indices = sprite.getIndices();
+        const std::vector<unsigned int>& indices = sprite.getIndices();
         std::vector<Vertex> triangleVertices(indices.size());
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
@@ -141,7 +141,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSFML::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
         // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.

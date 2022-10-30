@@ -575,11 +575,11 @@ namespace tgui
             error = parseRootSection(stream, root);
             if (!error.empty())
             {
-                if (stream.tellg() != std::stringstream::pos_type(-1))
+                const auto position = stream.tellg();
+                if (position != std::stringstream::pos_type(-1))
                 {
                     String str = stream.str();
-                    auto position = static_cast<std::iterator_traits<String::const_iterator>::difference_type>(stream.tellg());
-                    std::size_t lineNumber = std::count(str.begin(), str.begin() + position, U'\n') + 1;
+                    auto lineNumber = std::count(str.begin(), str.begin() + static_cast<std::ptrdiff_t>(position), U'\n') + 1;
                     throw Exception{"Error while parsing input at line " + String::fromNumber(lineNumber) + ". " + error};
                 }
                 else

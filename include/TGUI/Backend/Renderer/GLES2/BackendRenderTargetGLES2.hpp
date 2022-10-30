@@ -96,7 +96,7 @@ namespace tgui
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,9 +142,9 @@ namespace tgui
 
         Transform m_projectionTransform;
         int m_projectionMatrixShaderUniformLocation = 0;
-        int m_positionShaderLocation = 0;
-        int m_colorShaderLocation = 1;
-        int m_texCoordShaderLocation = 2;
+        unsigned int m_positionShaderLocation = 0;
+        unsigned int m_colorShaderLocation = 1;
+        unsigned int m_texCoordShaderLocation = 2;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

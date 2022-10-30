@@ -192,7 +192,7 @@ namespace tgui
     {
         if (lineIndex < m_lines.size())
         {
-            m_lines.erase(m_lines.begin() + lineIndex);
+            m_lines.erase(m_lines.begin() + static_cast<std::ptrdiff_t>(lineIndex));
 
             recalculateFullTextHeight();
             return true;
@@ -227,9 +227,9 @@ namespace tgui
         if ((m_maxLines > 0) && (m_maxLines < m_lines.size()))
         {
             if (m_newLinesBelowOthers)
-                m_lines.erase(m_lines.begin(), m_lines.begin() + m_lines.size() - m_maxLines);
+                m_lines.erase(m_lines.begin(), m_lines.begin() + static_cast<std::ptrdiff_t>(m_lines.size() - m_maxLines));
             else
-                m_lines.erase(m_lines.begin() + m_maxLines, m_lines.end());
+                m_lines.erase(m_lines.begin() + static_cast<std::ptrdiff_t>(m_maxLines), m_lines.end());
 
             recalculateFullTextHeight();
         }
@@ -566,7 +566,7 @@ namespace tgui
         if (node->propertyValuePairs["TextStyle"])
             setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["TextStyle"]->value).getTextStyle());
         if (node->propertyValuePairs["LineLimit"])
-            setLineLimit(node->propertyValuePairs["LineLimit"]->value.toInt());
+            setLineLimit(node->propertyValuePairs["LineLimit"]->value.toUInt());
 
         for (const auto& childNode : node->children)
         {

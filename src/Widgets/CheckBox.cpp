@@ -290,7 +290,7 @@ namespace tgui
                     {{rightPoint.x + x, rightPoint.y + y}, checkColor},
                     {{rightPoint.x - x, rightPoint.y - y}, checkColor}
                 }};
-                const std::array<int, 3*4> indices = {{
+                const std::array<unsigned int, 3*4> indices = {{
                     0, 1, 2,
                     1, 2, 3,
                     2, 3, 4,

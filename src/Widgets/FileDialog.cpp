@@ -610,7 +610,7 @@ namespace tgui
         if (updateHistory && (m_currentDirectory != path))
         {
             if (m_pathHistoryIndex + 1 < m_pathHistory.size())
-                m_pathHistory.erase(m_pathHistory.begin() + m_pathHistoryIndex + 1, m_pathHistory.end());
+                m_pathHistory.erase(m_pathHistory.begin() + static_cast<std::ptrdiff_t>(m_pathHistoryIndex + 1), m_pathHistory.end());
 
             m_pathHistory.push_back(path);
             m_pathHistoryIndex = m_pathHistory.size() - 1;

@@ -892,13 +892,13 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["ViewportSize"])
-            setViewportSize(node->propertyValuePairs["ViewportSize"]->value.toInt());
+            setViewportSize(node->propertyValuePairs["ViewportSize"]->value.toUInt());
         if (node->propertyValuePairs["Maximum"])
-            setMaximum(node->propertyValuePairs["Maximum"]->value.toInt());
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toUInt());
         if (node->propertyValuePairs["Value"])
-            setValue(node->propertyValuePairs["Value"]->value.toInt());
+            setValue(node->propertyValuePairs["Value"]->value.toUInt());
         if (node->propertyValuePairs["ScrollAmount"])
-            setScrollAmount(node->propertyValuePairs["ScrollAmount"]->value.toInt());
+            setScrollAmount(node->propertyValuePairs["ScrollAmount"]->value.toUInt());
         if (node->propertyValuePairs["AutoHide"])
             setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoHide"]->value).getBool());
     }

@@ -47,7 +47,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl::Ptr SpinControl::create(float min, float max, float value, unsigned decimal, float step)
+    SpinControl::Ptr SpinControl::create(float min, float max, float value, unsigned int decimal, float step)
     {
         auto spinControl = std::make_shared<SpinControl>();
         spinControl->setMinimum(min);

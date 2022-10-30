@@ -164,13 +164,13 @@ TEST_CASE("[tabContainer]")
             const tgui::Vector2f mousePos1{ 200, 10 };
             tabContainer->leftMousePressed(mousePos1);
             tabContainer->leftMouseReleased(mousePos1);
-            REQUIRE(tabContainer->getTabText(tabContainer->getSelectedIndex()) == "3");
+            REQUIRE(tabContainer->getTabText(static_cast<std::size_t>(tabContainer->getSelectedIndex())) == "3");
             REQUIRE(tabContainerSelectedCount == 5);
 
             const tgui::Vector2f mousePos2{ 199, 10 };
             tabContainer->leftMousePressed(mousePos2);
             tabContainer->leftMouseReleased(mousePos2);
-            REQUIRE(tabContainer->getTabText(tabContainer->getSelectedIndex()) == "2");
+            REQUIRE(tabContainer->getTabText(static_cast<std::size_t>(tabContainer->getSelectedIndex())) == "2");
             REQUIRE(tabContainerSelectedCount == 6);
 
             tabContainer->leftMousePressed(mousePos2);

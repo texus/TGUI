@@ -167,7 +167,7 @@ namespace dev
                 if (oldStoredStates & (1 << bitIndex))
                 {
                     m_globalValues[baseIndex + bitIndex] = m_globalValues[oldBaseIndex + bitIndex];
-                    total += (1 << bitIndex);
+                    total += static_cast<std::uint16_t>(1 << bitIndex);
                 }
                 ++bitIndex;
             }
@@ -340,7 +340,7 @@ namespace dev
                 if (storedStates & (1 << bitIndex))
                 {
                     m_globalValues.erase(baseIndex + bitIndex);
-                    total += (1 << bitIndex);
+                    total += static_cast<std::uint16_t>(1 << bitIndex);
                 }
                 ++bitIndex;
             }

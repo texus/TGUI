@@ -180,14 +180,14 @@ namespace tgui
         updateSelectedItem(static_cast<int>(index));
 
         // Move the scrollbar
-        if (m_selectedItem * getItemHeight() < m_scroll->getValue())
+        if (index * getItemHeight() < m_scroll->getValue())
         {
-            m_scroll->setValue(m_selectedItem * getItemHeight());
+            m_scroll->setValue(index * getItemHeight());
             triggerOnScroll();
         }
-        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
+        else if ((index + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
         {
-            m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getViewportSize());
+            m_scroll->setValue((index + 1) * getItemHeight() - m_scroll->getViewportSize());
             triggerOnScroll();
         }
 
@@ -247,7 +247,7 @@ namespace tgui
         }
 
         // Remove the item
-        m_items.erase(m_items.begin() + index);
+        m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
 
         m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         updateItemPositions();
@@ -321,14 +321,14 @@ namespace tgui
 
     String ListBox::getSelectedItem() const
     {
-        return (m_selectedItem >= 0) ? m_items[m_selectedItem].text.getString() : "";
+        return (m_selectedItem >= 0) ? m_items[static_cast<std::size_t>(m_selectedItem)].text.getString() : "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String ListBox::getSelectedItemId() const
     {
-        return (m_selectedItem >= 0) ? m_items[m_selectedItem].id : "";
+        return (m_selectedItem >= 0) ? m_items[static_cast<std::size_t>(m_selectedItem)].id : "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ namespace tgui
                 updateSelectedItem(-1);
 
             // Remove the items that passed the limitation
-            m_items.erase(m_items.begin() + m_maxItems, m_items.end());
+            m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.end());
 
             m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updateItemPositions();
@@ -593,7 +593,10 @@ namespace tgui
 
                 // Call the MousePress event after the item has already been changed, so that selected item represents the clicked item
                 if (m_selectedItem >= 0)
-                    onMousePress.emit(this, m_selectedItem, m_items[m_selectedItem].text.getString(), m_items[m_selectedItem].id);
+                {
+                    const Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
+                    onMousePress.emit(this, m_selectedItem, selectedItem.text.getString(), selectedItem.id);
+                }
             }
         }
     }
@@ -605,7 +608,10 @@ namespace tgui
         if (m_mouseDown && !m_scroll->isMouseDown())
         {
             if (m_selectedItem >= 0)
-                onMouseRelease.emit(this, m_selectedItem, m_items[m_selectedItem].text.getString(), m_items[m_selectedItem].id);
+            {
+                const Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
+                onMouseRelease.emit(this, m_selectedItem, selectedItem.text.getString(), selectedItem.id);
+            }
 
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -613,7 +619,10 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                    onDoubleClick.emit(this, m_selectedItem, m_items[m_selectedItem].text.getString(), m_items[m_selectedItem].id);
+                {
+                    const Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
+                    onDoubleClick.emit(this, m_selectedItem, selectedItem.text.getString(), selectedItem.id);
+                }
             }
             else // This is the first click
             {
@@ -793,7 +802,7 @@ namespace tgui
                 item.text.setStyle(m_textStyleCached);
 
             if ((m_selectedItem >= 0) && m_selectedTextStyleCached.isSet())
-                m_items[m_selectedItem].text.setStyle(m_selectedTextStyleCached);
+                m_items[static_cast<std::size_t>(m_selectedItem)].text.setStyle(m_selectedTextStyleCached);
         }
         else if (property == "SelectedTextStyle")
         {
@@ -802,9 +811,9 @@ namespace tgui
             if (m_selectedItem >= 0)
             {
                 if (m_selectedTextStyleCached.isSet())
-                    m_items[m_selectedItem].text.setStyle(m_selectedTextStyleCached);
+                    m_items[static_cast<std::size_t>(m_selectedItem)].text.setStyle(m_selectedTextStyleCached);
                 else
-                    m_items[m_selectedItem].text.setStyle(m_textStyleCached);
+                    m_items[static_cast<std::size_t>(m_selectedItem)].text.setStyle(m_textStyleCached);
             }
         }
         else if (property == "Scrollbar")
@@ -972,11 +981,11 @@ namespace tgui
         if (node->propertyValuePairs["AutoScroll"])
             setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
         if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
+            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
         if (node->propertyValuePairs["MaximumItems"])
-            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toInt());
+            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toUInt());
         if (node->propertyValuePairs["SelectedItemIndex"])
-            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toInt());
+            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toUInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1003,19 +1012,20 @@ namespace tgui
     {
         if (m_selectedItem >= 0)
         {
+            Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
             if ((m_selectedItem == m_hoveringItem) && m_selectedTextColorHoverCached.isSet())
-                m_items[m_selectedItem].text.setColor(m_selectedTextColorHoverCached);
+                selectedItem.text.setColor(m_selectedTextColorHoverCached);
             else if (m_selectedTextColorCached.isSet())
-                m_items[m_selectedItem].text.setColor(m_selectedTextColorCached);
+                selectedItem.text.setColor(m_selectedTextColorCached);
 
             if (m_selectedTextStyleCached.isSet())
-                m_items[m_selectedItem].text.setStyle(m_selectedTextStyleCached);
+                selectedItem.text.setStyle(m_selectedTextStyleCached);
         }
 
         if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
         {
             if (m_textColorHoverCached.isSet())
-                m_items[m_hoveringItem].text.setColor(m_textColorHoverCached);
+                m_items[static_cast<std::size_t>(m_hoveringItem)].text.setColor(m_textColorHoverCached);
         }
     }
 
@@ -1041,9 +1051,9 @@ namespace tgui
             if (m_hoveringItem >= 0)
             {
                 if ((m_selectedItem == m_hoveringItem) && m_selectedTextColorCached.isSet())
-                    m_items[m_hoveringItem].text.setColor(m_selectedTextColorCached);
+                    m_items[static_cast<std::size_t>(m_hoveringItem)].text.setColor(m_selectedTextColorCached);
                 else
-                    m_items[m_hoveringItem].text.setColor(m_textColorCached);
+                    m_items[static_cast<std::size_t>(m_hoveringItem)].text.setColor(m_textColorCached);
             }
 
             m_hoveringItem = item;
@@ -1056,26 +1066,30 @@ namespace tgui
 
     void ListBox::updateSelectedItem(int item)
     {
-        if (m_selectedItem != item)
+        if (m_selectedItem == item)
+            return;
+
+        if (m_selectedItem >= 0)
         {
-            if (m_selectedItem >= 0)
-            {
-                if ((m_selectedItem == m_hoveringItem) && m_textColorHoverCached.isSet())
-                    m_items[m_selectedItem].text.setColor(m_textColorHoverCached);
-                else
-                    m_items[m_selectedItem].text.setColor(m_textColorCached);
-
-                m_items[m_selectedItem].text.setStyle(m_textStyleCached);
-            }
-
-            m_selectedItem = item;
-            if (m_selectedItem >= 0)
-                onItemSelect.emit(this, m_selectedItem, m_items[m_selectedItem].text.getString(), m_items[m_selectedItem].id);
+            Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
+            if ((m_selectedItem == m_hoveringItem) && m_textColorHoverCached.isSet())
+                selectedItem.text.setColor(m_textColorHoverCached);
             else
-                onItemSelect.emit(this, m_selectedItem, "", "");
+                selectedItem.text.setColor(m_textColorCached);
 
-            updateSelectedAndHoveringItemColorsAndStyle();
+            selectedItem.text.setStyle(m_textStyleCached);
         }
+
+        m_selectedItem = item;
+        if (m_selectedItem >= 0)
+        {
+            const Item& selectedItem = m_items[static_cast<std::size_t>(m_selectedItem)];
+            onItemSelect.emit(this, m_selectedItem, selectedItem.text.getString(), selectedItem.id);
+        }
+        else
+            onItemSelect.emit(this, m_selectedItem, "", "");
+
+        updateSelectedAndHoveringItemColorsAndStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

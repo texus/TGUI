@@ -160,12 +160,16 @@ namespace tgui
             const auto surfacePixels = static_cast<const std::uint8_t*>(surface->pixels);
 
             // When minX is negative, it seems like the pixels on the surface are located as if minX is 0
-            const int surfaceLeft = std::max(0, minX);
-            const int surfaceTop = TTF_FontAscent(font) - maxY;
-            const int surfaceWidth = maxX - minX;
-            const int surfaceHeight = maxY - minY;
+            assert(maxX >= minX);
+            assert(maxY >= minY);
+            const unsigned int surfaceLeft = static_cast<unsigned int>(std::max(0, minX));
+            const unsigned int surfaceTop = static_cast<unsigned int>(std::max(0, TTF_FontAscent(font) - maxY)); // assumed to be always positive, even without max
+            const unsigned int surfaceWidth = static_cast<unsigned int>(maxX - minX);
+            const unsigned int surfaceHeight = static_cast<unsigned int>(maxY - minY);
 
-            if ((surfaceLeft + surfaceWidth <= surface->w) && (surfaceTop + surfaceHeight <= surface->h))
+            if ((surface->w > 0) && (surface->h > 0)
+             && (surfaceLeft + surfaceWidth <= static_cast<unsigned int>(surface->w))
+             && (surfaceTop + surfaceHeight <= static_cast<unsigned int>(surface->h)))
             {
                 // Find a good position for the new glyph into the texture.
                 // We leave a small padding around characters, so that filtering doesn't pollute them with pixels from neighbors.
@@ -177,12 +181,12 @@ namespace tgui
                 glyph.textureRect.height -= 2 * padding;
 
                 // Extract the glyph's pixels from the bitmap
-                for (int y = surfaceTop; y < surfaceTop + surfaceHeight; ++y)
+                for (unsigned int y = surfaceTop; y < surfaceTop + surfaceHeight; ++y)
                 {
-                    for (int x = surfaceLeft; x < surfaceLeft + surfaceWidth; ++x)
+                    for (unsigned int x = surfaceLeft; x < surfaceLeft + surfaceWidth; ++x)
                     {
                         const std::size_t index = (glyph.textureRect.left + x - surfaceLeft) + (glyph.textureRect.top + y - surfaceTop) * m_textureSize;
-                        m_pixels[index * 4 + 3] = surfacePixels[(y * surface->pitch) + x];
+                        m_pixels[index * 4 + 3] = surfacePixels[(static_cast<int>(y) * surface->pitch) + static_cast<int>(x)];
                     }
                 }
 
@@ -289,7 +293,7 @@ namespace tgui
         if (!handle)
             return nullptr;
 
-        auto font = TTF_OpenFontRW(handle, 1, characterSize);
+        auto font = TTF_OpenFontRW(handle, 1, static_cast<int>(characterSize));
         if (font)
         {
             m_fonts[characterSize] = font;
@@ -362,7 +366,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    IntRect BackendFontSDLttf::findAvailableGlyphRect(unsigned int width, unsigned int height)
+    UIntRect BackendFontSDLttf::findAvailableGlyphRect(unsigned int width, unsigned int height)
     {
         // Find the line that where the glyph fits well.
         // This is based on the sf::Font class in the SFML library. It might not be the most optimal method, but it is good enough for now.
@@ -438,7 +442,7 @@ namespace tgui
         }
 
         // Find the glyph's rectangle on the selected row
-        IntRect rect(bestRow->width, bestRow->top, width, height);
+        UIntRect rect{bestRow->width, bestRow->top, width, height};
 
         // Update the row informations
         bestRow->width += width;

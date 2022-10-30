@@ -364,7 +364,7 @@ namespace tgui
             return;
         }
 
-        auto& item = *m_items.emplace(m_items.begin() + index);
+        auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index));
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
@@ -388,7 +388,7 @@ namespace tgui
             return;
         }
 
-        auto& item = *m_items.emplace(m_items.begin() + index);
+        auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index));
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
@@ -417,9 +417,9 @@ namespace tgui
 
         bool updatedLastColumnMaxItemWidth = false;
 
-        for (unsigned int i = 0; i < items.size(); ++i)
+        for (std::size_t i = 0; i < items.size(); ++i)
         {
-            auto& item = *m_items.emplace(m_items.begin() + index + i);
+            auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index + i));
             item.texts.reserve(items[i].size());
             for (const auto& text : items[i])
                 item.texts.push_back(createText(text));
@@ -476,10 +476,10 @@ namespace tgui
             else if (m_selectedTextColorCached.isSet())
                 setItemColor(index, m_selectedTextColorCached);
             else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
-                setItemColor(m_hoveredItem, m_textColorHoverCached);
+                setItemColor(index, m_textColorHoverCached);
         }
         else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
-            setItemColor(m_hoveredItem, m_textColorHoverCached);
+            setItemColor(index, m_textColorHoverCached);
 
         return true;
     }
@@ -522,10 +522,10 @@ namespace tgui
             else if (m_selectedTextColorCached.isSet())
                 setItemColor(index, m_selectedTextColorCached);
             else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
-                setItemColor(m_hoveredItem, m_textColorHoverCached);
+                setItemColor(index, m_textColorHoverCached);
         }
         else if ((static_cast<int>(index) == m_hoveredItem) && m_textColorHoverCached.isSet())
-            setItemColor(m_hoveredItem, m_textColorHoverCached);
+            setItemColor(index, m_textColorHoverCached);
 
         return true;
     }
@@ -599,7 +599,7 @@ namespace tgui
         const float oldDesiredWidthInLastColumn = getItemTotalWidth(m_items[index], m_columns.empty() ? 0 : m_columns.size() - 1);
 
         const bool wasIconSet = m_items[index].icon.isSet();
-        m_items.erase(m_items.begin() + index);
+        m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
 
         if (wasIconSet)
         {
@@ -1318,14 +1318,17 @@ namespace tgui
         {
             updateHoveredItemByMousePos(pos);
 
-            const bool mouseOnSelectedItem = (m_selectedItems.find(m_hoveredItem) != m_selectedItems.end());
+            const bool mouseOnSelectedItem = (m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) != m_selectedItems.end());
             if (!mouseOnSelectedItem)
                 m_possibleDoubleClick = false;
 
             if (m_multiSelect && keyboard::isMultiselectModifierPressed())
             {
                 if (mouseOnSelectedItem)
-                    removeSelectedItem(m_hoveredItem);
+                {
+                    assert(m_hoveredItem >= 0); // Otherwise mouseOnSelectedItem should be false
+                    removeSelectedItem(static_cast<std::size_t>(m_hoveredItem));
+                }
                 else
                     addSelectedItem(m_hoveredItem);
             }
@@ -1490,14 +1493,17 @@ namespace tgui
                 // If the mouse is held down then select the item below the mouse
                 if ((m_hoveredItem != oldHoveredItem) && m_mouseDown && !m_verticalScrollbar->isMouseDown() && !m_horizontalScrollbar->isMouseDown())
                 {
-                    const bool mouseOnSelectedItem = (m_selectedItems.find(m_hoveredItem) != m_selectedItems.end());
+                    const bool mouseOnSelectedItem = (m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) != m_selectedItems.end());
                     if (m_multiSelect)
                     {
                         if (keyboard::isMultiselectModifierPressed())
                         {
                             // If the control/command key is pressed then toggle the selection of the item below the mouse
                             if (mouseOnSelectedItem)
-                                removeSelectedItem(m_hoveredItem);
+                            {
+                                assert(m_hoveredItem >= 0); // Otherwise mouseOnSelectedItem should be false
+                                removeSelectedItem(static_cast<std::size_t>(m_hoveredItem));
+                            }
                             else
                                 addSelectedItem(m_hoveredItem);
                         }
@@ -1968,13 +1974,13 @@ namespace tgui
         if (node->propertyValuePairs["HeaderHeight"])
             setHeaderHeight(node->propertyValuePairs["HeaderHeight"]->value.toFloat());
         if (node->propertyValuePairs["HeaderTextSize"])
-            setHeaderTextSize(node->propertyValuePairs["HeaderTextSize"]->value.toInt());
+            setHeaderTextSize(node->propertyValuePairs["HeaderTextSize"]->value.toUInt());
         if (node->propertyValuePairs["SeparatorWidth"])
-            setSeparatorWidth(node->propertyValuePairs["SeparatorWidth"]->value.toInt());
+            setSeparatorWidth(node->propertyValuePairs["SeparatorWidth"]->value.toUInt());
         if (node->propertyValuePairs["HeaderSeparatorHeight"])
-            setHeaderSeparatorHeight(node->propertyValuePairs["HeaderSeparatorHeight"]->value.toInt());
+            setHeaderSeparatorHeight(node->propertyValuePairs["HeaderSeparatorHeight"]->value.toUInt());
         if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
+            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
         if (node->propertyValuePairs["MultiSelect"])
             setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["MultiSelect"]->value).getBool());
 
@@ -1990,7 +1996,7 @@ namespace tgui
                 addSelectedItem(item.toInt());
         }
         if (node->propertyValuePairs["GridLinesWidth"])
-            setGridLinesWidth(node->propertyValuePairs["GridLinesWidth"]->value.toInt());
+            setGridLinesWidth(node->propertyValuePairs["GridLinesWidth"]->value.toUInt());
         if (node->propertyValuePairs["ShowHorizontalGridLines"])
             setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ShowHorizontalGridLines"]->value).getBool());
         if (node->propertyValuePairs["ShowVerticalGridLines"])
@@ -2132,10 +2138,10 @@ namespace tgui
                 setItemColor(selectedItem, m_selectedTextColorCached);
         }
 
-        if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()))
+        if ((m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) == m_selectedItems.end()))
         {
             if (m_textColorHoverCached.isSet())
-                setItemColor(m_hoveredItem, m_textColorHoverCached);
+                setItemColor(static_cast<std::size_t>(m_hoveredItem), m_textColorHoverCached);
         }
     }
 
@@ -2171,10 +2177,10 @@ namespace tgui
 
         if (m_hoveredItem >= 0)
         {
-            if ((m_selectedItems.find(m_hoveredItem) != m_selectedItems.end()) && m_selectedTextColorCached.isSet())
-                setItemColor(m_hoveredItem, m_selectedTextColorCached);
+            if ((m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) != m_selectedItems.end()) && m_selectedTextColorCached.isSet())
+                setItemColor(static_cast<std::size_t>(m_hoveredItem), m_selectedTextColorCached);
             else
-                setItemColor(m_hoveredItem, m_textColorCached);
+                setItemColor(static_cast<std::size_t>(m_hoveredItem), m_textColorCached);
         }
 
         m_hoveredItem = item;
@@ -2186,7 +2192,7 @@ namespace tgui
 
     void ListView::updateSelectedItem(int item)
     {
-        if (m_selectedItems.empty() && (item == -1))
+        if (m_selectedItems.empty() && (item < 0))
             return;
         if ((m_selectedItems.size() == 1) && (static_cast<int>(*m_selectedItems.begin()) == item))
             return;
@@ -2368,10 +2374,9 @@ namespace tgui
             return;
         }
 
-        if (m_selectedItems.find(item) != m_selectedItems.end())
-            return;
-
         if (item < 0)
+            return;
+        if (m_selectedItems.find(static_cast<std::size_t>(item)) != m_selectedItems.end())
             return;
 
         if ((item == m_hoveredItem) && m_textColorHoverCached.isSet())
@@ -2379,12 +2384,12 @@ namespace tgui
         else
             setItemColor(static_cast<std::size_t>(item), m_textColorCached);
 
-        TGUI_ASSERT(m_selectedItems.empty() == (m_firstSelectedItemIndex == -1), "m_firstSelectedItemIndex should (only) be set if there was a selection");
+        TGUI_ASSERT(m_selectedItems.empty() == (m_firstSelectedItemIndex < 0), "m_firstSelectedItemIndex should (only) be set if there was a selection");
         m_focusedItemIndex = item;
         if (m_selectedItems.empty())
             m_firstSelectedItemIndex = item;
 
-        m_selectedItems.insert(item);
+        m_selectedItems.insert(static_cast<std::size_t>(item));
 
         updateSelectedAndhoveredItemColors();
 
@@ -2858,7 +2863,7 @@ namespace tgui
             }
 
             // Draw the background of the item on which the mouse is standing
-            if ((m_hoveredItem >= 0) && (m_selectedItems.find(m_hoveredItem) == m_selectedItems.end()) && m_backgroundColorHoverCached.isSet())
+            if ((m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) == m_selectedItems.end()) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveredItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
                 target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));

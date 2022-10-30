@@ -192,9 +192,9 @@ namespace tgui
             return;
 
         const std::vector<Vertex>& vertices = sprite.getVertices();
-        const std::vector<int>& indices = sprite.getIndices();
+        const std::vector<unsigned int>& indices = sprite.getIndices();
         std::vector<Vertex> triangleVertices(indices.size());
-        for (unsigned int i = 0; i < indices.size(); ++i)
+        for (std::size_t i = 0; i < indices.size(); ++i)
             triangleVertices[i] = vertices[indices[i]];
 
         sf::RenderStates statesSFML;
@@ -240,7 +240,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, normalizedTextureSize.y}},
             {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, normalizedTextureSize.y}},
         }};
-        const std::array<int, 6> indices = {{
+        const std::array<unsigned int, 6> indices = {{
             0, 2, 1,
             1, 2, 3
         }};

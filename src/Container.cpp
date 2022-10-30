@@ -373,7 +373,7 @@ namespace tgui
 
             // Remove the widget
             widget->setParent(nullptr);
-            m_widgets.erase(m_widgets.begin() + i);
+            m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i));
             return true;
         }
 
@@ -604,7 +604,7 @@ namespace tgui
             m_widgets.push_back(m_widgets[i]);
 
             // Remove the old widget
-            m_widgets.erase(m_widgets.begin() + i);
+            m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i));
             break;
         }
     }
@@ -624,7 +624,7 @@ namespace tgui
             m_widgets.insert(m_widgets.begin(), obj);
 
             // Remove the old widget
-            m_widgets.erase(m_widgets.begin() + i + 1);
+            m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i + 1));
             break;
         }
     }
@@ -695,8 +695,8 @@ namespace tgui
             return true;
 
         // Move the widget to the new index
-        m_widgets.erase(m_widgets.begin() + currentWidgetIndex);
-        m_widgets.insert(m_widgets.begin() + index, widget);
+        m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(currentWidgetIndex));
+        m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widget);
         return true;
     }
 

@@ -354,11 +354,11 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["Minimum"])
-            setMinimum(node->propertyValuePairs["Minimum"]->value.toInt());
+            setMinimum(node->propertyValuePairs["Minimum"]->value.toUInt());
         if (node->propertyValuePairs["Maximum"])
-            setMaximum(node->propertyValuePairs["Maximum"]->value.toInt());
+            setMaximum(node->propertyValuePairs["Maximum"]->value.toUInt());
         if (node->propertyValuePairs["Value"])
-            setValue(node->propertyValuePairs["Value"]->value.toInt());
+            setValue(node->propertyValuePairs["Value"]->value.toUInt());
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
 

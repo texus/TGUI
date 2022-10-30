@@ -91,7 +91,7 @@ namespace tgui
         }
 
         // Restore the texture that was bound when this function was called
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, oldBoundTexture));
+        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(oldBoundTexture)));
         return true;
     }
 
@@ -115,7 +115,7 @@ namespace tgui
         TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
 
         // Restore the texture that was bound when this function was called
-        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, oldBoundTexture));
+        TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(oldBoundTexture)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

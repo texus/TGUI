@@ -176,13 +176,27 @@ namespace tgui
 
         // If our OpenGL version didn't support the layout qualifier in GLSL then we need to query the location
         if (!TGUI_GLAD_GL_ES_VERSION_3_1)
+        {
             m_projectionMatrixShaderUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
+            if (m_projectionMatrixShaderUniformLocation < 0)
+                throw Exception{"Failed to initialize BackendRenderTargetGLES2: projectionMatrix uniform wasn't found in shader program"};
+        }
 
         if (!TGUI_GLAD_GL_ES_VERSION_3_0)
         {
-            m_positionShaderLocation = glGetAttribLocation(m_shaderProgram, "inPosition");
-            m_colorShaderLocation = glGetAttribLocation(m_shaderProgram, "inColor");
-            m_texCoordShaderLocation = glGetAttribLocation(m_shaderProgram, "inTexCoord");
+            const int positionShaderLocation = glGetAttribLocation(m_shaderProgram, "inPosition");
+            const int colorShaderLocation = glGetAttribLocation(m_shaderProgram, "inColor");
+            const int texCoordShaderLocation = glGetAttribLocation(m_shaderProgram, "inTexCoord");
+            if (positionShaderLocation < 0)
+                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inPosition wasn't found in shader program"};
+            if (colorShaderLocation < 0)
+                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inColor wasn't found in shader program"};
+            if (texCoordShaderLocation < 0)
+                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inTexCoord wasn't found in shader program"};
+
+            m_positionShaderLocation = static_cast<GLuint>(positionShaderLocation);
+            m_colorShaderLocation = static_cast<GLuint>(colorShaderLocation);
+            m_texCoordShaderLocation = static_cast<GLuint>(texCoordShaderLocation);
         }
 
         createBuffers();
@@ -314,7 +328,7 @@ namespace tgui
         if (oldBlendEnabled)
         {
             if ((oldBlendSrc != GL_SRC_ALPHA) || (oldBlendDst != GL_ONE_MINUS_SRC_ALPHA))
-                TGUI_GL_CHECK(glBlendFunc(oldBlendSrc, oldBlendDst));
+                TGUI_GL_CHECK(glBlendFunc(static_cast<GLenum>(oldBlendSrc), static_cast<GLenum>(oldBlendDst)));
         }
         else
             TGUI_GL_CHECK(glDisable(GL_BLEND));
@@ -323,7 +337,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetGLES2::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
         // Change the bound texture if it changed
         if (m_currentTexture != texture)
@@ -345,7 +359,7 @@ namespace tgui
         // Load the data into the vertex buffer. After some experimenting, orphaning the buffer and allocating a new one each time
         // was (suprisingly) faster than creating a larger buffer and only writing to non-overlapping ranges within a frame.
         // Batch rendering (and re-arranging draw calls to be better batchable) would be much faster though.
-        TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_DYNAMIC_DRAW));
+        TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertexCount * sizeof(Vertex)), vertices, GL_DYNAMIC_DRAW));
 
         Transform finalTransform = states.transform;
         finalTransform.roundPosition(); // Avoid blurry texts
@@ -356,7 +370,7 @@ namespace tgui
         if (indices)
         {
             // Load the data into the index buffer
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), indices, GL_STREAM_DRAW));
+            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
 
             TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0));
         }

@@ -573,7 +573,7 @@ namespace tgui
 
             // Reselect the selected item to make sure it is always among the visible items when the list opens
             if (m_listBox->getSelectedItemIndex() >= 0)
-                m_listBox->setSelectedItemByIndex(m_listBox->getSelectedItemIndex());
+                m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex()));
         }
         else // This list was already open, so close it now
             hideListBox();
@@ -845,11 +845,11 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["ItemsToDisplay"])
-            setItemsToDisplay(node->propertyValuePairs["ItemsToDisplay"]->value.toInt());
+            setItemsToDisplay(node->propertyValuePairs["ItemsToDisplay"]->value.toUInt());
         if (node->propertyValuePairs["MaximumItems"])
-            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toInt());
+            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toUInt());
         if (node->propertyValuePairs["SelectedItemIndex"])
-            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toInt());
+            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toUInt());
         if (node->propertyValuePairs["ChangeItemOnScroll"])
             m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ChangeItemOnScroll"]->value).getBool();
 
@@ -1043,7 +1043,7 @@ namespace tgui
 
         // Draw the selected item
         const int selectedItemIndex = getSelectedItemIndex();
-        if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex == -1) && !m_defaultText.getString().empty()))
+        if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex < 0) && !m_defaultText.getString().empty()))
         {
             target.addClippingLayer(statesForText, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
                 {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});

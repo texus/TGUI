@@ -195,9 +195,9 @@ namespace tgui
                 if (m_gridWidgets[row][col] == widget)
                 {
                     // Remove the widget from the grid
-                    m_gridWidgets[row].erase(m_gridWidgets[row].begin() + col);
-                    m_objPadding[row].erase(m_objPadding[row].begin() + col);
-                    m_objAlignment[row].erase(m_objAlignment[row].begin() + col);
+                    m_gridWidgets[row].erase(m_gridWidgets[row].begin() + static_cast<std::ptrdiff_t>(col));
+                    m_objPadding[row].erase(m_objPadding[row].begin() + static_cast<std::ptrdiff_t>(col));
+                    m_objAlignment[row].erase(m_objAlignment[row].begin() + static_cast<std::ptrdiff_t>(col));
 
                     // Check if this is the last column
                     if (m_columnWidth.size() == m_gridWidgets[row].size() + 1)
@@ -215,16 +215,16 @@ namespace tgui
 
                         // Erase the last column if no other row is using it
                         if (!rowFound)
-                            m_columnWidth.erase(m_columnWidth.end()-1);
+                            m_columnWidth.erase(m_columnWidth.end() - 1);
                     }
 
                     // If the row is empty then remove it as well
                     if (m_gridWidgets[row].empty())
                     {
-                        m_gridWidgets.erase(m_gridWidgets.begin() + row);
-                        m_objPadding.erase(m_objPadding.begin() + row);
-                        m_objAlignment.erase(m_objAlignment.begin() + row);
-                        m_rowHeight.erase(m_rowHeight.begin() + row);
+                        m_gridWidgets.erase(m_gridWidgets.begin() + static_cast<std::ptrdiff_t>(row));
+                        m_objPadding.erase(m_objPadding.begin() + static_cast<std::ptrdiff_t>(row));
+                        m_objAlignment.erase(m_objAlignment.begin() + static_cast<std::ptrdiff_t>(row));
+                        m_rowHeight.erase(m_rowHeight.begin() + static_cast<std::ptrdiff_t>(row));
                     }
 
                     // Update the positions of all remaining widgets

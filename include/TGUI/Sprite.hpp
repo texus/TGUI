@@ -260,7 +260,7 @@ namespace tgui
         /// @internal
         /// Returns the internal vertices for drawing.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::vector<int>& getIndices() const
+        const std::vector<unsigned int>& getIndices() const
         {
             return m_indices;
         }
@@ -282,7 +282,7 @@ namespace tgui
         Texture     m_texture;
         std::shared_ptr<BackendTexture> m_svgTexture;
         std::vector<Vertex> m_vertices;
-        std::vector<int> m_indices;
+        std::vector<unsigned int> m_indices;
 
         FloatRect   m_visibleRect;
 

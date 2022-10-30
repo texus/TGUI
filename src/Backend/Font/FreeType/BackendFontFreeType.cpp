@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    IntRect BackendFontFreetype::findAvailableGlyphRect(unsigned int width, unsigned int height)
+    UIntRect BackendFontFreetype::findAvailableGlyphRect(unsigned int width, unsigned int height)
     {
         // Find the line that where the glyph fits well.
         // This is based on the sf::Font class in the SFML library. It might not be the most optimal method, but it is good enough for now.
@@ -218,7 +218,7 @@ namespace tgui
         }
 
         // Find the glyph's rectangle on the selected row
-        IntRect rect(bestRow->width, bestRow->top, width, height);
+        UIntRect rect{bestRow->width, bestRow->top, width, height};
 
         // Update the row informations
         bestRow->width += width;
@@ -333,7 +333,7 @@ namespace tgui
                 {
                     // The color channels remain white, just fill the alpha channel
                     const std::size_t index = (glyph.textureRect.left + x) + (glyph.textureRect.top + y) * m_textureSize;
-                    m_pixels[index * 4 + 3] = ((glyphBitmapPixels[(y * bitmap.pitch) + (x / 8)]) & (1 << (7 - (x % 8)))) ? 255 : 0;
+                    m_pixels[index * 4 + 3] = ((glyphBitmapPixels[(static_cast<int>(y) * bitmap.pitch) + static_cast<int>(x / 8)]) & (1 << (7 - (x % 8)))) ? 255 : 0;
                 }
             }
         }
@@ -346,7 +346,7 @@ namespace tgui
                 {
                     // The color channels remain white, just fill the alpha channel
                     const std::size_t index = (glyph.textureRect.left + x) + (glyph.textureRect.top + y) * m_textureSize;
-                    m_pixels[index * 4 + 3] = glyphBitmapPixels[(y * bitmap.pitch) + x];
+                    m_pixels[index * 4 + 3] = glyphBitmapPixels[(static_cast<int>(y) * bitmap.pitch) + static_cast<int>(x)];
                 }
             }
         }

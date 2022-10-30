@@ -416,7 +416,7 @@ namespace tgui
                 continue;
 
             closeMenu();
-            m_menus.erase(m_menus.begin() + i);
+            m_menus.erase(m_menus.begin() + static_cast<std::ptrdiff_t>(i));
             return true;
         }
 
@@ -614,7 +614,7 @@ namespace tgui
 
     void MenuBar::closeMenu()
     {
-        if (m_visibleMenu == -1)
+        if (m_visibleMenu < 0)
             return;
 
         closeSubMenus(m_menus, m_visibleMenu);
@@ -694,9 +694,10 @@ namespace tgui
             mouseEnteredWidget();
 
         // Don't open a menu without having clicked first
-        if (m_visibleMenu == -1)
+        if (m_visibleMenu < 0)
             return;
 
+        const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
         pos -= getPosition();
 
         // Loop through the menus to check if the mouse is on top of them
@@ -709,13 +710,13 @@ namespace tgui
                 continue;
 
             // Check if the menu is already open
-            if (m_visibleMenu == static_cast<int>(i))
+            if (visibleMenuIdx == i)
             {
                 // If one of the menu items is selected then unselect it
-                if (m_menus[m_visibleMenu].selectedMenuItem != -1)
+                if (m_menus[visibleMenuIdx].selectedMenuItem >= 0)
                 {
-                    updateMenuTextColor(m_menus[i].menuItems[m_menus[m_visibleMenu].selectedMenuItem], false);
-                    m_menus[m_visibleMenu].selectedMenuItem = -1;
+                    updateMenuTextColor(m_menus[i].menuItems[static_cast<std::size_t>(m_menus[visibleMenuIdx].selectedMenuItem)], false);
+                    m_menus[visibleMenuIdx].selectedMenuItem = -1;
                 }
             }
             else // The menu isn't open yet
@@ -877,15 +878,16 @@ namespace tgui
     void MenuBar::drawOpenMenu(BackendRenderTarget& target, RenderStates states) const
     {
         TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::drawOpenMenu can only be called when a menu is open");
+        const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
 
         // Find the position of the menu
         float leftOffset = 0;
-        for (int i = 0; i < m_visibleMenu; ++i)
+        for (std::size_t i = 0; i < visibleMenuIdx; ++i)
             leftOffset += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
 
         // Move the menu to the left if it otherwise falls off the screen
         bool openSubMenuToRight = true;
-        const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+        const float menuWidth = calculateMenuWidth(m_menus[visibleMenuIdx]);
         if (getParent() && (getPosition().x + leftOffset + menuWidth > getParent()->getInnerSize().x))
         {
             leftOffset = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
@@ -893,11 +895,11 @@ namespace tgui
         }
 
         if (m_invertedMenuDirection)
-            states.transform.translate({leftOffset, -calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems)});
+            states.transform.translate({leftOffset, -calculateOpenMenuHeight(m_menus[visibleMenuIdx].menuItems)});
         else
             states.transform.translate({leftOffset, getSize().y});
 
-        drawMenu(target, states, m_menus[m_visibleMenu], menuWidth, getPosition().x + leftOffset, openSubMenuToRight);
+        drawMenu(target, states, m_menus[visibleMenuIdx], menuWidth, getPosition().x + leftOffset, openSubMenuToRight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1063,10 +1065,13 @@ namespace tgui
 
     void MenuBar::closeSubMenus(std::vector<Menu>& menus, int& selectedMenu)
     {
-        if (menus[selectedMenu].selectedMenuItem != -1)
-            closeSubMenus(menus[selectedMenu].menuItems, menus[selectedMenu].selectedMenuItem);
+        if (selectedMenu < 0)
+            return;
 
-        updateMenuTextColor(menus[selectedMenu], false);
+        const auto selectedMenuIdx = static_cast<std::size_t>(selectedMenu);
+        closeSubMenus(menus[selectedMenuIdx].menuItems, menus[selectedMenuIdx].selectedMenuItem);
+
+        updateMenuTextColor(menus[selectedMenuIdx], false);
         selectedMenu = -1;
     }
 
@@ -1076,10 +1081,10 @@ namespace tgui
     {
         TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::deselectBottomItem can only be called when a menu is open");
 
-        auto* menu = &m_menus[m_visibleMenu];
-        while (menu->selectedMenuItem != -1)
+        auto* menu = &m_menus[static_cast<std::size_t>(m_visibleMenu)];
+        while (menu->selectedMenuItem >= 0)
         {
-            auto& menuItem = menu->menuItems[menu->selectedMenuItem];
+            auto& menuItem = menu->menuItems[static_cast<std::size_t>(menu->selectedMenuItem)];
             if (menuItem.menuItems.empty())
             {
                 closeSubMenus(menu->menuItems, menu->selectedMenuItem);
@@ -1180,6 +1185,9 @@ namespace tgui
 
     Vector2f MenuBar::calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const
     {
+        TGUI_ASSERT(menu.selectedMenuItem >= 0, "MenuBar::calculateSubmenuOffset can only be called when the menu has an open submenu");
+        const auto selectedMenuItemIdx = static_cast<std::size_t>(menu.selectedMenuItem);
+
         float leftOffset;
         if (openSubMenuToRight)
         {
@@ -1207,11 +1215,11 @@ namespace tgui
         }
 
         float topOffset = 0;
-        for (int i = 0; i < menu.selectedMenuItem; ++i)
+        for (std::size_t i = 0; i < selectedMenuItemIdx; ++i)
             topOffset += getMenuItemHeight(menu.menuItems[i]);
 
         if (m_invertedMenuDirection)
-            topOffset -= calculateOpenMenuHeight(menu.menuItems[menu.selectedMenuItem].menuItems) - getSize().y;
+            topOffset -= calculateOpenMenuHeight(menu.menuItems[selectedMenuItemIdx].menuItems) - getSize().y;
 
         return {leftOffset, topOffset};
     }
@@ -1225,11 +1233,11 @@ namespace tgui
             return true;
 
         // Check if the mouse is on one of the submenus
-        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[menu.selectedMenuItem].menuItems.empty())
+        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)].menuItems.empty())
         {
-            const float subMenuWidth = calculateMenuWidth(menu.menuItems[menu.selectedMenuItem]);
+            const float subMenuWidth = calculateMenuWidth(menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)]);
             const Vector2f offset = calculateSubmenuOffset(menu, menuPos.x, menuWidth, subMenuWidth, openSubMenuToRight);
-            if (isMouseOnTopOfMenu(menuPos + offset, mousePos, openSubMenuToRight, menu.menuItems[menu.selectedMenuItem], subMenuWidth))
+            if (isMouseOnTopOfMenu(menuPos + offset, mousePos, openSubMenuToRight, menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)], subMenuWidth))
                 return true;
         }
 
@@ -1241,7 +1249,7 @@ namespace tgui
     bool MenuBar::isMouseOnOpenMenu(Vector2f pos) const
     {
         // If there is no open menu then the mouse can't be on top of it
-        if (m_visibleMenu == -1)
+        if (m_visibleMenu < 0)
             return false;
 
         // If the mouse is on top of the menu bar itself then it isn't on one of the menus
@@ -1249,24 +1257,25 @@ namespace tgui
             return false;
 
         Vector2f menuPos{0, 0};
-        for (int i = 0; i < m_visibleMenu; ++i)
+        const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
+        for (std::size_t i = 0; i < visibleMenuIdx; ++i)
             menuPos.x += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
 
         if (m_invertedMenuDirection)
-            menuPos.y -= calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems);
+            menuPos.y -= calculateOpenMenuHeight(m_menus[visibleMenuIdx].menuItems);
         else
             menuPos.y += getSize().y;
 
         // The menu is moved to the left if it otherwise falls off the screen
         bool openSubMenuToRight = true;
-        const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+        const float menuWidth = calculateMenuWidth(m_menus[visibleMenuIdx]);
         if (getParent() && (menuPos.x + menuWidth > getParent()->getInnerSize().x))
         {
             menuPos.x = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
             openSubMenuToRight = false;
         }
 
-        return isMouseOnTopOfMenu(menuPos, pos, openSubMenuToRight, m_menus[m_visibleMenu], menuWidth);
+        return isMouseOnTopOfMenu(menuPos, pos, openSubMenuToRight, m_menus[visibleMenuIdx], menuWidth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1274,13 +1283,14 @@ namespace tgui
     void MenuBar::leftMouseReleasedOnMenu()
     {
         TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::leftMouseReleasedOnMenu can only be called when a menu is open");
+        const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
 
-        auto* menu = &m_menus[m_visibleMenu];
+        auto* menu = &m_menus[visibleMenuIdx];
         std::vector<String> hierarchy;
-        hierarchy.push_back(m_menus[m_visibleMenu].text.getString());
-        while (menu->selectedMenuItem != -1)
+        hierarchy.push_back(m_menus[visibleMenuIdx].text.getString());
+        while (menu->selectedMenuItem >= 0)
         {
-            auto& menuItem = menu->menuItems[menu->selectedMenuItem];
+            auto& menuItem = menu->menuItems[static_cast<std::size_t>(menu->selectedMenuItem)];
             hierarchy.push_back(menuItem.text.getString());
             if (menuItem.menuItems.empty())
             {
@@ -1298,18 +1308,21 @@ namespace tgui
 
     void MenuBar::mouseMovedOnMenu(Vector2f pos)
     {
+        TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::mouseMovedOnMenu can only be called when a menu is open");
+        const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
+
         Vector2f menuPos{0, 0};
-        for (int i = 0; i < m_visibleMenu; ++i)
+        for (std::size_t i = 0; i < visibleMenuIdx; ++i)
             menuPos.x += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
 
         if (m_invertedMenuDirection)
-            menuPos.y -= calculateOpenMenuHeight(m_menus[m_visibleMenu].menuItems);
+            menuPos.y -= calculateOpenMenuHeight(m_menus[visibleMenuIdx].menuItems);
         else
             menuPos.y += getSize().y;
 
         // The menu is moved to the left if it otherwise falls off the screen
         bool openSubMenuToRight = true;
-        const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+        const float menuWidth = calculateMenuWidth(m_menus[visibleMenuIdx]);
         if (getParent() && (menuPos.x + menuWidth > getParent()->getInnerSize().x))
         {
             menuPos.x = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
@@ -1317,58 +1330,56 @@ namespace tgui
         }
 
         Menu* menuBelowMouse;
-        int menuItemIndexBelowMouse;
-        if (findMenuItemBelowMouse(menuPos, pos, openSubMenuToRight, m_menus[m_visibleMenu], menuWidth, &menuBelowMouse, &menuItemIndexBelowMouse))
+        std::size_t menuItemIndexBelowMouse;
+        if (findMenuItemBelowMouse(menuPos, pos, openSubMenuToRight, m_menus[visibleMenuIdx], menuWidth, &menuBelowMouse, &menuItemIndexBelowMouse))
         {
             // Check if the mouse is on a different item than before
             auto& menu = *menuBelowMouse;
-            if (menuItemIndexBelowMouse != menu.selectedMenuItem)
+            if (static_cast<int>(menuItemIndexBelowMouse) != menu.selectedMenuItem)
             {
                 // If another of the menu items is selected then unselect it
-                if (menu.selectedMenuItem != -1)
-                    closeSubMenus(menu.menuItems, menu.selectedMenuItem);
+                closeSubMenus(menu.menuItems, menu.selectedMenuItem);
 
                 // Mark the item below the mouse as selected
                 auto& menuItem = menu.menuItems[menuItemIndexBelowMouse];
                 if (menuItem.enabled && !isSeparator(menuItem))
                 {
                     updateMenuTextColor(menu.menuItems[menuItemIndexBelowMouse], true);
-                    menu.selectedMenuItem = menuItemIndexBelowMouse;
+                    menu.selectedMenuItem = static_cast<int>(menuItemIndexBelowMouse);
                 }
             }
             else // We already selected this item
             {
                 // If the selected item has a submenu then unselect its item
-                if (menu.menuItems[menuItemIndexBelowMouse].selectedMenuItem != -1)
-                    closeSubMenus(menu.menuItems[menuItemIndexBelowMouse].menuItems, menu.menuItems[menuItemIndexBelowMouse].selectedMenuItem);
+                closeSubMenus(menu.menuItems[menuItemIndexBelowMouse].menuItems, menu.menuItems[menuItemIndexBelowMouse].selectedMenuItem);
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, Menu& menu, float menuWidth, Menu** resultMenu, int* resultSelectedMenuItem)
+    bool MenuBar::findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, Menu& menu, float menuWidth, Menu** resultMenu, std::size_t* resultSelectedMenuItem)
     {
         // Loop over the open submenus and make sure to handle them first as menus can overlap
-        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[menu.selectedMenuItem].menuItems.empty())
+        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)].menuItems.empty())
         {
-            const float subMenuWidth = calculateMenuWidth(menu.menuItems[menu.selectedMenuItem]);
+            const float subMenuWidth = calculateMenuWidth(menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)]);
             const Vector2f offset = calculateSubmenuOffset(menu, menuPos.x, menuWidth, subMenuWidth, openSubMenuToRight);
-            if (findMenuItemBelowMouse(menuPos + offset, mousePos, openSubMenuToRight, menu.menuItems[menu.selectedMenuItem], subMenuWidth, resultMenu, resultSelectedMenuItem))
+            if (findMenuItemBelowMouse(menuPos + offset, mousePos, openSubMenuToRight, menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)], subMenuWidth, resultMenu, resultSelectedMenuItem))
                 return true;
         }
 
         // Check if the mouse is on top of the menu
-        if (FloatRect{menuPos.x, menuPos.y, menuWidth, calculateOpenMenuHeight(menu.menuItems)}.contains(mousePos))
+        if (!menu.menuItems.empty() && FloatRect{menuPos.x, menuPos.y, menuWidth, calculateOpenMenuHeight(menu.menuItems)}.contains(mousePos))
         {
-            int selectedItem = static_cast<int>(menu.menuItems.size()) - 1;
+            std::size_t selectedItem = menu.menuItems.size() - 1;
             float topPos = menuPos.y;
             for (std::size_t i = 0; i < menu.menuItems.size(); ++i)
             {
                 topPos += getMenuItemHeight(menu.menuItems[i]);
                 if (topPos > mousePos.y)
                 {
-                    selectedItem = static_cast<int>(i);
+                    selectedItem = i;
                     break;
                 }
             }
@@ -1441,7 +1452,7 @@ namespace tgui
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
-        if ((menu.selectedMenuItem == -1) && !backgroundSprite.isSet() && !m_selectedBackgroundColorCached.isSet())
+        if ((menu.selectedMenuItem < 0) && !backgroundSprite.isSet() && !m_selectedBackgroundColorCached.isSet())
         {
             target.drawFilledRect(states, {menuWidth, calculateOpenMenuHeight(menu.menuItems)}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
         }
@@ -1536,12 +1547,13 @@ namespace tgui
         }
 
         // Draw the submenu if one is opened
-        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[menu.selectedMenuItem].menuItems.empty())
+        if ((menu.selectedMenuItem >= 0) && !menu.menuItems[static_cast<std::size_t>(menu.selectedMenuItem)].menuItems.empty())
         {
+            const auto selectedMenuItemIdx = static_cast<std::size_t>(menu.selectedMenuItem);
             states.transform = oldTransform;
 
             // If there isn't enough room on the right side then open the menu to the left if it has more room
-            const float subMenuWidth = calculateMenuWidth(menu.menuItems[menu.selectedMenuItem]);
+            const float subMenuWidth = calculateMenuWidth(menu.menuItems[selectedMenuItemIdx]);
 
             float leftOffset;
             if (openSubMenuToRight)
@@ -1570,14 +1582,14 @@ namespace tgui
             }
 
             float topOffset = 0;
-            for (int i = 0; i < menu.selectedMenuItem; ++i)
+            for (std::size_t i = 0; i < selectedMenuItemIdx; ++i)
                 topOffset += getMenuItemHeight(menu.menuItems[i]);
 
             if (m_invertedMenuDirection)
-                topOffset -= calculateOpenMenuHeight(menu.menuItems[menu.selectedMenuItem].menuItems) - getSize().y;
+                topOffset -= calculateOpenMenuHeight(menu.menuItems[selectedMenuItemIdx].menuItems) - getSize().y;
 
             states.transform.translate({leftOffset, topOffset});
-            drawMenu(target, states, menu.menuItems[menu.selectedMenuItem], subMenuWidth, globalLeftPos + leftOffset, openSubMenuToRight);
+            drawMenu(target, states, menu.menuItems[selectedMenuItemIdx], subMenuWidth, globalLeftPos + leftOffset, openSubMenuToRight);
         }
     }
 

@@ -54,6 +54,8 @@ function(tgui_set_global_compile_flags target)
                                -Wall
                                -Wextra
                                -Wshadow
+                               -Wsign-conversion
+                               -Wfloat-conversion
                                -Wnon-virtual-dtor
                                -Wold-style-cast
                                -Wcast-align

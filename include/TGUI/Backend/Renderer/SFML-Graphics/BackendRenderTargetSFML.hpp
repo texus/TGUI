@@ -104,7 +104,7 @@ namespace tgui
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

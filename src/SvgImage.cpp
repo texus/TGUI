@@ -27,11 +27,20 @@
 #include <TGUI/SvgImage.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
+#if defined(__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
+
 #define NANOSVG_IMPLEMENTATION
 #include "TGUI/extlibs/nanosvg/nanosvg.h"
 
 #define NANOSVGRAST_IMPLEMENTATION
 #include "TGUI/extlibs/nanosvg/nanosvgrast.h"
+
+#if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,7 +98,8 @@ namespace tgui
         const float scaleY = size.y / static_cast<float>(m_svg->height);
 
         auto pixels = MakeUniqueForOverwrite<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY), pixels.get(), size.x, size.y, size.x * 4);
+        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY),
+                          pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
 
         texture.load(size, std::move(pixels), true);
     }

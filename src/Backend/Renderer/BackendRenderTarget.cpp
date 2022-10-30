@@ -39,7 +39,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<Vector2f> drawCircleHelperGetPoints(int nrPoints, float radius, float offset)
+    static std::vector<Vector2f> drawCircleHelperGetPoints(unsigned int nrPoints, float radius, float offset)
     {
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float twoPi = 2.f * std::numbers::pi_v<float>;
@@ -49,7 +49,7 @@ namespace tgui
         std::vector<Vector2f> points;
         points.reserve(nrPoints);
 
-        for (int i = 0; i < nrPoints; ++i)
+        for (unsigned int i = 0; i < nrPoints; ++i)
         {
             points.emplace_back(offset + radius + (radius * std::cos(twoPi * i / nrPoints)),
                                 offset + radius + (radius * std::sin(twoPi * i / nrPoints)));
@@ -60,8 +60,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<Vector2f> drawRoundedRectHelperGetPoints(const int nrCornerPoints, const Vector2f& size, float radius, float offset)
+    static std::vector<Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const Vector2f& size, float radius, float offset)
     {
+        assert(nrCornerPoints != 0);
+
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float twoPi = 2.f * std::numbers::pi_v<float>;
 #else
@@ -70,31 +72,31 @@ namespace tgui
         std::vector<Vector2f> points;
         points.reserve(nrCornerPoints * 4);
 
-        const int nrPointsInCircle = 4 * (nrCornerPoints - 1);
+        const unsigned int nrPointsInCircle = 4 * (nrCornerPoints - 1);
 
         // Top right corner
-        for (int i = 0; i < nrCornerPoints; ++i)
+        for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * i / nrPointsInCircle)),
                                 offset + radius - (radius * std::sin(twoPi * i / nrPointsInCircle)));
         }
 
         // Top left corner
-        for (int i = 0; i < nrCornerPoints; ++i)
+        for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + radius + (radius * std::cos(twoPi * ((nrCornerPoints - 1) + i) / nrPointsInCircle)),
                                 offset + radius - (radius * std::sin(twoPi * ((nrCornerPoints - 1) + i) / nrPointsInCircle)));
         }
 
         // Bottom left corner
-        for (int i = 0; i < nrCornerPoints; ++i)
+        for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + radius + (radius * std::cos(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
                                 offset + size.y - radius - (radius * std::sin(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
         }
 
         // Bottom right corner
-        for (int i = 0; i < nrCornerPoints; ++i)
+        for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
                                 offset + size.y - radius - (radius * std::sin(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
@@ -119,22 +121,22 @@ namespace tgui
             vertices.push_back({innerPoints[i], Vertex::Color(color)});
 
         // Create the indices
-        std::vector<int> indices;
+        std::vector<unsigned int> indices;
         indices.reserve(3 * (outerPoints.size() + innerPoints.size()));
         for (std::size_t i = 0; i < outerPoints.size(); ++i)
         {
-            indices.push_back(static_cast<int>(i));
-            indices.push_back(static_cast<int>(i+1));
-            indices.push_back(static_cast<int>(outerPoints.size() + i));
+            indices.push_back(static_cast<unsigned int>(i));
+            indices.push_back(static_cast<unsigned int>(i+1));
+            indices.push_back(static_cast<unsigned int>(outerPoints.size() + i));
 
-            indices.push_back(static_cast<int>(outerPoints.size() + i));
-            indices.push_back(static_cast<int>(outerPoints.size() + i+1));
-            indices.push_back(static_cast<int>(i+1));
+            indices.push_back(static_cast<unsigned int>(outerPoints.size() + i));
+            indices.push_back(static_cast<unsigned int>(outerPoints.size() + i+1));
+            indices.push_back(static_cast<unsigned int>(i+1));
         }
 
         // The last two triangles were given wrong indices by the loop (where there are "+1" in the code), and need to be overwitten to close the circle
         indices[indices.size() - 1] = 0;
-        indices[indices.size() - 2] = static_cast<int>(outerPoints.size());
+        indices[indices.size() - 2] = static_cast<unsigned int>(outerPoints.size());
         indices[indices.size() - 5] = 0;
 
         // Draw the triangles
@@ -153,13 +155,13 @@ namespace tgui
             vertices.push_back({points[i], Vertex::Color(color)});
 
         // Create the indices
-        std::vector<int> indices;
+        std::vector<unsigned int> indices;
         indices.reserve(3 * points.size());
         for (std::size_t i = 1; i <= points.size(); ++i)
         {
             indices.push_back(0); // Center point
-            indices.push_back(static_cast<int>(i));
-            indices.push_back(static_cast<int>(i+1));
+            indices.push_back(static_cast<unsigned int>(i));
+            indices.push_back(static_cast<unsigned int>(i+1));
         }
         indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
 
@@ -279,7 +281,7 @@ namespace tgui
             {{size.x - borders.getRight(), borders.getTop()}, vertexColor},
             {{borders.getLeft(), borders.getTop()}, vertexColor}
         }};
-        const std::array<int, 8*3> indices = {{
+        const std::array<unsigned int, 8*3> indices = {{
             0, 2, 1,
             1, 2, 3,
             2, 4, 3,
@@ -303,7 +305,7 @@ namespace tgui
             {{size.x, 0}, vertexColor},
             {{size.x, size.y}, vertexColor}
         }};
-        const std::array<int, 2*3> indices = {{
+        const std::array<unsigned int, 2*3> indices = {{
             0, 1, 2,
             2, 1, 3
         }};
@@ -377,7 +379,7 @@ namespace tgui
     void BackendRenderTarget::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
     {
         const float radius = size / 2.f;
-        const int nrPoints = static_cast<int>(std::ceil((radius + std::abs(borderThickness)) * 4));
+        const unsigned int nrPoints = static_cast<unsigned int>(std::ceil((radius + std::abs(borderThickness)) * 4));
         if (borderThickness > 0)
         {
             const std::vector<Vector2f>& outerPoints = drawCircleHelperGetPoints(nrPoints, radius + borderThickness, -borderThickness);
@@ -412,7 +414,7 @@ namespace tgui
         if (radius > size.y / 2)
             radius = size.y / 2;
 
-        const int nrCornerPoints = std::max(1, static_cast<int>(std::ceil(radius * 2)));
+        const unsigned int nrCornerPoints = std::max(1u, static_cast<unsigned int>(std::ceil(radius * 2)));
         const std::vector<Vector2f>& outerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, size, radius, 0);
 
         const float borderWidth = borders.getLeft();

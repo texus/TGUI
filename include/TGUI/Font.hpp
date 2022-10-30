@@ -47,7 +47,7 @@ namespace tgui
     {
         float     advance = 0;  //!< Offset to move horizontally to the next character
         FloatRect bounds;       //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
-        IntRect   textureRect;  //!< Texture coordinates of the glyph inside the font's texture
+        UIntRect  textureRect;  //!< Texture coordinates of the glyph inside the font's texture
     };
 
 

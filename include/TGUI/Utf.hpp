@@ -183,7 +183,7 @@ namespace tgui
         std::u32string convertUtf16toUtf32(U16CharIt inputBegin, U16CharIt inputEnd)
         {
             std::u32string outStrUtf32;
-            outStrUtf32.reserve((inputEnd - inputBegin) + 1);
+            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
 
             auto it = inputBegin;
             while (it < inputEnd)
@@ -220,7 +220,7 @@ namespace tgui
         std::u32string convertWidetoUtf32(WCharIt inputBegin, WCharIt inputEnd)
         {
             std::u32string outStrUtf32;
-            outStrUtf32.reserve((inputEnd - inputBegin) + 1);
+            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
 
             // std::wstring uses UCS-2 on Windows and UCS-4 on unix, so we can be cast directly
             for (auto it = inputBegin; it != inputEnd; ++it)

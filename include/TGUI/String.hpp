@@ -299,11 +299,11 @@ namespace tgui
         /// @return String representing given number, rounded to the given decimals
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        static String fromNumberRounded(T value, int decimals)
+        static String fromNumberRounded(T value, unsigned int decimals)
         {
             std::ostringstream oss;
             oss.imbue(std::locale::classic());
-            oss << std::fixed << std::setprecision(decimals);
+            oss << std::fixed << std::setprecision(static_cast<int>(decimals));
             oss << value;
             return String(oss.str());
         }

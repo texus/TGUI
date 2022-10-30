@@ -613,12 +613,12 @@ namespace tgui
         {
             String text = m_text;
             if (m_selChars == 0)
-                text.insert(text.begin() + m_selEnd, key);
+                text.insert(m_selEnd, 1, key);
             else
             {
                 const std::size_t pos = std::min(m_selStart, m_selEnd);
                 text.erase(pos, m_selChars);
-                text.insert(text.begin() + pos, key);
+                text.insert(pos, 1, key);
             }
 
             // The character has to match the regex
@@ -635,13 +635,13 @@ namespace tgui
             return;
 
         // Insert our character
-        m_text.insert(m_text.begin() + m_selEnd, key);
+        m_text.insert(m_selEnd, 1, key);
 
         // Change the displayed text
         if (m_passwordChar != U'\0')
-            m_displayedText.insert(m_displayedText.begin() + m_selEnd, m_passwordChar);
+            m_displayedText.insert(m_selEnd, 1, m_passwordChar);
         else
-            m_displayedText.insert(m_displayedText.begin() + m_selEnd, key);
+            m_displayedText.insert(m_selEnd, 1, key);
 
         m_textFull.setString(m_displayedText);
 
@@ -883,7 +883,7 @@ namespace tgui
         if (node->propertyValuePairs["DefaultText"])
             setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["DefaultText"]->value).getString());
         if (node->propertyValuePairs["MaximumCharacters"])
-            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toInt());
+            setMaximumCharacters(node->propertyValuePairs["MaximumCharacters"]->value.toUInt());
         if (node->propertyValuePairs["TextWidthLimited"])
             limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["TextWidthLimited"]->value).getBool());
         if (node->propertyValuePairs["ReadOnly"])

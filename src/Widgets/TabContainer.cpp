@@ -137,7 +137,7 @@ namespace tgui
         panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
         layoutPanel(panel);
 
-        m_panels.insert(m_panels.begin() + index, panel);
+        m_panels.insert(m_panels.begin() + static_cast<std::ptrdiff_t>(index), panel);
         m_tabs->insert(index, name, false);
         layoutTabs();
 
@@ -176,10 +176,10 @@ namespace tgui
         layoutTabs();
 
         m_container->remove(m_panels[index]);
-        m_panels.erase(m_panels.begin() + index);
+        m_panels.erase(m_panels.begin() + static_cast<std::ptrdiff_t>(index));
 
-        if (m_tabs->getSelectedIndex() != -1)
-            select(m_tabs->getSelectedIndex());
+        if (m_tabs->getSelectedIndex() >= 0)
+            select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
         else
         {
             // Select the last tab when the selected tab is removed
@@ -256,7 +256,7 @@ namespace tgui
         if (index < 0 || index >= static_cast<int>(m_panels.size()))
             return nullptr;
 
-        return m_panels[index];
+        return m_panels[static_cast<std::size_t>(index)];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +405,8 @@ namespace tgui
         // Apply buffered values.
         setTabAlignment(tabAlign);
         setTabFixedSize(tabFixedSize);
-        select(m_tabs->getSelectedIndex());
+        if (m_tabs->getSelectedIndex())
+            select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
         init();
     }
 
@@ -415,7 +416,8 @@ namespace tgui
     {
         layoutTabs();
         m_tabs->onTabSelect([this](){
-            select(m_tabs->getSelectedIndex());
+            TGUI_ASSERT(m_tabs->getSelectedIndex() >= 0, "TabContainer relies on Tabs::onTabSelect not firing on deselect");
+            select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
         });
     }
 

@@ -330,13 +330,15 @@ namespace tgui
                 // There may be optional parameters
                 while (removeWhitespace(value, c))
                 {
+                    const auto startOffset = static_cast<std::size_t>(c - value.begin());
+
                     String word;
-                    auto openingBracketPos = value.find(U'(', c - value.begin());
+                    auto openingBracketPos = value.find(U'(', startOffset);
                     if (openingBracketPos != String::npos)
-                        word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
+                        word = value.substr(startOffset, openingBracketPos - startOffset);
                     else
                     {
-                        const String& smoothParam = value.substr(c - value.begin()).trim();
+                        const String& smoothParam = value.substr(startOffset).trim();
                         if (smoothParam.equalIgnoreCase("smooth"))
                         {
                             smooth = true;
@@ -370,16 +372,17 @@ namespace tgui
                     else
                         throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
 
-                    auto closeBracketPos = value.find(U')', c - value.begin());
+                    const auto endOffset = static_cast<std::size_t>(c - value.begin());
+                    auto closeBracketPos = value.find(U')', endOffset);
                     if (closeBracketPos != String::npos)
                     {
-                        if (!readUIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect, rectRequiresFourValues))
+                        if (!readUIntRect(value.substr(endOffset, closeBracketPos - endOffset + 1), *rect, rectRequiresFourValues))
                             throw Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
                     }
                     else
                         throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
 
-                    std::advance(c, closeBracketPos - (c - value.begin()) + 1);
+                    std::advance(c, closeBracketPos - endOffset + 1);
                 }
             }
 

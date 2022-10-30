@@ -1588,7 +1588,7 @@ namespace tgui
 #endif
         }
         if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toInt());
+            setTextSize(node->propertyValuePairs["TextSize"]->value.toUInt());
 
         if (node->propertyValuePairs["MouseCursor"])
         {

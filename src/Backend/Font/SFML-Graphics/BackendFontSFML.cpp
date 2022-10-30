@@ -71,7 +71,18 @@ namespace tgui
 #else
         glyph.bounds = {glyphSFML.bounds.left - outlineThickness, glyphSFML.bounds.top - outlineThickness, glyphSFML.bounds.width, glyphSFML.bounds.height};
 #endif
-        glyph.textureRect = {glyphSFML.textureRect.left, glyphSFML.textureRect.top, glyphSFML.textureRect.width, glyphSFML.textureRect.height};
+
+        // SFML uses an IntRect, but all values are unsigned
+        assert(glyphSFML.textureRect.left >= 0);
+        assert(glyphSFML.textureRect.top >= 0);
+        assert(glyphSFML.textureRect.width >= 0);
+        assert(glyphSFML.textureRect.height >= 0);
+        glyph.textureRect = {
+            static_cast<unsigned>(glyphSFML.textureRect.left),
+            static_cast<unsigned>(glyphSFML.textureRect.top),
+            static_cast<unsigned>(glyphSFML.textureRect.width),
+            static_cast<unsigned>(glyphSFML.textureRect.height)};
+
         return glyph;
     }
 

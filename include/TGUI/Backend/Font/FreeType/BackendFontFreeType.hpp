@@ -174,7 +174,7 @@ namespace tgui
             float     lsbDelta = 0;  //!< Left offset after forced autohint. Internally used by getKerning()
             float     rsbDelta = 0;  //!< Right offset after forced autohint. Internally used by getKerning()
             FloatRect bounds;        //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
-            IntRect   textureRect;   //!< Texture coordinates of the glyph inside the font's texture
+            UIntRect  textureRect;   //!< Texture coordinates of the glyph inside the font's texture
         };
 
 
@@ -193,7 +193,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Reserves space in the texture to place the glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        IntRect findAvailableGlyphRect(unsigned int width, unsigned int height);
+        UIntRect findAvailableGlyphRect(unsigned int width, unsigned int height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

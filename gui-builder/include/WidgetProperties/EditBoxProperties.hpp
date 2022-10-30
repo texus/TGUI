@@ -41,7 +41,7 @@ struct EditBoxProperties : WidgetProperties
         else if (property == "TextSize")
             editBox->setTextSize(value.toUInt());
         else if (property == "PasswordCharacter")
-            editBox->setPasswordCharacter(value.empty() ? '\0' : static_cast<char>(value[0]));
+            editBox->setPasswordCharacter(value.empty() ? U'\0' : value[0]);
         else if (property == "MaximumCharacters")
             editBox->setMaximumCharacters(value.toUInt());
         else if (property == "Alignment")

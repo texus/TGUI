@@ -230,12 +230,13 @@ namespace tgui
         for (std::size_t i = newPath.m_parts.size(); i > 0; --i)
         {
             if (newPath.m_parts[i-1] == U".")
-                newPath.m_parts.erase(newPath.m_parts.begin() + (i-1));
+                newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i-1));
             else if (m_parts[i-1] == U"..")
             {
                 if (i > 1)
                 {
-                    newPath.m_parts.erase(newPath.m_parts.begin() + (i-2), newPath.m_parts.begin() + i);
+                    newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i-2),
+                                          newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i));
                     --i;
                 }
                 else

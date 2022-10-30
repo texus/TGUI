@@ -58,7 +58,7 @@ namespace tgui
 
 
         /// Title buttons (use bitwise OR to combine)
-        enum TitleButton
+        enum TitleButton : unsigned int
         {
             None     = 0,      //!< No buttons
             Close    = 1 << 0, //!< Include a close button

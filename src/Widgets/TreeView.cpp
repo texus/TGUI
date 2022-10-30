@@ -462,11 +462,11 @@ namespace tgui
         if (!node)
             return false;
 
-        for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+        for (std::size_t i = 0; i < m_visibleNodes.size(); ++i)
         {
             if (m_visibleNodes[i].get() == node)
             {
-                updateSelectedItem(i);
+                updateSelectedItem(static_cast<int>(i));
                 return true;
             }
         }
@@ -504,10 +504,10 @@ namespace tgui
     {
         std::vector<String> hierarchy;
 
-        if (m_selectedItem == -1)
+        if (m_selectedItem < 0)
             return hierarchy;
 
-        const auto* node = m_visibleNodes[m_selectedItem].get();
+        const auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
         while (node)
         {
             hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -709,14 +709,14 @@ namespace tgui
                 {
                     // Expand or colapse the node when clicking the icon
                     const float iconPaddingX = (m_iconBounds.x / 4.f);
-                    const float iconOffsetX = iconPaddingX + ((m_iconBounds.x + iconPaddingX) * m_visibleNodes[selectedIndex]->depth);
+                    const float iconOffsetX = iconPaddingX + ((m_iconBounds.x + iconPaddingX) * m_visibleNodes[static_cast<std::size_t>(selectedIndex)]->depth);
                     const float iconOffsetY = (m_itemHeight - m_iconBounds.y) / 2.f;
                     if (FloatRect{iconOffsetX + m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(),
-                                  iconOffsetY + (selectedIndex * m_itemHeight) + m_bordersCached.getTop() + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
+                                  iconOffsetY + (static_cast<unsigned int>(selectedIndex) * m_itemHeight) + m_bordersCached.getTop() + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
                                   m_iconBounds.x,
                                   m_iconBounds.y}.contains(pos))
                     {
-                        toggleNodeInternal(selectedIndex);
+                        toggleNodeInternal(static_cast<std::size_t>(selectedIndex));
                         m_possibleDoubleClick = false;
                         iconPressed = true;
                     }
@@ -729,13 +729,13 @@ namespace tgui
 
                 if ((selectedIndex >= 0) && (selectedIndex == m_doubleClickNodeIndex) && (selectedIndex < static_cast<int>(m_visibleNodes.size())))
                 {
-                    toggleNodeInternal(selectedIndex);
+                    toggleNodeInternal(static_cast<std::size_t>(selectedIndex));
 
                     // Send double click if this was a leaf node
-                    if (m_visibleNodes[selectedIndex]->nodes.empty())
+                    if (m_visibleNodes[static_cast<std::size_t>(selectedIndex)]->nodes.empty())
                     {
                         std::vector<String> hierarchy;
-                        auto* node = m_visibleNodes[selectedIndex].get();
+                        auto* node = m_visibleNodes[static_cast<std::size_t>(selectedIndex)].get();
                         while (node)
                         {
                             hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -773,12 +773,12 @@ namespace tgui
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
             int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
-            if (selectedItem < static_cast<int>(m_visibleNodes.size()))
+            if ((selectedItem >= 0) && (selectedItem < static_cast<int>(m_visibleNodes.size())))
             {
-                updateSelectedItem(selectedItem);
+                updateSelectedItem(static_cast<std::size_t>(selectedItem));
 
                 std::vector<String> hierarchy;
-                auto* node = m_visibleNodes[selectedItem].get();
+                auto* node = m_visibleNodes[static_cast<std::size_t>(selectedItem)].get();
                 while (node)
                 {
                     hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -881,6 +881,7 @@ namespace tgui
         if (m_selectedItem < 0)
             return;
 
+        const auto selectedItemIdx = static_cast<std::size_t>(m_selectedItem);
         if (event.code == Event::KeyboardKey::Up)
         {
             // Select the item above
@@ -890,23 +891,23 @@ namespace tgui
         else if (event.code == Event::KeyboardKey::Down)
         {
             // Select the item below
-            if (static_cast<unsigned int>(m_selectedItem) + 1 < m_visibleNodes.size())
+            if (selectedItemIdx + 1 < m_visibleNodes.size())
                 updateSelectedItem(m_selectedItem + 1);
         }
         else if (event.code == Event::KeyboardKey::Left)
         {
             // If item is an expanded node then collapse it. Otherwise select the parent node, or the previous sibling node if it has no parent.
-            TGUI_ASSERT(static_cast<unsigned int>(m_selectedItem) <= m_visibleNodes.size(), "Selected item index has to be in range");
-            if (!m_visibleNodes[m_selectedItem]->nodes.empty() && m_visibleNodes[m_selectedItem]->expanded)
+            TGUI_ASSERT(selectedItemIdx <= m_visibleNodes.size(), "Selected item index has to be in range");
+            if (!m_visibleNodes[selectedItemIdx]->nodes.empty() && m_visibleNodes[selectedItemIdx]->expanded)
             {
-                m_visibleNodes[m_selectedItem]->expanded = false;
+                m_visibleNodes[selectedItemIdx]->expanded = false;
                 markNodesDirty();
             }
-            else if (m_visibleNodes[m_selectedItem]->parent)
+            else if (m_visibleNodes[selectedItemIdx]->parent)
             {
-                for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+                for (std::size_t i = 0; i < m_visibleNodes.size(); ++i)
                 {
-                    if (m_visibleNodes[i].get() == m_visibleNodes[m_selectedItem]->parent)
+                    if (m_visibleNodes[i].get() == m_visibleNodes[selectedItemIdx]->parent)
                     {
                         updateSelectedItem(i);
                         break;
@@ -916,9 +917,9 @@ namespace tgui
             else if (m_selectedItem > 0)
             {
                 unsigned int nodeIndex = 0;
-                for (unsigned int i = 0; i < m_nodes.size(); ++i)
+                for (std::size_t i = 0; i < m_nodes.size(); ++i)
                 {
-                    if (m_nodes[i] == m_visibleNodes[m_selectedItem])
+                    if (m_nodes[i] == m_visibleNodes[selectedItemIdx])
                     {
                         nodeIndex = i;
                         break;
@@ -926,7 +927,7 @@ namespace tgui
                 }
 
                 TGUI_ASSERT(nodeIndex > 0, "Index can't be 0 as this is not the top item");
-                for (unsigned int i = 0; i < m_visibleNodes.size(); ++i)
+                for (std::size_t i = 0; i < m_visibleNodes.size(); ++i)
                 {
                     if (m_visibleNodes[i] == m_nodes[nodeIndex - 1])
                     {
@@ -939,13 +940,13 @@ namespace tgui
         else if (event.code == Event::KeyboardKey::Right)
         {
             // If item is a collapsed node then expand it. Otherwise simply select the next item.
-            TGUI_ASSERT(static_cast<unsigned int>(m_selectedItem) <= m_visibleNodes.size(), "Selected item index has to be in range");
-            if (!m_visibleNodes[m_selectedItem]->nodes.empty() && !m_visibleNodes[m_selectedItem]->expanded)
+            TGUI_ASSERT(selectedItemIdx <= m_visibleNodes.size(), "Selected item index has to be in range");
+            if (!m_visibleNodes[selectedItemIdx]->nodes.empty() && !m_visibleNodes[selectedItemIdx]->expanded)
             {
-                m_visibleNodes[m_selectedItem]->expanded = true;
+                m_visibleNodes[selectedItemIdx]->expanded = true;
                 markNodesDirty();
             }
-            else if (static_cast<unsigned int>(m_selectedItem) + 1 < m_visibleNodes.size())
+            else if (selectedItemIdx + 1 < m_visibleNodes.size())
                 updateSelectedItem(m_selectedItem + 1);
         }
     }
@@ -1109,7 +1110,7 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toInt());
+            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
 
         loadItems(node, m_nodes, nullptr);
 
@@ -1178,7 +1179,7 @@ namespace tgui
         {
             m_visibleNodes.push_back(node);
             if (selectedNode == node.get())
-                m_selectedItem = pos;
+                m_selectedItem = static_cast<int>(pos);
 
             const float iconPadding = (m_iconBounds.x / 4.f);
             const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * node->depth);
@@ -1203,7 +1204,7 @@ namespace tgui
     {
         Node* selectedNode = nullptr;
         if (m_selectedItem >= 0 && static_cast<std::size_t>(m_selectedItem) < m_visibleNodes.size())
-            selectedNode = m_visibleNodes[m_selectedItem].get();
+            selectedNode = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
 
         int oldHoveredItem = m_hoveredItem;
 
@@ -1280,12 +1281,12 @@ namespace tgui
         target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
             {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
-        int firstNode = 0;
-        int lastNode = static_cast<int>(m_visibleNodes.size());
+        std::size_t firstNode = 0;
+        std::size_t lastNode = m_visibleNodes.size();
         if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
-            firstNode = static_cast<int>(m_verticalScrollbar->getValue() / m_itemHeight);
-            lastNode = static_cast<int>((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / m_itemHeight);
+            firstNode = m_verticalScrollbar->getValue() / m_itemHeight;
+            lastNode = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / m_itemHeight;
 
             // Show another item when the scrollbar is standing between two items
             if ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) % m_itemHeight != 0)
@@ -1295,7 +1296,7 @@ namespace tgui
         states.transform.translate({m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(), m_paddingCached.getTop() - m_verticalScrollbar->getValue()});
 
         // Draw the background of the selected item
-        if ((m_selectedItem >= firstNode) && (m_selectedItem < lastNode))
+        if ((m_selectedItem >= static_cast<int>(firstNode)) && (m_selectedItem < static_cast<int>(lastNode)))
         {
             states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
 
@@ -1309,7 +1310,7 @@ namespace tgui
         }
 
         // Draw the background of the item on which the mouse is standing
-        if ((m_hoveredItem >= firstNode) && (m_hoveredItem < lastNode) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
+        if ((m_hoveredItem >= static_cast<int>(firstNode)) && (m_hoveredItem < static_cast<int>(lastNode)) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
         {
             states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
             target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
@@ -1317,7 +1318,7 @@ namespace tgui
         }
 
         // Draw the icons
-        for (int i = firstNode; i < lastNode; ++i)
+        for (std::size_t i = firstNode; i < lastNode; ++i)
         {
             auto statesForIcon = states;
             const float iconPadding = (m_iconBounds.x / 4.f);
@@ -1359,14 +1360,14 @@ namespace tgui
                 else // No textures are used
                 {
                     Color iconColor = m_textColorCached;
-                    if (i == m_selectedItem)
+                    if (static_cast<int>(i) == m_selectedItem)
                     {
                         if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
                             iconColor = m_selectedTextColorHoverCached;
                         else if (m_selectedTextColorCached.isSet())
                             iconColor = m_selectedTextColorCached;
                     }
-                    if ((i == m_hoveredItem) && (m_selectedItem != m_hoveredItem))
+                    if ((static_cast<int>(i) == m_hoveredItem) && (m_selectedItem != m_hoveredItem))
                     {
                         if (m_textColorHoverCached.isSet())
                             iconColor = m_textColorHoverCached;
@@ -1392,7 +1393,7 @@ namespace tgui
         }
 
         // Draw the texts
-        for (int i = firstNode; i < lastNode; ++i)
+        for (std::size_t i = firstNode; i < lastNode; ++i)
             target.drawText(states, m_visibleNodes[i]->text);
 
         target.removeClippingLayer();
@@ -1504,15 +1505,15 @@ namespace tgui
         if (m_selectedItem >= 0)
         {
             if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
-                m_visibleNodes[m_selectedItem]->text.setColor(m_selectedTextColorHoverCached);
+                m_visibleNodes[static_cast<std::size_t>(m_selectedItem)]->text.setColor(m_selectedTextColorHoverCached);
             else if (m_selectedTextColorCached.isSet())
-                m_visibleNodes[m_selectedItem]->text.setColor(m_selectedTextColorCached);
+                m_visibleNodes[static_cast<std::size_t>(m_selectedItem)]->text.setColor(m_selectedTextColorCached);
         }
 
         if ((m_hoveredItem >= 0) && (m_selectedItem != m_hoveredItem))
         {
             if (m_textColorHoverCached.isSet())
-                m_visibleNodes[m_hoveredItem]->text.setColor(m_textColorHoverCached);
+                m_visibleNodes[static_cast<std::size_t>(m_hoveredItem)]->text.setColor(m_textColorHoverCached);
         }
     }
 
@@ -1526,9 +1527,9 @@ namespace tgui
         if (m_hoveredItem >= 0)
         {
             if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorCached.isSet())
-                m_visibleNodes[m_hoveredItem]->text.setColor(m_selectedTextColorCached);
+                m_visibleNodes[static_cast<std::size_t>(m_hoveredItem)]->text.setColor(m_selectedTextColorCached);
             else
-                m_visibleNodes[m_hoveredItem]->text.setColor(m_textColorCached);
+                m_visibleNodes[static_cast<std::size_t>(m_hoveredItem)]->text.setColor(m_textColorCached);
         }
 
         m_hoveredItem = item;
@@ -1545,16 +1546,16 @@ namespace tgui
         if (m_selectedItem >= 0)
         {
             if ((m_selectedItem == m_hoveredItem) && m_textColorHoverCached.isSet())
-                m_visibleNodes[m_selectedItem]->text.setColor(m_textColorHoverCached);
+                m_visibleNodes[static_cast<std::size_t>(m_selectedItem)]->text.setColor(m_textColorHoverCached);
             else
-                m_visibleNodes[m_selectedItem]->text.setColor(m_textColorCached);
+                m_visibleNodes[static_cast<std::size_t>(m_selectedItem)]->text.setColor(m_textColorCached);
         }
 
         m_selectedItem = item;
         if (m_selectedItem >= 0)
         {
             std::vector<String> hierarchy;
-            auto* node = m_visibleNodes[m_selectedItem].get();
+            auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
             while (node)
             {
                 hierarchy.insert(hierarchy.begin(), node->text.getString());

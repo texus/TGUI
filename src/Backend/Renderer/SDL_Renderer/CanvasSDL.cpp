@@ -139,7 +139,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, normalizedTextureSize.y}},
             {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, normalizedTextureSize.y}},
         }};
-        const std::array<int, 6> indices = {{
+        const std::array<unsigned int, 6> indices = {{
             0, 2, 1,
             1, 2, 3
         }};

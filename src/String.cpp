@@ -238,7 +238,7 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.begin(), m_string.begin() + substring.length(), substring.begin(), substring.end(), &compareCharIgnoreCase);
+        return std::equal(m_string.begin(), m_string.begin() + static_cast<std::ptrdiff_t>(substring.length()), substring.begin(), substring.end(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,8 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.begin() + length() - substring.length(), m_string.end(), substring.begin(), substring.end(), &compareCharIgnoreCase);
+        return std::equal(m_string.begin() + static_cast<std::ptrdiff_t>(length() - substring.length()), m_string.end(),
+                          substring.begin(), substring.end(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

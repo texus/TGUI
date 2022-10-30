@@ -105,19 +105,19 @@ private:
             return tgui::ChildWindow::TitleAlignment::Left;
     }
 
-    static int deserializeTitleButtons(tgui::String value)
+    static unsigned int deserializeTitleButtons(tgui::String value)
     {
-        int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
+        unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
         std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');
         for (const auto& elem : titleButtons)
         {
             tgui::String requestedTitleButton = elem.trim().toLower();
             if (requestedTitleButton == "close")
-                decodedTitleButtons |= tgui::TextStyle::Bold;
+                decodedTitleButtons |= tgui::ChildWindow::TitleButton::Close;
             else if (requestedTitleButton == "maximize")
-                decodedTitleButtons |= tgui::TextStyle::Italic;
+                decodedTitleButtons |= tgui::ChildWindow::TitleButton::Maximize;
             else if (requestedTitleButton == "minimize")
-                decodedTitleButtons |= tgui::TextStyle::Underlined;
+                decodedTitleButtons |= tgui::ChildWindow::TitleButton::Minimize;
         }
 
         return decodedTitleButtons;

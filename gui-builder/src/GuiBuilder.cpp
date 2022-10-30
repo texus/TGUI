@@ -1626,10 +1626,14 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
 
         auto updateTextStyleProperty = [=]{
             unsigned int newStyle = 0;
-            newStyle |= (checkBoxBold->isChecked() ? tgui::TextStyle::Bold : 0);
-            newStyle |= (checkBoxItalic->isChecked() ? tgui::TextStyle::Italic : 0);
-            newStyle |= (checkBoxUnderlined->isChecked() ? tgui::TextStyle::Underlined : 0);
-            newStyle |= (checkBoxStrikeThrough->isChecked() ? tgui::TextStyle::StrikeThrough : 0);
+            if (checkBoxBold->isChecked())
+                newStyle |= tgui::TextStyle::Bold;
+            if (checkBoxItalic->isChecked())
+                newStyle |= tgui::TextStyle::Italic;
+            if (checkBoxUnderlined->isChecked())
+                newStyle |= tgui::TextStyle::Underlined;
+            if (checkBoxStrikeThrough->isChecked())
+                newStyle |= tgui::TextStyle::StrikeThrough;
             onChange(tgui::Serializer::serialize(tgui::TextStyles{newStyle}));
         };
         checkBoxBold->onChange(updateTextStyleProperty);

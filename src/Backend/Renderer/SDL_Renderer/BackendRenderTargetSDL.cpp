@@ -116,7 +116,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTargetSDL::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
         SDL_Texture* textureSDL = nullptr;
         if (texture)
@@ -139,10 +139,11 @@ namespace tgui
 
         // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
         // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
+        static_assert(sizeof(int) == sizeof(unsigned int));
         static_assert(sizeof(Vertex) == sizeof(SDL_Vertex), "SDL_Vertex requires same memory layout as tgui::Vertex for cast to work");
         SDL_RenderGeometry(m_renderer, textureSDL,
                            reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()), static_cast<int>(vertexCount),
-                           indices, static_cast<int>(indexCount));
+                           reinterpret_cast<const int*>(indices), static_cast<int>(indexCount));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

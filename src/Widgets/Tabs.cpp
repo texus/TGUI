@@ -153,7 +153,7 @@ namespace tgui
         newTab.text.setCharacterSize(getTextSize());
         newTab.text.setString(text);
 
-        m_tabs.insert(m_tabs.begin() + index, std::move(newTab));
+        m_tabs.insert(m_tabs.begin() + static_cast<std::ptrdiff_t>(index), std::move(newTab));
         recalculateTabsWidth();
 
         // New hovered tab depends on several factors, we keep it simple and just remove the hover state
@@ -220,7 +220,7 @@ namespace tgui
 
         // Select the tab
         m_selectedTab = static_cast<int>(index);
-        m_tabs[m_selectedTab].text.setColor(m_selectedTextColorCached);
+        m_tabs[index].text.setColor(m_selectedTextColorCached);
         updateTextColors();
 
         // Send the callback
@@ -261,7 +261,7 @@ namespace tgui
             return false;
 
         // Remove the tab
-        m_tabs.erase(m_tabs.begin() + index);
+        m_tabs.erase(m_tabs.begin() + static_cast<std::ptrdiff_t>(index));
 
         // Check if the selected tab should be updated
         if (m_selectedTab == static_cast<int>(index))
@@ -291,7 +291,7 @@ namespace tgui
     String Tabs::getSelected() const
     {
         if (m_selectedTab >= 0)
-            return m_tabs[m_selectedTab].text.getString();
+            return m_tabs[static_cast<std::size_t>(m_selectedTab)].text.getString();
         else
             return "";
     }
@@ -762,7 +762,7 @@ namespace tgui
         if (node->propertyValuePairs["TabHeight"])
             setTabHeight(node->propertyValuePairs["TabHeight"]->value.toFloat());
         if (node->propertyValuePairs["Selected"])
-            select(node->propertyValuePairs["Selected"]->value.toInt());
+            select(node->propertyValuePairs["Selected"]->value.toUInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -782,15 +782,15 @@ namespace tgui
             if (m_selectedTab >= 0)
             {
                 if ((m_selectedTab == m_hoveringTab) && m_selectedTextColorHoverCached.isSet())
-                    m_tabs[m_selectedTab].text.setColor(m_selectedTextColorHoverCached);
+                    m_tabs[static_cast<std::size_t>(m_selectedTab)].text.setColor(m_selectedTextColorHoverCached);
                 else if (m_selectedTextColorCached.isSet())
-                    m_tabs[m_selectedTab].text.setColor(m_selectedTextColorCached);
+                    m_tabs[static_cast<std::size_t>(m_selectedTab)].text.setColor(m_selectedTextColorCached);
             }
 
             if ((m_hoveringTab >= 0) && (m_selectedTab != m_hoveringTab))
             {
                 if (m_textColorHoverCached.isSet())
-                    m_tabs[m_hoveringTab].text.setColor(m_textColorHoverCached);
+                    m_tabs[static_cast<std::size_t>(m_hoveringTab)].text.setColor(m_textColorHoverCached);
             }
         }
     }

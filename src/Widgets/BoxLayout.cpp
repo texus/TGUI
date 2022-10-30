@@ -85,7 +85,7 @@ namespace tgui
 
             m_widgets.pop_back();
 
-            m_widgets.insert(m_widgets.begin() + index, widget);
+            m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widget);
         }
         else // Just add the widget to the back
             Group::add(widget, widgetName);

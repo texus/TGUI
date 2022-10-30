@@ -30,6 +30,7 @@
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wold-style-cast"
 #   pragma GCC diagnostic ignored "-Wsign-compare"
+#   pragma GCC diagnostic ignored "-Wsign-conversion"
 #   pragma GCC diagnostic ignored "-Wdouble-promotion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
 #   pragma GCC diagnostic ignored "-Wcast-align"
