@@ -6,7 +6,7 @@ Although originally a library for SFML, it now also has backends for SDL and GLF
 
 For more information, take a look at the [website](https://tgui.eu).
 
-<img src="https://user-images.githubusercontent.com/1461034/199197932-76c71e25-d214-472f-8ae9-fa6033777bee.png" alt="TGUI 0.10 White theme" width="440" height="330"/> <img src="https://user-images.githubusercontent.com/1461034/199199319-72377b80-009f-4c1f-a4d0-b90b5cc56c27.png" alt="TGUI 0.10 Black theme" width="440" height="330"/>
+<img src="https://user-images.githubusercontent.com/1461034/199197932-76c71e25-d214-472f-8ae9-fa6033777bee.png" alt="TGUI 0.10 White theme" width="400" height="300"/> <img src="https://user-images.githubusercontent.com/1461034/199199319-72377b80-009f-4c1f-a4d0-b90b5cc56c27.png" alt="TGUI 0.10 Black theme" width="400" height="300"/>
 
 
 Status
