@@ -129,7 +129,7 @@ namespace tgui
     BackendRenderTargetOpenGL3::BackendRenderTargetOpenGL3() :
         m_shaderProgram(createShaderProgram())
     {
-        TGUI_ASSERT(getBackend(), "BackendRenderTargetOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
+        TGUI_ASSERT(isBackendSet(), "BackendRenderTargetOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
         TGUI_ASSERT(getBackend()->getRenderer(), "BackendRenderTargetOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
 
         // If our OpenGL version didn't support the layout qualifier in GLSL then we need to query the location
@@ -294,10 +294,7 @@ namespace tgui
         // Batch rendering (and re-arranging draw calls to be better batchable) would be much faster though.
         TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertexCount * sizeof(Vertex)), vertices, GL_DYNAMIC_DRAW));
 
-        Transform finalTransform = states.transform;
-        finalTransform.roundPosition(); // Avoid blurry texts
-        finalTransform = m_projectionTransform * finalTransform;
-
+        const Transform finalTransform = m_projectionTransform * states.transform;
         glUniformMatrix4fv(m_projectionMatrixShaderUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
 
         if (indices)
@@ -313,15 +310,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetOpenGL3::updateClipping(FloatRect, FloatRect clipViewport)
+    void BackendRenderTargetOpenGL3::updateClipping(FloatRect clipRect, FloatRect clipViewport)
     {
-        if ((clipViewport.width > 0) && (clipViewport.height > 0))
+        if ((clipViewport.width > 0) && (clipViewport.height > 0) && (clipRect.width > 0) && (clipRect.height > 0))
         {
+            m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
+
             TGUI_GL_CHECK(glScissor(static_cast<int>(clipViewport.left), static_cast<int>(m_targetSize.y - clipViewport.top - clipViewport.height),
                                     static_cast<int>(clipViewport.width), static_cast<int>(clipViewport.height)));
         }
         else // Clip the entire window
         {
+            m_pixelsPerPoint = {1, 1};
+
             TGUI_GL_CHECK(glScissor(0, 0, 0, 0));
         }
     }

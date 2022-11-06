@@ -183,16 +183,20 @@ namespace tgui
 
     void BackendRenderTargetSFML::updateClipping(FloatRect clipRect, FloatRect clipViewport)
     {
-        if ((clipViewport.width > 0) && (clipViewport.height > 0))
+        if ((clipViewport.width > 0) && (clipViewport.height > 0) && (clipRect.width > 0) && (clipRect.height > 0))
         {
-            sf::View newView{{{std::round(clipRect.left), std::round(clipRect.top)},
-                              {std::round(clipRect.width), std::round(clipRect.height)}}};
+            m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
+
+            sf::View newView{{{(clipRect.left * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, (clipRect.top * m_pixelsPerPoint.y) / m_pixelsPerPoint.y},
+                              {(clipRect.width * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, (clipRect.height * m_pixelsPerPoint.y) / m_pixelsPerPoint.y}}};
             newView.setViewport({{clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y},
                                  {clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y}});
             m_target->setView(newView);
         }
         else // Clip the entire window
         {
+            m_pixelsPerPoint = {1, 1};
+
             sf::View clippingView{{{0, 0}, {0, 0}}};
             clippingView.setViewport({{0, 0}, {0, 0}});
             m_target->setView(clippingView);
@@ -207,8 +211,8 @@ namespace tgui
 
         sf::RenderStates statesSFML;
         statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], std::round(transformMatrix[12]),
-            transformMatrix[1], transformMatrix[5], std::round(transformMatrix[13]),
+            transformMatrix[0], transformMatrix[4], transformMatrix[12],
+            transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
 
         if (texture)

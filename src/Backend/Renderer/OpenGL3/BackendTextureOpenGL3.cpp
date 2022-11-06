@@ -43,7 +43,7 @@ namespace tgui
 
     bool BackendTextureOpenGL3::loadTextureOnly(Vector2u size, const std::uint8_t* pixels, bool smooth)
     {
-        TGUI_ASSERT(getBackend(), "BackendTextureOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
+        TGUI_ASSERT(isBackendSet(), "BackendTextureOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
         TGUI_ASSERT(getBackend()->getRenderer(), "BackendTextureOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
 
         const bool reuseTexture = ((m_textureId != 0) && (size.x == m_imageSize.x) && (size.y == m_imageSize.y) && (smooth == m_isSmooth));

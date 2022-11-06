@@ -125,10 +125,7 @@ namespace tgui
             textureSDL = std::static_pointer_cast<BackendTextureSDL>(texture)->getInternalTexture();
         }
 
-        Transform finalTransform = states.transform;
-        finalTransform.roundPosition(); // Avoid blurry texts
-        finalTransform = m_projectionTransform * finalTransform;
-
+        const Transform finalTransform = m_projectionTransform * states.transform;
         std::vector<Vertex> verticesSDL(vertices, vertices + vertexCount);
         for (std::size_t i = 0; i < vertexCount; ++i)
         {
@@ -148,10 +145,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSDL::updateClipping(FloatRect, FloatRect clipViewport)
+    void BackendRenderTargetSDL::updateClipping(FloatRect clipRect, FloatRect clipViewport)
     {
-        if ((clipViewport.width > 0) && (clipViewport.height > 0))
+        if ((clipViewport.width > 0) && (clipViewport.height > 0) && (clipRect.width > 0) && (clipRect.height > 0))
         {
+            m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
+
             SDL_Rect clipRectSDL;
             clipRectSDL.x = static_cast<int>(clipViewport.left - m_viewport.left);
             clipRectSDL.y = static_cast<int>(clipViewport.top - m_viewport.top);
@@ -161,6 +160,8 @@ namespace tgui
         }
         else // Clip the entire window
         {
+            m_pixelsPerPoint = {1, 1};
+
             SDL_RenderSetClipRect(m_renderer, nullptr);
         }
     }

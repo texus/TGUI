@@ -201,20 +201,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transform::roundPosition()
+    void Transform::roundPosition(float pixelScaleX, float pixelScaleY)
     {
-        m_matrix[12] = std::round(m_matrix[12]);
-        m_matrix[13] = std::round(m_matrix[13]);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Transform::roundPositionForText()
-    {
-        m_matrix[12] = std::round(m_matrix[12]);
-
-        // Text tends to be drawn a little bit too low, so rounding downwards seems to usually provide slightly better results
-        m_matrix[13] = std::floor(m_matrix[13] + 0.1f);
+        m_matrix[12] = std::round(m_matrix[12] * pixelScaleX) / pixelScaleX;
+        m_matrix[13] = std::round(m_matrix[13] * pixelScaleY) / pixelScaleY;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

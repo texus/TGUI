@@ -193,7 +193,11 @@ namespace tgui
          || (widgetBottomRight.x < clipRect.left) || (widgetBottomRight.y < clipRect.top))
             return;
 
-        widget->draw(*this, states);
+        // Round widget positions to the nearest pixel
+        RenderStates statesWithRoundedPos = states;
+        statesWithRoundedPos.transform.roundPosition(m_pixelsPerPoint.x, m_pixelsPerPoint.y);
+
+        widget->draw(*this, statesWithRoundedPos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,7 +359,9 @@ namespace tgui
     {
         RenderStates transformedStates = states;
         transformedStates.transform.translate(text.getPosition());
-        transformedStates.transform.roundPositionForText();
+
+        // Round the text to the nearest pixel to try to avoid blurry text
+        transformedStates.transform.roundPosition(m_pixelsPerPoint.x, m_pixelsPerPoint.y);
 
         auto vertexData = text.getBackendText()->getVertexData();
 
@@ -371,7 +377,7 @@ namespace tgui
 
     void BackendRenderTarget::drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3)
     {
-        std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};
+        const std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};
         drawVertexArray(states, vertices.data(), vertices.size(), nullptr, 0, nullptr);
     }
 

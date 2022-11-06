@@ -229,6 +229,7 @@ namespace tgui
         Vector2f  m_targetSize;
 
         std::vector<std::pair<FloatRect, FloatRect>> m_clipLayers;
+        Vector2f m_pixelsPerPoint = {1, 1};
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
