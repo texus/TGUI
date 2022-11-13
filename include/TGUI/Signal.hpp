@@ -451,7 +451,6 @@ namespace tgui
     using SignalFloat = SignalTyped<float>; //!< Signal with one "float" as optional unbound parameter
     using SignalColor = SignalTyped<Color>; //!< Signal with one "Color" as optional unbound parameter
     using SignalString = SignalTyped<const String&>; //!< Signal with one "String" as optional unbound parameter
-    using SignalPathList = SignalTyped<const std::vector<Filesystem::Path>&>; //!< Signal with a vector of Filesystem::Path as optional unbound parameter
     using SignalVector2f = SignalTyped<Vector2f>; //!< Signal with one "Vector2f" as optional unbound parameter
     using SignalFloatRect = SignalTyped<FloatRect>; //!< Signal with one "FloatRect" as optional unbound parameter
     using SignalRange = SignalTyped2<float, float>; //!< Signal with two floats as optional unbound parameters
@@ -628,7 +627,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param func  Callback function that has an unbound string (for the item text) as last parameter
+        /// @param func  Callback function that has 2 unbound strings (for the item text and id) as last parameters
         /// @param args  Additional arguments to pass to the function
         ///
         /// @return Unique id of the connection
@@ -654,6 +653,108 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - vector<Filesystem::Path>
+    /// - Filesystem::Path
+    /// - String
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalFileDialogPaths : public Signal
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalFileDialogPaths(String&& name) :
+            Signal{std::move(name), 3}
+        {
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound string (for the first path) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<String>(1)); });
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound Filesystem::Path (for the first path) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const Filesystem::Path&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<Filesystem::Path>(2)); });
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound vector of Filesystem::Path (for all the paths) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::vector<Filesystem::Path>&)>>::value>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=]{ invokeFunc(func, args..., dereferenceParam<std::vector<Filesystem::Path>>(3)); });
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget Widget that is triggering the signal
+        /// @param paths  List of paths to selected files
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, const std::vector<Filesystem::Path>& paths);
     };
 
 

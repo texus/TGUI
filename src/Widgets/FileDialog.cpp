@@ -135,6 +135,7 @@ namespace tgui
     FileDialog::FileDialog(const FileDialog& other) :
         ChildWindow             {other},
         onFileSelect            {other.onFileSelect},
+        onCancel                {other.onCancel},
         m_currentDirectory      {other.m_currentDirectory},
         m_filesInDirectory      {other.m_filesInDirectory},
         m_fileIcons             {other.m_fileIcons},
@@ -162,6 +163,7 @@ namespace tgui
     FileDialog::FileDialog(FileDialog&& other) noexcept :
         ChildWindow             {std::move(other)},
         onFileSelect            {std::move(other.onFileSelect)},
+        onCancel                {std::move(other.onCancel)},
         m_buttonBack            {std::move(other.m_buttonBack)},
         m_buttonForward         {std::move(other.m_buttonForward)},
         m_buttonUp              {std::move(other.m_buttonUp)},
@@ -199,6 +201,7 @@ namespace tgui
             ChildWindow::operator=(other);
 
             onFileSelect = other.onFileSelect;
+            onCancel = other.onCancel;
             m_currentDirectory = other.m_currentDirectory;
             m_filesInDirectory = other.m_filesInDirectory;
             m_fileIcons = other.m_fileIcons;
@@ -232,6 +235,7 @@ namespace tgui
         {
             ChildWindow::operator=(std::move(other));
             onFileSelect = std::move(other.onFileSelect);
+            onCancel = std::move(other.onCancel);
             m_buttonBack = std::move(other.m_buttonBack);
             m_buttonForward = std::move(other.m_buttonForward);
             m_buttonUp = std::move(other.m_buttonUp);
@@ -834,7 +838,12 @@ namespace tgui
     void FileDialog::filesSelected(std::vector<Filesystem::Path> selectedFiles)
     {
         m_selectedFiles = std::move(selectedFiles);
-        onFileSelect.emit(this, m_selectedFiles);
+
+        if (!m_selectedFiles.empty())
+            onFileSelect.emit(this, m_selectedFiles);
+        else
+            onCancel.emit(this);
+
         close();
     }
 
@@ -1020,6 +1029,8 @@ namespace tgui
     {
         if (signalName == onFileSelect.getName())
             return onFileSelect;
+        else if (signalName == onCancel.getName())
+            return onCancel;
         else
             return ChildWindow::getSignal(std::move(signalName));
     }

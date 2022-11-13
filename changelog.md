@@ -24,6 +24,7 @@ TGUI 1.0-alpha  (17 September 2022)
 - Added ScrollbarValue to Label
 - Theme files now support global properties
 - Theme files now support inheritance between sections
+- onFileSelect signal in FileDialog is no longer called on cancel
 - Tool tips are now shown on disabled widgets by default
 - Word-wrapped lines no longer begin with whitespace
 - Filter CR in TextArea to prevent issues when pasting CRLF on Windows

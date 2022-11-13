@@ -769,9 +769,8 @@ void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::Strin
     fileDialog->setFilename(defaultFilename);
     openWindowWithFocus(fileDialog);
 
-    fileDialog->onFileSelect([onLoad](const std::vector<tgui::Filesystem::Path>& selectedFiles){
-        if (!selectedFiles.empty())
-            onLoad(selectedFiles[0].asString());
+    fileDialog->onFileSelect([onLoad](const tgui::String& selectedFile){
+        onLoad(selectedFile);
     });
 }
 
@@ -2247,9 +2246,8 @@ void GuiBuilder::menuBarCallbackEditThemes()
         }
         openWindowWithFocus(fileDialog);
 
-        fileDialog->onFileSelect([newThemeEditBox](const std::vector<tgui::Filesystem::Path>& selectedFiles){
-            if (!selectedFiles.empty())
-                newThemeEditBox->setText(selectedFiles[0].asString());
+        fileDialog->onFileSelect([newThemeEditBox](const tgui::String& selectedFile){
+            newThemeEditBox->setText(selectedFile);
         });
     });
 }

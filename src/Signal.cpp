@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 
 #include <set>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -127,6 +128,21 @@ namespace tgui
         m_parameters[1] = static_cast<const void*>(&index);
         m_parameters[2] = static_cast<const void*>(&item);
         m_parameters[3] = static_cast<const void*>(&id);
+        return Signal::emit(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SignalFileDialogPaths::emit(const Widget* widget, const std::vector<Filesystem::Path>& paths)
+    {
+        if (m_handlers.empty())
+            return false;
+
+        assert(!paths.empty());
+        const String& pathStr = paths[0].asString();
+        m_parameters[1] = static_cast<const void*>(&pathStr);
+        m_parameters[2] = static_cast<const void*>(&paths[0]);
+        m_parameters[3] = static_cast<const void*>(&paths);
         return Signal::emit(widget);
     }
 

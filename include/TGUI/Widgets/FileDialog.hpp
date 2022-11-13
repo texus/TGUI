@@ -504,10 +504,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        /// The file dialog has been closed.
-        /// Optional parameter: vector of selected files or empty vector on cancel.
+        /// One or more files were selected and the confirm button was pressed. This signal fires before onClose.
+        /// Optional parameter: selected file or vector of selected files
         /// @see getSelectedPaths
-        SignalPathList onFileSelect = {"FileSelected"};
+        SignalFileDialogPaths onFileSelect = {"FileSelected"};
+
+        /// The child window was closed or the cancel button was pressed. This signal fires before onClose.
+        Signal onCancel = {"Cancelled"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
