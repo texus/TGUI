@@ -286,10 +286,7 @@ namespace tgui
     {
         const auto& widgets = getWidgets();
         if (std::find(widgets.begin(), widgets.end(), widget) == widgets.end())
-        {
-            std::cerr << "FAIL setWidgetCell " << widget << std::endl;
             return false;
-        }
 
         // If the widget was added before the remove it from its old location
         if (m_widgetCells.find(widget) != m_widgetCells.end())
