@@ -121,7 +121,7 @@ namespace tgui
         column.text = createHeaderText(text);
         column.alignment = alignment;
         column.designWidth = width;
-        if (width)
+        if (width != 0)
             column.width = width;
         else
             column.width = calculateAutoColumnWidth(column.text);
@@ -177,7 +177,7 @@ namespace tgui
         }
 
         m_columns[index].designWidth = width;
-        if (width)
+        if (width != 0)
             m_columns[index].width = width;
         else
             m_columns[index].width = calculateAutoColumnWidth(m_columns[index].text);
@@ -1702,7 +1702,7 @@ namespace tgui
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
-            if (!getSharedRenderer()->getScrollbarWidth())
+            if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
                 m_verticalScrollbar->setSize({m_verticalScrollbar->getDefaultWidth(), m_verticalScrollbar->getSize().y});
                 m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, m_horizontalScrollbar->getDefaultWidth()});
@@ -1711,7 +1711,7 @@ namespace tgui
         }
         else if (property == "ScrollbarWidth")
         {
-            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
             m_horizontalScrollbar->setSize({m_verticalScrollbar->getSize().x, width});
             setSize(m_size);
@@ -1819,7 +1819,7 @@ namespace tgui
             columnNode->name = "Column";
 
             columnNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.text.getString()));
-            if (column.designWidth)
+            if (column.designWidth != 0)
                 columnNode->propertyValuePairs["Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
 
             if (column.alignment == ColumnAlignment::Center)

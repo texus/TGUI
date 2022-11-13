@@ -775,7 +775,7 @@ namespace tgui
             int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
             if ((selectedItem >= 0) && (selectedItem < static_cast<int>(m_visibleNodes.size())))
             {
-                updateSelectedItem(static_cast<std::size_t>(selectedItem));
+                updateSelectedItem(selectedItem);
 
                 std::vector<String> hierarchy;
                 auto* node = m_visibleNodes[static_cast<std::size_t>(selectedItem)].get();
@@ -1055,7 +1055,7 @@ namespace tgui
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
-            if (!getSharedRenderer()->getScrollbarWidth())
+            if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
                 const float width = m_verticalScrollbar->getDefaultWidth();
                 m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
@@ -1065,7 +1065,7 @@ namespace tgui
         }
         else if (property == "ScrollbarWidth")
         {
-            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
             m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
             markNodesDirty();

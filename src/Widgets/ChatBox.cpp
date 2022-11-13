@@ -467,7 +467,7 @@ namespace tgui
             m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
-            if (!getSharedRenderer()->getScrollbarWidth())
+            if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
                 m_scroll->setSize({m_scroll->getDefaultWidth(), m_scroll->getSize().y});
                 setSize(m_size);
@@ -475,7 +475,7 @@ namespace tgui
         }
         else if (property == "ScrollbarWidth")
         {
-            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
             m_scroll->setSize({width, m_scroll->getSize().y});
             setSize(m_size);
         }

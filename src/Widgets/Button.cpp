@@ -70,7 +70,7 @@ namespace tgui
 
     void Button::leftMouseReleased(Vector2f pos)
     {
-        const double bMouseWasDown = m_mouseDown;
+        const bool bMouseWasDown = m_mouseDown;
 
         m_down = false;
         ButtonBase::leftMouseReleased(pos);
