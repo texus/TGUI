@@ -72,10 +72,10 @@ jobs:
       - name: Lookup dependency versions
         id: find-dependencies
         run: |
-          echo "::set-output name=sfml-revision::$(git ls-remote $SFML_GITHUB_URL HEAD | cut -f1)"
-          echo "::set-output name=sdl-revision::$(git ls-remote $SDL_GITHUB_URL HEAD | cut -f1)"
-          echo "::set-output name=sdl-ttf-revision::$(git ls-remote $SDL_TTF_GITHUB_URL HEAD | cut -f1)"
-          echo "::set-output name=glfw-revision::$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)"
+          echo "sfml-revision=$(git ls-remote $SFML_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
+          echo "sdl-revision=$(git ls-remote $SDL_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
+          echo "sdl-ttf-revision=$(git ls-remote $SDL_TTF_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
+          echo "glfw-revision=$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
 
       - name: Cache SFML
         uses: actions/cache@v3
