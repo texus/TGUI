@@ -63,14 +63,7 @@ namespace tgui
     void BackendSDL::setGuiWindow(BackendGui* gui, SDL_Window* window)
     {
         TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSDL::setGuiWindow called with a gui that wasn't attached");
-        m_guis[gui].window = window;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSDL::attachGui(BackendGui* gui)
-    {
-        m_guis[gui] = {};
+        m_guiResources[gui].window = window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,10 +71,9 @@ namespace tgui
     void BackendSDL::detatchGui(BackendGui* gui)
     {
         // Don't check if it existed, detach is called for every gui while attached is only called for properly initialized guis
-        m_guis.erase(gui);
+        m_guiResources.erase(gui);
 
-        if (m_destroyOnLastGuiDetatch && m_guis.empty())
-            setBackend(nullptr);
+        Backend::detatchGui(gui);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,16 +126,16 @@ namespace tgui
     void BackendSDL::setMouseCursor(BackendGui* gui, Cursor::Type type)
     {
         TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSDL::setMouseCursor called with a gui that wasn't attached");
-        if (type == m_guis[gui].mouseCursor)
+        if (type == m_guiResources[gui].mouseCursor)
             return;
 
-        m_guis[gui].mouseCursor = type;
+        m_guiResources[gui].mouseCursor = type;
 
         // If the gui has no access to the window then we can't change the mouse cursor
-        if (!m_guis[gui].window)
+        if (!m_guiResources[gui].window)
             return;
 
-        updateShownMouseCursor(m_guis[gui].window, type);
+        updateShownMouseCursor(m_guiResources[gui].window, type);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,7 +297,7 @@ namespace tgui
 #ifdef TGUI_SYSTEM_WINDOWS
         // Make sure the old cursor isn't still being used before we destroy it
         bool cursorInUse = false;
-        for (auto& pair : m_guis)
+        for (auto& pair : m_guiResources)
         {
             if (pair.second.mouseCursor == type)
                 cursorInUse = true;
@@ -320,7 +312,7 @@ namespace tgui
         m_mouseCursors[type] = cursor;
 
         // Update the cursor on the screen if the cursor was in use
-        for (auto& pair : m_guis)
+        for (auto& pair : m_guiResources)
         {
             if (pair.second.mouseCursor == type)
             {

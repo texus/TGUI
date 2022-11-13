@@ -570,7 +570,7 @@ namespace tgui
         if (m_fontCached == nullptr)
             return;
 
-        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached);
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
 
         // Show or hide the scrollbar
         if (m_autoSize)
@@ -618,9 +618,9 @@ namespace tgui
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
         const auto lineCount = std::count(string.begin(), string.end(), U'\n') + 1;
-        float requiredTextHeight = lineCount * m_fontCached.getLineSpacing(m_textSizeCached)
-                                   + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached, m_textStyleCached)
-                                   + Text::getExtraVerticalPadding(m_textSizeCached);
+        float requiredTextHeight = (lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
+                                 + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
+                                 + Text::getExtraVerticalPadding(m_textSizeCached);
 
         // Check if a scrollbar should be added
         if (!m_autoSize)
@@ -635,9 +635,9 @@ namespace tgui
                 string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
 
                 const auto newLineCount = std::count(string.begin(), string.end(), U'\n') + 1;
-                requiredTextHeight = newLineCount * m_fontCached.getLineSpacing(m_textSizeCached)
-                                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached, m_textStyleCached)
-                                     + Text::getExtraVerticalPadding(m_textSizeCached);
+                requiredTextHeight = (newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
+                                   + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
+                                   + Text::getExtraVerticalPadding(m_textSizeCached);
             }
 
             m_scrollbar->setSize(m_scrollbar->getSize().x, static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));

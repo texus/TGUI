@@ -230,7 +230,7 @@ namespace tgui
 
             // Don't try to render too often, even when the screen is changing (e.g. during animation)
             const auto timePointNow = std::chrono::steady_clock::now();
-            const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(20);
+            const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(15);
             if (timePointNextAllowed > timePointNow)
             {
                 const auto timerWakeUpTime = getTimerWakeUpTime();

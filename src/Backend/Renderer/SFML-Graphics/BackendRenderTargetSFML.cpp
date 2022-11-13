@@ -187,8 +187,9 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
-            sf::View newView{{{(clipRect.left * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, (clipRect.top * m_pixelsPerPoint.y) / m_pixelsPerPoint.y},
-                              {(clipRect.width * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, (clipRect.height * m_pixelsPerPoint.y) / m_pixelsPerPoint.y}}};
+            // Rounding clipRect to pixel coordinates is needed to avoid blurry text
+            sf::View newView{{{std::round(clipRect.left * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, std::round(clipRect.top * m_pixelsPerPoint.y) / m_pixelsPerPoint.y},
+                              {std::round(clipRect.width * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, std::round(clipRect.height * m_pixelsPerPoint.y) / m_pixelsPerPoint.y}}};
             newView.setViewport({{clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y},
                                  {clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y}});
             m_target->setView(newView);

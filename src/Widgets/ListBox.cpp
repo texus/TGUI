@@ -43,8 +43,8 @@ namespace tgui
         }
 
         setTextSize(getGlobalTextSize());
-        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 1.25f));
-        setSize({Text::getLineHeight(m_fontCached, m_textSizeCached, m_textStyleCached) * 10,
+        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
+        setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 10,
                  (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
@@ -1186,7 +1186,7 @@ namespace tgui
             // Draw the items
             if (m_textAlignment == ListBox::TextAlignment::Right)
             {
-                const float textPadding = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached);
+                const float textPadding = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
                 for (std::size_t i = firstItem; i < lastItem; ++i)
                 {
                     const float textWidth = m_items[i].text.getSize().x;
@@ -1207,7 +1207,7 @@ namespace tgui
             }
             else // m_textAlignment == ListBox::TextAlignment::Left
             {
-                states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached, m_textStyleCached), 0});
+                states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), 0});
                 for (std::size_t i = firstItem; i < lastItem; ++i)
                     target.drawText(states, m_items[i].text);
             }

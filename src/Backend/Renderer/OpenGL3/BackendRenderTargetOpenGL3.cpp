@@ -222,6 +222,8 @@ namespace tgui
         GLint oldViewport[4];
         TGUI_GL_CHECK(glGetIntegerv(GL_VIEWPORT, oldViewport));
 
+        m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
+
         // Change the state that we need while drawing the gui
         const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left), static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
                                                static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height)};

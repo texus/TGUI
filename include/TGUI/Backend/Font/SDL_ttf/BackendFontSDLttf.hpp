@@ -116,6 +116,36 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the height required to render a line of text
+        ///
+        /// @param characterSize  Size of the characters
+        ///
+        /// @return Sum of font ascent and descent
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getFontHeight(unsigned int characterSize) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum height of a glyph above the baseline
+        ///
+        /// @param characterSize  Size of the characters
+        ///
+        /// @return Ascent of the font
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getAscent(unsigned int characterSize) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum height of a glyph below the baseline
+        ///
+        /// @param characterSize  Size of the characters
+        ///
+        /// @return Descent of the font
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getDescent(unsigned int characterSize) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the position of the underline
         ///
         /// Underline position is the vertical offset to apply between the baseline and the underline.
@@ -143,10 +173,21 @@ namespace tgui
         /// @brief Returns the texture that is used to store glyphs of the given character size
         ///
         /// @param characterSize  Size of the characters that should be part of the texture
+        /// @param textureVersion Counter that is incremented each time the texture is changed, returned by this function
         ///
         /// @return Texture to render text glyphs with
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize) override;
+        std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize, unsigned int& textureVersion) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the size of the texture that is used to store glyphs of the given character size
+        ///
+        /// @param characterSize  Size of the characters that should be part of the texture
+        ///
+        /// @return Size of the texture that holds the glyphs
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2u getTextureSize(unsigned int characterSize) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,6 +200,16 @@ namespace tgui
         /// @param smooth  True to enable smoothing, false to disable it
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSmooth(bool smooth) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Sets the scale at which to render each glyph, to allow rendering text at a higher resolution
+        ///
+        /// Text may be rendered blurry if the font scale doesn't match the ratio between the window size and gui view.
+        /// Default scaling is 1. If the scale is set to 1.5 then a font with text size 20 would be internally rendered at 30px.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFontScale(float scale) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +254,7 @@ namespace tgui
         // TTF_Font needs a character size, so we store one font per character size
         std::unordered_map<unsigned int, TTF_Font*> m_fonts;
         std::unordered_map<unsigned int, bool> m_lastBoldFlag;
-        std::unordered_map<unsigned int, float> m_lastOutlineThickness;
+        std::unordered_map<unsigned int, int> m_lastOutlineThickness;
 
         std::unordered_map<unsigned int, std::pair<int, int>> m_cachedUnderlineInfo; // character size -> (underline vertical offset, underline thickness)
 
@@ -214,7 +265,7 @@ namespace tgui
         std::unique_ptr<std::uint8_t[]> m_pixels;
         std::shared_ptr<BackendTexture> m_texture;
         unsigned int m_textureSize = 0;
-        bool m_textureUpToDate = false;
+        unsigned int m_textureVersion = 0;
     };
 }
 

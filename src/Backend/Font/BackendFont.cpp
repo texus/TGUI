@@ -24,12 +24,81 @@
 
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont::BackendFont()
+    {
+        TGUI_ASSERT(isBackendSet(), "Backend must exist before creating a font");
+        getBackend()->registerFont(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont::BackendFont(const BackendFont& other) :
+        m_isSmooth(other.m_isSmooth),
+        m_fontScale(other.m_fontScale)
+    {
+        TGUI_ASSERT(isBackendSet(), "Backend must exist before creating a font");
+        getBackend()->registerFont(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont::BackendFont(BackendFont&& other) :
+        m_isSmooth(std::move(other.m_isSmooth)),
+        m_fontScale(std::move(other.m_fontScale))
+    {
+        TGUI_ASSERT(isBackendSet(), "Backend must exist before creating a font");
+        getBackend()->registerFont(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont::~BackendFont()
+    {
+        TGUI_ASSERT(isBackendSet(), "Backend must still exist when font is destroyed");
+        getBackend()->unregisterFont(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont& BackendFont::operator=(const BackendFont& other)
+    {
+        if (this != &other)
+        {
+            m_isSmooth = other.m_isSmooth;
+            m_fontScale = other.m_fontScale;
+
+            TGUI_ASSERT(isBackendSet(), "Backend must exist while copying a font");
+            getBackend()->registerFont(this);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendFont& BackendFont::operator=(BackendFont&& other)
+    {
+        if (this != &other)
+        {
+            m_isSmooth = std::move(other.m_isSmooth);
+            m_fontScale = std::move(other.m_fontScale);
+
+            TGUI_ASSERT(isBackendSet(), "Backend must exist while copying a font");
+            getBackend()->registerFont(this);
+        }
+
+        return *this;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendFont::loadFromFile(const String& filename)
@@ -78,6 +147,23 @@ namespace tgui
     bool BackendFont::isSmooth() const
     {
         return m_isSmooth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendFont::setFontScale(float scale)
+    {
+        if (scale == m_fontScale)
+            return;
+
+        m_fontScale = scale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFont::getFontScale() const
+    {
+        return m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

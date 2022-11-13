@@ -63,14 +63,7 @@ namespace tgui
     void BackendSFML::setGuiWindow(BackendGui* gui, sf::Window* window)
     {
         TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSFML::setGuiWindow called with a gui that wasn't attached");
-        m_guis[gui].window = window;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BackendSFML::attachGui(BackendGui* gui)
-    {
-        m_guis[gui] = {};
+        m_guiResources[gui].window = window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,19 +73,18 @@ namespace tgui
         // Proper cleanup of TGUI resources requires that the gui is destroyed before the SFML window.
         // Unfortunately, SFML requires the cursor lifetime to exceed that of the window.
         // We are creating a memory leak here to allow cursors to exist long enough.
-        if (m_guis[gui].window && m_mouseCursors[m_guis[gui].mouseCursor])
+        if (m_guiResources[gui].window && m_mouseCursors[m_guiResources[gui].mouseCursor])
         {
             auto cursor = std::make_unique<sf::Cursor>();
             (void)cursor->loadFromSystem(sf::Cursor::Type::Arrow);
-            m_guis[gui].window->setMouseCursor(*cursor);
+            m_guiResources[gui].window->setMouseCursor(*cursor);
             m_leakedCursors.push_back(std::move(cursor));
         }
 
         // Don't check if it existed, detach is called for every gui while attached is only called for properly initialized guis
-        m_guis.erase(gui);
+        m_guiResources.erase(gui);
 
-        if (m_destroyOnLastGuiDetatch && m_guis.empty())
-            setBackend(nullptr);
+        Backend::detatchGui(gui);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,16 +124,16 @@ namespace tgui
     void BackendSFML::setMouseCursor(BackendGui* gui, Cursor::Type type)
     {
         TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendSFML::setMouseCursor called with a gui that wasn't attached");
-        if (type == m_guis[gui].mouseCursor)
+        if (type == m_guiResources[gui].mouseCursor)
             return;
 
-        m_guis[gui].mouseCursor = type;
+        m_guiResources[gui].mouseCursor = type;
 
         // If the gui has no access to the window then we can't change the mouse cursor
-        if (!m_guis[gui].window)
+        if (!m_guiResources[gui].window)
             return;
 
-        updateMouseCursor(m_guis[gui].window, type);
+        updateMouseCursor(m_guiResources[gui].window, type);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +307,7 @@ namespace tgui
 #ifdef TGUI_SYSTEM_WINDOWS
         // Make sure the old cursor isn't still being used before we destroy it
         bool cursorInUse = false;
-        for (auto& pair : m_guis)
+        for (auto& pair : m_guiResources)
         {
             if (pair.second.mouseCursor == type)
                 cursorInUse = true;
@@ -327,7 +319,7 @@ namespace tgui
         m_mouseCursors[type] = std::move(cursor);
 
         // Update the cursor on the screen if the cursor was in use
-        for (auto& pair : m_guis)
+        for (auto& pair : m_guiResources)
         {
             if (pair.second.mouseCursor == type)
             {

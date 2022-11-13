@@ -50,8 +50,8 @@ namespace tgui
         m_rows.clear();
         m_pixels = nullptr;
         m_texture = nullptr;
-        m_textureUpToDate = false;
         m_textureSize = 0;
+        m_textureVersion = 0;
         m_nextRow = 3; // First 2 rows contain pixels for underlining
 
         constexpr unsigned int initialTextureSize = 128;
@@ -95,7 +95,7 @@ namespace tgui
         TGUI_ASSERT(m_fonts.begin()->second != nullptr, "BackendFontSDLttf::m_fonts shouldn't contain any nullptr fonts");
 
         // All fonts are the same, except for the character size, so we can use any of them to query for the character
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL > 15)
+#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         return (TTF_GlyphIsProvided32(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint)) != 0);
 #else
         return (TTF_GlyphIsProvided(m_fonts.begin()->second, static_cast<std::uint16_t>(codePoint)) != 0);
@@ -106,7 +106,9 @@ namespace tgui
 
     FontGlyph BackendFontSDLttf::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
-        const std::uint64_t glyphKey = constructGlyphKey(codePoint, characterSize, bold, outlineThickness);
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const float scaledOutlineThickness = outlineThickness * m_fontScale;
+        const std::uint64_t glyphKey = constructGlyphKey(codePoint, scaledTextSize, bold, scaledOutlineThickness);
 
         const auto it = m_glyphs.find(glyphKey);
         if (it != m_glyphs.end())
@@ -117,16 +119,16 @@ namespace tgui
         if (!font)
             return glyph;
 
-        if (bold != m_lastBoldFlag[characterSize])
+        if (bold != m_lastBoldFlag[scaledTextSize])
         {
             TTF_SetFontStyle(font, bold ? TTF_STYLE_BOLD : TTF_STYLE_NORMAL);
-            m_lastBoldFlag[characterSize] = bold;
+            m_lastBoldFlag[scaledTextSize] = bold;
         }
 
-        if (outlineThickness != m_lastOutlineThickness[characterSize])
+        if (static_cast<int>(scaledOutlineThickness) != m_lastOutlineThickness[scaledTextSize])
         {
-            TTF_SetFontOutline(font, static_cast<int>(outlineThickness));
-            m_lastOutlineThickness[characterSize] = outlineThickness;
+            TTF_SetFontOutline(font, static_cast<int>(scaledOutlineThickness));
+            m_lastOutlineThickness[scaledTextSize] = static_cast<int>(scaledOutlineThickness);
         }
 
         int minX;
@@ -134,24 +136,24 @@ namespace tgui
         int minY;
         int maxY;
         int advance;
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL > 15)
+#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         if (TTF_GlyphMetrics32(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
 #else
         if (TTF_GlyphMetrics(font, static_cast<std::uint16_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
 #endif
             return m_glyphs.insert({glyphKey, glyph}).first->second;
 
-        glyph.advance = static_cast<float>(advance);
-        glyph.bounds.left = minX - outlineThickness;
-        glyph.bounds.top = -(maxY - outlineThickness);
-        glyph.bounds.width = static_cast<float>(maxX - minX);
-        glyph.bounds.height = static_cast<float>(maxY - minY);
+        glyph.advance = static_cast<float>(advance) / m_fontScale;
+        glyph.bounds.left = (static_cast<float>(minX) - scaledOutlineThickness) / m_fontScale;
+        glyph.bounds.top = -(static_cast<float>(maxY) - scaledOutlineThickness) / m_fontScale;
+        glyph.bounds.width = static_cast<float>(maxX - minX) / m_fontScale;
+        glyph.bounds.height = static_cast<float>(maxY - minY) / m_fontScale;
 
         // Glyphs such as spaces only have an advance and don't have texture
         if ((minX == maxX) || (minY == maxY))
             return m_glyphs.insert({glyphKey, glyph}).first->second;
 
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL > 15)
+#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         SDL_Surface* surface = TTF_RenderGlyph32_Shaded(font, static_cast<std::uint32_t>(codePoint), {255, 255, 255, 255}, {0, 0, 0, 0});
 #else
         SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint16_t>(codePoint), {255, 255, 255, 255}, {0, 0, 0, 0});
@@ -192,7 +194,7 @@ namespace tgui
                 }
 
                 // We will have to recreate the texture now that the pixels changed
-                m_textureUpToDate = false;
+                m_texture = nullptr;
             }
 
             SDL_FreeSurface(surface);
@@ -209,19 +211,20 @@ namespace tgui
         if (!font)
             return 0;
 
-        if (bold != m_lastBoldFlag[characterSize])
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        if (bold != m_lastBoldFlag[scaledTextSize])
         {
             TTF_SetFontStyle(font, bold ? TTF_STYLE_BOLD : TTF_STYLE_NORMAL);
-            m_lastBoldFlag[characterSize] = bold;
+            m_lastBoldFlag[scaledTextSize] = bold;
         }
 
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL > 15)
+#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         const int kerning = TTF_GetFontKerningSizeGlyphs32(font, static_cast<std::uint32_t>(first), static_cast<std::uint32_t>(second));
 #else
         const int kerning = TTF_GetFontKerningSizeGlyphs(font, static_cast<std::uint16_t>(first), static_cast<std::uint16_t>(second));
 #endif
 
-        return static_cast<float>(kerning);
+        return static_cast<float>(kerning) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,37 +235,92 @@ namespace tgui
         if (!font)
             return 0;
 
-        return static_cast<float>(TTF_FontLineSkip(font));
+        return static_cast<float>(TTF_FontLineSkip(font)) / m_fontScale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSDLttf::getFontHeight(unsigned int characterSize)
+    {
+        TTF_Font* font = getInternalFont(characterSize);
+        if (!font)
+            return 0;
+
+        return static_cast<float>(TTF_FontHeight(font)) / m_fontScale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSDLttf::getAscent(unsigned int characterSize)
+    {
+        TTF_Font* font = getInternalFont(characterSize);
+        if (!font)
+            return 0;
+
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        if (m_lastOutlineThickness[scaledTextSize] != 0)
+        {
+            TTF_SetFontOutline(font, 0);
+            m_lastOutlineThickness[scaledTextSize] = 0;
+        }
+
+        return static_cast<float>(TTF_FontAscent(font)) / m_fontScale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSDLttf::getDescent(unsigned int characterSize)
+    {
+        TTF_Font* font = getInternalFont(characterSize);
+        if (!font)
+            return 0;
+
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        if (m_lastOutlineThickness[scaledTextSize] != 0)
+        {
+            TTF_SetFontOutline(font, 0);
+            m_lastOutlineThickness[scaledTextSize] = 0;
+        }
+
+        return static_cast<float>(TTF_FontDescent(font)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float BackendFontSDLttf::getUnderlinePosition(unsigned int characterSize)
     {
-        return static_cast<float>(getUnderlineInfo(characterSize).first);
+        return static_cast<float>(getUnderlineInfo(characterSize).first) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float BackendFontSDLttf::getUnderlineThickness(unsigned int characterSize)
     {
-        return static_cast<float>(getUnderlineInfo(characterSize).second);
+        return static_cast<float>(getUnderlineInfo(characterSize).second) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTexture> BackendFontSDLttf::getTexture(unsigned int)
+    std::shared_ptr<BackendTexture> BackendFontSDLttf::getTexture(unsigned int, unsigned int& textureVersion)
     {
-        if (m_textureUpToDate)
+        if (m_texture)
+        {
+            textureVersion = m_textureVersion;
             return m_texture;
+        }
 
-        if (!m_texture)
-            m_texture = getBackend()->getRenderer()->createTexture();
-
+        m_texture = getBackend()->getRenderer()->createTexture();
         m_texture->loadTextureOnly({m_textureSize, m_textureSize}, m_pixels.get(), m_isSmooth);
 
-        m_textureUpToDate = true;
+        textureVersion = ++m_textureVersion;
         return m_texture;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2u BackendFontSDLttf::getTextureSize(unsigned int)
+    {
+        return {m_textureSize, m_textureSize};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,11 +336,13 @@ namespace tgui
 
     TTF_Font* BackendFontSDLttf::getInternalFont(unsigned int characterSize)
     {
-        if (characterSize == 0)
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+
+        if (scaledTextSize == 0)
             return nullptr;
 
         // Simply return the font if it already existed
-        auto it = m_fonts.find(characterSize);
+        auto it = m_fonts.find(scaledTextSize);
         if (it != m_fonts.end())
             return it->second;
 
@@ -294,11 +354,11 @@ namespace tgui
         if (!handle)
             return nullptr;
 
-        auto font = TTF_OpenFontRW(handle, 1, static_cast<int>(characterSize));
+        auto font = TTF_OpenFontRW(handle, 1, static_cast<int>(scaledTextSize));
         if (font)
         {
-            m_fonts[characterSize] = font;
-            m_lastBoldFlag[characterSize] = false;
+            m_fonts[scaledTextSize] = font;
+            m_lastBoldFlag[scaledTextSize] = false;
         }
 
         return font;
@@ -306,9 +366,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BackendFontSDLttf::setFontScale(float scale)
+    {
+        if (m_fontScale == scale)
+            return;
+
+        BackendFont::setFontScale(scale);
+
+        // Destroy the texture to force texts to update their glyphs
+        m_texture = nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::pair<int, int> BackendFontSDLttf::getUnderlineInfo(unsigned int characterSize)
     {
-        auto it = m_cachedUnderlineInfo.find(characterSize);
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+
+        auto it = m_cachedUnderlineInfo.find(scaledTextSize);
         if (it != m_cachedUnderlineInfo.end())
             return it->second;
 
@@ -324,7 +399,7 @@ namespace tgui
         int thickness = 0;
 
         // Draw a space with an underline. The underline will be white while the rest of the surface will be black
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL > 15)
+#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         SDL_Surface* surface = TTF_RenderGlyph32_Shaded(font, static_cast<std::uint32_t>(' '), {255, 255, 255, 255}, {0, 0, 0, 255});
 #else
         SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint16_t>(' '), {255, 255, 255, 255}, {0, 0, 0, 255});
@@ -349,7 +424,7 @@ namespace tgui
 
                 if (!isUnderlinePixel)
                 {
-                    offset = y + 1 - static_cast<int>(characterSize);
+                    offset = y + 1 - static_cast<int>(scaledTextSize);
                     break;
                 }
 
@@ -362,7 +437,7 @@ namespace tgui
         // Restore the old style
         TTF_SetFontStyle(font, oldFontStyle);
 
-        return m_cachedUnderlineInfo.emplace(characterSize, std::make_pair(offset, thickness)).first->second;
+        return m_cachedUnderlineInfo.emplace(scaledTextSize, std::make_pair(offset, thickness)).first->second;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,8 +513,6 @@ namespace tgui
             m_rows.push_back({m_nextRow, rowHeight});
             m_nextRow += rowHeight;
             bestRow = &m_rows.back();
-
-            m_textureUpToDate = false;
         }
 
         // Find the glyph's rectangle on the selected row

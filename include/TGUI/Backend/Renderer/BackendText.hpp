@@ -182,20 +182,22 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float italicShear);
+        void addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color,
+                          const FontGlyph& glyph, float fontScale, float italicShear);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a line
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color, float offset, float thickness, float outlineThickness);
+        void addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color,
+                     float offset, float thickness, float outlineThickness, float fontScale);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         std::shared_ptr<BackendFont> m_font;
-        BackendTexture* m_lastFontTexture = nullptr;
+        unsigned int m_lastFontTextureVersion = 0;
 
         String m_string;
         unsigned int m_characterSize = getGlobalTextSize();

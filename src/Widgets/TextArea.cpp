@@ -57,7 +57,7 @@ namespace tgui
             setTextSize(getGlobalTextSize());
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
                      10 * m_fontCached.getLineSpacing(m_textSizeCached)
-                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached)
+                     + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
                      + Text::getExtraVerticalPadding(m_textSizeCached)
                      + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
@@ -221,9 +221,9 @@ namespace tgui
         m_defaultText.setCharacterSize(m_textSizeCached);
 
         // Calculate the height of one line
-        m_lineHeight = static_cast<unsigned int>(m_fontCached.getLineSpacing(m_textSizeCached));
+        m_lineHeight = m_fontCached.getLineSpacing(m_textSizeCached);
 
-        m_verticalScrollbar->setScrollAmount(m_lineHeight);
+        m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(m_lineHeight));
         m_horizontalScrollbar->setScrollAmount(m_textSizeCached);
 
         rearrangeText(true);
@@ -756,7 +756,7 @@ namespace tgui
             insert();
 
             // Undo the insert if the text does not fit
-            if (m_lines.size() > getInnerSize().y / m_lineHeight)
+            if (m_lines.size() > static_cast<std::size_t>(getInnerSize().y / m_lineHeight))
             {
                 m_text = oldText;
                 m_selStart = oldSelStart;
@@ -1357,8 +1357,8 @@ namespace tgui
         const bool verticalScrollbarShown = m_verticalScrollbar->isShown();
         const bool horizontalScrollbarShown = m_horizontalScrollbar->isShown();
 
-        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight
-                                                                  + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached)
+        m_verticalScrollbar->setMaximum(static_cast<unsigned int>((m_lines.size() - 1) * m_lineHeight
+                                                                  + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight)
                                                                   + Text::getExtraVerticalPadding(m_textSizeCached)));
 
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxLineWidth
@@ -1486,8 +1486,8 @@ namespace tgui
             if (m_selEnd.y <= m_topLine)
                 m_verticalScrollbar->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
             else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
-                m_verticalScrollbar->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight)
-                                                                        + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached)
+                m_verticalScrollbar->setValue(static_cast<unsigned int>((m_selEnd.y * m_lineHeight)
+                                                                        + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight)
                                                                         + Text::getExtraVerticalPadding(m_textSizeCached)
                                                                         - m_verticalScrollbar->getViewportSize()));
         }
@@ -1505,7 +1505,7 @@ namespace tgui
             if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].length()))
                 kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSizeCached, false);
 
-            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
+            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning, static_cast<float>(m_selEnd.y) * m_lineHeight};
         }
 
         if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
@@ -1622,11 +1622,11 @@ namespace tgui
                 m_textAfterSelection1.setPosition({m_textSelection1.getPosition().x + m_textSelection1.findCharacterPos(m_textSelection1.getString().length()).x + kerningSelectionEnd,
                                                    m_textSelection1.getPosition().y});
 
-            m_textAfterSelection2.setPosition({textOffset, static_cast<float>((selectionEnd.y + 1) * m_lineHeight)});
+            m_textAfterSelection2.setPosition({textOffset, static_cast<float>(selectionEnd.y + 1) * m_lineHeight});
 
             // Recalculate the selection rectangles
             {
-                m_selectionRects.push_back({m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y * m_lineHeight), 0, static_cast<float>(m_lineHeight)});
+                m_selectionRects.push_back({m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y) * m_lineHeight, 0, m_lineHeight});
 
                 if (!m_lines[selectionStart.y].empty())
                 {
@@ -1644,7 +1644,7 @@ namespace tgui
                 for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                 {
                     m_selectionRects.back().width += textOffset;
-                    m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(i * m_lineHeight), textOffset, static_cast<float>(m_lineHeight)});
+                    m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(i) * m_lineHeight, textOffset, m_lineHeight});
 
                     if (!m_lines[i].empty())
                     {
@@ -1660,11 +1660,11 @@ namespace tgui
                     if (m_textSelection2.getString() != U"")
                     {
                         tempText.setString(m_lines[selectionEnd.y].substr(0, selectionEnd.x));
-                        m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y * m_lineHeight),
-                                                    textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, static_cast<float>(m_lineHeight)});
+                        m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y) * m_lineHeight,
+                                                    textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, m_lineHeight});
                     }
                     else
-                        m_selectionRects.push_back({0, static_cast<float>(selectionEnd.y * m_lineHeight), textOffset, static_cast<float>(m_lineHeight)});
+                        m_selectionRects.push_back({0, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight});
                 }
             }
         }
@@ -1693,10 +1693,11 @@ namespace tgui
         {
             m_verticalScrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x, m_bordersCached.getTop()});
 
-            m_topLine = m_verticalScrollbar->getValue() / m_lineHeight;
+            m_topLine = static_cast<std::size_t>(m_verticalScrollbar->getValue() / m_lineHeight);
 
             // The scrollbar may be standing between lines in which case one more line is visible
-            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) % m_lineHeight) != 0) || ((m_verticalScrollbar->getValue() % m_lineHeight) != 0))
+            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) % static_cast<unsigned int>(m_lineHeight)) != 0)
+             || ((m_verticalScrollbar->getValue() % static_cast<unsigned int>(m_lineHeight)) != 0))
                 m_visibleLines++;
         }
         else // There is no scrollbar
@@ -1934,7 +1935,7 @@ namespace tgui
             for (const auto& selectionRect : m_selectionRects)
             {
                 states.transform.translate({selectionRect.left, selectionRect.top});
-                target.drawFilledRect(states, {selectionRect.width, selectionRect.height + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached)},
+                target.drawFilledRect(states, {selectionRect.width, selectionRect.height + (std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight) - m_lineHeight)},
                                       Color::applyOpacity(m_selectedTextBackgroundColorCached, m_opacityCached));
                 states.transform.translate({-selectionRect.left, -selectionRect.top});
             }
@@ -1957,7 +1958,7 @@ namespace tgui
             // Only draw the caret when needed
             if (m_focused && m_caretVisible && (m_caretWidthCached > 0))
             {
-                const float caretHeight = m_lineHeight + Text::calculateExtraVerticalSpace(m_fontCached, m_textSizeCached);
+                const float caretHeight = std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight);
                 states.transform.translate({std::ceil(m_caretPosition.x - (m_caretWidthCached / 2.f)), m_caretPosition.y});
                 target.drawFilledRect(states, {m_caretWidthCached, caretHeight}, Color::applyOpacity(m_caretColorCached, m_opacityCached));
             }

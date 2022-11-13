@@ -614,7 +614,7 @@ namespace tgui
     protected:
 
         String m_text;
-        unsigned int m_lineHeight = 24;
+        float m_lineHeight = 24;
 
         // The width of the largest line
         float m_maxLineWidth;

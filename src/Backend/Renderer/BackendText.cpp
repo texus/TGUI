@@ -238,24 +238,21 @@ namespace tgui
         if (!m_font)
             return data;
 
-        auto texture = m_font->getTexture(m_characterSize);
+        unsigned int textureVersion;
+        auto texture = m_font->getTexture(m_characterSize, textureVersion);
         if (!texture)
             return data;
 
         // If the font texture changes then we need to update the texture coordinates
-        if (texture.get() != m_lastFontTexture)
-        {
-            m_lastFontTexture = texture.get();
+        if (textureVersion != m_lastFontTextureVersion)
             m_verticesNeedUpdate = true;
-        }
 
         if (m_verticesNeedUpdate)
         {
             updateVertices();
 
             // It is possible that the texture changes during the update
-            texture = m_font->getTexture(m_characterSize);
-            m_lastFontTexture = texture.get();
+            texture = m_font->getTexture(m_characterSize, m_lastFontTextureVersion);
         }
 
         if (m_outlineVertices && !m_outlineVertices->empty())
@@ -295,6 +292,7 @@ namespace tgui
         const float italicShear        = (static_cast<unsigned int>(m_style) & TextStyle::Italic) ? 0.20944f : 0.f; // 12 degrees in radians
         const float underlineOffset    = m_font->getUnderlinePosition(m_characterSize);
         const float underlineThickness = m_font->getUnderlineThickness(m_characterSize);
+        const float fontScale          = m_font->getFontScale();
 
         // Compute the location of the strike through dynamically
         // We use the center point of the lowercase 'x' glyph as the reference
@@ -305,8 +303,8 @@ namespace tgui
         // Precompute the variables needed by the algorithm
         const float whitespaceWidth = m_font->getGlyph(U' ', m_characterSize, isBold).advance;
         const float lineSpacing = m_font->getLineSpacing(m_characterSize);
-        float x = 0;
-        float y = static_cast<float>(m_characterSize);
+        float x = m_outlineThickness;
+        float y = m_font->getAscent(m_characterSize) + m_outlineThickness;
 
         // Create one quad for each character
         float maxX = 0.f;
@@ -326,19 +324,19 @@ namespace tgui
             // If we're using the underlined style and there's a new line, draw a line
             if (isUnderlined && (curChar == U'\n' && prevChar != U'\n'))
             {
-                addLine(*m_vertices, x, y, vertexFillColor, underlineOffset, underlineThickness, 0);
+                addLine(*m_vertices, x, y, vertexFillColor, underlineOffset, underlineThickness, 0, fontScale);
 
                 if (m_outlineThickness != 0)
-                    addLine(*m_outlineVertices, x, y, vertexOutlineColor, underlineOffset, underlineThickness, m_outlineThickness);
+                    addLine(*m_outlineVertices, x, y, vertexOutlineColor, underlineOffset, underlineThickness, m_outlineThickness, fontScale);
             }
 
             // If we're using the strike through style and there's a new line, draw a line across all characters
             if (isStrikeThrough && (curChar == U'\n' && prevChar != U'\n'))
             {
-                addLine(*m_vertices, x, y, vertexFillColor, strikeThroughOffset, underlineThickness, 0);
+                addLine(*m_vertices, x, y, vertexFillColor, strikeThroughOffset, underlineThickness, 0, fontScale);
 
                 if (m_outlineThickness != 0)
-                    addLine(*m_outlineVertices, x, y, vertexOutlineColor, strikeThroughOffset, underlineThickness, m_outlineThickness);
+                    addLine(*m_outlineVertices, x, y, vertexOutlineColor, strikeThroughOffset, underlineThickness, m_outlineThickness, fontScale);
             }
 
             prevChar = curChar;
@@ -372,7 +370,7 @@ namespace tgui
                 float right  = glyph.bounds.left + glyph.bounds.width;
 
                 // Add the outline glyph to the vertices
-                addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, italicShear);
+                addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, fontScale, italicShear);
                 maxX = std::max(maxX, x + right - italicShear * top - m_outlineThickness);
             }
 
@@ -380,7 +378,7 @@ namespace tgui
             const auto& glyph = m_font->getGlyph(curChar, m_characterSize, isBold);
 
             // Add the glyph to the vertices
-            addGlyphQuad(*m_vertices, {x, y}, vertexFillColor, glyph, italicShear);
+            addGlyphQuad(*m_vertices, {x, y}, vertexFillColor, glyph, fontScale, italicShear);
 
             // Update the current bounds with the non outlined glyph bounds
             if (m_outlineThickness == 0)
@@ -395,49 +393,46 @@ namespace tgui
         // If we're using the underlined style, add the last line
         if (isUnderlined && (x > 0))
         {
-            addLine(*m_vertices, x, y, vertexFillColor, underlineOffset, underlineThickness, 0);
+            addLine(*m_vertices, x, y, vertexFillColor, underlineOffset, underlineThickness, 0, fontScale);
 
             if (m_outlineThickness != 0)
-                addLine(*m_outlineVertices, x, y, vertexOutlineColor, underlineOffset, underlineThickness, m_outlineThickness);
+                addLine(*m_outlineVertices, x, y, vertexOutlineColor, underlineOffset, underlineThickness, m_outlineThickness, fontScale);
         }
 
         // If we're using the strike through style, add the last line across all characters
         if (isStrikeThrough && (x > 0))
         {
-            addLine(*m_vertices, x, y, vertexFillColor, strikeThroughOffset, underlineThickness, 0);
+            addLine(*m_vertices, x, y, vertexFillColor, strikeThroughOffset, underlineThickness, 0, fontScale);
 
             if (m_outlineThickness != 0)
-                addLine(*m_outlineVertices, x, y, vertexOutlineColor, strikeThroughOffset, underlineThickness, m_outlineThickness);
+                addLine(*m_outlineVertices, x, y, vertexOutlineColor, strikeThroughOffset, underlineThickness, m_outlineThickness, fontScale);
         }
 
-        // Calculate the height of a single line of text (char size = everything above baseline, height + top = part below baseline)
-        const float lineHeight = m_characterSize
-                               + m_font->getGlyph(U'g', m_characterSize, isBold).bounds.height
-                               + m_font->getGlyph(U'g', m_characterSize, isBold).bounds.top;
-
         // The height of a line can sometimes be slightly larger than the line spacing returned by the font.
-        // To not clip the last line, we have to add this extra offset to the total height of the text.
-        const float height = (nrLines * lineSpacing) + (lineHeight - lineSpacing);
+        // To not clip the last line, one line can use the font height instead of the line spacing, to include the extra offset.
+        const float fontHeight = m_font->getFontHeight(m_characterSize);
+        const float height = std::max(fontHeight, lineSpacing) + (nrLines - 1) * lineSpacing;
 
-        m_size = {maxX, height};
+        m_size = {maxX + 2 * m_outlineThickness, height + 2 * m_outlineThickness};
 
         // Normalize the texture coordinates
-        const auto texture = m_font->getTexture(m_characterSize);
-        if (texture)
+        const Vector2u textureSize = m_font->getTextureSize(m_characterSize);
+        if ((textureSize.x > 0) && (textureSize.y > 0))
         {
-            const Vector2f textureSize{texture->getSize()};
+            const float textureWidth = static_cast<float>(textureSize.x);
+            const float textureHeight = static_cast<float>(textureSize.y);
 
             for (auto& vertex : *m_vertices)
             {
-                vertex.texCoords.x /= textureSize.x;
-                vertex.texCoords.y /= textureSize.y;
+                vertex.texCoords.x /= textureWidth;
+                vertex.texCoords.y /= textureHeight;
             }
             if (m_outlineVertices)
             {
                 for (auto& vertex : *m_outlineVertices)
                 {
-                    vertex.texCoords.x /= textureSize.x;
-                    vertex.texCoords.y /= textureSize.y;
+                    vertex.texCoords.x /= textureWidth;
+                    vertex.texCoords.y /= textureHeight;
                 }
             }
         }
@@ -445,14 +440,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float italicShear)
+    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float fontScale, float italicShear)
     {
-        const float padding = 1.0;
+        const float padding = 1;
 
-        const float left   = glyph.bounds.left - padding;
-        const float top    = glyph.bounds.top - padding;
-        const float right  = glyph.bounds.left + glyph.bounds.width + padding;
-        const float bottom = glyph.bounds.top  + glyph.bounds.height + padding;
+        const float left   = glyph.bounds.left - padding / fontScale;
+        const float top    = glyph.bounds.top - padding / fontScale;
+        const float right  = glyph.bounds.left + glyph.bounds.width + padding / fontScale;
+        const float bottom = glyph.bounds.top  + glyph.bounds.height + padding / fontScale;
 
         const float u1 = glyph.textureRect.left - padding;
         const float v1 = glyph.textureRect.top - padding;
@@ -469,10 +464,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendText::addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color, float offset, float thickness, float outlineThickness)
+    void BackendText::addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color, float offset, float thickness, float outlineThickness, float fontScale)
     {
-        const float top = std::floor(lineTop + offset - (thickness / 2) + 0.5f);
-        const float bottom = top + std::floor(thickness + 0.5f);
+        const float top = std::round((lineTop + offset - (thickness / 2)) * fontScale) / fontScale;
+        const float bottom = top + std::round(thickness * fontScale) / fontScale;
 
         vertices.emplace_back(Vector2f{-outlineThickness,             top    - outlineThickness}, color, Vector2f{1, 1});
         vertices.emplace_back(Vector2f{lineLength + outlineThickness, top    - outlineThickness}, color, Vector2f{1, 1});

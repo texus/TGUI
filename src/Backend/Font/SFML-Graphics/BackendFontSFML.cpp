@@ -39,6 +39,9 @@ namespace tgui
 
     bool BackendFontSFML::loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes)
     {
+        m_textures.clear();
+        m_textureVersions.clear();
+
         m_fileContents = std::move(data);
         return m_font.loadFromMemory(m_fileContents.get(), sizeInBytes);
     }
@@ -59,19 +62,22 @@ namespace tgui
 
     FontGlyph BackendFontSFML::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
-        // If this is the first time requesting the glyph then mark the texture as outdated
-        const auto key = constructGlyphKey(codePoint, characterSize, bold, outlineThickness);
-        if (m_loadedGlyphKeys.emplace(key).second)
-            m_textures[characterSize] = nullptr;
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const float scaledOutlineThickness = outlineThickness * m_fontScale;
 
-        const sf::Glyph& glyphSFML = m_font.getGlyph(codePoint, characterSize, bold, outlineThickness);
+        // If this is the first time requesting the glyph then mark the texture as outdated
+        const auto key = constructGlyphKey(codePoint, scaledTextSize, bold, scaledOutlineThickness);
+        if (m_loadedGlyphKeys.emplace(key).second)
+            m_textures[scaledTextSize] = nullptr;
+
+        const sf::Glyph& glyphSFML = m_font.getGlyph(codePoint, scaledTextSize, bold, scaledOutlineThickness);
 
         FontGlyph glyph;
-        glyph.advance = glyphSFML.advance;
+        glyph.advance = glyphSFML.advance / m_fontScale;
 #if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // outline is not corrected in bounds in SFML < 2.6
-        glyph.bounds = {glyphSFML.bounds.left, glyphSFML.bounds.top, glyphSFML.bounds.width, glyphSFML.bounds.height};
+        glyph.bounds = {glyphSFML.bounds.left / m_fontScale, glyphSFML.bounds.top / m_fontScale, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
 #else
-        glyph.bounds = {glyphSFML.bounds.left - outlineThickness, glyphSFML.bounds.top - outlineThickness, glyphSFML.bounds.width, glyphSFML.bounds.height};
+        glyph.bounds = {glyphSFML.bounds.left / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.top / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
 #endif
 
         // SFML uses an IntRect, but all values are unsigned
@@ -80,10 +86,10 @@ namespace tgui
         assert(glyphSFML.textureRect.width >= 0);
         assert(glyphSFML.textureRect.height >= 0);
         glyph.textureRect = {
-            static_cast<unsigned>(glyphSFML.textureRect.left),
-            static_cast<unsigned>(glyphSFML.textureRect.top),
-            static_cast<unsigned>(glyphSFML.textureRect.width),
-            static_cast<unsigned>(glyphSFML.textureRect.height)};
+            static_cast<unsigned int>(glyphSFML.textureRect.left),
+            static_cast<unsigned int>(glyphSFML.textureRect.top),
+            static_cast<unsigned int>(glyphSFML.textureRect.width),
+            static_cast<unsigned int>(glyphSFML.textureRect.height)};
 
         return glyph;
     }
@@ -93,10 +99,10 @@ namespace tgui
     float BackendFontSFML::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold)
     {
 #if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // bold parameter was added in SFML 2.6
-        return m_font.getKerning(first, second, characterSize, bold);
+        return m_font.getKerning(first, second, static_cast<unsigned int>(characterSize * m_fontScale), bold) / m_fontScale;
 #else
         (void)bold;
-        return m_font.getKerning(first, second, characterSize);
+        return m_font.getKerning(first, second, static_cast<unsigned int>(characterSize * m_fontScale)) / m_fontScale;
 #endif
     }
 
@@ -104,38 +110,97 @@ namespace tgui
 
     float BackendFontSFML::getLineSpacing(unsigned int characterSize)
     {
-        return m_font.getLineSpacing(characterSize);
+        return m_font.getLineSpacing(static_cast<unsigned int>(characterSize * m_fontScale)) / m_fontScale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSFML::getFontHeight(unsigned int characterSize)
+    {
+        return getAscent(characterSize) + getDescent(characterSize);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSFML::getAscent(unsigned int characterSize)
+    {
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+
+        // SFML doesn't provide a method to access the ascent of the font.
+        // If the font contains a capital e-circumflex glyph then we use its size as our ascent value.
+        // Otherwise we will simply assume that the ascent equals the character size, which is what SFML's sf::Text class does.
+        // With the built-in DejaVuSans font, ascent should be 15 for a text size of 16.
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)
+        if (!m_font.hasGlyph(U'\u00CA'))
+            return static_cast<float>(scaledTextSize) / m_fontScale;
+
+        const sf::Glyph& glyph = m_font.getGlyph(U'\u00CA', scaledTextSize, false, 0);
+#else
+        const sf::Glyph& glyph = m_font.getGlyph(U'\u00CA', scaledTextSize, false, 0);
+        if ((glyph.advance == 0) && (glyph.bounds == sf::FloatRect{}) && (glyph.textureRect == sf::IntRect{}))
+            return static_cast<float>(scaledTextSize) / m_fontScale;
+#endif
+
+        return glyph.bounds.height / m_fontScale;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BackendFontSFML::getDescent(unsigned int characterSize)
+    {
+        // SFML doesn't provide a method to access the descent of the font.
+        // We extract the descent by examining the 'g' glyph, assuming it exists.
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const float descent = m_font.getGlyph(U'g', scaledTextSize, false).bounds.height
+                            + m_font.getGlyph(U'g', scaledTextSize, false).bounds.top;
+        return descent / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float BackendFontSFML::getUnderlinePosition(unsigned int characterSize)
     {
-        return m_font.getUnderlinePosition(characterSize);
+        return m_font.getUnderlinePosition(static_cast<unsigned int>(characterSize * m_fontScale)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float BackendFontSFML::getUnderlineThickness(unsigned int characterSize)
     {
-        return m_font.getUnderlineThickness(characterSize);
+        return m_font.getUnderlineThickness(static_cast<unsigned int>(characterSize * m_fontScale)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTexture> BackendFontSFML::getTexture(unsigned int characterSize)
+    std::shared_ptr<BackendTexture> BackendFontSFML::getTexture(unsigned int characterSize, unsigned int& textureVersion)
     {
-        if (m_textures[characterSize])
-            return m_textures[characterSize];
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+
+        if (m_textures[scaledTextSize])
+        {
+            textureVersion = m_textureVersions[scaledTextSize];
+            return m_textures[scaledTextSize];
+        }
 
         // Unfortunately we currently need to extract the pixel data from the sf::Font texture, in order to load a
         // texture with TGUI, even if the TGUI texture also uses sf::Texture.
-        const sf::Image& image = m_font.getTexture(characterSize).copyToImage();
+        const sf::Image& image = m_font.getTexture(scaledTextSize).copyToImage();
 
         auto texture = getBackend()->getRenderer()->createTexture();
         texture->loadTextureOnly({image.getSize().x, image.getSize().y}, image.getPixelsPtr(), m_isSmooth);
-        m_textures[characterSize] = texture;
+        m_textures[scaledTextSize] = texture;
+
+        textureVersion = ++m_textureVersions[scaledTextSize];
         return texture;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2u BackendFontSFML::getTextureSize(unsigned int characterSize)
+    {
+        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const auto size = m_font.getTexture(scaledTextSize).getSize();
+        return {size.x, size.y};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,6 +221,19 @@ namespace tgui
     sf::Font& BackendFontSFML::getInternalFont()
     {
         return m_font;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendFontSFML::setFontScale(float scale)
+    {
+        if (m_fontScale == scale)
+            return;
+
+        BackendFont::setFontScale(scale);
+
+        // Destroy all textures to force texts to update their glyphs
+        m_textures.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

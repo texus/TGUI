@@ -223,28 +223,28 @@ namespace tgui
 
     float Text::getExtraHorizontalPadding() const
     {
-        return getExtraHorizontalPadding(getFont(), getCharacterSize(), getStyle());
+        return getExtraHorizontalPadding(getFont(), getCharacterSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize, TextStyles textStyle)
+    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize)
     {
-        return getLineHeight(font, characterSize, textStyle) / 10.f;
+        return getLineHeight(font, characterSize) / 10.f;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float Text::getExtraHorizontalOffset() const
     {
-        return getExtraHorizontalOffset(getFont(), getCharacterSize(), getStyle());
+        return getExtraHorizontalOffset(getFont(), getCharacterSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalOffset(Font font, unsigned int characterSize, TextStyles textStyle)
+    float Text::getExtraHorizontalOffset(Font font, unsigned int characterSize)
     {
-        return getLineHeight(font, characterSize, textStyle) / 6.f;
+        return getLineHeight(font, characterSize) / 6.f;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,15 +258,14 @@ namespace tgui
 
     float Text::getLineHeight() const
     {
-        return getLineHeight(getFont(), getCharacterSize(), getStyle());
+        return getLineHeight(getFont(), getCharacterSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineHeight(Font font, unsigned int characterSize, TextStyles textStyle)
+    float Text::getLineHeight(Font font, unsigned int characterSize)
     {
-        const float extraVerticalSpace = Text::calculateExtraVerticalSpace(font, characterSize, textStyle);
-        return font.getLineSpacing(characterSize) + extraVerticalSpace;
+        return std::max(font.getLineSpacing(characterSize), font.getFontHeight(characterSize));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +323,7 @@ namespace tgui
             textSizes[i] = i + 1;
 
         const auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
-                                           [&](unsigned int charSize, float h) { return font.getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
+                                           [&](unsigned int charSize, float h) { return std::max(font.getLineSpacing(charSize), font.getFontHeight(charSize)) < h; });
         if (high == textSizes.end())
             return static_cast<unsigned int>(height);
 
@@ -346,27 +345,6 @@ namespace tgui
             else
                 return *high;
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float Text::calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyles style)
-    {
-        if (font == nullptr)
-            return 0;
-
-        const bool bold = (style & TextStyle::Bold) != 0;
-
-        // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
-        const float lineHeight = characterSize
-                                 + font.getGlyph('g', characterSize, bold).bounds.height
-                                 + font.getGlyph('g', characterSize, bold).bounds.top;
-
-        // Get the line spacing sfml returns
-        const float lineSpacing = font.getLineSpacing(characterSize);
-
-        // Calculate the offset of the text
-        return lineHeight - lineSpacing;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

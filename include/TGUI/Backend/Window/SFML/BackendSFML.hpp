@@ -52,13 +52,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Informs the backend that a new gui object has been created.
-        /// @param gui  Newly created gui
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void attachGui(BackendGui* gui) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the backend that a gui object is being destroyed.
         /// @param gui  Gui object that is about to be deconstructed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +180,8 @@ namespace tgui
             Cursor::Type mouseCursor = Cursor::Type::Arrow;
         };
 
-        std::unordered_map<BackendGui*, GuiResources> m_guis;
-        std::map<Cursor::Type, std::unique_ptr<sf::Cursor>> m_mouseCursors;  /// We can't use unordered_map with enum class in GCC < 6
+        std::unordered_map<BackendGui*, GuiResources> m_guiResources;
+        std::unordered_map<Cursor::Type, std::unique_ptr<sf::Cursor>> m_mouseCursors;
 
         static std::vector<std::unique_ptr<sf::Cursor>> m_leakedCursors;
     };

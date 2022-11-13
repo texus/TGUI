@@ -30,6 +30,7 @@
 #include <TGUI/DefaultFont.hpp>
 #include <TGUI/Backend/Font/BackendFontFactory.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -53,8 +54,6 @@ namespace tgui
     {
         TGUI_ASSERT(!backend || !globalBackend, "setBackend() was called with a backend while there already was a backend");
 
-        globalBackend = backend;
-
         // Do some cleanup when we destroy the backend
         if (!backend)
         {
@@ -67,6 +66,8 @@ namespace tgui
             // Destroy the global theme
             Theme::setDefault(nullptr);
         }
+
+        globalBackend = backend;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,12 +88,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Backend::attachGui(BackendGui* gui)
+    {
+        m_guis.insert(gui);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::detatchGui(BackendGui* gui)
+    {
+        // Don't check if it existed, detach is called for every gui while attached is only called for properly initialized guis
+        m_guis.erase(gui);
+
+        if (m_destroyOnLastGuiDetatch && m_guis.empty())
+            setBackend(nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Font Backend::createDefaultFont()
     {
         if (m_fontBackend)
             return {defaultFontBytes, sizeof(defaultFontBytes)};
         else
             return {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::setFontScale(float scale)
+    {
+        if (scale == m_fontScale)
+            return;
+
+        m_fontScale = scale;
+
+        // Invalidate all font textures
+        for (auto* font : m_registeredFonts)
+            font->setFontScale(scale);
+
+        // Update the size of all texts in all widgets
+        for (auto& gui : m_guis)
+        {
+            for (auto& widget : gui->getWidgets())
+                widget->updateTextSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +231,20 @@ namespace tgui
     void Backend::setFontBackend(std::shared_ptr<BackendFontFactory> fontBackend)
     {
         m_fontBackend = fontBackend;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::registerFont(BackendFont* font)
+    {
+        m_registeredFonts.insert(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::unregisterFont(BackendFont* font)
+    {
+        m_registeredFonts.erase(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

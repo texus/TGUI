@@ -6,6 +6,7 @@ TGUI 1.0-alpha  (17 September 2022)
 - Added SFML/OpenGL backend (sfml-window + OpenGL >= 3.3)
 - Existing SFML-Graphics and SDL/OpenGL backends were redesigned
 - Black, BabyBlue and TransparentGrey themes can now be used for all widgets
+- Added font scaling to keep text sharp while view is smaller than window size
 - Added tab alignment and fixed tab size to TabContainer ([PR #174](https://github.com/texus/TGUI/pull/174))
 - ClientSize of ChildWindow can now be a layout instead of only a constant
 - Typing in FileDialog now selects the first file starting with the typed letter
