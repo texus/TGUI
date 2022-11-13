@@ -39,21 +39,25 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Grid::Grid(const Grid& gridToCopy) :
-        Container {gridToCopy},
-        m_autoSize{gridToCopy.m_autoSize}
+        Container     {gridToCopy},
+        m_autoSize    {gridToCopy.m_autoSize},
+        m_gridWidgets {},
+        m_objPadding  {},
+        m_objAlignment{},
+        m_rowHeight   {},
+        m_columnWidth {},
+        m_widgetCells {},
+        m_connectedSizeCallbacks{}
     {
-        for (std::size_t row = 0; row < gridToCopy.m_gridWidgets.size(); ++row)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            for (std::size_t col = 0; col < gridToCopy.m_gridWidgets[row].size(); ++col)
-            {
-                // Find the widget that belongs in this square
-                for (std::size_t i = 0; i < gridToCopy.m_widgets.size(); ++i)
-                {
-                    // If a widget matches then add it to the grid
-                    if (gridToCopy.m_widgets[i] == gridToCopy.m_gridWidgets[row][col])
-                        addWidget(m_widgets[i], row, col, gridToCopy.m_objAlignment[row][col], gridToCopy.m_objPadding[row][col]);
-                }
-            }
+            const auto it = gridToCopy.m_widgetCells.find(gridToCopy.m_widgets[i]);
+            if (it == gridToCopy.m_widgetCells.end())
+                continue;
+
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+            setWidgetCell(m_widgets[i], row, col, gridToCopy.m_objAlignment[row][col], gridToCopy.m_objPadding[row][col]);
         }
     }
 
@@ -67,6 +71,7 @@ namespace tgui
         m_objAlignment{std::move(gridToMove.m_objAlignment)},
         m_rowHeight   {std::move(gridToMove.m_rowHeight)},
         m_columnWidth {std::move(gridToMove.m_columnWidth)},
+        m_widgetCells {std::move(gridToMove.m_widgetCells)},
         m_connectedSizeCallbacks{}
     {
         for (auto& widget : m_widgets)
@@ -78,27 +83,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid& Grid::operator= (const Grid& right)
+    Grid& Grid::operator= (const Grid& other)
     {
         // Make sure it is not the same widget
-        if (this != &right)
+        if (this != &other)
         {
-            Container::operator=(right);
-            m_autoSize = right.m_autoSize;
+            Container::operator=(other);
+            m_autoSize = other.m_autoSize;
+            m_gridWidgets.clear();
+            m_objPadding.clear();
+            m_objAlignment.clear();
+            m_rowHeight.clear();
+            m_columnWidth.clear();
+            m_widgetCells.clear();
             m_connectedSizeCallbacks.clear();
 
-            for (std::size_t row = 0; row < right.m_gridWidgets.size(); ++row)
+            for (std::size_t i = 0; i < m_widgets.size(); ++i)
             {
-                for (std::size_t col = 0; col < right.m_gridWidgets[row].size(); ++col)
-                {
-                    // Find the widget that belongs in this square
-                    for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-                    {
-                        // If a widget matches then add it to the grid
-                        if (right.m_widgets[i] == right.m_gridWidgets[row][col])
-                            addWidget(m_widgets[i], row, col, right.m_objAlignment[row][col], right.m_objPadding[row][col]);
-                    }
-                }
+                const auto it = other.m_widgetCells.find(other.m_widgets[i]);
+                if (it == other.m_widgetCells.end())
+                    continue;
+
+                const std::size_t row = it->second.first;
+                const std::size_t col = it->second.second;
+                setWidgetCell(m_widgets[i], row, col, other.m_objAlignment[row][col], other.m_objPadding[row][col]);
             }
         }
 
@@ -107,22 +115,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid& Grid::operator= (Grid&& right)
+    Grid& Grid::operator= (Grid&& other)
     {
-        if (this != &right)
+        if (this != &other)
         {
-            Container::operator=(std::move(right));
-            m_autoSize               = std::move(right.m_autoSize);
-            m_gridWidgets            = std::move(right.m_gridWidgets);
-            m_objPadding             = std::move(right.m_objPadding);
-            m_objAlignment           = std::move(right.m_objAlignment);
-            m_rowHeight              = std::move(right.m_rowHeight);
-            m_columnWidth            = std::move(right.m_columnWidth);
-            m_connectedSizeCallbacks = std::move(right.m_connectedSizeCallbacks);
+            Container::operator=(std::move(other));
+            m_autoSize               = std::move(other.m_autoSize);
+            m_gridWidgets            = std::move(other.m_gridWidgets);
+            m_objPadding             = std::move(other.m_objPadding);
+            m_objAlignment           = std::move(other.m_objAlignment);
+            m_rowHeight              = std::move(other.m_rowHeight);
+            m_columnWidth            = std::move(other.m_columnWidth);
+            m_widgetCells            = std::move(other.m_widgetCells);
+            m_connectedSizeCallbacks = std::move(other.m_connectedSizeCallbacks);
 
             for (auto& widget : m_widgets)
             {
-                widget->onSizeChange.disconnect(right.m_connectedSizeCallbacks[widget]);
+                widget->onSizeChange.disconnect(other.m_connectedSizeCallbacks[widget]);
                 m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
             }
         }
@@ -188,49 +197,48 @@ namespace tgui
         }
 
         // Find the widget in the grid
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        const auto it = m_widgetCells.find(widget);
+        if (it != m_widgetCells.end())
         {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+
+            // Remove the widget from the grid
+            m_gridWidgets[row].erase(m_gridWidgets[row].begin() + static_cast<std::ptrdiff_t>(col));
+            m_objPadding[row].erase(m_objPadding[row].begin() + static_cast<std::ptrdiff_t>(col));
+            m_objAlignment[row].erase(m_objAlignment[row].begin() + static_cast<std::ptrdiff_t>(col));
+            m_widgetCells.erase(widget);
+
+            // Check if this is the last column
+            if (m_columnWidth.size() == m_gridWidgets[row].size() + 1)
             {
-                if (m_gridWidgets[row][col] == widget)
+                // Check if there is another row with this many columns
+                bool rowFound = false;
+                for (std::size_t i = 0; i < m_gridWidgets.size(); ++i)
                 {
-                    // Remove the widget from the grid
-                    m_gridWidgets[row].erase(m_gridWidgets[row].begin() + static_cast<std::ptrdiff_t>(col));
-                    m_objPadding[row].erase(m_objPadding[row].begin() + static_cast<std::ptrdiff_t>(col));
-                    m_objAlignment[row].erase(m_objAlignment[row].begin() + static_cast<std::ptrdiff_t>(col));
-
-                    // Check if this is the last column
-                    if (m_columnWidth.size() == m_gridWidgets[row].size() + 1)
+                    if (m_gridWidgets[i].size() >= m_columnWidth.size())
                     {
-                        // Check if there is another row with this many columns
-                        bool rowFound = false;
-                        for (std::size_t i = 0; i < m_gridWidgets.size(); ++i)
-                        {
-                            if (m_gridWidgets[i].size() >= m_columnWidth.size())
-                            {
-                                rowFound = true;
-                                break;
-                            }
-                        }
-
-                        // Erase the last column if no other row is using it
-                        if (!rowFound)
-                            m_columnWidth.erase(m_columnWidth.end() - 1);
+                        rowFound = true;
+                        break;
                     }
-
-                    // If the row is empty then remove it as well
-                    if (m_gridWidgets[row].empty())
-                    {
-                        m_gridWidgets.erase(m_gridWidgets.begin() + static_cast<std::ptrdiff_t>(row));
-                        m_objPadding.erase(m_objPadding.begin() + static_cast<std::ptrdiff_t>(row));
-                        m_objAlignment.erase(m_objAlignment.begin() + static_cast<std::ptrdiff_t>(row));
-                        m_rowHeight.erase(m_rowHeight.begin() + static_cast<std::ptrdiff_t>(row));
-                    }
-
-                    // Update the positions of all remaining widgets
-                    updatePositionsOfAllWidgets();
                 }
+
+                // Erase the last column if no other row is using it
+                if (!rowFound)
+                    m_columnWidth.erase(m_columnWidth.end() - 1);
             }
+
+            // If the row is empty then remove it as well
+            if (m_gridWidgets[row].empty())
+            {
+                m_gridWidgets.erase(m_gridWidgets.begin() + static_cast<std::ptrdiff_t>(row));
+                m_objPadding.erase(m_objPadding.begin() + static_cast<std::ptrdiff_t>(row));
+                m_objAlignment.erase(m_objAlignment.begin() + static_cast<std::ptrdiff_t>(row));
+                m_rowHeight.erase(m_rowHeight.begin() + static_cast<std::ptrdiff_t>(row));
+            }
+
+            // Update the positions of all remaining widgets
+            updatePositionsOfAllWidgets();
         }
 
         return Container::remove(widget);
@@ -249,6 +257,8 @@ namespace tgui
         m_rowHeight.clear();
         m_columnWidth.clear();
 
+        m_widgetCells.clear();
+
         m_connectedSizeCallbacks.clear();
 
         updateWidgets();
@@ -258,9 +268,35 @@ namespace tgui
 
     void Grid::addWidget(const Widget::Ptr& widget, std::size_t row, std::size_t col, Alignment alignment, const Padding& padding)
     {
-        // If the widget hasn't already been added then add it now
-        if (std::find(getWidgets().begin(), getWidgets().end(), widget) == getWidgets().end())
+        // Add the widget to the container. For backwards compatibility, we still do a search and skip this when it is already there.
+        const auto& widgets = getWidgets();
+        if (std::find(widgets.begin(), widgets.end(), widget) == widgets.end())
+            Container::add(widget);
+        else
+        {
+            TGUI_PRINT_WARNING("Grid::addWidget should no longer be called after widget is already added, use setWidgetCell instead");
+        }
+
+        setWidgetCell(widget, row, col, alignment, padding);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Grid::setWidgetCell(const Widget::Ptr& widget, std::size_t row, std::size_t col, Alignment alignment, const Padding& padding)
+    {
+        const auto& widgets = getWidgets();
+        if (std::find(widgets.begin(), widgets.end(), widget) == widgets.end())
+        {
+            std::cerr << "FAIL setWidgetCell " << widget << std::endl;
+            return false;
+        }
+
+        // If the widget was added before the remove it from its old location
+        if (m_widgetCells.find(widget) != m_widgetCells.end())
+        {
+            remove(widget);
             add(widget);
+        }
 
         // Create the row if it did not exist yet
         if (m_gridWidgets.size() < row + 1)
@@ -290,12 +326,15 @@ namespace tgui
         m_gridWidgets[row][col] = widget;
         m_objPadding[row][col] = padding;
         m_objAlignment[row][col] = alignment;
+        m_widgetCells[widget] = std::make_pair(row, col);
 
         // Update the widgets
         updateWidgets();
 
         // Automatically update the widgets when their size changes
         m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,34 +349,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> Grid::getWidgetLocations() const
+    const std::unordered_map<Widget::Ptr, std::pair<std::size_t, std::size_t>>& Grid::getWidgetLocations() const
     {
-        std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> widgetsMap;
-
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
-        {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col])
-                    widgetsMap[m_gridWidgets[row][col]] = {row, col};
-            }
-        }
-
-        return widgetsMap;
+        return m_widgetCells;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Grid::setWidgetPadding(const Widget::Ptr& widget, const Padding& padding)
     {
-        // Find the widget in the grid
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        const auto it = m_widgetCells.find(widget);
+        if (it != m_widgetCells.end())
         {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col] == widget)
-                    setWidgetPadding(row, col, padding);
-            }
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+            setWidgetPadding(row, col, padding);
         }
     }
 
@@ -359,14 +385,12 @@ namespace tgui
 
     Padding Grid::getWidgetPadding(const Widget::Ptr& widget) const
     {
-        // Find the widget in the grid
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        const auto it = m_widgetCells.find(widget);
+        if (it != m_widgetCells.end())
         {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col] == widget)
-                    return getWidgetPadding(row, col);
-            }
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+            return getWidgetPadding(row, col);
         }
 
         return {};
@@ -386,14 +410,12 @@ namespace tgui
 
     void Grid::setWidgetAlignment(const Widget::Ptr& widget, Alignment alignment)
     {
-        // Find the widget in the grid
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        const auto it = m_widgetCells.find(widget);
+        if (it != m_widgetCells.end())
         {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col] == widget)
-                    setWidgetAlignment(row, col, alignment);
-            }
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+            setWidgetAlignment(row, col, alignment);
         }
     }
 
@@ -412,13 +434,12 @@ namespace tgui
 
     Grid::Alignment Grid::getWidgetAlignment(const Widget::Ptr& widget) const
     {
-        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        const auto it = m_widgetCells.find(widget);
+        if (it != m_widgetCells.end())
         {
-            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-            {
-                if (m_gridWidgets[row][col] == widget)
-                    return getWidgetAlignment(row, col);
-            }
+            const std::size_t row = it->second.first;
+            const std::size_t col = it->second.second;
+            return getWidgetAlignment(row, col);
         }
 
         return Alignment::Center;
@@ -611,7 +632,7 @@ namespace tgui
                 else
                     throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
 
-                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), alignment, padding);
+                setWidgetCell(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), alignment, padding);
             }
         }
     }

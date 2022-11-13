@@ -174,18 +174,35 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget to the grid
         ///
-        /// @param widget    Pointer to a fully created widget that will be added to the grid
-        /// @param row       The row in which the widget should be placed
-        /// @param column    The column in which the widget should be placed
-        /// @param padding   Distance from the grid cell to the widget (left, top, right, bottom)
-        /// @param alignment Where the widget is located in the cell
-        ///
+        /// This function is a shortcut for executing the following 2 lines:
+        /// @code
+        /// grid->add(widget);
+        /// grid->setWidgetCell(widget, row, column);
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addWidget(const Widget::Ptr& widget,
                        std::size_t        row,
                        std::size_t        column,
                        Alignment          alignment = Alignment::Center,
                        const Padding&     padding   = Padding{0});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Chooses the row and column in which a widget should be placed
+        ///
+        /// @param widget    Pointer to a fully created widget that will be added to the grid
+        /// @param row       The row in which the widget should be placed
+        /// @param column    The column in which the widget should be placed
+        /// @param padding   Distance from the grid cell to the widget (left, top, right, bottom)
+        /// @param alignment Where the widget is located in the cell
+        ///
+        /// @return True if row and column were set, false if widget didn't exist in grid
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setWidgetCell(const Widget::Ptr& widget,
+                           std::size_t        row,
+                           std::size_t        column,
+                           Alignment          alignment = Alignment::Center,
+                           const Padding&     padding   = Padding{0});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +224,7 @@ namespace tgui
         ///         element in the pair is the column.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> getWidgetLocations() const;
+        const std::unordered_map<Widget::Ptr, std::pair<std::size_t, std::size_t>>& getWidgetLocations() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,6 +383,8 @@ namespace tgui
 
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
+
+        std::unordered_map<Widget::Ptr, std::pair<std::size_t, std::size_t>> m_widgetCells;
 
         std::unordered_map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
 

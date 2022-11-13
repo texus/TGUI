@@ -51,10 +51,10 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
 
         auto widget2 = tgui::ClickableWidget::create({20, 10});
-        grid->add(widget2); // Widget is added before calling addWidget here
-        grid->addWidget(widget2, 0, 0, tgui::Grid::Alignment::UpperLeft, {1, 2, 3, 4});
+        grid->add(widget2);
+        grid->setWidgetCell(widget2, 0, 0, tgui::Grid::Alignment::UpperLeft, {1, 2, 3, 4});
 
-        REQUIRE(grid->getWidgets().size() == 2); // addWidget did not add a duplicate or widget2
+        REQUIRE(grid->getWidgets().size() == 2);
         REQUIRE(grid->getWidget(0, 0) == widget2);
         REQUIRE(grid->getWidgetPadding(0, 0) ==  tgui::Padding(1, 2, 3, 4));
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::UpperLeft);
