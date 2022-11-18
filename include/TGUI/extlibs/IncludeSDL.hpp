@@ -29,6 +29,10 @@
 
 #include <SDL.h>
 
+#if SDL_MAJOR_VERSION < 2
+    #error TGUI does not support SDL 1.x
+#endif
+
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
 #endif

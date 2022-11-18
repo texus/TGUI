@@ -463,7 +463,12 @@ namespace tgui
             return;
 
         SDL_GetWindowSize(m_window, &m_windowSize.x, &m_windowSize.y);
+
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+        SDL_GetWindowSizeInPixels(m_window, &m_framebufferSize.x, &m_framebufferSize.y);
+#else
         updateFramebufferSize();
+#endif
 
         BackendGui::updateContainerSize();
     }
