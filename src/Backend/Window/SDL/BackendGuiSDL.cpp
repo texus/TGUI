@@ -30,6 +30,7 @@
 #include <TGUI/extlibs/IncludeSDL.hpp>
 
 #include <thread>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -223,9 +224,14 @@ namespace tgui
                     eventTGUI.mouseWheel.delta = static_cast<float>(eventSDL.wheel.y);
 #endif
 
-                // SDL doesn't include the mouse position in mouse wheel events, so we add the last known position ourself
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+                eventTGUI.mouseWheel.x = eventSDL.wheel.mouseX;
+                eventTGUI.mouseWheel.y = eventSDL.wheel.mouseY;
+#else
+                // SDL didn't include the mouse position in mouse wheel events, so we add the last known position ourself
                 eventTGUI.mouseWheel.x = static_cast<int>(m_lastMousePos.x);
                 eventTGUI.mouseWheel.y = static_cast<int>(m_lastMousePos.y);
+#endif
 
                 return true;
             }
