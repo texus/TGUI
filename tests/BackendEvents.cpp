@@ -720,18 +720,28 @@ TEST_CASE("[Backend events]")
 
             SECTION("MouseWheelScrolled")
             {
-                // SDL has no mouse position in its mouse scroll event, so first simulate a mouse move
                 SDL_Event eventSDL;
+
+#if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION < 26))
+                // SDL < 2.26 had no mouse position in its mouse scroll event, so first simulate a mouse move
                 eventSDL.type = SDL_MOUSEMOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 200;
                 eventSDL.motion.y = 150;
                 backendGuiSDL->handleEvent(eventSDL);
+#else
+                eventSDL.wheel.mouseX = 200;
+                eventSDL.wheel.mouseY = 150;
+#endif
 
                 eventSDL.type = SDL_MOUSEWHEEL;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 2;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
+#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+                eventSDL.wheel.preciseX = eventSDL.wheel.x;
+                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+#endif
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -748,6 +758,10 @@ TEST_CASE("[Backend events]")
                 // We only handle vertical scrolling
                 eventSDL.wheel.x = 2;
                 eventSDL.wheel.y = 0;
+#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+                eventSDL.wheel.preciseX = eventSDL.wheel.x;
+                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+#endif
                 REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
             }
 
@@ -912,17 +926,29 @@ TEST_CASE("[Backend events]")
                 REQUIRE(editBox->getText() == "AC");
 
                 // Scroll the mouse wheel on top of the slider and verify that its value changes
+#if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION < 26))
                 eventSDL.type = SDL_MOUSEMOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 260;
                 eventSDL.motion.y = 80;
                 backendGuiSDL->handleEvent(eventSDL);
+#else
+                eventSDL.wheel.mouseX = 260;
+                eventSDL.wheel.mouseY = 80;
+#endif
                 eventSDL.type = SDL_MOUSEWHEEL;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 4;
+#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+                eventSDL.wheel.preciseX = eventSDL.wheel.x;
+                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+#endif
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.wheel.y = -1;
+#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+#endif
                 backendGuiSDL->handleEvent(eventSDL);
                 backendGuiSDL->handleEvent(eventSDL);
 
