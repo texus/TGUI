@@ -191,14 +191,14 @@ namespace tgui
 
         const auto it = m_cachedLineSpacing.find(scaledCharacterSize);
         if (it != m_cachedLineSpacing.end())
-            return it->second;
+            return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
 
-        const float lineSpacing = m_face->size->metrics.height / unitsPerPixel / m_fontScale;
+        const float lineSpacing = m_face->size->metrics.height / unitsPerPixel;
         m_cachedLineSpacing[scaledCharacterSize] = lineSpacing;
-        return lineSpacing;
+        return lineSpacing / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,19 +209,19 @@ namespace tgui
 
         const auto it = m_cachedFontHeights.find(scaledCharacterSize);
         if (it != m_cachedFontHeights.end())
-            return it->second;
+            return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
 
         float fontHeight;
         if (FT_IS_SCALABLE(m_face))
-            fontHeight = std::ceil(static_cast<float>(FT_MulFix(m_face->ascender - m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel) / m_fontScale;
+            fontHeight = std::ceil(static_cast<float>(FT_MulFix(m_face->ascender - m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
         else // Use the line spacing when we don't have a scalable font
-            fontHeight = m_face->size->metrics.height / unitsPerPixel / m_fontScale;
+            fontHeight = m_face->size->metrics.height / unitsPerPixel;
 
         m_cachedFontHeights[scaledCharacterSize] = fontHeight;
-        return fontHeight;
+        return fontHeight / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,19 +232,19 @@ namespace tgui
 
         const auto it = m_cachedAscents.find(scaledCharacterSize);
         if (it != m_cachedAscents.end())
-            return it->second;
+            return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
 
         float ascent;
         if (FT_IS_SCALABLE(m_face))
-            ascent = std::ceil(static_cast<float>(FT_MulFix(m_face->ascender, m_face->size->metrics.y_scale)) / unitsPerPixel) / m_fontScale;
+            ascent = std::ceil(static_cast<float>(FT_MulFix(m_face->ascender, m_face->size->metrics.y_scale)) / unitsPerPixel);
         else
-            ascent = m_face->size->metrics.ascender / unitsPerPixel / m_fontScale;
+            ascent = m_face->size->metrics.ascender / unitsPerPixel;
 
         m_cachedAscents[scaledCharacterSize] = ascent;
-        return ascent;
+        return ascent / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,19 +255,19 @@ namespace tgui
 
         const auto it = m_cachedDescents.find(scaledCharacterSize);
         if (it != m_cachedDescents.end())
-            return it->second;
+            return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
 
         float descent;
         if (FT_IS_SCALABLE(m_face))
-            descent = std::ceil(static_cast<float>(FT_MulFix(-m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel) / m_fontScale;
+            descent = std::ceil(static_cast<float>(FT_MulFix(-m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
         else
-            descent = -m_face->size->metrics.descender / unitsPerPixel / m_fontScale;
+            descent = -m_face->size->metrics.descender / unitsPerPixel;
 
         m_cachedDescents[scaledCharacterSize] = descent;
-        return descent;
+        return descent / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
