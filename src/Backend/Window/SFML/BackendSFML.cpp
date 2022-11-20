@@ -206,9 +206,11 @@ namespace tgui
             return nullptr;
 
         const off_t assetLength = AAsset_getLength(asset);
+        if (assetLength <= 0)
+            return nullptr;
 
-        auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(assetLength);
-        if (AAsset_read(asset, buffer.get(), assetLength) < 0)
+        auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(assetLength));
+        if (AAsset_read(asset, buffer.get(), static_cast<std::size_t>(assetLength)) < 0)
             return nullptr;
 
         AAsset_close(asset);

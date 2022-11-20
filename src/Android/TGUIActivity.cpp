@@ -94,15 +94,15 @@ const char* getLibraryName(JNIEnv* lJNIEnv, jobject& objectActivityInfo)
     // Convert the application name to a C++ string and return it
     const jsize applicationNameLength = lJNIEnv->GetStringUTFLength(valueString);
     const char* applicationName = lJNIEnv->GetStringUTFChars(valueString, NULL);
-    if (applicationNameLength >= 256)
+    if (applicationNameLength < 0 || applicationNameLength >= 256)
     {
         LOGE("The value of 'tgui.app.lib_name' must not be longer than 255 characters.");
         exit(1);
     }
 
     static char name[256];
-    strncpy(name, applicationName, applicationNameLength);
-    name[applicationNameLength] = '\0';
+    strncpy(name, applicationName, static_cast<size_t>(applicationNameLength));
+    name[static_cast<size_t>(applicationNameLength)] = '\0';
 
     lJNIEnv->ReleaseStringUTFChars(valueString, applicationName);
     return name;

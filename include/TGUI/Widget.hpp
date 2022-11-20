@@ -1203,7 +1203,7 @@ namespace tgui
         aurora::CopiedPtr<WidgetRenderer> m_renderer = nullptr;
 
         // Show animations
-        std::vector<std::shared_ptr<priv::Animation>> m_showAnimations;
+        std::vector<std::unique_ptr<priv::Animation>> m_showAnimations;
 
         // Renderer properties that can be passed from containers to their children
         Font m_inheritedFont;

@@ -150,7 +150,7 @@ namespace tgui
 
         // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
         // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
-        static_assert(sizeof(int) == sizeof(unsigned int));
+        static_assert(sizeof(int) == sizeof(unsigned int), "Size of 'int' and 'unsigned int' must be identical for cast to work");
         static_assert(sizeof(Vertex) == sizeof(SDL_Vertex), "SDL_Vertex requires same memory layout as tgui::Vertex for cast to work");
         SDL_RenderGeometry(m_renderer, textureSDL,
                            reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()), static_cast<int>(vertexCount),

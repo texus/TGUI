@@ -382,7 +382,7 @@ namespace tgui
                     else
                         throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
 
-                    std::advance(c, closeBracketPos - endOffset + 1);
+                    std::advance(c, static_cast<std::ptrdiff_t>(closeBracketPos - endOffset + 1));
                 }
             }
 
