@@ -99,10 +99,17 @@ namespace dev
             return;
         }
 
+#if defined(__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wnull-dereference"  // We were getting a warning for not checking the iterator in release mode
+#endif
         // Find out to which topic this callback belongs
         auto it = m_callbackIdToTopicId.find(callbackId);
         TGUI_ASSERT(it != m_callbackIdToTopicId.end(), "Callback id needs to have matching topic in MessageBroker::unsubscribe");
         const auto topicId = it->second;
+#if defined(__GNUC__)
+#   pragma GCC diagnostic pop
+#endif
 
         // Remove the callback
         m_listeners.erase(listenersIt);

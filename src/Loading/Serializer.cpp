@@ -35,6 +35,7 @@
 #   pragma GCC diagnostic ignored "-Wold-style-cast"
 #   pragma GCC diagnostic ignored "-Wsign-conversion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
+#   pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #   pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #elif defined (_MSC_VER)
 #   if defined(__clang__)

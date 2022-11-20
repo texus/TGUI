@@ -34,16 +34,14 @@
 #   pragma GCC diagnostic ignored "-Wdouble-promotion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
 #   pragma GCC diagnostic ignored "-Wcast-align"
+#   pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #   if defined(__clang__)
-#       pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #       if __has_warning("-Wunused-but-set-variable")
 #           pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #       endif
 #   else
-#       if __GNUC__ >= 7
-#           pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-#       endif
 #       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#       pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #   endif
 #elif defined (_MSC_VER)
 #   if defined(__clang__)

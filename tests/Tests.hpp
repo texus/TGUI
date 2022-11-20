@@ -208,8 +208,8 @@ public:
         setAbsoluteView({0, 0, 200, 200});
     }
 
-    void draw() {}
-    void mainLoop(tgui::Color = {240, 240, 240}) {}
+    void draw() override {}
+    void mainLoop(tgui::Color = {240, 240, 240}) override {}
 };
 
 extern tgui::BackendGui* globalGui;

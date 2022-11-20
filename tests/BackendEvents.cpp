@@ -739,8 +739,8 @@ TEST_CASE("[Backend events]")
                 eventSDL.wheel.y = 2;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
 #if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
-                eventSDL.wheel.preciseX = eventSDL.wheel.x;
-                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+                eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
+                eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
 
                 tgui::Event eventTGUI;
@@ -759,8 +759,8 @@ TEST_CASE("[Backend events]")
                 eventSDL.wheel.x = 2;
                 eventSDL.wheel.y = 0;
 #if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
-                eventSDL.wheel.preciseX = eventSDL.wheel.x;
-                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+                eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
+                eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
                 REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
             }
@@ -941,13 +941,13 @@ TEST_CASE("[Backend events]")
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 4;
 #if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
-                eventSDL.wheel.preciseX = eventSDL.wheel.x;
-                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+                eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
+                eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.wheel.y = -1;
 #if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
-                eventSDL.wheel.preciseY = eventSDL.wheel.y;
+                eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 backendGuiSDL->handleEvent(eventSDL);

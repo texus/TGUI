@@ -69,7 +69,6 @@ function(tgui_set_global_compile_flags target)
                                -Wdouble-promotion
                                -Wformat=2
                                -Wimplicit-fallthrough
-                               -Wsuggest-override
                                -Wnull-dereference
         )
 
@@ -79,6 +78,10 @@ function(tgui_set_global_compile_flags target)
                                    -Wduplicated-cond
                                    -Wlogical-op
             )
+        endif()
+
+        if(TGUI_COMPILER_GCC OR (TGUI_COMPILER_LLVM_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11))
+            target_compile_options(${target} PRIVATE -Wsuggest-override)
         endif()
     endif()
 
