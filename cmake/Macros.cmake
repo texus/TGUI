@@ -47,10 +47,14 @@ endmacro()
 # Set the compile options used by all targets
 function(tgui_set_global_compile_flags target)
     if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
-        target_compile_options(${target} PRIVATE /W4)
+        target_compile_options(${target} PRIVATE
+                               $<$<BOOL:${TGUI_WARNINGS_AS_ERRORS}>:/WX>
+                               /W4
+                               /permissive-
+        )
     else()
-        target_compile_options(${target}
-                               PRIVATE
+        target_compile_options(${target} PRIVATE
+                               $<$<BOOL:${TGUI_WARNINGS_AS_ERRORS}>:-Werror>
                                -Wall
                                -Wextra
                                -Wshadow
@@ -63,7 +67,19 @@ function(tgui_set_global_compile_flags target)
                                -Woverloaded-virtual
                                -Wpedantic
                                -Wdouble-promotion
-                               -Wformat=2)
+                               -Wformat=2
+                               -Wimplicit-fallthrough
+                               -Wsuggest-override
+                               -Wnull-dereference
+        )
+
+        if(TGUI_COMPILER_GCC)
+            target_compile_options(${target} PRIVATE
+                                   -Wmisleading-indentation
+                                   -Wduplicated-cond
+                                   -Wlogical-op
+            )
+        endif()
     endif()
 
     set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
