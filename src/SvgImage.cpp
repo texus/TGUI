@@ -30,6 +30,9 @@
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wsign-conversion"
+#elif defined (_MSC_VER) && defined(__clang__)
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 #define NANOSVG_IMPLEMENTATION
@@ -39,7 +42,9 @@
 #include "TGUI/extlibs/nanosvg/nanosvgrast.h"
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#   pragma GCC diagnostic pop
+#elif defined (_MSC_VER) && defined(__clang__)
+#   pragma clang diagnostic pop
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

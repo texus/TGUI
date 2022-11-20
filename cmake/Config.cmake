@@ -26,15 +26,18 @@ else()
     return()
 endif()
 
-# Detect the compiler.
-# Note: The detection is order is important because:
-# - Visual Studio can both use MSVC and Clang
-# - GNUCXX can still be set on macOS when using Clang
-if(MSVC)
+# Detect the compiler
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(TGUI_COMPILER_MSVC 1)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(TGUI_COMPILER_CLANG 1)
-elseif(CMAKE_COMPILER_IS_GNUCXX)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    set(TGUI_COMPILER_APPLE_CLANG 1)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        set(TGUI_COMPILER_CLANG_CL 1)
+    else()
+        set(TGUI_COMPILER_LLVM_CLANG 1)
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(TGUI_COMPILER_GCC 1)
 
     # Check if this is the TDM-GCC version.

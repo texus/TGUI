@@ -46,7 +46,7 @@ endmacro()
 
 # Set the compile options used by all targets
 function(tgui_set_global_compile_flags target)
-    if(TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW))
+    if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
         target_compile_options(${target} PRIVATE /W4)
     else()
         target_compile_options(${target}
@@ -93,7 +93,7 @@ function(tgui_set_stdlib target)
     endif()
 
     # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using Visual Studio.
-    if((TGUI_COMPILER_MSVC OR (TGUI_OS_WINDOWS AND TGUI_COMPILER_CLANG AND NOT MINGW)))
+    if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
         if(TGUI_USE_STATIC_STD_LIBS)
             set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         else()

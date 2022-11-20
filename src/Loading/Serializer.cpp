@@ -37,8 +37,14 @@
 #   pragma GCC diagnostic ignored "-Wunused-function"
 #   pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #elif defined (_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4505) // Unreferenced local function
+#   if defined(__clang__)
+#       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wunused-function"
+#       pragma clang diagnostic ignored "-Wmissing-field-initializers"
+#   else
+#       pragma warning(push)
+#       pragma warning(disable: 4505) // Unreferenced local function
+#   endif
 #endif
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -47,9 +53,13 @@
 #include <TGUI/extlibs/stb/stb_image_write.h>
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#   pragma GCC diagnostic pop
 #elif defined (_MSC_VER)
-    #pragma warning(pop)
+#   if defined(__clang__)
+#       pragma clang diagnostic pop
+#   else
+#       pragma warning(pop)
+#   endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

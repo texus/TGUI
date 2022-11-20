@@ -46,8 +46,13 @@
 #       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #   endif
 #elif defined (_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4505) // Unreferenced local function
+#   if defined(__clang__)
+#       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wunused-function"
+#   else
+#       pragma warning(push)
+#       pragma warning(disable: 4505) // Unreferenced local function
+#   endif
 #endif
 
 #define STBI_NO_STDIO
@@ -57,9 +62,13 @@
 #include <TGUI/extlibs/stb/stb_image.h>
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#   pragma GCC diagnostic pop
 #elif defined (_MSC_VER)
-    #pragma warning(pop)
+#   if defined(__clang__)
+#       pragma clang diagnostic pop
+#   else
+#       pragma warning(pop)
+#   endif
 #endif
 
 #include <cstring> // memcpy
