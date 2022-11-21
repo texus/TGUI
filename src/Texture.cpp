@@ -475,7 +475,7 @@ namespace tgui
                 if (m_partRect.width > 2 * middleRect.left)
                     m_middleRect.width = m_partRect.width - (2 * middleRect.left);
 
-                if (m_partRect.width > 2 * middleRect.left)
+                if (m_partRect.height > 2 * middleRect.top)
                     m_middleRect.height = m_partRect.height - (2 * middleRect.top);
             }
         }

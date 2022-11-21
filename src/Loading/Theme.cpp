@@ -678,7 +678,7 @@ namespace tgui
         m_renderers[id] = RendererData::create();
         m_renderers[id]->connectedTheme = this;
 
-        auto& properties = m_themeLoader->load(m_primary, id);
+        const auto& properties = m_themeLoader->load(m_primary, id);
         for (const auto& property : properties)
             m_renderers[id]->propertyValuePairs[property.first] = ObjectConverter(property.second);
 

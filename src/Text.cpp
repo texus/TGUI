@@ -417,7 +417,7 @@ namespace tgui
                     }
 
                     // The word can't be split but there is no other choice, it does not fit on the line.
-                    // cppcheck-suppress knownConditionTrueFalse
+                    // cppcheck-suppress[knownConditionTrueFalse,unmatchedSuppression]
                     if ((index - oldIndex) <= wordWrapCorrection)
                         index = indexWithoutWordWrap;
                 }
