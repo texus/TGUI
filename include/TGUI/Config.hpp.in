@@ -181,7 +181,14 @@
 #if !defined(NDEBUG) && !defined(TGUI_DISABLE_ASSERTS)
     #include <iostream>
     #include <cassert>
-    #define TGUI_ASSERT(condition, msg) { if (!(condition)) { std::cerr << "TGUI assertion: " << msg << "\n"; assert(condition); } }
+    #include <exception>
+    #define TGUI_ASSERT(condition, msg) { \
+        if (!(condition)) { \
+            std::cerr << "TGUI assertion: " << msg << "\n"; \
+            assert(condition); \
+            std::terminate(); \
+        } \
+    }
 #else
     #define TGUI_ASSERT(condition, msg)
 #endif

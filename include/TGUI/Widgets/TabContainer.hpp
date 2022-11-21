@@ -117,7 +117,7 @@ namespace tgui
         ///
         /// @param height Height of tabs part of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTabsHeight(Layout height);
+        void setTabsHeight(const Layout& height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +333,7 @@ namespace tgui
 
         Panel::Ptr m_selectedPanel = nullptr;  // Stores the panel belonging to the selected tab
 
-        Tabs::Ptr m_tabs; // Stores the tabs.
+        Tabs::Ptr m_tabs = Tabs::create(); // Stores the tabs.
 
         TabContainer::TabAlign m_tabAlign = TabContainer::TabAlign::Top; // Stores the tab alignment.
 

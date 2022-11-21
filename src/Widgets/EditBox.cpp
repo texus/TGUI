@@ -1584,7 +1584,7 @@ namespace tgui
         {
             if (m_mouseHover && m_caretColorHoverCached.isSet())
                 target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorHoverCached, m_opacityCached));
-            else if (m_focused && m_caretColorFocusedCached.isSet())
+            else if (m_caretColorFocusedCached.isSet())
                 target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorFocusedCached, m_opacityCached));
             else
                 target.drawFilledRect(states, m_caret.getSize(), Color::applyOpacity(m_caretColorCached, m_opacityCached));

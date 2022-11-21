@@ -467,13 +467,13 @@ namespace tgui
         TGUI_API Layout2d bindInnerSize(std::shared_ptr<Container> container);
 
         /// @brief Bind to the width of the gui view
-        TGUI_API Layout bindWidth(BackendGui& gui);
+        TGUI_API Layout bindWidth(const BackendGui& gui);
 
         /// @brief Bind to the height of the gui view
-        TGUI_API Layout bindHeight(BackendGui& gui);
+        TGUI_API Layout bindHeight(const BackendGui& gui);
 
         /// @brief Bind to the size of the gui view
-        TGUI_API Layout2d bindSize(BackendGui& gui);
+        TGUI_API Layout2d bindSize(const BackendGui& gui);
 
         /// @brief Bind to the minimum value of two layouts
         TGUI_API Layout bindMin(const Layout& value1, const Layout& value2);

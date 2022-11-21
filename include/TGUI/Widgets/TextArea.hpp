@@ -617,7 +617,7 @@ namespace tgui
         float m_lineHeight = 24;
 
         // The width of the largest line
-        float m_maxLineWidth;
+        float m_maxLineWidth = 0;
 
         std::vector<String> m_lines;
 

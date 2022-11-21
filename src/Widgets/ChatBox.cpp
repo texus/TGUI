@@ -286,8 +286,7 @@ namespace tgui
 
     void ChatBox::setLinesStartFromTop(bool startFromTop)
     {
-        if (m_linesStartFromTop != startFromTop)
-            m_linesStartFromTop = startFromTop;
+        m_linesStartFromTop = startFromTop;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

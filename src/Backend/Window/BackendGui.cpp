@@ -36,7 +36,6 @@ namespace tgui
 
     BackendGui::BackendGui()
     {
-        m_container = std::make_shared<RootContainer>();
         m_container->setParentGui(this);
     }
 

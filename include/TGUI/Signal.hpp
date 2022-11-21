@@ -253,7 +253,7 @@ namespace tgui
         template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
         static void invokeFunc(Func&& func, Args&&... args)
         {
-            std::mem_fn(func)(std::forward<Args>(args)...);
+            (std::mem_fn(func))(std::forward<Args>(args)...);
         }
 
         template <typename Func, typename... Args, typename std::enable_if<!std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>

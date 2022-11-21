@@ -67,10 +67,8 @@ namespace tgui
                 bytestoWrite = 2;
             else if (input <  0x10000)
                 bytestoWrite = 3;
-            else if (input <= 0x0010FFFF)
-                bytestoWrite = 4;
             else
-                return;
+                bytestoWrite = 4;
 
             static const std::uint8_t firstByteMask[5] = { 0, 0, 0xC0, 0xE0, 0xF0 };
 

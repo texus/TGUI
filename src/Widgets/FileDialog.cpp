@@ -1137,7 +1137,7 @@ namespace tgui
             return child->name == "ListView.\"#TGUI_INTERNAL$ListView#\"";
         });
         TGUI_ASSERT(listViewNodeIt != node->children.end(), "FileDialog::save couldn't find its ListView");
-        auto& listViewNode = *listViewNodeIt;
+        const auto& listViewNode = *listViewNodeIt;
         listViewNode->children.erase(std::remove_if(listViewNode->children.begin(), listViewNode->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
             return child->name == "Item";
         }), listViewNode->children.end());
@@ -1147,7 +1147,7 @@ namespace tgui
             return child->name == "EditBox.\"#TGUI_INTERNAL$EditBoxPath#\"";
         });
         TGUI_ASSERT(pathEditBoxNodeIt != node->children.end(), "FileDialog::save couldn't find its path EditBox");
-        auto& pathEditBoxNode = *pathEditBoxNodeIt;
+        const auto& pathEditBoxNode = *pathEditBoxNodeIt;
         pathEditBoxNode->propertyValuePairs.erase("Text");
 
         node->propertyValuePairs["FileMustExist"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_fileMustExist));

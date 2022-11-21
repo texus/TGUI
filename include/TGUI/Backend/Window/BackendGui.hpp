@@ -613,7 +613,7 @@ namespace tgui
         std::chrono::steady_clock::time_point m_lastUpdateTime;
         bool m_windowFocused = true;
 
-        RootContainer::Ptr m_container = nullptr;
+        RootContainer::Ptr m_container = std::make_shared<RootContainer>();
 
         Widget::Ptr m_visibleToolTip = nullptr;
         Duration m_tooltipTime;

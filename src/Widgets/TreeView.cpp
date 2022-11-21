@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <cassert>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +191,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void saveItems(std::unique_ptr<DataIO::Node>& parentNode, const std::vector<std::shared_ptr<TreeView::Node>>& items)
+        void saveItems(const std::unique_ptr<DataIO::Node>& parentNode, const std::vector<std::shared_ptr<TreeView::Node>>& items)
         {
             for (const auto& item : items)
             {
@@ -508,6 +509,7 @@ namespace tgui
             return hierarchy;
 
         const auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
+        assert(node != nullptr);
         while (node)
         {
             hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -529,6 +531,7 @@ namespace tgui
 
         std::vector<String> hierarchy;
         auto* node = m_visibleNodes[index].get();
+        assert(node != nullptr);
         while (node)
         {
             hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -736,6 +739,7 @@ namespace tgui
                     {
                         std::vector<String> hierarchy;
                         auto* node = m_visibleNodes[static_cast<std::size_t>(selectedIndex)].get();
+                        assert(node != nullptr);
                         while (node)
                         {
                             hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -779,6 +783,7 @@ namespace tgui
 
                 std::vector<String> hierarchy;
                 auto* node = m_visibleNodes[static_cast<std::size_t>(selectedItem)].get();
+                assert(node != nullptr);
                 while (node)
                 {
                     hierarchy.insert(hierarchy.begin(), node->text.getString());
@@ -1469,7 +1474,7 @@ namespace tgui
         }
         else // Root node
         {
-            for (auto& node : m_nodes)
+            for (const auto& node : m_nodes)
             {
                 if (node->text.getString() != hierarchy.back())
                     continue;
@@ -1556,6 +1561,7 @@ namespace tgui
         {
             std::vector<String> hierarchy;
             auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
+            assert(node != nullptr);
             while (node)
             {
                 hierarchy.insert(hierarchy.begin(), node->text.getString());

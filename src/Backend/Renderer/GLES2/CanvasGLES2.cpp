@@ -41,8 +41,6 @@ namespace tgui
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererGLES2>(getBackend()->getRenderer()),
                     "CanvasGLES2 can only be created when using the GLES2 backend renderer");
 
-        m_backendTexture = std::make_shared<BackendTextureGLES2>();
-
         glGenFramebuffers(1, &m_frameBuffer);
     }
 
@@ -53,8 +51,6 @@ namespace tgui
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererGLES2>(getBackend()->getRenderer()),
                     "CanvasGLES2 can only be used when using the GLES2 backend renderer");
-
-        m_backendTexture = std::make_shared<BackendTextureGLES2>();
 
         glGenFramebuffers(1, &m_frameBuffer);
 
@@ -130,7 +126,7 @@ namespace tgui
     void CanvasGLES2::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const Vector2f size = getSize();
-        if ((size.x <= 0) || (size.y <= 0) || (m_textureSize.x <= 0) || (m_textureSize.y <= 0))
+        if ((size.x <= 0) || (size.y <= 0) || (m_textureSize.x == 0) || (m_textureSize.y == 0))
             return;
 
         const Vector2f normalizedTextureSize{static_cast<float>(m_usedTextureSize.x) / static_cast<float>(m_textureSize.x),

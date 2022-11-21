@@ -843,7 +843,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 
     m_selectedWidgetComboBox->addItem(filename, "form");
     m_selectedWidgetComboBox->setSelectedItemById("form");
-    m_selectedWidgetComboBox->onItemSelect([this](tgui::String, tgui::String id){ m_selectedForm->selectWidgetById(id); });
+    m_selectedWidgetComboBox->onItemSelect([this](const tgui::String&, const tgui::String& id){ m_selectedForm->selectWidgetById(id); });
 
     m_menuBar = m_gui->get<tgui::MenuBar>("MenuBar");
     m_menuBar->onMouseEnter([this]{ m_menuBar->moveToFront(); });
@@ -878,7 +878,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 
     const auto hierarchyWindow = m_gui->get<tgui::ChildWindow>("HierarchyWindow");
     m_widgetHierarchyTree = hierarchyWindow->get<tgui::TreeView>("WidgetsTree");
-    m_widgetHierarchyTree->onItemSelect([this](tgui::String name){
+    m_widgetHierarchyTree->onItemSelect([this](const tgui::String& name){
         if (!name.empty())
             m_selectedForm->selectWidgetByName(name);
     });
@@ -1303,7 +1303,7 @@ bool GuiBuilder::loadForm(tgui::String filename)
 
     // Try to match renderers with themes (this could create false positives but it is better than not being able to load themes at all)
     // Many cases are still unsupported (e.g. nested renderers), in which case the renderer will not be shared after loading
-    for (auto& widget : m_selectedForm->getWidgets())
+    for (const auto& widget : m_selectedForm->getWidgets())
     {
         for (auto& theme : m_themes)
         {
@@ -1395,14 +1395,17 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
     if (widgetInfo->ptr->isContainer())
     {
         const auto& container = widgetInfo->ptr->cast<tgui::Container>();
-        for (const auto& childWidget : container->getWidgets())
+        if (container) // Should aways be the case
         {
-            const auto& childWidgetInfo = m_selectedForm->getWidget(tgui::String::fromNumber(childWidget.get()));
-            copyWidgetRecursive(copiedWidget.childWidgets, childWidgetInfo);
-        }
+            for (const auto& childWidget : container->getWidgets())
+            {
+                const auto& childWidgetInfo = m_selectedForm->getWidget(tgui::String::fromNumber(childWidget.get()));
+                copyWidgetRecursive(copiedWidget.childWidgets, childWidgetInfo);
+            }
 
-        // Remove the widgets inside the container itself as we stored them separately
-        copiedWidget.widget->cast<tgui::Container>()->removeAllWidgets();
+            // Remove the widgets inside the container itself as we stored them separately
+            copiedWidget.widget->cast<tgui::Container>()->removeAllWidgets();
+        }
     }
 
     copiedWidgetList.push_back(std::move(copiedWidget));
@@ -2189,7 +2192,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
             themesList->addItem(theme.second.getPrimary());
     }
 
-    themesList->onItemSelect([=](tgui::String item){
+    themesList->onItemSelect([=](const tgui::String& item){
         if (item.empty())
             buttonDelete->setEnabled(false);
         else
@@ -2198,7 +2201,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
         newThemeEditBox->setText(item);
     });
 
-    newThemeEditBox->onTextChange([=](tgui::String text){
+    newThemeEditBox->onTextChange([=](const tgui::String& text){
         if (text.empty())
             buttonAdd->setEnabled(false);
         else

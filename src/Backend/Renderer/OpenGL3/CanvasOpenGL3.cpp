@@ -41,8 +41,6 @@ namespace tgui
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be created when using the OpenGL3 backend renderer");
 
-        m_backendTexture = std::make_shared<BackendTextureOpenGL3>();
-
         glGenFramebuffers(1, &m_frameBuffer);
     }
 
@@ -53,8 +51,6 @@ namespace tgui
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be used when using the OpenGL3 backend renderer");
-
-        m_backendTexture = std::make_shared<BackendTextureOpenGL3>();
 
         glGenFramebuffers(1, &m_frameBuffer);
 
@@ -130,7 +126,7 @@ namespace tgui
     void CanvasOpenGL3::draw(BackendRenderTarget& target, RenderStates states) const
     {
         const Vector2f size = getSize();
-        if ((size.x <= 0) || (size.y <= 0) || (m_textureSize.x <= 0) || (m_textureSize.y <= 0))
+        if ((size.x <= 0) || (size.y <= 0) || (m_textureSize.x == 0) || (m_textureSize.y == 0))
             return;
 
         const Vector2f normalizedTextureSize{static_cast<float>(m_usedTextureSize.x) / static_cast<float>(m_textureSize.x),

@@ -80,29 +80,6 @@ struct TextAreaProperties : WidgetProperties
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
-
-private:
-
-    static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::EditBox::Alignment::Right;
-        else if (value == "center")
-            return tgui::EditBox::Alignment::Center;
-        else
-            return tgui::EditBox::Alignment::Left;
-    }
-
-    static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
-    {
-        if (alignment == tgui::EditBox::Alignment::Center)
-            return "Center";
-        else if (alignment == tgui::EditBox::Alignment::Right)
-            return "Right";
-        else
-            return "Left";
-    }
 };
 
 #endif // TGUI_GUI_BUILDER_TEXT_AREA_PROPERTIES_HPP

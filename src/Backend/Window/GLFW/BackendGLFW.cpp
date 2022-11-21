@@ -257,7 +257,7 @@ namespace tgui
         m_mouseCursors[type] = cursor;
 
         // Update the cursor on the screen if the cursor was in use
-        for (auto& pair : m_guiResources)
+        for (const auto& pair : m_guiResources)
         {
             if (pair.second.mouseCursor == type)
             {

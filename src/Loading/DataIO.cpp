@@ -407,7 +407,7 @@ namespace tgui
             if (!error.empty())
                 return error;
 
-            auto& sectionNode = node->children.back(); // This node was added by parseSection
+            const auto& sectionNode = node->children.back(); // This node was added by parseSection
 
             // Copy properties that aren't overwritten
             for (const auto& pair : baseSectionNode->propertyValuePairs)

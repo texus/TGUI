@@ -63,7 +63,7 @@ namespace tgui
     {
         if (m_contentSize == Vector2f{0, 0})
         {
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 connectPositionAndSize(widget);
         }
     }
@@ -85,7 +85,7 @@ namespace tgui
 
         if (m_contentSize == Vector2f{0, 0})
         {
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 connectPositionAndSize(widget);
         }
     }
@@ -108,7 +108,7 @@ namespace tgui
 
             if (m_contentSize == Vector2f{0, 0})
             {
-                for (auto& widget : m_widgets)
+                for (const auto& widget : m_widgets)
                     connectPositionAndSize(widget);
             }
         }
@@ -134,7 +134,7 @@ namespace tgui
 
             if (m_contentSize == Vector2f{0, 0})
             {
-                for (auto& widget : m_widgets)
+                for (const auto& widget : m_widgets)
                     connectPositionAndSize(widget);
             }
         }
@@ -279,7 +279,7 @@ namespace tgui
             recalculateMostBottomRightPosition();
 
             // Automatically recalculate the bottom right position when the position or size of a widget changes
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 connectPositionAndSize(widget);
         }
 

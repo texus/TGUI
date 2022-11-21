@@ -254,7 +254,7 @@ namespace tgui
     std::vector<String> MessageBox::getButtons() const
     {
         std::vector<String> buttonTexts;
-        for (auto& button : m_buttons)
+        for (const auto& button : m_buttons)
             buttonTexts.emplace_back(button->getText());
 
         return buttonTexts;
@@ -513,7 +513,7 @@ namespace tgui
 
     void MessageBox::connectButtonPressSignal(std::size_t buttonIndex)
     {
-        TGUI_ASSERT(buttonIndex < m_buttons.size(), "Index shouldn't be out-of-range");
+        TGUI_ASSERT(buttonIndex < m_buttons.size(), "Index shouldn't be out-of-range in MessageBox::connectButtonPressSignal");
         m_buttons[buttonIndex]->onPress.disconnectAll();
         m_buttons[buttonIndex]->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
             // We can't copy button into this lambda because it would cause a memory leak.

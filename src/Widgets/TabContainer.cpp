@@ -33,7 +33,6 @@ namespace tgui
     TabContainer::TabContainer(const char* typeName, bool initRenderer) :
         SubwidgetContainer{typeName, initRenderer}
     {
-        m_tabs = Tabs::create();
         m_container->add(m_tabs, "Tabs");
         init();
     }
@@ -99,7 +98,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::setTabsHeight(Layout height)
+    void TabContainer::setTabsHeight(const Layout& height)
     {
         m_tabs->setHeight(height);
         setSize(getSizeLayout());

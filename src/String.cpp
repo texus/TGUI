@@ -348,28 +348,28 @@ namespace tgui
     {
     }
 
-    String::String(const std::u32string& str)
-        : m_string{str}
+    String::String(const std::u32string& str) :
+        m_string{str}
     {
     }
 
-    String::String(char ansiChar)
-        : m_string(1, static_cast<char32_t>(ansiChar))
+    String::String(char ansiChar) :
+        m_string(1, static_cast<char32_t>(ansiChar))
     {
     }
 
-    String::String(wchar_t wideChar)
-        : m_string(1, static_cast<char32_t>(wideChar))
+    String::String(wchar_t wideChar) :
+        m_string(1, static_cast<char32_t>(wideChar))
     {
     }
 
-    String::String(char16_t utfChar)
-        : m_string(1, static_cast<char32_t>(utfChar))
+    String::String(char16_t utfChar) :
+        m_string(1, static_cast<char32_t>(utfChar))
     {
     }
 
-    String::String(char32_t utfChar)
-        : m_string(1, utfChar)
+    String::String(char32_t utfChar) :
+        m_string(1, utfChar)
     {
     }
 
@@ -388,123 +388,123 @@ namespace tgui
     {
     }
 
-    String::String(std::size_t count, char ch)
-        : m_string(count, static_cast<char32_t>(ch))
+    String::String(std::size_t count, char ch) :
+        m_string(count, static_cast<char32_t>(ch))
     {
     }
 
-    String::String(std::size_t count, wchar_t ch)
-        : m_string(count, static_cast<char32_t>(ch))
+    String::String(std::size_t count, wchar_t ch) :
+        m_string(count, static_cast<char32_t>(ch))
     {
     }
 
-    String::String(std::size_t count, char16_t ch)
-        : m_string(count, static_cast<char32_t>(ch))
+    String::String(std::size_t count, char16_t ch) :
+        m_string(count, static_cast<char32_t>(ch))
     {
     }
 
-    String::String(std::size_t count, char32_t ch)
-        : m_string(count, ch)
+    String::String(std::size_t count, char32_t ch) :
+        m_string(count, ch)
     {
     }
 
-    String::String(const std::string& str, std::size_t pos)
-        : String{std::string(str, pos)}
+    String::String(const std::string& str, std::size_t pos) :
+        String{std::string(str, pos)}
     {
     }
 
-    String::String(const std::wstring& str, std::size_t pos)
-        : String{std::wstring(str, pos)}
+    String::String(const std::wstring& str, std::size_t pos) :
+        String{std::wstring(str, pos)}
     {
     }
 
-    String::String(const std::u16string& str, std::size_t pos)
-        : String{std::u16string(str, pos)}
+    String::String(const std::u16string& str, std::size_t pos) :
+        String{std::u16string(str, pos)}
     {
     }
 
-    String::String(const std::u32string& str, std::size_t pos)
-        : m_string(str, pos)
+    String::String(const std::u32string& str, std::size_t pos) :
+        m_string(str, pos)
     {
     }
 
-    String::String(const std::string& str, std::size_t pos, std::size_t count)
-        : String{std::string(str, pos, count)}
+    String::String(const std::string& str, std::size_t pos, std::size_t count) :
+        String{std::string(str, pos, count)}
     {
     }
 
-    String::String(const std::wstring& str, std::size_t pos, std::size_t count)
-        : String{std::wstring(str, pos, count)}
+    String::String(const std::wstring& str, std::size_t pos, std::size_t count) :
+        String{std::wstring(str, pos, count)}
     {
     }
 
-    String::String(const std::u16string& str, std::size_t pos, std::size_t count)
-        : String{std::u16string(str, pos, count)}
+    String::String(const std::u16string& str, std::size_t pos, std::size_t count) :
+        String{std::u16string(str, pos, count)}
     {
     }
 
-    String::String(const std::u32string& str, std::size_t pos, std::size_t count)
-        : m_string(str, pos, count)
+    String::String(const std::u32string& str, std::size_t pos, std::size_t count) :
+        m_string(str, pos, count)
     {
     }
 
-    String::String(const char* str, std::size_t count)
-        : String{std::string{str, count}}
+    String::String(const char* str, std::size_t count) :
+        m_string(utf::convertUtf8toUtf32(str, str + count))
     {
     }
 
-    String::String(const wchar_t* str, std::size_t count)
-        : String{std::wstring{str, count}}
+    String::String(const wchar_t* str, std::size_t count) :
+        m_string(utf::convertWidetoUtf32(str, str + count))
     {
     }
 
-    String::String(const char16_t* str, std::size_t count)
-        : String{std::u16string{str, count}}
+    String::String(const char16_t* str, std::size_t count) :
+        m_string(utf::convertUtf16toUtf32(str, str + count))
     {
     }
 
-    String::String(const char32_t* str, std::size_t count)
-        : m_string{str, count}
+    String::String(const char32_t* str, std::size_t count) :
+        m_string{str, count}
     {
     }
 
-    String::String(std::initializer_list<char> chars)
-        : String(std::string(chars.begin(), chars.end()))
+    String::String(std::initializer_list<char> chars) :
+        m_string(utf::convertUtf8toUtf32(chars.begin(), chars.end()))
     {
     }
 
-    String::String(std::initializer_list<wchar_t> chars)
-        : String(std::wstring(chars.begin(), chars.end()))
+    String::String(std::initializer_list<wchar_t> chars) :
+        m_string(utf::convertWidetoUtf32(chars.begin(), chars.end()))
     {
     }
 
-    String::String(std::initializer_list<char16_t> chars)
-        : String(std::u16string(chars.begin(), chars.end()))
+    String::String(std::initializer_list<char16_t> chars) :
+        m_string(utf::convertUtf16toUtf32(chars.begin(), chars.end()))
     {
     }
 
-    String::String(std::initializer_list<char32_t> chars)
-        : m_string(chars)
+    String::String(std::initializer_list<char32_t> chars) :
+        m_string(chars)
     {
     }
 
-    String::String(std::string::const_iterator first, std::string::const_iterator last)
-        : String{std::string(first, last)}
+    String::String(std::string::const_iterator first, std::string::const_iterator last) :
+        m_string(utf::convertUtf8toUtf32(first, last))
     {
     }
 
-    String::String(std::wstring::const_iterator first, std::wstring::const_iterator last)
-        : String{std::wstring(first, last)}
+    String::String(std::wstring::const_iterator first, std::wstring::const_iterator last) :
+        m_string(utf::convertWidetoUtf32(first, last))
     {
     }
 
-    String::String(std::u16string::const_iterator first, std::u16string::const_iterator last)
-        : String{std::u16string(first, last)}
+    String::String(std::u16string::const_iterator first, std::u16string::const_iterator last) :
+        m_string(utf::convertUtf16toUtf32(first, last))
     {
     }
 
-    String::String(std::u32string::const_iterator first, std::u32string::const_iterator last)
-        : m_string(first, last)
+    String::String(std::u32string::const_iterator first, std::u32string::const_iterator last) :
+        m_string(first, last)
     {
     }
 
@@ -1055,19 +1055,19 @@ namespace tgui
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<char> chars)
     {
-        const auto tmpStr = String{chars};
+        const std::u32string tmpStr(utf::convertUtf8toUtf32(chars.begin(), chars.end()));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<wchar_t> chars)
     {
-        const auto tmpStr = String{chars};
+        const std::u32string tmpStr(utf::convertWidetoUtf32(chars.begin(), chars.end()));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<char16_t> chars)
     {
-        const auto tmpStr = String{chars};
+        const std::u32string tmpStr(utf::convertUtf16toUtf32(chars.begin(), chars.end()));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
@@ -1076,25 +1076,24 @@ namespace tgui
         // This function was missing in libstdc++ with GCC 8.2 on Arch Linux. It is present now with GCC 9.1.
         //return m_string.insert(pos, chars);
 
-        const auto tmpStr = String{chars};
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, chars.begin(), chars.end());
     }
 
     String::iterator String::insert(const_iterator pos, std::string::const_iterator first, std::string::const_iterator last)
     {
-        const auto tmpStr = String{first, last};
+        const std::u32string tmpStr(utf::convertUtf8toUtf32(first, last));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     String::iterator String::insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last)
     {
-        const auto tmpStr = String{first, last};
+        const std::u32string tmpStr(utf::convertWidetoUtf32(first, last));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     String::iterator String::insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
-        const auto tmpStr = String{first, last};
+        const std::u32string tmpStr(utf::convertUtf16toUtf32(first, last));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 

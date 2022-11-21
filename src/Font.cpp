@@ -136,8 +136,13 @@ namespace tgui
 
     FontGlyph Font::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
     {
-        TGUI_ASSERT(m_backendFont != nullptr, "Font::getGlyph called on font that wasn't initialized");
-        return m_backendFont->getGlyph(codePoint, characterSize, bold, outlineThickness);
+        if (m_backendFont != nullptr)
+            return m_backendFont->getGlyph(codePoint, characterSize, bold, outlineThickness);
+        else
+        {
+            TGUI_PRINT_WARNING("Font::getGlyph called on font that wasn't initialized");
+            return {};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -143,7 +143,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::setFont(Font font)
+    void WidgetRenderer::setFont(const Font& font)
     {
         setProperty("Font", font);
     }

@@ -33,10 +33,7 @@ namespace tgui
     SpinControl::SpinControl(const char* typeName, bool initRenderer) :
         SubwidgetContainer{typeName, initRenderer}
     {
-        m_spinButton = SpinButton::create();
-        m_spinText = EditBox::create();
         m_spinText->setInputValidator(EditBox::Validator::Float);
-
         m_spinText->setSize(m_spinText->getSize().x, m_spinButton->getSize().y);
 
         m_container->add(m_spinText, "SpinText");

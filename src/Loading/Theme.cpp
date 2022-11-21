@@ -306,7 +306,7 @@ namespace tgui
                     {"VerticalLayout", RendererData::create({})}
                };
 
-                for (auto& pair : m_renderers)
+                for (const auto& pair : m_renderers)
                     pair.second->connectedTheme = this;
             }
         };
@@ -533,7 +533,7 @@ namespace tgui
 
     Theme::~Theme()
     {
-        for (auto& pair : m_renderers)
+        for (const auto& pair : m_renderers)
         {
             if (pair.second->connectedTheme == this)
                 pair.second->connectedTheme = nullptr;
@@ -547,7 +547,7 @@ namespace tgui
         m_globalProperties{other.m_globalProperties},
         m_primary         {other.m_primary}
     {
-        for (auto& pair : other.m_renderers)
+        for (const auto& pair : other.m_renderers)
         {
             auto data = std::make_shared<RendererData>(*pair.second);
             data->observers = {};
@@ -564,7 +564,7 @@ namespace tgui
         m_globalProperties{std::move(other.m_globalProperties)},
         m_primary         {std::move(other.m_primary)}
     {
-        for (auto& pair : m_renderers)
+        for (const auto& pair : m_renderers)
             pair.second->connectedTheme = this;
     }
 
@@ -580,7 +580,7 @@ namespace tgui
             std::swap(m_globalProperties, temp.m_globalProperties);
             std::swap(m_primary,          temp.m_primary);
 
-            for (auto& pair : m_renderers)
+            for (const auto& pair : m_renderers)
                 pair.second->connectedTheme = this;
         }
 
@@ -597,7 +597,7 @@ namespace tgui
             m_globalProperties = std::move(other.m_globalProperties);
             m_primary = std::move(other.m_primary);
 
-            for (auto& pair : m_renderers)
+            for (const auto& pair : m_renderers)
                 pair.second->connectedTheme = this;
         }
 

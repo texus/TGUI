@@ -49,9 +49,9 @@ namespace tgui
          *      return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
          * }
         **/
-        auto fract = [](float x) { return x - std::floor(x); };
-        auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
-        auto clamp = [](float x, float minVal, float maxVal) {
+        const auto fract = [](float x) { return x - std::floor(x); };
+        const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
+        const auto clamp = [](float x, float minVal, float maxVal) {
             return std::min(std::max(x, minVal), maxVal);
         };
 
@@ -59,15 +59,15 @@ namespace tgui
         s = clamp(s, 0.f, 1.f);
         v = clamp(v, 0.f, 1.f);
 
-        float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
+        const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
-        float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
-                     std::abs(fract(h + K[1]) * 6.0f - K[3]),
-                     std::abs(fract(h + K[2]) * 6.0f - K[3])};
+        const float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
+                           std::abs(fract(h + K[1]) * 6.0f - K[3]),
+                           std::abs(fract(h + K[2]) * 6.0f - K[3])};
 
-        float C[] = {v * mix(K[0], clamp(p[0] - K[0], 0.f, 1.f), s),
-                     v * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), s),
-                     v * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), s)};
+        const float C[] = {v * mix(K[0], clamp(p[0] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), s)};
 
         return {static_cast<std::uint8_t>(clamp(255 * C[0], 0, 255)),
                 static_cast<std::uint8_t>(clamp(255 * C[1], 0, 255)),
@@ -125,8 +125,8 @@ namespace tgui
          * e-1  - e curve (e^x-1)/(e-1)
          * +    - bigger curve
          */
-        const double a = std::exp(1.0) - 1.0;
-        return static_cast<float>((std::exp(std::log(a + 1.0) * static_cast<double>(x)) - 1.0) / a);
+        const double a = std::expm1(1.0);
+        return static_cast<float>(std::expm1(std::log1p(a) * static_cast<double>(x)) / a);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

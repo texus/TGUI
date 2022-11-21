@@ -73,9 +73,9 @@ static void importOldFormFileExtractValidProperties(std::set<tgui::String>& poss
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO::Node>& parentNode, const std::set<tgui::String>& possibleProperties)
+static void importOldFormFileFixRendererProperties(const std::unique_ptr<tgui::DataIO::Node>& parentNode, const std::set<tgui::String>& possibleProperties)
 {
-    for (auto& node : parentNode->children)
+    for (const auto& node : parentNode->children)
     {
         if (!node->children.empty())
             importOldFormFileFixRendererProperties(node, possibleProperties);
@@ -114,7 +114,7 @@ static void importOldFormFileFixRendererProperties(std::unique_ptr<tgui::DataIO:
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void importOldForm(std::unique_ptr<tgui::DataIO::Node>& rootNode)
+static void importOldForm(const std::unique_ptr<tgui::DataIO::Node>& rootNode)
 {
     // Construct a list of all existing renderer properties for all widgets.
     // Since the renderers may be global in the form file, we can't know which widget type will use it (without some effort),

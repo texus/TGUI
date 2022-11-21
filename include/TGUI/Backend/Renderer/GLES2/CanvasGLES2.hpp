@@ -184,7 +184,7 @@ namespace tgui
         unsigned int m_frameBuffer = 0;
         Vector2u m_textureSize;
         Vector2u m_usedTextureSize;
-        std::shared_ptr<BackendTextureGLES2> m_backendTexture;
+        std::shared_ptr<BackendTextureGLES2> m_backendTexture = std::make_shared<BackendTextureGLES2>();
     };
 }
 

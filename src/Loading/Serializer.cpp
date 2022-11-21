@@ -33,6 +33,7 @@
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wold-style-cast"
+#   pragma GCC diagnostic ignored "-Wnull-dereference"
 #   pragma GCC diagnostic ignored "-Wsign-conversion"
 #   pragma GCC diagnostic ignored "-Wunused-function"
 #   pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
@@ -154,11 +155,17 @@ namespace tgui
             bool encodingRequired = false;
             if (result.empty())
                 encodingRequired = true;
-            for (const char32_t c : result)
+            else
             {
-                // Slashes have to be serialized because the DataIO parser doesn't like values starting with a slash
-                if ((c != U'%') && (c != U'_') && (c != U'@') && ((c < U'0') || (c > U'9')) && ((c < U'A') || (c > U'Z')) && ((c < U'a') || (c > U'z')))
-                    encodingRequired = true;
+                for (const char32_t c : result)
+                {
+                    // Slashes have to be serialized because the DataIO parser doesn't like values starting with a slash
+                    if ((c != U'%') && (c != U'_') && (c != U'@') && ((c < U'0') || (c > U'9')) && ((c < U'A') || (c > U'Z')) && ((c < U'a') || (c > U'z')))
+                    {
+                        encodingRequired = true;
+                        break;
+                    }
+                }
             }
 
             if (!encodingRequired)

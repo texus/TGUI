@@ -156,7 +156,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Text::setFont(Font font)
+    void Text::setFont(const Font& font)
     {
         m_font = font;
         m_backendText->setFont(font.getBackendFont());
@@ -228,7 +228,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize)
+    float Text::getExtraHorizontalPadding(const Font& font, unsigned int characterSize)
     {
         return getLineHeight(font, characterSize) / 10.f;
     }
@@ -242,7 +242,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getExtraHorizontalOffset(Font font, unsigned int characterSize)
+    float Text::getExtraHorizontalOffset(const Font& font, unsigned int characterSize)
     {
         return getLineHeight(font, characterSize) / 6.f;
     }
@@ -263,7 +263,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineHeight(Font font, unsigned int characterSize)
+    float Text::getLineHeight(const Font& font, unsigned int characterSize)
     {
         return std::max(font.getLineSpacing(characterSize), font.getFontHeight(characterSize));
     }
@@ -277,7 +277,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineWidth(const String &text, Font font, unsigned int characterSize, TextStyles textStyle)
+    float Text::getLineWidth(const String &text, const Font& font, unsigned int characterSize, TextStyles textStyle)
     {
         if (font == nullptr)
             return 0.0f;
@@ -310,7 +310,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Text::findBestTextSize(Font font, float height, int fit)
+    unsigned int Text::findBestTextSize(const Font& font, float height, int fit)
     {
         if (!font)
             return 0;
@@ -349,7 +349,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String Text::wordWrap(float maxWidth, const String& text, Font font, unsigned int textSize, bool bold)
+    String Text::wordWrap(float maxWidth, const String& text, const Font& font, unsigned int textSize, bool bold)
     {
         if (font == nullptr)
             return U"";
@@ -384,11 +384,11 @@ namespace tgui
                     charWidth = font.getGlyph(curChar, textSize, bold).advance;
 
                 const float kerning = font.getKerning(prevChar, curChar, textSize, bold);
-                const bool isWhitespace = (curChar == U' ') || (curChar == U'\t');
+                const bool charIsWhitespace = (curChar == U' ') || (curChar == U'\t');
 
                 // We add the character to the line, unless a non-whitespace character exceeds the line length.
                 // We don't break on whitespace characters because having a space at the beginning of the line looks wrong.
-                if ((maxWidth == 0) || isWhitespace || (width + charWidth + kerning <= maxWidth))
+                if ((maxWidth == 0) || charIsWhitespace || (width + charWidth + kerning <= maxWidth))
                 {
                     width += kerning + charWidth;
                     index++;
@@ -410,13 +410,14 @@ namespace tgui
                 if ((index < text.length()) && (!isWhitespace(text[index])))
                 {
                     std::size_t wordWrapCorrection = 0;
-                    while ((index > oldIndex) && (!isWhitespace(text[index - 1])))
+                    while ((index > oldIndex) && !isWhitespace(text[index - 1]))
                     {
                         wordWrapCorrection++;
                         index--;
                     }
 
-                    // The word can't be split but there is no other choice, it does not fit on the line
+                    // The word can't be split but there is no other choice, it does not fit on the line.
+                    // cppcheck-suppress knownConditionTrueFalse
                     if ((index - oldIndex) <= wordWrapCorrection)
                         index = indexWithoutWordWrap;
                 }

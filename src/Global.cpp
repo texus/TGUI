@@ -193,7 +193,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool writeFile(const String& filename, std::stringstream& stream)
+    bool writeFile(const String& filename, const std::stringstream& stream)
     {
 #if TGUI_COMPILED_WITH_CPP_VER > 20
         return writeFile(filename, stream.view());
@@ -219,11 +219,10 @@ namespace tgui
         if (!file)
             return false;
 
-        if (fwrite(stringView.data(), 1, stringView.size(), file) < stringView.size())
-            return false;
+        const bool success = (fwrite(stringView.data(), 1, stringView.size(), file) == stringView.size());
 
         fclose(file);
-        return true;
+        return success;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

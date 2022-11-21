@@ -127,7 +127,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void saveMenus(std::unique_ptr<DataIO::Node>& parentNode, const std::vector<MenuBar::Menu>& menus)
+        void saveMenus(const std::unique_ptr<DataIO::Node>& parentNode, const std::vector<MenuBar::Menu>& menus)
         {
             for (const auto& menu : menus)
             {
@@ -141,16 +141,8 @@ namespace tgui
                 if (!menu.menuItems.empty())
                 {
                     // Save as nested 'Menu' sections only when needed, use the more compact string list when just storing the menu items
-                    bool recursionNeeded = false;
-                    for (const auto& menuItem : menu.menuItems)
-                    {
-                        if (!menuItem.enabled || !menuItem.menuItems.empty())
-                        {
-                            recursionNeeded = true;
-                            break;
-                        }
-                    }
-
+                    const bool recursionNeeded = std::any_of(menu.menuItems.begin(), menu.menuItems.end(),
+                        [](const MenuBar::Menu& menuItem){ return !menuItem.enabled || !menuItem.menuItems.empty(); });
                     if (recursionNeeded)
                         saveMenus(menuNode, menu.menuItems);
                     else

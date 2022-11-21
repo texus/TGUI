@@ -2655,7 +2655,7 @@ namespace tgui
         target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), headerHeight}});
 
         float translateX;
-        if ((m_columns[column].alignment == ColumnAlignment::Left) || (column >= m_columns.size()))
+        if (m_columns[column].alignment == ColumnAlignment::Left)
             translateX = textPadding;
         else if (m_columns[column].alignment == ColumnAlignment::Center)
             translateX = (columnWidth - m_columns[column].text.getSize().x) / 2.f;

@@ -562,7 +562,7 @@ namespace dev
 
         unsigned int getCharacterSize() const;
 
-        void setFont(Font font);
+        void setFont(const Font& font);
 
         Font getFont() const;
 

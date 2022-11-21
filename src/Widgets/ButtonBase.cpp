@@ -38,7 +38,7 @@ namespace tgui
         m_backgroundComponent{std::make_shared<priv::dev::BackgroundComponent>(&background)},
         m_textComponent{std::make_shared<priv::dev::TextComponent>(&text)}
     {
-        initComponents();
+        ButtonBase::initComponents();
 
         if (initRenderer)
         {
@@ -70,7 +70,7 @@ namespace tgui
         m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
         m_components                  {}
     {
-        initComponents();
+        ButtonBase::initComponents();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ namespace tgui
         m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
         m_components                  {}
     {
-        initComponents();
+        ButtonBase::initComponents();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ namespace tgui
             m_textComponent                = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
             m_components                   = {};
 
-            initComponents();
+            ButtonBase::initComponents();
         }
 
         return *this;
@@ -152,7 +152,7 @@ namespace tgui
             m_textComponent                = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
             m_components                   = {};
 
-            initComponents();
+            ButtonBase::initComponents();
         }
 
         return *this;

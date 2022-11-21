@@ -70,7 +70,7 @@ namespace dev
 
         // Make a copy of the callback ids to prevent issues when unsubscribe removes the value from the set
         const std::set<std::uint64_t> callbackIds = it->second;
-        for (auto& callbackId : callbackIds)
+        for (const auto& callbackId : callbackIds)
             unsubscribe(callbackId);
 
         m_topicIdToCallbackIds.erase(it);
@@ -101,11 +101,11 @@ namespace dev
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wnull-dereference"  // We were getting a warning for not checking the iterator in release mode
+#   pragma GCC diagnostic ignored "-Wnull-dereference"  // Suppress warning for not checking the iterator in release mode
 #endif
         // Find out to which topic this callback belongs
         auto it = m_callbackIdToTopicId.find(callbackId);
-        TGUI_ASSERT(it != m_callbackIdToTopicId.end(), "Callback id needs to have matching topic in MessageBroker::unsubscribe");
+        TGUI_ASSERT(it != m_callbackIdToTopicId.end(), "MessageBroker::unsubscribe requires callback id to have matching topic");
         const auto topicId = it->second;
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop
@@ -130,7 +130,7 @@ namespace dev
 
         // Make a copy of the callback ids to prevent issues when an unsubscribe is called during a callback
         const std::set<std::uint64_t> callbackIds = it->second;
-        for (auto& callbackId : callbackIds)
+        for (const auto& callbackId : callbackIds)
             m_listeners[callbackId]();
     }
 
@@ -658,7 +658,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextComponent::setFont(Font font)
+    void TextComponent::setFont(const Font& font)
     {
         m_text.setFont(font);
         updateLayout();

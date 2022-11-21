@@ -83,7 +83,7 @@ namespace tgui
                 if (pixels)
                     TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
             }
-            else if (!TGUI_GLAD_GL_ES_VERSION_3_0)
+            else
             {
                 // GLES 2.0 doesn't support GL_RGBA8
                 TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));

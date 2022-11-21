@@ -1052,21 +1052,21 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Layout bindWidth(BackendGui& gui)
+        Layout bindWidth(const BackendGui& gui)
         {
             return bindWidth(gui.getContainer());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Layout bindHeight(BackendGui& gui)
+        Layout bindHeight(const BackendGui& gui)
         {
             return bindHeight(gui.getContainer());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Layout2d bindSize(BackendGui& gui)
+        Layout2d bindSize(const BackendGui& gui)
         {
             return bindSize(gui.getContainer());
         }
