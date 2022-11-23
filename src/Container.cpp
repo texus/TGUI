@@ -177,7 +177,7 @@ namespace tgui
         for (const auto& widget : other.m_widgets)
             m_widgets.emplace_back(widget->clone());
 
-        for (const auto& widget : other.m_widgets)
+        for (const auto& widget : m_widgets)
             widgetAdded(widget);
     }
 
@@ -236,7 +236,7 @@ namespace tgui
             for (auto& widget : right.m_widgets)
                 m_widgets.emplace_back(widget->clone());
 
-            for (auto& widget : right.m_widgets)
+            for (auto& widget : m_widgets)
                 widgetAdded(widget);
         }
 
