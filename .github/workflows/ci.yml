@@ -22,9 +22,9 @@ jobs:
 
       - name: Build TGUI (recent gcc)
         run: >
-          mkdir $GITHUB_WORKSPACE/TGUI-build
+          mkdir $GITHUB_WORKSPACE/TGUI-build-gcc
 
-          cd $GITHUB_WORKSPACE/TGUI-build
+          cd $GITHUB_WORKSPACE/TGUI-build-gcc
 
           cmake
           -DCMAKE_CXX_CPPCHECK="cppcheck;--enable=all;--inline-suppr;--quiet;--suppress=*:*/extlibs/*;--suppress=preprocessorErrorDirective;--suppress=noExplicitConstructor;--suppress=unmatchedSuppression;--suppress=missingIncludeSystem;--suppress=useStlAlgorithm;--suppress=passedByValue;--suppress=unusedFunction;--suppress=virtualCallInConstructor"
@@ -48,6 +48,12 @@ jobs:
           ../TGUI
 
           make -j2
+
+      - name: Build TGUI (recent clang)
+        run: >
+          mkdir $GITHUB_WORKSPACE/TGUI-build-clang
+
+          cd $GITHUB_WORKSPACE/TGUI-build-clang
 
           cmake
           -DCMAKE_CXX_CLANG_TIDY="clang-tidy-$CLANG_VERSION;-checks=*"
@@ -75,7 +81,7 @@ jobs:
       - name: Test TGUIConfig.cmake
         run: |
           cd $GITHUB_WORKSPACE/TGUI/tests/cmake
-          cmake -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build .
+          cmake -DTGUI_DIR=$GITHUB_WORKSPACE/TGUI-build-gcc .
           make
           test -e TguiTest
 
@@ -445,7 +451,7 @@ jobs:
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
-          -DCMAKE_UNITY_BUILD=ON
+          -DCMAKE_UNITY_BUILD=OFF
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=20
