@@ -56,7 +56,6 @@ jobs:
           cd $GITHUB_WORKSPACE/TGUI-build-clang
 
           cmake
-          -DCMAKE_CXX_CLANG_TIDY="clang-tidy-$CLANG_VERSION;-checks=*"
           -DCMAKE_CXX_COMPILER=clang++-$CLANG_VERSION
           -DCMAKE_BUILD_TYPE=Release
           -DTGUI_CXX_STANDARD=17
@@ -165,7 +164,7 @@ jobs:
         if: steps.cache-sdl.outputs.cache-hit != 'true'
         run: |
           mkdir -p $SDL_INSTALL_DIR
-          git clone --depth 1 $SDL_GITHUB_URL $GITHUB_WORKSPACE/SDL
+          git clone --branch SDL2 --single-branch --depth 1 $SDL_GITHUB_URL $GITHUB_WORKSPACE/SDL
           mkdir $GITHUB_WORKSPACE/SDL-build
           cd $GITHUB_WORKSPACE/SDL-build
           cmake -DCMAKE_INSTALL_PREFIX=$SDL_INSTALL_DIR -DBUILD_SHARED_LIBS=ON ../SDL

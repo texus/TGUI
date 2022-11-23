@@ -1626,7 +1626,7 @@ namespace tgui
 
             // Recalculate the selection rectangles
             {
-                m_selectionRects.emplace_back(m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y) * m_lineHeight, 0, m_lineHeight);
+                m_selectionRects.emplace_back(m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y) * m_lineHeight, 0.f, m_lineHeight);
 
                 if (!m_lines[selectionStart.y].empty())
                 {
@@ -1664,7 +1664,7 @@ namespace tgui
                                                       textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, m_lineHeight);
                     }
                     else
-                        m_selectionRects.emplace_back(0, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight);
+                        m_selectionRects.emplace_back(0.f, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight);
                 }
             }
         }
