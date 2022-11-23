@@ -80,8 +80,7 @@ TEST_CASE("[RadioButtonGroup]")
         group->setPosition({10, 5});
         group->setSize({4, 3}); // RadioButtonGroup ignores its size
 
-        tgui::GroupRenderer renderer = tgui::RendererData::create();
-        renderer.setPadding({1, 2, 3, 4});
+        tgui::WidgetRenderer renderer = tgui::RendererData::create();
         renderer.setOpacity(0.7f);
         group->setRenderer(renderer.getData());
 
