@@ -37,19 +37,19 @@ TEST_CASE("[ChildWindow]")
         childWindow->onMousePress([](){});
 
         childWindow->onClose([](){});
-        childWindow->onClose([](tgui::ChildWindow::Ptr){});
+        childWindow->onClose([](const tgui::ChildWindow::Ptr&){});
 
         childWindow->onClosing([](){});
         childWindow->onClosing([](bool*){});
 
         childWindow->onMaximize([](){});
-        childWindow->onMaximize([](tgui::ChildWindow::Ptr){});
+        childWindow->onMaximize([](const tgui::ChildWindow::Ptr&){});
 
         childWindow->onMinimize([](){});
-        childWindow->onMinimize([](tgui::ChildWindow::Ptr){});
+        childWindow->onMinimize([](const tgui::ChildWindow::Ptr&){});
 
         childWindow->onEscapeKeyPress([](){});
-        childWindow->onEscapeKeyPress([](tgui::ChildWindow::Ptr){});
+        childWindow->onEscapeKeyPress([](const tgui::ChildWindow::Ptr&){});
     }
 
     SECTION("WidgetType")

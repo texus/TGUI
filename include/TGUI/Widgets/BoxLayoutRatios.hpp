@@ -40,8 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<BoxLayoutRatios> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const BoxLayoutRatios> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<BoxLayoutRatios>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const BoxLayoutRatios>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ namespace tgui
         ///
         /// @return False when the the widget was not found, true when the widget was valid and the ratio was changed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setRatio(Widget::Ptr widget, float ratio);
+        bool setRatio(const Widget::Ptr& widget, float ratio);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +178,7 @@ namespace tgui
         ///
         /// @return The ratio of the widget or 0 when the widget was not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getRatio(Widget::Ptr widget) const;
+        float getRatio(const Widget::Ptr& widget) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

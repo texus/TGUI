@@ -56,7 +56,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font::Font(std::nullptr_t)
+    Font::Font(std::nullptr_t) noexcept
     {
     }
 
@@ -84,9 +84,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font::Font(std::shared_ptr<BackendFont> backendFont, const String& id) :
-        m_backendFont(backendFont),
-        m_id(id)
+    Font::Font(std::shared_ptr<BackendFont> backendFont, String id) :
+        m_backendFont(std::move(backendFont)),
+        m_id(std::move(id))
     {
     }
 

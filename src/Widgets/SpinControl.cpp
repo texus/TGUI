@@ -58,7 +58,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl::Ptr SpinControl::copy(SpinControl::ConstPtr spinCtrl)
+    SpinControl::Ptr SpinControl::copy(const SpinControl::ConstPtr& spinCtrl)
     {
         if (spinCtrl)
             return std::static_pointer_cast<SpinControl>(spinCtrl->clone());

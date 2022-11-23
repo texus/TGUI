@@ -39,8 +39,8 @@ namespace tgui
     class TGUI_API HorizontalWrap : public BoxLayout
     {
     public:
-        typedef std::shared_ptr<HorizontalWrap> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const HorizontalWrap> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<HorizontalWrap>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const HorizontalWrap>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ namespace tgui
         /// @return The new layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Ptr copy(ConstPtr layout);
+        static HorizontalWrap::Ptr copy(const HorizontalWrap::ConstPtr& layout);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

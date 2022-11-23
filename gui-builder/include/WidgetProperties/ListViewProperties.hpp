@@ -37,7 +37,7 @@ struct ListViewProperties : WidgetProperties
     // TODO: Item icons
     // TODO: Scrollbar renderer
 
-    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
+    void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
         auto listView = widget->cast<tgui::ListView>();
         if (property == "Columns")
@@ -85,7 +85,7 @@ struct ListViewProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto listView = widget->cast<tgui::ListView>();
@@ -129,7 +129,7 @@ struct ListViewProperties : WidgetProperties
 
 private:
 
-    static tgui::String serializeColumns(tgui::ListView::Ptr listView)
+    static tgui::String serializeColumns(const tgui::ListView::Ptr& listView)
     {
         std::vector<tgui::String> serializedColumns;
         for (std::size_t i = 0; i < listView->getColumnCount(); ++i)

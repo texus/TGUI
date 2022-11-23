@@ -99,6 +99,7 @@ namespace tgui
             m_framebufferSize = {static_cast<int>(m_target->getSize().x), static_cast<int>(m_target->getSize().y)};
 
             // Call the base function directly on BackendGui and not BackendGuiSFML!
+            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             BackendGui::updateContainerSize();
         }
 

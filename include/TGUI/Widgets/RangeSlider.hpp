@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<RangeSlider> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const RangeSlider> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<RangeSlider>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const RangeSlider>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ namespace tgui
         /// @return The new slider
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static RangeSlider::Ptr copy(RangeSlider::ConstPtr slider);
+        static RangeSlider::Ptr copy(const RangeSlider::ConstPtr& slider);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

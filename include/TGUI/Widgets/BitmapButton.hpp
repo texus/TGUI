@@ -40,8 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<BitmapButton> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const BitmapButton> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<BitmapButton>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const BitmapButton>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ namespace tgui
         /// @param button  The other button
         /// @return The new button
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static BitmapButton::Ptr copy(BitmapButton::ConstPtr button);
+        static BitmapButton::Ptr copy(const BitmapButton::ConstPtr& button);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

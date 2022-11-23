@@ -127,14 +127,14 @@ tgui::String getClipboardContents();
 void mouseCallback(unsigned int& count, tgui::Vector2f pos);
 void genericCallback(unsigned int& count);
 
-void testWidgetSignals(tgui::Widget::Ptr widget);
-void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
-void testClickableWidgetSignals(tgui::Panel::Ptr widget);
+void testWidgetSignals(const tgui::Widget::Ptr& widget);
+void testClickableWidgetSignals(const tgui::ClickableWidget::Ptr& widget);
+void testClickableWidgetSignals(const tgui::Panel::Ptr& widget);
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 
 template <typename WidgetType>
-void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
+void testSavingWidget(const tgui::String& name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
 {
     if (loadFromTheme)
     {
@@ -161,7 +161,7 @@ void testSavingWidget(tgui::String name, std::shared_ptr<WidgetType> widget, boo
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wself-assign-overloaded"
 #endif
-        temp2 = temp2;
+        temp2 = temp2; // NOLINT(misc-redundant-expression)
 #if defined(__clang__)
     #pragma clang diagnostic pop
 #endif

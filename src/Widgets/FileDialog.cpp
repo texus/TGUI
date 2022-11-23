@@ -233,7 +233,6 @@ namespace tgui
     {
         if (this != &other)
         {
-            ChildWindow::operator=(std::move(other));
             onFileSelect = std::move(other.onFileSelect);
             onCancel = std::move(other.onCancel);
             m_buttonBack = std::move(other.m_buttonBack);
@@ -260,6 +259,7 @@ namespace tgui
             m_selectedFileTypeFilter = std::move(other.m_selectedFileTypeFilter);
             m_iconLoader = std::move(other.m_iconLoader);
             m_selectedFiles = std::move(other.m_selectedFiles);
+            ChildWindow::operator=(std::move(other));
 
             connectSignals();
         }
@@ -269,7 +269,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog::Ptr FileDialog::create(String title, String confirmButtonText)
+    FileDialog::Ptr FileDialog::create(const String& title, const String& confirmButtonText)
     {
         auto fileDialog = std::make_shared<FileDialog>();
         fileDialog->setTitle(title);
@@ -279,7 +279,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog::Ptr FileDialog::copy(FileDialog::ConstPtr dialog)
+    FileDialog::Ptr FileDialog::copy(const FileDialog::ConstPtr& dialog)
     {
         if (dialog)
             return std::static_pointer_cast<FileDialog>(dialog->clone());
@@ -375,11 +375,11 @@ namespace tgui
                 expression = expression.toLower();
             }
 
-            m_fileTypeFilters.push_back({filter.first, expressions});
+            m_fileTypeFilters.emplace_back(filter.first, expressions);
         }
 
         if (m_fileTypeFilters.size() == 0)
-            m_fileTypeFilters.push_back({"All files (*)", {}});
+            m_fileTypeFilters.emplace_back("All files (*)", std::vector<String>());
 
         m_comboBoxFileTypes->removeAllItems();
 
@@ -531,7 +531,7 @@ namespace tgui
     void FileDialog::setIconLoader(std::shared_ptr<FileDialogIconLoader> iconLoader)
     {
         TGUI_ASSERT(iconLoader != nullptr, "Icon loader can't be a nullptr");
-        m_iconLoader = iconLoader;
+        m_iconLoader = std::move(iconLoader);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -690,12 +690,12 @@ namespace tgui
         {
             TGUI_ASSERT(m_filesInDirectory.size() == m_fileIcons.size(), "Icon count must match file count in FileDialog::sortFilesInListView");
             for (std::size_t i = 0; i < m_filesInDirectory.size(); ++i)
-                items.push_back({m_filesInDirectory[i], m_fileIcons[i]});
+                items.emplace_back(m_filesInDirectory[i], m_fileIcons[i]);
         }
         else // There are no file icons
         {
             for (const auto& file : m_filesInDirectory)
-                items.push_back({file, {}});
+                items.emplace_back(file, Texture{});
         }
 
         std::sort(items.begin(), items.end(), [this](const auto& leftItem, const auto& rightItem){
@@ -784,34 +784,37 @@ namespace tgui
             {
                 if (file.fileSize == 0)
                     fileSizeStr = U"0.0 KB";
-                else if (file.fileSize < 100u)
+                else if (file.fileSize < static_cast<std::uintmax_t>(100))
                     fileSizeStr = U"0.1 KB";
-                else if (file.fileSize < 1000u*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f, 1) + U" KB";
-                else if (file.fileSize < 1000u*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f, 1) + U" MB";
-                else if (file.fileSize < 1000ull*1000*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000*1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f / 1000.f, 1) + U" GB";
-                else if (file.fileSize < 1000ull*1000*1000*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000*1000*1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f / 1000.f / 1000.f, 1) + U" TB";
             }
 
             String modificationTimeStr;
+            bool modificationTimeConverted = false;
             char buffer[19];
 #if defined(TGUI_SYSTEM_WINDOWS) && defined(_MSC_VER)
             tm TimeStructure;
             if (localtime_s(&TimeStructure, &file.modificationTime) == 0)
             {
-                if (strftime(buffer, 19, "%e %b %Y  %R", &TimeStructure) != 0)
-                    modificationTimeStr = buffer;
+                if (strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", &TimeStructure) != 0)
+                    modificationTimeConverted = true;
             }
 #elif defined(TGUI_SYSTEM_WINDOWS) && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)
-            if (strftime(buffer, 19, "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
-                modificationTimeStr = buffer;
+            if (strftime(&buffer[0], sizeof(buffer), "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
+                modificationTimeConverted = true;
 #else
-            if (strftime(buffer, 19, "%e %b %Y  %R", std::localtime(&file.modificationTime)) != 0)
-                modificationTimeStr = buffer;
+            if (strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", std::localtime(&file.modificationTime)) != 0)
+                modificationTimeConverted = true;
 #endif
+            if (modificationTimeConverted)
+                modificationTimeStr = static_cast<char*>(buffer);
 
 #if defined(TGUI_SYSTEM_WINDOWS)
             // Hide .lnk and .url extensions
@@ -1208,7 +1211,7 @@ namespace tgui
             for (const auto& item : childNode->propertyValuePairs["Pattern"]->valueList)
                 patterns.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
 
-            fileTypeFilters.push_back({description, patterns});
+            fileTypeFilters.emplace_back(description, patterns);
         }
 
         // We have to remove FileTypeFilter nodes before calling the load function on the base class, because Container will

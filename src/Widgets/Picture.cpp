@@ -60,7 +60,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Ptr Picture::copy(Picture::ConstPtr picture)
+    Picture::Ptr Picture::copy(const Picture::ConstPtr& picture)
     {
         if (picture)
             return std::static_pointer_cast<Picture>(picture->clone());

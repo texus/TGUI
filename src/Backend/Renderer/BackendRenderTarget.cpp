@@ -116,10 +116,10 @@ namespace tgui
         // Create the vertices
         std::vector<Vertex> vertices;
         vertices.reserve(outerPoints.size() + innerPoints.size());
-        for (std::size_t i = 0; i < outerPoints.size(); ++i)
-            vertices.push_back({outerPoints[i], Vertex::Color(color)});
-        for (std::size_t i = 0; i < innerPoints.size(); ++i)
-            vertices.push_back({innerPoints[i], Vertex::Color(color)});
+        for (const auto& point : outerPoints)
+            vertices.emplace_back(point, Vertex::Color(color));
+        for (const auto& point : innerPoints)
+            vertices.emplace_back(point, Vertex::Color(color));
 
         // Create the indices
         std::vector<unsigned int> indices;
@@ -151,9 +151,9 @@ namespace tgui
         // Create the vertices (one point in the middle of the circle and the others as provided in the 'points' parameter)
         std::vector<Vertex> vertices;
         vertices.reserve(1 + points.size());
-        vertices.push_back({centerPoint, Vertex::Color(color)});
-        for (std::size_t i = 0; i < points.size(); ++i)
-            vertices.push_back({points[i], Vertex::Color(color)});
+        vertices.emplace_back(centerPoint, Vertex::Color(color));
+        for (const auto& point : points)
+            vertices.emplace_back(point, Vertex::Color(color));
 
         // Create the indices
         std::vector<unsigned int> indices;
@@ -207,7 +207,7 @@ namespace tgui
         TGUI_ASSERT(m_targetSize.x > 0 && m_targetSize.y > 0, "Target size must be valid in BackendRenderTarget::addClippingLayer");
 
         /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
-        const float* transformMatrix = states.transform.getMatrix();
+        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
         if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
          && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
          && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
@@ -215,7 +215,7 @@ namespace tgui
             if (!m_clipLayers.empty())
                 m_clipLayers.push_back(m_clipLayers.back());
             else
-                m_clipLayers.push_back({m_viewRect, m_viewport});
+                m_clipLayers.emplace_back(m_viewRect, m_viewport);
             return;
         }
 
@@ -237,12 +237,12 @@ namespace tgui
                 m_viewport.width * ((clipRight - clipLeft) / m_viewRect.width),
                 m_viewport.height * ((clipBottom - clipTop) / m_viewRect.height)
             };
-            m_clipLayers.push_back({clipRect, clipViewport});
+            m_clipLayers.emplace_back(clipRect, clipViewport);
             updateClipping(clipRect, clipViewport);
         }
         else // Entire window is being clipped
         {
-            m_clipLayers.push_back({{}, {}});
+            m_clipLayers.emplace_back(FloatRect{}, FloatRect{});
             updateClipping({}, {});
         }
     }

@@ -49,14 +49,14 @@ namespace tgui
         if (imageIt != m_imageMap.end())
         {
             // Loop all our textures to find the one containing the image
-            for (auto dataIt = imageIt->second.begin(); dataIt != imageIt->second.end(); ++dataIt)
+            for (auto& dataHolder : imageIt->second)
             {
                 // We can reuse everything only if the image is loaded with the same settings
-                if (dataIt->smooth == smooth)
+                if (dataHolder.smooth == smooth)
                 {
                     // The exact same texture is now used at multiple places
-                    ++(dataIt->users);
-                    return dataIt->data;
+                    ++dataHolder.users;
+                    return dataHolder.data;
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::copyTexture(std::shared_ptr<TextureData> textureDataToCopy)
+    void TextureManager::copyTexture(const std::shared_ptr<TextureData>& textureDataToCopy)
     {
         // Loop all our textures to check if we already have this one
         for (auto& dataHolder : m_imageMap)
@@ -121,7 +121,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::removeTexture(std::shared_ptr<TextureData> textureDataToRemove)
+    void TextureManager::removeTexture(const std::shared_ptr<TextureData>& textureDataToRemove)
     {
         // Loop all our textures to check which one it is
         for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)

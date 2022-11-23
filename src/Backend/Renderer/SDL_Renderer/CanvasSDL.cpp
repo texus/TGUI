@@ -72,7 +72,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSDL::Ptr CanvasSDL::create(Layout2d size)
+    CanvasSDL::Ptr CanvasSDL::create(const Layout2d& size)
     {
         auto canvas = std::make_shared<CanvasSDL>();
         canvas->setSize(size);
@@ -81,7 +81,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSDL::Ptr CanvasSDL::copy(CanvasSDL::ConstPtr canvas)
+    CanvasSDL::Ptr CanvasSDL::copy(const CanvasSDL::ConstPtr& canvas)
     {
         if (canvas)
             return std::static_pointer_cast<CanvasSDL>(canvas->clone());

@@ -85,10 +85,10 @@ namespace tgui
     {
         if (&other != this)
         {
-            Button::operator=(std::move(other));
             icon = std::move(other.icon);
             m_imageComponent = std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon);
             m_relativeGlyphHeight = std::move(other.m_relativeGlyphHeight);
+            Button::operator=(std::move(other));
 
             initComponentsBitmapButton();
         }
@@ -110,7 +110,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BitmapButton::Ptr BitmapButton::copy(BitmapButton::ConstPtr button)
+    BitmapButton::Ptr BitmapButton::copy(const BitmapButton::ConstPtr& button)
     {
         if (button)
             return std::static_pointer_cast<BitmapButton>(button->clone());
@@ -214,6 +214,8 @@ namespace tgui
         if (m_autoSize)
         {
             const Outline& borders = m_backgroundComponent->getBorders();
+
+            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             Widget::setSize({getSize().x, m_textComponent->getLineHeight() * 1.25f + borders.getTop() + borders.getBottom()});
 
             recalculateGlyphSize();
@@ -221,6 +223,8 @@ namespace tgui
             if (m_string.empty())
             {
                 const Vector2f innerSize = m_backgroundComponent->getClientSize();
+
+                // NOLINTNEXTLINE(bugprone-parent-virtual-call)
                 Widget::setSize({m_imageComponent->getSize().x + (innerSize.y - m_imageComponent->getSize().y) + borders.getLeft() + borders.getRight(),
                                  getSize().y});
             }
@@ -228,6 +232,8 @@ namespace tgui
             {
                 const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
                 const float spaceAroundImageAndText = m_textComponent->getLineHeight();
+
+                // NOLINTNEXTLINE(bugprone-parent-virtual-call)
                 Widget::setSize({m_imageComponent->getSize().x + distanceBetweenTextAndImage + m_textComponent->getSize().x
                                 + spaceAroundImageAndText + borders.getLeft() + borders.getRight(), getSize().y});
             }

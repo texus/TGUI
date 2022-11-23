@@ -428,43 +428,43 @@ namespace tgui
     inline namespace bind_functions
     {
         /// @brief Bind to the x position of the widget (same as bindLeft unless widget origin is changed)
-        TGUI_API Layout bindPosX(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindPosX(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the y position of the widget (same as bindTop unless widget origin is changed)
-        TGUI_API Layout bindPosY(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindPosY(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the left position of the widget
-        TGUI_API Layout bindLeft(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindLeft(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the top position of the widget
-        TGUI_API Layout bindTop(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindTop(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the width of the widget
-        TGUI_API Layout bindWidth(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindWidth(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the height of the widget
-        TGUI_API Layout bindHeight(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindHeight(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the inner width of the container widget
-        TGUI_API Layout bindInnerWidth(std::shared_ptr<Container> container);
+        TGUI_API Layout bindInnerWidth(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the inner height of the container widget
-        TGUI_API Layout bindInnerHeight(std::shared_ptr<Container> container);
+        TGUI_API Layout bindInnerHeight(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the right position of the widget
-        TGUI_API Layout bindRight(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindRight(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the bottom of the widget
-        TGUI_API Layout bindBottom(std::shared_ptr<Widget> widget);
+        TGUI_API Layout bindBottom(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the position of the widget
-        TGUI_API Layout2d bindPosition(std::shared_ptr<Widget> widget);
+        TGUI_API Layout2d bindPosition(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the size of the widget
-        TGUI_API Layout2d bindSize(std::shared_ptr<Widget> widget);
+        TGUI_API Layout2d bindSize(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the inner size of the container widget
-        TGUI_API Layout2d bindInnerSize(std::shared_ptr<Container> container);
+        TGUI_API Layout2d bindInnerSize(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the width of the gui view
         TGUI_API Layout bindWidth(const BackendGui& gui);

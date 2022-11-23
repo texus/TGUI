@@ -31,7 +31,7 @@
 
 struct ChildWindowProperties : WidgetProperties
 {
-    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
+    void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
         auto childWindow = widget->cast<tgui::ChildWindow>();
         if (property == "TitleAlignment")
@@ -58,7 +58,7 @@ struct ChildWindowProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto childWindow = widget->cast<tgui::ChildWindow>();
@@ -105,7 +105,7 @@ private:
             return tgui::ChildWindow::TitleAlignment::Left;
     }
 
-    static unsigned int deserializeTitleButtons(tgui::String value)
+    static unsigned int deserializeTitleButtons(const tgui::String& value)
     {
         unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
         std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');

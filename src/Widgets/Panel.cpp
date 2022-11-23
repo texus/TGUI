@@ -45,7 +45,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr Panel::create(Layout2d size)
+    Panel::Ptr Panel::create(const Layout2d& size)
     {
         auto panel = std::make_shared<Panel>();
         panel->setSize(size);
@@ -54,7 +54,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr Panel::copy(Panel::ConstPtr panel)
+    Panel::Ptr Panel::copy(const Panel::ConstPtr& panel)
     {
         if (panel)
             return std::static_pointer_cast<Panel>(panel->clone());
@@ -238,7 +238,7 @@ namespace tgui
         }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
-            Container::rendererChanged(property);
+            Group::rendererChanged(property);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
         else
@@ -249,7 +249,7 @@ namespace tgui
 
     bool Panel::updateTime(Duration elapsedTime)
     {
-        const bool screenRefreshRequired = Widget::updateTime(elapsedTime);
+        const bool screenRefreshRequired = Group::updateTime(elapsedTime);
 
         if (m_animationTimeElapsed >= getDoubleClickTime())
         {
@@ -295,7 +295,7 @@ namespace tgui
 
         // Draw the child widgets
         target.addClippingLayer(states, {{}, contentSize});
-        Container::draw(target, states);
+        Container::draw(target, states); // NOLINT(bugprone-parent-virtual-call)
         target.removeClippingLayer();
     }
 

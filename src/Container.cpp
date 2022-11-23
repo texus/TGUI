@@ -174,11 +174,11 @@ namespace tgui
         // They all need to be in m_widgets before setParent is called on the first widget,
         // which is why we can't just use call add(widget) for each widget.
         m_widgets.reserve(other.m_widgets.size());
-        for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
-            m_widgets.push_back(other.m_widgets[i]->clone());
+        for (const auto& widget : other.m_widgets)
+            m_widgets.emplace_back(widget->clone());
 
-        for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
-            widgetAdded(m_widgets[i]);
+        for (const auto& widget : other.m_widgets)
+            widgetAdded(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,8 +199,6 @@ namespace tgui
 
         for (auto& widget : m_widgets)
             widget->setParent(this);
-
-        other.m_widgets = {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,11 +233,11 @@ namespace tgui
             // They all need to be in m_widgets before setParent is called on the first widget,
             // which is why we can't just use call add(widget) for each widget.
             m_widgets.reserve(right.m_widgets.size());
-            for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-                m_widgets.push_back(right.m_widgets[i]->clone());
+            for (auto& widget : right.m_widgets)
+                m_widgets.emplace_back(widget->clone());
 
-            for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-                widgetAdded(m_widgets[i]);
+            for (auto& widget : right.m_widgets)
+                widgetAdded(widget);
         }
 
         return *this;
@@ -252,12 +250,12 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            Widget::operator=(std::move(right));
             m_widgets                  = std::move(right.m_widgets);
             m_widgetBelowMouse         = std::move(right.m_widgetBelowMouse);
             m_widgetWithLeftMouseDown  = std::move(right.m_widgetWithLeftMouseDown);
             m_widgetWithRightMouseDown = std::move(right.m_widgetWithRightMouseDown);
             m_focusedWidget            = std::move(right.m_focusedWidget);
+            Widget::operator=(std::move(right));
 
             // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
             // Otherwise calling setParent on one widget could cause another widget's position to be recalculated which could
@@ -267,8 +265,6 @@ namespace tgui
 
             for (auto& widget : m_widgets)
                 widget->setParent(this);
-
-            right.m_widgets = {};
         }
 
         return *this;
@@ -529,7 +525,7 @@ namespace tgui
                     // We delay loading of widgets until they have all been added to the container.
                     // Otherwise there would be issues if their position and size layouts refer to
                     // widgets that have not yet been loaded.
-                    widgetsToLoad.push_back(std::make_pair(widget, std::cref(node)));
+                    widgetsToLoad.emplace_back(widget, std::cref(node));
                 }
                 else
                     throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
@@ -727,7 +723,7 @@ namespace tgui
         if (!m_focusedWidget || !m_focusedWidget->isContainer())
             return m_focusedWidget;
 
-        const auto leafWidget = std::static_pointer_cast<Container>(m_focusedWidget)->getFocusedLeaf();
+        auto leafWidget = std::static_pointer_cast<Container>(m_focusedWidget)->getFocusedLeaf();
 
         // If the container has no focused child then the container itself is the leaf
         if (!leafWidget)
@@ -742,9 +738,9 @@ namespace tgui
     {
         pos -= getPosition() + getChildWidgetsOffset();
 
-        for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
+        for (auto it = m_widgets.crbegin(); it != m_widgets.crend(); ++it)
         {
-            auto& widget = *it;
+            const auto& widget = *it;
 
             // Look for a visible widget below the mouse
             if (!widget->isVisible())
@@ -1019,8 +1015,8 @@ namespace tgui
 
         if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
-            for (std::size_t i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->setInheritedOpacity(m_opacityCached);
+            for (const auto& widget : m_widgets)
+                widget->setInheritedOpacity(m_opacityCached);
         }
         else if (property == "Font")
         {
@@ -1069,7 +1065,7 @@ namespace tgui
                 // We delay loading of widgets until they have all been added to the container.
                 // Otherwise there would be issues if their position and size layouts refer to
                 // widgets that have not yet been loaded.
-                widgetsToLoad.push_back(std::make_pair(childWidget, std::cref(childNode)));
+                widgetsToLoad.emplace_back(childWidget, std::cref(childNode));
             }
             else
                 throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
@@ -1239,14 +1235,13 @@ namespace tgui
         bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
         // Loop through all widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        for (auto& widget : m_widgets)
         {
             // Update the elapsed time in widgets that need it
-            if (m_widgets[i]->isVisible())
-                screenRefreshRequired |= m_widgets[i]->updateTime(elapsedTime);
+            if (widget->isVisible())
+                screenRefreshRequired |= widget->updateTime(elapsedTime);
         }
 
-        m_animationTimeElapsed = {};
         return screenRefreshRequired;
     }
 
@@ -1281,9 +1276,9 @@ namespace tgui
 
     Widget::Ptr Container::getWidgetBelowMouse(Vector2f mousePos) const
     {
-        for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
+        for (auto it = m_widgets.crbegin(); it != m_widgets.crend(); ++it)
         {
-            auto& widget = *it;
+            const auto& widget = *it;
             if (!widget->isVisible())
                 continue;
 
@@ -1418,7 +1413,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::widgetAdded(Widget::Ptr widgetPtr)
+    void Container::widgetAdded(const Widget::Ptr& widgetPtr)
     {
         if (widgetPtr->getParent())
         {

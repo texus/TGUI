@@ -46,8 +46,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<MenuBar> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const MenuBar> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<MenuBar>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const MenuBar>; //!< Shared constant widget pointer
 
         /// @brief Used for return value of getMenus
         struct GetMenusElement
@@ -115,7 +115,7 @@ namespace tgui
         /// @return The new menu bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MenuBar::Ptr copy(MenuBar::ConstPtr menuBar);
+        static MenuBar::Ptr copy(const MenuBar::ConstPtr& menuBar);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

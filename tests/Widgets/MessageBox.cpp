@@ -33,7 +33,7 @@ TEST_CASE("[MessageBox]")
     SECTION("Signals")
     {
         messageBox->onButtonPress([](){});
-        messageBox->onButtonPress([](tgui::String){});
+        messageBox->onButtonPress([](const tgui::String&){});
     }
 
     SECTION("WidgetType")

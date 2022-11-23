@@ -111,11 +111,11 @@ namespace tgui
         /// @param value  Value to store in the variant
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        Variant(const T& value) :
+        Variant(T&& value) : // NOLINT(bugprone-forwarding-reference-overload)
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_variant{value}
+            m_variant{std::forward<T>(value)}
 #else
-            m_any{value}
+            m_any{std::forward<T>(value)}
 #endif
         {
         }

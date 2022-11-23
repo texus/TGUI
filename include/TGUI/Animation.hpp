@@ -105,7 +105,7 @@ namespace tgui
         class TGUI_API MoveAnimation : public Animation
         {
         public:
-            MoveAnimation(std::shared_ptr<Widget> widget, Vector2f start, const Layout2d& end, Duration duration, std::function<void()> finishedCallback = nullptr);
+            MoveAnimation(std::shared_ptr<Widget> widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback = nullptr);
 
             bool update(Duration elapsedTime) override;
 
@@ -121,7 +121,7 @@ namespace tgui
         class TGUI_API ResizeAnimation : public Animation
         {
         public:
-            ResizeAnimation(std::shared_ptr<Widget> widget, Vector2f start, const Layout2d& end, Duration duration, std::function<void()> finishedCallback = nullptr);
+            ResizeAnimation(std::shared_ptr<Widget> widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback = nullptr);
 
             bool update(Duration elapsedTime) override;
 

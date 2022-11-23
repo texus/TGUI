@@ -122,13 +122,13 @@ namespace tgui
     {
         if (this != &other)
         {
-            Panel::operator=(std::move(other));
             m_contentSize               = std::move(other.m_contentSize);
             m_mostBottomRightPosition   = std::move(other.m_mostBottomRightPosition);
             m_verticalScrollbar         = std::move(other.m_verticalScrollbar);
             m_horizontalScrollbar       = std::move(other.m_horizontalScrollbar);
             m_verticalScrollbarPolicy   = std::move(other.m_verticalScrollbarPolicy);
             m_horizontalScrollbarPolicy = std::move(other.m_horizontalScrollbarPolicy);
+            Panel::operator=(std::move(other));
 
             disconnectAllChildWidgets();
 
@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::Ptr ScrollablePanel::create(Layout2d size, Vector2f contentSize)
+    ScrollablePanel::Ptr ScrollablePanel::create(const Layout2d& size, Vector2f contentSize)
     {
         auto panel = std::make_shared<ScrollablePanel>();
         panel->setSize(size);
@@ -154,7 +154,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::Ptr ScrollablePanel::copy(ScrollablePanel::ConstPtr panel)
+    ScrollablePanel::Ptr ScrollablePanel::copy(const ScrollablePanel::ConstPtr& panel)
     {
         if (panel)
             return std::static_pointer_cast<ScrollablePanel>(panel->clone());
@@ -646,7 +646,7 @@ namespace tgui
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()),
                                         -static_cast<float>(m_verticalScrollbar->getValue())});
 
-            Container::draw(target, states);
+            Container::draw(target, states); // NOLINT(bugprone-parent-virtual-call)
             target.removeClippingLayer();
         }
 
@@ -822,7 +822,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::connectPositionAndSize(Widget::Ptr widget)
+    void ScrollablePanel::connectPositionAndSize(const Widget::Ptr& widget)
     {
         const auto updateFunc = [this]{ recalculateMostBottomRightPosition(); updateScrollbars(); };
         m_connectedPositionCallbacks[widget] = widget->onPositionChange(updateFunc);

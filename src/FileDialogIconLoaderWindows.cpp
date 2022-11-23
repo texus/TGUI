@@ -73,7 +73,7 @@ namespace tgui
     {
     public:
         FileDialogIconLoaderWindows();
-        ~FileDialogIconLoaderWindows();
+        ~FileDialogIconLoaderWindows() override;
 
         bool update() override;
         bool supportsSystemIcons() const override;
@@ -321,7 +321,7 @@ namespace tgui
         const DWORD iconWidth = static_cast<DWORD>(bitmap.bmWidth);
         const DWORD iconHeight = static_cast<DWORD>(bitmap.bmHeight);
 
-        hDC = CreateCompatibleDC(NULL);
+        hDC = CreateCompatibleDC(nullptr);
         if (!hDC)
         {
             releaseResources();

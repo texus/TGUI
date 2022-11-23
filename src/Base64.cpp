@@ -98,7 +98,7 @@ namespace tgui
         int valShift = -8;
         for (char c : data)
         {
-            const std::uint8_t tableIndex = base64InverseCharactersTable[static_cast<std::uint8_t>(c)];
+            const std::uint8_t tableIndex = base64InverseCharactersTable[static_cast<std::uint8_t>(c)]; // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
 
             // Stop the decoding when an invalid character is encountered.
             // Since we don't check for it explicitly, this case will also happen when we reach a padding byte at the end.

@@ -208,7 +208,7 @@ namespace tgui
 
     sf::RenderStates BackendRenderTargetSFML::convertRenderStates(const RenderStates& states, const std::shared_ptr<BackendTexture>& texture)
     {
-        const float *transformMatrix = states.transform.getMatrix();
+        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
 
         sf::RenderStates statesSFML;
         statesSFML.transform = sf::Transform(

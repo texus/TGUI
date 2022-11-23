@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalWrap::Ptr HorizontalWrap::copy(HorizontalWrap::ConstPtr layout)
+    HorizontalWrap::Ptr HorizontalWrap::copy(const HorizontalWrap::ConstPtr& layout)
     {
         if (layout)
             return std::static_pointer_cast<HorizontalWrap>(layout->clone());

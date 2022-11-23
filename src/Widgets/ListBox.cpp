@@ -57,7 +57,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox::Ptr ListBox::copy(ListBox::ConstPtr listBox)
+    ListBox::Ptr ListBox::copy(const ListBox::ConstPtr& listBox)
     {
         if (listBox)
             return std::static_pointer_cast<ListBox>(listBox->clone());
@@ -275,10 +275,10 @@ namespace tgui
 
     String ListBox::getItemById(const String& id) const
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i)
+        for (const auto& item : m_items)
         {
-            if (m_items[i].id == id)
-                return m_items[i].text.getString();
+            if (item.id == id)
+                return item.text.getString();
         }
 
         return "";
@@ -578,6 +578,7 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
+                // NOLINTNEXTLINE(bugprone-integer-division)
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
@@ -664,6 +665,7 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
+                // NOLINTNEXTLINE(bugprone-integer-division)
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
@@ -732,9 +734,9 @@ namespace tgui
             setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem - 1));
         }
         else if ((event.code == Event::KeyboardKey::Down)
-              && (m_selectedItem >= 0) && (static_cast<std::size_t>(m_selectedItem + 1) < m_items.size()))
+              && (m_selectedItem >= 0) && (static_cast<std::size_t>(m_selectedItem) + 1 < m_items.size()))
         {
-            setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem + 1));
+            setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem) + 1);
         }
     }
 

@@ -46,10 +46,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR AbsoluteOrRelativeValue()
-        {
-            // Constructor isn't defined as "= default" because this leads to an IntelliSense error
-        }
+        constexpr AbsoluteOrRelativeValue() = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +55,7 @@ namespace tgui
         /// @param constant  Value to set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-        TGUI_CONSTEXPR AbsoluteOrRelativeValue(T constant) :
+        constexpr AbsoluteOrRelativeValue(T constant) :
             m_constant    {true},
             m_value       {static_cast<float>(constant)}
         {
@@ -101,7 +98,7 @@ namespace tgui
         ///
         /// @return The constant value or the value based on the given ratio and parent size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getValue() const
+        constexpr float getValue() const
         {
             return m_value;
         }
@@ -112,7 +109,7 @@ namespace tgui
         ///
         /// @return The ratio that is multiplied with the parent size to get the value, when the value isn't a constant
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getRatio() const
+        constexpr float getRatio() const
         {
             return m_ratio;
         }
@@ -123,7 +120,7 @@ namespace tgui
         ///
         /// @return Does the value contain a constant?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool isConstant() const
+        constexpr bool isConstant() const
         {
             return m_constant;
         }
@@ -135,7 +132,7 @@ namespace tgui
         ///
         /// @param newParentSize  New size from which to take the relative value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR void updateParentSize(float newParentSize)
+        constexpr void updateParentSize(float newParentSize)
         {
             if (!m_constant)
             {
@@ -175,7 +172,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API RelativeValue : AbsoluteOrRelativeValue
     {
-        explicit TGUI_CONSTEXPR RelativeValue(float ratio)
+        explicit constexpr RelativeValue(float ratio)
         {
             m_constant = false;
             m_ratio    = ratio;

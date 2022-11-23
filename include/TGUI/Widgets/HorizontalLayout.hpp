@@ -40,8 +40,8 @@ namespace tgui
     class TGUI_API HorizontalLayout : public BoxLayoutRatios
     {
     public:
-        typedef std::shared_ptr<HorizontalLayout> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const HorizontalLayout> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<HorizontalLayout>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const HorizontalLayout>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ namespace tgui
         ///
         /// @return The new layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static HorizontalLayout::Ptr copy(ConstPtr layout);
+        static HorizontalLayout::Ptr copy(const HorizontalLayout::ConstPtr& layout);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

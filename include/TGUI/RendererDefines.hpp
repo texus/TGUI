@@ -145,14 +145,14 @@
         else \
         { \
             const auto& renderer = tgui::Theme::getDefault()->getRendererNoThrow(RENDERER); \
-            m_data->propertyValuePairs[tgui::String(#NAME)] = {renderer ? renderer : DEFAULT}; \
+            m_data->propertyValuePairs[tgui::String(#NAME)] = {renderer ? renderer : (DEFAULT)}; \
             return renderer; \
         } \
     } \
     void CLASS::set##NAME(std::shared_ptr<tgui::RendererData> renderer) \
     { \
         if (renderer) \
-            setProperty(tgui::String(#NAME), {renderer}); \
+            setProperty(tgui::String(#NAME), {std::move(renderer)}); \
         else \
             setProperty(tgui::String(#NAME), {RendererData::create()}); \
     }

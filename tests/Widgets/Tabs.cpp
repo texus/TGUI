@@ -33,7 +33,7 @@ TEST_CASE("[Tabs]")
     SECTION("Signals")
     {
         tabs->onTabSelect([](){});
-        tabs->onTabSelect([](tgui::String){});
+        tabs->onTabSelect([](const tgui::String&){});
     }
 
     SECTION("WidgetType")

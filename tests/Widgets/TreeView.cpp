@@ -34,24 +34,24 @@ TEST_CASE("[TreeView]")
     SECTION("Signals")
     {
         treeView->onItemSelect([](){});
-        treeView->onItemSelect([](tgui::String){});
-        treeView->onItemSelect([](std::vector<tgui::String>){});
+        treeView->onItemSelect([](const tgui::String&){});
+        treeView->onItemSelect([](const std::vector<tgui::String>&){});
 
         treeView->onDoubleClick([](){});
-        treeView->onDoubleClick([](tgui::String){});
-        treeView->onDoubleClick([](std::vector<tgui::String>){});
+        treeView->onDoubleClick([](const tgui::String&){});
+        treeView->onDoubleClick([](const std::vector<tgui::String>&){});
 
         treeView->onExpand([](){});
-        treeView->onExpand([](tgui::String){});
-        treeView->onExpand([](std::vector<tgui::String>){});
+        treeView->onExpand([](const tgui::String&){});
+        treeView->onExpand([](const std::vector<tgui::String>&){});
 
         treeView->onCollapse([](){});
-        treeView->onCollapse([](tgui::String){});
-        treeView->onCollapse([](std::vector<tgui::String>){});
+        treeView->onCollapse([](const tgui::String&){});
+        treeView->onCollapse([](const std::vector<tgui::String>&){});
 
         treeView->onRightClick([](){});
-        treeView->onRightClick([](tgui::String){});
-        treeView->onRightClick([](std::vector<tgui::String>){});
+        treeView->onRightClick([](const tgui::String&){});
+        treeView->onRightClick([](const std::vector<tgui::String>&){});
     }
 
     SECTION("WidgetType")

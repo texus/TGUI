@@ -133,12 +133,6 @@
 //    #define TGUI_USE_STD_FILESYSTEM_FILE_TIME
 //#endif
 
-#if defined(__cpp_constexpr) && (__cpp_constexpr >= 201304L)
-    #define TGUI_CONSTEXPR constexpr
-#else
-    #define TGUI_CONSTEXPR inline
-#endif
-
 #if __cplusplus >= 201703L
     #define TGUI_EMPLACE_BACK(object, vector) auto& object = vector.emplace_back();
 #else

@@ -142,7 +142,6 @@ namespace tgui
     {
         if (this != &other)
         {
-            Widget::operator=(std::move(other));
             onItemSelect                      = std::move(other.onItemSelect);
             m_nrOfItemsToDisplay              = std::move(other.m_nrOfItemsToDisplay);
             m_listBox                         = std::move(other.m_listBox);
@@ -161,6 +160,7 @@ namespace tgui
             m_arrowColorHoverCached           = std::move(other.m_arrowColorHoverCached);
             m_arrowBackgroundColorCached      = std::move(other.m_arrowBackgroundColorCached);
             m_arrowBackgroundColorHoverCached = std::move(other.m_arrowBackgroundColorHoverCached);
+            Widget::operator=(std::move(other));
         }
 
         return *this;
@@ -175,7 +175,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::Ptr ComboBox::copy(ComboBox::ConstPtr comboBox)
+    ComboBox::Ptr ComboBox::copy(const ComboBox::ConstPtr& comboBox)
     {
         if (comboBox)
             return std::static_pointer_cast<ComboBox>(comboBox->clone());
@@ -591,13 +591,17 @@ namespace tgui
         if (m_listBox->isVisible())
             return false;
 
+        if (m_listBox->getItemCount() == 0)
+            return false;
+
         // Check if you are scrolling down
         if (delta < 0)
         {
             // Select the next item
-            if (static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->getItemCount())
+            const std::size_t nextIndex = (m_listBox->getSelectedItemIndex() < 0) ? 0 : static_cast<std::size_t>(m_listBox->getSelectedItemIndex()) + 1;
+            if (nextIndex < m_listBox->getItemCount())
             {
-                m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
+                m_listBox->setSelectedItemByIndex(nextIndex);
                 m_text.setString(m_listBox->getSelectedItem());
                 onItemSelect.emit(this, m_listBox->getSelectedItemIndex(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
             }

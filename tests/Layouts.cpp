@@ -67,7 +67,7 @@ TEST_CASE("[Layouts]")
     {
         Layout l1;
         Layout l2{2};
-        Layout l3 = l2;
+        Layout l3 = l2; // NOLINT(performance-unnecessary-copy-initialization)
         Layout l4;
         Layout l5{0};
         Layout l6{"max(2,3)+1"};
@@ -350,7 +350,7 @@ TEST_CASE("[Layouts]")
 
             REQUIRE(Layout("width").getValue() == 0);
 
-            std::streambuf *oldbuf = std::cerr.rdbuf(0);
+            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
             REQUIRE(Layout("xyz").getValue() == 0);
             std::cerr.rdbuf(oldbuf);
         }
@@ -380,7 +380,7 @@ TEST_CASE("[Layouts]")
             REQUIRE(button2->getSizeLayout().toString() == "(b1.size, b1.size)");
             REQUIRE(button2->getPositionLayout().toString() == "(b1.position, b1.position)");
 
-            std::streambuf *oldbuf = std::cerr.rdbuf(0);
+            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
             button2->setPosition({"b1.p"});
             REQUIRE(button2->getPosition() == tgui::Vector2f(0, 0));
             std::cerr.rdbuf(oldbuf);
@@ -401,7 +401,7 @@ TEST_CASE("[Layouts]")
             REQUIRE(button2->getSize() == tgui::Vector2f(340, 110));
             REQUIRE(button2->getSizeLayout().toString() == "(b1.left + b1.width, b1.top + b1.height)");
 
-            oldbuf = std::cerr.rdbuf(0);
+            oldbuf = std::cerr.rdbuf(nullptr);
             button2->setSize({"{@, #}"});
             REQUIRE(button2->getSize() == tgui::Vector2f(0, 0));
             std::cerr.rdbuf(oldbuf);

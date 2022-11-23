@@ -80,7 +80,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasGLES2::Ptr CanvasGLES2::create(Layout2d size)
+    CanvasGLES2::Ptr CanvasGLES2::create(const Layout2d& size)
     {
         auto canvas = std::make_shared<CanvasGLES2>();
         canvas->setSize(size);
@@ -89,7 +89,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasGLES2::Ptr CanvasGLES2::copy(CanvasGLES2::ConstPtr canvas)
+    CanvasGLES2::Ptr CanvasGLES2::copy(const CanvasGLES2::ConstPtr& canvas)
     {
         if (canvas)
             return std::static_pointer_cast<CanvasGLES2>(canvas->clone());

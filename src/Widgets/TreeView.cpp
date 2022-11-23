@@ -352,7 +352,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TreeView::Ptr TreeView::copy(TreeView::ConstPtr treeView)
+    TreeView::Ptr TreeView::copy(const TreeView::ConstPtr& treeView)
     {
         if (treeView)
             return std::static_pointer_cast<TreeView>(treeView->clone());
@@ -677,6 +677,8 @@ namespace tgui
                           maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
+
+                // NOLINTNEXTLINE(bugprone-integer-division)
                 int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if (selectedItem >= static_cast<int>(m_visibleNodes.size()))
                     selectedItem = -1;
@@ -707,6 +709,7 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
+                // NOLINTNEXTLINE(bugprone-integer-division)
                 selectedIndex = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if ((selectedIndex >= 0) && (selectedIndex == m_selectedItem))
                 {
@@ -776,6 +779,8 @@ namespace tgui
                       maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
+
+            // NOLINTNEXTLINE(bugprone-integer-division)
             int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
             if ((selectedItem >= 0) && (selectedItem < static_cast<int>(m_visibleNodes.size())))
             {
@@ -822,6 +827,7 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
+                // NOLINTNEXTLINE(bugprone-integer-division)
                 int hoveredItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if (hoveredItem >= static_cast<int>(m_visibleNodes.size()))
                     hoveredItem = -1;

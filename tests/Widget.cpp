@@ -81,7 +81,7 @@ TEST_CASE("[Widget]")
         panel1->add(widget);
 
         // When the same widget is added to a different parent, a warning is generated but the widget gets moved
-        std::streambuf *oldbuf = std::cerr.rdbuf(0);
+        std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
         panel2->add(widget);
         std::cerr.rdbuf(oldbuf);
         REQUIRE(widget->getParent() == panel2.get());

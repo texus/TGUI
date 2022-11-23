@@ -60,7 +60,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RangeSlider::Ptr RangeSlider::copy(RangeSlider::ConstPtr slider)
+    RangeSlider::Ptr RangeSlider::copy(const RangeSlider::ConstPtr& slider)
     {
         if (slider)
             return std::static_pointer_cast<RangeSlider>(slider->clone());

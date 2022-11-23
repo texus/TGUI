@@ -42,8 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<TreeView> Ptr;
-        typedef std::shared_ptr<const TreeView> ConstPtr;
+        using Ptr = std::shared_ptr<TreeView>;
+        using ConstPtr = std::shared_ptr<const TreeView>;
 
         /// @brief Read-only node representation used by getNodes
         struct ConstNode
@@ -107,7 +107,7 @@ namespace tgui
         /// @param treeView  The other tree view
         /// @return The new tree view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TreeView::Ptr copy(TreeView::ConstPtr treeView);
+        static TreeView::Ptr copy(const TreeView::ConstPtr& treeView);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

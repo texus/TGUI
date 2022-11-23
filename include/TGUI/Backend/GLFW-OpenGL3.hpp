@@ -34,7 +34,7 @@
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
 
-typedef struct GLFWwindow GLFWwindow;
+using GLFWwindow = struct GLFWwindow;
 
 namespace tgui
 {

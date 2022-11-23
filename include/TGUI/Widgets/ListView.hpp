@@ -46,8 +46,8 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<ListView> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const ListView> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<ListView>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const ListView>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment for all texts within a column
@@ -100,7 +100,7 @@ namespace tgui
         ///
         /// @return The new list view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListView::Ptr copy(ListView::ConstPtr listView);
+        static ListView::Ptr copy(const ListView::ConstPtr& listView);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

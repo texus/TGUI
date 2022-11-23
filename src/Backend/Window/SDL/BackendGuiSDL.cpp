@@ -97,7 +97,7 @@ namespace tgui
         case SDLK_EQUALS:       return Event::KeyboardKey::Equal;
         case SDLK_MINUS:        return Event::KeyboardKey::Minus;
         case SDLK_SPACE:        return Event::KeyboardKey::Space;
-        case SDLK_RETURN:       return Event::KeyboardKey::Enter;
+        case SDLK_RETURN:
         case SDLK_KP_ENTER:     return Event::KeyboardKey::Enter;
         case SDLK_BACKSPACE:    return Event::KeyboardKey::Backspace;
         case SDLK_TAB:          return Event::KeyboardKey::Tab;
@@ -181,9 +181,13 @@ namespace tgui
             }
             case SDL_TEXTINPUT:
             {
+                const String& unicodeStr(static_cast<const char*>(eventSDL.text.text));
+                if (unicodeStr.empty())
+                    return false;
+
                 // This code assumes eventSDL.text.text never contains more than one UTF-32 character
                 eventTGUI.type = Event::Type::TextEntered;
-                eventTGUI.text.unicode = String(eventSDL.text.text)[0];
+                eventTGUI.text.unicode = unicodeStr[0];
                 return true;
             }
             case SDL_KEYDOWN:

@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Ptr Button::copy(Button::ConstPtr button)
+    Button::Ptr Button::copy(const Button::ConstPtr& button)
     {
         if (button)
             return std::static_pointer_cast<Button>(button->clone());

@@ -191,7 +191,7 @@ namespace tgui
         ANativeActivity* activity = sf::getNativeActivity();
 
         JNIEnv* env = 0;
-        activity->vm->AttachCurrentThread(&env, NULL);
+        activity->vm->AttachCurrentThread(&env, nullptr);
         jclass clazz = env->GetObjectClass(activity->clazz);
 
         jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
@@ -315,7 +315,7 @@ namespace tgui
                 cursorInUse = true;
         }
         if (cursorInUse)
-            SetCursor(static_cast<HCURSOR>(LoadImage(NULL, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
+            SetCursor(static_cast<HCURSOR>(LoadImage(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
 #endif
 
         m_mouseCursors[type] = std::move(cursor);

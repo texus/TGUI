@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Ptr Label::create(String text)
+    Label::Ptr Label::create(const String& text)
     {
         auto label = std::make_shared<Label>();
 
@@ -62,7 +62,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Ptr Label::copy(Label::ConstPtr label)
+    Label::Ptr Label::copy(const Label::ConstPtr& label)
     {
         if (label)
             return std::static_pointer_cast<Label>(label->clone());

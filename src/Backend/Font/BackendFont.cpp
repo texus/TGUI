@@ -51,7 +51,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendFont::BackendFont(BackendFont&& other) :
+    BackendFont::BackendFont(BackendFont&& other) noexcept :
         m_isSmooth(std::move(other.m_isSmooth)),
         m_fontScale(std::move(other.m_fontScale))
     {
@@ -85,7 +85,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendFont& BackendFont::operator=(BackendFont&& other)
+    BackendFont& BackendFont::operator=(BackendFont&& other) noexcept
     {
         if (this != &other)
         {

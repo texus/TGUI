@@ -286,7 +286,7 @@ namespace tgui
             std::ostringstream oss;
             oss.imbue(std::locale::classic());
             oss << value;
-            return String(oss.str());
+            return {oss.str()};
         }
 
 
@@ -305,7 +305,7 @@ namespace tgui
             oss.imbue(std::locale::classic());
             oss << std::fixed << std::setprecision(static_cast<int>(decimals));
             oss << value;
-            return String(oss.str());
+            return {oss.str()};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,19 +1025,19 @@ namespace tgui
 
     inline String operator+(const String& left, const String& right)
     {
-        return String(left.m_string + right.m_string);
+        return {left.m_string + right.m_string};
     }
     inline String operator+(String&& left, String&& right)
     {
-        return String(std::move(left.m_string) + std::move(right.m_string));
+        return {std::move(left.m_string) + std::move(right.m_string)};
     }
     inline String operator+(String&& left, const String& right)
     {
-        return String(std::move(left.m_string) + right.m_string);
+        return {std::move(left.m_string) + right.m_string};
     }
     inline String operator+(const String& left, String&& right)
     {
-        return String(left.m_string + std::move(right.m_string));
+        return {left.m_string + std::move(right.m_string)};
     }
 
     TGUI_API std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& str);
@@ -1477,8 +1477,8 @@ namespace tgui
     using StringView = std::u32string_view;
     using CharStringView = std::string_view;
 #else
-    using StringView = String;
-    using CharStringView = std::string;
+    using StringView = const String&;
+    using CharStringView = const std::string&;
 #endif
 }
 

@@ -68,7 +68,7 @@ namespace tgui
         GLFWimage image;
         image.width = static_cast<int>(size.x);
         image.height = static_cast<int>(size.y);
-        image.pixels = static_cast<unsigned char*>(const_cast<std::uint8_t*>(pixels));
+        image.pixels = static_cast<unsigned char*>(const_cast<std::uint8_t*>(pixels)); // NOLINT(cppcoreguidelines-pro-type-const-cast)
 
         GLFWcursor* cursor = glfwCreateCursor(&image, static_cast<int>(hotspot.x), static_cast<int>(hotspot.y));
         if (!cursor)
@@ -235,7 +235,7 @@ namespace tgui
         case Cursor::Type::Crosshair:
             typeGLFW = GLFW_CROSSHAIR_CURSOR;
             break;
-        case Cursor::Type::Help:
+        case Cursor::Type::Help: // In release mode, Help and NotAllowed branches are identical. NOLINT(bugprone-branch-clone)
             TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::Help");
             break;
         case Cursor::Type::NotAllowed:

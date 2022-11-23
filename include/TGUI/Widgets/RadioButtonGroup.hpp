@@ -38,12 +38,12 @@ namespace tgui
     /// @brief Can be used as parent of radio buttons so that different groups of radio buttons can be isolated
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API RadioButtonGroup : public Group
+    class TGUI_API RadioButtonGroup : public Container
     {
     public:
 
-        typedef std::shared_ptr<RadioButtonGroup> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const RadioButtonGroup> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<RadioButtonGroup>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const RadioButtonGroup>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ namespace tgui
         /// @return The new group
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static RadioButtonGroup::Ptr copy(RadioButtonGroup::ConstPtr group);
+        static RadioButtonGroup::Ptr copy(const RadioButtonGroup::ConstPtr& group);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,13 +90,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw the child widgets to the render target
+        /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
-        /// @param target Render target to draw to
-        /// @param states Current render states
+        /// @return Is the mouse on top of the widget?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(BackendRenderTarget& target, RenderStates states) const override;
+        bool isMouseOnWidget(Vector2f pos) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

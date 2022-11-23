@@ -143,7 +143,7 @@ namespace tgui
         setTitleButtons(ChildWindow::TitleButton::None);
         setTextSize(getGlobalTextSize());
 
-        auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(colorWheelSize * colorWheelSize * 4);
+        auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(colorWheelSize) * colorWheelSize * 4);
         for (unsigned int y = 0; y < colorWheelSize; ++y)
         {
             for (unsigned int x = 0; x < colorWheelSize; ++x)
@@ -238,7 +238,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker::ColorPicker(const ColorPicker &other) :
+    ColorPicker::ColorPicker(const ColorPicker& other) :
         ChildWindow{other},
         onColorChange{other.onColorChange},
         onOkPress{other.onOkPress},
@@ -257,7 +257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker::ColorPicker(ColorPicker &&other) :
+    ColorPicker::ColorPicker(ColorPicker&& other) noexcept :
         ChildWindow{std::move(other)},
         onColorChange{std::move(other.onColorChange)},
         onOkPress{std::move(other.onOkPress)},
@@ -276,7 +276,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker &ColorPicker::operator=(const ColorPicker &other)
+    ColorPicker& ColorPicker::operator=(const ColorPicker& other)
     {
         if (this != &other)
         {
@@ -296,16 +296,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker &ColorPicker::operator=(ColorPicker &&other)
+    ColorPicker& ColorPicker::operator=(ColorPicker&& other) noexcept
     {
         if (this != &other)
         {
-            ChildWindow::operator=(std::move(other));
-
             onColorChange = std::move(other.onColorChange);
             onOkPress = std::move(other.onOkPress);
             m_colorWheelTexture = std::move(other.m_colorWheelTexture);
-            m_colorWheelSprite = std::move(other.m_colorWheelSprite),
+            m_colorWheelSprite = std::move(other.m_colorWheelSprite);
+            ChildWindow::operator=(std::move(other));
 
             identifyButtonsAndConnect();
         }
@@ -315,7 +314,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker::Ptr ColorPicker::create(String title, Color color)
+    ColorPicker::Ptr ColorPicker::create(const String& title, Color color)
     {
         auto colorPicker = std::make_shared<ColorPicker>();
         colorPicker->setTitle(title);
@@ -326,7 +325,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPicker::Ptr ColorPicker::copy(ColorPicker::ConstPtr colorPicker)
+    ColorPicker::Ptr ColorPicker::copy(const ColorPicker::ConstPtr& colorPicker)
     {
         if (colorPicker)
             return std::static_pointer_cast<ColorPicker>(colorPicker->clone());
@@ -357,7 +356,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ColorPicker::setColor(const Color &color)
+    void ColorPicker::setColor(const Color& color)
     {
         const auto colorLast = m_current->getRenderer()->getBackgroundColor();
         m_last->getRenderer()->setBackgroundColor(color);
@@ -532,7 +531,7 @@ namespace tgui
     {
         if (property == "Button")
         {
-            const auto &renderer = getSharedRenderer()->getButton();
+            const auto& renderer = getSharedRenderer()->getButton();
 
             // During loading from file, the renderer is loaded before the child widgets are loaded.
             // In this exceptional case, we shouldn't try to set the renderer. The buttons will have their renderer in the form file anyway.
@@ -545,9 +544,9 @@ namespace tgui
         }
         else if (property == "Label")
         {
-            const auto &renderer = getSharedRenderer()->getLabel();
+            const auto& renderer = getSharedRenderer()->getLabel();
 
-            for (const auto &it : getWidgets())
+            for (const auto& it : getWidgets())
             {
                 auto label = std::dynamic_pointer_cast<Label>(it);
                 if (label)
@@ -556,7 +555,7 @@ namespace tgui
         }
         else if (property == "Slider")
         {
-            const auto &renderer = getSharedRenderer()->getSlider();
+            const auto& renderer = getSharedRenderer()->getSlider();
 
             m_red->setRenderer(renderer);
             m_green->setRenderer(renderer);
@@ -567,9 +566,8 @@ namespace tgui
         }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
-            Widget::rendererChanged(property);
-            m_colorWheelSprite.setOpacity(m_opacityCached);
             ChildWindow::rendererChanged(property);
+            m_colorWheelSprite.setOpacity(m_opacityCached);
         }
         else
             ChildWindow::rendererChanged(property);
@@ -577,7 +575,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::unique_ptr<DataIO::Node> ColorPicker::save(SavingRenderersMap &renderers) const
+    std::unique_ptr<DataIO::Node> ColorPicker::save(SavingRenderersMap& renderers) const
     {
         // Labels, buttons and sliders are saved indirectly by saving the child window
         return ChildWindow::save(renderers);
@@ -585,7 +583,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ColorPicker::load(const std::unique_ptr<DataIO::Node> &node, const LoadingRenderersMap &renderers)
+    void ColorPicker::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         // Remove the widgets that the ColorPicker constructor creates because they will be created when loading the child window
         removeAllWidgets();
@@ -631,19 +629,19 @@ namespace tgui
 
         redBox->onTextChange.disconnectAll();
         redBox->setText(String(m_red->getValue()));
-        redBox->onTextChange([this](const String &s) { m_red->setValue(s.toFloat()); });
+        redBox->onTextChange([this](const String& s) { m_red->setValue(s.toFloat()); });
 
         greenBox->onTextChange.disconnectAll();
         greenBox->setText(String(m_green->getValue()));
-        greenBox->onTextChange([this](const String &s) { m_green->setValue(s.toFloat()); });
+        greenBox->onTextChange([this](const String& s) { m_green->setValue(s.toFloat()); });
 
         blueBox->onTextChange.disconnectAll();
         blueBox->setText(String(m_blue->getValue()));
-        blueBox->onTextChange([this](const String &s) { m_blue->setValue(s.toFloat()); });
+        blueBox->onTextChange([this](const String& s) { m_blue->setValue(s.toFloat()); });
 
         alphaBox->onTextChange.disconnectAll();
         alphaBox->setText(String(m_alpha->getValue()));
-        alphaBox->onTextChange([this](const String &s) { m_alpha->setValue(s.toFloat()); });
+        alphaBox->onTextChange([this](const String& s) { m_alpha->setValue(s.toFloat()); });
 
         m_red->onValueChange.disconnectAll();
         m_red->onValueChange(

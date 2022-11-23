@@ -32,7 +32,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButtonGroup::RadioButtonGroup(const char* typeName, bool initRenderer) :
-        Group{typeName, initRenderer}
+        Container{typeName, initRenderer}
     {
         setSize({"100%", "100%"});
     }
@@ -46,7 +46,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButtonGroup::Ptr RadioButtonGroup::copy(RadioButtonGroup::ConstPtr group)
+    RadioButtonGroup::Ptr RadioButtonGroup::copy(const RadioButtonGroup::ConstPtr& group)
     {
         if (group)
             return std::static_pointer_cast<RadioButtonGroup>(group->clone());
@@ -85,10 +85,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButtonGroup::draw(BackendRenderTarget& target, RenderStates states) const
+    bool RadioButtonGroup::isMouseOnWidget(Vector2f pos) const
     {
-        // Note that it calls the function from Container, not Group!
-        Container::draw(target, states);
+        pos -= getPosition();
+
+        if (!FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+            return false;
+
+        const Vector2f offset = getChildWidgetsOffset();
+        for (const auto& widget : m_widgets)
+        {
+            if (widget->isVisible() && widget->isMouseOnWidget(transformMousePos(widget, pos - offset)))
+                return true;
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

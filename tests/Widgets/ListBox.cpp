@@ -35,23 +35,23 @@ TEST_CASE("[ListBox]")
     {
         listBox->onItemSelect([](){});
         listBox->onItemSelect([](int){});
-        listBox->onItemSelect([](tgui::String){});
-        listBox->onItemSelect([](tgui::String, tgui::String){});
+        listBox->onItemSelect([](const tgui::String&){});
+        listBox->onItemSelect([](const tgui::String&, const tgui::String&){});
 
         listBox->onMousePress([](){});
         listBox->onMousePress([](int){});
-        listBox->onMousePress([](tgui::String){});
-        listBox->onMousePress([](tgui::String, tgui::String){});
+        listBox->onMousePress([](const tgui::String&){});
+        listBox->onMousePress([](const tgui::String&, const tgui::String&){});
 
         listBox->onMouseRelease([](){});
         listBox->onMouseRelease([](int){});
-        listBox->onMouseRelease([](tgui::String){});
-        listBox->onMouseRelease([](tgui::String, tgui::String){});
+        listBox->onMouseRelease([](const tgui::String&){});
+        listBox->onMouseRelease([](const tgui::String&, const tgui::String&){});
 
         listBox->onDoubleClick([](){});
         listBox->onDoubleClick([](int){});
-        listBox->onDoubleClick([](tgui::String){});
-        listBox->onDoubleClick([](tgui::String, tgui::String){});
+        listBox->onDoubleClick([](const tgui::String&){});
+        listBox->onDoubleClick([](const tgui::String&, const tgui::String&){});
 
         listBox->onScroll([](){});
         listBox->onScroll([](unsigned int){});

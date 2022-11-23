@@ -214,8 +214,6 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &other)
         {
-            Container::operator=(std::move(other));
-
             m_titleText                         = std::move(other.m_titleText);
             m_draggingPosition                  = std::move(other.m_draggingPosition);
             m_maximumSize                       = std::move(other.m_maximumSize);
@@ -246,6 +244,7 @@ namespace tgui
             m_paddingBetweenButtonsCached       = std::move(other.m_paddingBetweenButtonsCached);
             m_minimumResizableBorderWidthCached = std::move(other.m_minimumResizableBorderWidthCached);
             m_showTextOnTitleButtonsCached      = std::move(other.m_showTextOnTitleButtonsCached);
+            Container::operator=(std::move(other));
 
             // The inner size has changed since the container created the child widgets
             for (auto& layout : m_boundSizeLayouts)
@@ -269,7 +268,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::Ptr ChildWindow::copy(ChildWindow::ConstPtr childWindow)
+    ChildWindow::Ptr ChildWindow::copy(const ChildWindow::ConstPtr& childWindow)
     {
         if (childWindow)
             return std::static_pointer_cast<ChildWindow>(childWindow->clone());

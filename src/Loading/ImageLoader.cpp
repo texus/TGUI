@@ -102,7 +102,7 @@ namespace tgui
 
         if ((imgWidth > 0) && (imgHeight > 0))
         {
-            const std::size_t pixelDataSize = static_cast<std::size_t>(4 * imgWidth * imgHeight);
+            const std::size_t pixelDataSize = 4 * static_cast<std::size_t>(imgWidth) * static_cast<std::size_t>(imgHeight);
             pixelData = MakeUniqueForOverwrite<std::uint8_t[]>(pixelDataSize);
             std::memcpy(pixelData.get(), buffer, pixelDataSize);
 

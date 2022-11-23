@@ -310,10 +310,8 @@ namespace tgui
         float maxX = 0.f;
         char32_t prevChar = 0;
         unsigned int nrLines = 1;
-        for (std::size_t i = 0; i < m_string.length(); ++i)
+        for (const char32_t curChar : m_string)
         {
-            const char32_t curChar = m_string[i];
-
             // Skip the carriage return character since we can't render it
             if (curChar == U'\r')
                 continue;

@@ -53,7 +53,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalLayout::Ptr HorizontalLayout::copy(HorizontalLayout::ConstPtr layout)
+    HorizontalLayout::Ptr HorizontalLayout::copy(const HorizontalLayout::ConstPtr& layout)
     {
         if (layout)
             return std::static_pointer_cast<HorizontalLayout>(layout->clone());

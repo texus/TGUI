@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CheckBox::Ptr CheckBox::create(String text)
+    CheckBox::Ptr CheckBox::create(const String& text)
     {
         auto checkBox = std::make_shared<CheckBox>();
 
@@ -64,7 +64,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CheckBox::Ptr CheckBox::copy(CheckBox::ConstPtr checkbox)
+    CheckBox::Ptr CheckBox::copy(const CheckBox::ConstPtr& checkbox)
     {
         if (checkbox)
             return std::static_pointer_cast<CheckBox>(checkbox->clone());
@@ -161,7 +161,7 @@ namespace tgui
     {
         const bool mouseDown = m_mouseDown;
 
-        ClickableWidget::leftMouseReleased(pos);
+        ClickableWidget::leftMouseReleased(pos); // NOLINT(bugprone-parent-virtual-call)
 
         // Check or uncheck when we clicked on the checkbox (not just mouse release)
         if (mouseDown)
@@ -290,7 +290,7 @@ namespace tgui
                     {{rightPoint.x + x, rightPoint.y + y}, checkColor},
                     {{rightPoint.x - x, rightPoint.y - y}, checkColor}
                 }};
-                const std::array<unsigned int, 3*4> indices = {{
+                const std::array<unsigned int, 3u*4u> indices = {{
                     0, 1, 2,
                     1, 2, 3,
                     2, 3, 4,

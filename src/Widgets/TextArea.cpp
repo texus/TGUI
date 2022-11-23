@@ -72,7 +72,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextArea::Ptr TextArea::copy(TextArea::ConstPtr textArea)
+    TextArea::Ptr TextArea::copy(const TextArea::ConstPtr& textArea)
     {
         if (textArea)
             return std::static_pointer_cast<TextArea>(textArea->clone());
@@ -805,7 +805,7 @@ namespace tgui
 
         // Don't continue when line height is 0 or when there is no font yet
         if ((m_lineHeight == 0) || (m_fontCached == nullptr))
-            return Vector2<std::size_t>(m_lines[m_lines.size()-1].size(), m_lines.size()-1);
+            return {m_lines[m_lines.size()-1].size(), m_lines.size()-1};
 
         // Find on which line the mouse is
         std::size_t lineNumber;
@@ -826,7 +826,7 @@ namespace tgui
 
         // Check if you clicked behind everything
         if (lineNumber + 1 > m_lines.size())
-            return Vector2<std::size_t>(m_lines[m_lines.size()-1].size(), m_lines.size()-1);
+            return {m_lines[m_lines.size()-1].size(), m_lines.size()-1};
 
         // Find between which character the mouse is standing
         float width = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) - m_horizontalScrollbar->getValue();
@@ -858,7 +858,7 @@ namespace tgui
         }
 
         // You clicked behind the last character
-        return Vector2<std::size_t>(m_lines[lineNumber].length(), lineNumber);
+        return {m_lines[lineNumber].length(), lineNumber};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1419,8 +1419,8 @@ namespace tgui
         if (m_selStart == m_selEnd)
         {
             String displayedText;
-            for (std::size_t i = 0; i < m_lines.size(); ++i)
-                displayedText += m_lines[i] + "\n";
+            for (const auto& line : m_lines)
+                displayedText += line + "\n";
 
             m_textBeforeSelection.setString(displayedText);
             m_textSelection1.setString("");
@@ -1626,7 +1626,7 @@ namespace tgui
 
             // Recalculate the selection rectangles
             {
-                m_selectionRects.push_back({m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y) * m_lineHeight, 0, m_lineHeight});
+                m_selectionRects.emplace_back(m_textSelection1.getPosition().x, static_cast<float>(selectionStart.y) * m_lineHeight, 0, m_lineHeight);
 
                 if (!m_lines[selectionStart.y].empty())
                 {
@@ -1644,7 +1644,7 @@ namespace tgui
                 for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                 {
                     m_selectionRects.back().width += textOffset;
-                    m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(i) * m_lineHeight, textOffset, m_lineHeight});
+                    m_selectionRects.emplace_back(m_textSelection2.getPosition().x - textOffset, static_cast<float>(i) * m_lineHeight, textOffset, m_lineHeight);
 
                     if (!m_lines[i].empty())
                     {
@@ -1660,11 +1660,11 @@ namespace tgui
                     if (m_textSelection2.getString() != U"")
                     {
                         tempText.setString(m_lines[selectionEnd.y].substr(0, selectionEnd.x));
-                        m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y) * m_lineHeight,
-                                                    textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, m_lineHeight});
+                        m_selectionRects.emplace_back(m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y) * m_lineHeight,
+                                                      textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerningSelectionEnd, m_lineHeight);
                     }
                     else
-                        m_selectionRects.push_back({0, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight});
+                        m_selectionRects.emplace_back(0, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight);
                 }
             }
         }

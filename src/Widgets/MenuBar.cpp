@@ -77,18 +77,18 @@ namespace tgui
 
         bool removeSubMenusImpl(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<MenuBar::Menu>& menus)
         {
-            for (auto it = menus.begin(); it != menus.end(); ++it)
+            for (auto& menu : menus)
             {
-                if (it->text.getString() != hierarchy[parentIndex])
+                if (menu.text.getString() != hierarchy[parentIndex])
                     continue;
 
                 if (parentIndex + 1 == hierarchy.size())
                 {
-                    it->menuItems.clear();
+                    menu.menuItems.clear();
                     return true;
                 }
                 else
-                    return removeSubMenusImpl(hierarchy, parentIndex + 1, it->menuItems);
+                    return removeSubMenusImpl(hierarchy, parentIndex + 1, menu.menuItems);
             }
 
             // The hierarchy doesn't exist
@@ -165,10 +165,9 @@ namespace tgui
 
     MenuBar::MenuBar(const char* typeName, bool initRenderer) :
         Widget{typeName, false},
-        m_menuWidgetPlaceholder(std::make_shared<MenuBarMenuPlaceholder>(this))
+        m_menuWidgetPlaceholder(std::make_shared<MenuBarMenuPlaceholder>(this)),
+        m_distanceToSideCached(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f)
     {
-        m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<MenuBarRenderer>();
@@ -255,7 +254,6 @@ namespace tgui
     {
         if (this != &other)
         {
-            Widget::operator=(std::move(other));
             m_menus = std::move(other.m_menus);
             m_menuWidgetPlaceholder = std::move(other.m_menuWidgetPlaceholder);
             m_visibleMenu = std::move(other.m_visibleMenu);
@@ -270,6 +268,7 @@ namespace tgui
             m_selectedTextColorCached = std::move(other.m_selectedTextColorCached);
             m_textColorDisabledCached = std::move(other.m_textColorDisabledCached);
             m_distanceToSideCached = std::move(other.m_distanceToSideCached);
+            Widget::operator=(std::move(other));
         }
 
         return *this;
@@ -284,7 +283,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MenuBar::Ptr MenuBar::copy(MenuBar::ConstPtr menuBar)
+    MenuBar::Ptr MenuBar::copy(const MenuBar::ConstPtr& menuBar)
     {
         if (menuBar)
             return std::static_pointer_cast<MenuBar>(menuBar->clone());
@@ -661,16 +660,16 @@ namespace tgui
 
         // Loop through the menus to check if the mouse is on top of them
         float menuWidth = 0;
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        for (const auto& menu : m_menus)
         {
-            menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+            menuWidth += menu.text.getSize().x + (2 * m_distanceToSideCached);
             if (pos.x >= menuWidth)
                 continue;
 
             // If a menu is clicked that has no menu items then also emit a signal
-            if (m_menus[i].menuItems.empty())
+            if (menu.menuItems.empty())
             {
-                onMenuItemClick.emit(this, m_menus[i].text.getString(), std::vector<String>(1, m_menus[i].text.getString()));
+                onMenuItemClick.emit(this, menu.text.getString(), std::vector<String>(1, menu.text.getString()));
                 closeMenu();
             }
 
@@ -1424,11 +1423,11 @@ namespace tgui
         // Draw the texts
         const float textHeight = m_menus[0].text.getSize().y;
         states.transform.translate({m_distanceToSideCached, (getSize().y - textHeight) / 2.f});
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        for (const auto& menu : m_menus)
         {
-            target.drawText(states, m_menus[i].text);
+            target.drawText(states, menu.text);
 
-            const float width = m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+            const float width = menu.text.getSize().x + (2 * m_distanceToSideCached);
             states.transform.translate({width, 0});
         }
     }
@@ -1529,12 +1528,12 @@ namespace tgui
         {
             states.transform = oldTransform;
             states.transform.translate({m_separatorSidePaddingCached, m_separatorVerticalPaddingCached});
-            for (std::size_t j = 0; j < menu.menuItems.size(); ++j)
+            for (const auto& menuItem : menu.menuItems)
             {
-                if (isSeparator(menu.menuItems[j]))
+                if (isSeparator(menuItem))
                     target.drawFilledRect(states, {menuWidth - 2*m_separatorSidePaddingCached, m_separatorThicknessCached}, m_separatorColorCached);
 
-                states.transform.translate({0, getMenuItemHeight(menu.menuItems[j])});
+                states.transform.translate({0, getMenuItemHeight(menuItem)});
             }
         }
 

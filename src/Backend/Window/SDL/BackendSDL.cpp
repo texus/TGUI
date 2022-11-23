@@ -80,6 +80,7 @@ namespace tgui
 
     void BackendSDL::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
             32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
         if (!surface)
@@ -303,7 +304,7 @@ namespace tgui
                 cursorInUse = true;
         }
         if (cursorInUse)
-            SetCursor(static_cast<HCURSOR>(LoadImage(NULL, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
+            SetCursor(static_cast<HCURSOR>(LoadImage(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
 #endif
 
         if (m_mouseCursors[type])

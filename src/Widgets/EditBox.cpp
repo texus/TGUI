@@ -73,7 +73,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::Ptr EditBox::copy(EditBox::ConstPtr editBox)
+    EditBox::Ptr EditBox::copy(const EditBox::ConstPtr& editBox)
     {
         if (editBox)
             return std::static_pointer_cast<EditBox>(editBox->clone());
@@ -106,7 +106,7 @@ namespace tgui
 
     void EditBox::setSize(const Layout2d& size)
     {
-        Widget::setSize(size);
+        ClickableWidget::setSize(size);
 
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
@@ -131,7 +131,7 @@ namespace tgui
 
     void EditBox::setEnabled(bool enabled)
     {
-        Widget::setEnabled(enabled);
+        ClickableWidget::setEnabled(enabled);
         updateTextColor();
     }
 
@@ -405,7 +405,7 @@ namespace tgui
             keyboard::closeVirtualKeyboard();
 #endif
 
-        Widget::setFocused(focused);
+        ClickableWidget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ namespace tgui
 
     void EditBox::leftMousePressed(Vector2f pos)
     {
-        Widget::leftMousePressed(pos);
+        ClickableWidget::leftMousePressed(pos);
 
         pos -= getPosition();
 
@@ -465,8 +465,6 @@ namespace tgui
             // If the next click comes soon enough then it will be a double click
             m_possibleDoubleClick = true;
         }
-
-        onMousePress.emit(this, pos);
 
         // The caret should be visible
         m_caretVisible = true;
@@ -799,7 +797,7 @@ namespace tgui
         }
         else if ((property == "Opacity") || (property == "OpacityDisabled"))
         {
-            Widget::rendererChanged(property);
+            ClickableWidget::rendererChanged(property);
 
             m_textBeforeSelection.setOpacity(m_opacityCached);
             m_textAfterSelection.setOpacity(m_opacityCached);
@@ -814,7 +812,7 @@ namespace tgui
         }
         else if (property == "Font")
         {
-            Widget::rendererChanged(property);
+            ClickableWidget::rendererChanged(property);
 
             m_textBeforeSelection.setFont(m_fontCached);
             m_textSelection.setFont(m_fontCached);
@@ -825,14 +823,14 @@ namespace tgui
             updateTextSize();
         }
         else
-            Widget::rendererChanged(property);
+            ClickableWidget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::unique_ptr<DataIO::Node> EditBox::save(SavingRenderersMap& renderers) const
     {
-        auto node = Widget::save(renderers);
+        auto node = ClickableWidget::save(renderers);
 
         if (getAlignment() != EditBox::Alignment::Left)
         {
@@ -876,7 +874,7 @@ namespace tgui
 
     void EditBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
-        Widget::load(node, renderers);
+        ClickableWidget::load(node, renderers);
 
         if (node->propertyValuePairs["Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
@@ -1264,7 +1262,7 @@ namespace tgui
 
     bool EditBox::updateTime(Duration elapsedTime)
     {
-        bool screenRefreshRequired = Widget::updateTime(elapsedTime);
+        bool screenRefreshRequired = ClickableWidget::updateTime(elapsedTime);
 
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= getEditCursorBlinkRate())

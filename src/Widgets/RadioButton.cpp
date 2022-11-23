@@ -55,7 +55,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton::Ptr RadioButton::copy(RadioButton::ConstPtr radioButton)
+    RadioButton::Ptr RadioButton::copy(const RadioButton::ConstPtr& radioButton)
     {
         if (radioButton)
             return std::static_pointer_cast<RadioButton>(radioButton->clone());

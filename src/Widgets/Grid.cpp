@@ -63,7 +63,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid::Grid(Grid&& gridToMove) :
+    Grid::Grid(Grid&& gridToMove) noexcept :
         Container     {std::move(gridToMove)},
         m_autoSize    {std::move(gridToMove.m_autoSize)},
         m_gridWidgets {std::move(gridToMove.m_gridWidgets)},
@@ -72,13 +72,14 @@ namespace tgui
         m_rowHeight   {std::move(gridToMove.m_rowHeight)},
         m_columnWidth {std::move(gridToMove.m_columnWidth)},
         m_widgetCells {std::move(gridToMove.m_widgetCells)},
-        m_connectedSizeCallbacks{}
+        m_connectedSizeCallbacks{std::move(gridToMove.m_connectedSizeCallbacks)}
     {
         for (auto& widget : m_widgets)
-        {
-            widget->onSizeChange.disconnect(gridToMove.m_connectedSizeCallbacks[widget]);
+            widget->onSizeChange.disconnect(m_connectedSizeCallbacks[widget]);
+
+        m_connectedSizeCallbacks.clear();
+        for (auto& widget : m_widgets)
             m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,11 +116,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid& Grid::operator= (Grid&& other)
+    Grid& Grid::operator= (Grid&& other) noexcept
     {
         if (this != &other)
         {
-            Container::operator=(std::move(other));
+            for (auto& widget : other.m_widgets)
+                widget->onSizeChange.disconnect(other.m_connectedSizeCallbacks[widget]);
+
             m_autoSize               = std::move(other.m_autoSize);
             m_gridWidgets            = std::move(other.m_gridWidgets);
             m_objPadding             = std::move(other.m_objPadding);
@@ -127,13 +130,11 @@ namespace tgui
             m_rowHeight              = std::move(other.m_rowHeight);
             m_columnWidth            = std::move(other.m_columnWidth);
             m_widgetCells            = std::move(other.m_widgetCells);
-            m_connectedSizeCallbacks = std::move(other.m_connectedSizeCallbacks);
+            Container::operator=(std::move(other));
 
+            m_connectedSizeCallbacks.clear();
             for (auto& widget : m_widgets)
-            {
-                widget->onSizeChange.disconnect(other.m_connectedSizeCallbacks[widget]);
                 m_connectedSizeCallbacks[widget] = widget->onSizeChange([this](){ updateWidgets(); });
-            }
         }
 
         return *this;
@@ -148,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid::Ptr Grid::copy(Grid::ConstPtr grid)
+    Grid::Ptr Grid::copy(const Grid::ConstPtr& grid)
     {
         if (grid)
             return std::static_pointer_cast<Grid>(grid->clone());
@@ -214,9 +215,9 @@ namespace tgui
             {
                 // Check if there is another row with this many columns
                 bool rowFound = false;
-                for (std::size_t i = 0; i < m_gridWidgets.size(); ++i)
+                for (const auto& gridWidgetsRow : m_gridWidgets)
                 {
-                    if (m_gridWidgets[i].size() >= m_columnWidth.size())
+                    if (gridWidgetsRow.size() >= m_columnWidth.size())
                     {
                         rowFound = true;
                         break;

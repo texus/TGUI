@@ -37,13 +37,13 @@ TEST_CASE("[EditBox]")
     SECTION("Signals")
     {
         editBox->onTextChange([](){});
-        editBox->onTextChange([](tgui::String){});
+        editBox->onTextChange([](const tgui::String&){});
 
         editBox->onReturnKeyPress([](){});
-        editBox->onReturnKeyPress([](tgui::String){});
+        editBox->onReturnKeyPress([](const tgui::String&){});
 
         editBox->onReturnOrUnfocus([](){});
-        editBox->onReturnOrUnfocus([](tgui::String){});
+        editBox->onReturnOrUnfocus([](const tgui::String&){});
     }
 
     SECTION("WidgetType")
@@ -420,7 +420,7 @@ TEST_CASE("[EditBox]")
         {
             unsigned int count = 0;
             tgui::String expectedText = "";
-            editBox->onReturnKeyPress([&](tgui::String text){ REQUIRE(text == expectedText); count++; });
+            editBox->onReturnKeyPress([&](const tgui::String& text){ REQUIRE(text == expectedText); count++; });
 
             keyEvent.code = tgui::Event::KeyboardKey::Enter;
             editBox->keyPressed(keyEvent);

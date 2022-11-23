@@ -43,8 +43,8 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<ListBox> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const ListBox> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<ListBox>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const ListBox>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ namespace tgui
         /// @return The new list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListBox::Ptr copy(ListBox::ConstPtr listBox);
+        static ListBox::Ptr copy(const ListBox::ConstPtr& listBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

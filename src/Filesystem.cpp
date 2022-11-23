@@ -34,7 +34,7 @@
 #endif
 
 #if !defined(TGUI_USE_STD_FILESYSTEM) && !defined(TGUI_SYSTEM_WINDOWS)
-    #include <errno.h> // errno
+    #include <cerrno> // errno
     #include <unistd.h> // getcwd
 #endif
 
@@ -131,7 +131,7 @@ namespace tgui
         {
             // If the last character was a slash then add an empty filename
             if (!path.empty())
-                m_parts.push_back("");
+                m_parts.emplace_back("");
         }
 #endif
     }
@@ -368,7 +368,7 @@ namespace tgui
         const bool created = std::filesystem::create_directory(path, errorCode);
         return created || !errorCode; // "created" will be false for existing directory, but we still return true for that case
 #elif defined(TGUI_SYSTEM_WINDOWS)
-        const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), NULL);
+        const DWORD status = CreateDirectoryW(path.asNativeString().c_str(), nullptr);
         return (status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS);
 #else
         const int status = mkdir(path.asNativeString().c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
@@ -407,7 +407,7 @@ namespace tgui
             return Path(homeDir);
 #endif
 
-        return Path();
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,12 +426,12 @@ namespace tgui
         else
             return Path();
 #else
-        const unsigned BUFFER_SIZE = 4096; // More than enough for any reasonable use and doesn't rely on PATH_MAX
+        const unsigned int BUFFER_SIZE = 4096; // More than enough for any reasonable use and doesn't rely on PATH_MAX
         char buffer[BUFFER_SIZE];
-        if (getcwd(buffer, BUFFER_SIZE))
-            return Path(buffer);
+        if (getcwd(static_cast<char*>(buffer), BUFFER_SIZE))
+            return Path(static_cast<const char*>(buffer));
         else
-            return Path();
+            return {};
 #endif
     }
 
@@ -495,7 +495,7 @@ namespace tgui
 
         do
         {
-            String filename = entry.cFileName;
+            String filename = static_cast<const wchar_t*>(entry.cFileName);
             if ((filename == U".") || (filename == U".."))
                 continue;
 
@@ -517,9 +517,9 @@ namespace tgui
             return fileList;
 
         struct dirent* entry = nullptr;
-        while ((entry = readdir(dir)) != NULL)
+        while ((entry = readdir(dir)) != nullptr)
         {
-            const String filename(entry->d_name);
+            const String filename(static_cast<const char*>(entry->d_name));
             if ((filename == ".") || (filename == ".."))
                 continue;
 

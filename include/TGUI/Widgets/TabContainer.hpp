@@ -45,8 +45,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<TabContainer> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const TabContainer> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<TabContainer>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const TabContainer>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace tgui
         ///
         /// @return The new tab container
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TabContainer::Ptr copy(TabContainer::ConstPtr tabContainer);
+        static TabContainer::Ptr copy(const TabContainer::ConstPtr& tabContainer);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ namespace tgui
         /// @param ptr Panel to find
         /// @return Index of the specified panel or -1 if not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getIndex(Panel::Ptr ptr);
+        int getIndex(const Panel::Ptr& ptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +312,7 @@ namespace tgui
 
         void layoutTabs(); // Helper function that sets position and size of the tabs according to the tab alignment
 
-        void layoutPanel(Panel::Ptr panel); // Helper function that sets position of a panel according to the tab alignment
+        void layoutPanel(const Panel::Ptr& panel); // Helper function that sets position of a panel according to the tab alignment
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

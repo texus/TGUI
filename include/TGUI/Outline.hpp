@@ -45,7 +45,7 @@ namespace tgui
         /// @param size  Width and height of the outline in all directions
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue size = 0) :
+        constexpr Outline(AbsoluteOrRelativeValue size = 0) :
             m_left  {size},
             m_top   {size},
             m_right {size},
@@ -61,7 +61,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-        TGUI_CONSTEXPR Outline(T size) :
+        constexpr Outline(T size) :
             m_left  {size},
             m_top   {size},
             m_right {size},
@@ -77,7 +77,7 @@ namespace tgui
         /// @param height  Height of the top and bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
+        constexpr Outline(AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
             m_left  {width},
             m_top   {height},
             m_right {width},
@@ -95,7 +95,7 @@ namespace tgui
         /// @param bottomBorderHeight Height of the bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue leftBorderWidth, AbsoluteOrRelativeValue topBorderHeight, AbsoluteOrRelativeValue rightBorderWidth, AbsoluteOrRelativeValue bottomBorderHeight) :
+        constexpr Outline(AbsoluteOrRelativeValue leftBorderWidth, AbsoluteOrRelativeValue topBorderHeight, AbsoluteOrRelativeValue rightBorderWidth, AbsoluteOrRelativeValue bottomBorderHeight) :
             m_left  {leftBorderWidth},
             m_top   {topBorderHeight},
             m_right {rightBorderWidth},
@@ -110,7 +110,7 @@ namespace tgui
         /// @return Left border width
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getLeft() const
+        constexpr float getLeft() const
         {
             return m_left.getValue();
         }
@@ -122,7 +122,7 @@ namespace tgui
         /// @return Top border height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getTop() const
+        constexpr float getTop() const
         {
             return m_top.getValue();
         }
@@ -134,7 +134,7 @@ namespace tgui
         /// @return Right border width
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getRight() const
+        constexpr float getRight() const
         {
             return m_right.getValue();
         }
@@ -146,7 +146,7 @@ namespace tgui
         /// @return Bottom border height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getBottom() const
+        constexpr float getBottom() const
         {
             return m_bottom.getValue();
         }
@@ -156,9 +156,9 @@ namespace tgui
         /// @brief Returnes the width of the left and top borders
         /// @return Left and top borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Vector2f getOffset() const
+        constexpr Vector2f getOffset() const
         {
-            return Vector2f(getLeft(), getTop());
+            return {getLeft(), getTop()};
         }
 
 
@@ -170,7 +170,7 @@ namespace tgui
         /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool operator==(const Outline& outline) const
+        constexpr bool operator==(const Outline& outline) const
         {
             return (getLeft() == outline.getLeft()) && (getTop() == outline.getTop()) && (getRight() == outline.getRight()) && (getBottom() == outline.getBottom());
         }
@@ -184,7 +184,7 @@ namespace tgui
         /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool operator!=(const Outline& outline) const
+        constexpr bool operator!=(const Outline& outline) const
         {
             return !(*this == outline);
         }
@@ -195,7 +195,7 @@ namespace tgui
         ///
         /// @param other  The outline to add together with this instance
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline operator+(const Outline& other) const
+        constexpr Outline operator+(const Outline& other) const
         {
             return {getLeft() + other.getLeft(),
                     getTop() + other.getTop(),
@@ -208,7 +208,7 @@ namespace tgui
         ///
         /// @param other  The outline to subtract from this instance
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline operator-(const Outline& other) const
+        constexpr Outline operator-(const Outline& other) const
         {
             return {getLeft() - other.getLeft(),
                     getTop() - other.getTop(),
@@ -221,7 +221,7 @@ namespace tgui
         ///
         /// @param other  The outline to add to this instance
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline& operator+=(const Outline& other)
+        constexpr Outline& operator+=(const Outline& other)
         {
             m_left = getLeft() + other.getLeft();
             m_top = getTop() + other.getTop();
@@ -235,7 +235,7 @@ namespace tgui
         ///
         /// @param other  The outline to subtract from this instance
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline& operator-=(const Outline& other)
+        constexpr Outline& operator-=(const Outline& other)
         {
             m_left = getLeft() - other.getLeft();
             m_top = getTop() - other.getTop();
@@ -252,7 +252,7 @@ namespace tgui
         /// @param newParentSize  New size from which to take the relative value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR void updateParentSize(Vector2f newParentSize)
+        constexpr void updateParentSize(Vector2f newParentSize)
         {
             m_left.updateParentSize(newParentSize.x);
             m_top.updateParentSize(newParentSize.y);

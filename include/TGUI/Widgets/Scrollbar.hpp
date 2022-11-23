@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Scrollbar> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const Scrollbar> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<Scrollbar>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const Scrollbar>; //!< Shared constant widget pointer
 
 
         /// @brief Defines when the scrollbar shows up
@@ -81,7 +81,7 @@ namespace tgui
         /// @return The new scrollbar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Scrollbar::Ptr copy(Scrollbar::ConstPtr scrollbar);
+        static Scrollbar::Ptr copy(const Scrollbar::ConstPtr& scrollbar);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

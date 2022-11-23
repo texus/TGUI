@@ -38,7 +38,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::Ptr ClickableWidget::create(Layout2d size)
+    ClickableWidget::Ptr ClickableWidget::create(const Layout2d& size)
     {
         auto widget = std::make_shared<ClickableWidget>();
         widget->setSize(size);
@@ -47,7 +47,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::Ptr ClickableWidget::copy(ClickableWidget::ConstPtr widget)
+    ClickableWidget::Ptr ClickableWidget::copy(const ClickableWidget::ConstPtr& widget)
     {
         if (widget)
             return std::static_pointer_cast<ClickableWidget>(widget->clone());

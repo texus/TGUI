@@ -46,7 +46,7 @@
     #define	MAGIC_MIME_TYPE 0x000010
     extern "C"
     {
-        typedef struct magic_set *magic_t;
+        using magic_t = struct magic_set*;
         magic_t magic_open(int);
         void magic_close(magic_t);
         int magic_load(magic_t, const char *);
@@ -62,7 +62,7 @@ namespace tgui
     {
     public:
         FileDialogIconLoaderLinux();
-        ~FileDialogIconLoaderLinux();
+        ~FileDialogIconLoaderLinux() override;
 
         bool update() override;
         bool supportsSystemIcons() const override;
@@ -124,9 +124,9 @@ namespace tgui
     {
         const char* dataHomeDir = std::getenv("XDG_DATA_HOME");
         if (dataHomeDir && dataHomeDir[0])
-            m_dataDirs.push_back(dataHomeDir);
+            m_dataDirs.emplace_back(dataHomeDir);
         else
-            m_dataDirs.push_back((Filesystem::getHomeDirectory() / ".local" / "share").asString());
+            m_dataDirs.emplace_back((Filesystem::getHomeDirectory() / ".local" / "share").asString());
 
         const char* dataDirs = std::getenv("XDG_DATA_DIRS");
         if (dataDirs && dataDirs[0])
@@ -134,14 +134,14 @@ namespace tgui
             for (const String& dir : String(dataDirs).split(':'))
             {
                 if (!dir.empty())
-                    m_dataDirs.push_back(dir);
+                    m_dataDirs.emplace_back(dir);
             }
         }
 
         if (m_dataDirs.empty())
         {
-            m_dataDirs.push_back("/usr/local/share/");
-            m_dataDirs.push_back("/usr/share/");
+            m_dataDirs.emplace_back("/usr/local/share/");
+            m_dataDirs.emplace_back("/usr/share/");
         }
 
         initMagic();
@@ -667,12 +667,9 @@ namespace tgui
                 {
                     // Executables are sometimes identified as "application/x-sharedlib". If there is no icon for such type then just use an
                     // icon for executables for files with such type.
-                    if (firstMimeMatch == "application/x-sharedlib")
-                        pathIt = m_iconNameToIconPathMap.find(U"application-x-executable");
-
                     // Executables were detected by libmagic as application/x-pie-executable, but this didn't exist in my /usr/share/mime.
                     // So if we couldn't find anything then at least don't show a text icon if "executable" is literally in the MIME type name.
-                    else if (firstMimeMatch.find(U"exec") != String::npos)
+                    if ((firstMimeMatch == "application/x-sharedlib") || (firstMimeMatch.find(U"exec") != String::npos))
                         pathIt = m_iconNameToIconPathMap.find(U"application-x-executable");
                 }
             }

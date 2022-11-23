@@ -59,7 +59,7 @@ namespace tgui
     ///
     /// SDL_SetRenderTarget(renderer, canvas->getTextureTarget());  // Let drawing happen on the canvas instead of the window
     /// SDL_RenderClear(renderer);                                  // Clear the contents of the canvas
-    /// SDL_RenderCopy(renderer, imgTexture, NULL, NULL);           // Draw an image to the canvas
+    /// SDL_RenderCopy(renderer, imgTexture, nullptr, nullptr);     // Draw an image to the canvas
     /// SDL_SetRenderTarget(renderer, nullptr);                     // Let further drawing happen on the window again
     /// @endcode
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,8 +67,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<CanvasSDL> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const CanvasSDL> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<CanvasSDL>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const CanvasSDL>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ namespace tgui
         /// @return The new canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static CanvasSDL::Ptr create(Layout2d size = {"100%", "100%"});
+        static CanvasSDL::Ptr create(const Layout2d& size = {"100%", "100%"});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ namespace tgui
         /// @return The new canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static CanvasSDL::Ptr copy(CanvasSDL::ConstPtr canvas);
+        static CanvasSDL::Ptr copy(const CanvasSDL::ConstPtr& canvas);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

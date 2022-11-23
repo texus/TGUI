@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Picture> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const Picture> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<Picture>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const Picture>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ namespace tgui
         /// @return The new picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr copy(Picture::ConstPtr picture);
+        static Picture::Ptr copy(const Picture::ConstPtr& picture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

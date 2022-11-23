@@ -510,7 +510,7 @@ namespace tgui
             }
 
             // We can now create the new row
-            m_rows.push_back({m_nextRow, rowHeight});
+            m_rows.emplace_back(m_nextRow, rowHeight);
             m_nextRow += rowHeight;
             bestRow = &m_rows.back();
         }

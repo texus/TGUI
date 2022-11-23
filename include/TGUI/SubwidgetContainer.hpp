@@ -43,8 +43,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SubwidgetContainer> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const SubwidgetContainer> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<SubwidgetContainer>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const SubwidgetContainer>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

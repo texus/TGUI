@@ -57,7 +57,7 @@ namespace tgui
         m_backendTexture {std::move(other.m_backendTexture)}
     {
         // sf::RenderTexture does not support move yet
-        setSize(other.getSize());
+        setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +81,12 @@ namespace tgui
     {
         if (this != &right)
         {
-            ClickableWidget::operator=(std::move(right));
             m_usedTextureSize = std::move(right.m_usedTextureSize);
             m_backendTexture = std::move(right.m_backendTexture);
+            ClickableWidget::operator=(std::move(right));
 
             // sf::RenderTexture does not support move yet
-            setSize(right.getSize());
+            setSize(getSize());
         }
 
         return *this;
@@ -94,7 +94,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML::Ptr CanvasSFML::create(Layout2d size)
+    CanvasSFML::Ptr CanvasSFML::create(const Layout2d& size)
     {
         auto canvas = std::make_shared<CanvasSFML>();
         canvas->setSize(size);
@@ -103,7 +103,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML::Ptr CanvasSFML::copy(CanvasSFML::ConstPtr canvas)
+    CanvasSFML::Ptr CanvasSFML::copy(const CanvasSFML::ConstPtr& canvas)
     {
         if (canvas)
             return std::static_pointer_cast<CanvasSFML>(canvas->clone());
@@ -159,7 +159,7 @@ namespace tgui
     IntRect CanvasSFML::getViewport() const
     {
         const sf::IntRect rect = m_renderTexture.getViewport(m_renderTexture.getView());
-        return IntRect(rect.left, rect.top, rect.width, rect.height);
+        return {rect.left, rect.top, rect.width, rect.height};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ namespace tgui
             triangleVertices[i] = vertices[indices[i]];
 
         sf::RenderStates statesSFML;
-        const float *transformMatrix = states.transform.getMatrix();
+        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
         statesSFML.transform = sf::Transform(
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],

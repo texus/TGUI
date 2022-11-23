@@ -68,7 +68,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListView::Ptr ListView::copy(ListView::ConstPtr listView)
+    ListView::Ptr ListView::copy(const ListView::ConstPtr& listView)
     {
         if (listView)
             return std::static_pointer_cast<ListView>(listView->clone());
@@ -334,11 +334,11 @@ namespace tgui
     {
         bool updatedLastColumnMaxItemWidth = false;
 
-        for (unsigned int i = 0; i < items.size(); ++i)
+        for (const auto& itemToInsert : items)
         {
             TGUI_EMPLACE_BACK(item, m_items)
-            item.texts.reserve(items[i].size());
-            for (const auto& text : items[i])
+            item.texts.reserve(itemToInsert.size());
+            for (const auto& text : itemToInsert)
                 item.texts.push_back(createText(text));
 
             item.icon.setOpacity(m_opacityCached);
@@ -1601,7 +1601,7 @@ namespace tgui
         }
         else if (event.code == Event::KeyboardKey::Down && (m_focusedItemIndex + 1 < static_cast<int>(m_items.size())))
         {
-            const auto indexBelow = static_cast<std::size_t>(m_focusedItemIndex + 1);
+            const std::size_t indexBelow = (m_focusedItemIndex >= 0) ? static_cast<std::size_t>(m_focusedItemIndex) + 1 : 0;
             if (m_multiSelect && keyboard::isShiftPressed())
             {
                 selectRangeFromEvent(indexBelow);

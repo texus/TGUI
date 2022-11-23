@@ -57,7 +57,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ProgressBar::Ptr ProgressBar::copy(ProgressBar::ConstPtr progressBar)
+    ProgressBar::Ptr ProgressBar::copy(const ProgressBar::ConstPtr& progressBar)
     {
         if (progressBar)
             return std::static_pointer_cast<ProgressBar>(progressBar->clone());

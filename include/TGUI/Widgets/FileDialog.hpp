@@ -62,8 +62,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<FileDialog> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const FileDialog> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<FileDialog>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const FileDialog>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace tgui
         ///
         /// @return The new file dialog
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static FileDialog::Ptr create(String title = "Open file", String confirmButtonText = "Open");
+        static FileDialog::Ptr create(const String& title = "Open file", const String& confirmButtonText = "Open");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ namespace tgui
         ///
         /// @return The new file dialog
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static FileDialog::Ptr copy(FileDialog::ConstPtr dialog);
+        static FileDialog::Ptr copy(const FileDialog::ConstPtr& dialog);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

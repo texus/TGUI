@@ -113,6 +113,9 @@ namespace tgui
 
         Optional& operator=(const Optional& other) noexcept
         {
+            if (this == &other)
+                return *this;
+
             m_ptr = other.m_ptr ? std::make_unique<T>(*other.m_ptr) : nullptr;
             return *this;
         }

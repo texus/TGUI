@@ -37,29 +37,6 @@ TEST_CASE("[RadioButtonGroup]")
     }
 
     testWidgetRenderer(group->getRenderer());
-    SECTION("Renderer")
-    {
-        auto renderer = group->getRenderer();
-
-        SECTION("set serialized property")
-        {
-            REQUIRE_NOTHROW(renderer->setProperty("Padding", "(1, 2, 3, 4)"));
-        }
-
-        SECTION("set object property")
-        {
-            REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{1, 2, 3, 4}));
-        }
-
-        SECTION("functions")
-        {
-            renderer->setPadding({1, 2, 3, 4});
-        }
-
-        REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(1, 2, 3, 4));
-
-        REQUIRE(renderer->getPadding() == tgui::Padding(1, 2, 3, 4));
-    }
 
     SECTION("Saving and loading from file")
     {

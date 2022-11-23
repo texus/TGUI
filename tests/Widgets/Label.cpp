@@ -34,7 +34,7 @@ TEST_CASE("[Label]")
     SECTION("Signals")
     {
         label->onDoubleClick([](){});
-        label->onDoubleClick([](tgui::String){});
+        label->onDoubleClick([](const tgui::String&){});
     }
 
     SECTION("WidgetType")

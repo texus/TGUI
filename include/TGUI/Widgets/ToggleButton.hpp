@@ -40,8 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ToggleButton> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const ToggleButton> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<ToggleButton>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const ToggleButton>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace tgui
         ///
         /// @return The new toggle button
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ToggleButton::Ptr copy(ToggleButton::ConstPtr button);
+        static ToggleButton::Ptr copy(const ToggleButton::ConstPtr& button);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

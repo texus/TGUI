@@ -38,7 +38,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SFML_GRAPHICS::Gui>(window);
         }
 
-        ~TestsWindowSfmlGraphics()
+        ~TestsWindowSfmlGraphics() override
         {
             gui = nullptr; // Destroy the gui before the window
             window.close();
@@ -66,7 +66,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SFML_OPENGL3::Gui>(window);
         }
 
-        ~TestsWindowSfmlOpenGL3()
+        ~TestsWindowSfmlOpenGL3() override
         {
             gui = nullptr; // Destroy the gui before the window
             window.close();
@@ -107,7 +107,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SDL_RENDERER::Gui>(window, renderer);
         }
 
-        ~TestsWindowSdlRenderer()
+        ~TestsWindowSdlRenderer() override
         {
             gui = nullptr;
             SDL_DestroyRenderer(renderer);
@@ -146,7 +146,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SDL_TTF_OPENGL3::Gui>(window);
         }
 
-        ~TestsWindowSdlTtfOpenGL3()
+        ~TestsWindowSdlTtfOpenGL3() override
         {
             gui = nullptr;
             SDL_GL_DeleteContext(glContext);
@@ -185,7 +185,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SDL_TTF_GLES2::Gui>(window);
         }
 
-        ~TestsWindowSdlTtfGLES2()
+        ~TestsWindowSdlTtfGLES2() override
         {
             gui = nullptr;
             SDL_GL_DeleteContext(glContext);
@@ -223,7 +223,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SDL_OPENGL3::Gui>(window);
         }
 
-        ~TestsWindowSdlOpenGL3()
+        ~TestsWindowSdlOpenGL3() override
         {
             gui = nullptr;
             SDL_GL_DeleteContext(glContext);
@@ -260,7 +260,7 @@ struct TestsWindowDefault : public TestsWindowBase
             gui = std::make_unique<tgui::SDL_GLES2::Gui>(window);
         }
 
-        ~TestsWindowSdlGLES2()
+        ~TestsWindowSdlGLES2() override
         {
             gui = nullptr;
             SDL_GL_DeleteContext(glContext);
@@ -292,12 +292,12 @@ struct TestsWindowDefault : public TestsWindowBase
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
+            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
             glfwMakeContextCurrent(window);
             gui = std::make_unique<tgui::GLFW_OPENGL3::Gui>(window);
         }
 
-        ~TestsWindowGlfwOpenGL3()
+        ~TestsWindowGlfwOpenGL3() override
         {
             gui = nullptr;
             glfwDestroyWindow(window);
@@ -324,12 +324,12 @@ struct TestsWindowDefault : public TestsWindowBase
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
+            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
             glfwMakeContextCurrent(window);
             gui = std::make_unique<tgui::GLFW_GLES2::Gui>(window);
         }
 
-        ~TestsWindowGlfwGLES2()
+        ~TestsWindowGlfwGLES2() override
         {
             gui = nullptr;
             glfwDestroyWindow(window);

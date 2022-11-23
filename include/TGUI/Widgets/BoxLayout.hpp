@@ -41,8 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<BoxLayout> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const BoxLayout> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<BoxLayout>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const BoxLayout>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

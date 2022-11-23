@@ -103,7 +103,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayoutRatios::setRatio(Widget::Ptr widget, float ratio)
+    bool BoxLayoutRatios::setRatio(const Widget::Ptr& widget, float ratio)
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
@@ -128,7 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BoxLayoutRatios::getRatio(Widget::Ptr widget) const
+    float BoxLayoutRatios::getRatio(const Widget::Ptr& widget) const
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {

@@ -75,7 +75,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Timer::scheduleCallback(std::function<void()> callback, Duration interval)
+    void Timer::scheduleCallback(const std::function<void()>& callback, Duration interval)
     {
         auto timer = createTimer(callback, interval, true);
         timer->m_repeats = false;
@@ -182,7 +182,7 @@ namespace tgui
     {
         // If there are no active timers then return an empty object
         if (m_activeTimers.empty())
-            return Optional<Duration>();
+            return {};
 
         // Find the timer with the smallest remaining duration
         Duration minDuration = m_activeTimers[0]->m_remainingDuration;

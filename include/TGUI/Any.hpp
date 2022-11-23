@@ -50,7 +50,7 @@ namespace tgui
     struct Any
     {
         template<class T>
-        using StorageType = typename std::decay<T>::type;
+        using StorageType = std::decay_t<T>;
 
         bool is_null() const
         {
@@ -63,7 +63,7 @@ namespace tgui
         }
 
         template<typename U>
-        Any(U&& value)
+        Any(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
             : ptr{new Derived<StorageType<U>>(std::forward<U>(value))}
         {
         }
@@ -76,14 +76,14 @@ namespace tgui
         template<class U>
         bool is() const
         {
-            typedef StorageType<U> T;
+            using T = StorageType<U>;
             return (dynamic_cast<Derived<T>*>(ptr) != nullptr);
         }
 
         template<class U>
         StorageType<U>& as() const
         {
-            typedef StorageType<U> T;
+            using T = StorageType<U>;
             auto derived = dynamic_cast<Derived<T>*>(ptr);
             if (!derived)
                 throw std::bad_cast();
@@ -115,7 +115,7 @@ namespace tgui
 
         Any& operator=(const Any& a)
         {
-            if (ptr == a.ptr)
+            if ((this == &a) || (ptr == a.ptr))
                 return *this;
 
             auto old_ptr = ptr;
@@ -130,7 +130,7 @@ namespace tgui
 
         Any& operator=(Any&& a) noexcept
         {
-            if (ptr == a.ptr)
+            if ((this == &a) || (ptr == a.ptr))
                 return *this;
 
             std::swap(ptr, a.ptr);
@@ -146,7 +146,7 @@ namespace tgui
     private:
         struct Base
         {
-            virtual ~Base() {}
+            virtual ~Base() = default;
             virtual Base* clone() const = 0;
         };
 
@@ -154,7 +154,7 @@ namespace tgui
         struct Derived : Base
         {
             template<typename U>
-            Derived(U&& val) :
+            Derived(U&& val) : // NOLINT(bugprone-forwarding-reference-overload)
                 value(std::forward<U>(val))
             {
             }

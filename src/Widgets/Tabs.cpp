@@ -34,10 +34,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tabs::Tabs(const char* typeName, bool initRenderer) :
-        Widget{typeName, false}
+        Widget{typeName, false},
+        m_distanceToSideCached(std::round(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f))
     {
-        m_distanceToSideCached = std::round(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f);
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<TabsRenderer>();
@@ -57,7 +56,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Ptr Tabs::copy(Tabs::ConstPtr tabs)
+    Tabs::Ptr Tabs::copy(const Tabs::ConstPtr& tabs)
     {
         if (tabs)
             return std::static_pointer_cast<Tabs>(tabs->clone());
@@ -492,9 +491,9 @@ namespace tgui
     void Tabs::recalculateTabsWidth()
     {
         std::size_t visibleTabs = 0;
-        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+        for (const auto& tab : m_tabs)
         {
-            if (m_tabs[i].visible)
+            if (tab.visible)
                 visibleTabs++;
         }
 
@@ -506,16 +505,16 @@ namespace tgui
             {
                 // First calculate the width of the tabs as if there aren't any borders
                 float totalWidth = 0;
-                for (std::size_t i = 0; i < m_tabs.size(); ++i)
+                for (auto& tab : m_tabs)
                 {
-                    if (!m_tabs[i].visible)
+                    if (!tab.visible)
                         continue;
 
-                    m_tabs[i].width = m_tabs[i].text.getSize().x + std::max(m_minimumTabWidth, 2 * m_distanceToSideCached);
-                    if ((m_maximumTabWidth > 0) && (m_maximumTabWidth < m_tabs[i].width))
-                        m_tabs[i].width = m_maximumTabWidth;
+                    tab.width = tab.text.getSize().x + std::max(m_minimumTabWidth, 2 * m_distanceToSideCached);
+                    if ((m_maximumTabWidth > 0) && (m_maximumTabWidth < tab.width))
+                        tab.width = m_maximumTabWidth;
 
-                    totalWidth += m_tabs[i].width;
+                    totalWidth += tab.width;
                 }
 
                 // Now add the borders to the tabs
@@ -527,8 +526,8 @@ namespace tgui
         else // A size was provided
         {
             const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f))) / visibleTabs;
-            for (std::size_t i = 0; i < m_tabs.size(); ++i)
-                m_tabs[i].width = tabWidth;
+            for (auto& tab : m_tabs)
+                tab.width = tabWidth;
         }
 
         m_bordersCached.updateParentSize(getSize());

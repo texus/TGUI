@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToggleButton::Ptr ToggleButton::copy(ToggleButton::ConstPtr button)
+    ToggleButton::Ptr ToggleButton::copy(const ToggleButton::ConstPtr& button)
     {
         if (button)
             return std::static_pointer_cast<ToggleButton>(button->clone());

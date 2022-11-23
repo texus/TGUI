@@ -80,7 +80,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasOpenGL3::Ptr CanvasOpenGL3::create(Layout2d size)
+    CanvasOpenGL3::Ptr CanvasOpenGL3::create(const Layout2d& size)
     {
         auto canvas = std::make_shared<CanvasOpenGL3>();
         canvas->setSize(size);
@@ -89,7 +89,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasOpenGL3::Ptr CanvasOpenGL3::copy(CanvasOpenGL3::ConstPtr canvas)
+    CanvasOpenGL3::Ptr CanvasOpenGL3::copy(const CanvasOpenGL3::ConstPtr& canvas)
     {
         if (canvas)
             return std::static_pointer_cast<CanvasOpenGL3>(canvas->clone());

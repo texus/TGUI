@@ -301,7 +301,7 @@ namespace tgui
                     valueNode->listNode = true;
                     if (line.size() >= 3)
                     {
-                        valueNode->valueList.push_back("");
+                        valueNode->valueList.emplace_back("");
 
                         std::size_t i = 1;
                         while (i < line.size()-1)
@@ -310,7 +310,7 @@ namespace tgui
                             {
                                 i++;
                                 valueNode->valueList.back() = valueNode->valueList.back().trim();
-                                valueNode->valueList.push_back("");
+                                valueNode->valueList.emplace_back("");
                             }
                             else if (line[i] == '"')
                             {
@@ -472,19 +472,19 @@ namespace tgui
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() == '{')
                 {
-                    const String error = parseSection(stream, sectionNode, word);
+                    String error = parseSection(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
                 else if (stream.peek() == '=')
                 {
-                    const String error = parseKeyValue(stream, sectionNode, word);
+                    String error = parseKeyValue(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
                 else if (stream.peek() == ':')
                 {
-                    const String error = parseInheritance(stream, sectionNode, word);
+                    String error = parseInheritance(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }

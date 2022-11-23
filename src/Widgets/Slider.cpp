@@ -60,7 +60,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::Ptr Slider::copy(Slider::ConstPtr slider)
+    Slider::Ptr Slider::copy(const Slider::ConstPtr& slider)
     {
         if (slider)
             return std::static_pointer_cast<Slider>(slider->clone());
@@ -430,11 +430,9 @@ namespace tgui
                 m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
             }
 
-            float value;
-            if (m_thumbWithinTrackCached)
-                value = m_maximum - (((pos.y - m_mouseDownOnThumbPos.y) / (getSize().y - m_thumb.height)) * (m_maximum - m_minimum));
-            else
-                value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+            float value = m_thumbWithinTrackCached
+                ? m_maximum - (((pos.y - m_mouseDownOnThumbPos.y) / (getSize().y - m_thumb.height)) * (m_maximum - m_minimum))
+                : m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
 
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);
@@ -459,11 +457,9 @@ namespace tgui
                 m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
             }
 
-            float value;
-            if (m_thumbWithinTrackCached)
-                value = (((pos.x - m_mouseDownOnThumbPos.x) / (getSize().x - m_thumb.width)) * (m_maximum - m_minimum)) + m_minimum;
-            else
-                value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+            float value = m_thumbWithinTrackCached
+                ? (((pos.x - m_mouseDownOnThumbPos.x) / (getSize().x - m_thumb.width)) * (m_maximum - m_minimum)) + m_minimum
+                : (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
 
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);

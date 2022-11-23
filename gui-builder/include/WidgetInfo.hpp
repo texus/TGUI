@@ -31,7 +31,7 @@
 struct WidgetInfo
 {
     WidgetInfo() = default;
-    WidgetInfo(tgui::Widget::Ptr widget) : ptr{widget} {}
+    WidgetInfo(tgui::Widget::Ptr widget) : ptr{std::move(widget)} {}
 
     tgui::Widget::Ptr ptr = nullptr;
     tgui::String name = "";

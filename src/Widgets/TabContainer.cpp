@@ -48,7 +48,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabContainer::Ptr TabContainer::copy(TabContainer::ConstPtr tabContainer)
+    TabContainer::Ptr TabContainer::copy(const TabContainer::ConstPtr& tabContainer)
     {
         if (tabContainer)
             return std::static_pointer_cast<TabContainer>(tabContainer->clone());
@@ -223,7 +223,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int TabContainer::getIndex(Panel::Ptr ptr)
+    int TabContainer::getIndex(const Panel::Ptr& ptr)
     {
         for (std::size_t i = 0; i < m_panels.size(); ++i)
         {
@@ -289,7 +289,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabContainer::layoutPanel(Panel::Ptr panel)
+    void TabContainer::layoutPanel(const Panel::Ptr& panel)
     {
         if (m_tabAlign == TabContainer::TabAlign::Top)
             panel->setPosition(0.0f, bindBottom(m_tabs));
@@ -308,8 +308,8 @@ namespace tgui
 
         layoutTabs();
 
-        for (std::size_t i = 0; i < m_panels.size(); i++)
-            layoutPanel(m_panels[i]);
+        for (const auto& panel : m_panels)
+            layoutPanel(panel);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,9 +390,9 @@ namespace tgui
             throw Exception{"Failed to find Tabs child when loading TabContainer"};
 
         auto widgets = m_container->getWidgets();
-        for (std::size_t i = 0; i < widgets.size(); i++)
+        for (const auto& widget : widgets)
         {
-            auto panel = std::dynamic_pointer_cast<Panel>(widgets[i]);
+            auto panel = std::dynamic_pointer_cast<Panel>(widget);
             if (!panel)
                 continue;
 

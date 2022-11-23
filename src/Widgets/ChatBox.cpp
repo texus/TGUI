@@ -59,7 +59,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox::Ptr ChatBox::copy(ChatBox::ConstPtr chatBox)
+    ChatBox::Ptr ChatBox::copy(const ChatBox::ConstPtr& chatBox)
     {
         if (chatBox)
             return std::static_pointer_cast<ChatBox>(chatBox->clone());

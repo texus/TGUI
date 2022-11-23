@@ -36,8 +36,8 @@ TEST_CASE("[ComboBox]")
     {
         comboBox->onItemSelect([](){});
         comboBox->onItemSelect([](int){});
-        comboBox->onItemSelect([](tgui::String){});
-        comboBox->onItemSelect([](tgui::String, tgui::String){});
+        comboBox->onItemSelect([](const tgui::String&){});
+        comboBox->onItemSelect([](const tgui::String&, const tgui::String&){});
     }
 
     SECTION("WidgetType")

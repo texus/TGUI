@@ -89,7 +89,7 @@ namespace tgui
         if (vertexShader == 0)
             throw Exception{"Failed to create shaders in BackendRenderTargetOpenGL3. glCreateShader(GL_VERTEX_SHADER) returned 0."};
 
-        TGUI_GL_CHECK(glShaderSource(vertexShader, 1, &vertexShaderSource, NULL));
+        TGUI_GL_CHECK(glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr));
         TGUI_GL_CHECK(glCompileShader(vertexShader));
 
         GLint vertexShaderCompiled = GL_FALSE;
@@ -102,7 +102,7 @@ namespace tgui
         if (fragmentShader == 0)
             throw Exception{"Failed to create shaders in BackendRenderTargetOpenGL3. glCreateShader(GL_FRAGMENT_SHADER) returned 0."};
 
-        TGUI_GL_CHECK(glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL));
+        TGUI_GL_CHECK(glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr));
         TGUI_GL_CHECK(glCompileShader(fragmentShader));
 
         GLint fragmentShaderCompiled = GL_FALSE;
@@ -215,12 +215,12 @@ namespace tgui
         GLint oldClipRect[4];
         const GLboolean oldScissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
         if (oldScissorEnabled)
-            glGetIntegerv(GL_SCISSOR_BOX, oldClipRect);
+            glGetIntegerv(GL_SCISSOR_BOX, static_cast<GLint*>(oldClipRect));
         else
             glEnable(GL_SCISSOR_TEST);
 
         GLint oldViewport[4];
-        TGUI_GL_CHECK(glGetIntegerv(GL_VIEWPORT, oldViewport));
+        TGUI_GL_CHECK(glGetIntegerv(GL_VIEWPORT, static_cast<GLint*>(oldViewport)));
 
         m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
 
@@ -297,14 +297,14 @@ namespace tgui
         TGUI_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertexCount * sizeof(Vertex)), vertices, GL_DYNAMIC_DRAW));
 
         const Transform finalTransform = m_projectionTransform * states.transform;
-        glUniformMatrix4fv(m_projectionMatrixShaderUniformLocation, 1, GL_FALSE, finalTransform.getMatrix());
+        glUniformMatrix4fv(m_projectionMatrixShaderUniformLocation, 1, GL_FALSE, finalTransform.getMatrix().data());
 
         if (indices)
         {
             // Load the data into the index buffer
             TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
 
-            TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0));
+            TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr));
         }
         else // No indices were given, all vertices need to be drawn in the order they were provided
             TGUI_GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertexCount)));

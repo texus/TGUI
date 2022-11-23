@@ -398,7 +398,7 @@ namespace tgui
 
         // Rasterize the glyph to a bitmap
         // Warning: use bitmapGlyph->root instead of glyphDesc to access the glyph after this conversion
-        if (FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, 0, 1) != 0)
+        if (FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, nullptr, 1) != 0)
         {
             FT_Done_Glyph(glyphDesc);
             return glyph;
@@ -562,7 +562,7 @@ namespace tgui
             }
 
             // We can now create the new row
-            m_rows.push_back({m_nextRow, rowHeight});
+            m_rows.emplace_back(m_nextRow, rowHeight);
             m_nextRow += rowHeight;
             bestRow = &m_rows.back();
         }

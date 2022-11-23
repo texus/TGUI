@@ -40,8 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ClickableWidget> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const ClickableWidget> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<ClickableWidget>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const ClickableWidget>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ namespace tgui
         /// @return The new clickable widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ClickableWidget::Ptr create(Layout2d size = {"100%", "100%"});
+        static ClickableWidget::Ptr create(const Layout2d& size = {"100%", "100%"});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ namespace tgui
         /// @return The new clickable widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ClickableWidget::Ptr copy(ClickableWidget::ConstPtr widget);
+        static ClickableWidget::Ptr copy(const ClickableWidget::ConstPtr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

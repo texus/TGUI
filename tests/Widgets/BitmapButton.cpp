@@ -33,7 +33,7 @@ TEST_CASE("[BitmapButton]")
     SECTION("Signals")
     {
         button->onPress([](){});
-        button->onPress([](tgui::String){});
+        button->onPress([](const tgui::String&){});
     }
 
     SECTION("WidgetType")

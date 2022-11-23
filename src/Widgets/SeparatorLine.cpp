@@ -43,7 +43,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SeparatorLine::Ptr SeparatorLine::create(Layout2d size)
+    SeparatorLine::Ptr SeparatorLine::create(const Layout2d& size)
     {
         auto separator = std::make_shared<SeparatorLine>();
         separator->setSize(size);
@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SeparatorLine::Ptr SeparatorLine::copy(SeparatorLine::ConstPtr separator)
+    SeparatorLine::Ptr SeparatorLine::copy(const SeparatorLine::ConstPtr& separator)
     {
         if (separator)
             return std::static_pointer_cast<SeparatorLine>(separator->clone());

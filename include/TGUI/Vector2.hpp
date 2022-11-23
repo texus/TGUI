@@ -45,16 +45,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Vector2()
-        {
-            // Constructor isn't defined as "= default" because this leads to an IntelliSense error
-        }
+        constexpr Vector2() noexcept = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor to create from X and Y values
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Vector2(T xValue, T yValue) :
+        constexpr Vector2(T xValue, T yValue) noexcept :
             x{xValue},
             y{yValue}
         {
@@ -67,7 +64,7 @@ namespace tgui
         /// @param vec  Vector to copy
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename U>
-        explicit TGUI_CONSTEXPR Vector2(const Vector2<U>& vec) :
+        explicit constexpr Vector2(const Vector2<U>& vec) noexcept :
             x{static_cast<T>(vec.x)},
             y{static_cast<T>(vec.y)}
         {
@@ -77,7 +74,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor to create from an sf::Vector2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Vector2(const sf::Vector2<T>& vec) :
+        constexpr Vector2(const sf::Vector2<T>& vec) noexcept :
             x{vec.x},
             y{vec.y}
         {
@@ -149,7 +146,7 @@ namespace tgui
     /// @brief Overload of unary operator -
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator-(const Vector2<T>& right)
+    constexpr Vector2<T> operator-(const Vector2<T>& right)
     {
         return {-right.x, -right.y};
     }
@@ -158,7 +155,7 @@ namespace tgui
     /// @brief Overload of binary operator +=
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T>& operator+=(Vector2<T>& left, const Vector2<T>& right)
+    constexpr Vector2<T>& operator+=(Vector2<T>& left, const Vector2<T>& right)
     {
         left.x += right.x;
         left.y += right.y;
@@ -169,7 +166,7 @@ namespace tgui
     /// @brief Overload of binary operator -=
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T>& operator-=(Vector2<T>& left, const Vector2<T>& right)
+    constexpr Vector2<T>& operator-=(Vector2<T>& left, const Vector2<T>& right)
     {
         left.x -= right.x;
         left.y -= right.y;
@@ -180,7 +177,7 @@ namespace tgui
     /// @brief Overload of binary operator +
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator+(const Vector2<T>& left, const Vector2<T>& right)
+    constexpr Vector2<T> operator+(const Vector2<T>& left, const Vector2<T>& right)
     {
         return {left.x + right.x, left.y + right.y};
     }
@@ -189,7 +186,7 @@ namespace tgui
     /// @brief Overload of binary operator -
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator-(const Vector2<T>& left, const Vector2<T>& right)
+    constexpr Vector2<T> operator-(const Vector2<T>& left, const Vector2<T>& right)
     {
         return {left.x - right.x, left.y - right.y};
     }
@@ -198,7 +195,7 @@ namespace tgui
     /// @brief Overload of binary operator *
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator*(const Vector2<T>& left, float right)
+    constexpr Vector2<T> operator*(const Vector2<T>& left, float right)
     {
         return {left.x * right, left.y * right};
     }
@@ -207,7 +204,7 @@ namespace tgui
     /// @brief Overload of binary operator *
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator*(float left, const Vector2<T>& right)
+    constexpr Vector2<T> operator*(float left, const Vector2<T>& right)
     {
         return {left * right.x, left * right.y};
     }
@@ -216,7 +213,7 @@ namespace tgui
     /// @brief Overload of binary operator *=
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T>& operator*=(Vector2<T>& left, float right)
+    constexpr Vector2<T>& operator*=(Vector2<T>& left, float right)
     {
         left.x *= right;
         left.y *= right;
@@ -227,7 +224,7 @@ namespace tgui
     /// @brief Overload of binary operator /
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T> operator/(const Vector2<T>& left, float right)
+    constexpr Vector2<T> operator/(const Vector2<T>& left, float right)
     {
         return {left.x / right, left.y / right};
     }
@@ -236,7 +233,7 @@ namespace tgui
     /// @brief Overload of binary operator /=
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR Vector2<T>& operator/=(Vector2<T>& left, float right)
+    constexpr Vector2<T>& operator/=(Vector2<T>& left, float right)
     {
         left.x /= right;
         left.y /= right;
@@ -247,7 +244,7 @@ namespace tgui
     /// @brief Overload of binary operator ==
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR bool operator==(const Vector2<T>& left, const Vector2<T>& right)
+    constexpr bool operator==(const Vector2<T>& left, const Vector2<T>& right)
     {
         return (left.x == right.x) && (left.y == right.y);
     }
@@ -256,7 +253,7 @@ namespace tgui
     /// @brief Overload of binary operator !=
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    TGUI_CONSTEXPR bool operator!=(const Vector2<T>& left, const Vector2<T>& right)
+    constexpr bool operator!=(const Vector2<T>& left, const Vector2<T>& right)
     {
         return !(left == right);
     }

@@ -63,7 +63,7 @@ namespace tgui
         ///
         /// The isSet function will return false when the object was created using this constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TextStyles() :
+        constexpr TextStyles() :
             m_isSet{false},
             m_style{Regular}
         {
@@ -79,7 +79,7 @@ namespace tgui
         /// TextStyles style{tgui::TextStyle::Italic | tgui::TextStyle::Bold};
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR TextStyles(unsigned int style) :
+        constexpr TextStyles(unsigned int style) :
             m_isSet{true},
             m_style{style}
         {
@@ -111,7 +111,7 @@ namespace tgui
         ///
         /// @return True if a text style was passed to the constructor, false when the default constructor was used
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool isSet() const
+        constexpr bool isSet() const
         {
             return m_isSet;
         }
@@ -122,7 +122,7 @@ namespace tgui
         ///
         /// @return The text styles stored in this object, or tgui::TextStyle::Regular if no style was set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR operator unsigned int() const
+        constexpr operator unsigned int() const
         {
             return m_style;
         }

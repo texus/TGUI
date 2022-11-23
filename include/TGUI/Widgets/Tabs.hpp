@@ -45,8 +45,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Tabs> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const Tabs> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<Tabs>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const Tabs>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace tgui
         /// @return The new tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Tabs::Ptr copy(Tabs::ConstPtr tab);
+        static Tabs::Ptr copy(const Tabs::ConstPtr& tab);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

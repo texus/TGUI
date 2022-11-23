@@ -51,7 +51,7 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Timer> Ptr; // Only provided for potential consistence in user code
+        using Ptr = std::shared_ptr<Timer>; // Only provided for potential consistence in user code
 
         Timer(const Timer&) = delete;
         Timer& operator=(const Timer&) = delete;
@@ -90,7 +90,7 @@ namespace tgui
         /// There is no way to cancel a scheduled call. If you need this functionality then you should create a proper timer
         /// (with the create function) which you then stop when the callback happens.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void scheduleCallback(std::function<void()> callback, Duration interval = Duration());
+        static void scheduleCallback(const std::function<void()>& callback, Duration interval = Duration());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

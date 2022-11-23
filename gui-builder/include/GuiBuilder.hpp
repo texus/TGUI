@@ -41,7 +41,7 @@ public:
     void mainLoop();
 
     void reloadProperties();
-    void widgetSelected(tgui::Widget::Ptr widget);
+    void widgetSelected(const tgui::Widget::Ptr& widget);
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
 
@@ -64,7 +64,7 @@ private:
     void loadEditingScreen(const tgui::String& filename);
     void loadToolbox();
     void showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad);
-    void createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
+    void createNewWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
     bool updateWidgetProperty(const tgui::String& property, const tgui::String& value);
     void initProperties();
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
@@ -78,14 +78,14 @@ private:
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
 
-    void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo);
+    void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
-    void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
+    void copyWidgetToInternalClipboard(const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetFromInternalClipboard();
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
-    void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
+    void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, const std::shared_ptr<tgui::Widget>& parentWidget);
     bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
 
     tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);

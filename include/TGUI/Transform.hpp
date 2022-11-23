@@ -30,6 +30,7 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Rect.hpp>
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,24 +73,24 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs a transform from a 4x4 matrix
         ///
-        /// @param matrix  Pointer to a 4x4 matrix, similar to what getMatrix returns
+        /// @param matrix  4x4 transform matrix, similar to what getMatrix returns
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform(const float matrix[16]);
+        Transform(const std::array<float, 16>& matrix);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Return the transform as a 4x4 matrix
         ///
-        /// This function returns a pointer to an array of 16 floats containing the transform elements as a 4x4 matrix, which is
+        /// This function returns an array of 16 floats containing the transform elements as a 4x4 matrix, which is
         /// directly compatible with OpenGL functions.
         ///
         /// @code
-        /// glLoadMatrixf(transform.getMatrix());
+        /// glLoadMatrixf(transform.getMatrix().data());
         /// @endcode
         ///
-        /// @return Pointer to a 4x4 matrix
+        /// @return 4x4 transform matrix
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const float* getMatrix() const;
+        const std::array<float, 16>& getMatrix() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +200,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        float m_matrix[16]; //!< 4x4 matrix defining the transformation
+        std::array<float, 16> m_matrix; //!< 4x4 matrix defining the transformation
     };
 }
 

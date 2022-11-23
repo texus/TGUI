@@ -52,7 +52,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Ptr Group::copy(Group::ConstPtr group)
+    Group::Ptr Group::copy(const Group::ConstPtr& group)
     {
         if (group)
             return std::static_pointer_cast<Group>(group->clone());

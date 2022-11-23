@@ -63,21 +63,29 @@ namespace tgui
 
             // Get the number of bytes to write
             std::size_t bytestoWrite;
+            std::uint8_t firstByteMask;
             if (input <  0x800)
+            {
                 bytestoWrite = 2;
+                firstByteMask = 0xC0;
+            }
             else if (input <  0x10000)
+            {
                 bytestoWrite = 3;
+                firstByteMask = 0xE0;
+            }
             else
+            {
                 bytestoWrite = 4;
-
-            static const std::uint8_t firstByteMask[5] = { 0, 0, 0xC0, 0xE0, 0xF0 };
+                firstByteMask = 0xF0;
+            }
 
             // Extract the bytes to write
             std::array<CharT, 4> bytes;
             if (bytestoWrite == 4) { bytes[3] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6; }
             if (bytestoWrite >= 3) { bytes[2] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6; }
-            if (bytestoWrite >= 2) { bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6; }
-            if (bytestoWrite >= 1) { bytes[0] = static_cast<CharT>(input | firstByteMask[bytestoWrite]); }
+            bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6;
+            bytes[0] = static_cast<CharT>(input | firstByteMask);
 
             // Add them to the output
             outStrUtf8.append(bytes.begin(), bytes.begin() + bytestoWrite);

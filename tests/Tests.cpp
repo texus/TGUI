@@ -53,7 +53,7 @@ void genericCallback(unsigned int& count)
     count++;
 }
 
-void testWidgetSignals(tgui::Widget::Ptr widget)
+void testWidgetSignals(const tgui::Widget::Ptr& widget)
 {
     // TODO: Test other signals than MouseEntered and MouseLeft
 
@@ -189,12 +189,12 @@ void testClickableWidgetSignalsImpl(T widget)
     }
 }
 
-void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
+void testClickableWidgetSignals(const tgui::ClickableWidget::Ptr& widget)
 {
     testClickableWidgetSignalsImpl(widget);
 }
 
-void testClickableWidgetSignals(tgui::Panel::Ptr widget)
+void testClickableWidgetSignals(const tgui::Panel::Ptr& widget)
 {
     testClickableWidgetSignalsImpl(widget);
 }

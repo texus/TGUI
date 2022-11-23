@@ -631,8 +631,8 @@ TEST_CASE("[String]")
         char32_t chars[4];
         chars[3] = U'$';
         str = U"\u03b1\u03b2\u03b3\u03b4\u03b5";
-        REQUIRE(str.copy(chars, 3, 1) == 3);
-        REQUIRE(std::u32string(chars, 4) == U"\u03b2\u03b3\u03b4$");
+        REQUIRE(str.copy(static_cast<char32_t*>(chars), 3, 1) == 3);
+        REQUIRE(std::u32string(static_cast<const char32_t*>(chars), 4) == U"\u03b2\u03b3\u03b4$");
     }
 
     SECTION("resize")

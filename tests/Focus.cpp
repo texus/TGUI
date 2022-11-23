@@ -38,7 +38,7 @@
 
 static tgui::Container::Ptr rootContainer;
 
-static bool noWidgetsFocused(tgui::Container::Ptr root)
+static bool noWidgetsFocused(const tgui::Container::Ptr& root)
 {
     for (auto& widget : root->getWidgets())
     {
@@ -56,7 +56,7 @@ static bool noWidgetsFocused(tgui::Container::Ptr root)
     return true;
 }
 
-static bool widgetFocused(tgui::Widget::Ptr widget)
+static bool widgetFocused(const tgui::Widget::Ptr& widget)
 {
     if (!widget->isFocused())
         return false;

@@ -26,7 +26,7 @@
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 
-void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
+void login(const tgui::EditBox::Ptr& username, const tgui::EditBox::Ptr& password)
 {
     std::cout << "Username: " << username->getText() << std::endl;
     std::cout << "Password: " << password->getText() << std::endl;

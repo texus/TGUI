@@ -41,14 +41,14 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SignalManager> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const SignalManager> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<SignalManager>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const SignalManager>; //!< Shared constant widget pointer
 
         using Delegate = std::function<void()>;
         using DelegateEx = std::function<void(std::shared_ptr<Widget>, const String&)>;
 
-        typedef std::weak_ptr<Widget> Weak;
-        typedef unsigned int SignalID;
+        using Weak = std::weak_ptr<Widget>;
+        using SignalID = unsigned int;
 
         struct SignalTuple
         {
@@ -62,17 +62,24 @@ namespace tgui
             SignalID signalId;
             Weak widget;
             unsigned int signalWidgetID;
+
+            ConnectedSignalTuple(SignalID sigId, Weak widgetPtr, unsigned int widgetId) :
+                signalId(sigId),
+                widget(std::move(widgetPtr)),
+                signalWidgetID(widgetId)
+            {
+            }
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalManager();
+        SignalManager() = default;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~SignalManager();
+        virtual ~SignalManager() = default;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets Signal Manager that will be used to operate a signal

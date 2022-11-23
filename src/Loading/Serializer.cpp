@@ -139,7 +139,7 @@ namespace tgui
             for (const auto& pair : Color::colorNamesMap)
             {
                 if (color == pair.second)
-                    return String(pair.first);
+                    return String{pair.first};
             }
 
             // Return the color by its rgb value
@@ -234,7 +234,7 @@ namespace tgui
 
                 assert(dataLength >= 0); // Length is always positive, but returned as a signed int
                 result = "\"data:image/png;base64," + base64Encode(pngData, static_cast<std::size_t>(dataLength)) + "\"";
-                STBIW_FREE(pngData);
+                STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
             }
 
             if (texture.getData()->backendTexture)

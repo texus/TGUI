@@ -136,21 +136,18 @@ namespace dev
 
         StyleProperty() :
             m_defaultValue  {},
-            m_propertyData  {0},
             m_messageTopicId{MessageBroker::createTopic()}
         {
         }
 
-        explicit StyleProperty(const ValueType& defaultValue) :
-            m_defaultValue  {defaultValue},
-            m_propertyData  {0},
+        explicit StyleProperty(ValueType defaultValue) :
+            m_defaultValue  {std::move(defaultValue)},
             m_messageTopicId{MessageBroker::createTopic()}
         {
         }
 
         StyleProperty(const StyleProperty& other) :
             m_defaultValue  {other.m_defaultValue},
-            m_propertyData  {0},
             m_messageTopicId{MessageBroker::createTopic()},
             m_globalValues  {other.m_globalValues}
         {
@@ -184,7 +181,7 @@ namespace dev
             other.m_messageTopicId = 0;
         }
 
-        ~StyleProperty()
+        ~StyleProperty() override
         {
             if (m_messageTopicId) // Can be 0 on moved object
                 MessageBroker::destroyTopic(m_messageTopicId);
@@ -399,6 +396,9 @@ namespace dev
     {
     public:
 
+        Component() = default;
+        virtual ~Component() = default;
+
         Component(const Component&);
         Component& operator=(const Component&);
 
@@ -426,10 +426,6 @@ namespace dev
         virtual std::shared_ptr<Component> clone() const = 0;
 
     protected:
-
-        Component() = default;
-
-        virtual ~Component() = default;
 
         friend void swap(Component& first, Component& second);
 
@@ -485,7 +481,7 @@ namespace dev
 
         BackgroundComponent(StylePropertyBackground* backgroundStyle);
 
-        ~BackgroundComponent();
+        ~BackgroundComponent() override;
 
         BackgroundComponent(const BackgroundComponent& other, StylePropertyBackground* backgroundStyle = nullptr);
         BackgroundComponent& operator=(const BackgroundComponent& other);
@@ -547,7 +543,7 @@ namespace dev
 
         TextComponent(StylePropertyText* textStyle);
 
-        ~TextComponent();
+        ~TextComponent() override;
 
         TextComponent(const TextComponent& other, StylePropertyText* textStyle = nullptr);
         TextComponent& operator=(const TextComponent& other);
@@ -605,7 +601,7 @@ namespace dev
 
         ImageComponent(StyleProperty<Texture>* textureStyle);
 
-        ~ImageComponent();
+        ~ImageComponent() override;
 
         ImageComponent(const ImageComponent& other, StyleProperty<Texture>* textureStyle = nullptr);
         ImageComponent& operator=(const ImageComponent& other);

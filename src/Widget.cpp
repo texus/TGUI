@@ -199,7 +199,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(Widget&& other) noexcept :
-        enable_shared_from_this<Widget>{std::move(other)},
+        enable_shared_from_this<Widget>{other},
         onPositionChange               {std::move(other.onPositionChange)},
         onSizeChange                   {std::move(other.onSizeChange)},
         onFocus                        {std::move(other.onFocus)},
@@ -318,8 +318,6 @@ namespace tgui
             m_renderer->unsubscribe(this);
             other.m_renderer->unsubscribe(&other);
 
-            enable_shared_from_this::operator=(std::move(other));
-
             onPositionChange       = std::move(other.onPositionChange);
             onSizeChange           = std::move(other.onSizeChange);
             onFocus                = std::move(other.onFocus);
@@ -363,10 +361,10 @@ namespace tgui
 
             m_renderer->subscribe(this);
 
-            other.m_renderer = nullptr;
-
             if (other.m_parent)
                 SignalManager::getSignalManager()->remove(&other);
+
+            enable_shared_from_this::operator=(std::move(other));
         }
 
         return *this;
@@ -1090,7 +1088,7 @@ namespace tgui
 
     void Widget::setToolTip(Widget::Ptr toolTip)
     {
-        m_toolTip = toolTip;
+        m_toolTip = std::move(toolTip);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

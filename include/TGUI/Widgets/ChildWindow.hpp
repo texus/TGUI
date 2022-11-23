@@ -44,8 +44,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ChildWindow> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const ChildWindow> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<ChildWindow>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const ChildWindow>; //!< Shared constant widget pointer
 
 
         /// Title alignments, possible options for the setTitleAlignment function
@@ -117,7 +117,7 @@ namespace tgui
         /// @return The new child window
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ChildWindow::Ptr copy(ChildWindow::ConstPtr childWindow);
+        static ChildWindow::Ptr copy(const ChildWindow::ConstPtr& childWindow);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

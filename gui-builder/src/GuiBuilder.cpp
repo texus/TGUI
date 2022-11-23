@@ -69,59 +69,62 @@ namespace
 {
     bool compareRenderers(std::map<tgui::String, tgui::ObjectConverter> themePropertyValuePairs, std::map<tgui::String, tgui::ObjectConverter> widgetPropertyValuePairs)
     {
-        for (auto themeIt = themePropertyValuePairs.begin(); themeIt != themePropertyValuePairs.end(); ++themeIt)
+        for (auto& pair : themePropertyValuePairs)
         {
-            if (((widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::None)
-              && (themeIt->second.getType() != tgui::ObjectConverter::Type::None))
-             || ((widgetPropertyValuePairs[themeIt->first].getType() != tgui::ObjectConverter::Type::None)
-              && (themeIt->second.getType() == tgui::ObjectConverter::Type::None))
-             || ((widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::String)
-              && (themeIt->second.getType() != tgui::ObjectConverter::Type::String)
-              && (widgetPropertyValuePairs[themeIt->first].getString() != themeIt->second.getString()))
-             || ((widgetPropertyValuePairs[themeIt->first].getType() != tgui::ObjectConverter::Type::String)
-              && (themeIt->second.getType() == tgui::ObjectConverter::Type::String)
-              && (widgetPropertyValuePairs[themeIt->first].getString() != themeIt->second.getString()))
-             || ((widgetPropertyValuePairs[themeIt->first].getType() != tgui::ObjectConverter::Type::String)
-              && (themeIt->second.getType() != tgui::ObjectConverter::Type::String)
-              && (widgetPropertyValuePairs[themeIt->first] != themeIt->second)))
+            const auto& property = pair.first;
+            auto& value = pair.second;
+
+            if (((widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::None)
+              && (value.getType() != tgui::ObjectConverter::Type::None))
+             || ((widgetPropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::None)
+              && (value.getType() == tgui::ObjectConverter::Type::None))
+             || ((widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::String)
+              && (value.getType() != tgui::ObjectConverter::Type::String)
+              && (widgetPropertyValuePairs[property].getString() != value.getString()))
+             || ((widgetPropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::String)
+              && (value.getType() == tgui::ObjectConverter::Type::String)
+              && (widgetPropertyValuePairs[property].getString() != value.getString()))
+             || ((widgetPropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::String)
+              && (value.getType() != tgui::ObjectConverter::Type::String)
+              && (widgetPropertyValuePairs[property] != value)))
             {
                 // Exception: Colors should never be compared as strings
-                if (((widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::Color)
-                 && (themeIt->second.getType() == tgui::ObjectConverter::Type::String))
-                || ((widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::String)
-                 && (themeIt->second.getType() == tgui::ObjectConverter::Type::Color)))
+                if (((widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::Color)
+                 && (value.getType() == tgui::ObjectConverter::Type::String))
+                || ((widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::String)
+                 && (value.getType() == tgui::ObjectConverter::Type::Color)))
                 {
-                    if (widgetPropertyValuePairs[themeIt->first].getColor() == themeIt->second.getColor())
+                    if (widgetPropertyValuePairs[property].getColor() == value.getColor())
                         continue;
                 }
 
                 // Exception: Don't use the data pointers and try to use absolute paths to compare textures
-                if ((widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::Texture)
-                 && (themeIt->second.getType() == tgui::ObjectConverter::Type::Texture)
-                 && widgetPropertyValuePairs[themeIt->first].getTexture().getData()
-                 && themeIt->second.getTexture().getData())
+                if ((widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::Texture)
+                 && (value.getType() == tgui::ObjectConverter::Type::Texture)
+                 && widgetPropertyValuePairs[property].getTexture().getData()
+                 && value.getTexture().getData())
                 {
-                    if ((widgetPropertyValuePairs[themeIt->first].getTexture().getId() == themeIt->second.getTexture().getId())
-                     && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
+                    if ((widgetPropertyValuePairs[property].getTexture().getId() == value.getTexture().getId())
+                     && (widgetPropertyValuePairs[property].getTexture().getMiddleRect() == value.getTexture().getMiddleRect()))
                     {
                         continue;
                     }
 
-                    const tgui::String absoluteFilename1 = (tgui::getResourcePath() / tgui::Filesystem::Path(widgetPropertyValuePairs[themeIt->first].getTexture().getId())).asString();
-                    const tgui::String absoluteFilename2 = (tgui::getResourcePath() / tgui::Filesystem::Path(themeIt->second.getTexture().getId())).asString();
+                    const tgui::String absoluteFilename1 = (tgui::getResourcePath() / tgui::Filesystem::Path(widgetPropertyValuePairs[property].getTexture().getId())).asString();
+                    const tgui::String absoluteFilename2 = (tgui::getResourcePath() / tgui::Filesystem::Path(value.getTexture().getId())).asString();
                     if ((absoluteFilename1 == absoluteFilename2)
-                     && (widgetPropertyValuePairs[themeIt->first].getTexture().getMiddleRect() == themeIt->second.getTexture().getMiddleRect()))
+                     && (widgetPropertyValuePairs[property].getTexture().getMiddleRect() == value.getTexture().getMiddleRect()))
                     {
                         continue;
                     }
                 }
 
                 // Exception: Nested renderers need to check for the same exceptions
-                if ((themeIt->second.getType() == tgui::ObjectConverter::Type::RendererData)
-                 && (widgetPropertyValuePairs[themeIt->first].getType() == tgui::ObjectConverter::Type::RendererData))
+                if ((value.getType() == tgui::ObjectConverter::Type::RendererData)
+                 && (widgetPropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::RendererData))
                 {
-                    if (compareRenderers(themeIt->second.getRenderer()->propertyValuePairs,
-                                         widgetPropertyValuePairs[themeIt->first].getRenderer()->propertyValuePairs))
+                    if (compareRenderers(value.getRenderer()->propertyValuePairs,
+                                         widgetPropertyValuePairs[property].getRenderer()->propertyValuePairs))
                     {
                         continue;
                     }
@@ -131,42 +134,45 @@ namespace
             }
         }
 
-        for (auto widgetIt = widgetPropertyValuePairs.begin(); widgetIt != widgetPropertyValuePairs.end(); ++widgetIt)
+        for (auto& pair : widgetPropertyValuePairs)
         {
-            if (((themePropertyValuePairs[widgetIt->first].getType() == tgui::ObjectConverter::Type::None)
-              && (widgetIt->second.getType() != tgui::ObjectConverter::Type::None))
-             || ((themePropertyValuePairs[widgetIt->first].getType() != tgui::ObjectConverter::Type::None)
-              && (widgetIt->second.getType() == tgui::ObjectConverter::Type::None))
-             || ((themePropertyValuePairs[widgetIt->first].getType() == tgui::ObjectConverter::Type::String)
-              && (widgetIt->second.getType() != tgui::ObjectConverter::Type::String)
-              && (themePropertyValuePairs[widgetIt->first].getString() != widgetIt->second.getString()))
-             || ((themePropertyValuePairs[widgetIt->first].getType() != tgui::ObjectConverter::Type::String)
-              && (widgetIt->second.getType() == tgui::ObjectConverter::Type::String)
-              && (themePropertyValuePairs[widgetIt->first].getString() != widgetIt->second.getString()))
-             || ((themePropertyValuePairs[widgetIt->first].getType() != tgui::ObjectConverter::Type::String)
-              && (widgetIt->second.getType() != tgui::ObjectConverter::Type::String)
-              && (themePropertyValuePairs[widgetIt->first] != widgetIt->second)))
+            const auto& property = pair.first;
+            auto& value = pair.second;
+
+            if (((themePropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::None)
+              && (value.getType() != tgui::ObjectConverter::Type::None))
+             || ((themePropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::None)
+              && (value.getType() == tgui::ObjectConverter::Type::None))
+             || ((themePropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::String)
+              && (value.getType() != tgui::ObjectConverter::Type::String)
+              && (themePropertyValuePairs[property].getString() != value.getString()))
+             || ((themePropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::String)
+              && (value.getType() == tgui::ObjectConverter::Type::String)
+              && (themePropertyValuePairs[property].getString() != value.getString()))
+             || ((themePropertyValuePairs[property].getType() != tgui::ObjectConverter::Type::String)
+              && (value.getType() != tgui::ObjectConverter::Type::String)
+              && (themePropertyValuePairs[property] != value)))
             {
                 // Exception: An empty texture is considered the same as an empty property
-                if ((themePropertyValuePairs[widgetIt->first].getType() == tgui::ObjectConverter::Type::None)
-                 && (widgetIt->second.getType() == tgui::ObjectConverter::Type::Texture)
-                 && !widgetIt->second.getTexture().getData())
+                if ((themePropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::None)
+                 && (value.getType() == tgui::ObjectConverter::Type::Texture)
+                 && !value.getTexture().getData())
                 {
                     continue;
                 }
 
                 // Exception: Textures need to be checked differently, but this is already handled in earlier check
-                if ((themePropertyValuePairs[widgetIt->first].getType() == tgui::ObjectConverter::Type::Texture)
-                 && (widgetIt->second.getType() == tgui::ObjectConverter::Type::Texture)
-                 && themePropertyValuePairs[widgetIt->first].getTexture().getData()
-                 && widgetIt->second.getTexture().getData())
+                if ((themePropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::Texture)
+                 && (value.getType() == tgui::ObjectConverter::Type::Texture)
+                 && themePropertyValuePairs[property].getTexture().getData()
+                 && value.getTexture().getData())
                 {
                     continue;
                 }
 
                 // Exception: Renderers need to be checked differently, but this is already handled in earlier check
-                if ((widgetIt->second.getType() == tgui::ObjectConverter::Type::RendererData)
-                 && (themePropertyValuePairs[widgetIt->first].getType() == tgui::ObjectConverter::Type::RendererData))
+                if ((value.getType() == tgui::ObjectConverter::Type::RendererData)
+                 && (themePropertyValuePairs[property].getType() == tgui::ObjectConverter::Type::RendererData))
                 {
                     continue;
                 }
@@ -499,15 +505,15 @@ void GuiBuilder::saveGuiBuilderState()
 
     // Save the list of recent opened forms
     tgui::String recentFileList;
-    for (auto fileIt = m_recentFiles.begin(); fileIt != m_recentFiles.end(); ++fileIt)
+    for (const auto& recentFile : m_recentFiles)
     {
-        if (!tgui::Filesystem::fileExists(tgui::getResourcePath() / tgui::String(*fileIt)))
+        if (!tgui::Filesystem::fileExists(tgui::getResourcePath() / tgui::String(recentFile)))
             continue;
 
         if (recentFileList.empty())
-            recentFileList = "[" + tgui::Serializer::serialize(*fileIt);
+            recentFileList = "[" + tgui::Serializer::serialize(recentFile);
         else
-            recentFileList += ", " + tgui::Serializer::serialize(*fileIt);
+            recentFileList += ", " + tgui::Serializer::serialize(recentFile);
     }
     if (!recentFileList.empty())
     {
@@ -676,7 +682,7 @@ void GuiBuilder::reloadProperties()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::widgetSelected(tgui::Widget::Ptr widget)
+void GuiBuilder::widgetSelected(const tgui::Widget::Ptr& widget)
 {
     initProperties();
 
@@ -974,13 +980,13 @@ void GuiBuilder::loadToolbox()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
+void GuiBuilder::createNewWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget)
 {
     if (!parent)
     {
         tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget() ? m_selectedForm->getSelectedWidget()->ptr : nullptr;
         if (selectedWidget && selectedWidget->isContainer())
-            parent = static_cast<tgui::Container*>(selectedWidget.get());
+            parent = dynamic_cast<tgui::Container*>(selectedWidget.get());
         else if (selectedWidget)
             parent = selectedWidget->getParent();
     }
@@ -1384,7 +1390,7 @@ tgui::String GuiBuilder::getDefaultFilename() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, std::shared_ptr<WidgetInfo> widgetInfo)
+void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo)
 {
     CopiedWidget copiedWidget;
     copiedWidget.theme = widgetInfo->theme;
@@ -1426,7 +1432,7 @@ void GuiBuilder::pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Co
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo)
+void GuiBuilder::copyWidgetToInternalClipboard(const std::shared_ptr<WidgetInfo>& widgetInfo)
 {
     m_copiedWidgets.clear();
     copyWidgetRecursive(m_copiedWidgets, widgetInfo);
@@ -1713,7 +1719,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
-    auto setArrowColor = [](tgui::BitmapButton::Ptr button, tgui::Color color){
+    auto setArrowColor = [](const tgui::BitmapButton::Ptr& button, const tgui::Color& color){
         tgui::Texture texture = button->getImage();
         texture.setColor(color);
         button->setImage(texture);
@@ -1863,7 +1869,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
 
         auto separators = std::make_shared<std::vector<tgui::SeparatorLine::Ptr>>();
 
-        auto updateForm = TGUI_LAMBDA_CAPTURE_EQ_THIS(tgui::String filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
+        auto updateForm = TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
             auto texture = previewPicture->getUserData<std::shared_ptr<tgui::Texture>>();
 
             try
@@ -2324,6 +2330,7 @@ void GuiBuilder::updateSelectedWidgetHierarchy()
             if (nodeList.back().text == m_selectedForm->getSelectedWidget()->name)
             {
                 std::vector<tgui::String> hierarchy;
+                hierarchy.reserve(nodeList.size());
                 for (const auto& node : nodeList)
                     hierarchy.push_back(node.text);
 
@@ -2346,7 +2353,7 @@ void GuiBuilder::updateSelectedWidgetHierarchy()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, std::shared_ptr<tgui::Widget> parentWidget)
+void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, const std::shared_ptr<tgui::Widget>& parentWidget)
 {
     m_widgetHierarchyTree->addItem(hierarchy);
 
@@ -2390,7 +2397,7 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui:
 
     auto widgets = m_selectedForm->getWidgets();
 
-    auto it = std::find_if(widgets.begin(), widgets.end(), [&](std::shared_ptr<WidgetInfo> otherWidget){
+    auto it = std::find_if(widgets.begin(), widgets.end(), [&](const std::shared_ptr<WidgetInfo>& otherWidget){
         return otherWidget->ptr.get() == widget;
     });
 

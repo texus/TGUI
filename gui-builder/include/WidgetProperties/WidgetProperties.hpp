@@ -40,7 +40,7 @@ struct WidgetProperties
 {
     virtual ~WidgetProperties() = default;
 
-    virtual void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const
+    virtual void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const
     {
         if (property == "Left")
             widget->setPosition(value, widget->getPositionLayout().y);
@@ -62,7 +62,7 @@ struct WidgetProperties
             widget->getRenderer()->setProperty(property, value);
     }
 
-    virtual PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const
+    virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
     {
         PropertyValueMap pairs;
         pairs["Left"] = {"String", widget->getPositionLayout().x.toString()};
@@ -127,7 +127,7 @@ struct WidgetProperties
         return {};
     }
 
-    static tgui::String serializeList(std::vector<tgui::String> list)
+    static tgui::String serializeList(const std::vector<tgui::String>& list)
     {
         if (list.empty())
             return "[]";

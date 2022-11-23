@@ -45,8 +45,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<MessageBox> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const MessageBox> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<MessageBox>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const MessageBox>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ namespace tgui
         ///
         /// @return The new message box
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MessageBox::Ptr create(String title = "", String text = "", std::vector<String> buttons = {});
+        static MessageBox::Ptr create(const String& title = "", const String& text = "", const std::vector<String>& buttons = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ namespace tgui
         /// @return The new message box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MessageBox::Ptr copy(MessageBox::ConstPtr messageBox);
+        static MessageBox::Ptr copy(const MessageBox::ConstPtr& messageBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

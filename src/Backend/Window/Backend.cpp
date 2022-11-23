@@ -67,7 +67,7 @@ namespace tgui
             Theme::setDefault(nullptr);
         }
 
-        globalBackend = backend;
+        globalBackend = std::move(backend);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace tgui
     Font Backend::createDefaultFont()
     {
         if (m_fontBackend)
-            return {defaultFontBytes, sizeof(defaultFontBytes)};
+            return {static_cast<const unsigned char*>(defaultFontBytes), sizeof(defaultFontBytes)};
         else
             return {};
     }
@@ -208,7 +208,7 @@ namespace tgui
 
     void Backend::setRenderer(std::shared_ptr<BackendRenderer> renderer)
     {
-        m_renderer = renderer;
+        m_renderer = std::move(renderer);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ namespace tgui
 
     void Backend::setFontBackend(std::shared_ptr<BackendFontFactory> fontBackend)
     {
-        m_fontBackend = fontBackend;
+        m_fontBackend = std::move(fontBackend);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

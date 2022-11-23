@@ -30,7 +30,7 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 20
+#if TGUI_COMPILED_WITH_CPP_VER < 17
     const Color Color::Black      {  0,   0,   0};
     const Color Color::White      {255, 255, 255};
     const Color Color::Red        {255,   0,   0};
@@ -41,7 +41,7 @@ namespace tgui
     const Color Color::Cyan       {  0, 255, 255};
     const Color Color::Transparent{  0,   0,   0,   0};
 
-    const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
+    const std::array<std::pair<std::decay_t<StringView>, Color>, 9> Color::colorNamesMap
     {
         {{U"black", Color::Black},
          {U"white", Color::White},
@@ -59,7 +59,7 @@ namespace tgui
 
     namespace priv
     {
-        TGUI_API Color constructColorFromString(String string)
+        TGUI_API Color constructColorFromString(const String& string)
         {
             return Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor();
         }

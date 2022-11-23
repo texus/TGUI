@@ -62,7 +62,7 @@ namespace tgui
 
     void BoxLayout::setSize(const Layout2d& size)
     {
-        Container::setSize(size);
+        Group::setSize(size);
 
         updateWidgets();
     }

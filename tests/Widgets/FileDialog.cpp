@@ -34,11 +34,8 @@ TEST_CASE("[FileDialog]")
     SECTION("Signals")
     {
         dialog->onFileSelect([](){});
-        dialog->onFileSelect([](tgui::String){});
         dialog->onFileSelect([](const tgui::String&){});
-        dialog->onFileSelect([](tgui::Filesystem::Path){});
         dialog->onFileSelect([](const tgui::Filesystem::Path&){});
-        dialog->onFileSelect([](std::vector<tgui::Filesystem::Path>){});
         dialog->onFileSelect([](const std::vector<tgui::Filesystem::Path>&){});
     }
 

@@ -35,8 +35,8 @@ class GuiBuilder;
 class Form
 {
 public:
-    Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWindow::Ptr formWindow, tgui::Vector2f formSize);
-    tgui::String addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget = true);
+    Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::ChildWindow::Ptr& formWindow, tgui::Vector2f formSize);
+    tgui::String addWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget = true);
     void removeWidget(const tgui::String& id);
     std::shared_ptr<WidgetInfo> getWidget(const tgui::String& id) const;
     std::shared_ptr<WidgetInfo> getWidgetByName(const tgui::String& name) const;
@@ -66,12 +66,12 @@ public:
     void updateAlignmentLines();
 
 private:
-    void importLoadedWidgets(tgui::Container::Ptr parent);
-    void onSelectionSquarePress(tgui::Button::Ptr square, tgui::Vector2f pos);
-    tgui::Widget::Ptr getWidgetBelowMouse(tgui::Container::Ptr parent, tgui::Vector2f pos);
+    void importLoadedWidgets(const tgui::Container::Ptr& parent);
+    void onSelectionSquarePress(const tgui::Button::Ptr& square, tgui::Vector2f pos);
+    tgui::Widget::Ptr getWidgetBelowMouse(const tgui::Container::Ptr& parent, tgui::Vector2f pos);
     void onFormMousePress(tgui::Vector2f pos);
     void onDrag(tgui::Vector2i mousePos);
-    void selectWidget(std::shared_ptr<WidgetInfo> widget);
+    void selectWidget(const std::shared_ptr<WidgetInfo>& widget);
     std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
 
 private:

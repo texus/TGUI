@@ -43,7 +43,7 @@ namespace tgui
     {
     public:
 
-        using ContextLoadFuncReturnType = void (*)(void);
+        using ContextLoadFuncReturnType = void (*)();
         using ContextLoadFuncType = ContextLoadFuncReturnType (*)(const char *name);
 
         using SDLContextLoadFuncType = void* (*)(const char *name);

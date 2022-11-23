@@ -264,7 +264,7 @@ namespace tgui
 
     void Texture::loadFromBase64(CharStringView imageAsBase64, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)
     {
-        const std::vector<std::uint8_t> fileData = base64Decode(std::move(imageAsBase64));
+        const std::vector<std::uint8_t> fileData = base64Decode(imageAsBase64);
         loadFromMemory(fileData.data(), fileData.size(), partRect, middleRect, smooth);
     }
 
@@ -448,7 +448,7 @@ namespace tgui
             m_destructCallback = nullptr;
         }
 
-        m_data = data;
+        m_data = std::move(data);
 
         if (partRect == UIntRect{})
         {

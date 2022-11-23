@@ -69,7 +69,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::Ptr Knob::copy(Knob::ConstPtr knob)
+    Knob::Ptr Knob::copy(const Knob::ConstPtr& knob)
     {
         if (knob)
             return std::static_pointer_cast<Knob>(knob->clone());
@@ -109,8 +109,8 @@ namespace tgui
         if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
         {
             m_spriteBackground.setSize(getSize());
-            m_spriteForeground.setSize({(m_spriteForeground.getTexture().getImageSize().x / m_spriteBackground.getTexture().getImageSize().x) * getSize().x,
-                                        (m_spriteForeground.getTexture().getImageSize().y / m_spriteBackground.getTexture().getImageSize().y) * getSize().y});
+            m_spriteForeground.setSize({(m_spriteForeground.getTexture().getImageSize().x / static_cast<float>(m_spriteBackground.getTexture().getImageSize().x)) * getSize().x,
+                                        (m_spriteForeground.getTexture().getImageSize().y / static_cast<float>(m_spriteBackground.getTexture().getImageSize().y)) * getSize().y});
         }
     }
 

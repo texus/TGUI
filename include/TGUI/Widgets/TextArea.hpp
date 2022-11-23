@@ -46,8 +46,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<TextArea> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const TextArea> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<TextArea>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const TextArea>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace tgui
         ///
         /// @return The new text area
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextArea::Ptr copy(TextArea::ConstPtr textArea);
+        static TextArea::Ptr copy(const TextArea::ConstPtr& textArea);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

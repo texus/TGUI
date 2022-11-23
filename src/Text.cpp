@@ -286,10 +286,9 @@ namespace tgui
 
         float width = 0.0f;
         char32_t prevChar = 0;
-        for (std::size_t i = 0; i < text.length(); ++i)
+        for (const char32_t curChar : text)
         {
             float charWidth;
-            const char32_t curChar = text[i];
             if (curChar == '\n')
                 break;
             else if (curChar == U'\r')

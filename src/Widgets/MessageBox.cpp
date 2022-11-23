@@ -108,8 +108,6 @@ namespace tgui
     {
         if (this != &other)
         {
-            ChildWindow::operator=(std::move(other));
-
             onButtonPress     = std::move(other.onButtonPress);
             m_loadedThemeFile = std::move(other.m_loadedThemeFile);
             m_buttonClassName = std::move(other.m_buttonClassName);
@@ -118,6 +116,7 @@ namespace tgui
             m_buttonAlignment = std::move(other.m_buttonAlignment);
             m_buttons         = std::move(other.m_buttons);
             m_label           = std::move(other.m_label);
+            ChildWindow::operator=(std::move(other));
 
             for (std::size_t i = 0; i < m_buttons.size(); ++i)
                 connectButtonPressSignal(i);
@@ -128,7 +127,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::Ptr MessageBox::create(String title, String text, std::vector<String> buttons)
+    MessageBox::Ptr MessageBox::create(const String& title, const String& text, const std::vector<String>& buttons)
     {
         auto messageBox = std::make_shared<MessageBox>();
         messageBox->setTitle(title);
@@ -141,7 +140,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::Ptr MessageBox::copy(MessageBox::ConstPtr messageBox)
+    MessageBox::Ptr MessageBox::copy(const MessageBox::ConstPtr& messageBox)
     {
         if (messageBox)
             return std::static_pointer_cast<MessageBox>(messageBox->clone());
@@ -428,7 +427,7 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> MessageBox::save(SavingRenderersMap& renderers) const
     {
-        auto node = Container::save(renderers);
+        auto node = ChildWindow::save(renderers);
 
         node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoSize));
 
@@ -496,11 +495,11 @@ namespace tgui
     {
         m_label = get<Label>("#TGUI_INTERNAL$MessageBoxText#");
 
-        for (unsigned int i = 0; i < m_widgets.size(); ++i)
+        for (const auto& widget : m_widgets)
         {
-            if ((m_widgets[i]->getWidgetName().length() >= 32) && (m_widgets[i]->getWidgetName().substr(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
+            if ((widget->getWidgetName().length() >= 32) && (widget->getWidgetName().substr(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
             {
-                auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
+                auto button = std::dynamic_pointer_cast<Button>(widget);
                 m_buttons.push_back(button);
                 connectButtonPressSignal(m_buttons.size() - 1);
             }

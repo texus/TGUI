@@ -53,7 +53,7 @@ TEST_CASE("[TextArea]")
     SECTION("Signals")
     {
         textArea->onTextChange([](){});
-        textArea->onTextChange([](tgui::String){});
+        textArea->onTextChange([](const tgui::String&){});
     }
 
     SECTION("WidgetType")

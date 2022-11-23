@@ -48,8 +48,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SeparatorLine> Ptr; //!< Shared widget pointer
-        typedef std::shared_ptr<const SeparatorLine> ConstPtr; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<SeparatorLine>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const SeparatorLine>; //!< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ namespace tgui
         ///
         /// @return The new separator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SeparatorLine::Ptr create(Layout2d size = {"100%", 1});
+        static SeparatorLine::Ptr create(const Layout2d& size = {"100%", 1});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace tgui
         ///
         /// @return The new separator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SeparatorLine::Ptr copy(SeparatorLine::ConstPtr separator);
+        static SeparatorLine::Ptr copy(const SeparatorLine::ConstPtr& separator);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

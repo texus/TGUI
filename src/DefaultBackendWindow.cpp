@@ -83,7 +83,7 @@ namespace tgui
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
         }
 
-        ~BackendWindowSFML()
+        ~BackendWindowSFML() override
         {
             // Make sure the window is closed before destroying the gui. This is necessary when mouse cursors are changed,
             // because the mouse cursor (which is destroyed with the gui) has to live longer than the window.
@@ -185,7 +185,7 @@ namespace tgui
             m_windowOpen = true;
         }
 
-        ~BackendWindowSDL()
+        ~BackendWindowSDL() override
         {
             m_gui = nullptr; // Gui must be destroyed before destroying SDL window
 
@@ -299,7 +299,7 @@ namespace tgui
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
-            m_window = glfwCreateWindow(width, height, title.toStdString().c_str(), NULL, NULL);
+            m_window = glfwCreateWindow(width, height, title.toStdString().c_str(), nullptr, nullptr);
             glfwMakeContextCurrent(m_window);
 
             glfwSwapInterval(1);
@@ -353,7 +353,7 @@ namespace tgui
             });
         }
 
-        ~BackendWindowGLFW()
+        ~BackendWindowGLFW() override
         {
             m_gui = nullptr; // Gui must be destroyed before destroying GLFW window
 

@@ -34,8 +34,8 @@ TEST_CASE("[MenuBar]")
     SECTION("Signals")
     {
         menuBar->onMenuItemClick([](){});
-        menuBar->onMenuItemClick([](tgui::String){});
-        menuBar->onMenuItemClick([](std::vector<tgui::String>){});
+        menuBar->onMenuItemClick([](const tgui::String&){});
+        menuBar->onMenuItemClick([](const std::vector<tgui::String>&){});
 
         menuBar->connectMenuItem("File", "Save", [](){});
         menuBar->connectMenuItem({"Help", "About", "Version"}, [](){});

@@ -43,7 +43,7 @@ namespace tgui
     class Color;
     namespace priv
     {
-        TGUI_API Color constructColorFromString(String string);
+        TGUI_API Color constructColorFromString(const String& string);
     }
 
 
@@ -55,7 +55,7 @@ namespace tgui
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_COMPILED_WITH_CPP_VER >= 20
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     class Color
 #else
     class TGUI_API Color
@@ -66,7 +66,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the color with its alpha channel multiplied with the alpha parameter
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TGUI_CONSTEXPR Color applyOpacity(const Color& color, float alpha)
+        static constexpr Color applyOpacity(const Color& color, float alpha)
         {
             return {color.getRed(), color.getGreen(), color.getBlue(), static_cast<std::uint8_t>(color.getAlpha() * alpha)};
         }
@@ -79,7 +79,7 @@ namespace tgui
         ///
         /// The isSet() function will return false when the object was created using this constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Color() :
+        constexpr Color() :
             m_isSet{false},
             m_red  {0},
             m_green{0},
@@ -94,7 +94,7 @@ namespace tgui
         ///
         /// @param color  Color to set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Color(const sf::Color& color) :
+        constexpr Color(const sf::Color& color) :
             m_isSet{true},
             m_red  {color.r},
             m_green{color.g},
@@ -112,7 +112,7 @@ namespace tgui
         /// @param blue  Blue component
         /// @param alpha Alpha component
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Color(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = 255) :
+        constexpr Color(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = 255) :
             m_isSet{true},
             m_red  {red},
             m_green{green},
@@ -159,7 +159,7 @@ namespace tgui
         ///
         /// @return True if a color was passed to the constructor, false when the default constructor was used
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool isSet() const
+        constexpr bool isSet() const
         {
             return m_isSet;
         }
@@ -172,7 +172,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         operator sf::Color() const
         {
-            return sf::Color(m_red, m_green, m_blue, m_alpha);
+            return {m_red, m_green, m_blue, m_alpha};
         }
 #endif
 
@@ -192,7 +192,7 @@ namespace tgui
         ///
         /// @return Red component of the stored color or the one from the default color is no color was set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR std::uint8_t getRed() const
+        constexpr std::uint8_t getRed() const
         {
             return m_red;
         }
@@ -203,7 +203,7 @@ namespace tgui
         ///
         /// @return Green component of the stored color or the one from the default color is no color was set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR std::uint8_t getGreen() const
+        constexpr std::uint8_t getGreen() const
         {
             return m_green;
         }
@@ -214,7 +214,7 @@ namespace tgui
         ///
         /// @return Blue component of the stored color or the one from the default color is no color was set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR std::uint8_t getBlue() const
+        constexpr std::uint8_t getBlue() const
         {
             return m_blue;
         }
@@ -225,7 +225,7 @@ namespace tgui
         ///
         /// @return Alpha component of the stored color or the one from the default color is no color was set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR std::uint8_t getAlpha() const
+        constexpr std::uint8_t getAlpha() const
         {
             return m_alpha;
         }
@@ -234,7 +234,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Compares the color with another one
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool operator==(const Color& rhs) const
+        constexpr bool operator==(const Color& rhs) const
         {
             return (m_isSet == rhs.m_isSet)
                 && (m_red == rhs.m_red)
@@ -247,7 +247,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Compares the color with another one
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool operator!=(const Color& right) const
+        constexpr bool operator!=(const Color& right) const
         {
             return !(*this == right);
         }
@@ -266,7 +266,11 @@ namespace tgui
         static const Color Cyan;        //!< Cyan predefined color
         static const Color Transparent; //!< Transparent (black) predefined color
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         static const std::array<std::pair<StringView, Color>, 9> colorNamesMap;
+#else
+        static const std::array<std::pair<std::decay_t<StringView>, Color>, 9> colorNamesMap;
+#endif
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -297,13 +301,13 @@ namespace tgui
         /// Note that having this function allows keeping the Color class outside of a DLL, which allows the color constants
         /// to be defined as "inline constexpr".
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_API Color constructColorFromString(String string);
+        TGUI_API Color constructColorFromString(const String& string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 20 // Although technically available since c++17, we put the bar higher to allow building TGUI with c++17 in VS2017
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     inline constexpr const Color Color::Black      {  0,   0,   0};
     inline constexpr const Color Color::White      {255, 255, 255};
     inline constexpr const Color Color::Red        {255,   0,   0};

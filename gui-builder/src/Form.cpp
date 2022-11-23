@@ -393,7 +393,7 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWindow::Ptr formWindow, tgui::Vector2f formSize) :
+Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::ChildWindow::Ptr& formWindow, tgui::Vector2f formSize) :
     m_guiBuilder      {guiBuilder},
     m_formWindow      {formWindow},
     m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
@@ -427,7 +427,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::String Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent, bool selectNewWidget)
+tgui::String Form::addWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget)
 {
     const tgui::String id = tgui::String::fromNumber(widget.get());
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
@@ -517,7 +517,7 @@ std::shared_ptr<WidgetInfo> Form::getWidget(const tgui::String& id) const
 std::shared_ptr<WidgetInfo> Form::getWidgetByName(const tgui::String& name) const
 {
     if (name == m_filename)
-        return std::shared_ptr<WidgetInfo>();
+        return {};
 
     const auto it = std::find_if(
         m_widgets.begin(),
@@ -970,24 +970,24 @@ void Form::updateAlignmentLines()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::importLoadedWidgets(tgui::Container::Ptr parent)
+void Form::importLoadedWidgets(const tgui::Container::Ptr& parent)
 {
     const auto& widgets = parent->getWidgets();
-    for (std::size_t i = 0; i < widgets.size(); ++i)
+    for (const auto& widget : widgets)
     {
-        const tgui::String id = tgui::String::fromNumber(widgets[i].get());
-        m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
-        m_widgets[id]->name = widgets[i]->getWidgetName();
+        const tgui::String id = tgui::String::fromNumber(widget.get());
+        m_widgets[id] = std::make_shared<WidgetInfo>(widget);
+        m_widgets[id]->name = widget->getWidgetName();
         m_widgets[id]->theme = "Custom";
 
-        if (widgets[i]->isContainer())
-            importLoadedWidgets(std::static_pointer_cast<tgui::Container>(widgets[i]));
+        if (widget->isContainer())
+            importLoadedWidgets(std::static_pointer_cast<tgui::Container>(widget));
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::onSelectionSquarePress(tgui::Button::Ptr square, tgui::Vector2f pos)
+void Form::onSelectionSquarePress(const tgui::Button::Ptr& square, tgui::Vector2f pos)
 {
     m_draggingSelectionSquare = square;
     m_draggingPos = square->getPosition() + pos;
@@ -995,7 +995,7 @@ void Form::onSelectionSquarePress(tgui::Button::Ptr square, tgui::Vector2f pos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, tgui::Vector2f pos)
+tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, tgui::Vector2f pos)
 {
     // Loop through widgets in reverse order to find the top one in case of overlapping widgets
     const auto& widgets = parent->getWidgets();
@@ -1252,7 +1252,7 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
+void Form::selectWidget(const std::shared_ptr<WidgetInfo>& widget)
 {
     if (m_selectedWidget != widget)
     {

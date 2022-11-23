@@ -56,14 +56,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Transform::Transform(const float matrix[16])
+    Transform::Transform(const std::array<float, 16>& matrix) :
+        m_matrix(matrix)
     {
-        std::copy(&matrix[0], &matrix[16], m_matrix);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const float* Transform::getMatrix() const
+    const std::array<float, 16>& Transform::getMatrix() const
     {
         return m_matrix;
     }
@@ -80,26 +80,26 @@ namespace tgui
         // Compute the inverse if the determinant is not zero (don't use an epsilon because the determinant may *really* be tiny)
         if (det != 0.f)
         {
-            return Transform( (m_matrix[15] * m_matrix[5] - m_matrix[7] * m_matrix[13]) / det,
-                             -(m_matrix[15] * m_matrix[4] - m_matrix[7] * m_matrix[12]) / det,
-                              (m_matrix[13] * m_matrix[4] - m_matrix[5] * m_matrix[12]) / det,
-                             -(m_matrix[15] * m_matrix[1] - m_matrix[3] * m_matrix[13]) / det,
-                              (m_matrix[15] * m_matrix[0] - m_matrix[3] * m_matrix[12]) / det,
-                             -(m_matrix[13] * m_matrix[0] - m_matrix[1] * m_matrix[12]) / det,
-                              (m_matrix[7]  * m_matrix[1] - m_matrix[3] * m_matrix[5])  / det,
-                             -(m_matrix[7]  * m_matrix[0] - m_matrix[3] * m_matrix[4])  / det,
-                              (m_matrix[5]  * m_matrix[0] - m_matrix[1] * m_matrix[4])  / det);
+            return { (m_matrix[15] * m_matrix[5] - m_matrix[7] * m_matrix[13]) / det,
+                    -(m_matrix[15] * m_matrix[4] - m_matrix[7] * m_matrix[12]) / det,
+                     (m_matrix[13] * m_matrix[4] - m_matrix[5] * m_matrix[12]) / det,
+                    -(m_matrix[15] * m_matrix[1] - m_matrix[3] * m_matrix[13]) / det,
+                     (m_matrix[15] * m_matrix[0] - m_matrix[3] * m_matrix[12]) / det,
+                    -(m_matrix[13] * m_matrix[0] - m_matrix[1] * m_matrix[12]) / det,
+                     (m_matrix[7]  * m_matrix[1] - m_matrix[3] * m_matrix[5])  / det,
+                    -(m_matrix[7]  * m_matrix[0] - m_matrix[3] * m_matrix[4])  / det,
+                     (m_matrix[5]  * m_matrix[0] - m_matrix[1] * m_matrix[4])  / det};
         }
         else
-            return Transform();
+            return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Transform::transformPoint(const Vector2f& point) const
     {
-        return Vector2f(m_matrix[0] * point.x + m_matrix[4] * point.y + m_matrix[12],
-                        m_matrix[1] * point.x + m_matrix[5] * point.y + m_matrix[13]);
+        return {m_matrix[0] * point.x + m_matrix[4] * point.y + m_matrix[12],
+                m_matrix[1] * point.x + m_matrix[5] * point.y + m_matrix[13]};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,15 +121,15 @@ namespace tgui
         const float top = std::min({points[0].y, points[1].y, points[2].y, points[3].y});
         const float bottom = std::max({points[0].y, points[1].y, points[2].y, points[3].y});
 
-        return FloatRect(left, top, right - left, bottom - top);
+        return {left, top, right - left, bottom - top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Transform& Transform::combine(const Transform& other)
     {
-        const float* a = m_matrix;
-        const float* b = other.m_matrix;
+        const auto& a = m_matrix;
+        const auto& b = other.m_matrix;
 
         *this = Transform(a[0] * b[0]  + a[4] * b[1]  + a[12] * b[3],
                           a[0] * b[4]  + a[4] * b[5]  + a[12] * b[7],

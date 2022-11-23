@@ -55,7 +55,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Ptr Scrollbar::copy(Scrollbar::ConstPtr scrollbar)
+    Scrollbar::Ptr Scrollbar::copy(const Scrollbar::ConstPtr& scrollbar)
     {
         if (scrollbar)
             return std::static_pointer_cast<Scrollbar>(scrollbar->clone());

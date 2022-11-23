@@ -30,7 +30,7 @@
 #include <locale>
 #include <cctype> // isspace
 #include <cmath> // abs
-#include <stdio.h> // C header for compatibility with _wfopen_s
+#include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -159,34 +159,36 @@ namespace tgui
 #endif
         {
 #if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
-            FILE* file = nullptr;
-            if (_wfopen_s(&file, filename.toWideString().c_str(), L"rb") != 0)
+            FILE* rawFilePtr = nullptr;
+            if (_wfopen_s(&rawFilePtr, filename.toWideString().c_str(), L"rb") != 0)
                 return nullptr;
 #else
-            FILE*  file = fopen(filename.toStdString().c_str(), "rb");
+            FILE* rawFilePtr = fopen(filename.toStdString().c_str(), "rb");
 #endif
-            if (!file)
+            if (!rawFilePtr)
                 return nullptr;
 
-            fseek(file, 0, SEEK_END);
-            const long bytesInFile = ftell(file);
-            fseek(file, 0, SEEK_SET);
+            std::unique_ptr<FILE, decltype(&fclose)> file(rawFilePtr, &fclose);
+
+            if (fseek(file.get(), 0, SEEK_END) != 0)
+                return nullptr;
+
+            const long bytesInFile = ftell(file.get());
+
+            if (fseek(file.get(), 0, SEEK_SET) != 0)
+                return nullptr;
+
             if ((bytesInFile <= 0) || (bytesInFile == std::numeric_limits<long>::max()))
             {
                 // When filename was a directory on linux, ftell returned the maximum long value instead of -1
-                fclose(file);
                 return nullptr;
             }
 
             fileSize = static_cast<std::size_t>(bytesInFile);
             auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(fileSize);
-            if (fread(buffer.get(), 1, fileSize, file) != fileSize)
-            {
-                fclose(file);
+            if (fread(buffer.get(), 1, fileSize, file.get()) != fileSize)
                 return nullptr;
-            }
 
-            fclose(file);
             return buffer;
         }
     }
@@ -207,7 +209,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool writeFile(const String& filename, const CharStringView& stringView)
+    bool writeFile(const String& filename, CharStringView stringView)
     {
 #if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
         FILE* file = nullptr;
@@ -221,7 +223,7 @@ namespace tgui
 
         const bool success = (fwrite(stringView.data(), 1, stringView.size(), file) == stringView.size());
 
-        fclose(file);
+        (void)fclose(file);
         return success;
     }
 

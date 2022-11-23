@@ -126,13 +126,13 @@ TEST_CASE("[Texture]")
         unsigned int destructCount = 0;
         {
             tgui::Texture texture{"resources/image.png", {}, {10, 0, 30, 50}, false};
-            texture.setCopyCallback([&](std::shared_ptr<tgui::TextureData> data)
+            texture.setCopyCallback([&](const std::shared_ptr<tgui::TextureData>& data)
                 {
                     copyCount++;
                     tgui::TextureManager::copyTexture(data);
                 }
             );
-            texture.setDestructCallback([&](std::shared_ptr<tgui::TextureData> data)
+            texture.setDestructCallback([&](const std::shared_ptr<tgui::TextureData>& data)
                 {
                     destructCount++;
                     tgui::TextureManager::removeTexture(data);
@@ -150,7 +150,7 @@ TEST_CASE("[Texture]")
             REQUIRE(copyCount == 0);
             REQUIRE(destructCount == 0);
             {
-                tgui::Texture textureCopy{texture};
+                tgui::Texture textureCopy{texture}; // NOLINT(performance-unnecessary-copy-initialization)
                 REQUIRE(textureCopy.getId() == "resources/image.png");
                 REQUIRE(textureCopy.getData() != nullptr);
                 REQUIRE(textureCopy.getData()->backendTexture != nullptr);

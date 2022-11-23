@@ -34,7 +34,7 @@ struct TabsProperties : WidgetProperties
     // TODO: TabsVisible
     // TODO: TabsEnabled
 
-    void updateProperty(tgui::Widget::Ptr widget, const tgui::String& property, const tgui::String& value) const override
+    void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
         auto tabs = widget->cast<tgui::Tabs>();
         if (property == "Tabs")
@@ -63,7 +63,7 @@ struct TabsProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto tabs = widget->cast<tgui::Tabs>();

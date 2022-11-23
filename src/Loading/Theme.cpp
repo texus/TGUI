@@ -742,7 +742,7 @@ namespace tgui
 
     void Theme::setThemeLoader(std::shared_ptr<BaseThemeLoader> themeLoader)
     {
-        m_themeLoader = themeLoader;
+        m_themeLoader = std::move(themeLoader);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
