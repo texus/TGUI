@@ -27,7 +27,7 @@
 #include <TGUI/Global.hpp>
 #include <TGUI/String.hpp>
 
-#include <cctype>
+#include <cctype> // isspace
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace tgui
                     stream.read(&c, 1);
                     return word;
                 }
-                else if (!::isspace(c) && (c != '=') && (c != ';') && (c != ':') && (c != '{') && (c != '}'))
+                else if (!std::isspace(static_cast<unsigned char>(c)) && (c != '=') && (c != ';') && (c != ':') && (c != '{') && (c != '}'))
                 {
                     stream.read(&c, 1);
 

@@ -28,8 +28,7 @@
 #include <functional>
 #include <sstream>
 #include <locale>
-#include <cctype> // isspace
-#include <cmath> // abs
+#include <limits>
 #include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
