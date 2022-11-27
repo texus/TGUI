@@ -116,7 +116,7 @@ TEST_CASE("[String]")
 
     #if TGUI_COMPILED_WITH_CPP_VER >= 17
         REQUIRE(tgui::String(u8"\U00010348"sv) == u8"\U00010348");
-        REQUIRE(tgui::String(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"sv, 1, 3) == u8"\u03b2\u03b3\u03b4");
+        REQUIRE(tgui::String(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"sv, 2, 6) == u8"\u03b2\u03b3\u03b4");
     #endif
 #endif
 
