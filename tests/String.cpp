@@ -25,7 +25,9 @@
 #include "Tests.hpp"
 #include <TGUI/String.hpp>
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
 using namespace std::literals::string_view_literals;
+#endif
 
 TEST_CASE("[String]")
 {

@@ -915,27 +915,27 @@ namespace tgui
 #endif
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
-        constexpr inline bool starts_with(std::u32string_view sv) const noexcept;
-        constexpr inline bool starts_with(const char32_t* s) const;
-        constexpr inline bool starts_with(const std::u32string& s) const;
-        constexpr inline bool starts_with(const String& s) const;
+        inline bool starts_with(std::u32string_view sv) const noexcept;
+        inline bool starts_with(const char32_t* s) const;
+        inline bool starts_with(const std::u32string& s) const;
+        inline bool starts_with(const String& s) const;
 
-        constexpr inline bool starts_with(char ch) const noexcept;
-        constexpr inline bool starts_with(wchar_t ch) const noexcept;
-        constexpr inline bool starts_with(char8_t ch) const noexcept;
-        constexpr inline bool starts_with(char16_t ch) const noexcept;
-        constexpr inline bool starts_with(char32_t ch) const noexcept;
+        inline bool starts_with(char ch) const noexcept;
+        inline bool starts_with(wchar_t ch) const noexcept;
+        inline bool starts_with(char8_t ch) const noexcept;
+        inline bool starts_with(char16_t ch) const noexcept;
+        inline bool starts_with(char32_t ch) const noexcept;
 
-        constexpr inline bool ends_with(std::u32string_view sv) const noexcept;
-        constexpr inline bool ends_with(const char32_t* s) const;
-        constexpr inline bool ends_with(const std::u32string& s) const;
-        constexpr inline bool ends_with(const String& s) const;
+        inline bool ends_with(std::u32string_view sv) const noexcept;
+        inline bool ends_with(const char32_t* s) const;
+        inline bool ends_with(const std::u32string& s) const;
+        inline bool ends_with(const String& s) const;
 
-        constexpr inline bool ends_with(char ch) const noexcept;
-        constexpr inline bool ends_with(wchar_t ch) const noexcept;
-        constexpr inline bool ends_with(char8_t ch) const noexcept;
-        constexpr inline bool ends_with(char16_t ch) const noexcept;
-        constexpr inline bool ends_with(char32_t ch) const noexcept;
+        inline bool ends_with(char ch) const noexcept;
+        inline bool ends_with(wchar_t ch) const noexcept;
+        inline bool ends_with(char8_t ch) const noexcept;
+        inline bool ends_with(char16_t ch) const noexcept;
+        inline bool ends_with(char32_t ch) const noexcept;
 #else
         bool starts_with(const String& s) const;
         bool ends_with(const String& s) const;
@@ -1280,92 +1280,92 @@ namespace tgui
 #endif
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
-    constexpr inline bool String::starts_with(std::u32string_view sv) const noexcept
+    inline bool String::starts_with(std::u32string_view sv) const noexcept
     {
         return m_string.starts_with(sv);
     }
 
-    constexpr inline bool String::starts_with(const char32_t* s) const
+    inline bool String::starts_with(const char32_t* s) const
     {
         return m_string.starts_with(s);
     }
 
-    constexpr inline bool String::starts_with(const std::u32string& s) const
+    inline bool String::starts_with(const std::u32string& s) const
     {
         return m_string.starts_with(s);
     }
 
-    constexpr inline bool String::starts_with(const String& s) const
+    inline bool String::starts_with(const String& s) const
     {
         return m_string.starts_with(s.m_string);
     }
 
-    constexpr inline bool String::starts_with(char ch) const noexcept
+    inline bool String::starts_with(char ch) const noexcept
     {
         return m_string.starts_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::starts_with(wchar_t ch) const noexcept
+    inline bool String::starts_with(wchar_t ch) const noexcept
     {
         return m_string.starts_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::starts_with(char8_t ch) const noexcept
+    inline bool String::starts_with(char8_t ch) const noexcept
     {
         return m_string.starts_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::starts_with(char16_t ch) const noexcept
+    inline bool String::starts_with(char16_t ch) const noexcept
     {
         return m_string.starts_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::starts_with(char32_t ch) const noexcept
+    inline bool String::starts_with(char32_t ch) const noexcept
     {
         return m_string.starts_with(ch);
     }
 
-    constexpr inline bool String::ends_with(std::u32string_view sv) const noexcept
+    inline bool String::ends_with(std::u32string_view sv) const noexcept
     {
         return m_string.ends_with(sv);
     }
 
-    constexpr inline bool String::ends_with(const char32_t* s) const
+    inline bool String::ends_with(const char32_t* s) const
     {
         return m_string.ends_with(s);
     }
 
-    constexpr inline bool String::ends_with(const std::u32string& s) const
+    inline bool String::ends_with(const std::u32string& s) const
     {
         return m_string.ends_with(s);
     }
 
-    constexpr inline bool String::ends_with(const String& s) const
+    inline bool String::ends_with(const String& s) const
     {
         return m_string.ends_with(s.m_string);
     }
 
-    constexpr inline bool String::ends_with(char ch) const noexcept
+    inline bool String::ends_with(char ch) const noexcept
     {
         return m_string.ends_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::ends_with(wchar_t ch) const noexcept
+    inline bool String::ends_with(wchar_t ch) const noexcept
     {
         return m_string.ends_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::ends_with(char8_t ch) const noexcept
+    inline bool String::ends_with(char8_t ch) const noexcept
     {
         return m_string.ends_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::ends_with(char16_t ch) const noexcept
+    inline bool String::ends_with(char16_t ch) const noexcept
     {
         return m_string.ends_with(static_cast<char32_t>(ch));
     }
 
-    constexpr inline bool String::ends_with(char32_t ch) const noexcept
+    inline bool String::ends_with(char32_t ch) const noexcept
     {
         return m_string.ends_with(ch);
     }

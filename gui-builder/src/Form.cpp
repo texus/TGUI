@@ -284,14 +284,14 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
             }
 
             // Make the path relative to the form or gui builder
-            if (filename.startsWith(formPath))
+            if (filename.starts_with(formPath))
             {
                 if (pair.second->value[0] != '"')
                     pair.second->value.erase(0, formPath.length());
                 else
                     pair.second->value.erase(1, formPath.length());
             }
-            else if (filename.startsWith(guiBuilderPath))
+            else if (filename.starts_with(guiBuilderPath))
             {
                 if (pair.second->value[0] != '"')
                     pair.second->value.erase(0, guiBuilderPath.length());
@@ -358,7 +358,7 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
                             if (basePathStr.back() != '/')
                                 basePathStr.push_back('/');
 
-                            if (filename.startsWith(basePathStr))
+                            if (filename.starts_with(basePathStr))
                             {
                                 if (pair.second->value[0] != '"')
                                 {
