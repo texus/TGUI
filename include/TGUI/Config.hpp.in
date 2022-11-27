@@ -114,6 +114,11 @@
 // Include the version header when c++20 is available to use the library feature-testing macros
 #if TGUI_COMPILED_WITH_CPP_VER >= 20
     #include <version>
+#elif defined(__has_include)
+    // Try including the header even when TGUI itself wasn't compiled with c++20
+    #if __has_include(<version>)
+        #include <version>
+    #endif
 #endif
 
 // Enable the use of std::filesystem if TGUI is built with c++17 with a new enough compiler.
