@@ -268,7 +268,7 @@ namespace tgui
             while (propertyIt != propertyValuePairs.end())
             {
                 // Search for properties that either match the widget name or start with the name followed by a dot
-                if ((!propertyIt->first.startsWith(widgetName))
+                if ((!propertyIt->first.starts_with(widgetName))
                  || ((propertyIt->first.length() > widgetName.length()) && (propertyIt->first[widgetName.length()] != U'.'))
                  || (propertyIt->first != widgetName))
                 {
@@ -285,7 +285,7 @@ namespace tgui
             {
                 // Search for children that either match the widget name or start with the name followed by a dot
                 const auto& childName = (*childIt)->name;
-                if ((!childName.startsWith(widgetName))
+                if ((!childName.starts_with(widgetName))
                  || ((childName.length() > widgetName.length()) && (childName[widgetName.length()] != U'.'))
                  || (childName != widgetName))
                 {

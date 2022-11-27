@@ -387,7 +387,7 @@ namespace tgui
             }
 
             // Check if the texture is provided as a base64-encoded string
-            if (filename.startsWith(U"data:"))
+            if (filename.starts_with(U"data:"))
             {
                 const auto foundIndex = filename.find(U";base64,");
                 if (foundIndex == tgui::String::npos)

@@ -120,8 +120,10 @@
 // Although GCC and clang supported it before version 9, this is the first version where no
 // additional library has to be linked in order to use std::filesystem. This is also the
 // reason why we can't rely on __cpp_lib_filesystem for this.
+// Xcode 11 supports it on macOS 10.15 only, so we require Xcode 12 which doesn't run on macOS 10.14.
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #if (defined(__clang_major__) && (__clang_major__ >= 9)) \
+    #if (defined(__apple_build_version__) && defined(__clang_major__) && (__clang_major__ >= 12)) \
+     || (!defined(__apple_build_version__) && defined(__clang_major__) && (__clang_major__ >= 9)) \
      || (defined(__GNUC__) && (__GNUC__ >= 9)) \
      || (defined(_MSC_VER) && (_MSC_VER >= 1914))
         #define TGUI_USE_STD_FILESYSTEM

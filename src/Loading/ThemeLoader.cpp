@@ -72,7 +72,7 @@ namespace tgui
                 // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
                 if (pair.second->value[0] != '"')
                 {
-                    if (pair.second->value.startsWith("data:"))
+                    if (pair.second->value.starts_with("data:"))
                         continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS

@@ -320,15 +320,15 @@ namespace tgui
 
     inline constexpr const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
     {
-        {{U"black", Color::Black},
-         {U"white", Color::White},
-         {U"red", Color::Red},
-         {U"yellow", Color::Yellow},
-         {U"green", Color::Green},
-         {U"cyan", Color::Cyan},
-         {U"blue", Color::Blue},
-         {U"magenta", Color::Magenta},
-         {U"transparent", Color::Transparent}}
+        {{U"black"sv, Color::Black},
+         {U"white"sv, Color::White},
+         {U"red"sv, Color::Red},
+         {U"yellow"sv, Color::Yellow},
+         {U"green"sv, Color::Green},
+         {U"cyan"sv, Color::Cyan},
+         {U"blue"sv, Color::Blue},
+         {U"magenta"sv, Color::Magenta},
+         {U"transparent"sv, Color::Transparent}}
     };
 #endif
 

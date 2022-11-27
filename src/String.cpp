@@ -29,7 +29,7 @@
 #include <cctype> // tolower, toupper, isspace
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <charconv>
+    #include <charconv> // from_chars, to_chars
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,13 +223,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     bool String::startsWith(const String& substring) const
     {
-        if (substring.length() <= length())
-            return compare(0, substring.length(), substring) == 0;
-        else
-            return false;
+        return starts_with(substring);
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -243,13 +242,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     bool String::endsWith(const String& substring) const
     {
-        if (substring.length() <= length())
-            return compare(length() - substring.length(), substring.length(), substring) == 0;
-        else
-            return false;
+        return ends_with(substring);
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -409,17 +407,17 @@ namespace tgui
     }
 
     String::String(const std::string& str, std::size_t pos) :
-        String{std::string(str, pos)}
+        m_string(utf::convertUtf8toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
     {
     }
 
     String::String(const std::wstring& str, std::size_t pos) :
-        String{std::wstring(str, pos)}
+        m_string(utf::convertWidetoUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
     {
     }
 
     String::String(const std::u16string& str, std::size_t pos) :
-        String{std::u16string(str, pos)}
+        m_string(utf::convertUtf16toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
     {
     }
 
@@ -429,17 +427,20 @@ namespace tgui
     }
 
     String::String(const std::string& str, std::size_t pos, std::size_t count) :
-        String{std::string(str, pos, count)}
+        m_string(utf::convertUtf8toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
+                                         ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
     {
     }
 
     String::String(const std::wstring& str, std::size_t pos, std::size_t count) :
-        String{std::wstring(str, pos, count)}
+        m_string(utf::convertWidetoUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
+                                         ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
     {
     }
 
     String::String(const std::u16string& str, std::size_t pos, std::size_t count) :
-        String{std::u16string(str, pos, count)}
+        m_string(utf::convertUtf16toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
+                                          ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
     {
     }
 
@@ -512,17 +513,17 @@ namespace tgui
 
     String::operator std::string() const
     {
-        return toStdString();
+        return utf::convertUtf32toStdStringUtf8(m_string);
     }
 
     String::operator std::wstring() const
     {
-        return toWideString();
+        return utf::convertUtf32toWide(m_string);
     }
 
     String::operator std::u16string() const
     {
-        return toUtf16();
+        return utf::convertUtf32toUtf16(m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -568,19 +569,18 @@ namespace tgui
         return *this;
     }
 
-    String& String::assign(const std::string& str)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::assign(std::u32string_view sv)
     {
-        return *this = str;
+        m_string.assign(sv);
+        return *this;
     }
+#endif
 
-    String& String::assign(const std::wstring& str)
+    String& String::assign(const char32_t* str)
     {
-        return *this = str;
-    }
-
-    String& String::assign(const std::u16string& str)
-    {
-        return *this = str;
+        m_string.assign(str);
+        return *this;
     }
 
     String& String::assign(const std::u32string& str)
@@ -595,19 +595,30 @@ namespace tgui
         return *this;
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::assign(std::u32string_view sv, std::size_t pos, std::size_t count)
+    {
+        m_string.assign(sv, pos, count);
+        return *this;
+    }
+#endif
+
     String& String::assign(const std::string& str, std::size_t pos, std::size_t count)
     {
-        return *this = {str, pos, count};
+        m_string.assign(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const std::wstring& str, std::size_t pos, std::size_t count)
     {
-        return *this = {str, pos, count};
+        m_string.assign(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const std::u16string& str, std::size_t pos, std::size_t count)
     {
-        return *this = {str, pos, count};
+        m_string.assign(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const std::u32string& str, std::size_t pos, std::size_t count)
@@ -620,21 +631,6 @@ namespace tgui
     {
         m_string.assign(str.m_string, pos, count);
         return *this;
-    }
-
-    String& String::assign(std::string&& str)
-    {
-        return *this = std::move(str);
-    }
-
-    String& String::assign(std::wstring&& str)
-    {
-        return *this = std::move(str);
-    }
-
-    String& String::assign(std::u16string&& str)
-    {
-        return *this = std::move(str);
     }
 
     String& String::assign(std::u32string&& str)
@@ -651,17 +647,20 @@ namespace tgui
 
     String& String::assign(const char* str, std::size_t count)
     {
-        return *this = {str, count};
+        m_string.assign(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const wchar_t* str, std::size_t count)
     {
-        return *this = {str, count};
+        m_string.assign(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const char16_t* str, std::size_t count)
     {
-        return *this = {str, count};
+        m_string.assign(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::assign(const char32_t* str, std::size_t count)
@@ -670,40 +669,22 @@ namespace tgui
         return *this;
     }
 
-    String& String::assign(const char* str)
-    {
-        return *this = str;
-    }
-
-    String& String::assign(const wchar_t* str)
-    {
-        return *this = str;
-    }
-
-    String& String::assign(const char16_t* str)
-    {
-        return *this = str;
-    }
-
-    String& String::assign(const char32_t* str)
-    {
-        m_string.assign(str);
-        return *this;
-    }
-
     String& String::assign(std::initializer_list<char> chars)
     {
-        return *this = String(chars);
+        m_string.assign(String{chars}.m_string);
+        return *this;
     }
 
     String& String::assign(std::initializer_list<wchar_t> chars)
     {
-        return *this = String(chars);
+        m_string.assign(String{chars}.m_string);
+        return *this;
     }
 
     String& String::assign(std::initializer_list<char16_t> chars)
     {
-        return *this = String(chars);
+        m_string.assign(String{chars}.m_string);
+        return *this;
     }
 
     String& String::assign(std::initializer_list<char32_t> chars)
@@ -714,17 +695,20 @@ namespace tgui
 
     String& String::assign(std::string::const_iterator first, std::string::const_iterator last)
     {
-        return *this = String(first, last);
+        m_string.assign(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::assign(std::wstring::const_iterator first, std::wstring::const_iterator last)
     {
-        return *this = String(first, last);
+        m_string.assign(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::assign(std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
-        return *this = String(first, last);
+        m_string.assign(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::assign(std::u32string::const_iterator first, std::u32string::const_iterator last)
@@ -906,21 +890,17 @@ namespace tgui
         return *this;
     }
 
-    String& String::insert(std::size_t index, const std::string& str)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::insert(std::size_t index, std::u32string_view sv)
     {
-        m_string.insert(index, String{str}.m_string);
+        m_string.insert(index, sv);
         return *this;
     }
+#endif
 
-    String& String::insert(std::size_t index, const std::wstring& str)
+    String& String::insert(std::size_t index, const char32_t* str)
     {
-        m_string.insert(index, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::insert(std::size_t index, const std::u16string& str)
-    {
-        m_string.insert(index, String{str}.m_string);
+        m_string.insert(index, str);
         return *this;
     }
 
@@ -935,6 +915,14 @@ namespace tgui
         m_string.insert(index, str.m_string);
         return *this;
     }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::insert(std::size_t index, std::u32string_view sv, std::size_t pos, std::size_t count)
+    {
+        m_string.insert(index, sv, pos, count);
+        return *this;
+    }
+#endif
 
     String& String::insert(std::size_t index, const std::string& str, std::size_t pos, std::size_t count)
     {
@@ -986,30 +974,6 @@ namespace tgui
     String& String::insert(std::size_t index, const char32_t* str, std::size_t count)
     {
         m_string.insert(index, str, count);
-        return *this;
-    }
-
-    String& String::insert(std::size_t index, const char* str)
-    {
-        m_string.insert(index, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::insert(std::size_t index, const wchar_t* str)
-    {
-        m_string.insert(index, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::insert(std::size_t index, const char16_t* str)
-    {
-        m_string.insert(index, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::insert(std::size_t index, const char32_t* str)
-    {
-        m_string.insert(index, str);
         return *this;
     }
 
@@ -1175,19 +1139,18 @@ namespace tgui
         return *this;
     }
 
-    String& String::append(const std::string& str)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::append(std::u32string_view sv)
     {
-        return append(String{str});
+        m_string.append(sv);
+        return *this;
     }
+#endif
 
-    String& String::append(const std::wstring& str)
+    String& String::append(const char32_t* str)
     {
-        return append(String{str});
-    }
-
-    String& String::append(const std::u16string& str)
-    {
-        return append(String{str});
+        m_string.append(str);
+        return *this;
     }
 
     String& String::append(const std::u32string& str)
@@ -1202,19 +1165,30 @@ namespace tgui
         return *this;
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::append(std::u32string_view sv, std::size_t pos, std::size_t count)
+    {
+        m_string.append(sv, pos, count);
+        return *this;
+    }
+#endif
+
     String& String::append(const std::string& str, std::size_t pos, std::size_t count)
     {
-        return append(String{str, pos, count});
+        m_string.append(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::append(const std::wstring& str, std::size_t pos, std::size_t count)
     {
-        return append(String{str, pos, count});
+        m_string.append(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::append(const std::u16string& str, std::size_t pos, std::size_t count)
     {
-        return append(String{str, pos, count});
+        m_string.append(String{str, pos, count}.m_string);
+        return *this;
     }
 
     String& String::append(const std::u32string& str, std::size_t pos, std::size_t count)
@@ -1231,17 +1205,20 @@ namespace tgui
 
     String& String::append(const char* str, std::size_t count)
     {
-        return append(String{str, count});
+        m_string.append(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::append(const wchar_t* str, std::size_t count)
     {
-        return append(String{str, count});
+        m_string.append(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::append(const char16_t* str, std::size_t count)
     {
-        return append(String{str, count});
+        m_string.append(String{str, count}.m_string);
+        return *this;
     }
 
     String& String::append(const char32_t* str, std::size_t count)
@@ -1250,40 +1227,22 @@ namespace tgui
         return *this;
     }
 
-    String& String::append(const char* str)
-    {
-        return append(String{str});
-    }
-
-    String& String::append(const wchar_t* str)
-    {
-        return append(String{str});
-    }
-
-    String& String::append(const char16_t* str)
-    {
-        return append(String{str});
-    }
-
-    String& String::append(const char32_t* str)
-    {
-        m_string.append(str);
-        return *this;
-    }
-
     String& String::append(std::initializer_list<char> chars)
     {
-        return append(String{chars});
+        m_string.append(String{chars}.m_string);
+        return *this;
     }
 
     String& String::append(std::initializer_list<wchar_t> chars)
     {
-        return append(String{chars});
+        m_string.append(String{chars}.m_string);
+        return *this;
     }
 
     String& String::append(std::initializer_list<char16_t> chars)
     {
-        return append(String{chars});
+        m_string.append(String{chars}.m_string);
+        return *this;
     }
 
     String& String::append(std::initializer_list<char32_t> chars)
@@ -1294,17 +1253,20 @@ namespace tgui
 
     String& String::append(std::string::const_iterator first, std::string::const_iterator last)
     {
-        return append(String{first, last});
+        m_string.append(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::append(std::wstring::const_iterator first, std::wstring::const_iterator last)
     {
-        return append(String{first, last});
+        m_string.append(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::append(std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
-        return append(String{first, last});
+        m_string.append(String{first, last}.m_string);
+        return *this;
     }
 
     String& String::append(std::u32string::const_iterator first, std::u32string::const_iterator last)
@@ -1323,19 +1285,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int String::compare(const std::string& str) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    int String::compare(std::u32string_view sv) const noexcept
     {
-        return m_string.compare(String{str}.m_string);
+        return m_string.compare(sv);
     }
+#endif
 
-    int String::compare(const std::wstring& str) const noexcept
+    int String::compare(const char32_t* s) const
     {
-        return m_string.compare(String{str}.m_string);
-    }
-
-    int String::compare(const std::u16string& str) const noexcept
-    {
-        return m_string.compare(String{str}.m_string);
+        return m_string.compare(s);
     }
 
     int String::compare(const std::u32string& str) const noexcept
@@ -1348,19 +1307,16 @@ namespace tgui
         return m_string.compare(str.m_string);
     }
 
-    int String::compare(std::size_t pos1, std::size_t count1, const std::string& str) const
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    int String::compare(std::size_t pos1, std::size_t count1, std::u32string_view sv) const
     {
-        return m_string.compare(pos1, count1, String{str}.m_string);
+        return m_string.compare(pos1, count1, sv);
     }
+#endif
 
-    int String::compare(std::size_t pos1, std::size_t count1, const std::wstring& str) const
+    int String::compare(std::size_t pos1, std::size_t count1, const char32_t* s) const
     {
-        return m_string.compare(pos1, count1, String{str}.m_string);
-    }
-
-    int String::compare(std::size_t pos1, std::size_t count1, const std::u16string& str) const
-    {
-        return m_string.compare(pos1, count1, String{str}.m_string);
+        return m_string.compare(pos1, count1, s);
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const
@@ -1372,6 +1328,13 @@ namespace tgui
     {
         return m_string.compare(pos1, count1, str.m_string);
     }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    int String::compare(std::size_t pos1, std::size_t count1, std::u32string_view sv, std::size_t pos2, std::size_t count2) const
+    {
+        return m_string.compare(pos1, count1, sv, pos2, count2);
+    }
+#endif
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::string& str, std::size_t pos2, std::size_t count2) const
     {
@@ -1398,46 +1361,6 @@ namespace tgui
         return m_string.compare(pos1, count1, str.m_string, pos2, count2);
     }
 
-    int String::compare(const char* s) const
-    {
-        return m_string.compare(String{s}.m_string);
-    }
-
-    int String::compare(const wchar_t* s) const
-    {
-        return m_string.compare(String{s}.m_string);
-    }
-
-    int String::compare(const char16_t* s) const
-    {
-        return m_string.compare(String{s}.m_string);
-    }
-
-    int String::compare(const char32_t* s) const
-    {
-        return m_string.compare(s);
-    }
-
-    int String::compare(std::size_t pos1, std::size_t count1, const char* s) const
-    {
-        return m_string.compare(pos1, count1, String{s}.m_string);
-    }
-
-    int String::compare(std::size_t pos1, std::size_t count1, const wchar_t* s) const
-    {
-        return m_string.compare(pos1, count1, String{s}.m_string);
-    }
-
-    int String::compare(std::size_t pos1, std::size_t count1, const char16_t* s) const
-    {
-        return m_string.compare(pos1, count1, String{s}.m_string);
-    }
-
-    int String::compare(std::size_t pos1, std::size_t count1, const char32_t* s) const
-    {
-        return m_string.compare(pos1, count1, s);
-    }
-
     int String::compare(std::size_t pos1, std::size_t count1, const char* s, std::size_t count2) const
     {
         return m_string.compare(pos1, count1, String{s, count2}.m_string);
@@ -1460,21 +1383,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String& String::replace(std::size_t pos, std::size_t count, const std::string& str)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::replace(std::size_t pos, std::size_t count, std::u32string_view sv)
     {
-        m_string.replace(pos, count, String{str}.m_string);
+        m_string.replace(pos, count, sv);
         return *this;
     }
+#endif
 
-    String& String::replace(std::size_t pos, std::size_t count, const std::wstring& str)
+    String& String::replace(std::size_t pos, std::size_t count, const char32_t* cstr)
     {
-        m_string.replace(pos, count, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::replace(std::size_t pos, std::size_t count, const std::u16string& str)
-    {
-        m_string.replace(pos, count, String{str}.m_string);
+        m_string.replace(pos, count, cstr);
         return *this;
     }
 
@@ -1490,21 +1409,17 @@ namespace tgui
         return *this;
     }
 
-    String& String::replace(const_iterator first, const_iterator last, const std::string& str)
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::replace(const_iterator first, const_iterator last, std::u32string_view sv)
     {
-        m_string.replace(first, last, String{str}.m_string);
+        m_string.replace(first, last, sv);
         return *this;
     }
+#endif
 
-    String& String::replace(const_iterator first, const_iterator last, const std::wstring& str)
+    String& String::replace(const_iterator first, const_iterator last, const char32_t* cstr)
     {
-        m_string.replace(first, last, String{str}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, const std::u16string& str)
-    {
-        m_string.replace(first, last, String{str}.m_string);
+        m_string.replace(first, last, cstr);
         return *this;
     }
 
@@ -1519,6 +1434,14 @@ namespace tgui
         m_string.replace(first, last, str.m_string);
         return *this;
     }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String& String::replace(std::size_t pos, std::size_t count, std::u32string_view sv, std::size_t pos2, std::size_t count2)
+    {
+        m_string.replace(pos, count, sv, pos2, count2);
+        return *this;
+    }
+#endif
 
     String& String::replace(std::size_t pos, std::size_t count, const std::string& str, std::size_t pos2, std::size_t count2)
     {
@@ -1619,54 +1542,6 @@ namespace tgui
     String& String::replace(const_iterator first, const_iterator last, const char32_t* cstr, std::size_t count2)
     {
         m_string.replace(first, last, cstr, count2);
-        return *this;
-    }
-
-    String& String::replace(std::size_t pos, std::size_t count, const char* cstr)
-    {
-        m_string.replace(pos, count, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(std::size_t pos, std::size_t count, const wchar_t* cstr)
-    {
-        m_string.replace(pos, count, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(std::size_t pos, std::size_t count, const char16_t* cstr)
-    {
-        m_string.replace(pos, count, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(std::size_t pos, std::size_t count, const char32_t* cstr)
-    {
-        m_string.replace(pos, count, cstr);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, const char* cstr)
-    {
-        m_string.replace(first, last, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, const wchar_t* cstr)
-    {
-        m_string.replace(first, last, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, const char16_t* cstr)
-    {
-        m_string.replace(first, last, String{cstr}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, const char32_t* cstr)
-    {
-        m_string.replace(first, last, cstr);
         return *this;
     }
 
@@ -1792,19 +1667,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    bool String::contains(std::u32string_view sv) const noexcept
-    {
-#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
-        return m_string.contains(sv);
-#else
-        return find(sv) != npos;
-#endif
-    }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool String::contains(char c) const noexcept
     {
         return contains(static_cast<char32_t>(c));
@@ -1820,56 +1682,74 @@ namespace tgui
         return contains(static_cast<char32_t>(c));
     }
 
+#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
     bool String::contains(char32_t c) const noexcept
     {
-#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
         return m_string.contains(c);
-#else
-        return find(c) != npos;
+    }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    bool String::contains(std::u32string_view sv) const noexcept
+    {
+        return m_string.contains(sv);
+    }
 #endif
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool String::contains(const char* s) const
-    {
-        return find(s) != npos;
-    }
-
-    bool String::contains(const wchar_t* s) const
-    {
-        return find(s) != npos;
-    }
-
-    bool String::contains(const char16_t* s) const
-    {
-        return find(s) != npos;
-    }
 
     bool String::contains(const char32_t* s) const
     {
-#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
         return m_string.contains(s);
-#else
-        return find(s) != npos;
-#endif
     }
+
+    bool String::contains(const std::u32string& s) const
+    {
+        return m_string.contains(s);
+    }
+
+    bool String::contains(const String& s) const
+    {
+        return m_string.contains(s.m_string);
+    }
+#else
+    bool String::contains(char32_t c) const noexcept
+    {
+        return find(c) != npos;
+    }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    bool String::contains(std::u32string_view sv) const noexcept
+    {
+        return find(sv) != npos;
+    }
+#endif
+
+    bool String::contains(const char32_t* s) const
+    {
+        return find(s) != npos;
+    }
+
+    bool String::contains(const std::u32string& s) const
+    {
+        return find(s) != npos;
+    }
+
+    bool String::contains(const String& s) const
+    {
+        return find(s.m_string) != npos;
+    }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t String::find(const std::string& str, std::size_t pos) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::find(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.find(String{str}.m_string, pos);
+        return m_string.find(sv, pos);
     }
+#endif
 
-    std::size_t String::find(const std::wstring& str, std::size_t pos) const noexcept
+    std::size_t String::find(const char32_t* s, std::size_t pos) const
     {
-        return m_string.find(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find(String{str}.m_string, pos);
+        return m_string.find(s, pos);
     }
 
     std::size_t String::find(const std::u32string& str, std::size_t pos) const noexcept
@@ -1902,26 +1782,6 @@ namespace tgui
         return m_string.find(s, pos, count);
     }
 
-    std::size_t String::find(const char* s, std::size_t pos) const
-    {
-        return m_string.find(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.find(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.find(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.find(s, pos);
-    }
-
     std::size_t String::find(char ch, std::size_t pos) const noexcept
     {
         return m_string.find(static_cast<char32_t>(ch), pos);
@@ -1942,28 +1802,18 @@ namespace tgui
         return m_string.find(ch, pos);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    std::size_t String::find(std::u32string_view sv, std::size_t pos) const noexcept
+    std::size_t String::find_first_of(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.find(sv, pos);
+        return m_string.find_first_of(sv, pos);
     }
 #endif
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::size_t String::find_first_of(const std::string& str, std::size_t pos) const noexcept
+    std::size_t String::find_first_of(const char32_t* s, std::size_t pos) const
     {
-        return m_string.find_first_of(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find_first_of(const std::wstring& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_first_of(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find_first_of(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_first_of(String{str}.m_string, pos);
+        return m_string.find_first_of(s, pos);
     }
 
     std::size_t String::find_first_of(const std::u32string& str, std::size_t pos) const noexcept
@@ -1996,26 +1846,6 @@ namespace tgui
         return m_string.find_first_of(s, pos, count);
     }
 
-    std::size_t String::find_first_of(const char* s, std::size_t pos) const
-    {
-        return m_string.find_first_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_of(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_of(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_of(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_of(s, pos);
-    }
-
     std::size_t String::find_first_of(char ch, std::size_t pos) const noexcept
     {
         return m_string.find_first_of(static_cast<char32_t>(ch), pos);
@@ -2038,19 +1868,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t String::find_first_not_of(const std::string& str, std::size_t pos) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::find_first_not_of(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.find_first_not_of(String{str}.m_string, pos);
+        return m_string.find_first_not_of(sv, pos);
     }
+#endif
 
-    std::size_t String::find_first_not_of(const std::wstring& str, std::size_t pos) const noexcept
+    std::size_t String::find_first_not_of(const char32_t* s, std::size_t pos) const
     {
-        return m_string.find_first_not_of(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find_first_not_of(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_first_not_of(String{str}.m_string, pos);
+        return m_string.find_first_not_of(s, pos);
     }
 
     std::size_t String::find_first_not_of(const std::u32string& str, std::size_t pos) const noexcept
@@ -2083,26 +1910,6 @@ namespace tgui
         return m_string.find_first_not_of(s, pos, count);
     }
 
-    std::size_t String::find_first_not_of(const char* s, std::size_t pos) const
-    {
-        return m_string.find_first_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_not_of(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_not_of(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_first_not_of(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_not_of(s, pos);
-    }
-
     std::size_t String::find_first_not_of(char ch, std::size_t pos) const noexcept
     {
         return m_string.find_first_not_of(static_cast<char32_t>(ch), pos);
@@ -2125,19 +1932,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t String::rfind(const std::string& str, std::size_t pos) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::rfind(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.rfind(String{str}.m_string, pos);
+        return m_string.rfind(sv, pos);
     }
+#endif
 
-    std::size_t String::rfind(const std::wstring& str, std::size_t pos) const noexcept
+    std::size_t String::rfind(const char32_t* s, std::size_t pos) const
     {
-        return m_string.rfind(String{str}.m_string, pos);
-    }
-
-    std::size_t String::rfind(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.rfind(String{str}.m_string, pos);
+        return m_string.rfind(s, pos);
     }
 
     std::size_t String::rfind(const std::u32string& str, std::size_t pos) const noexcept
@@ -2170,26 +1974,6 @@ namespace tgui
         return m_string.rfind(s, pos, count);
     }
 
-    std::size_t String::rfind(const char* s, std::size_t pos) const
-    {
-        return m_string.rfind(String{s}.m_string, pos);
-    }
-
-    std::size_t String::rfind(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.rfind(String{s}.m_string, pos);
-    }
-
-    std::size_t String::rfind(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.rfind(String{s}.m_string, pos);
-    }
-
-    std::size_t String::rfind(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.rfind(s, pos);
-    }
-
     std::size_t String::rfind(char ch, std::size_t pos) const noexcept
     {
         return m_string.rfind(static_cast<char32_t>(ch), pos);
@@ -2212,19 +1996,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t String::find_last_of(const std::string& str, std::size_t pos) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::find_last_of(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.find_last_of(String{str}.m_string, pos);
+        return m_string.find_last_of(sv, pos);
     }
+#endif
 
-    std::size_t String::find_last_of(const std::wstring& str, std::size_t pos) const noexcept
+    std::size_t String::find_last_of(const char32_t* s, std::size_t pos) const
     {
-        return m_string.find_last_of(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find_last_of(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_last_of(String{str}.m_string, pos);
+        return m_string.find_last_of(s, pos);
     }
 
     std::size_t String::find_last_of(const std::u32string& str, std::size_t pos) const noexcept
@@ -2257,26 +2038,6 @@ namespace tgui
         return m_string.find_last_of(s, pos, count);
     }
 
-    std::size_t String::find_last_of(const char* s, std::size_t pos) const
-    {
-        return m_string.find_last_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_of(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_of(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_of(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_of(s, pos);
-    }
-
     std::size_t String::find_last_of(char ch, std::size_t pos) const noexcept
     {
         return m_string.find_last_of(static_cast<char32_t>(ch), pos);
@@ -2299,19 +2060,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t String::find_last_not_of(const std::string& str, std::size_t pos) const noexcept
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    std::size_t String::find_last_not_of(std::u32string_view sv, std::size_t pos) const noexcept
     {
-        return m_string.find_last_not_of(String{str}.m_string, pos);
+        return m_string.find_last_not_of(sv, pos);
     }
+#endif
 
-    std::size_t String::find_last_not_of(const std::wstring& str, std::size_t pos) const noexcept
+    std::size_t String::find_last_not_of(const char32_t* s, std::size_t pos) const
     {
-        return m_string.find_last_not_of(String{str}.m_string, pos);
-    }
-
-    std::size_t String::find_last_not_of(const std::u16string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_last_not_of(String{str}.m_string, pos);
+        return m_string.find_last_not_of(s, pos);
     }
 
     std::size_t String::find_last_not_of(const std::u32string& str, std::size_t pos) const noexcept
@@ -2342,26 +2100,6 @@ namespace tgui
     std::size_t String::find_last_not_of(const char32_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find_last_not_of(s, pos, count);
-    }
-
-    std::size_t String::find_last_not_of(const char* s, std::size_t pos) const
-    {
-        return m_string.find_last_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_not_of(const wchar_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_not_of(const char16_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_not_of(String{s}.m_string, pos);
-    }
-
-    std::size_t String::find_last_not_of(const char32_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_not_of(s, pos);
     }
 
     std::size_t String::find_last_not_of(char ch, std::size_t pos) const noexcept
@@ -2397,19 +2135,6 @@ namespace tgui
         os << std::wstring(str);
         return os;
     }
-
-    // Doesn't compile with libc++
-    //std::basic_ostream<char16_t>& operator<<(std::basic_ostream<char16_t>& os, const String& str)
-    //{
-    //    os << std::u16string(str);
-    //    return os;
-    //}
-
-    //std::basic_ostream<char32_t>& operator<<(std::basic_ostream<char32_t>& os, const String& str)
-    //{
-    //    os << std::u32string(str);
-    //    return os;
-    //}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

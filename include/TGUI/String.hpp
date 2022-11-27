@@ -203,7 +203,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool equalIgnoreCase(const String& other) const;
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks whether the first part of the string matches the given substring
         ///
@@ -211,8 +211,8 @@ namespace tgui
         ///
         /// @return Does the first part of the string match the given substring?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool startsWith(const String& substring) const;
-
+        TGUI_DEPRECATED("Use starts_with instead") bool startsWith(const String& substring) const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks whether the first part of the string matches the given substring, case-insensitive
@@ -223,7 +223,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool startsWithIgnoreCase(const String& substring) const;
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks whether the last part of the string matches the given substring
         ///
@@ -231,8 +231,8 @@ namespace tgui
         ///
         /// @return Does the back of the string match the given substring?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool endsWith(const String& substring) const;
-
+        TGUI_DEPRECATED("Use ends_with instead") bool endsWith(const String& substring) const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks whether the last part of the string matches the given substring, case-insensitive
@@ -430,21 +430,22 @@ namespace tgui
         String& assign(std::size_t count, char16_t ch);
         String& assign(std::size_t count, char32_t ch);
 
-        String& assign(const std::string& str);
-        String& assign(const std::wstring& str);
-        String& assign(const std::u16string& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& assign(std::u32string_view sv);
+#endif
+        String& assign(const char32_t* str);
         String& assign(const std::u32string& str);
         String& assign(const String& str);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& assign(std::u32string_view sv, std::size_t pos, std::size_t count = npos);
+#endif
         String& assign(const std::string& str, std::size_t pos, std::size_t count = npos);
         String& assign(const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& assign(const std::u16string& str, std::size_t pos, std::size_t count = npos);
         String& assign(const std::u32string& str, std::size_t pos, std::size_t count = npos);
         String& assign(const String& str, std::size_t pos, std::size_t count = npos);
 
-        String& assign(std::string&& str);
-        String& assign(std::wstring&& str);
-        String& assign(std::u16string&& str);
         String& assign(std::u32string&& str);
         String& assign(String&& str);
 
@@ -452,11 +453,6 @@ namespace tgui
         String& assign(const wchar_t* str, std::size_t count);
         String& assign(const char16_t* str, std::size_t count);
         String& assign(const char32_t* str, std::size_t count);
-
-        String& assign(const char* str);
-        String& assign(const wchar_t* str);
-        String& assign(const char16_t* str);
-        String& assign(const char32_t* str);
 
         String& assign(std::initializer_list<char> chars);
         String& assign(std::initializer_list<wchar_t> chars);
@@ -540,12 +536,16 @@ namespace tgui
         String& insert(std::size_t index, std::size_t count, char16_t ch);
         String& insert(std::size_t index, std::size_t count, char32_t ch);
 
-        String& insert(std::size_t index, const std::string& str);
-        String& insert(std::size_t index, const std::wstring& str);
-        String& insert(std::size_t index, const std::u16string& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& insert(std::size_t index, std::u32string_view sv);
+#endif
+        String& insert(std::size_t index, const char32_t* str);
         String& insert(std::size_t index, const std::u32string& str);
         String& insert(std::size_t index, const String& str);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& insert(std::size_t index, std::u32string_view sv, std::size_t pos, std::size_t count = npos);
+#endif
         String& insert(std::size_t index, const std::string& str, std::size_t pos, std::size_t count = npos);
         String& insert(std::size_t index, const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& insert(std::size_t index, const std::u16string& str, std::size_t pos, std::size_t count = npos);
@@ -556,11 +556,6 @@ namespace tgui
         String& insert(std::size_t index, const wchar_t* str, std::size_t count);
         String& insert(std::size_t index, const char16_t* str, std::size_t count);
         String& insert(std::size_t index, const char32_t* str, std::size_t count);
-
-        String& insert(std::size_t index, const char* str);
-        String& insert(std::size_t index, const wchar_t* str);
-        String& insert(std::size_t index, const char16_t* str);
-        String& insert(std::size_t index, const char32_t* str);
 
         iterator insert(const_iterator pos, char ch);
         iterator insert(const_iterator pos, wchar_t ch);
@@ -599,12 +594,16 @@ namespace tgui
         String& append(std::size_t count, char16_t ch);
         String& append(std::size_t count, char32_t ch);
 
-        String& append(const std::string& str);
-        String& append(const std::wstring& str);
-        String& append(const std::u16string& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& append(std::u32string_view sv);
+#endif
+        String& append(const char32_t* str);
         String& append(const std::u32string& str);
         String& append(const String& str);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& append(std::u32string_view sv, std::size_t pos, std::size_t count = npos);
+#endif
         String& append(const std::string& str, std::size_t pos, std::size_t count = npos);
         String& append(const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& append(const std::u16string& str, std::size_t pos, std::size_t count = npos);
@@ -615,11 +614,6 @@ namespace tgui
         String& append(const wchar_t* str, std::size_t count);
         String& append(const char16_t* str, std::size_t count);
         String& append(const char32_t* str, std::size_t count);
-
-        String& append(const char* str);
-        String& append(const wchar_t* str);
-        String& append(const char16_t* str);
-        String& append(const char32_t* str);
 
         String& append(std::string::const_iterator first, std::string::const_iterator last);
         String& append(std::wstring::const_iterator first, std::wstring::const_iterator last);
@@ -633,51 +627,51 @@ namespace tgui
 
         String& operator+=(const String& str);
 
-        int compare(const std::string& str) const noexcept;
-        int compare(const std::wstring& str) const noexcept;
-        int compare(const std::u16string& str) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        int compare(std::u32string_view sv) const noexcept;
+#endif
+        int compare(const char32_t* s) const;
         int compare(const std::u32string& str) const noexcept;
         int compare(const String& str) const noexcept;
 
-        int compare(std::size_t pos1, std::size_t count1, const std::string& str) const;
-        int compare(std::size_t pos1, std::size_t count1, const std::wstring& str) const;
-        int compare(std::size_t pos1, std::size_t count1, const std::u16string& str) const;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        int compare(std::size_t pos1, std::size_t count1, std::u32string_view sv) const;
+#endif
+        int compare(std::size_t pos1, std::size_t count1, const char32_t* s) const;
         int compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const;
         int compare(std::size_t pos1, std::size_t count1, const String& str) const;
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        int compare(std::size_t pos1, std::size_t count1, std::u32string_view sv, std::size_t pos2, std::size_t count2 = npos) const;
+#endif
         int compare(std::size_t pos1, std::size_t count1, const std::string& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::wstring& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::u16string& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::u32string& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const String& str, std::size_t pos2, std::size_t count2 = npos) const;
 
-        int compare(const char* s) const;
-        int compare(const wchar_t* s) const;
-        int compare(const char16_t* s) const;
-        int compare(const char32_t* s) const;
-
-        int compare(std::size_t pos1, std::size_t count1, const char* s) const;
-        int compare(std::size_t pos1, std::size_t count1, const wchar_t* s) const;
-        int compare(std::size_t pos1, std::size_t count1, const char16_t* s) const;
-        int compare(std::size_t pos1, std::size_t count1, const char32_t* s) const;
-
         int compare(std::size_t pos1, std::size_t count1, const char* s, std::size_t count2) const;
         int compare(std::size_t pos1, std::size_t count1, const wchar_t* s, std::size_t count2) const;
         int compare(std::size_t pos1, std::size_t count1, const char16_t* s, std::size_t count2) const;
         int compare(std::size_t pos1, std::size_t count1, const char32_t* s, std::size_t count2) const;
 
-        String& replace(std::size_t pos, std::size_t count, const std::string& str);
-        String& replace(std::size_t pos, std::size_t count, const std::wstring& str);
-        String& replace(std::size_t pos, std::size_t count, const std::u16string& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& replace(std::size_t pos, std::size_t count, std::u32string_view sv);
+#endif
+        String& replace(std::size_t pos, std::size_t count, const char32_t* cstr);
         String& replace(std::size_t pos, std::size_t count, const std::u32string& str);
         String& replace(std::size_t pos, std::size_t count, const String& str);
 
-        String& replace(const_iterator first, const_iterator last, const std::string& str);
-        String& replace(const_iterator first, const_iterator last, const std::wstring& str);
-        String& replace(const_iterator first, const_iterator last, const std::u16string& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& replace(const_iterator first, const_iterator last, std::u32string_view sv);
+#endif
+        String& replace(const_iterator first, const_iterator last, const char32_t* cstr);
         String& replace(const_iterator first, const_iterator last, const std::u32string& str);
         String& replace(const_iterator first, const_iterator last, const String& str);
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        String& replace(std::size_t pos, std::size_t count, std::u32string_view sv, std::size_t pos2, std::size_t count2 = npos);
+#endif
         String& replace(std::size_t pos, std::size_t count, const std::string& str, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const std::wstring& str, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const std::u16string& str, std::size_t pos2, std::size_t count2 = npos);
@@ -698,16 +692,6 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, const wchar_t* cstr, std::size_t count2);
         String& replace(const_iterator first, const_iterator last, const char16_t* cstr, std::size_t count2);
         String& replace(const_iterator first, const_iterator last, const char32_t* cstr, std::size_t count2);
-
-        String& replace(std::size_t pos, std::size_t count, const char* cstr);
-        String& replace(std::size_t pos, std::size_t count, const wchar_t* cstr);
-        String& replace(std::size_t pos, std::size_t count, const char16_t* cstr);
-        String& replace(std::size_t pos, std::size_t count, const char32_t* cstr);
-
-        String& replace(const_iterator first, const_iterator last, const char* cstr);
-        String& replace(const_iterator first, const_iterator last, const wchar_t* cstr);
-        String& replace(const_iterator first, const_iterator last, const char16_t* cstr);
-        String& replace(const_iterator first, const_iterator last, const char32_t* cstr);
 
         String& replace(std::size_t pos, std::size_t count, std::size_t count2, char ch);
         String& replace(std::size_t pos, std::size_t count, std::size_t count2, wchar_t ch);
@@ -736,23 +720,22 @@ namespace tgui
 
         void swap(String& other);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        bool contains(std::u32string_view sv) const noexcept;
-#endif
-
         bool contains(char c) const noexcept;
         bool contains(wchar_t c) const noexcept;
         bool contains(char16_t c) const noexcept;
         bool contains(char32_t c) const noexcept;
 
-        bool contains(const char* s) const;
-        bool contains(const wchar_t* s) const;
-        bool contains(const char16_t* s) const;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        bool contains(std::u32string_view sv) const noexcept;
+#endif
         bool contains(const char32_t* s) const;
+        bool contains(const std::u32string& s) const;
+        bool contains(const String& s) const;
 
-        std::size_t find(const std::string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find(const std::wstring& str, std::size_t pos = 0) const noexcept;
-        std::size_t find(const std::u16string& str, std::size_t pos = 0) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t find(std::u32string_view sv, std::size_t pos = 0) const noexcept;
+#endif
+        std::size_t find(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find(const String& str, std::size_t pos = 0) const noexcept;
 
@@ -761,23 +744,15 @@ namespace tgui
         std::size_t find(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        std::size_t find(const char* s, std::size_t pos = 0) const;
-        std::size_t find(const wchar_t* s, std::size_t pos = 0) const;
-        std::size_t find(const char16_t* s, std::size_t pos = 0) const;
-        std::size_t find(const char32_t* s, std::size_t pos = 0) const;
-
         std::size_t find(char ch, std::size_t pos = 0) const noexcept;
         std::size_t find(wchar_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find(char32_t ch, std::size_t pos = 0) const noexcept;
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find(std::u32string_view sv, std::size_t pos = 0) const noexcept;
+        std::size_t find_first_of(std::u32string_view sv, std::size_t pos = 0) const noexcept;
 #endif
-
-        std::size_t find_first_of(const std::string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_of(const std::wstring& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_of(const std::u16string& str, std::size_t pos = 0) const noexcept;
+        std::size_t find_first_of(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find_first_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(const String& str, std::size_t pos = 0) const noexcept;
 
@@ -786,19 +761,15 @@ namespace tgui
         std::size_t find_first_of(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find_first_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        std::size_t find_first_of(const char* s, std::size_t pos = 0) const;
-        std::size_t find_first_of(const wchar_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_of(const char16_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_of(const char32_t* s, std::size_t pos = 0) const;
-
         std::size_t find_first_of(char ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(wchar_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-        std::size_t find_first_not_of(const std::string& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_not_of(const std::wstring& str, std::size_t pos = 0) const noexcept;
-        std::size_t find_first_not_of(const std::u16string& str, std::size_t pos = 0) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t find_first_not_of(std::u32string_view sv, std::size_t pos = 0) const noexcept;
+#endif
+        std::size_t find_first_not_of(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find_first_not_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(const String& str, std::size_t pos = 0) const noexcept;
 
@@ -807,19 +778,15 @@ namespace tgui
         std::size_t find_first_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find_first_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        std::size_t find_first_not_of(const char* s, std::size_t pos = 0) const;
-        std::size_t find_first_not_of(const wchar_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_not_of(const char16_t* s, std::size_t pos = 0) const;
-        std::size_t find_first_not_of(const char32_t* s, std::size_t pos = 0) const;
-
         std::size_t find_first_not_of(char ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(wchar_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-        std::size_t rfind(const std::string& str, std::size_t pos = npos) const noexcept;
-        std::size_t rfind(const std::wstring& str, std::size_t pos = npos) const noexcept;
-        std::size_t rfind(const std::u16string& str, std::size_t pos = npos) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t rfind(std::u32string_view sv, std::size_t pos = npos) const noexcept;
+#endif
+        std::size_t rfind(const char32_t* s, std::size_t pos = npos) const;
         std::size_t rfind(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t rfind(const String& str, std::size_t pos = npos) const noexcept;
 
@@ -828,19 +795,15 @@ namespace tgui
         std::size_t rfind(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t rfind(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        std::size_t rfind(const char* s, std::size_t pos = npos) const;
-        std::size_t rfind(const wchar_t* s, std::size_t pos = npos) const;
-        std::size_t rfind(const char16_t* s, std::size_t pos = npos) const;
-        std::size_t rfind(const char32_t* s, std::size_t pos = npos) const;
-
         std::size_t rfind(char ch, std::size_t pos = npos) const noexcept;
         std::size_t rfind(wchar_t ch, std::size_t pos = npos) const noexcept;
         std::size_t rfind(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t rfind(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        std::size_t find_last_of(const std::string& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_of(const std::wstring& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_of(const std::u16string& str, std::size_t pos = npos) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t find_last_of(std::u32string_view sv, std::size_t pos = npos) const noexcept;
+#endif
+        std::size_t find_last_of(const char32_t* s, std::size_t pos = npos) const;
         std::size_t find_last_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(const String& str, std::size_t pos = npos) const noexcept;
 
@@ -849,19 +812,15 @@ namespace tgui
         std::size_t find_last_of(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find_last_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        std::size_t find_last_of(const char* s, std::size_t pos = npos) const;
-        std::size_t find_last_of(const wchar_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_of(const char16_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_of(const char32_t* s, std::size_t pos = npos) const;
-
         std::size_t find_last_of(char ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(wchar_t ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        std::size_t find_last_not_of(const std::string& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_not_of(const std::wstring& str, std::size_t pos = npos) const noexcept;
-        std::size_t find_last_not_of(const std::u16string& str, std::size_t pos = npos) const noexcept;
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        std::size_t find_last_not_of(std::u32string_view sv, std::size_t pos = npos) const noexcept;
+#endif
+        std::size_t find_last_not_of(const char32_t* s, std::size_t pos = npos) const;
         std::size_t find_last_not_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(const String& str, std::size_t pos = npos) const noexcept;
 
@@ -869,11 +828,6 @@ namespace tgui
         std::size_t find_last_not_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find_last_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
         std::size_t find_last_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
-
-        std::size_t find_last_not_of(const char* s, std::size_t pos = npos) const;
-        std::size_t find_last_not_of(const wchar_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_not_of(const char16_t* s, std::size_t pos = npos) const;
-        std::size_t find_last_not_of(const char32_t* s, std::size_t pos = npos) const;
 
         std::size_t find_last_not_of(char ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(wchar_t ch, std::size_t pos = npos) const noexcept;
@@ -899,55 +853,40 @@ namespace tgui
         inline String(const std::u8string& str, std::size_t pos);
         inline String(const std::u8string& str, std::size_t pos, std::size_t count);
         inline String(const char8_t* str, std::size_t count);
-        inline String(std::initializer_list<char8_t> chars);
-        inline String(std::u8string::const_iterator first, std::u8string::const_iterator last);
+        inline explicit String(std::initializer_list<char8_t> chars);
+        inline explicit String(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline explicit operator std::u8string() const;
 
         inline std::u8string toUtf8() const;
 
         inline String& assign(std::size_t count, char8_t ch);
-        inline String& assign(const std::u8string& str);
         inline String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
-        inline String& assign(std::u8string&& str);
         inline String& assign(const char8_t* str, std::size_t count);
-        inline String& assign(const char8_t* str);
         inline String& assign(std::initializer_list<char8_t> chars);
         inline String& assign(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline String& insert(std::size_t index, std::size_t count, char8_t ch);
-        inline String& insert(std::size_t index, const std::u8string& str);
         inline String& insert(std::size_t index, const std::u8string& str, std::size_t pos, std::size_t count = npos);
         inline String& insert(std::size_t index, const char8_t* str, std::size_t count);
-        inline String& insert(std::size_t index, const char8_t* str);
         inline iterator insert(const_iterator pos, char8_t ch);
         inline iterator insert(const_iterator pos, std::size_t count, char8_t ch);
         inline iterator insert(const_iterator pos, std::initializer_list<char8_t> chars);
         inline iterator insert(const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline String& append(std::size_t count, char8_t ch);
-        inline String& append(const std::u8string& str);
         inline String& append(const std::u8string& str, std::size_t pos, std::size_t count = npos);
         inline String& append(const char8_t* str, std::size_t count);
-        inline String& append(const char8_t* str);
         inline String& append(std::initializer_list<char8_t> chars);
         inline String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        inline int compare(const std::u8string& str) const noexcept;
-        inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str) const;
         inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos) const;
-        inline int compare(const char8_t* s) const;
-        inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s) const;
         inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
 
-        inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str);
-        inline String& replace(const_iterator first, const_iterator last, const std::u8string& str);
         inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
         inline String& replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2);
         inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr, std::size_t count2);
         inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2);
-        inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr);
-        inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr);
         inline String& replace(std::size_t pos, std::size_t count, std::size_t count2, char8_t ch);
         inline String& replace(const_iterator first, const_iterator last, std::size_t count2, char8_t ch);
         inline String& replace(const_iterator first, const_iterator last, std::initializer_list<char8_t> chars);
@@ -955,39 +894,51 @@ namespace tgui
         inline void resize(std::size_t count, char8_t ch);
 
         inline bool contains(char8_t c) const noexcept;
-        inline bool contains(const char8_t* s) const noexcept;
 
-        inline std::size_t find(const std::u8string& str, std::size_t pos = 0) const noexcept;
         inline std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t find(const char8_t* s, std::size_t pos = 0) const;
         inline std::size_t find(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        inline std::size_t find_first_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
         inline std::size_t find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t find_first_of(const char8_t* s, std::size_t pos = 0) const;
         inline std::size_t find_first_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        inline std::size_t find_first_not_of(const std::u8string& str, std::size_t pos = 0) const noexcept;
         inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos = 0) const;
         inline std::size_t find_first_not_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        inline std::size_t rfind(const std::u8string& str, std::size_t pos = npos) const noexcept;
         inline std::size_t rfind(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t rfind(const char8_t* s, std::size_t pos = npos) const;
         inline std::size_t rfind(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        inline std::size_t find_last_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
         inline std::size_t find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t find_last_of(const char8_t* s, std::size_t pos = npos) const;
         inline std::size_t find_last_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        inline std::size_t find_last_not_of(const std::u8string& str, std::size_t pos = npos) const noexcept;
         inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos = npos) const;
         inline std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
+#endif
 
-        //inline friend std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
+        constexpr inline bool starts_with(std::u32string_view sv) const noexcept;
+        constexpr inline bool starts_with(const char32_t* s) const;
+        constexpr inline bool starts_with(const std::u32string& s) const;
+        constexpr inline bool starts_with(const String& s) const;
+
+        constexpr inline bool starts_with(char ch) const noexcept;
+        constexpr inline bool starts_with(wchar_t ch) const noexcept;
+        constexpr inline bool starts_with(char8_t ch) const noexcept;
+        constexpr inline bool starts_with(char16_t ch) const noexcept;
+        constexpr inline bool starts_with(char32_t ch) const noexcept;
+
+        constexpr inline bool ends_with(std::u32string_view sv) const noexcept;
+        constexpr inline bool ends_with(const char32_t* s) const;
+        constexpr inline bool ends_with(const std::u32string& s) const;
+        constexpr inline bool ends_with(const String& s) const;
+
+        constexpr inline bool ends_with(char ch) const noexcept;
+        constexpr inline bool ends_with(wchar_t ch) const noexcept;
+        constexpr inline bool ends_with(char8_t ch) const noexcept;
+        constexpr inline bool ends_with(char16_t ch) const noexcept;
+        constexpr inline bool ends_with(char32_t ch) const noexcept;
+#else
+        bool starts_with(const String& s) const;
+        bool ends_with(const String& s) const;
 #endif
     };
 
@@ -1040,10 +991,11 @@ namespace tgui
         return {left.m_string + std::move(right.m_string)};
     }
 
-    TGUI_API std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& str);
-    TGUI_API std::basic_ostream<wchar_t>& operator<<(std::basic_ostream<wchar_t>& os, const String& str);
-    //TGUI_API std::basic_ostream<char16_t>& operator<<(std::basic_ostream<char16_t>& os, const String& str);
-    //TGUI_API std::basic_ostream<char32_t>& operator<<(std::basic_ostream<char32_t>& os, const String& str);
+    // We don't provide operator<< implmentations for basic_ostream<charX_t> streams because
+    // even clang 15 can't compile them when using libc++.
+    // We could define them for VS, GCC and for clang with libstdc++, but there is no real use for them.
+    TGUI_API std::ostream& operator<<(std::ostream& os, const String& str);
+    TGUI_API std::wostream& operator<<(std::wostream& os, const String& str);
 
 
     // UTF-8 function are defined in the header so that they can be enabled/disabled based on
@@ -1096,12 +1048,24 @@ namespace tgui
 
     inline String::operator std::u8string() const
     {
-        return toUtf8();
+        return utf::convertUtf32toUtf8(m_string);
     }
 
     inline std::u8string String::toUtf8() const
     {
         return utf::convertUtf32toUtf8(m_string);
+    }
+
+    inline String& String::assign(const std::u8string& str, std::size_t pos, std::size_t count)
+    {
+        m_string.assign(String{str, pos, count}.m_string);
+        return *this;
+    }
+
+    inline String& String::assign(const char8_t* str, std::size_t count)
+    {
+        m_string.assign(String{str, count}.m_string);
+        return *this;
     }
 
     inline String& String::assign(std::size_t count, char8_t ch)
@@ -1110,50 +1074,21 @@ namespace tgui
         return *this;
     }
 
-    inline String& String::assign(const std::u8string& str)
-    {
-        return *this = str;
-    }
-
-    inline String& String::assign(const std::u8string& str, std::size_t pos, std::size_t count)
-    {
-        return *this = {str, pos, count};
-    }
-
-    inline String& String::assign(std::u8string&& str)
-    {
-        return *this = std::move(str);
-    }
-
-    inline String& String::assign(const char8_t* str, std::size_t count)
-    {
-        return *this = {str, count};
-    }
-
-    inline String& String::assign(const char8_t* str)
-    {
-        return *this = str;
-    }
-
     inline String& String::assign(std::initializer_list<char8_t> chars)
     {
-        return *this = chars;
+        m_string.assign(String{chars}.m_string);
+        return *this;
     }
 
     inline String& String::assign(std::u8string::const_iterator first, std::u8string::const_iterator last)
     {
-        return *this = {first, last};
+        m_string.assign(String{first, last}.m_string);
+        return *this;
     }
 
     inline String& String::insert(std::size_t index, std::size_t count, char8_t ch)
     {
         m_string.insert(index, count, static_cast<char32_t>(ch));
-        return *this;
-    }
-
-    inline String& String::insert(std::size_t index, const std::u8string& str)
-    {
-        m_string.insert(index, String{str}.m_string);
         return *this;
     }
 
@@ -1169,12 +1104,6 @@ namespace tgui
         return *this;
     }
 
-    inline String& String::insert(std::size_t index, const char8_t* str)
-    {
-        m_string.insert(index, String{str}.m_string);
-        return *this;
-    }
-
     inline String::iterator String::insert(String::const_iterator pos, char8_t ch)
     {
         return m_string.insert(pos, static_cast<char32_t>(ch));
@@ -1187,59 +1116,44 @@ namespace tgui
 
     inline String::iterator String::insert(String::const_iterator pos, std::initializer_list<char8_t> chars)
     {
-        auto tmpStr = String{chars};
+        const std::u32string tmpStr(utf::convertUtf8toUtf32(chars.begin(), chars.end()));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     inline String::iterator String::insert(String::const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last)
     {
-        auto tmpStr = String{first, last};
+        const std::u32string tmpStr(utf::convertUtf8toUtf32(first, last));
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
     inline String& String::append(std::size_t count, char8_t ch)
     {
-        return append(String(count, ch));
-    }
-
-    inline String& String::append(const std::u8string& str)
-    {
-        return append(String{str});
+        m_string.append(count, static_cast<char32_t>(ch));
+        return *this;
     }
 
     inline String& String::append(const std::u8string& str, std::size_t pos, std::size_t count)
     {
-        return append(String{str, pos, count});
+        m_string.append(String{str, pos, count}.m_string);
+        return *this;
     }
 
     inline String& String::append(const char8_t* str, std::size_t count)
     {
-        return append(String{str, count});
-    }
-
-    inline String& String::append(const char8_t* str)
-    {
-        return append(String{str});
+        m_string.append(String{str, count}.m_string);
+        return *this;
     }
 
     inline String& String::append(std::initializer_list<char8_t> chars)
     {
-        return append(String{chars});
+        m_string.append(String{chars}.m_string);
+        return *this;
     }
 
     inline String& String::append(std::u8string::const_iterator first, std::u8string::const_iterator last)
     {
-        return append(String{first, last});
-    }
-
-    inline int String::compare(const std::u8string& str) const noexcept
-    {
-        return m_string.compare(String{str}.m_string);
-    }
-
-    inline int String::compare(std::size_t pos1, std::size_t count1, const std::u8string& str) const
-    {
-        return m_string.compare(pos1, count1, String{str}.m_string);
+        m_string.append(String{first, last}.m_string);
+        return *this;
     }
 
     inline int String::compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2) const
@@ -1247,31 +1161,9 @@ namespace tgui
         return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
     }
 
-    inline int String::compare(const char8_t* s) const
-    {
-        return m_string.compare(String{s}.m_string);
-    }
-
-    inline int String::compare(std::size_t pos1, std::size_t count1, const char8_t* s) const
-    {
-        return m_string.compare(pos1, count1, String{s}.m_string);
-    }
-
     inline int String::compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const
     {
         return m_string.compare(pos1, count1, String{s, count2}.m_string);
-    }
-
-    inline String& String::replace(std::size_t pos, std::size_t count, const std::u8string& str)
-    {
-        m_string.replace(pos, count, String{str}.m_string);
-        return *this;
-    }
-
-    inline String& String::replace(const_iterator first, const_iterator last, const std::u8string& str)
-    {
-        m_string.replace(first, last, String{str}.m_string);
-        return *this;
     }
 
     inline String& String::replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2)
@@ -1295,18 +1187,6 @@ namespace tgui
     inline String& String::replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2)
     {
         m_string.replace(first, last, String{cstr, count2}.m_string);
-        return *this;
-    }
-
-    inline String& String::replace(std::size_t pos, std::size_t count, const char8_t* cstr)
-    {
-        m_string.replace(pos, count, String{cstr}.m_string);
-        return *this;
-    }
-
-    inline String& String::replace(const_iterator first, const_iterator last, const char8_t* cstr)
-    {
-        m_string.replace(first, last, String{cstr}.m_string);
         return *this;
     }
 
@@ -1338,24 +1218,9 @@ namespace tgui
         return contains(static_cast<char32_t>(c));
     }
 
-    inline bool String::contains(const char8_t* s) const noexcept
-    {
-        return find(s) != npos;
-    }
-
-    inline std::size_t String::find(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::find(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::find(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.find(String{s}.m_string, pos);
     }
 
     inline std::size_t String::find(char8_t ch, std::size_t pos) const noexcept
@@ -1363,19 +1228,9 @@ namespace tgui
         return m_string.find(static_cast<char32_t>(ch), pos);
     }
 
-    inline std::size_t String::find_first_of(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_first_of(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find_first_of(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::find_first_of(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_of(String{s}.m_string, pos);
     }
 
     inline std::size_t String::find_first_of(char8_t ch, std::size_t pos) const noexcept
@@ -1383,19 +1238,9 @@ namespace tgui
         return m_string.find_first_of(static_cast<char32_t>(ch), pos);
     }
 
-    inline std::size_t String::find_first_not_of(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_first_not_of(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find_first_not_of(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::find_first_not_of(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.find_first_not_of(String{s}.m_string, pos);
     }
 
     inline std::size_t String::find_first_not_of(char8_t ch, std::size_t pos) const noexcept
@@ -1403,19 +1248,9 @@ namespace tgui
         return m_string.find_first_not_of(static_cast<char32_t>(ch), pos);
     }
 
-    inline std::size_t String::rfind(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.rfind(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::rfind(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.rfind(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::rfind(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.rfind(String{s}.m_string, pos);
     }
 
     inline std::size_t String::rfind(char8_t ch, std::size_t pos) const noexcept
@@ -1423,19 +1258,9 @@ namespace tgui
         return m_string.rfind(static_cast<char32_t>(ch), pos);
     }
 
-    inline std::size_t String::find_last_of(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_last_of(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find_last_of(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::find_last_of(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_of(String{s}.m_string, pos);
     }
 
     inline std::size_t String::find_last_of(char8_t ch, std::size_t pos) const noexcept
@@ -1443,32 +1268,123 @@ namespace tgui
         return m_string.find_last_of(static_cast<char32_t>(ch), pos);
     }
 
-    inline std::size_t String::find_last_not_of(const std::u8string& str, std::size_t pos) const noexcept
-    {
-        return m_string.find_last_not_of(String{str}.m_string, pos);
-    }
-
     inline std::size_t String::find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const
     {
         return m_string.find_last_not_of(String{s, count}.m_string, pos);
-    }
-
-    inline std::size_t String::find_last_not_of(const char8_t* s, std::size_t pos) const
-    {
-        return m_string.find_last_not_of(String{s}.m_string, pos);
     }
 
     inline std::size_t String::find_last_not_of(char8_t ch, std::size_t pos) const noexcept
     {
         return m_string.find_last_not_of(static_cast<char8_t>(ch), pos);
     }
+#endif
 
-    // Doesn't compile with libc++
-    //inline std::basic_ostream<char8_t>& operator<<(std::basic_ostream<char8_t>& os, const String& str)
-    //{
-    //    os << std::u8string(str);
-    //    return os;
-    //}
+#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
+    constexpr inline bool String::starts_with(std::u32string_view sv) const noexcept
+    {
+        return m_string.starts_with(sv);
+    }
+
+    constexpr inline bool String::starts_with(const char32_t* s) const
+    {
+        return m_string.starts_with(s);
+    }
+
+    constexpr inline bool String::starts_with(const std::u32string& s) const
+    {
+        return m_string.starts_with(s);
+    }
+
+    constexpr inline bool String::starts_with(const String& s) const
+    {
+        return m_string.starts_with(s.m_string);
+    }
+
+    constexpr inline bool String::starts_with(char ch) const noexcept
+    {
+        return m_string.starts_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::starts_with(wchar_t ch) const noexcept
+    {
+        return m_string.starts_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::starts_with(char8_t ch) const noexcept
+    {
+        return m_string.starts_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::starts_with(char16_t ch) const noexcept
+    {
+        return m_string.starts_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::starts_with(char32_t ch) const noexcept
+    {
+        return m_string.starts_with(ch);
+    }
+
+    constexpr inline bool String::ends_with(std::u32string_view sv) const noexcept
+    {
+        return m_string.ends_with(sv);
+    }
+
+    constexpr inline bool String::ends_with(const char32_t* s) const
+    {
+        return m_string.ends_with(s);
+    }
+
+    constexpr inline bool String::ends_with(const std::u32string& s) const
+    {
+        return m_string.ends_with(s);
+    }
+
+    constexpr inline bool String::ends_with(const String& s) const
+    {
+        return m_string.ends_with(s.m_string);
+    }
+
+    constexpr inline bool String::ends_with(char ch) const noexcept
+    {
+        return m_string.ends_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::ends_with(wchar_t ch) const noexcept
+    {
+        return m_string.ends_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::ends_with(char8_t ch) const noexcept
+    {
+        return m_string.ends_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::ends_with(char16_t ch) const noexcept
+    {
+        return m_string.ends_with(static_cast<char32_t>(ch));
+    }
+
+    constexpr inline bool String::ends_with(char32_t ch) const noexcept
+    {
+        return m_string.ends_with(ch);
+    }
+#else
+    inline bool String::starts_with(const String& s) const
+    {
+        if (s.length() <= length())
+            return compare(0, s.length(), s) == 0;
+        else
+            return false;
+    }
+
+    inline bool String::ends_with(const String& s) const
+    {
+        if (s.length() <= length())
+            return compare(length() - s.length(), s.length(), s) == 0;
+        else
+            return false;
+    }
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1476,6 +1392,10 @@ namespace tgui
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     using StringView = std::u32string_view;
     using CharStringView = std::string_view;
+
+    // Allow using operator ""sv
+    // Note that this only affects code placed inside the tgui namespace.
+    using namespace std::literals::string_view_literals;
 #else
     using StringView = const String&;
     using CharStringView = const std::string&;

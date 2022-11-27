@@ -125,7 +125,7 @@ namespace tgui
         {
             for (const auto& pair : node->propertyValuePairs)
             {
-                if (!pair.first.startsWith(U"Texture") && (pair.first != U"Font") && (pair.first != U"Image") && (pair.first != U"Icon"))
+                if (!pair.first.starts_with(U"Texture") && (pair.first != U"Font") && (pair.first != U"Image") && (pair.first != U"Icon"))
                     continue;
 
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
@@ -143,7 +143,7 @@ namespace tgui
                 }
 
                 // Make the path relative to the form file
-                if (filename.startsWith(formPath))
+                if (filename.starts_with(formPath))
                 {
                     if (pair.second->value[0] != '"')
                         pair.second->value.erase(0, formPath.length());
@@ -1463,7 +1463,7 @@ namespace tgui
                     continue;
 #endif
                 // Skip embedded data
-                if (filename.startsWith("data:"))
+                if (filename.starts_with("data:"))
                     continue;
 
                 // If this image already appeared in the form file, then we already know whether it exists or not,
