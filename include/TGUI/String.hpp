@@ -94,6 +94,14 @@ namespace tgui
             void>;
 #endif
 
+        // Helper to check if template parameter is an iterator over a certain value type
+        template <typename Type, typename WantedValueType>
+        using IsIteratorType = std::enable_if_t<std::is_same<typename std::iterator_traits<Type>::value_type, WantedValueType>::value, int>;
+
+        // Helper to check if template parameter is an iterator over a value type other than char32_t
+        template <typename Type>
+        using IsIteratorTypeNotChar32 = std::enable_if_t<!std::is_same<typename std::iterator_traits<Type>::value_type, char32_t>::value, int>;
+
     public:
 
         static const decltype(std::u32string::npos) npos;
@@ -337,7 +345,7 @@ namespace tgui
         }
 
         // Constructor to initialize the string from a number (integer or float)
-        template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
         explicit String(T number) :
             String{fromNumber(number)}
         {
@@ -370,10 +378,27 @@ namespace tgui
 
         // Constructors using iterators have to be explicit to prevent {"1", "2"} to be ambiguous between String and std::vector<String>.
         // The reason these constructors were considered a candicate to clang is due to a private constructor in the iterator class.
-        explicit String(std::string::const_iterator first, std::string::const_iterator last);
-        explicit String(std::wstring::const_iterator first, std::wstring::const_iterator last);
-        explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
+        // We use a templated iterator type instead of string::const_iterator, to also support e.g. string_view::const_iterator.
+        template<typename IteratorType, IsIteratorType<IteratorType, char> = 0>
+        explicit String(IteratorType first, IteratorType last) :
+            m_string(utf::convertUtf8toUtf32(first, last))
+        {
+        }
+        template<typename IteratorType, IsIteratorType<IteratorType, wchar_t> = 0>
+        explicit String(IteratorType first, IteratorType last) :
+            m_string(utf::convertWidetoUtf32(first, last))
+        {
+        }
+        template<typename IteratorType, IsIteratorType<IteratorType, char16_t> = 0>
+        explicit String(IteratorType first, IteratorType last) :
+            m_string(utf::convertUtf16toUtf32(first, last))
+        {
+        }
+        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
+        explicit String(IteratorType first, IteratorType last) :
+            m_string(first, last)
+        {
+        }
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         template <typename StringViewType, typename = IsStringViewType<StringViewType>>
@@ -459,10 +484,19 @@ namespace tgui
         String& assign(std::initializer_list<char16_t> chars);
         String& assign(std::initializer_list<char32_t> chars);
 
-        String& assign(std::string::const_iterator first, std::string::const_iterator last);
-        String& assign(std::wstring::const_iterator first, std::wstring::const_iterator last);
-        String& assign(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        String& assign(std::u32string::const_iterator first, std::u32string::const_iterator last);
+        template<typename IteratorType, IsIteratorTypeNotChar32<IteratorType> = 0>
+        String& assign(IteratorType first, IteratorType last)
+        {
+            m_string.assign(String{first, last}.m_string);
+            return *this;
+        }
+
+        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
+        String& assign(IteratorType first, IteratorType last)
+        {
+            m_string.assign(first, last);
+            return *this;
+        }
 
         reference       at(std::size_t pos);
         const_reference at(std::size_t pos) const;
@@ -572,10 +606,18 @@ namespace tgui
         iterator insert(const_iterator pos, std::initializer_list<char16_t> chars);
         iterator insert(const_iterator pos, std::initializer_list<char32_t> chars);
 
-        iterator insert(const_iterator pos, std::string::const_iterator first, std::string::const_iterator last);
-        iterator insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last);
-        iterator insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last);
-        iterator insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last);
+        template<typename IteratorType, IsIteratorTypeNotChar32<IteratorType> = 0>
+        iterator insert(const_iterator pos, IteratorType first, IteratorType last)
+        {
+            const String tmpStr(first, last);
+            return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        }
+
+        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
+        iterator insert(const_iterator pos, IteratorType first, IteratorType last)
+        {
+            return m_string.insert(pos, first, last);
+        }
 
         String& erase(std::size_t index = 0, std::size_t count = npos);
 
@@ -615,10 +657,19 @@ namespace tgui
         String& append(const char16_t* str, std::size_t count);
         String& append(const char32_t* str, std::size_t count);
 
-        String& append(std::string::const_iterator first, std::string::const_iterator last);
-        String& append(std::wstring::const_iterator first, std::wstring::const_iterator last);
-        String& append(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        String& append(std::u32string::const_iterator first, std::u32string::const_iterator last);
+        template<typename IteratorType, IsIteratorTypeNotChar32<IteratorType> = 0>
+        String& append(IteratorType first, IteratorType last)
+        {
+            m_string.append(String{first, last}.m_string);
+            return *this;
+        }
+
+        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
+        String& append(IteratorType first, IteratorType last)
+        {
+            m_string.append(first, last);
+            return *this;
+        }
 
         String& append(std::initializer_list<char> chars);
         String& append(std::initializer_list<wchar_t> chars);
@@ -678,10 +729,19 @@ namespace tgui
         String& replace(std::size_t pos, std::size_t count, const std::u32string& str, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const String& str, std::size_t pos2, std::size_t count2 = npos);
 
-        String& replace(const_iterator first, const_iterator last, std::string::const_iterator first2, std::string::const_iterator last2);
-        String& replace(const_iterator first, const_iterator last, std::wstring::const_iterator first2, std::wstring::const_iterator last2);
-        String& replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2);
-        String& replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2);
+        template<typename IteratorType, IsIteratorTypeNotChar32<IteratorType> = 0>
+        String& replace(const_iterator first, const_iterator last, IteratorType first2, IteratorType last2)
+        {
+            m_string.replace(first, last, String{first2, last2}.m_string);
+            return *this;
+        }
+
+        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
+        String& replace(const_iterator first, const_iterator last, IteratorType first2, IteratorType last2)
+        {
+            m_string.replace(first, last, first2, last2);
+            return *this;
+        }
 
         String& replace(std::size_t pos, std::size_t count, const char* cstr, std::size_t count2);
         String& replace(std::size_t pos, std::size_t count, const wchar_t* cstr, std::size_t count2);
@@ -854,7 +914,12 @@ namespace tgui
         inline String(const std::u8string& str, std::size_t pos, std::size_t count);
         inline String(const char8_t* str, std::size_t count);
         inline explicit String(std::initializer_list<char8_t> chars);
-        inline explicit String(std::u8string::const_iterator first, std::u8string::const_iterator last);
+
+        template<typename IteratorType, IsIteratorType<IteratorType, char8_t> = 0>
+        explicit String(IteratorType first, IteratorType last) :
+            m_string(utf::convertUtf8toUtf32(first, last))
+        {
+        }
 
         inline explicit operator std::u8string() const;
 
@@ -864,7 +929,6 @@ namespace tgui
         inline String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
         inline String& assign(const char8_t* str, std::size_t count);
         inline String& assign(std::initializer_list<char8_t> chars);
-        inline String& assign(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline String& insert(std::size_t index, std::size_t count, char8_t ch);
         inline String& insert(std::size_t index, const std::u8string& str, std::size_t pos, std::size_t count = npos);
@@ -872,19 +936,16 @@ namespace tgui
         inline iterator insert(const_iterator pos, char8_t ch);
         inline iterator insert(const_iterator pos, std::size_t count, char8_t ch);
         inline iterator insert(const_iterator pos, std::initializer_list<char8_t> chars);
-        inline iterator insert(const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline String& append(std::size_t count, char8_t ch);
         inline String& append(const std::u8string& str, std::size_t pos, std::size_t count = npos);
         inline String& append(const char8_t* str, std::size_t count);
         inline String& append(std::initializer_list<char8_t> chars);
-        inline String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
         inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos) const;
         inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
 
         inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
-        inline String& replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2);
         inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr, std::size_t count2);
         inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2);
         inline String& replace(std::size_t pos, std::size_t count, std::size_t count2, char8_t ch);
@@ -937,8 +998,8 @@ namespace tgui
         inline bool ends_with(char16_t ch) const noexcept;
         inline bool ends_with(char32_t ch) const noexcept;
 #else
-        bool starts_with(const String& s) const;
-        bool ends_with(const String& s) const;
+        inline bool starts_with(const String& s) const;
+        inline bool ends_with(const String& s) const;
 #endif
     };
 
@@ -1041,11 +1102,6 @@ namespace tgui
     {
     }
 
-    inline String::String(std::u8string::const_iterator first, std::u8string::const_iterator last)
-        : String{std::u8string(first, last)}
-    {
-    }
-
     inline String::operator std::u8string() const
     {
         return utf::convertUtf32toUtf8(m_string);
@@ -1077,12 +1133,6 @@ namespace tgui
     inline String& String::assign(std::initializer_list<char8_t> chars)
     {
         m_string.assign(String{chars}.m_string);
-        return *this;
-    }
-
-    inline String& String::assign(std::u8string::const_iterator first, std::u8string::const_iterator last)
-    {
-        m_string.assign(String{first, last}.m_string);
         return *this;
     }
 
@@ -1120,12 +1170,6 @@ namespace tgui
         return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
     }
 
-    inline String::iterator String::insert(String::const_iterator pos, std::u8string::const_iterator first, std::u8string::const_iterator last)
-    {
-        const std::u32string tmpStr(utf::convertUtf8toUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
-    }
-
     inline String& String::append(std::size_t count, char8_t ch)
     {
         m_string.append(count, static_cast<char32_t>(ch));
@@ -1150,12 +1194,6 @@ namespace tgui
         return *this;
     }
 
-    inline String& String::append(std::u8string::const_iterator first, std::u8string::const_iterator last)
-    {
-        m_string.append(String{first, last}.m_string);
-        return *this;
-    }
-
     inline int String::compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2) const
     {
         return m_string.compare(pos1, count1, String{str, pos2, count2}.m_string);
@@ -1169,12 +1207,6 @@ namespace tgui
     inline String& String::replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2)
     {
         m_string.replace(pos, count, String{str, pos2, count2}.m_string);
-        return *this;
-    }
-
-    inline String& String::replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2)
-    {
-        m_string.replace(first, last, String{first2, last2}.m_string);
         return *this;
     }
 

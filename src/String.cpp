@@ -489,26 +489,6 @@ namespace tgui
     {
     }
 
-    String::String(std::string::const_iterator first, std::string::const_iterator last) :
-        m_string(utf::convertUtf8toUtf32(first, last))
-    {
-    }
-
-    String::String(std::wstring::const_iterator first, std::wstring::const_iterator last) :
-        m_string(utf::convertWidetoUtf32(first, last))
-    {
-    }
-
-    String::String(std::u16string::const_iterator first, std::u16string::const_iterator last) :
-        m_string(utf::convertUtf16toUtf32(first, last))
-    {
-    }
-
-    String::String(std::u32string::const_iterator first, std::u32string::const_iterator last) :
-        m_string(first, last)
-    {
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String::operator std::string() const
@@ -690,30 +670,6 @@ namespace tgui
     String& String::assign(std::initializer_list<char32_t> chars)
     {
         m_string.assign(chars);
-        return *this;
-    }
-
-    String& String::assign(std::string::const_iterator first, std::string::const_iterator last)
-    {
-        m_string.assign(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::assign(std::wstring::const_iterator first, std::wstring::const_iterator last)
-    {
-        m_string.assign(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::assign(std::u16string::const_iterator first, std::u16string::const_iterator last)
-    {
-        m_string.assign(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::assign(std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        m_string.assign(first, last);
         return *this;
     }
 
@@ -1043,29 +999,6 @@ namespace tgui
         return m_string.insert(pos, chars.begin(), chars.end());
     }
 
-    String::iterator String::insert(const_iterator pos, std::string::const_iterator first, std::string::const_iterator last)
-    {
-        const std::u32string tmpStr(utf::convertUtf8toUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
-    }
-
-    String::iterator String::insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last)
-    {
-        const std::u32string tmpStr(utf::convertWidetoUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
-    }
-
-    String::iterator String::insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last)
-    {
-        const std::u32string tmpStr(utf::convertUtf16toUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
-    }
-
-    String::iterator String::insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        return m_string.insert(pos, first, last);
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String& String::erase(std::size_t index, std::size_t count)
@@ -1248,30 +1181,6 @@ namespace tgui
     String& String::append(std::initializer_list<char32_t> chars)
     {
         m_string.append(chars);
-        return *this;
-    }
-
-    String& String::append(std::string::const_iterator first, std::string::const_iterator last)
-    {
-        m_string.append(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::append(std::wstring::const_iterator first, std::wstring::const_iterator last)
-    {
-        m_string.append(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::append(std::u16string::const_iterator first, std::u16string::const_iterator last)
-    {
-        m_string.append(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::append(std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        m_string.append(first, last);
         return *this;
     }
 
@@ -1470,30 +1379,6 @@ namespace tgui
     String& String::replace(std::size_t pos, std::size_t count, const String& str, std::size_t pos2, std::size_t count2)
     {
         m_string.replace(pos, count, str.m_string, pos2, count2);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, std::string::const_iterator first2, std::string::const_iterator last2)
-    {
-        m_string.replace(first, last, String{first2, last2}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, std::wstring::const_iterator first2, std::wstring::const_iterator last2)
-    {
-        m_string.replace(first, last, String{first2, last2}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2)
-    {
-        m_string.replace(first, last, String{first2, last2}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2)
-    {
-        m_string.replace(first, last, first2, last2);
         return *this;
     }
 
