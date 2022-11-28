@@ -489,6 +489,48 @@ namespace tgui
     {
     }
 
+    String::String(std::string::const_iterator first, std::string::const_iterator last) :
+        m_string(utf::convertUtf8toUtf32(first, last))
+    {
+    }
+
+    String::String(std::wstring::const_iterator first, std::wstring::const_iterator last) :
+        m_string(utf::convertWidetoUtf32(first, last))
+    {
+    }
+
+    String::String(std::u16string::const_iterator first, std::u16string::const_iterator last) :
+        m_string(utf::convertUtf16toUtf32(first, last))
+    {
+    }
+
+    String::String(std::u32string::const_iterator first, std::u32string::const_iterator last) :
+        m_string(first, last)
+    {
+    }
+
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    String::String(std::string_view::const_iterator first, std::string_view::const_iterator last) :
+        m_string(utf::convertUtf8toUtf32(first, last))
+    {
+    }
+
+    String::String(std::wstring_view::const_iterator first, std::wstring_view::const_iterator last) :
+        m_string(utf::convertWidetoUtf32(first, last))
+    {
+    }
+
+    String::String(std::u16string_view::const_iterator first, std::u16string_view::const_iterator last) :
+        m_string(utf::convertUtf16toUtf32(first, last))
+    {
+    }
+
+    String::String(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last) :
+        m_string(first, last)
+    {
+    }
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String::operator std::string() const

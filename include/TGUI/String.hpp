@@ -378,27 +378,19 @@ namespace tgui
 
         // Constructors using iterators have to be explicit to prevent {"1", "2"} to be ambiguous between String and std::vector<String>.
         // The reason these constructors were considered a candicate to clang is due to a private constructor in the iterator class.
-        // We use a templated iterator type instead of string::const_iterator, to also support e.g. string_view::const_iterator.
-        template<typename IteratorType, IsIteratorType<IteratorType, char> = 0>
-        explicit String(IteratorType first, IteratorType last) :
-            m_string(utf::convertUtf8toUtf32(first, last))
-        {
-        }
-        template<typename IteratorType, IsIteratorType<IteratorType, wchar_t> = 0>
-        explicit String(IteratorType first, IteratorType last) :
-            m_string(utf::convertWidetoUtf32(first, last))
-        {
-        }
-        template<typename IteratorType, IsIteratorType<IteratorType, char16_t> = 0>
-        explicit String(IteratorType first, IteratorType last) :
-            m_string(utf::convertUtf16toUtf32(first, last))
-        {
-        }
-        template<typename IteratorType, IsIteratorType<IteratorType, char32_t> = 0>
-        explicit String(IteratorType first, IteratorType last) :
-            m_string(first, last)
-        {
-        }
+        // We can't use a template iterator with the "IsIteratorType<IteratorType, CharType>" check, because MSVC seems to ignore
+        // the explicit keyword in this case and still gives ambiguity on {"1", "2"}.
+        // So we have to provide variants for both string::iterator and string_view::iterator manually.
+        explicit String(std::string::const_iterator first, std::string::const_iterator last);
+        explicit String(std::wstring::const_iterator first, std::wstring::const_iterator last);
+        explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
+        explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        explicit String(std::string_view::const_iterator first, std::string_view::const_iterator last);
+        explicit String(std::wstring_view::const_iterator first, std::wstring_view::const_iterator last);
+        explicit String(std::u16string_view::const_iterator first, std::u16string_view::const_iterator last);
+        explicit String(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
+#endif
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         template <typename StringViewType, typename = IsStringViewType<StringViewType>>
