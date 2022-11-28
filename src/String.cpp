@@ -717,11 +717,13 @@ namespace tgui
         return *this;
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     String& String::assign(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last)
     {
         m_string.assign(first, last);
         return *this;
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1072,10 +1074,12 @@ namespace tgui
         return m_string.insert(pos, first, last);
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     String::iterator String::insert(const_iterator pos, std::u32string_view::const_iterator first, std::u32string_view::const_iterator last)
     {
         return m_string.insert(pos, first, last);
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1286,11 +1290,13 @@ namespace tgui
         return *this;
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     String& String::append(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last)
     {
         m_string.append(first, last);
         return *this;
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1514,11 +1520,13 @@ namespace tgui
         return *this;
     }
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     String& String::replace(const_iterator first, const_iterator last, std::u32string_view::const_iterator first2, std::u32string_view::const_iterator last2)
     {
         m_string.replace(first, last, first2, last2);
         return *this;
     }
+#endif
 
     String& String::replace(std::size_t pos, std::size_t count, const char* cstr, std::size_t count2)
     {

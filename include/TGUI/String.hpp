@@ -465,7 +465,9 @@ namespace tgui
         String& assign(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& assign(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String& assign(std::u32string::const_iterator first, std::u32string::const_iterator last);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         String& assign(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
+#endif
 
         reference       at(std::size_t pos);
         const_reference at(std::size_t pos) const;
@@ -579,7 +581,9 @@ namespace tgui
         iterator insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last);
         iterator insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last);
         iterator insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         iterator insert(const_iterator pos, std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
+#endif
 
         String& erase(std::size_t index = 0, std::size_t count = npos);
 
@@ -623,7 +627,9 @@ namespace tgui
         String& append(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& append(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String& append(std::u32string::const_iterator first, std::u32string::const_iterator last);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         String& append(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
+#endif
 
         String& append(std::initializer_list<char> chars);
         String& append(std::initializer_list<wchar_t> chars);
@@ -687,7 +693,9 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, std::wstring::const_iterator first2, std::wstring::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
         String& replace(const_iterator first, const_iterator last, std::u32string_view::const_iterator first2, std::u32string_view::const_iterator last2);
+#endif
 
         String& replace(std::size_t pos, std::size_t count, const char* cstr, std::size_t count2);
         String& replace(std::size_t pos, std::size_t count, const wchar_t* cstr, std::size_t count2);
