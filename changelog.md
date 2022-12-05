@@ -1,6 +1,7 @@
 TGUI 1.0-alpha  (17 September 2022)
 -----------------------------------
 
+- Added RichTextLabel widget
 - Added SDL\_Renderer backend (SDL + SDL\_ttf)
 - Added GLFW/OpenGL backend (glfw3 + OpenGL >= 3.3 or GLES >= 2.0)
 - Added SFML/OpenGL backend (sfml-window + OpenGL >= 3.3)

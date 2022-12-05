@@ -150,14 +150,7 @@ namespace tgui
             if (str.empty() || (str == "none"))
                 return Color();
 
-            // Check if the color is represented by a string with its name
-            for (const auto& pair : Color::colorNamesMap)
-            {
-                if (str == pair.first)
-                    return pair.second;
-            }
-
-            // The color can be represented with a hexadecimal number
+            // Check if the color can be represented with a hexadecimal number
             if (str[0] == '#')
             {
                 if ((str.length() != 4) && (str.length() != 5) && (str.length() != 7) && (str.length() != 9))
@@ -196,6 +189,15 @@ namespace tgui
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
                                  static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6])),
                                  static_cast<std::uint8_t>(hexToDec(str[7]) * 16 + hexToDec(str[8]))};
+                }
+            }
+            else // Color doesn't start with '#'
+            {
+                // Check if the color is represented by a string with its name
+                for (const auto& pair : Color::colorNamesMap)
+                {
+                    if (str == pair.first)
+                        return pair.second;
                 }
             }
 

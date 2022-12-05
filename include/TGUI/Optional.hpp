@@ -137,6 +137,11 @@ namespace tgui
             return m_ptr != nullptr;
         }
 
+        bool has_value() const noexcept
+        {
+            return m_ptr != nullptr;
+        }
+
         const T& value() const
         {
             return *m_ptr;

@@ -49,6 +49,21 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Describes a text piece, before turning it into an actual Text object
+        ///
+        /// This is used to word-wrap multiple text pieces (e.g. in RichTextLabel) without having to create Text objects for
+        /// each piece until after the word-wrap is completed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        struct Blueprint
+        {
+            unsigned int characterSize;
+            unsigned int style;
+            Color        color;
+            String       text;
+            Vector2u     gapSize;
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a small distance that text should be placed from the side of a widget as padding.
         ///
         /// This distance is slightly smaller than getExtraHorizontalOffset.
@@ -89,6 +104,7 @@ namespace tgui
         /// @param height  Height that the text should fill
         /// @param fit     0 to choose best fit, 1 to select font of at least that height, -1 to select font of maximum that height
         ///
+        /// @return Chosen character size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static unsigned int findBestTextSize(const Font& font, float height, int fit = 0);
 
@@ -101,8 +117,24 @@ namespace tgui
         /// @param font             Font of the text
         /// @param textSize         The text size
         /// @param bold             Should the text be bold?
+        ///
+        /// @return Text with additional '\n' characters
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static String wordWrap(float maxWidth, const String& text, const Font& font, unsigned int textSize, bool bold);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Takes multiple lines of potentially multiple text pieces, and splits lines so that the width does not exceed maxWidth
+        ///
+        /// @param maxWidth         Maximum width of the text
+        /// @param lines            Existing lines that need to be split if they are too long
+        /// @param font             Font of the text
+        /// @param textSize         The text size
+        /// @param bold             Should the text be bold?
+        ///
+        /// @return Lines of text pieces (either the same as the input or more lines when some were split)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static std::vector<std::vector<Blueprint>> wordWrap(float maxWidth, const std::vector<std::vector<Blueprint>>& lines, const Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

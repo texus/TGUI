@@ -53,6 +53,7 @@
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
 #include <TGUI/Widgets/RangeSlider.hpp>
+#include <TGUI/Widgets/RichTextLabel.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/SeparatorLine.hpp>

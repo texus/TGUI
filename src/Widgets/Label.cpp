@@ -25,7 +25,8 @@
 
 #include <TGUI/Widgets/Label.hpp>
 
-#include <cmath>
+#include <numeric> // accumulate
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -396,7 +397,10 @@ namespace tgui
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             for (auto& line : m_lines)
-                line.setColor(m_textColorCached);
+            {
+                for (auto& textPiece : line)
+                    textPiece.setColor(m_textColorCached);
+            }
         }
         else if (property == "BorderColor")
         {
@@ -413,14 +417,16 @@ namespace tgui
         else if (property == "TextOutlineThickness")
         {
             m_textOutlineThicknessCached = getSharedRenderer()->getTextOutlineThickness();
-            for (auto& line : m_lines)
-                line.setOutlineThickness(m_textOutlineThicknessCached);
+            rearrangeText();
         }
         else if (property == "TextOutlineColor")
         {
             m_textOutlineColorCached = getSharedRenderer()->getTextOutlineColor();
             for (auto& line : m_lines)
-                line.setOutlineColor(m_textOutlineColorCached);
+            {
+                for (auto& textPiece : line)
+                    textPiece.setOutlineColor(m_textOutlineColorCached);
+            }
         }
         else if (property == "Scrollbar")
         {
@@ -452,7 +458,10 @@ namespace tgui
             m_scrollbar->setInheritedOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
-                line.setOpacity(m_opacityCached);
+            {
+                for (auto& textPiece : line)
+                    textPiece.setOpacity(m_opacityCached);
+            }
         }
         else
             Widget::rendererChanged(property);
@@ -610,14 +619,17 @@ namespace tgui
         }
 
         // Fit the text in the available space
-        String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
+        Optional<String> wordWrappedString = (maxWidth > 0)
+            ? Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold)
+            : Optional<String>();
+        String* stringPtr = wordWrappedString.has_value() ? &wordWrappedString.value() : &m_string;
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
                                  m_paddingCached.getRight() + m_bordersCached.getRight(),
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
-        const auto lineCount = std::count(string.begin(), string.end(), U'\n') + 1;
+        const auto lineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
         float requiredTextHeight = (lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
                                  + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                  + Text::getExtraVerticalPadding(m_textSizeCached);
@@ -632,9 +644,10 @@ namespace tgui
                 if (maxWidth <= 0)
                     return;
 
-                string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
+                wordWrappedString = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
+                stringPtr = &wordWrappedString.value();
 
-                const auto newLineCount = std::count(string.begin(), string.end(), U'\n') + 1;
+                const auto newLineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
                 requiredTextHeight = (newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
                                    + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                    + Text::getExtraVerticalPadding(m_textSizeCached);
@@ -653,24 +666,25 @@ namespace tgui
         std::size_t newLinePos = 0;
         while (newLinePos != String::npos)
         {
-            newLinePos = string.find('\n', searchPosStart);
+            newLinePos = stringPtr->find('\n', searchPosStart);
 
             TGUI_EMPLACE_BACK(line, m_lines)
-            line.setCharacterSize(getTextSize());
-            line.setFont(m_fontCached);
-            line.setStyle(m_textStyleCached);
-            line.setColor(m_textColorCached);
-            line.setOpacity(m_opacityCached);
-            line.setOutlineColor(m_textOutlineColorCached);
-            line.setOutlineThickness(m_textOutlineThicknessCached);
+            TGUI_EMPLACE_BACK(textPiece, line)
+            textPiece.setCharacterSize(getTextSize());
+            textPiece.setFont(m_fontCached);
+            textPiece.setStyle(m_textStyleCached);
+            textPiece.setColor(m_textColorCached);
+            textPiece.setOpacity(m_opacityCached);
+            textPiece.setOutlineColor(m_textOutlineColorCached);
+            textPiece.setOutlineThickness(m_textOutlineThicknessCached);
 
             if (newLinePos != String::npos)
-                line.setString(string.substr(searchPosStart, newLinePos - searchPosStart));
+                textPiece.setString(stringPtr->substr(searchPosStart, newLinePos - searchPosStart));
             else
-                line.setString(string.substr(searchPosStart));
+                textPiece.setString(stringPtr->substr(searchPosStart));
 
-            if (line.getSize().x > width)
-                width = line.getSize().x;
+            if (textPiece.getSize().x > width)
+                width = textPiece.getSize().x;
 
             searchPosStart = newLinePos + 1;
         }
@@ -686,54 +700,132 @@ namespace tgui
                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
         }
 
-        // Update the line positions
+        updateTextPiecePositions((maxWidth > 0) ? maxWidth : width);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::updateTextPiecePositions(float maxWidth)
+    {
+        TGUI_ASSERT(!m_lines.empty(), "Label::updateTextPiecePositions requires that m_lines contains at least one line");
+
+        const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
+                                 m_paddingCached.getTop() + m_bordersCached.getTop(),
+                                 m_paddingCached.getRight() + m_bordersCached.getRight(),
+                                 m_paddingCached.getBottom() + m_bordersCached.getBottom()};
+
+        if ((getSize().x <= outline.getLeft() + outline.getRight()) || (getSize().y <= outline.getTop() + outline.getBottom()))
+            return;
+
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
+
+        Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
+
+        // Calculate the line spacing for each line
+        std::vector<float> lineSpacings;
+        lineSpacings.reserve(m_lines.size());
+        const float defaultLineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
+        for (auto& line : m_lines)
         {
-            if ((getSize().x <= outline.getLeft() + outline.getRight()) || (getSize().y <= outline.getTop() + outline.getBottom()))
-                return;
-
-            Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
-
-            if (m_verticalAlignment != VerticalAlignment::Top)
+            if (line.empty())
+                lineSpacings.push_back(0);
+            else if (line.size() == 1 && line[0].getCharacterSize() == m_textSizeCached)
+                lineSpacings.push_back(defaultLineSpacing);
+            else
             {
-                const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
-                const float totalTextHeight = m_lines.size() * m_fontCached.getLineSpacing(m_textSizeCached);
+                unsigned int lineMaxTextSize = 0;
+                for (const auto& textPiece : line)
+                    lineMaxTextSize = std::max(lineMaxTextSize, textPiece.getCharacterSize());
 
-                if (!m_scrollbar->isShown() || (totalTextHeight < totalHeight))
+                lineSpacings.push_back(m_fontCached.getLineSpacing(lineMaxTextSize));
+            }
+        }
+
+        if (m_verticalAlignment != VerticalAlignment::Top)
+        {
+            const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
+            float totalTextHeight = std::accumulate(lineSpacings.begin(), lineSpacings.end(), 0.f);
+
+            unsigned int lastLineMaxTextSize = 0;
+            for (const auto& textPiece : m_lines.back())
+                lastLineMaxTextSize = std::max(lastLineMaxTextSize, textPiece.getCharacterSize());
+
+            // Add some extra space below the last line, to not cut of low letters
+            const float lastLineFontHeight = m_fontCached.getFontHeight(lastLineMaxTextSize);
+            const float lastLineLineSpacing = m_fontCached.getLineSpacing(lastLineMaxTextSize);
+            totalTextHeight += Text::getExtraVerticalPadding(m_textSizeCached);
+            if (lastLineFontHeight > lastLineLineSpacing)
+                totalTextHeight += (lastLineFontHeight - lastLineLineSpacing);
+
+            if (!m_scrollbar->isShown() || (totalTextHeight < totalHeight))
+            {
+                if (m_verticalAlignment == VerticalAlignment::Bottom)
+                    pos.y += totalHeight - totalTextHeight;
+                else // if (m_verticalAlignment == VerticalAlignment::Center)
+                    pos.y += (totalHeight - totalTextHeight) / 2.f;
+            }
+        }
+
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+        {
+            auto& line = m_lines[i];
+
+            float maxHeight = 0;
+            for (std::size_t j = 0; j < line.size(); ++j)
+                maxHeight = std::max(maxHeight, line[j].getSize().y);
+
+            Vector2f piecePos = pos;
+            if ((m_horizontalAlignment != HorizontalAlignment::Left) && !line.empty())
+            {
+                // If the line ends with whitespace then remove them from the line width for aligning horizontally
+                const auto& lastTextPiece = line.back();
+                std::size_t charsToUse = lastTextPiece.getString().length();
+                while (charsToUse > 0 && isWhitespace(lastTextPiece.getString()[charsToUse-1]))
+                    charsToUse--;
+
+                float whitespaceOffset = 0;
+                if (charsToUse != lastTextPiece.getString().length())
+                    whitespaceOffset = lastTextPiece.getSize().x - lastTextPiece.findCharacterPos(charsToUse).x;
+
+                float textWidth = lastTextPiece.getSize().x - whitespaceOffset;
+                for (std::size_t j = line.size() - 1; j > 0; --j)
                 {
-                    if (m_verticalAlignment == VerticalAlignment::Center)
-                        pos.y += (totalHeight - totalTextHeight) / 2.f;
-                    else if (m_verticalAlignment == VerticalAlignment::Bottom)
-                        pos.y += totalHeight - totalTextHeight;
+                    textWidth += line[j-1].getSize().x;
+
+                    // Take kerning into account
+                    if (!line[j-1].getString().empty() && !line[j].getString().empty())
+                    {
+                        const bool bold = ((line[j-1].getStyle() & TextStyle::Bold) != 0) && ((line[j].getStyle() & TextStyle::Bold) != 0);
+                        const unsigned int characterSize = std::min(line[j-1].getCharacterSize(), line[j].getCharacterSize());
+                        textWidth += m_fontCached.getKerning(line[j-1].getString().back(), line[j].getString().front(), characterSize, bold);
+                    }
                 }
+
+                if (m_horizontalAlignment == HorizontalAlignment::Right)
+                    piecePos.x = pos.x + maxWidth - textWidth;
+                else // if (m_horizontalAlignment == HorizontalAlignment::Center)
+                    piecePos.x = pos.x + ((maxWidth - textWidth) / 2.f);
             }
 
-            const float lineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
-            if ((m_horizontalAlignment == HorizontalAlignment::Left) || (m_autoSize && (maxWidth == 0)))
+            for (std::size_t j = 0; j < line.size(); ++j)
             {
-                for (auto& line : m_lines)
+                // If pieces have a different text size then we align their bottom position.
+                // This isn't ideal, we should align the baseline, but it is at least better than aligning the top.
+                piecePos.y = pos.y + (maxHeight - line[j].getSize().y);
+
+                // Take kerning into account
+                if (j > 0 && !line[j-1].getString().empty() && !line[j].getString().empty())
                 {
-                    line.setPosition(pos);
-                    pos.y += lineSpacing;
+                    const bool bold = ((line[j-1].getStyle() & TextStyle::Bold) != 0) && ((line[j].getStyle() & TextStyle::Bold) != 0);
+                    const unsigned int characterSize = std::min(line[j-1].getCharacterSize(), line[j].getCharacterSize());
+                    piecePos.x += m_fontCached.getKerning(line[j-1].getString().back(), line[j].getString().front(), characterSize, bold);
                 }
+
+                line[j].setPosition(piecePos);
+                piecePos.x += line[j].getSize().x;
             }
-            else // Center or Right alignment
-            {
-                for (auto& line : m_lines)
-                {
-                    std::size_t lastChar = line.getString().length();
-                    while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
-                        lastChar--;
 
-                    const float textWidth = line.findCharacterPos(lastChar).x;
-
-                    if (m_horizontalAlignment == HorizontalAlignment::Center)
-                        line.setPosition({pos.x + ((maxWidth - textWidth) / 2.f), pos.y});
-                    else // if (m_horizontalAlignment == HorizontalAlignment::Right)
-                        line.setPosition({pos.x + maxWidth - textWidth, pos.y});
-
-                    pos.y += lineSpacing;
-                }
-            }
+            pos.y += lineSpacings[i];
         }
     }
 
@@ -767,7 +859,10 @@ namespace tgui
         if (m_autoSize)
         {
             for (const auto& line : m_lines)
-                target.drawText(states, line);
+            {
+                for (const auto& text : line)
+                    target.drawText(states, text);
+            }
         }
         else
         {
@@ -780,7 +875,10 @@ namespace tgui
                 states.transform.translate({0, -static_cast<float>(m_scrollbar->getValue())});
 
             for (const auto& line : m_lines)
-                target.drawText(states, line);
+            {
+                for (const auto& text : line)
+                    target.drawText(states, text);
+            }
 
             target.removeClippingLayer();
         }
