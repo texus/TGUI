@@ -382,8 +382,8 @@ namespace tgui
         }
 
         float lineSpacing = (lineMaxTextSize > 0) ? m_fontCached.getLineSpacing(lineMaxTextSize) : 0;
-        if (maxGapHeight > lineSpacing)
-            lineSpacing = maxGapHeight;
+        if (static_cast<float>(maxGapHeight) > lineSpacing)
+            lineSpacing = static_cast<float>(maxGapHeight);
 
         return lineSpacing;
     }
@@ -567,7 +567,11 @@ namespace tgui
                     else // opening tag
                     {
                         const std::size_t symbolLength = rightAngleBracketPos - (i + 1);
-                        const std::decay_t<StringView> symbolName(&m_string[i + 1], symbolLength);
+#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
+                        const StringView symbolName(&m_string[i + 1], symbolLength);
+#else
+                        const String symbolName(&m_string[i + 1], symbolLength);
+#endif
 
                         if (symbolName == U"b")
                         {
