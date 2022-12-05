@@ -484,7 +484,7 @@ namespace tgui
                     if (inputPiece.gapSize != Vector2u{})
                     {
                         curChar = 0;
-                        charWidth = inputPiece.gapSize.x;
+                        charWidth = static_cast<float>(inputPiece.gapSize.x);
                         TGUI_ASSERT(inputLine[pieceIndex].text.empty() && (pieceCharIndex == 0), "Blueprint gap in Text::wordWrap should have an empty text");
                     }
                     else // Normal text piece instead of a gap

@@ -592,7 +592,7 @@ namespace tgui
                         else if (symbolName.starts_with(U"color="))
                         {
                             Color newColor = currentColor;
-                            const String colorStr(std::decay_t<StringView>(symbolName.begin() + 6, symbolName.end()));
+                            const String colorStr(std::decay_t<StringView>(&symbolName[6], symbolName.length() - 6));
                             if (!colorStr.empty())
                             {
                                 newColor = Deserializer::deserialize(ObjectConverter::Type::Color, colorStr).getColor();
@@ -608,7 +608,7 @@ namespace tgui
                         else if (symbolName.starts_with(U"size="))
                         {
                             unsigned int newTextSize = currentTextSize;
-                            const String textSizeStr(std::decay_t<StringView>(symbolName.begin() + 5, symbolName.end()));
+                            const String textSizeStr(std::decay_t<StringView>(&symbolName[5], symbolName.length() - 5));
 
                             if (textSizeStr.attemptToUInt(newTextSize) && (newTextSize > 0))
                             {
@@ -620,7 +620,7 @@ namespace tgui
                         }
                         else if (symbolName.starts_with(U"img="))
                         {
-                            const String imageFilename(std::decay_t<StringView>(symbolName.begin() + 4, symbolName.end()));
+                            const String imageFilename(std::decay_t<StringView>(&symbolName[4], symbolName.length() - 4));
                             try
                             {
                                 auto textureWrapper = Deserializer::deserialize(ObjectConverter::Type::Texture, imageFilename);
