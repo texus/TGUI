@@ -410,6 +410,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->onMousePress([=](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
+    onDragSaved = false;
 
     setSize(formSize);
 
@@ -665,6 +666,7 @@ void Form::mouseReleased()
 {
     m_draggingWidget = false;
     m_draggingSelectionSquare = nullptr;
+    onDragSaved = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -922,6 +924,40 @@ void Form::save()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Saves state to internal storage
+tgui::String Form::saveState()
+{
+    setChanged(false);
+
+    // Save the output file to memory so that it can be edited
+    std::stringstream originalOutStream;
+    m_widgetsContainer->saveWidgetsToStream(originalOutStream);
+    auto rootNode = tgui::DataIO::parse(originalOutStream);
+
+    
+    std::stringstream outStream;
+    tgui::DataIO::emit(rootNode, outStream);
+    return outStream.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Loads state from internal storage
+bool Form::loadState(tgui::String inputData)
+{
+
+    if (!inputData.empty())
+    {
+        // Try to load the modified file from memory
+        std::stringstream outStream;
+        outStream << inputData;
+        m_widgetsContainer->loadWidgetsFromStream(outStream);
+    }
+
+    importLoadedWidgets(m_widgetsContainer);
+    return 1;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Form::updateAlignmentLines()
 {
@@ -1033,6 +1069,12 @@ void Form::onFormMousePress(tgui::Vector2f pos)
 
 void Form::onDrag(tgui::Vector2i mousePos)
 {
+    // Saves state for undo recall
+    if (!onDragSaved && m_draggingWidget)
+    {
+        m_guiBuilder->undoWidgetSave(GuiBuilder::eUndoType::Move);
+        onDragSaved = true;
+    }
     assert(m_selectedWidget != nullptr);
 
     const tgui::Vector2f pos = tgui::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();

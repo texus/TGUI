@@ -401,8 +401,13 @@ void GuiBuilder::mainLoop()
                         removeSelectedWidget();
                     }
                 }
+                else if ((event.key.code == tgui::Event::KeyboardKey::Z) && event.key.control)
+                {
+                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                        undoWidgetFromTempMemory();
+                }
             }
-
+                                            
             m_gui->handleEvent(event);
         }
 
@@ -692,51 +697,52 @@ void GuiBuilder::closeForm(Form* form)
         return;
     }
 
-    auto panel = tgui::Panel::create({"100%", "100%"});
-    panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-    m_gui->add(panel);
+        auto panel = tgui::Panel::create({"100%", "100%"});
+        panel->getRenderer()->setBackgroundColor({ 0, 0, 0, 175 });
+        m_gui->add(panel);
 
-    auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", {"Yes", "No"});
-    messageBox->setPosition("(&.size - size) / 2");
-    m_gui->add(messageBox);
+        auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", { "Yes", "No" });
+        messageBox->setPosition("(&.size - size) / 2");
+        m_gui->add(messageBox);
 
-    bool haltProgram = true;
-    messageBox->onButtonPress([=,&haltProgram](const tgui::String& button){
-        if (button == "Yes")
-            m_selectedForm->save();
+        bool haltProgram = true;
+        messageBox->onButtonPress([=, &haltProgram](const tgui::String& button) {
+            if (button == "Yes")
+                m_selectedForm->save();
 
-        m_gui->remove(panel);
-        m_gui->remove(messageBox);
+            m_gui->remove(panel);
+            m_gui->remove(messageBox);
 
-        if (m_selectedForm == form)
-            m_selectedForm = nullptr;
+            if (m_selectedForm == form)
+                m_selectedForm = nullptr;
 
-        m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f){ return f.get() == form; }));
-        if (m_forms.empty())
-            loadStartScreen();
+            m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
+            if (m_forms.empty())
+                loadStartScreen();
 
-        haltProgram = false;
-    });
+            haltProgram = false;
+            });
 
-    // The closeForm function has to halt the execution of the normal main loop (to be able to prevent closing the window)
-    while (haltProgram && m_window->isOpen())
-    {
-        tgui::Event event;
-        while (m_window->pollEvent(event))
+        // The closeForm function has to halt the execution of the normal main loop (to be able to prevent closing the window)
+        while (haltProgram && m_window->isOpen())
         {
-            if (event.type == tgui::Event::Type::Closed)
+            tgui::Event event;
+            while (m_window->pollEvent(event))
             {
-                // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
-                m_window->close();
-                m_forms.clear();
+                if (event.type == tgui::Event::Type::Closed)
+                {
+                    // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
+                    m_window->close();
+                    m_forms.clear();
+                }
+
+                m_gui->handleEvent(event);
             }
 
-            m_gui->handleEvent(event);
+            m_window->draw();
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
-
-        m_window->draw();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -779,7 +785,6 @@ void GuiBuilder::loadStartScreen()
         m_themes["themes/BabyBlue.txt"] = {(tgui::getResourcePath() / "themes/BabyBlue.txt").asString()};
         m_themes["themes/TransparentGrey.txt"] = {(tgui::getResourcePath() / "themes/TransparentGrey.txt").asString()};
     }
-
     auto panel = m_gui->get<tgui::Panel>("MainPanel");
     panel->get<tgui::Panel>("PnlNewForm")->onClick([=]{
         showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [=](const tgui::String& filename){
@@ -787,7 +792,7 @@ void GuiBuilder::loadStartScreen()
         });
     });
     panel->get<tgui::Panel>("PnlLoadForm")->onClick([=]{
-        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
+        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename, 0); });
     });
 
     if (m_recentFiles.empty())
@@ -799,7 +804,7 @@ void GuiBuilder::loadStartScreen()
             auto labelRecentForm = panel->get<tgui::Label>("LblRecentForm" + tgui::String::fromNumber(i+1));
             labelRecentForm->setText(m_recentFiles[i]);
             labelRecentForm->setVisible(true);
-            labelRecentForm->onClick([=,filename=m_recentFiles[i]]{ loadForm(filename); });
+            labelRecentForm->onClick([=,filename=m_recentFiles[i]]{ loadForm(filename, 0); });
 
             auto buttonRemoveFormFromList = panel->get<tgui::ClickableWidget>("BtnDeleteRecentForm" + tgui::String::fromNumber(i+1));
             buttonRemoveFormFromList->setVisible(true);
@@ -1169,6 +1174,7 @@ void GuiBuilder::initSelectedWidgetComboBoxAfterLoad()
 
 void GuiBuilder::removeSelectedWidget()
 {
+    undoWidgetSave(GuiBuilder::eUndoType::Delete);
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
@@ -1261,7 +1267,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool GuiBuilder::loadForm(tgui::String filename)
+bool GuiBuilder::loadForm(tgui::String filename, int loadType)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
     const tgui::String basePath = tgui::getResourcePath().getNormalForm().asString();
@@ -1276,7 +1282,11 @@ bool GuiBuilder::loadForm(tgui::String filename)
 
     try
     {
-        m_selectedForm->load();
+        if (loadType == 0)
+            m_selectedForm->load();
+        else
+            m_selectedForm->loadState(m_undoSaves.back());
+          
     }
     catch (const tgui::Exception& e)
     {
@@ -2110,7 +2120,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
     loadStartScreen();
 
     showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){
-        loadForm(filename);
+        loadForm(filename, 0);
     });
 }
 
@@ -2119,7 +2129,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
 void GuiBuilder::menuBarCallbackLoadRecent(const tgui::String& filename)
 {
     loadStartScreen();
-    loadForm(filename);
+    loadForm(filename, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2399,4 +2409,59 @@ void GuiBuilder::menuBarCallbackAbout()
 
     auto labelVersion = aboutWindow->get<tgui::Label>("LabelVersion");
     labelVersion->setText(tgui::String::fromNumber(TGUI_VERSION_MAJOR) + "." + tgui::String::fromNumber(TGUI_VERSION_MINOR) + "." + tgui::String::fromNumber(TGUI_VERSION_PATCH));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::undoWidgetSave(GuiBuilder::eUndoType type)
+{
+    tgui::String descString;
+    switch (type)
+    {
+    case GuiBuilder::eUndoType::Move:
+        descString = "Move";
+        break;
+    case GuiBuilder::eUndoType::Delete:
+        descString = "Delete";
+        break;
+    }
+    m_undoSaves.push_back(m_selectedForm->saveState());
+    m_undoSavesDesc.push_back( descString);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::undoWidgetFromTempMemory()
+{
+    undoWidgetLoad();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::undoWidgetLoad()
+{
+    tgui::String filename = m_selectedForm->getFilename();
+    Form* form = m_forms[0].get();
+    m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
+    m_selectedForm = nullptr;
+    m_forms.clear();
+
+    m_propertiesWindow = nullptr;
+    m_propertiesContainer = nullptr;
+    m_selectedWidgetComboBox = nullptr;
+
+    m_gui->removeAllWidgets();
+    m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
+
+    if (!loadGuiBuilderState())
+    {
+        m_themes["themes/Black.txt"] = { (tgui::getResourcePath() / "themes/Black.txt").asString() };
+        m_themes["themes/BabyBlue.txt"] = { (tgui::getResourcePath() / "themes/BabyBlue.txt").asString() };
+        m_themes["themes/TransparentGrey.txt"] = { (tgui::getResourcePath() / "themes/TransparentGrey.txt").asString() };
+    }
+    auto panel = m_gui->get<tgui::Panel>("MainPanel");
+    loadForm(filename, 1);
+
+
+
 }

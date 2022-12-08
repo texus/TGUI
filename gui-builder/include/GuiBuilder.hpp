@@ -40,10 +40,16 @@ public:
     ~GuiBuilder();
     void mainLoop();
 
+    enum class eUndoType
+    {
+        Delete, Move
+    };
+
     void reloadProperties();
     void widgetSelected(tgui::Widget::Ptr widget);
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
+    void undoWidgetSave(eUndoType);
 
 private:
 
@@ -73,7 +79,7 @@ private:
     void removeSelectedWidget();
     void removePopupMenu();
     void createNewForm(tgui::String filename);
-    bool loadForm(tgui::String filename);
+    bool loadForm(tgui::String filename, int loadType);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
@@ -82,6 +88,9 @@ private:
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
+
+    void undoWidgetFromTempMemory();
+    void undoWidgetLoad();
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
@@ -144,6 +153,10 @@ private:
     tgui::Vector2f m_formSize{800.f, 600.f};
     tgui::String m_defaultPath;
     tgui::Filesystem::Path m_programPath;
+
+    std::vector<tgui::String> m_undoSaves; // Saves states for undo
+    std::vector<tgui::String> m_undoSavesDesc; //Saves state change for undo
+
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP
