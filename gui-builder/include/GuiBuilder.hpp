@@ -64,6 +64,7 @@ private:
         std::vector<CopiedWidget> childWidgets;
     };
 
+
     bool loadGuiBuilderState();
     void saveGuiBuilderState();
     void loadStartScreen();
@@ -88,8 +89,6 @@ private:
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
-
-    void undoWidgetFromTempMemory();
     void undoWidgetLoad();
 
     void widgetHierarchyChanged();
@@ -142,6 +141,7 @@ private:
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
 
+
     std::map<tgui::String, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
 
@@ -154,8 +154,8 @@ private:
     tgui::String m_defaultPath;
     tgui::Filesystem::Path m_programPath;
 
-    std::vector<tgui::String> m_undoSaves; // Saves states for undo
-    std::vector<tgui::String> m_undoSavesDesc; //Saves state change for undo
+    std::vector<tgui::String> m_undoSaves;
+    std::vector<tgui::String> m_undoSavesDesc;
 
 };
 

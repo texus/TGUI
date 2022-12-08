@@ -404,7 +404,7 @@ void GuiBuilder::mainLoop()
                 else if ((event.key.code == tgui::Event::KeyboardKey::Z) && event.key.control)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
-                        undoWidgetFromTempMemory();
+                        undoWidgetLoad();
                 }
             }
                                             
@@ -697,7 +697,7 @@ void GuiBuilder::closeForm(Form* form)
         return;
     }
 
-        auto panel = tgui::Panel::create({"100%", "100%"});
+        auto panel = tgui::Panel::create({ "100%", "100%" });
         panel->getRenderer()->setBackgroundColor({ 0, 0, 0, 175 });
         m_gui->add(panel);
 
@@ -1285,7 +1285,11 @@ bool GuiBuilder::loadForm(tgui::String filename, int loadType)
         if (loadType == 0)
             m_selectedForm->load();
         else
+        {
             m_selectedForm->loadState(m_undoSaves.back());
+            m_undoSaves.pop_back();
+            m_undoSavesDesc.pop_back();
+        }
           
     }
     catch (const tgui::Exception& e)
@@ -2431,37 +2435,31 @@ void GuiBuilder::undoWidgetSave(GuiBuilder::eUndoType type)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::undoWidgetFromTempMemory()
-{
-    undoWidgetLoad();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void GuiBuilder::undoWidgetLoad()
 {
-    tgui::String filename = m_selectedForm->getFilename();
-    Form* form = m_forms[0].get();
-    m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
-    m_selectedForm = nullptr;
-    m_forms.clear();
-
-    m_propertiesWindow = nullptr;
-    m_propertiesContainer = nullptr;
-    m_selectedWidgetComboBox = nullptr;
-
-    m_gui->removeAllWidgets();
-    m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
-
-    if (!loadGuiBuilderState())
+    if (!m_undoSaves.empty())
     {
-        m_themes["themes/Black.txt"] = { (tgui::getResourcePath() / "themes/Black.txt").asString() };
-        m_themes["themes/BabyBlue.txt"] = { (tgui::getResourcePath() / "themes/BabyBlue.txt").asString() };
-        m_themes["themes/TransparentGrey.txt"] = { (tgui::getResourcePath() / "themes/TransparentGrey.txt").asString() };
+        tgui::String filename = m_selectedForm->getFilename();
+        Form* form = m_forms[0].get();
+        m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
+        m_selectedForm = nullptr;
+        m_forms.clear();
+
+        m_propertiesWindow = nullptr;
+        m_propertiesContainer = nullptr;
+        m_selectedWidgetComboBox = nullptr;
+
+        m_gui->removeAllWidgets();
+        m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
+
+        if (!loadGuiBuilderState())
+        {
+            m_themes["themes/Black.txt"] = { (tgui::getResourcePath() / "themes/Black.txt").asString() };
+            m_themes["themes/BabyBlue.txt"] = { (tgui::getResourcePath() / "themes/BabyBlue.txt").asString() };
+            m_themes["themes/TransparentGrey.txt"] = { (tgui::getResourcePath() / "themes/TransparentGrey.txt").asString() };
+        }
+        auto panel = m_gui->get<tgui::Panel>("MainPanel");
+        loadForm(filename, 1);
+        m_selectedForm->focus();
     }
-    auto panel = m_gui->get<tgui::Panel>("MainPanel");
-    loadForm(filename, 1);
-
-
-
 }
