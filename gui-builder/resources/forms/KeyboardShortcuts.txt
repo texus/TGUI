@@ -206,36 +206,23 @@ Label.Widget20 {
     TextSize = 13;
 }
 
-Label.Label1 {
+Label.Widget21 {
     AutoSize = true;
     Position = (10, 310);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (53.2, 18);
     Text = "Ctrl + Z";
     TextSize = 13;
-
-    Renderer {
-        BackgroundColor = transparent;
-        BorderColor = #3C3C3C;
-        Borders = (0, 0, 0, 0);
-        TextColor = #3C3C3C;
-        TextureBackground = None;
-    }
 }
 
-Label.Label2 {
+Label.Widget22 {
     AutoSize = true;
     Position = (180, 310);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (80.2, 18);
     Text = "Undo Action";
     TextSize = 13;
 
-    Renderer {
-        BackgroundColor = transparent;
-        BorderColor = #3C3C3C;
-        Borders = (0, 0, 0, 0);
-        TextColor = #3C3C3C;
-        TextureBackground = None;
-    }
 }

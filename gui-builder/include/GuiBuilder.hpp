@@ -42,14 +42,14 @@ public:
 
     enum class eUndoType
     {
-        Delete, Move
+        Delete, Move, Paste, SendtoFront, SendtoBack, CreateNew
     };
 
     void reloadProperties();
     void widgetSelected(tgui::Widget::Ptr widget);
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
-    void undoWidgetSave(eUndoType);
+    void saveUndoState(eUndoType);
 
 private:
 
@@ -89,7 +89,7 @@ private:
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
-    void undoWidgetLoad();
+    void loadUndoState();
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
@@ -156,6 +156,7 @@ private:
 
     std::vector<tgui::String> m_undoSaves;
     std::vector<tgui::String> m_undoSavesDesc;
+    unsigned int m_undoSaveMaxSaves;
 
 };
 

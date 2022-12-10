@@ -268,6 +268,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
+    m_undoSaveMaxSaves = 1000;
 
     loadStartScreen();
 }
@@ -404,7 +405,7 @@ void GuiBuilder::mainLoop()
                 else if ((event.key.code == tgui::Event::KeyboardKey::Z) && event.key.control)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
-                        undoWidgetLoad();
+                        loadUndoState();
                 }
             }
                                             
@@ -933,6 +934,8 @@ void GuiBuilder::loadToolbox()
         toolbox->add(verticalLayout);
 
         panel->onClick([=]{
+            saveUndoState(GuiBuilder::eUndoType::CreateNew);
+
             createNewWidget(widget.second());
 
             auto selectedWidget = m_selectedForm->getSelectedWidget();
@@ -1174,7 +1177,7 @@ void GuiBuilder::initSelectedWidgetComboBoxAfterLoad()
 
 void GuiBuilder::removeSelectedWidget()
 {
-    undoWidgetSave(GuiBuilder::eUndoType::Delete);
+    saveUndoState(GuiBuilder::eUndoType::Delete);
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
@@ -1266,7 +1269,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// For load type, 0 for saved file load, 1 for undo save load
 bool GuiBuilder::loadForm(tgui::String filename, int loadType)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
@@ -1432,6 +1435,8 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
 {
     if (m_copiedWidgets.empty())
         return;
+
+    saveUndoState(GuiBuilder::eUndoType::Paste);
 
     // When selecting a container and pressing ctrl+C immediately followed by ctrl+V, the the new container should be a sibling
     // of the old one, not a child. So don't try to paste a container inside itself.
@@ -2226,6 +2231,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
 
 void GuiBuilder::menuBarCallbackBringWidgetToFront()
 {
+    saveUndoState(GuiBuilder::eUndoType::SendtoFront);
     m_selectedForm->getSelectedWidget()->ptr->moveToFront();
     m_selectedForm->setChanged(true);
 
@@ -2236,6 +2242,7 @@ void GuiBuilder::menuBarCallbackBringWidgetToFront()
 
 void GuiBuilder::menuBarCallbackSendWidgetToBack()
 {
+    saveUndoState(GuiBuilder::eUndoType::SendtoBack);
     m_selectedForm->getSelectedWidget()->ptr->moveToBack();
     m_selectedForm->setChanged(true);
 
@@ -2417,7 +2424,8 @@ void GuiBuilder::menuBarCallbackAbout()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::undoWidgetSave(GuiBuilder::eUndoType type)
+// Save state to program interal memory for undo command
+void GuiBuilder::saveUndoState(GuiBuilder::eUndoType type)
 {
     tgui::String descString;
     switch (type)
@@ -2428,14 +2436,35 @@ void GuiBuilder::undoWidgetSave(GuiBuilder::eUndoType type)
     case GuiBuilder::eUndoType::Delete:
         descString = "Delete";
         break;
+    case GuiBuilder::eUndoType::Paste:
+        descString = "Paste";
+        break;
+    case GuiBuilder::eUndoType::SendtoBack:
+        descString = "Send to Back";
+        break;
+    case GuiBuilder::eUndoType::SendtoFront:
+        descString = "Send to Front";
+        break;
+    case GuiBuilder::eUndoType::CreateNew:
+        descString = "Create New";
+        break;
     }
+    // Starts deleting beginning history of saved states if > max ammount set to prevent overflow or excess memory usage
+    if (m_undoSaves.size() >= m_undoSaveMaxSaves)
+    {
+        m_undoSaves.erase(m_undoSaves.begin());
+        m_undoSavesDesc.erase(m_undoSavesDesc.begin());
+    }
+    // Save state and desc of saved state
     m_undoSaves.push_back(m_selectedForm->saveState());
     m_undoSavesDesc.push_back( descString);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::undoWidgetLoad()
+// Clear page and load previous state
+void GuiBuilder::loadUndoState()
 {
     if (!m_undoSaves.empty())
     {

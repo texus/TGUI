@@ -698,13 +698,25 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     if (keyEvent.shift && keyEvent.control)
     {
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
-            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
             selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP });
+        }
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -713,13 +725,25 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     else if (keyEvent.shift)
     {
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
             selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSizeLayout().y});
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
-            selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setSize({ selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
-            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setSize({ selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1 });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
-            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setSize({ selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1 });
+        }
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -728,13 +752,25 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     else if (keyEvent.control)
     {
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
-            selectedWidget->setPosition({selectedWidget->getPosition().x - 1, selectedWidget->getPositionLayout().y});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPosition().x - 1, selectedWidget->getPositionLayout().y });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
-            selectedWidget->setPosition({selectedWidget->getPosition().x + 1, selectedWidget->getPositionLayout().y});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPosition().x + 1, selectedWidget->getPositionLayout().y });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - 1});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - 1 });
+        }
         else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + 1});
+        {
+            m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
+            selectedWidget->setPosition({ selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + 1 });
+        }
 
         setChanged(true);
         updateSelectionSquarePositions();
@@ -927,8 +963,6 @@ void Form::save()
 //Saves state to internal storage
 tgui::String Form::saveState()
 {
-    setChanged(false);
-
     // Save the output file to memory so that it can be edited
     std::stringstream originalOutStream;
     m_widgetsContainer->saveWidgetsToStream(originalOutStream);
@@ -1072,7 +1106,7 @@ void Form::onDrag(tgui::Vector2i mousePos)
     // Saves state for undo recall
     if (!onDragSaved && m_draggingWidget)
     {
-        m_guiBuilder->undoWidgetSave(GuiBuilder::eUndoType::Move);
+        m_guiBuilder->saveUndoState(GuiBuilder::eUndoType::Move);
         onDragSaved = true;
     }
     assert(m_selectedWidget != nullptr);
