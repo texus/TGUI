@@ -43,6 +43,8 @@ namespace tgui
         using Ptr = std::shared_ptr<Grid>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Grid>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "Grid"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The alignment of the widget in its cell
@@ -72,7 +74,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Grid(const char* typeName = "Grid", bool initRenderer = true);
+        Grid(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ namespace tgui
         using Ptr = std::shared_ptr<MessageBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MessageBox>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "MessageBox"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The label and button alignment
@@ -67,7 +69,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        MessageBox(const char* typeName = "MessageBox", bool initRenderer = true);
+        MessageBox(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,6 +49,9 @@ namespace tgui
         using Ptr = std::shared_ptr<ListView>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ListView>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ListView"; //!< Type name of the widget
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment for all texts within a column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +86,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListView(const char* typeName = "ListView", bool initRenderer = true);
+        ListView(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

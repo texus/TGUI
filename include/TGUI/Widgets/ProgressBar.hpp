@@ -45,6 +45,8 @@ namespace tgui
         using Ptr = std::shared_ptr<ProgressBar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ProgressBar>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ProgressBar"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The fill direction of the progress bar
@@ -68,7 +70,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ProgressBar(const char* typeName = "ProgressBar", bool initRenderer = true);
+        ProgressBar(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

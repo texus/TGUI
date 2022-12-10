@@ -45,6 +45,8 @@ namespace tgui
         using Ptr = std::shared_ptr<RadioButton>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RadioButton>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "RadioButton"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -53,7 +55,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        RadioButton(const char* typeName = "RadioButton", bool initRenderer = true);
+        RadioButton(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

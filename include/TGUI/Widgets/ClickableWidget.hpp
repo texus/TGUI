@@ -43,6 +43,8 @@ namespace tgui
         using Ptr = std::shared_ptr<ClickableWidget>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ClickableWidget>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ClickableWidget"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -51,7 +53,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ClickableWidget(const char* typeName = "ClickableWidget", bool initRenderer = true);
+        ClickableWidget(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

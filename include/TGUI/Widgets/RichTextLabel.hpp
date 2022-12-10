@@ -54,6 +54,9 @@ namespace tgui
         using Ptr = std::shared_ptr<RichTextLabel>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RichTextLabel>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "RichTextLabel"; //!< Type name of the widget
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Constructor
@@ -61,7 +64,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        RichTextLabel(const char* typeName = "RichTextLabel", bool initRenderer = true);
+        RichTextLabel(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

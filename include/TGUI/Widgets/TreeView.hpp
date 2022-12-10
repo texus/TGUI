@@ -45,6 +45,9 @@ namespace tgui
         using Ptr = std::shared_ptr<TreeView>;
         using ConstPtr = std::shared_ptr<const TreeView>;
 
+        static constexpr const char StaticWidgetType[] = "TreeView"; //!< Type name of the widget
+
+
         /// @brief Read-only node representation used by getNodes
         struct ConstNode
         {
@@ -71,7 +74,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TreeView(const char* typeName = "TreeView", bool initRenderer = true);
+        TreeView(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

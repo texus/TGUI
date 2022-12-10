@@ -49,6 +49,9 @@ namespace tgui
         using Ptr = std::shared_ptr<MenuBar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MenuBar>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "MenuBar"; //!< Type name of the widget
+
+
         /// @brief Used for return value of getMenus
         struct GetMenusElement
         {
@@ -74,7 +77,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        MenuBar(const char* typeName = "MenuBar", bool initRenderer = true);
+        MenuBar(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

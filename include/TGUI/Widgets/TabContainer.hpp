@@ -48,6 +48,8 @@ namespace tgui
         using Ptr = std::shared_ptr<TabContainer>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const TabContainer>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "TabContainer"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enumeration of the tab alignments for tabs
@@ -66,7 +68,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TabContainer(const char* typeName = "TabContainer", bool initRenderer = true);
+        TabContainer(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

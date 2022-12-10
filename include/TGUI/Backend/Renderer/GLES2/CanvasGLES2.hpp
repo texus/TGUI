@@ -66,6 +66,8 @@ namespace tgui
         using Ptr = std::shared_ptr<CanvasGLES2>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasGLES2>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "CanvasGLES2"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -74,7 +76,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasGLES2(const char* typeName = "CanvasGLES2", bool initRenderer = true);
+        CanvasGLES2(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

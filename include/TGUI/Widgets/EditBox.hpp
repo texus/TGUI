@@ -49,6 +49,8 @@ namespace tgui
         using Ptr = std::shared_ptr<EditBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const EditBox>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "EditBox"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment
@@ -85,7 +87,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        EditBox(const char* typeName = "EditBox", bool initRenderer = true);
+        EditBox(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

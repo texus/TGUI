@@ -47,6 +47,8 @@ namespace tgui
         using Ptr = std::shared_ptr<ChildWindow>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ChildWindow>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ChildWindow"; //!< Type name of the widget
+
 
         /// Title alignments, possible options for the setTitleAlignment function
         enum class TitleAlignment
@@ -73,7 +75,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ChildWindow(const char* typeName = "ChildWindow", bool initRenderer = true);
+        ChildWindow(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

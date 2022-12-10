@@ -46,6 +46,8 @@ namespace tgui
         using Ptr = std::shared_ptr<ListBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ListBox>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ListBox"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The horizontal text alignment
@@ -65,7 +67,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListBox(const char* typeName = "ListBox", bool initRenderer = true);
+        ListBox(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ namespace tgui
         using Ptr = std::shared_ptr<Scrollbar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Scrollbar>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
+
 
         /// @brief Defines when the scrollbar shows up
         enum class Policy
@@ -61,7 +63,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Scrollbar(const char* typeName = "Scrollbar", bool initRenderer = true);
+        Scrollbar(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

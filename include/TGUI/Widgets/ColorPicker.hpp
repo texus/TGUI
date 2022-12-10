@@ -45,6 +45,8 @@ namespace tgui
         using Ptr = std::shared_ptr<ColorPicker>; ///< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ColorPicker>; ///< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "ColorPicker"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -53,7 +55,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ColorPicker(const char* typeName = "ColorPicker", bool initRenderer = true);
+        ColorPicker(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

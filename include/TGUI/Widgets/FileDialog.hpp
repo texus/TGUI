@@ -65,6 +65,8 @@ namespace tgui
         using Ptr = std::shared_ptr<FileDialog>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const FileDialog>; //!< Shared constant widget pointer
 
+        static constexpr const char StaticWidgetType[] = "FileDialog"; //!< Type name of the widget
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -73,7 +75,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        FileDialog(const char* typeName = "FileDialog", bool initRenderer = true);
+        FileDialog(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
