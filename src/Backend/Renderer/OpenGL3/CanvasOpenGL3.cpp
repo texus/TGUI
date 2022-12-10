@@ -33,6 +33,10 @@
 
 namespace tgui
 {
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char CanvasOpenGL3::StaticWidgetType[];
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasOpenGL3::CanvasOpenGL3(const char* typeName, bool initRenderer) :

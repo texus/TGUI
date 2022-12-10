@@ -48,6 +48,10 @@ namespace tgui
     };
 #endif
 
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char RichTextLabel::StaticWidgetType[];
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RichTextLabel::RichTextLabel(const char* typeName, bool initRenderer) :

@@ -33,6 +33,10 @@
 
 namespace tgui
 {
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char ScrollablePanel::StaticWidgetType[];
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(const char* typeName, bool initRenderer) :

@@ -38,6 +38,10 @@ namespace tgui
     const char* EditBox::Validator::UInt  = "[0-9]*";
     const char* EditBox::Validator::Float = "[+-]?[0-9]*\\.?[0-9]*";
 
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char EditBox::StaticWidgetType[];
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox(const char* typeName, bool initRenderer) :

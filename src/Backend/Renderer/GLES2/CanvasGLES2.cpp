@@ -33,6 +33,10 @@
 
 namespace tgui
 {
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char CanvasGLES2::StaticWidgetType[];
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasGLES2::CanvasGLES2(const char* typeName, bool initRenderer) :
