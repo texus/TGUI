@@ -2398,7 +2398,7 @@ void GuiBuilder::menuBarCallbackKeyboardShortcuts()
 {
     auto keyboardShortcutsWindow = openWindowWithFocus();
     keyboardShortcutsWindow->setTitle("Keyboard shortcuts");
-    keyboardShortcutsWindow->setClientSize({375, 310});
+    keyboardShortcutsWindow->setClientSize({375, 340});
     keyboardShortcutsWindow->loadWidgetsFromFile("resources/forms/KeyboardShortcuts.txt");
 }
 
