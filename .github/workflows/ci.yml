@@ -297,7 +297,7 @@ jobs:
       run: |
         mkdir $GITHUB_WORKSPACE/TGUI-build-temp
         cd $GITHUB_WORKSPACE/TGUI-build-temp
-        cmake -DTGUI_BACKEND=Custom -DTGUI_USE_GLES=TRUE -DTGUI_BUILD_GUI_BUILDER=FALSE ../TGUI
+        cmake -DTGUI_BACKEND=Custom -DTGUI_USE_GLES=TRUE -DTGUI_CXX_STANDARD=14 -DTGUI_BUILD_GUI_BUILDER=FALSE ../TGUI
         cd $GITHUB_WORKSPACE
         rm -R $GITHUB_WORKSPACE/TGUI-build-temp
 
