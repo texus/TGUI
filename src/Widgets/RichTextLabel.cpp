@@ -603,11 +603,18 @@ namespace tgui
                             const String colorStr(std::decay_t<StringView>(&symbolName[6], symbolName.length() - 6));
                             if (!colorStr.empty())
                             {
-                                newColor = Deserializer::deserialize(ObjectConverter::Type::Color, colorStr).getColor();
-                                if (newColor.isSet())
+                                try
                                 {
-                                    addTextPiece();
-                                    currentColor = newColor;
+                                    newColor = Deserializer::deserialize(ObjectConverter::Type::Color, colorStr).getColor();
+                                    if (newColor.isSet())
+                                    {
+                                        addTextPiece();
+                                        currentColor = newColor;
+                                    }
+                                }
+                                catch (const Exception&)
+                                {
+                                    // Ignore colors that don't exist
                                 }
                             }
 
