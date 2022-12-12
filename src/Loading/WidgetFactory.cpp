@@ -83,6 +83,7 @@ namespace tgui
         {"RadioButton", std::make_shared<RadioButton>},
         {"RadioButtonGroup", std::make_shared<RadioButtonGroup>},
         {"RangeSlider", std::make_shared<RangeSlider>},
+        {"RichTextLabel", std::make_shared<RichTextLabel>},
         {"ScrollablePanel", std::make_shared<ScrollablePanel>},
         {"Scrollbar", std::make_shared<Scrollbar>},
         {"SeparatorLine", std::make_shared<SeparatorLine>},
