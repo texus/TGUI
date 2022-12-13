@@ -885,7 +885,7 @@ void GuiBuilder::loadToolbox()
     auto toolboxWindow = m_gui->get<tgui::ChildWindow>("ToolboxWindow");
     auto toolbox = toolboxWindow->get<tgui::ScrollablePanel>("Widgets");
 
-    const auto widgets = std::vector<std::pair<tgui::String, std::function<tgui::Widget::Ptr()>>>{
+    auto widgets = std::vector<std::pair<tgui::String, std::function<tgui::Widget::Ptr()>>>{
         {"BitmapButton", []{ return tgui::BitmapButton::create("BitBtn"); }},
         {"Button", []{ return tgui::Button::create("Button"); }},
         {"ChatBox", []{ return tgui::ChatBox::create(); }},
@@ -914,10 +914,10 @@ void GuiBuilder::loadToolbox()
     };
 
     float topPosition = 0;
-    for (auto& widget : widgets)
+    for (std::pair<tgui::String, std::function<tgui::Widget::Ptr()>>& mWidget_tool : widgets)
     {
-        auto icon = tgui::Picture::create("resources/widget-icons/" + widget.first + ".png");
-        auto name = tgui::Label::create(widget.first);
+        auto icon = tgui::Picture::create("resources/widget-icons/" + mWidget_tool.first + ".png");
+        auto name = tgui::Label::create(mWidget_tool.first);
         name->setPosition({icon->getSize().x * 1.1f, "50% - 10"});
         name->setTextSize(14);
 
@@ -936,14 +936,14 @@ void GuiBuilder::loadToolbox()
         panel->onClick([=]{
             saveUndoState(GuiBuilder::eUndoType::CreateNew);
 
-            createNewWidget(widget.second());
+            createNewWidget(mWidget_tool.second());
 
             auto selectedWidget = m_selectedForm->getSelectedWidget();
 
             auto renderer = m_themes[m_defaultTheme].getRendererNoThrow(selectedWidget->ptr->getWidgetType());
 
             // Although the white theme has an empty Picture renderer, the gui builder should not use it and display a placeholder image instead
-            if ((widget.first == "Picture") && (m_defaultTheme == "White"))
+            if ((mWidget_tool.first == "Picture") && (m_defaultTheme == "White"))
                 renderer = nullptr;
 
             if (renderer)
@@ -1286,7 +1286,11 @@ bool GuiBuilder::loadForm(tgui::String filename, int loadType)
     try
     {
         if (loadType == 0)
+        {
             m_selectedForm->load();
+            m_undoSaves.clear(); // Reset undo saves
+            m_undoSavesDesc.clear(); // Reset undo saves
+        }
         else
         {
             m_selectedForm->loadState(m_undoSaves.back());
@@ -2477,9 +2481,11 @@ void GuiBuilder::loadUndoState()
         m_propertiesWindow = nullptr;
         m_propertiesContainer = nullptr;
         m_selectedWidgetComboBox = nullptr;
+        
 
         m_gui->removeAllWidgets();
         m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
+        
 
         if (!loadGuiBuilderState())
         {
@@ -2490,5 +2496,6 @@ void GuiBuilder::loadUndoState()
         auto panel = m_gui->get<tgui::Panel>("MainPanel");
         loadForm(filename, 1);
         m_selectedForm->focus();
+
     }
 }
