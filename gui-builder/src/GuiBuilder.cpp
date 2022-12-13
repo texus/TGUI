@@ -1286,14 +1286,18 @@ bool GuiBuilder::loadForm(tgui::String filename, int loadType)
     try
     {
         if (loadType == 0)
+        {
             m_selectedForm->load();
+            m_undoSaves.clear(); // Reset undo saves
+            m_undoSavesDesc.clear(); // Reset undo saves
+        }
         else
         {
             m_selectedForm->loadState(m_undoSaves.back());
             m_undoSaves.pop_back();
             m_undoSavesDesc.pop_back();
         }
-          
+
     }
     catch (const tgui::Exception& e)
     {
