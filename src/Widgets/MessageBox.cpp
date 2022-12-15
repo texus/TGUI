@@ -402,17 +402,17 @@ namespace tgui
 
     void MessageBox::rendererChanged(const String& property)
     {
-        if (property == "TextColor")
+        if (property == U"TextColor")
         {
             m_label->getRenderer()->setTextColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "Button")
+        else if (property == U"Button")
         {
             const auto& renderer = getSharedRenderer()->getButton();
             for (auto& button : m_buttons)
                 button->setRenderer(renderer);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             ChildWindow::rendererChanged(property);
 
@@ -433,21 +433,21 @@ namespace tgui
     {
         auto node = ChildWindow::save(renderers);
 
-        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoSize));
+        node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoSize));
 
         if (m_labelAlignment == Alignment::Left)
-            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
+            node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
         else if (m_labelAlignment == Alignment::Center)
-            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_labelAlignment == Alignment::Right)
-            node->propertyValuePairs["LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+            node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         if (m_buttonAlignment == Alignment::Left)
-            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
+            node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
         else if (m_buttonAlignment == Alignment::Center)
-            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_buttonAlignment == Alignment::Right)
-            node->propertyValuePairs["ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+            node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         return node;
     }
@@ -461,33 +461,33 @@ namespace tgui
 
         ChildWindow::load(node, renderers);
 
-        if (node->propertyValuePairs["AutoSize"])
-            m_autoSize = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool();
+        if (node->propertyValuePairs[U"AutoSize"])
+            m_autoSize = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool();
         else
             m_autoSize = true;
 
-        if (node->propertyValuePairs["LabelAlignment"])
+        if (node->propertyValuePairs[U"LabelAlignment"])
         {
-            if (node->propertyValuePairs["LabelAlignment"]->value == "Left")
+            if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Left")
                 setLabelAlignment(Alignment::Left);
-            else if (node->propertyValuePairs["LabelAlignment"]->value == "Center")
+            else if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Center")
                 setLabelAlignment(Alignment::Center);
-            else if (node->propertyValuePairs["LabelAlignment"]->value == "Right")
+            else if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Right")
                 setLabelAlignment(Alignment::Right);
             else
-                throw Exception{"Failed to parse LabelAlignment property. Only the values Left, Center and Right are correct."};
+                throw Exception{U"Failed to parse LabelAlignment property. Only the values Left, Center and Right are correct."};
         }
 
-        if (node->propertyValuePairs["ButtonAlignment"])
+        if (node->propertyValuePairs[U"ButtonAlignment"])
         {
-            if (node->propertyValuePairs["ButtonAlignment"]->value == "Left")
+            if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Left")
                 setButtonAlignment(Alignment::Left);
-            else if (node->propertyValuePairs["ButtonAlignment"]->value == "Center")
+            else if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Center")
                 setButtonAlignment(Alignment::Center);
-            else if (node->propertyValuePairs["ButtonAlignment"]->value == "Right")
+            else if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Right")
                 setButtonAlignment(Alignment::Right);
             else
-                throw Exception{"Failed to parse ButtonAlignment property. Only the values Left, Center and Right are correct."};
+                throw Exception{U"Failed to parse ButtonAlignment property. Only the values Left, Center and Right are correct."};
         }
 
         identifyLabelAndButtons();
@@ -497,11 +497,11 @@ namespace tgui
 
     void MessageBox::identifyLabelAndButtons()
     {
-        m_label = get<Label>("#TGUI_INTERNAL$MessageBoxText#");
+        m_label = get<Label>(U"#TGUI_INTERNAL$MessageBoxText#");
 
         for (const auto& widget : m_widgets)
         {
-            if ((widget->getWidgetName().length() >= 32) && (widget->getWidgetName().substr(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
+            if ((widget->getWidgetName().length() >= 32) && (widget->getWidgetName().substr(0, 32) == U"#TGUI_INTERNAL$MessageBoxButton:"))
             {
                 auto button = std::dynamic_pointer_cast<Button>(widget);
                 m_buttons.push_back(button);

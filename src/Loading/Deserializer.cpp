@@ -106,7 +106,7 @@ namespace tgui
             else if (str.equalIgnoreCase("false") || str.equalIgnoreCase("no") || str.equalIgnoreCase("off") || str.equalIgnoreCase("0"))
                 return {false};
             else
-                throw Exception{"Failed to deserialize boolean from '" + str + "'"};
+                throw Exception{U"Failed to deserialize boolean from '" + str + "'"};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,12 +129,12 @@ namespace tgui
 #endif
             {
                 if (!font->loadFromFile((getResourcePath() / filename).asString()))
-                    throw Exception{"Failed to load font from '" + (getResourcePath() / filename).asString() + "'"};
+                    throw Exception{U"Failed to load font from '" + (getResourcePath() / filename).asString() + "'"};
             }
             else
             {
                 if (!font->loadFromFile(filename))
-                    throw Exception{"Failed to load font from '" + filename + "'"};
+                    throw Exception{U"Failed to load font from '" + filename + U"'"};
             }
 
             // We create the backend font manually first, as passing the string to the Font constructor would cause
@@ -147,20 +147,20 @@ namespace tgui
         ObjectConverter deserializeColor(const String& value)
         {
             String str = value.trim().toLower();
-            if (str.empty() || (str == "none"))
+            if (str.empty() || (str == U"none"))
                 return Color();
 
             // Check if the color can be represented with a hexadecimal number
             if (str[0] == '#')
             {
                 if ((str.length() != 4) && (str.length() != 5) && (str.length() != 7) && (str.length() != 9))
-                    throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
+                    throw Exception{U"Failed to deserialize color '" + value + U"'. Value started but '#' but has the wrong length."};
 
                 // You can only have hex characters
                 for (std::size_t i = 1; i < str.length(); ++i)
                 {
                     if (!((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'a' && str[i] <= 'f')))
-                        throw Exception{"Failed to deserialize color '" + str + "'. Value started but '#' but contained an invalid character afterwards."};
+                        throw Exception{U"Failed to deserialize color '" + str + U"'. Value started but '#' but contained an invalid character afterwards."};
                 }
 
                 // Parse the different types of strings (#123, #1234, #112233 and #11223344)
@@ -202,9 +202,9 @@ namespace tgui
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
-            if (str.substr(0, 4) == "rgba")
+            if (str.substr(0, 4) == U"rgba")
                 str.erase(0, 4);
-            else if (str.substr(0, 3) == "rgb")
+            else if (str.substr(0, 3) == U"rgb")
                 str.erase(0, 3);
 
             // Remove the first and last characters when they are brackets
@@ -220,7 +220,7 @@ namespace tgui
                              static_cast<std::uint8_t>((tokens.size() == 4) ? tokens[3].toInt() : 255)};
             }
 
-            throw Exception{"Failed to deserialize color '" + value + "'."};
+            throw Exception{U"Failed to deserialize color '" + value + U"'."};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,7 +267,7 @@ namespace tgui
             String str = value.trim();
 
             if (str.empty())
-                throw Exception{"Failed to deserialize outline '" + value + "'. String was empty."};
+                throw Exception{U"Failed to deserialize outline '" + value + U"'. String was empty."};
 
             // Remove the brackets around the value
             if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
@@ -284,7 +284,7 @@ namespace tgui
             else if (tokens.size() == 4)
                 return {Outline{tokens[0], tokens[1], tokens[2], tokens[3]}};
             else
-                throw Exception{"Failed to deserialize outline '" + value + "'. Expected numbers separated with a comma."};
+                throw Exception{U"Failed to deserialize outline '" + value + U"'. Expected numbers separated with a comma."};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,7 +327,7 @@ namespace tgui
                 }
 
                 if (!filenameFound)
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find the closing quote of the filename."};
+                    throw Exception{U"Failed to deserialize texture '" + value + U"'. Failed to find the closing quote of the filename."};
 
                 // There may be optional parameters
                 while (removeWhitespace(value, c))
@@ -352,11 +352,11 @@ namespace tgui
                             break;
                         }
                         else
-                            throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
+                            throw Exception{U"Failed to deserialize texture '" + value + U"'. Invalid text found behind filename."};
                     }
 
                     if (word.empty())
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Expected 'Part' or 'Middle' in front of opening bracket."};
 
                     bool rectRequiresFourValues = true;
                     UIntRect* rect = nullptr;
@@ -372,17 +372,17 @@ namespace tgui
                         std::advance(c, 6);
                     }
                     else
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word + U"' in front of opening bracket. Expected 'Part' or 'Middle'."};
 
                     const auto endOffset = static_cast<std::size_t>(c - value.begin());
                     auto closeBracketPos = value.find(U')', endOffset);
                     if (closeBracketPos != String::npos)
                     {
                         if (!readUIntRect(value.substr(endOffset, closeBracketPos - endOffset + 1), *rect, rectRequiresFourValues))
-                            throw Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
+                            throw Exception{U"Failed to parse " + word + U" rectangle while deserializing texture '" + value + U"'."};
                     }
                     else
-                        throw Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Failed to find closing bracket for " + word + U" rectangle."};
 
                     std::advance(c, static_cast<std::ptrdiff_t>(closeBracketPos - endOffset + 1));
                 }
@@ -393,17 +393,13 @@ namespace tgui
             {
                 const auto foundIndex = filename.find(U";base64,");
                 if (foundIndex == tgui::String::npos)
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
+                    throw Exception{U"Failed to deserialize texture '" + value + U"'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
 
                 const auto dataIndex = foundIndex + 8;
                 const std::string& encodedData = filename.toStdString();
 
                 Texture texture;
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-                texture.loadFromBase64(std::string_view(encodedData.data() + dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
-#else
-                texture.loadFromBase64(encodedData.substr(dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
-#endif
+                texture.loadFromBase64(CharStringView(encodedData.data() + dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
                 return texture;
             }
 

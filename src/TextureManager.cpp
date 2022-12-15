@@ -116,7 +116,7 @@ namespace tgui
             }
         }
 
-        throw Exception{"Trying to copy texture data that was not loaded by the TextureManager."};
+        throw Exception{U"Trying to copy texture data that was not loaded by the TextureManager."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ namespace tgui
             }
         }
 
-        throw Exception{"Trying to remove a texture that was not loaded by the TextureManager."};
+        throw Exception{U"Trying to remove a texture that was not loaded by the TextureManager."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

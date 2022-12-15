@@ -535,7 +535,7 @@ namespace tgui
 
     void ColorPicker::rendererChanged(const String& property)
     {
-        if (property == "Button")
+        if (property == U"Button")
         {
             const auto& renderer = getSharedRenderer()->getButton();
 
@@ -548,7 +548,7 @@ namespace tgui
                 get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setRenderer(renderer);
             }
         }
-        else if (property == "Label")
+        else if (property == U"Label")
         {
             const auto& renderer = getSharedRenderer()->getLabel();
 
@@ -559,7 +559,7 @@ namespace tgui
                     label->setRenderer(renderer);
             }
         }
-        else if (property == "Slider")
+        else if (property == U"Slider")
         {
             const auto& renderer = getSharedRenderer()->getSlider();
 
@@ -570,7 +570,7 @@ namespace tgui
 
             m_value->setRenderer(renderer);
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             ChildWindow::rendererChanged(property);
             m_colorWheelSprite.setOpacity(m_opacityCached);

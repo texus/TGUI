@@ -142,7 +142,7 @@ namespace tgui
                 // Loop through all radio buttons in our parent and uncheck them
                 for (auto& widget : m_parent->getWidgets())
                 {
-                    if (widget->getWidgetType() == "RadioButton")
+                    if (widget->getWidgetType() == U"RadioButton")
                         std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
                 }
             }
@@ -289,18 +289,18 @@ namespace tgui
 
     void RadioButton::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
             updateTextureSizes();
         }
-        else if ((property == "TextColor") || (property == "TextColorHover") || (property == "TextColorDisabled")
-              || (property == "TextColorChecked") || (property == "TextColorCheckedHover") || (property == "TextColorCheckedDisabled"))
+        else if ((property == U"TextColor") || (property == U"TextColorHover") || (property == U"TextColorDisabled")
+              || (property == U"TextColorChecked") || (property == U"TextColorCheckedHover") || (property == U"TextColorCheckedDisabled"))
         {
             updateTextColor();
         }
-        else if (property == "TextStyle")
+        else if (property == U"TextStyle")
         {
             m_textStyleCached = getSharedRenderer()->getTextStyle();
 
@@ -309,7 +309,7 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
         }
-        else if (property == "TextStyleChecked")
+        else if (property == U"TextStyleChecked")
         {
             m_textStyleCheckedCached = getSharedRenderer()->getTextStyleChecked();
 
@@ -318,113 +318,113 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
         }
-        else if (property == "TextureUnchecked")
+        else if (property == U"TextureUnchecked")
         {
             m_spriteUnchecked.setTexture(getSharedRenderer()->getTextureUnchecked());
             updateTextureSizes();
         }
-        else if (property == "TextureChecked")
+        else if (property == U"TextureChecked")
         {
             m_spriteChecked.setTexture(getSharedRenderer()->getTextureChecked());
             updateTextureSizes();
         }
-        else if (property == "TextureUncheckedHover")
+        else if (property == U"TextureUncheckedHover")
         {
             m_spriteUncheckedHover.setTexture(getSharedRenderer()->getTextureUncheckedHover());
         }
-        else if (property == "TextureCheckedHover")
+        else if (property == U"TextureCheckedHover")
         {
             m_spriteCheckedHover.setTexture(getSharedRenderer()->getTextureCheckedHover());
         }
-        else if (property == "TextureUncheckedDisabled")
+        else if (property == U"TextureUncheckedDisabled")
         {
             m_spriteUncheckedDisabled.setTexture(getSharedRenderer()->getTextureUncheckedDisabled());
         }
-        else if (property == "TextureCheckedDisabled")
+        else if (property == U"TextureCheckedDisabled")
         {
             m_spriteCheckedDisabled.setTexture(getSharedRenderer()->getTextureCheckedDisabled());
         }
-        else if (property == "TextureUncheckedFocused")
+        else if (property == U"TextureUncheckedFocused")
         {
             m_spriteUncheckedFocused.setTexture(getSharedRenderer()->getTextureUncheckedFocused());
         }
-        else if (property == "TextureCheckedFocused")
+        else if (property == U"TextureCheckedFocused")
         {
             m_spriteCheckedFocused.setTexture(getSharedRenderer()->getTextureCheckedFocused());
         }
-        else if (property == "CheckColor")
+        else if (property == U"CheckColor")
         {
             m_checkColorCached = getSharedRenderer()->getCheckColor();
         }
-        else if (property == "CheckColorHover")
+        else if (property == U"CheckColorHover")
         {
             m_checkColorHoverCached = getSharedRenderer()->getCheckColorHover();
         }
-        else if (property == "CheckColorDisabled")
+        else if (property == U"CheckColorDisabled")
         {
             m_checkColorDisabledCached = getSharedRenderer()->getCheckColorDisabled();
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BorderColorHover")
+        else if (property == U"BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if (property == "BorderColorDisabled")
+        else if (property == U"BorderColorDisabled")
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
-        else if (property == "BorderColorFocused")
+        else if (property == U"BorderColorFocused")
         {
             m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
         }
-        else if (property == "BorderColorChecked")
+        else if (property == U"BorderColorChecked")
         {
             m_borderColorCheckedCached = getSharedRenderer()->getBorderColorChecked();
         }
-        else if (property == "BorderColorCheckedHover")
+        else if (property == U"BorderColorCheckedHover")
         {
             m_borderColorCheckedHoverCached = getSharedRenderer()->getBorderColorCheckedHover();
         }
-        else if (property == "BorderColorCheckedDisabled")
+        else if (property == U"BorderColorCheckedDisabled")
         {
             m_borderColorCheckedDisabledCached = getSharedRenderer()->getBorderColorCheckedDisabled();
         }
-        else if (property == "BorderColorCheckedFocused")
+        else if (property == U"BorderColorCheckedFocused")
         {
             m_borderColorCheckedFocusedCached = getSharedRenderer()->getBorderColorCheckedFocused();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "BackgroundColorDisabled")
+        else if (property == U"BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "BackgroundColorChecked")
+        else if (property == U"BackgroundColorChecked")
         {
             m_backgroundColorCheckedCached = getSharedRenderer()->getBackgroundColorChecked();
         }
-        else if (property == "BackgroundColorCheckedHover")
+        else if (property == U"BackgroundColorCheckedHover")
         {
             m_backgroundColorCheckedHoverCached = getSharedRenderer()->getBackgroundColorCheckedHover();
         }
-        else if (property == "BackgroundColorCheckedDisabled")
+        else if (property == U"BackgroundColorCheckedDisabled")
         {
             m_backgroundColorCheckedDisabledCached = getSharedRenderer()->getBackgroundColorCheckedDisabled();
         }
-        else if (property == "TextDistanceRatio")
+        else if (property == U"TextDistanceRatio")
         {
             m_textDistanceRatioCached = getSharedRenderer()->getTextDistanceRatio();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -439,7 +439,7 @@ namespace tgui
 
             m_text.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
 
@@ -457,11 +457,11 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (!getText().empty())
-            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
+            node->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
         if (m_checked)
-            node->propertyValuePairs["Checked"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"Checked"] = std::make_unique<DataIO::ValueNode>("true");
         if (!isTextClickable())
-            node->propertyValuePairs["TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
 
         return node;
     }
@@ -472,12 +472,12 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["Text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextClickable"])
-            setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["TextClickable"]->value).getBool());
-        if (node->propertyValuePairs["Checked"])
-            setChecked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Checked"]->value).getBool());
+        if (node->propertyValuePairs[U"Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
+        if (node->propertyValuePairs[U"TextClickable"])
+            setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextClickable"]->value).getBool());
+        if (node->propertyValuePairs[U"Checked"])
+            setChecked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Checked"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

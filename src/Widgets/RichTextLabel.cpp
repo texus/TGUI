@@ -32,21 +32,12 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     static constexpr const std::array<std::pair<StringView, char32_t>, 4> symbolNamesMap
     {
         {{U"lt"sv, U'<'},
          {U"gt"sv, U'>'},
          {U"amp"sv, U'&'}}
     };
-#else
-    static const std::array<std::pair<std::decay_t<StringView>, char32_t>, 4> symbolNamesMap
-    {
-        {{U"lt", U'<'},
-         {U"gt", U'>'},
-         {U"amp", U'&'}}
-    };
-#endif
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr const char RichTextLabel::StaticWidgetType[];
@@ -85,7 +76,7 @@ namespace tgui
 
     void RichTextLabel::rendererChanged(const String& property)
     {
-        if (property == "TextColor")
+        if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             rearrangeText();
@@ -479,7 +470,7 @@ namespace tgui
                         break;
 
                     const std::size_t symbolLength = semiColonPos - (i + 1);
-                    const std::decay_t<StringView> symbolName(&m_string[i + 1], symbolLength);
+                    const StringView symbolName(&m_string[i + 1], symbolLength);
 
                     bool symbolFound = false;
                     for (const auto& pair : symbolNamesMap)
@@ -514,11 +505,7 @@ namespace tgui
 
                         const std::size_t symbolLength = rightAngleBracketPos - (i + 2);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
                         const StringView symbolName(&m_string[i + 2], symbolLength);
-#else
-                        const String symbolName(&m_string[i + 2], symbolLength);
-#endif
                         if (symbolName == U"b")
                         {
                             addTextPiece();
@@ -571,11 +558,7 @@ namespace tgui
                     else // opening tag
                     {
                         const std::size_t symbolLength = rightAngleBracketPos - (i + 1);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
                         const StringView symbolName(&m_string[i + 1], symbolLength);
-#else
-                        const String symbolName(&m_string[i + 1], symbolLength);
-#endif
 
                         if (symbolName == U"b")
                         {
@@ -597,10 +580,10 @@ namespace tgui
                             addTextPiece();
                             currentTextStyle |= TextStyle::StrikeThrough;
                         }
-                        else if (symbolName.starts_with(U"color="))
+                        else if (viewStartsWith(symbolName, U"color="))
                         {
                             Color newColor = currentColor;
-                            const String colorStr(std::decay_t<StringView>(&symbolName[6], symbolName.length() - 6));
+                            const String colorStr(StringView(&symbolName[6], symbolName.length() - 6));
                             if (!colorStr.empty())
                             {
                                 try
@@ -620,10 +603,10 @@ namespace tgui
 
                             colorStack.push_back(newColor);
                         }
-                        else if (symbolName.starts_with(U"size="))
+                        else if (viewStartsWith(symbolName, U"size="))
                         {
                             unsigned int newTextSize = currentTextSize;
-                            const String textSizeStr(std::decay_t<StringView>(&symbolName[5], symbolName.length() - 5));
+                            const String textSizeStr(StringView(&symbolName[5], symbolName.length() - 5));
 
                             if (textSizeStr.attemptToUInt(newTextSize) && (newTextSize > 0))
                             {
@@ -633,9 +616,9 @@ namespace tgui
 
                             textSizeStack.push_back(newTextSize);
                         }
-                        else if (symbolName.starts_with(U"img="))
+                        else if (viewStartsWith(symbolName, U"img="))
                         {
-                            const String imageFilename(std::decay_t<StringView>(&symbolName[4], symbolName.length() - 4));
+                            const String imageFilename(StringView(&symbolName[4], symbolName.length() - 4));
                             try
                             {
                                 auto textureWrapper = Deserializer::deserialize(ObjectConverter::Type::Texture, imageFilename);

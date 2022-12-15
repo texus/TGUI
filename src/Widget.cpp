@@ -65,7 +65,7 @@ namespace tgui
         static Layout2d parseLayout(String str)
         {
             if (str.empty())
-                throw Exception{"Failed to parse layout. String was empty."};
+                throw Exception{U"Failed to parse layout. String was empty."};
 
             // Remove the brackets around the value
             if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
@@ -85,7 +85,7 @@ namespace tgui
                 else if (str[commaOrBracketPos] == ')')
                 {
                     if (bracketCount == 0)
-                        throw Exception{"Failed to parse layout '" + str + "'. Brackets didn't match."};
+                        throw Exception{U"Failed to parse layout '" + str + U"'. Brackets didn't match."};
 
                     bracketCount--;
                 }
@@ -116,7 +116,7 @@ namespace tgui
     static Vector2f parseVector2f(String str)
     {
         if (str.empty())
-            throw Exception{"Failed to parse Vector2f string. String was empty."};
+            throw Exception{U"Failed to parse Vector2f string. String was empty."};
 
         // Remove the brackets around the value
         if ((str.front() == '(') && (str.back() == ')'))
@@ -124,7 +124,7 @@ namespace tgui
 
         const auto commaPos = str.find(',');
         if (commaPos == String::npos)
-            throw Exception{"Failed to parse Vector2f string '" + str + "'. No comma found."};
+            throw Exception{U"Failed to parse Vector2f string '" + str + U"'. No comma found."};
 
         return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
     }
@@ -1394,21 +1394,21 @@ namespace tgui
         else if (signalName == onShowEffectFinish.getName())
             return onShowEffectFinish;
 
-        throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
+        throw Exception{U"No signal exists with name '" + std::move(signalName) + U"'."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::rendererChanged(const String& property)
     {
-        if ((property == "Opacity") || (property == "OpacityDisabled"))
+        if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             if (!m_enabled && (getSharedRenderer()->getOpacityDisabled() != -1))
                 m_opacityCached = getSharedRenderer()->getOpacityDisabled() * m_inheritedOpacity;
             else
                 m_opacityCached = getSharedRenderer()->getOpacity() * m_inheritedOpacity;
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             if (getSharedRenderer()->getFont())
                 m_fontCached = getSharedRenderer()->getFont();
@@ -1417,7 +1417,7 @@ namespace tgui
             else
                 m_fontCached = Font::getGlobalFont();
         }
-        else if (property == "TextSize")
+        else if (property == U"TextSize")
         {
             if (getSharedRenderer()->getTextSize())
                 m_textSizeCached = getSharedRenderer()->getTextSize();
@@ -1426,12 +1426,12 @@ namespace tgui
 
             updateTextSize();
         }
-        else if (property == "TransparentTexture")
+        else if (property == U"TransparentTexture")
         {
             m_transparentTextureCached = getSharedRenderer()->getTransparentTexture();
         }
         else
-            throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
+            throw Exception{U"Could not set property '" + property + U"', widget of type '" + getWidgetType() + U"' does not has this property."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1442,29 +1442,29 @@ namespace tgui
         if (m_name.empty())
             node->name = getWidgetType();
         else
-            node->name = getWidgetType() + "." + Serializer::serialize(m_name);
+            node->name = getWidgetType() + U"." + Serializer::serialize(m_name);
 
         if (!isVisible())
-            node->propertyValuePairs["Visible"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"Visible"] = std::make_unique<DataIO::ValueNode>("false");
         if (!isEnabled())
-            node->propertyValuePairs["Enabled"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"Enabled"] = std::make_unique<DataIO::ValueNode>("false");
         if (getPosition() != Vector2f{})
-            node->propertyValuePairs["Position"] = std::make_unique<DataIO::ValueNode>(m_position.toString());
+            node->propertyValuePairs[U"Position"] = std::make_unique<DataIO::ValueNode>(m_position.toString());
         if (getSize() != Vector2f{})
-            node->propertyValuePairs["Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
+            node->propertyValuePairs[U"Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
         if (getOrigin() != Vector2f{})
-            node->propertyValuePairs["Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
+            node->propertyValuePairs[U"Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
         if (getScale() != Vector2f{1, 1})
         {
-            node->propertyValuePairs["Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
+            node->propertyValuePairs[U"Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
             if (m_scaleOrigin)
-                node->propertyValuePairs["ScaleOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleOrigin->x) + "," + String::fromNumber(m_scaleOrigin->y) + ")");
+                node->propertyValuePairs[U"ScaleOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleOrigin->x) + "," + String::fromNumber(m_scaleOrigin->y) + ")");
         }
         if (getRotation() != 0)
         {
-            node->propertyValuePairs["Rotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_rotationDeg));
+            node->propertyValuePairs[U"Rotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_rotationDeg));
             if (m_rotationOrigin)
-                node->propertyValuePairs["RotationOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
+                node->propertyValuePairs[U"RotationOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
         }
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
@@ -1472,17 +1472,17 @@ namespace tgui
             if (m_userData.type() == typeid(String))
             {
                 const String string = std::any_cast<String>(m_userData);
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
             else if (m_userData.type() == typeid(std::string))
             {
                 const String string = std::any_cast<std::string>(m_userData);
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
             else if (m_userData.type() == typeid(const char*))
             {
                 const String string = std::any_cast<const char*>(m_userData);
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
         }
 #else
@@ -1490,20 +1490,20 @@ namespace tgui
         {
             if (m_userData.is<String>())
             {
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<String>()));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<String>()));
             }
             else if (m_userData.is<std::string>())
             {
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>()))) ;
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>()))) ;
             }
             else if (m_userData.is<const char*>())
             {
-                node->propertyValuePairs["UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<const char*>()));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<const char*>()));
             }
         }
 #endif
         if (m_textSize != 0)
-            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+            node->propertyValuePairs[U"TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
         String mouseCursorStr;
         switch (m_mouseCursor)
@@ -1526,7 +1526,7 @@ namespace tgui
             case Cursor::Type::Arrow:           break; // We don't save the cursor if it has the default value
         }
         if (!mouseCursorStr.empty())
-            node->propertyValuePairs["MouseCursor"] = std::make_unique<DataIO::ValueNode>(mouseCursorStr);
+            node->propertyValuePairs[U"MouseCursor"] = std::make_unique<DataIO::ValueNode>(mouseCursorStr);
 
         if (getToolTip() != nullptr)
         {
@@ -1536,9 +1536,9 @@ namespace tgui
             toolTipNode->name = "ToolTip";
             toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-            toolTipNode->propertyValuePairs["InitialDelay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(ToolTip::getInitialDelay().asSeconds()));
-            toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("("
-                + String::fromNumber(ToolTip::getDistanceToMouse().x) + "," + String::fromNumber(ToolTip::getDistanceToMouse().y) + ")");
+            toolTipNode->propertyValuePairs[U"InitialDelay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(ToolTip::getInitialDelay().asSeconds()));
+            toolTipNode->propertyValuePairs[U"DistanceToMouse"] = std::make_unique<DataIO::ValueNode>(U"("
+                + String::fromNumber(ToolTip::getDistanceToMouse().x) + "," + String::fromNumber(ToolTip::getDistanceToMouse().y) + U")");
 
             node->children.emplace_back(std::move(toolTipNode));
         }
@@ -1546,7 +1546,7 @@ namespace tgui
         if (renderers.at(this).first)
             node->children.emplace_back(std::move(renderers.at(this).first));
         else
-            node->propertyValuePairs["Renderer"] = std::make_unique<DataIO::ValueNode>("&" + renderers.at(this).second);
+            node->propertyValuePairs[U"Renderer"] = std::make_unique<DataIO::ValueNode>(U"&" + renderers.at(this).second);
 
         return node;
     }
@@ -1555,102 +1555,102 @@ namespace tgui
 
     void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
-        if (node->propertyValuePairs["Visible"])
-            setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Visible"]->value).getBool());
-        if (node->propertyValuePairs["Enabled"])
-            setEnabled(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Enabled"]->value).getBool());
-        if (node->propertyValuePairs["Position"])
-            setPosition(parseLayout(node->propertyValuePairs["Position"]->value));
-        if (node->propertyValuePairs["Size"])
-            setSize(parseLayout(node->propertyValuePairs["Size"]->value));
-        if (node->propertyValuePairs["Origin"])
-            setOrigin(parseVector2f(node->propertyValuePairs["Origin"]->value));
-        if (node->propertyValuePairs["Scale"])
+        if (node->propertyValuePairs[U"Visible"])
+            setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Visible"]->value).getBool());
+        if (node->propertyValuePairs[U"Enabled"])
+            setEnabled(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Enabled"]->value).getBool());
+        if (node->propertyValuePairs[U"Position"])
+            setPosition(parseLayout(node->propertyValuePairs[U"Position"]->value));
+        if (node->propertyValuePairs[U"Size"])
+            setSize(parseLayout(node->propertyValuePairs[U"Size"]->value));
+        if (node->propertyValuePairs[U"Origin"])
+            setOrigin(parseVector2f(node->propertyValuePairs[U"Origin"]->value));
+        if (node->propertyValuePairs[U"Scale"])
         {
-            if (node->propertyValuePairs["ScaleOrigin"])
-                setScale(parseVector2f(node->propertyValuePairs["Scale"]->value), parseVector2f(node->propertyValuePairs["ScaleOrigin"]->value));
+            if (node->propertyValuePairs[U"ScaleOrigin"])
+                setScale(parseVector2f(node->propertyValuePairs[U"Scale"]->value), parseVector2f(node->propertyValuePairs[U"ScaleOrigin"]->value));
             else
-                setScale(parseVector2f(node->propertyValuePairs["Scale"]->value));
+                setScale(parseVector2f(node->propertyValuePairs[U"Scale"]->value));
         }
-        if (node->propertyValuePairs["Rotation"])
+        if (node->propertyValuePairs[U"Rotation"])
         {
-            if (node->propertyValuePairs["RotationOrigin"])
-                setRotation(node->propertyValuePairs["Rotation"]->value.toFloat(), parseVector2f(node->propertyValuePairs["RotationOrigin"]->value));
+            if (node->propertyValuePairs[U"RotationOrigin"])
+                setRotation(node->propertyValuePairs[U"Rotation"]->value.toFloat(), parseVector2f(node->propertyValuePairs[U"RotationOrigin"]->value));
             else
-                setRotation(node->propertyValuePairs["Rotation"]->value.toFloat());
+                setRotation(node->propertyValuePairs[U"Rotation"]->value.toFloat());
         }
-        if (node->propertyValuePairs["UserData"])
+        if (node->propertyValuePairs[U"UserData"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["UserData"]->value).getString());
+            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #else
-            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["UserData"]->value).getString());
+            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #endif
         }
-        if (node->propertyValuePairs["TextSize"])
-            setTextSize(node->propertyValuePairs["TextSize"]->value.toUInt());
+        if (node->propertyValuePairs[U"TextSize"])
+            setTextSize(node->propertyValuePairs[U"TextSize"]->value.toUInt());
 
-        if (node->propertyValuePairs["MouseCursor"])
+        if (node->propertyValuePairs[U"MouseCursor"])
         {
-            String cursorStr = node->propertyValuePairs["MouseCursor"]->value.trim();
-            if (cursorStr == "Text")
+            String cursorStr = node->propertyValuePairs[U"MouseCursor"]->value.trim();
+            if (cursorStr == U"Text")
                 m_mouseCursor = Cursor::Type::Text;
-            else if (cursorStr == "Hand")
+            else if (cursorStr == U"Hand")
                 m_mouseCursor = Cursor::Type::Hand;
-            else if (cursorStr == "SizeLeft")
+            else if (cursorStr == U"SizeLeft")
                 m_mouseCursor = Cursor::Type::SizeLeft;
-            else if (cursorStr == "SizeRight")
+            else if (cursorStr == U"SizeRight")
                 m_mouseCursor = Cursor::Type::SizeRight;
-            else if (cursorStr == "SizeTop")
+            else if (cursorStr == U"SizeTop")
                 m_mouseCursor = Cursor::Type::SizeTop;
-            else if (cursorStr == "SizeBottom")
+            else if (cursorStr == U"SizeBottom")
                 m_mouseCursor = Cursor::Type::SizeBottom;
-            else if (cursorStr == "SizeBottomRight")
+            else if (cursorStr == U"SizeBottomRight")
                 m_mouseCursor = Cursor::Type::SizeBottomRight;
-            else if (cursorStr == "SizeTopLeft")
+            else if (cursorStr == U"SizeTopLeft")
                 m_mouseCursor = Cursor::Type::SizeTopLeft;
-            else if (cursorStr == "SizeBottomLeft")
+            else if (cursorStr == U"SizeBottomLeft")
                 m_mouseCursor = Cursor::Type::SizeBottomLeft;
-            else if (cursorStr == "SizeTopRight")
+            else if (cursorStr == U"SizeTopRight")
                 m_mouseCursor = Cursor::Type::SizeTopRight;
-            else if (cursorStr == "SizeHorizontal")
+            else if (cursorStr == U"SizeHorizontal")
                 m_mouseCursor = Cursor::Type::SizeHorizontal;
-            else if (cursorStr == "SizeVertical")
+            else if (cursorStr == U"SizeVertical")
                 m_mouseCursor = Cursor::Type::SizeVertical;
-            else if (cursorStr == "Crosshair")
+            else if (cursorStr == U"Crosshair")
                 m_mouseCursor = Cursor::Type::Crosshair;
-            else if (cursorStr == "Help")
+            else if (cursorStr == U"Help")
                 m_mouseCursor = Cursor::Type::Help;
-            else if (cursorStr == "NotAllowed")
+            else if (cursorStr == U"NotAllowed")
                 m_mouseCursor = Cursor::Type::NotAllowed;
-            else if (cursorStr == "Arrow")
+            else if (cursorStr == U"Arrow")
                 m_mouseCursor = Cursor::Type::Arrow;
             else
-                throw Exception{"Failed to parse 'MouseCursor' property. Invalid cursor '" + cursorStr + "'."};
+                throw Exception{U"Failed to parse 'MouseCursor' property. Invalid cursor '" + cursorStr + U"'."};
         }
 
-        if (node->propertyValuePairs["Renderer"])
+        if (node->propertyValuePairs[U"Renderer"])
         {
-            const String value = node->propertyValuePairs["Renderer"]->value;
+            const String value = node->propertyValuePairs[U"Renderer"]->value;
             if (value.empty() || (value[0] != '&'))
-                throw Exception{"Expected reference to renderer, did not find '&' character"};
+                throw Exception{U"Expected reference to renderer, did not find '&' character"};
 
             const auto it = renderers.find(value.substr(1));
             if (it == renderers.end())
-                throw Exception{"Widget refers to renderer with name '" + value.substr(1) + "', but no such renderer was found"};
+                throw Exception{U"Widget refers to renderer with name '" + value.substr(1) + U"', but no such renderer was found"};
 
             setRenderer(it->second);
         }
 
         for (const auto& childNode : node->children)
         {
-            if (childNode->name == "ToolTip")
+            if (childNode->name == U"ToolTip")
             {
                 for (const auto& pair : childNode->propertyValuePairs)
                 {
-                    if (pair.first == "InitialDelay")
+                    if (pair.first == U"InitialDelay")
                         ToolTip::setInitialDelay(std::chrono::duration<float>(pair.second->value.toFloat()));
-                    else if (pair.first == "DistanceToMouse")
+                    else if (pair.first == U"DistanceToMouse")
                         ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
                 }
 
@@ -1658,7 +1658,7 @@ namespace tgui
                 {
                     // There can only be one child in the tool tip section
                     if (childNode->children.size() > 1)
-                        throw Exception{"ToolTip section contained multiple children."};
+                        throw Exception{U"ToolTip section contained multiple children."};
 
                     const auto& toolTipWidgetNode = childNode->children[0];
                     const auto& constructor = WidgetFactory::getConstructFunction(toolTipWidgetNode->name);
@@ -1669,16 +1669,16 @@ namespace tgui
                         setToolTip(toolTip);
                     }
                     else
-                        throw Exception{"No construct function exists for widget type '" + toolTipWidgetNode->name + "'."};
+                        throw Exception{U"No construct function exists for widget type '" + toolTipWidgetNode->name + "'."};
                 }
             }
-            else if (childNode->name == "Renderer")
+            else if (childNode->name == U"Renderer")
                 setRenderer(RendererData::createFromDataIONode(childNode.get()));
 
             /// TODO: Signals?
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-                return (child->name == "ToolTip") || (child->name == "Renderer");
+                return (child->name == U"ToolTip") || (child->name == U"Renderer");
             }), node->children.end());
     }
 

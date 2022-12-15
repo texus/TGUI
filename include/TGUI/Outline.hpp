@@ -270,7 +270,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         String toString() const
         {
-            return "(" + m_left.toString() + ", " + m_top.toString() + ", " + m_right.toString() + ", " + m_bottom.toString() + ")";
+            return U"(" + m_left.toString() + U", " + m_top.toString() + U", " + m_right.toString() + U", " + m_bottom.toString() + U")";
         }
 
 

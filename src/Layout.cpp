@@ -78,16 +78,16 @@ namespace tgui
             if (expression.back() == '%')
             {
                 // We don't know if we have to bind the width or height, so bind "size" and let the connectWidget function figure it out later
-                if (expression == "100%")
+                if (expression == U"100%")
                 {
-                    m_boundString = "&.innersize";
+                    m_boundString = U"&.innersize";
                     m_operation = Operation::BindingString;
                 }
                 else // value is a fraction of parent size
                 {
                     *this = Layout{Layout::Operation::Multiplies,
                                    std::make_unique<Layout>(expression.substr(0, expression.length()-1).toFloat() / 100.f),
-                                   std::make_unique<Layout>("&.innersize")};
+                                   std::make_unique<Layout>(U"&.innersize")};
                 }
             }
             else
@@ -166,7 +166,7 @@ namespace tgui
             {
                 // Find corresponding closing bracket
                 unsigned int bracketCount = 0;
-                auto bracketPos = expression.find_first_of("()", searchPos + 1);
+                auto bracketPos = expression.find_first_of(U"()", searchPos + 1);
                 while (bracketPos != String::npos)
                 {
                     if (expression[bracketPos] == '(')
@@ -181,13 +181,13 @@ namespace tgui
                             *this = Layout{expression.substr(1, expression.size()-2)};
                             return;
                         }
-                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == "min"))
+                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"min"))
                         {
                             const auto& minSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                             *this = Layout{Operation::Minimum, std::make_unique<Layout>(minSubExpressions.first), std::make_unique<Layout>(minSubExpressions.second)};
                             return;
                         }
-                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == "max"))
+                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"max"))
                         {
                             const auto& maxSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                             *this = Layout{Operation::Maximum, std::make_unique<Layout>(maxSubExpressions.first), std::make_unique<Layout>(maxSubExpressions.second)};
@@ -509,8 +509,8 @@ namespace tgui
         }
         else
         {
-            if (m_boundString == "&.innersize")
-                return "100%";
+            if (m_boundString == U"&.innersize")
+                return U"100%";
 
             // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
             if (!m_boundString.empty())
@@ -760,66 +760,66 @@ namespace tgui
 
     void Layout::parseBindingString(const String& expression, Widget* widget, bool xAxis)
     {
-        if (expression == "x")
+        if (expression == U"x")
         {
             m_operation = Operation::BindingPosX;
             m_boundWidget = widget;
         }
-        else if (expression == "y")
+        else if (expression == U"y")
         {
             m_operation = Operation::BindingPosY;
             m_boundWidget = widget;
         }
-        else if (expression == "left")
+        else if (expression == U"left")
         {
             m_operation = Operation::BindingLeft;
             m_boundWidget = widget;
         }
-        else if (expression == "top")
+        else if (expression == U"top")
         {
             m_operation = Operation::BindingTop;
             m_boundWidget = widget;
         }
-        else if (expression == "w" || expression == "width")
+        else if (expression == U"w" || expression == U"width")
         {
             m_operation = Operation::BindingWidth;
             m_boundWidget = widget;
         }
-        else if (expression == "h" || expression == "height")
+        else if (expression == U"h" || expression == U"height")
         {
             m_operation = Operation::BindingHeight;
             m_boundWidget = widget;
         }
-        else if (expression == "iw" || expression == "innerwidth")
+        else if (expression == U"iw" || expression == U"innerwidth")
         {
             m_operation = Operation::BindingInnerWidth;
             m_boundWidget = widget;
         }
-        else if (expression == "ih" || expression == "innerheight")
+        else if (expression == U"ih" || expression == U"innerheight")
         {
             m_operation = Operation::BindingInnerHeight;
             m_boundWidget = widget;
         }
-        else if (expression == "size")
+        else if (expression == U"size")
         {
             if (xAxis)
-                return parseBindingString("width", widget, xAxis);
+                return parseBindingString(U"width", widget, xAxis);
             else
-                return parseBindingString("height", widget, xAxis);
+                return parseBindingString(U"height", widget, xAxis);
         }
-        else if (expression == "innersize")
+        else if (expression == U"innersize")
         {
             if (xAxis)
-                return parseBindingString("innerwidth", widget, xAxis);
+                return parseBindingString(U"innerwidth", widget, xAxis);
             else
-                return parseBindingString("innerheight", widget, xAxis);
+                return parseBindingString(U"innerheight", widget, xAxis);
         }
-        else if ((expression == "pos") || (expression == "position"))
+        else if ((expression == U"pos") || (expression == U"position"))
         {
             if (xAxis)
-                return parseBindingString("x", widget, xAxis);
+                return parseBindingString(U"x", widget, xAxis);
             else
-                return parseBindingString("y", widget, xAxis);
+                return parseBindingString(U"y", widget, xAxis);
         }
         else
         {
@@ -827,7 +827,7 @@ namespace tgui
             if (dotPos != String::npos)
             {
                 const String widgetName = expression.substr(0, dotPos);
-                if (widgetName == "parent" || widgetName == "&")
+                if (widgetName == U"parent" || widgetName == U"&")
                 {
                     if (widget->getParent())
                         return parseBindingString(expression.substr(dotPos+1), widget->getParent(), xAxis);

@@ -320,111 +320,111 @@ namespace tgui
 
     void ButtonBase::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             background.borders = getSharedRenderer()->getBorders();
             updateSize();
         }
-        else if (property == "RoundedBorderRadius")
+        else if (property == U"RoundedBorderRadius")
         {
             background.roundedBorderRadius = getSharedRenderer()->getRoundedBorderRadius();
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColor(), priv::dev::ComponentState::Normal);
-        else if (property == "TextColorDown")
+        else if (property == U"TextColorDown")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDown(), priv::dev::ComponentState::Active);
-        else if (property == "TextColorHover")
+        else if (property == U"TextColorHover")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorHover(), priv::dev::ComponentState::Hover);
-        else if (property == "TextColorDownHover")
+        else if (property == U"TextColorDownHover")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownHover(), priv::dev::ComponentState::ActiveHover);
-        else if (property == "TextColorDisabled")
+        else if (property == U"TextColorDisabled")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "TextColorDownDisabled")
+        else if (property == U"TextColorDownDisabled")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
-        else if (property == "TextColorFocused")
+        else if (property == U"TextColorFocused")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorFocused(), priv::dev::ComponentState::Focused);
-        else if (property == "TextColorDownFocused")
+        else if (property == U"TextColorDownFocused")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownFocused(), priv::dev::ComponentState::FocusedActive);
-        else if (property == "TextStyle")
+        else if (property == U"TextStyle")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyle(), priv::dev::ComponentState::Normal);
-        else if (property == "TextStyleDown")
+        else if (property == U"TextStyleDown")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDown(), priv::dev::ComponentState::Active);
-        else if (property == "TextStyleHover")
+        else if (property == U"TextStyleHover")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleHover(), priv::dev::ComponentState::Hover);
-        else if (property == "TextStyleDownHover")
+        else if (property == U"TextStyleDownHover")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownHover(), priv::dev::ComponentState::ActiveHover);
-        else if (property == "TextStyleDisabled")
+        else if (property == U"TextStyleDisabled")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "TextStyleDownDisabled")
+        else if (property == U"TextStyleDownDisabled")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownDisabled(), priv::dev::ComponentState::DisabledActive);
-        else if (property == "TextStyleFocused")
+        else if (property == U"TextStyleFocused")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleFocused(), priv::dev::ComponentState::Focused);
-        else if (property == "TextStyleDownFocused")
+        else if (property == U"TextStyleDownFocused")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownFocused(), priv::dev::ComponentState::FocusedActive);
-        else if (property == "Texture")
+        else if (property == U"Texture")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTexture(), priv::dev::ComponentState::Normal);
-        else if (property == "TextureDown")
+        else if (property == U"TextureDown")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDown(), priv::dev::ComponentState::Active);
-        else if (property == "TextureHover")
+        else if (property == U"TextureHover")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureHover(), priv::dev::ComponentState::Hover);
-        else if (property == "TextureDownHover")
+        else if (property == U"TextureDownHover")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownHover(), priv::dev::ComponentState::ActiveHover);
-        else if (property == "TextureDisabled")
+        else if (property == U"TextureDisabled")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "TextureDownDisabled")
+        else if (property == U"TextureDownDisabled")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "TextureFocused")
+        else if (property == U"TextureFocused")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureFocused(), priv::dev::ComponentState::Focused);
-        else if (property == "TextureDownFocused")
+        else if (property == U"TextureDownFocused")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownFocused(), priv::dev::ComponentState::FocusedActive);
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColor(), priv::dev::ComponentState::Normal);
-        else if (property == "BorderColorDown")
+        else if (property == U"BorderColorDown")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDown(), priv::dev::ComponentState::Active);
-        else if (property == "BorderColorHover")
+        else if (property == U"BorderColorHover")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorHover(), priv::dev::ComponentState::Hover);
-        else if (property == "BorderColorDownHover")
+        else if (property == U"BorderColorDownHover")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownHover(), priv::dev::ComponentState::ActiveHover);
-        else if (property == "BorderColorDisabled")
+        else if (property == U"BorderColorDisabled")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "BorderColorDownDisabled")
+        else if (property == U"BorderColorDownDisabled")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
-        else if (property == "BorderColorFocused")
+        else if (property == U"BorderColorFocused")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorFocused(), priv::dev::ComponentState::Focused);
-        else if (property == "BorderColorDownFocused")
+        else if (property == U"BorderColorDownFocused")
             priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownFocused(), priv::dev::ComponentState::FocusedActive);
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColor(), priv::dev::ComponentState::Normal);
-        else if (property == "BackgroundColorDown")
+        else if (property == U"BackgroundColorDown")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDown(), priv::dev::ComponentState::Active);
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorHover(), priv::dev::ComponentState::Hover);
-        else if (property == "BackgroundColorDownHover")
+        else if (property == U"BackgroundColorDownHover")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownHover(), priv::dev::ComponentState::ActiveHover);
-        else if (property == "BackgroundColorDisabled")
+        else if (property == U"BackgroundColorDisabled")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDisabled(), priv::dev::ComponentState::Disabled);
-        else if (property == "BackgroundColorDownDisabled")
+        else if (property == U"BackgroundColorDownDisabled")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
-        else if (property == "BackgroundColorFocused")
+        else if (property == U"BackgroundColorFocused")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorFocused(), priv::dev::ComponentState::Focused);
-        else if (property == "BackgroundColorDownFocused")
+        else if (property == U"BackgroundColorDownFocused")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownFocused(), priv::dev::ComponentState::FocusedActive);
-        else if (property == "TextOutlineThickness")
+        else if (property == U"TextOutlineThickness")
         {
             m_textComponent->setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
             updateTextPosition();
         }
-        else if (property == "TextOutlineColor")
+        else if (property == U"TextOutlineColor")
         {
             m_textComponent->setOutlineColor(getSharedRenderer()->getTextOutlineColor());
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             ClickableWidget::rendererChanged(property);
             m_textComponent->setOpacity(m_opacityCached);
             m_backgroundComponent->setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             ClickableWidget::rendererChanged(property);
 
@@ -442,7 +442,7 @@ namespace tgui
         auto node = ClickableWidget::save(renderers);
 
         if (!m_string.empty())
-            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
+            node->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
 
         // Don't store size when auto-sizing
         if (m_autoSize)
@@ -457,8 +457,8 @@ namespace tgui
     {
         ClickableWidget::load(node, renderers);
 
-        if (node->propertyValuePairs["Text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
+        if (node->propertyValuePairs[U"Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

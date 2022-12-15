@@ -503,7 +503,7 @@ namespace tgui
                 case Grid::Alignment::Left:
                     return "Left";
                 default:
-                    throw Exception{"Invalid grid alignment encountered."};
+                    throw Exception{U"Invalid grid alignment encountered."};
                 }
             };
 
@@ -529,13 +529,13 @@ namespace tgui
                 str += ", " + getWidgetsInGridString(children[i]);
 
             str += "]";
-            node->propertyValuePairs["GridWidgets"] = std::make_unique<DataIO::ValueNode>(str);
+            node->propertyValuePairs[U"GridWidgets"] = std::make_unique<DataIO::ValueNode>(str);
         }
 
         if (m_autoSize)
             node->propertyValuePairs.erase("Size");
 
-        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
+        node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
         return node;
     }
 
@@ -545,17 +545,17 @@ namespace tgui
     {
         Container::load(node, renderers);
 
-        if (node->propertyValuePairs["AutoSize"])
-            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool());
+        if (node->propertyValuePairs[U"AutoSize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool());
 
-        if (node->propertyValuePairs["GridWidgets"])
+        if (node->propertyValuePairs[U"GridWidgets"])
         {
-            if (!node->propertyValuePairs["GridWidgets"]->listNode)
-                throw Exception{"Failed to parse 'GridWidgets' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"GridWidgets"]->listNode)
+                throw Exception{U"Failed to parse 'GridWidgets' property, expected a list as value"};
 
-            const auto& elements = node->propertyValuePairs["GridWidgets"]->valueList;
+            const auto& elements = node->propertyValuePairs[U"GridWidgets"]->valueList;
             if (elements.size() != getWidgets().size())
-                throw Exception{"Failed to parse 'GridWidgets' property, the amount of items has to match with the amount of child widgets"};
+                throw Exception{U"Failed to parse 'GridWidgets' property, the amount of items has to match with the amount of child widgets"};
 
             for (unsigned int i = 0; i < elements.size(); ++i)
             {
@@ -581,58 +581,58 @@ namespace tgui
                 std::size_t index = 0;
                 std::size_t pos = str.find(',');
                 if (pos == String::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after row."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after row."};
 
                 row = str.substr(index, pos - index).toInt();
                 index = pos + 1;
 
                 pos = str.find(',', index);
                 if (pos == String::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after column."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after column."};
 
                 col = str.substr(index, pos - index).toInt();
                 index = pos + 1;
 
                 if (row < 0 || col < 0)
-                    throw Exception{"Failed to parse 'GridWidgets' property, row and column have to be positive integers"};
+                    throw Exception{U"Failed to parse 'GridWidgets' property, row and column have to be positive integers"};
 
                 pos = str.find('(', index);
                 if (pos == String::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing opening bracket for padding."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing opening bracket for padding."};
 
                 index = pos;
                 pos = str.find(')', index);
                 if (pos == String::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing closing bracket for padding."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing closing bracket for padding."};
 
                 padding = Deserializer::deserialize(ObjectConverter::Type::Outline, str.substr(index, pos+1 - index)).getOutline();
                 index = pos + 1;
 
                 pos = str.find(',', index);
                 if (pos == String::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
 
                 String alignmentStr = str.substr(pos + 1).trim();
-                if (alignmentStr == "Center")
+                if (alignmentStr == U"Center")
                     alignment = Grid::Alignment::Center;
-                else if (alignmentStr == "UpperLeft")
+                else if (alignmentStr == U"UpperLeft")
                     alignment = Grid::Alignment::UpperLeft;
-                else if (alignmentStr == "Up")
+                else if (alignmentStr == U"Up")
                     alignment = Grid::Alignment::Up;
-                else if (alignmentStr == "UpperRight")
+                else if (alignmentStr == U"UpperRight")
                     alignment = Grid::Alignment::UpperRight;
-                else if (alignmentStr == "Right")
+                else if (alignmentStr == U"Right")
                     alignment = Grid::Alignment::Right;
-                else if (alignmentStr == "BottomRight")
+                else if (alignmentStr == U"BottomRight")
                     alignment = Grid::Alignment::BottomRight;
-                else if (alignmentStr == "Bottom")
+                else if (alignmentStr == U"Bottom")
                     alignment = Grid::Alignment::Bottom;
-                else if (alignmentStr == "BottomLeft")
+                else if (alignmentStr == U"BottomLeft")
                     alignment = Grid::Alignment::BottomLeft;
-                else if (alignmentStr == "Left")
+                else if (alignmentStr == U"Left")
                     alignment = Grid::Alignment::Left;
                 else
-                    throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
+                    throw Exception{U"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + U"'."};
 
                 setWidgetCell(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), alignment, padding);
             }

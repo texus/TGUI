@@ -65,7 +65,7 @@ namespace tgui
         // Loop through all radio buttons and uncheck them
         for (auto& widget : m_widgets)
         {
-            if (widget->getWidgetType() == "RadioButton")
+            if (widget->getWidgetType() == U"RadioButton")
                 std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
         }
     }
@@ -76,7 +76,7 @@ namespace tgui
     {
         for (const auto& widget : m_widgets)
         {
-            if (widget->getWidgetType() != "RadioButton")
+            if (widget->getWidgetType() != U"RadioButton")
                 continue;
 
             tgui::RadioButton::Ptr radioButton = std::static_pointer_cast<RadioButton>(widget);

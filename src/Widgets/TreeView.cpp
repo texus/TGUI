@@ -198,7 +198,7 @@ namespace tgui
                 auto itemNode = std::make_unique<DataIO::Node>();
                 itemNode->name = "Item";
 
-                itemNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(item->text.getString()));
+                itemNode->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(item->text.getString()));
 
                 if (!item->nodes.empty())
                 {
@@ -222,7 +222,7 @@ namespace tgui
                             itemList += ", " + Serializer::serialize(item->nodes[i]->text.getString());
                         itemList += "]";
 
-                        itemNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+                        itemNode->propertyValuePairs[U"Items"] = std::make_unique<DataIO::ValueNode>(itemList);
                     }
                 }
 
@@ -988,83 +988,83 @@ namespace tgui
 
     void TreeView::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "Padding")
+        else if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "SelectedBackgroundColor")
+        else if (property == U"SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "SelectedBackgroundColorHover")
+        else if (property == U"SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextureBranchExpanded")
+        else if (property == U"TextureBranchExpanded")
         {
             m_spriteBranchExpanded.setTexture(getSharedRenderer()->getTextureBranchExpanded());
             updateIconBounds();
             markNodesDirty();
         }
-        else if (property == "TextureBranchCollapsed")
+        else if (property == U"TextureBranchCollapsed")
         {
             m_spriteBranchCollapsed.setTexture(getSharedRenderer()->getTextureBranchCollapsed());
             updateIconBounds();
             markNodesDirty();
         }
-        else if (property == "TextureLeaf")
+        else if (property == U"TextureLeaf")
         {
             m_spriteLeaf.setTexture(getSharedRenderer()->getTextureLeaf());
             updateIconBounds();
             markNodesDirty();
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors(m_nodes);
             updateSelectedAndHoveringItemColors();
         }
-        else if (property == "TextColorHover")
+        else if (property == U"TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateTextColors(m_nodes);
             updateSelectedAndHoveringItemColors();
         }
-        else if (property == "SelectedTextColor")
+        else if (property == U"SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors(m_nodes);
             updateSelectedAndHoveringItemColors();
         }
-        else if (property == "SelectedTextColorHover")
+        else if (property == U"SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateTextColors(m_nodes);
             updateSelectedAndHoveringItemColors();
         }
-        else if (property == "Scrollbar")
+        else if (property == U"Scrollbar")
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -1078,14 +1078,14 @@ namespace tgui
                 markNodesDirty();
             }
         }
-        else if (property == "ScrollbarWidth")
+        else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
             m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
             markNodesDirty();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -1099,7 +1099,7 @@ namespace tgui
             m_verticalScrollbar->setInheritedOpacity(m_opacityCached);
             m_horizontalScrollbar->setInheritedOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
             setTextFontImpl(m_nodes, m_fontCached);
@@ -1113,7 +1113,7 @@ namespace tgui
     std::unique_ptr<DataIO::Node> TreeView::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         saveItems(node, m_nodes);
         return node;
     }
@@ -1124,14 +1124,14 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
+        if (node->propertyValuePairs[U"ItemHeight"])
+            setItemHeight(node->propertyValuePairs[U"ItemHeight"]->value.toUInt());
 
         loadItems(node, m_nodes, nullptr);
 
         // Remove the 'Item' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == "Item"; }), node->children.end());
+            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Item"; }), node->children.end());
 
         // Update the visible nodes
         markNodesDirty();
@@ -1158,13 +1158,13 @@ namespace tgui
     {
         for (const auto& childNode : node->children)
         {
-            if (childNode->name != "Item")
+            if (childNode->name != U"Item")
                 continue;
 
-            if (!childNode->propertyValuePairs["Text"])
-                throw Exception{"Failed to parse 'Item' property, expected a nested 'Text' propery"};
+            if (!childNode->propertyValuePairs[U"Text"])
+                throw Exception{U"Failed to parse 'Item' property, expected a nested 'Text' propery"};
 
-            const String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Text"]->value).getString();
+            const String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString();
             createNode(items, parent, itemText);
 
             // Recursively handle the menu nodes
@@ -1172,14 +1172,14 @@ namespace tgui
                 loadItems(childNode, items.back()->nodes, items.back().get());
 
             // Menu items can also be stored in an string array in the 'Items' property instead of as a nested Menu section
-            if (childNode->propertyValuePairs["Items"])
+            if (childNode->propertyValuePairs[U"Items"])
             {
-                if (!childNode->propertyValuePairs["Items"]->listNode)
-                    throw Exception{"Failed to parse 'Items' property inside 'Item' property, expected a list as value"};
+                if (!childNode->propertyValuePairs[U"Items"]->listNode)
+                    throw Exception{U"Failed to parse 'Items' property inside 'Item' property, expected a list as value"};
 
-                for (std::size_t i = 0; i < childNode->propertyValuePairs["Items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < childNode->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
-                    const String subItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Items"]->valueList[i]).getString();
+                    const String subItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Items"]->valueList[i]).getString();
                     createNode(items.back()->nodes, items.back().get(), subItemText);
                 }
             }

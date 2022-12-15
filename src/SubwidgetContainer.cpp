@@ -240,7 +240,7 @@ namespace tgui
         {
             // If the renderer has no name then it isn't shared and we should find the renderer among the child nodes
             rendererNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-                return child->name == "Renderer";
+                return child->name == U"Renderer";
             });
             TGUI_ASSERT(rendererNodeIt != node->children.end(), "SubwidgetContainer relies on Widget::save saving the renderer");
         }
@@ -251,7 +251,7 @@ namespace tgui
                 rootNode = node->parent;
 
             rendererNodeIt = std::find_if(rootNode->children.begin(), rootNode->children.end(), [&](const std::unique_ptr<DataIO::Node>& child){
-                return child->name == "Renderer" + rendererName;
+                return child->name == U"Renderer" + rendererName;
             });
             TGUI_ASSERT(rendererNodeIt != rootNode->children.end(), "SubwidgetContainer relies on the renderer being saved already");
         }

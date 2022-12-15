@@ -106,7 +106,7 @@ namespace tgui
         std::size_t fileSize;
         const auto fileContents = readFileToMemory(filename, fileSize);
         if (!fileContents)
-            throw Exception{"Failed to load '" + filename + "'"};
+            throw Exception{U"Failed to load '" + filename + U"'"};
 
         return loadFromMemory(fileContents.get(), fileSize);
     }

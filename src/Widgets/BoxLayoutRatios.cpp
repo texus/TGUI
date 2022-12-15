@@ -162,7 +162,7 @@ namespace tgui
                 ratioList += ", " + Serializer::serialize(m_ratios[i]);
 
             ratioList += "]";
-            node->propertyValuePairs["Ratios"] = std::make_unique<DataIO::ValueNode>(ratioList);
+            node->propertyValuePairs[U"Ratios"] = std::make_unique<DataIO::ValueNode>(ratioList);
         }
 
         return node;
@@ -174,16 +174,16 @@ namespace tgui
     {
         BoxLayout::load(node, renderers);
 
-        if (node->propertyValuePairs["Ratios"])
+        if (node->propertyValuePairs[U"Ratios"])
         {
-            if (!node->propertyValuePairs["Ratios"]->listNode)
-                throw Exception{"Failed to parse 'Ratios' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"Ratios"]->listNode)
+                throw Exception{U"Failed to parse 'Ratios' property, expected a list as value"};
 
-            if (node->propertyValuePairs["Ratios"]->valueList.size() != getWidgets().size())
-                throw Exception{"Amounts of values for 'Ratios' differs from the amount in child widgets"};
+            if (node->propertyValuePairs[U"Ratios"]->valueList.size() != getWidgets().size())
+                throw Exception{U"Amounts of values for 'Ratios' differs from the amount in child widgets"};
 
-            for (std::size_t i = 0; i < node->propertyValuePairs["Ratios"]->valueList.size(); ++i)
-                setRatio(i, Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["Ratios"]->valueList[i]).getNumber());
+            for (std::size_t i = 0; i < node->propertyValuePairs[U"Ratios"]->valueList.size(); ++i)
+                setRatio(i, Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"Ratios"]->valueList[i]).getNumber());
         }
     }
 

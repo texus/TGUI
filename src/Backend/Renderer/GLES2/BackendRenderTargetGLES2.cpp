@@ -123,7 +123,7 @@ namespace tgui
         // Create the vertex shader
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         if (vertexShader == 0)
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. glCreateShader(GL_VERTEX_SHADER) returned 0."};
+            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. glCreateShader(GL_VERTEX_SHADER) returned 0."};
 
         TGUI_GL_CHECK(glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr));
         TGUI_GL_CHECK(glCompileShader(vertexShader));
@@ -131,12 +131,12 @@ namespace tgui
         GLint vertexShaderCompiled = GL_FALSE;
         TGUI_GL_CHECK(glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexShaderCompiled));
         if (vertexShaderCompiled != GL_TRUE)
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. Failed to compile vertex shader."};
+            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. Failed to compile vertex shader."};
 
         // Create the fragment shader
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         if (fragmentShader == 0)
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. glCreateShader(GL_FRAGMENT_SHADER) returned 0."};
+            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. glCreateShader(GL_FRAGMENT_SHADER) returned 0."};
 
         TGUI_GL_CHECK(glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr));
         TGUI_GL_CHECK(glCompileShader(fragmentShader));
@@ -144,7 +144,7 @@ namespace tgui
         GLint fragmentShaderCompiled = GL_FALSE;
         TGUI_GL_CHECK(glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentShaderCompiled));
         if (fragmentShaderCompiled != GL_TRUE)
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. Failed to compile fragment shader."};
+            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. Failed to compile fragment shader."};
 
         // Link the vertex and fragment shader into a program
         GLuint programId = glCreateProgram();
@@ -160,7 +160,7 @@ namespace tgui
             GLsizei errorMessageLength = 0;
             glGetProgramInfoLog(programId, 512, &errorMessageLength, static_cast<GLchar*>(errorMessage));
             const String errorMessageStr{static_cast<const char*>(errorMessage), static_cast<std::size_t>(errorMessageLength)};
-            throw Exception{"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders. Error: '" + errorMessageStr + "'"};
+            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders. Error: '" + errorMessageStr + "'"};
         }
 
         return programId;
@@ -179,7 +179,7 @@ namespace tgui
         {
             m_projectionMatrixShaderUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
             if (m_projectionMatrixShaderUniformLocation < 0)
-                throw Exception{"Failed to initialize BackendRenderTargetGLES2: projectionMatrix uniform wasn't found in shader program"};
+                throw Exception{U"Failed to initialize BackendRenderTargetGLES2: projectionMatrix uniform wasn't found in shader program"};
         }
 
         if (!TGUI_GLAD_GL_ES_VERSION_3_0)
@@ -188,11 +188,11 @@ namespace tgui
             const int colorShaderLocation = glGetAttribLocation(m_shaderProgram, "inColor");
             const int texCoordShaderLocation = glGetAttribLocation(m_shaderProgram, "inTexCoord");
             if (positionShaderLocation < 0)
-                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inPosition wasn't found in shader program"};
+                throw Exception{U"Failed to initialize BackendRenderTargetGLES2: inPosition wasn't found in shader program"};
             if (colorShaderLocation < 0)
-                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inColor wasn't found in shader program"};
+                throw Exception{U"Failed to initialize BackendRenderTargetGLES2: inColor wasn't found in shader program"};
             if (texCoordShaderLocation < 0)
-                throw Exception{"Failed to initialize BackendRenderTargetGLES2: inTexCoord wasn't found in shader program"};
+                throw Exception{U"Failed to initialize BackendRenderTargetGLES2: inTexCoord wasn't found in shader program"};
 
             m_positionShaderLocation = static_cast<GLuint>(positionShaderLocation);
             m_colorShaderLocation = static_cast<GLuint>(colorShaderLocation);

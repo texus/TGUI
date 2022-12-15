@@ -102,14 +102,14 @@ namespace tgui
         // Initialize the freetype library each time, since we currently don't reuse the library object between fonts.
         FT_Library library;
         if (FT_Init_FreeType(&library) != 0)
-            throw Exception{"Failed to initialize Freetype"};
+            throw Exception{U"Failed to initialize Freetype"};
 
         // Load the font face from the font file that we have in memory
         FT_Face face;
         if (FT_New_Memory_Face(library, static_cast<const FT_Byte*>(data.get()), static_cast<FT_Long>(sizeInBytes), 0, &face) != 0)
         {
             FT_Done_FreeType(library);
-            throw Exception{"Failed to load font face"};
+            throw Exception{U"Failed to load font face"};
         }
 
         // Select the unicode character map. Can we ignore a failure from this function?
@@ -117,7 +117,7 @@ namespace tgui
         {
             FT_Done_Face(face);
             FT_Done_FreeType(library);
-            throw Exception{"Failed to select font character map"};
+            throw Exception{U"Failed to select font character map"};
         }
 
         m_fileContents = std::move(data);

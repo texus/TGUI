@@ -89,7 +89,7 @@ namespace tgui
 
     void SeparatorLine::rendererChanged(const String& property)
     {
-        if (property == "Color")
+        if (property == U"Color")
             m_colorCached = getSharedRenderer()->getColor();
     }
 

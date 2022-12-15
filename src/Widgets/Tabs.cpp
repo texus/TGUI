@@ -551,98 +551,98 @@ namespace tgui
 
     void Tabs::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             recalculateTabsWidth();
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors();
         }
-        else if (property == "TextColorHover")
+        else if (property == U"TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateTextColors();
         }
-        else if (property == "TextColorDisabled")
+        else if (property == U"TextColorDisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
             updateTextColors();
         }
-        else if (property == "SelectedTextColor")
+        else if (property == U"SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors();
         }
-        else if (property == "SelectedTextColorHover")
+        else if (property == U"SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateTextColors();
         }
-        else if (property == "TextureTab")
+        else if (property == U"TextureTab")
         {
             m_spriteTab.setTexture(getSharedRenderer()->getTextureTab());
         }
-        else if (property == "TextureTabHover")
+        else if (property == U"TextureTabHover")
         {
             m_spriteTabHover.setTexture(getSharedRenderer()->getTextureTabHover());
         }
-        else if (property == "TextureSelectedTab")
+        else if (property == U"TextureSelectedTab")
         {
             m_spriteSelectedTab.setTexture(getSharedRenderer()->getTextureSelectedTab());
         }
-        else if (property == "TextureSelectedTabHover")
+        else if (property == U"TextureSelectedTabHover")
         {
             m_spriteSelectedTabHover.setTexture(getSharedRenderer()->getTextureSelectedTabHover());
         }
-        else if (property == "TextureDisabledTab")
+        else if (property == U"TextureDisabledTab")
         {
             m_spriteDisabledTab.setTexture(getSharedRenderer()->getTextureDisabledTab());
         }
-        else if (property == "DistanceToSide")
+        else if (property == U"DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             recalculateTabsWidth();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "BackgroundColorDisabled")
+        else if (property == U"BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "SelectedBackgroundColor")
+        else if (property == U"SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "SelectedBackgroundColorHover")
+        else if (property == U"SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BorderColorHover")
+        else if (property == U"BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if (property == "SelectedBorderColor")
+        else if (property == U"SelectedBorderColor")
         {
             m_selectedBorderColorCached = getSharedRenderer()->getSelectedBorderColor();
         }
-        else if (property == "SelectedBorderColorHover")
+        else if (property == U"SelectedBorderColorHover")
         {
             m_selectedBorderColorHoverCached = getSharedRenderer()->getSelectedBorderColorHover();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -655,7 +655,7 @@ namespace tgui
             for (auto& tab : m_tabs)
                 tab.text.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
 
@@ -701,26 +701,26 @@ namespace tgui
             tabVisibleList += "]";
             tabEnabledList += "]";
 
-            node->propertyValuePairs["Tabs"] = std::make_unique<DataIO::ValueNode>(tabList);
+            node->propertyValuePairs[U"Tabs"] = std::make_unique<DataIO::ValueNode>(tabList);
             if (!allTabsVisible)
-                node->propertyValuePairs["TabsVisible"] = std::make_unique<DataIO::ValueNode>(tabVisibleList);
+                node->propertyValuePairs[U"TabsVisible"] = std::make_unique<DataIO::ValueNode>(tabVisibleList);
             if (!allTabsEnabled)
-                node->propertyValuePairs["TabsEnabled"] = std::make_unique<DataIO::ValueNode>(tabEnabledList);
+                node->propertyValuePairs[U"TabsEnabled"] = std::make_unique<DataIO::ValueNode>(tabEnabledList);
         }
 
         if (getSelectedIndex() >= 0)
-            node->propertyValuePairs["Selected"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedIndex()));
+            node->propertyValuePairs[U"Selected"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedIndex()));
 
         if (m_maximumTabWidth > 0)
-            node->propertyValuePairs["MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTabWidth));
+            node->propertyValuePairs[U"MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTabWidth));
 
         if (m_autoSize)
         {
             node->propertyValuePairs.erase("Size");
-            node->propertyValuePairs["TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSize().y));
+            node->propertyValuePairs[U"TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSize().y));
         }
 
-        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
+        node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
 
         return node;
     }
@@ -731,41 +731,41 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["Tabs"])
+        if (node->propertyValuePairs[U"Tabs"])
         {
-            if (!node->propertyValuePairs["Tabs"]->listNode)
-                throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"Tabs"]->listNode)
+                throw Exception{U"Failed to parse 'Tabs' property, expected a list as value"};
 
-            for (const auto& tabText : node->propertyValuePairs["Tabs"]->valueList)
+            for (const auto& tabText : node->propertyValuePairs[U"Tabs"]->valueList)
                 add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString(), false);
         }
 
-        if (node->propertyValuePairs["TabsVisible"])
+        if (node->propertyValuePairs[U"TabsVisible"])
         {
-            if (!node->propertyValuePairs["TabsVisible"]->listNode)
-                throw Exception{"Failed to parse 'TabsVisible' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"TabsVisible"]->listNode)
+                throw Exception{U"Failed to parse 'TabsVisible' property, expected a list as value"};
 
-            const auto& values = node->propertyValuePairs["TabsVisible"]->valueList;
+            const auto& values = node->propertyValuePairs[U"TabsVisible"]->valueList;
             for (std::size_t i = 0; i < values.size(); ++i)
                 setTabVisible(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
-        if (node->propertyValuePairs["TabsEnabled"])
+        if (node->propertyValuePairs[U"TabsEnabled"])
         {
-            if (!node->propertyValuePairs["TabsEnabled"]->listNode)
-                throw Exception{"Failed to parse 'TabsEnabled' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"TabsEnabled"]->listNode)
+                throw Exception{U"Failed to parse 'TabsEnabled' property, expected a list as value"};
 
-            const auto& values = node->propertyValuePairs["TabsEnabled"]->valueList;
+            const auto& values = node->propertyValuePairs[U"TabsEnabled"]->valueList;
             for (std::size_t i = 0; i < values.size(); ++i)
                 setTabEnabled(i, Deserializer::deserialize(ObjectConverter::Type::Bool, values[i]).getBool());
         }
 
-        if (node->propertyValuePairs["MaximumTabWidth"])
-            setMaximumTabWidth(node->propertyValuePairs["MaximumTabWidth"]->value.toFloat());
-        if (node->propertyValuePairs["TabHeight"])
-            setTabHeight(node->propertyValuePairs["TabHeight"]->value.toFloat());
-        if (node->propertyValuePairs["Selected"])
-            select(node->propertyValuePairs["Selected"]->value.toUInt());
+        if (node->propertyValuePairs[U"MaximumTabWidth"])
+            setMaximumTabWidth(node->propertyValuePairs[U"MaximumTabWidth"]->value.toFloat());
+        if (node->propertyValuePairs[U"TabHeight"])
+            setTabHeight(node->propertyValuePairs[U"TabHeight"]->value.toFloat());
+        if (node->propertyValuePairs[U"Selected"])
+            select(node->propertyValuePairs[U"Selected"]->value.toUInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

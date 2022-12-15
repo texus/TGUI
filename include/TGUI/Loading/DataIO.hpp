@@ -83,7 +83,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct ValueNode
         {
-            ValueNode(String v = "") : value(std::move(v)) {}
+            ValueNode(String v = U"") : value(std::move(v)) {}
 
             String value;
             bool listNode = false;

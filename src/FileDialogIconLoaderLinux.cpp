@@ -669,7 +669,7 @@ namespace tgui
                     // icon for executables for files with such type.
                     // Executables were detected by libmagic as application/x-pie-executable, but this didn't exist in my /usr/share/mime.
                     // So if we couldn't find anything then at least don't show a text icon if "executable" is literally in the MIME type name.
-                    if ((firstMimeMatch == "application/x-sharedlib") || (firstMimeMatch.find(U"exec") != String::npos))
+                    if ((firstMimeMatch == U"application/x-sharedlib") || (firstMimeMatch.find(U"exec") != String::npos))
                         pathIt = m_iconNameToIconPathMap.find(U"application-x-executable");
                 }
             }

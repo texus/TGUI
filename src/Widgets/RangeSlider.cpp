@@ -523,12 +523,12 @@ namespace tgui
 
     void RangeSlider::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "TextureTrack")
+        else if (property == U"TextureTrack")
         {
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
 
@@ -539,63 +539,63 @@ namespace tgui
 
             setSize(m_size);
         }
-        else if (property == "TextureTrackHover")
+        else if (property == U"TextureTrackHover")
         {
             m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
-        else if (property == "TextureThumb")
+        else if (property == U"TextureThumb")
         {
             m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             setSize(m_size);
         }
-        else if (property == "TextureThumbHover")
+        else if (property == U"TextureThumbHover")
         {
             m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
             setSize(m_size);
         }
-        else if (property == "TextureSelectedTrack")
+        else if (property == U"TextureSelectedTrack")
         {
             m_spriteSelectedTrack.setTexture(getSharedRenderer()->getTextureSelectedTrack());
             setSize(m_size);
         }
-        else if (property == "TextureSelectedTrackHover")
+        else if (property == U"TextureSelectedTrackHover")
         {
             m_spriteSelectedTrackHover.setTexture(getSharedRenderer()->getTextureSelectedTrackHover());
             setSize(m_size);
         }
-        else if (property == "TrackColor")
+        else if (property == U"TrackColor")
         {
             m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
-        else if (property == "TrackColorHover")
+        else if (property == U"TrackColorHover")
         {
             m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
-        else if (property == "SelectedTrackColor")
+        else if (property == U"SelectedTrackColor")
         {
             m_selectedTrackColorCached = getSharedRenderer()->getSelectedTrackColor();
         }
-        else if (property == "SelectedTrackColorHover")
+        else if (property == U"SelectedTrackColorHover")
         {
             m_selectedTrackColorHoverCached = getSharedRenderer()->getSelectedTrackColorHover();
         }
-        else if (property == "ThumbColor")
+        else if (property == U"ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "ThumbColorHover")
+        else if (property == U"ThumbColorHover")
         {
             m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BorderColorHover")
+        else if (property == U"BorderColorHover")
         {
             m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -616,11 +616,11 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
-        node->propertyValuePairs["SelectionStart"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionStart));
-        node->propertyValuePairs["SelectionEnd"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionEnd));
-        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
+        node->propertyValuePairs[U"Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs[U"Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs[U"SelectionStart"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionStart));
+        node->propertyValuePairs[U"SelectionEnd"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectionEnd));
+        node->propertyValuePairs[U"Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
 
         return node;
     }
@@ -631,16 +631,16 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["Minimum"])
-            setMinimum(node->propertyValuePairs["Minimum"]->value.toFloat());
-        if (node->propertyValuePairs["Maximum"])
-            setMaximum(node->propertyValuePairs["Maximum"]->value.toFloat());
-        if (node->propertyValuePairs["SelectionStart"])
-            setSelectionStart(node->propertyValuePairs["SelectionStart"]->value.toFloat());
-        if (node->propertyValuePairs["SelectionEnd"])
-            setSelectionEnd(node->propertyValuePairs["SelectionEnd"]->value.toFloat());
-        if (node->propertyValuePairs["Step"])
-            setStep(node->propertyValuePairs["Step"]->value.toFloat());
+        if (node->propertyValuePairs[U"Minimum"])
+            setMinimum(node->propertyValuePairs[U"Minimum"]->value.toFloat());
+        if (node->propertyValuePairs[U"Maximum"])
+            setMaximum(node->propertyValuePairs[U"Maximum"]->value.toFloat());
+        if (node->propertyValuePairs[U"SelectionStart"])
+            setSelectionStart(node->propertyValuePairs[U"SelectionStart"]->value.toFloat());
+        if (node->propertyValuePairs[U"SelectionEnd"])
+            setSelectionEnd(node->propertyValuePairs[U"SelectionEnd"]->value.toFloat());
+        if (node->propertyValuePairs[U"Step"])
+            setStep(node->propertyValuePairs[U"Step"]->value.toFloat());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

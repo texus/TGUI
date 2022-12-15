@@ -72,7 +72,7 @@ namespace tgui
                 // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
                 if (pair.second->value[0] != '"')
                 {
-                    if (pair.second->value.starts_with("data:"))
+                    if (pair.second->value.starts_with(U"data:"))
                         continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS
@@ -87,7 +87,7 @@ namespace tgui
                     if (pair.second->value.size() <= 1)
                         continue;
 
-                    if ((pair.second->value.size() >= 7) && (pair.second->value.substr(1, 5) == "data:"))
+                    if ((pair.second->value.size() >= 7) && (pair.second->value.substr(1, 5) == U"data:"))
                         continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS
@@ -127,7 +127,7 @@ namespace tgui
                         continue;
                     }
 
-                    throw Exception{"Undefined reference to '" + name + "' encountered."};
+                    throw Exception{U"Undefined reference to '" + name + U"' encountered."};
                 }
 
                 // Resolve references recursively
@@ -149,7 +149,7 @@ namespace tgui
 
     void DefaultThemeLoader::flushCache(const String& filename)
     {
-        if (filename != "")
+        if (filename != U"")
         {
             m_propertiesCache.erase(filename);
             m_globalPropertiesCache.erase(filename);
@@ -165,7 +165,7 @@ namespace tgui
 
     void DefaultThemeLoader::preload(const String& filename)
     {
-        if (filename == "")
+        if (filename == U"")
             return;
 
         // Load the file when not already in cache
@@ -173,7 +173,7 @@ namespace tgui
         {
             std::unique_ptr<DataIO::Node> root = readFile(filename);
             if (!root)
-                throw Exception{"DefaultThemeLoader::preload failed to load file, readFile returned nullptr."};
+                throw Exception{U"DefaultThemeLoader::preload failed to load file, readFile returned nullptr."};
 
             for (const auto& pair : root->propertyValuePairs)
                 m_globalPropertiesCache[filename][pair.first] = pair.second->value;
@@ -230,7 +230,7 @@ namespace tgui
             return m_propertiesCache[""][section];
 
         if (m_propertiesCache[filename].find(section) == m_propertiesCache[filename].end())
-            throw Exception{"No section '" + section + "' was found in file '" + filename + "'."};
+            throw Exception{U"No section '" + section + U"' was found in file '" + filename + "'."};
 
         return m_propertiesCache[filename][section];
     }
@@ -265,7 +265,7 @@ namespace tgui
         std::size_t fileSize;
         auto fileContents = readFileToMemory(fullFilename, fileSize);
         if (!fileContents)
-            throw Exception{"Failed to open theme file '" + fullFilename + "'."};
+            throw Exception{U"Failed to open theme file '" + fullFilename + U"'."};
 
         std::stringstream stream;
         stream.write(reinterpret_cast<char*>(fileContents.get()), static_cast<std::streamsize>(fileSize));

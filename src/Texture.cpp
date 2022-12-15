@@ -192,13 +192,13 @@ namespace tgui
         {
             data = m_textureLoader(*this, (getResourcePath() / id).asString(), smooth);
             if (!data)
-                throw Exception{"Failed to load '" + (getResourcePath() / id).asString() + "'"};
+                throw Exception{U"Failed to load '" + (getResourcePath() / id).asString() + U"'"};
         }
         else
         {
             data = m_textureLoader(*this, id, smooth);
             if (!data)
-                throw Exception{"Failed to load '" + id + "'"};
+                throw Exception{U"Failed to load '" + id + U"'"};
         }
 
         TGUI_ASSERT(data->svgImage || data->backendTexture, "TextureLoaderFunc returned non-nullptr but didn't initialized backendTexture or svgImage");
@@ -234,10 +234,10 @@ namespace tgui
         Vector2u imageSize;
         auto pixelPtr = ImageLoader::loadFromMemory(fileData, fileDataSize, imageSize);
         if (!pixelPtr)
-            throw Exception{"Failed to load texture from provided memory location (" + String(fileDataSize) + " bytes)"};
+            throw Exception{U"Failed to load texture from provided memory location (" + String(fileDataSize) + U" bytes)"};
 
         if (!data->backendTexture->load(imageSize, std::move(pixelPtr), smooth))
-            throw Exception{"Failed to load texture from pixels that were loaded from file in memory"};
+            throw Exception{U"Failed to load texture from pixels that were loaded from file in memory"};
 
         m_id = "";
         setTextureData(data, partRect, middleRect);
@@ -254,7 +254,7 @@ namespace tgui
         std::memcpy(pixelPtr.get(), pixels, size.x * size.y * 4);
 
         if (!data->backendTexture->load(size, std::move(pixelPtr), smooth))
-            throw Exception{"Failed to load texture from provided pixel data"};
+            throw Exception{U"Failed to load texture from provided pixel data"};
 
         m_id = "";
         setTextureData(data, partRect, middleRect);

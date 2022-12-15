@@ -638,17 +638,17 @@ namespace tgui
 
     void ComboBox::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "Padding")
+        else if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             if (m_enabled || !m_textColorDisabledCached.isSet())
@@ -656,94 +656,94 @@ namespace tgui
             if (!getSharedRenderer()->getDefaultTextColor().isSet())
                 m_defaultText.setColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "TextColorDisabled")
+        else if (property == U"TextColorDisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
             if (!m_enabled && m_textColorDisabledCached.isSet())
                 m_text.setColor(m_textColorDisabledCached);
         }
-        else if (property == "TextStyle")
+        else if (property == U"TextStyle")
         {
             m_text.setStyle(getSharedRenderer()->getTextStyle());
             if (!getSharedRenderer()->getDefaultTextStyle().isSet())
                 m_defaultText.setStyle(getSharedRenderer()->getTextStyle());
         }
-        else if (property == "DefaultTextColor")
+        else if (property == U"DefaultTextColor")
         {
             if (getSharedRenderer()->getDefaultTextColor().isSet())
                 m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor());
             else
                 m_defaultText.setColor(getSharedRenderer()->getTextColor());
         }
-        else if (property == "DefaultTextStyle")
+        else if (property == U"DefaultTextStyle")
         {
             if (getSharedRenderer()->getDefaultTextStyle().isSet())
                 m_defaultText.setStyle(getSharedRenderer()->getDefaultTextStyle());
             else
                 m_defaultText.setStyle(getSharedRenderer()->getTextStyle());
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextureBackgroundDisabled")
+        else if (property == U"TextureBackgroundDisabled")
         {
             m_spriteBackgroundDisabled.setTexture(getSharedRenderer()->getTextureBackgroundDisabled());
         }
-        else if (property == "TextureArrow")
+        else if (property == U"TextureArrow")
         {
             m_spriteArrow.setTexture(getSharedRenderer()->getTextureArrow());
             setSize(m_size);
         }
-        else if (property == "TextureArrowHover")
+        else if (property == U"TextureArrowHover")
         {
             m_spriteArrowHover.setTexture(getSharedRenderer()->getTextureArrowHover());
         }
-        else if (property == "TextureArrowDisabled")
+        else if (property == U"TextureArrowDisabled")
         {
             m_spriteArrowDisabled.setTexture(getSharedRenderer()->getTextureArrowDisabled());
         }
-        else if (property == "ListBox")
+        else if (property == U"ListBox")
         {
             m_listBox->setRenderer(getSharedRenderer()->getListBox());
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "BackgroundColorDisabled")
+        else if (property == U"BackgroundColorDisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
-        else if (property == "ArrowBackgroundColor")
+        else if (property == U"ArrowBackgroundColor")
         {
             m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
         }
-        else if (property == "ArrowBackgroundColorHover")
+        else if (property == U"ArrowBackgroundColorHover")
         {
             m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
         }
-        else if (property == "ArrowBackgroundColorDisabled")
+        else if (property == U"ArrowBackgroundColorDisabled")
         {
             m_arrowBackgroundColorDisabledCached = getSharedRenderer()->getArrowBackgroundColorDisabled();
         }
-        else if (property == "ArrowColor")
+        else if (property == U"ArrowColor")
         {
             m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
-        else if (property == "ArrowColorHover")
+        else if (property == U"ArrowColorHover")
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
-        else if (property == "ArrowColorDisabled")
+        else if (property == U"ArrowColorDisabled")
         {
             m_arrowColorDisabledCached = getSharedRenderer()->getArrowColorDisabled();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -756,7 +756,7 @@ namespace tgui
             m_text.setOpacity(m_opacityCached);
             m_defaultText.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
 
@@ -795,22 +795,22 @@ namespace tgui
             itemList += "]";
             itemIdList += "]";
 
-            node->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs[U"Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             if (itemIdsUsed)
-                node->propertyValuePairs["ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
+                node->propertyValuePairs[U"ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
         }
 
-        node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsToDisplay()));
-        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumItems()));
-        node->propertyValuePairs["ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
+        node->propertyValuePairs[U"ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsToDisplay()));
+        node->propertyValuePairs[U"MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumItems()));
+        node->propertyValuePairs[U"ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
 
         if (getExpandDirection() == ComboBox::ExpandDirection::Down)
-            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
+            node->propertyValuePairs[U"ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
         else if (getExpandDirection() == ComboBox::ExpandDirection::Up)
-            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
+            node->propertyValuePairs[U"ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
 
         if (m_listBox->getSelectedItemIndex() >= 0)
-            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_listBox->getSelectedItemIndex()));
+            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_listBox->getSelectedItemIndex()));
 
         return node;
     }
@@ -821,56 +821,56 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["Items"])
+        if (node->propertyValuePairs[U"Items"])
         {
-            if (!node->propertyValuePairs["Items"]->listNode)
-                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"Items"]->listNode)
+                throw Exception{U"Failed to parse 'Items' property, expected a list as value"};
 
-            if (node->propertyValuePairs["ItemIds"])
+            if (node->propertyValuePairs[U"ItemIds"])
             {
-                if (!node->propertyValuePairs["ItemIds"]->listNode)
-                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+                if (!node->propertyValuePairs[U"ItemIds"]->listNode)
+                    throw Exception{U"Failed to parse 'ItemIds' property, expected a list as value"};
 
-                if (node->propertyValuePairs["Items"]->valueList.size() != node->propertyValuePairs["ItemIds"]->valueList.size())
-                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+                if (node->propertyValuePairs[U"Items"]->valueList.size() != node->propertyValuePairs[U"ItemIds"]->valueList.size())
+                    throw Exception{U"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
 
-                for (std::size_t i = 0; i < node->propertyValuePairs["Items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < node->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
-                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Items"]->valueList[i]).getString(),
-                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ItemIds"]->valueList[i]).getString());
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Items"]->valueList[i]).getString(),
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i]).getString());
                 }
             }
             else // There are no item ids
             {
-                for (const auto& item : node->propertyValuePairs["Items"]->valueList)
+                for (const auto& item : node->propertyValuePairs[U"Items"]->valueList)
                     addItem(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
             }
         }
         else // If there are no items, there should be no item ids
         {
-            if (node->propertyValuePairs["ItemIds"])
-                throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            if (node->propertyValuePairs[U"ItemIds"])
+                throw Exception{U"Found 'ItemIds' property while there is no 'Items' property"};
         }
 
-        if (node->propertyValuePairs["ItemsToDisplay"])
-            setItemsToDisplay(node->propertyValuePairs["ItemsToDisplay"]->value.toUInt());
-        if (node->propertyValuePairs["MaximumItems"])
-            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toUInt());
-        if (node->propertyValuePairs["SelectedItemIndex"])
-            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toUInt());
-        if (node->propertyValuePairs["ChangeItemOnScroll"])
-            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ChangeItemOnScroll"]->value).getBool();
+        if (node->propertyValuePairs[U"ItemsToDisplay"])
+            setItemsToDisplay(node->propertyValuePairs[U"ItemsToDisplay"]->value.toUInt());
+        if (node->propertyValuePairs[U"MaximumItems"])
+            setMaximumItems(node->propertyValuePairs[U"MaximumItems"]->value.toUInt());
+        if (node->propertyValuePairs[U"SelectedItemIndex"])
+            setSelectedItemByIndex(node->propertyValuePairs[U"SelectedItemIndex"]->value.toUInt());
+        if (node->propertyValuePairs[U"ChangeItemOnScroll"])
+            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ChangeItemOnScroll"]->value).getBool();
 
-        if (node->propertyValuePairs["ExpandDirection"])
+        if (node->propertyValuePairs[U"ExpandDirection"])
         {
-            if (node->propertyValuePairs["ExpandDirection"]->value == "Up")
+            if (node->propertyValuePairs[U"ExpandDirection"]->value == U"Up")
                 setExpandDirection(ComboBox::ExpandDirection::Up);
-            else if (node->propertyValuePairs["ExpandDirection"]->value == "Down")
+            else if (node->propertyValuePairs[U"ExpandDirection"]->value == U"Down")
                 setExpandDirection(ComboBox::ExpandDirection::Down);
-            else if (node->propertyValuePairs["ExpandDirection"]->value == "Automatic")
+            else if (node->propertyValuePairs[U"ExpandDirection"]->value == U"Automatic")
                 setExpandDirection(ComboBox::ExpandDirection::Automatic);
             else
-                throw Exception{"Failed to parse ExpandDirection property. Only the values Up, Down and Automatic are correct."};
+                throw Exception{U"Failed to parse ExpandDirection property. Only the values Up, Down and Automatic are correct."};
         }
     }
 

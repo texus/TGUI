@@ -1065,7 +1065,7 @@ namespace tgui
 
     void ChildWindow::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
 
@@ -1076,15 +1076,15 @@ namespace tgui
 
             setSize(m_size);
         }
-        else if (property == "TitleColor")
+        else if (property == U"TitleColor")
         {
             m_titleText.setColor(getSharedRenderer()->getTitleColor());
         }
-        else if ((property == "TextureTitleBar") || (property == "TitleBarHeight"))
+        else if ((property == U"TextureTitleBar") || (property == U"TitleBarHeight"))
         {
             const float oldTitleBarHeight = m_titleBarHeightCached;
 
-            if (property == "TextureTitleBar")
+            if (property == U"TextureTitleBar")
                 m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
 
             m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
@@ -1100,36 +1100,36 @@ namespace tgui
                     layout->recalculateValue();
             }
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "BorderBelowTitleBar")
+        else if (property == U"BorderBelowTitleBar")
         {
             m_borderBelowTitleBarCached = getSharedRenderer()->getBorderBelowTitleBar();
             if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
                 m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
         }
-        else if (property == "DistanceToSide")
+        else if (property == U"DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             setPosition(m_position);
         }
-        else if (property == "PaddingBetweenButtons")
+        else if (property == U"PaddingBetweenButtons")
         {
             m_paddingBetweenButtonsCached = getSharedRenderer()->getPaddingBetweenButtons();
             setPosition(m_position);
         }
-        else if (property == "MinimumResizableBorderWidth")
+        else if (property == U"MinimumResizableBorderWidth")
         {
             m_minimumResizableBorderWidthCached = getSharedRenderer()->getMinimumResizableBorderWidth();
         }
-        else if (property == "ShowTextOnTitleButtons")
+        else if (property == U"ShowTextOnTitleButtons")
         {
             m_showTextOnTitleButtonsCached = getSharedRenderer()->getShowTextOnTitleButtons();
             setTitleButtons(m_titleButtons);
         }
-        else if (property == "CloseButton")
+        else if (property == U"CloseButton")
         {
             if (m_closeButton->isVisible())
             {
@@ -1139,7 +1139,7 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "MaximizeButton")
+        else if (property == U"MaximizeButton")
         {
             if (m_maximizeButton->isVisible())
             {
@@ -1153,7 +1153,7 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "MinimizeButton")
+        else if (property == U"MinimizeButton")
         {
             if (m_minimizeButton->isVisible())
             {
@@ -1167,23 +1167,23 @@ namespace tgui
 
             updateTitleBarHeight();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "TitleBarColor")
+        else if (property == U"TitleBarColor")
         {
             m_titleBarColorCached = getSharedRenderer()->getTitleBarColor();
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BorderColorFocused")
+        else if (property == U"BorderColorFocused")
         {
             m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Container::rendererChanged(property);
 
@@ -1197,7 +1197,7 @@ namespace tgui
             m_spriteTitleBar.setOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Container::rendererChanged(property);
 
@@ -1224,45 +1224,45 @@ namespace tgui
         auto node = Container::save(renderers);
 
         if (m_titleAlignment == TitleAlignment::Left)
-            node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
+            node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
         else if (m_titleAlignment == TitleAlignment::Center)
-            node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_titleAlignment == TitleAlignment::Right)
-            node->propertyValuePairs["TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+            node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         if (getTitle().length() > 0)
-            node->propertyValuePairs["Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
+            node->propertyValuePairs[U"Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
 
         if (m_titleTextSize != 0)
-            node->propertyValuePairs["TitleTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_titleTextSize));
+            node->propertyValuePairs[U"TitleTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_titleTextSize));
 
         if (m_keepInParent)
-            node->propertyValuePairs["KeepInParent"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"KeepInParent"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (m_resizable)
-            node->propertyValuePairs["Resizable"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"Resizable"] = std::make_unique<DataIO::ValueNode>("true");
         if (m_positionLocked)
-            node->propertyValuePairs["PositionLocked"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"PositionLocked"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (m_minimumSize != Vector2f{})
-            node->propertyValuePairs["MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_minimumSize.x) + ", " + String::fromNumber(m_minimumSize.y) + ")");
+            node->propertyValuePairs[U"MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_minimumSize.x) + ", " + String::fromNumber(m_minimumSize.y) + ")");
         if (m_maximumSize != Vector2f{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()})
-            node->propertyValuePairs["MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_maximumSize.x) + ", " + String::fromNumber(m_maximumSize.y) + ")");
+            node->propertyValuePairs[U"MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_maximumSize.x) + ", " + String::fromNumber(m_maximumSize.y) + ")");
 
         String serializedTitleButtons;
         if (m_titleButtons & TitleButton::Minimize)
-            serializedTitleButtons += " | Minimize";
+            serializedTitleButtons += U" | Minimize";
         if (m_titleButtons & TitleButton::Maximize)
-            serializedTitleButtons += " | Maximize";
+            serializedTitleButtons += U" | Maximize";
         if (m_titleButtons & TitleButton::Close)
-            serializedTitleButtons += " | Close";
+            serializedTitleButtons += U" | Close";
 
         if (!serializedTitleButtons.empty())
             serializedTitleButtons.erase(0, 3);
         else
-            serializedTitleButtons = "None";
+            serializedTitleButtons = U"None";
 
-        node->propertyValuePairs["TitleButtons"] = std::make_unique<DataIO::ValueNode>(serializedTitleButtons);
+        node->propertyValuePairs[U"TitleButtons"] = std::make_unique<DataIO::ValueNode>(serializedTitleButtons);
 
         return node;
     }
@@ -1273,55 +1273,55 @@ namespace tgui
     {
         Container::load(node, renderers);
 
-        if (node->propertyValuePairs["TitleAlignment"])
+        if (node->propertyValuePairs[U"TitleAlignment"])
         {
-            if (node->propertyValuePairs["TitleAlignment"]->value == "Left")
+            if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Left")
                 setTitleAlignment(TitleAlignment::Left);
-            else if (node->propertyValuePairs["TitleAlignment"]->value == "Center")
+            else if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Center")
                 setTitleAlignment(TitleAlignment::Center);
-            else if (node->propertyValuePairs["TitleAlignment"]->value == "Right")
+            else if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Right")
                 setTitleAlignment(TitleAlignment::Right);
             else
-                throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
+                throw Exception{U"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
-        if (node->propertyValuePairs["TitleButtons"])
+        if (node->propertyValuePairs[U"TitleButtons"])
         {
             unsigned int decodedTitleButtons = TitleButton::None;
-            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs["TitleButtons"]->value, '|');
+            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs[U"TitleButtons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
                 String requestedTitleButton = elem.trim();
-                if (requestedTitleButton == "Close")
+                if (requestedTitleButton == U"Close")
                     decodedTitleButtons |= TitleButton::Close;
-                else if (requestedTitleButton == "Maximize")
+                else if (requestedTitleButton == U"Maximize")
                     decodedTitleButtons |= TitleButton::Maximize;
-                else if (requestedTitleButton == "Minimize")
+                else if (requestedTitleButton == U"Minimize")
                     decodedTitleButtons |= TitleButton::Minimize;
             }
 
             setTitleButtons(decodedTitleButtons);
         }
 
-        if (node->propertyValuePairs["Title"])
-            setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Title"]->value).getString());
+        if (node->propertyValuePairs[U"Title"])
+            setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Title"]->value).getString());
 
-        if (node->propertyValuePairs["TitleTextSize"])
-            setTitleTextSize(static_cast<unsigned int>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TitleTextSize"]->value).getNumber()));
+        if (node->propertyValuePairs[U"TitleTextSize"])
+            setTitleTextSize(static_cast<unsigned int>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TitleTextSize"]->value).getNumber()));
 
-        if (node->propertyValuePairs["KeepInParent"])
-            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["KeepInParent"]->value).getBool());
+        if (node->propertyValuePairs[U"KeepInParent"])
+            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"KeepInParent"]->value).getBool());
 
-        if (node->propertyValuePairs["Resizable"])
-            setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["Resizable"]->value).getBool());
-        if (node->propertyValuePairs["PositionLocked"])
-            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["PositionLocked"]->value).getBool());
+        if (node->propertyValuePairs[U"Resizable"])
+            setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Resizable"]->value).getBool());
+        if (node->propertyValuePairs[U"PositionLocked"])
+            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"PositionLocked"]->value).getBool());
 
-        if (node->propertyValuePairs["MinimumSize"])
-            setMinimumSize(Vector2f{node->propertyValuePairs["MinimumSize"]->value});
+        if (node->propertyValuePairs[U"MinimumSize"])
+            setMinimumSize(Vector2f{node->propertyValuePairs[U"MinimumSize"]->value});
 
-        if (node->propertyValuePairs["MaximumSize"])
-            setMaximumSize(Vector2f{node->propertyValuePairs["MaximumSize"]->value});
+        if (node->propertyValuePairs[U"MaximumSize"])
+            setMaximumSize(Vector2f{node->propertyValuePairs[U"MaximumSize"]->value});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

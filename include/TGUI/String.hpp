@@ -27,6 +27,7 @@
 #define TGUI_STRING_HPP
 
 #include <TGUI/Config.hpp>
+#include <TGUI/StringView.hpp>
 #include <TGUI/Utf.hpp>
 #include <string>
 #include <vector>
@@ -35,14 +36,11 @@
 #include <iomanip>
 #include <ostream>
 #include <sstream>
+#include <type_traits>
+#include <initializer_list>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/String.hpp>
-#endif
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <type_traits>
-    #include <string_view>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +384,19 @@ namespace tgui
 
         template <typename StringViewType, typename = IsStringViewType<StringViewType>>
         explicit String(const StringViewType& stringView, std::size_t pos, std::size_t count) :
-            String(stringView.data(), pos, count)
+            String(stringView.data() + pos, count)
+        {
+        }
+#else
+        template <typename CharType>
+        explicit String(StringViewImpl<CharType> stringView) :
+            String(stringView.data(), stringView.size())
+        {
+        }
+
+        template <typename CharType>
+        explicit String(StringViewImpl<CharType> stringView, std::size_t pos, std::size_t count) :
+            String(stringView.data() + pos, count)
         {
         }
 #endif
@@ -412,12 +422,14 @@ namespace tgui
             return m_string;
         }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        operator std::u32string_view() const noexcept
+        operator StringView() const noexcept
         {
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return m_string;
-        }
+#else
+            return StringView(m_string.data(), m_string.length());
 #endif
+        }
 
         std::string toStdString() const;
         std::wstring toWideString() const;
@@ -432,16 +444,12 @@ namespace tgui
         String& assign(std::size_t count, char16_t ch);
         String& assign(std::size_t count, char32_t ch);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& assign(std::u32string_view sv);
-#endif
+        String& assign(StringView sv);
         String& assign(const char32_t* str);
         String& assign(const std::u32string& str);
         String& assign(const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& assign(std::u32string_view sv, std::size_t pos, std::size_t count = npos);
-#endif
+        String& assign(StringView sv, std::size_t pos, std::size_t count = npos);
         String& assign(const std::string& str, std::size_t pos, std::size_t count = npos);
         String& assign(const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& assign(const std::u16string& str, std::size_t pos, std::size_t count = npos);
@@ -465,9 +473,7 @@ namespace tgui
         String& assign(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& assign(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String& assign(std::u32string::const_iterator first, std::u32string::const_iterator last);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& assign(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
-#endif
+        String& assign(StringView::const_iterator first, StringView::const_iterator last);
 
         reference       at(std::size_t pos);
         const_reference at(std::size_t pos) const;
@@ -486,12 +492,15 @@ namespace tgui
             return m_string.data();
         }
 
-#if __cplusplus >= 201703L
         char32_t* data() noexcept
         {
+#if __cplusplus >= 201703L
             return m_string.data();
-        }
+#else
+            return &m_string[0];
 #endif
+        }
+
         const char32_t* c_str() const noexcept
         {
             return m_string.c_str();
@@ -541,16 +550,12 @@ namespace tgui
         String& insert(std::size_t index, std::size_t count, char16_t ch);
         String& insert(std::size_t index, std::size_t count, char32_t ch);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& insert(std::size_t index, std::u32string_view sv);
-#endif
+        String& insert(std::size_t index, StringView sv);
         String& insert(std::size_t index, const char32_t* str);
         String& insert(std::size_t index, const std::u32string& str);
         String& insert(std::size_t index, const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& insert(std::size_t index, std::u32string_view sv, std::size_t pos, std::size_t count = npos);
-#endif
+        String& insert(std::size_t index, StringView sv, std::size_t pos, std::size_t count = npos);
         String& insert(std::size_t index, const std::string& str, std::size_t pos, std::size_t count = npos);
         String& insert(std::size_t index, const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& insert(std::size_t index, const std::u16string& str, std::size_t pos, std::size_t count = npos);
@@ -581,9 +586,7 @@ namespace tgui
         iterator insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last);
         iterator insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last);
         iterator insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         iterator insert(const_iterator pos, std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
-#endif
 
         String& erase(std::size_t index = 0, std::size_t count = npos);
 
@@ -602,16 +605,12 @@ namespace tgui
         String& append(std::size_t count, char16_t ch);
         String& append(std::size_t count, char32_t ch);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& append(std::u32string_view sv);
-#endif
+        String& append(StringView sv);
         String& append(const char32_t* str);
         String& append(const std::u32string& str);
         String& append(const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& append(std::u32string_view sv, std::size_t pos, std::size_t count = npos);
-#endif
+        String& append(StringView sv, std::size_t pos, std::size_t count = npos);
         String& append(const std::string& str, std::size_t pos, std::size_t count = npos);
         String& append(const std::wstring& str, std::size_t pos, std::size_t count = npos);
         String& append(const std::u16string& str, std::size_t pos, std::size_t count = npos);
@@ -627,9 +626,7 @@ namespace tgui
         String& append(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& append(std::u16string::const_iterator first, std::u16string::const_iterator last);
         String& append(std::u32string::const_iterator first, std::u32string::const_iterator last);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& append(std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
-#endif
+        String& append(StringView::const_iterator first, StringView::const_iterator last);
 
         String& append(std::initializer_list<char> chars);
         String& append(std::initializer_list<wchar_t> chars);
@@ -638,23 +635,17 @@ namespace tgui
 
         String& operator+=(const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        int compare(std::u32string_view sv) const noexcept;
-#endif
+        int compare(StringView sv) const noexcept;
         int compare(const char32_t* s) const;
         int compare(const std::u32string& str) const noexcept;
         int compare(const String& str) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        int compare(std::size_t pos1, std::size_t count1, std::u32string_view sv) const;
-#endif
+        int compare(std::size_t pos1, std::size_t count1, StringView sv) const;
         int compare(std::size_t pos1, std::size_t count1, const char32_t* s) const;
         int compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const;
         int compare(std::size_t pos1, std::size_t count1, const String& str) const;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        int compare(std::size_t pos1, std::size_t count1, std::u32string_view sv, std::size_t pos2, std::size_t count2 = npos) const;
-#endif
+        int compare(std::size_t pos1, std::size_t count1, StringView sv, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::string& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::wstring& str, std::size_t pos2, std::size_t count2 = npos) const;
         int compare(std::size_t pos1, std::size_t count1, const std::u16string& str, std::size_t pos2, std::size_t count2 = npos) const;
@@ -666,23 +657,17 @@ namespace tgui
         int compare(std::size_t pos1, std::size_t count1, const char16_t* s, std::size_t count2) const;
         int compare(std::size_t pos1, std::size_t count1, const char32_t* s, std::size_t count2) const;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& replace(std::size_t pos, std::size_t count, std::u32string_view sv);
-#endif
+        String& replace(std::size_t pos, std::size_t count, StringView sv);
         String& replace(std::size_t pos, std::size_t count, const char32_t* cstr);
         String& replace(std::size_t pos, std::size_t count, const std::u32string& str);
         String& replace(std::size_t pos, std::size_t count, const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& replace(const_iterator first, const_iterator last, std::u32string_view sv);
-#endif
+        String& replace(const_iterator first, const_iterator last, StringView sv);
         String& replace(const_iterator first, const_iterator last, const char32_t* cstr);
         String& replace(const_iterator first, const_iterator last, const std::u32string& str);
         String& replace(const_iterator first, const_iterator last, const String& str);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& replace(std::size_t pos, std::size_t count, std::u32string_view sv, std::size_t pos2, std::size_t count2 = npos);
-#endif
+        String& replace(std::size_t pos, std::size_t count, StringView sv, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const std::string& str, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const std::wstring& str, std::size_t pos2, std::size_t count2 = npos);
         String& replace(std::size_t pos, std::size_t count, const std::u16string& str, std::size_t pos2, std::size_t count2 = npos);
@@ -693,9 +678,7 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, std::wstring::const_iterator first2, std::wstring::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2);
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        String& replace(const_iterator first, const_iterator last, std::u32string_view::const_iterator first2, std::u32string_view::const_iterator last2);
-#endif
+        String& replace(const_iterator first, const_iterator last, StringView::const_iterator first2, StringView::const_iterator last2);
 
         String& replace(std::size_t pos, std::size_t count, const char* cstr, std::size_t count2);
         String& replace(std::size_t pos, std::size_t count, const wchar_t* cstr, std::size_t count2);
@@ -739,16 +722,12 @@ namespace tgui
         bool contains(char16_t c) const noexcept;
         bool contains(char32_t c) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        bool contains(std::u32string_view sv) const noexcept;
-#endif
+        bool contains(StringView sv) const noexcept;
         bool contains(const char32_t* s) const;
         bool contains(const std::u32string& s) const;
         bool contains(const String& s) const;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find(std::u32string_view sv, std::size_t pos = 0) const noexcept;
-#endif
+        std::size_t find(StringView sv, std::size_t pos = 0) const noexcept;
         std::size_t find(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find(const String& str, std::size_t pos = 0) const noexcept;
@@ -763,9 +742,7 @@ namespace tgui
         std::size_t find(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find(char32_t ch, std::size_t pos = 0) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find_first_of(std::u32string_view sv, std::size_t pos = 0) const noexcept;
-#endif
+        std::size_t find_first_of(StringView sv, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find_first_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(const String& str, std::size_t pos = 0) const noexcept;
@@ -780,9 +757,7 @@ namespace tgui
         std::size_t find_first_of(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find_first_not_of(std::u32string_view sv, std::size_t pos = 0) const noexcept;
-#endif
+        std::size_t find_first_not_of(StringView sv, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(const char32_t* s, std::size_t pos = 0) const;
         std::size_t find_first_not_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(const String& str, std::size_t pos = 0) const noexcept;
@@ -797,9 +772,7 @@ namespace tgui
         std::size_t find_first_not_of(char16_t ch, std::size_t pos = 0) const noexcept;
         std::size_t find_first_not_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t rfind(std::u32string_view sv, std::size_t pos = npos) const noexcept;
-#endif
+        std::size_t rfind(StringView sv, std::size_t pos = npos) const noexcept;
         std::size_t rfind(const char32_t* s, std::size_t pos = npos) const;
         std::size_t rfind(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t rfind(const String& str, std::size_t pos = npos) const noexcept;
@@ -814,9 +787,7 @@ namespace tgui
         std::size_t rfind(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t rfind(char32_t ch, std::size_t pos = npos) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find_last_of(std::u32string_view sv, std::size_t pos = npos) const noexcept;
-#endif
+        std::size_t find_last_of(StringView sv, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(const char32_t* s, std::size_t pos = npos) const;
         std::size_t find_last_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(const String& str, std::size_t pos = npos) const noexcept;
@@ -831,9 +802,7 @@ namespace tgui
         std::size_t find_last_of(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        std::size_t find_last_not_of(std::u32string_view sv, std::size_t pos = npos) const noexcept;
-#endif
+        std::size_t find_last_not_of(StringView sv, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(const char32_t* s, std::size_t pos = npos) const;
         std::size_t find_last_not_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(const String& str, std::size_t pos = npos) const noexcept;
@@ -848,12 +817,56 @@ namespace tgui
         std::size_t find_last_not_of(char16_t ch, std::size_t pos = npos) const noexcept;
         std::size_t find_last_not_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
+        inline bool starts_with(StringView sv) const noexcept;
+        inline bool starts_with(const char32_t* s) const;
+        inline bool starts_with(const std::u32string& s) const;
+        inline bool starts_with(const String& s) const;
+
+        inline bool starts_with(char ch) const noexcept;
+        inline bool starts_with(wchar_t ch) const noexcept;
+        inline bool starts_with(char16_t ch) const noexcept;
+        inline bool starts_with(char32_t ch) const noexcept;
+
+        inline bool ends_with(StringView sv) const noexcept;
+        inline bool ends_with(const char32_t* s) const;
+        inline bool ends_with(const std::u32string& s) const;
+        inline bool ends_with(const String& s) const;
+
+        inline bool ends_with(char ch) const noexcept;
+        inline bool ends_with(wchar_t ch) const noexcept;
+        inline bool ends_with(char16_t ch) const noexcept;
+        inline bool ends_with(char32_t ch) const noexcept;
+
+        inline friend bool operator==(const String& left, StringView right);
+        inline friend bool operator==(const String& left, const char32_t* right);
+        inline friend bool operator==(const String& left, const std::u32string& right);
         inline friend bool operator==(const String& left, const String& right);
+
+        inline friend bool operator!=(const String& left, StringView right);
+        inline friend bool operator!=(const String& left, const char32_t* right);
+        inline friend bool operator!=(const String& left, const std::u32string& right);
         inline friend bool operator!=(const String& left, const String& right);
+
+        inline friend bool operator<(const String& left, StringView right);
+        inline friend bool operator<(const String& left, const char32_t* right);
+        inline friend bool operator<(const String& left, const std::u32string& right);
         inline friend bool operator<(const String& left, const String& right);
+
+        inline friend bool operator<=(const String& left, StringView right);
+        inline friend bool operator<=(const String& left, const char32_t* right);
+        inline friend bool operator<=(const String& left, const std::u32string& right);
         inline friend bool operator<=(const String& left, const String& right);
+
+        inline friend bool operator>(const String& left, StringView right);
+        inline friend bool operator>(const String& left, const char32_t* right);
+        inline friend bool operator>(const String& left, const std::u32string& right);
         inline friend bool operator>(const String& left, const String& right);
+
+        inline friend bool operator>=(const String& left, StringView right);
+        inline friend bool operator>=(const String& left, const char32_t* right);
+        inline friend bool operator>=(const String& left, const std::u32string& right);
         inline friend bool operator>=(const String& left, const String& right);
+
         inline friend String operator+(const String& left, const String& right);
         inline friend String operator+(const String& left, String&& right);
         inline friend String operator+(String&& left, const String& right);
@@ -926,41 +939,128 @@ namespace tgui
 
         inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
         inline std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
-#endif
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
-        inline bool starts_with(std::u32string_view sv) const noexcept;
-        inline bool starts_with(const char32_t* s) const;
-        inline bool starts_with(const std::u32string& s) const;
-        inline bool starts_with(const String& s) const;
-
-        inline bool starts_with(char ch) const noexcept;
-        inline bool starts_with(wchar_t ch) const noexcept;
         inline bool starts_with(char8_t ch) const noexcept;
-        inline bool starts_with(char16_t ch) const noexcept;
-        inline bool starts_with(char32_t ch) const noexcept;
-
-        inline bool ends_with(std::u32string_view sv) const noexcept;
-        inline bool ends_with(const char32_t* s) const;
-        inline bool ends_with(const std::u32string& s) const;
-        inline bool ends_with(const String& s) const;
-
-        inline bool ends_with(char ch) const noexcept;
-        inline bool ends_with(wchar_t ch) const noexcept;
         inline bool ends_with(char8_t ch) const noexcept;
-        inline bool ends_with(char16_t ch) const noexcept;
-        inline bool ends_with(char32_t ch) const noexcept;
-#else
-        inline bool starts_with(const String& s) const;
-        inline bool ends_with(const String& s) const;
 #endif
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    inline bool String::starts_with(StringView sv) const noexcept
+    {
+        return viewStartsWith(StringView(m_string), sv);
+    }
+
+    inline bool String::starts_with(const char32_t* s) const
+    {
+        return viewStartsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::starts_with(const std::u32string& s) const
+    {
+        return viewStartsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::starts_with(const String& s) const
+    {
+        return viewStartsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::starts_with(char ch) const noexcept
+    {
+        return viewStartsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::starts_with(wchar_t ch) const noexcept
+    {
+        return viewStartsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::starts_with(char16_t ch) const noexcept
+    {
+        return viewStartsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::starts_with(char32_t ch) const noexcept
+    {
+        return viewStartsWith(StringView(m_string), ch);
+    }
+
+    inline bool String::ends_with(StringView sv) const noexcept
+    {
+        return viewEndsWith(StringView(m_string), sv);
+    }
+
+    inline bool String::ends_with(const char32_t* s) const
+    {
+        return viewEndsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::ends_with(const std::u32string& s) const
+    {
+        return viewEndsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::ends_with(const String& s) const
+    {
+        return viewEndsWith(StringView(m_string), StringView(s));
+    }
+
+    inline bool String::ends_with(char ch) const noexcept
+    {
+        return viewEndsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::ends_with(wchar_t ch) const noexcept
+    {
+        return viewEndsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::ends_with(char16_t ch) const noexcept
+    {
+        return viewEndsWith(StringView(m_string), static_cast<char32_t>(ch));
+    }
+
+    inline bool String::ends_with(char32_t ch) const noexcept
+    {
+        return viewEndsWith(StringView(m_string), ch);
+    }
+
+
+    inline bool operator==(const String& left, StringView right)
+    {
+        return StringView(left) == right;
+    }
+
+    inline bool operator==(const String& left, const char32_t* right)
+    {
+        return StringView(left) == right;
+    }
+
+    inline bool operator==(const String& left, const std::u32string& right)
+    {
+        return StringView(left) == right;
+    }
+
     inline bool operator==(const String& left, const String& right)
     {
         return left.m_string == right.m_string;
+    }
+
+    inline bool operator!=(const String& left, StringView right)
+    {
+        return StringView(left) != right;
+    }
+
+    inline bool operator!=(const String& left, const char32_t* right)
+    {
+        return StringView(left) != right;
+    }
+
+    inline bool operator!=(const String& left, const std::u32string& right)
+    {
+        return StringView(left) != right;
     }
 
     inline bool operator!=(const String& left, const String& right)
@@ -968,9 +1068,39 @@ namespace tgui
         return left.m_string != right.m_string;
     }
 
+    inline bool operator<(const String& left, StringView right)
+    {
+        return StringView(left) < right;
+    }
+
+    inline bool operator<(const String& left, const char32_t* right)
+    {
+        return StringView(left) < right;
+    }
+
+    inline bool operator<(const String& left, const std::u32string& right)
+    {
+        return StringView(left) < right;
+    }
+
     inline bool operator<(const String& left, const String& right)
     {
         return left.m_string < right.m_string;
+    }
+
+    inline bool operator<=(const String& left, StringView right)
+    {
+        return StringView(left) <= right;
+    }
+
+    inline bool operator<=(const String& left, const char32_t* right)
+    {
+        return StringView(left) <= right;
+    }
+
+    inline bool operator<=(const String& left, const std::u32string& right)
+    {
+        return StringView(left) <= right;
     }
 
     inline bool operator<=(const String& left, const String& right)
@@ -978,9 +1108,39 @@ namespace tgui
         return left.m_string <= right.m_string;
     }
 
+    inline bool operator>(const String& left, StringView right)
+    {
+        return StringView(left) > right;
+    }
+
+    inline bool operator>(const String& left, const char32_t* right)
+    {
+        return StringView(left) > right;
+    }
+
+    inline bool operator>(const String& left, const std::u32string& right)
+    {
+        return StringView(left) > right;
+    }
+
     inline bool operator>(const String& left, const String& right)
     {
         return left.m_string > right.m_string;
+    }
+
+    inline bool operator>=(const String& left, StringView right)
+    {
+        return StringView(left) >= right;
+    }
+
+    inline bool operator>=(const String& left, const char32_t* right)
+    {
+        return StringView(left) >= right;
+    }
+
+    inline bool operator>=(const String& left, const std::u32string& right)
+    {
+        return StringView(left) >= right;
     }
 
     inline bool operator>=(const String& left, const String& right)
@@ -1291,129 +1451,19 @@ namespace tgui
     {
         return m_string.find_last_not_of(static_cast<char8_t>(ch), pos);
     }
-#endif
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && defined(__cpp_lib_char8_t) && (__cpp_lib_starts_ends_with >= 201711L) && (__cpp_lib_char8_t >= 201811L)
-    inline bool String::starts_with(std::u32string_view sv) const noexcept
-    {
-        return m_string.starts_with(sv);
-    }
-
-    inline bool String::starts_with(const char32_t* s) const
-    {
-        return m_string.starts_with(s);
-    }
-
-    inline bool String::starts_with(const std::u32string& s) const
-    {
-        return m_string.starts_with(s);
-    }
-
-    inline bool String::starts_with(const String& s) const
-    {
-        return m_string.starts_with(s.m_string);
-    }
-
-    inline bool String::starts_with(char ch) const noexcept
-    {
-        return m_string.starts_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::starts_with(wchar_t ch) const noexcept
-    {
-        return m_string.starts_with(static_cast<char32_t>(ch));
-    }
 
     inline bool String::starts_with(char8_t ch) const noexcept
     {
-        return m_string.starts_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::starts_with(char16_t ch) const noexcept
-    {
-        return m_string.starts_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::starts_with(char32_t ch) const noexcept
-    {
-        return m_string.starts_with(ch);
-    }
-
-    inline bool String::ends_with(std::u32string_view sv) const noexcept
-    {
-        return m_string.ends_with(sv);
-    }
-
-    inline bool String::ends_with(const char32_t* s) const
-    {
-        return m_string.ends_with(s);
-    }
-
-    inline bool String::ends_with(const std::u32string& s) const
-    {
-        return m_string.ends_with(s);
-    }
-
-    inline bool String::ends_with(const String& s) const
-    {
-        return m_string.ends_with(s.m_string);
-    }
-
-    inline bool String::ends_with(char ch) const noexcept
-    {
-        return m_string.ends_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::ends_with(wchar_t ch) const noexcept
-    {
-        return m_string.ends_with(static_cast<char32_t>(ch));
+        return viewStartsWith(StringView(m_string), static_cast<char32_t>(ch));
     }
 
     inline bool String::ends_with(char8_t ch) const noexcept
     {
-        return m_string.ends_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::ends_with(char16_t ch) const noexcept
-    {
-        return m_string.ends_with(static_cast<char32_t>(ch));
-    }
-
-    inline bool String::ends_with(char32_t ch) const noexcept
-    {
-        return m_string.ends_with(ch);
-    }
-#else
-    inline bool String::starts_with(const String& s) const
-    {
-        if (s.length() <= length())
-            return compare(0, s.length(), s) == 0;
-        else
-            return false;
-    }
-
-    inline bool String::ends_with(const String& s) const
-    {
-        if (s.length() <= length())
-            return compare(length() - s.length(), s.length(), s) == 0;
-        else
-            return false;
+        return viewEndsWith(StringView(m_string), static_cast<char32_t>(ch));
     }
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    using StringView = std::u32string_view;
-    using CharStringView = std::string_view;
-
-    // Allow using operator ""sv
-    // Note that this only affects code placed inside the tgui namespace.
-    using namespace std::literals::string_view_literals;
-#else
-    using StringView = const String&;
-    using CharStringView = const std::string&;
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

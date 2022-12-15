@@ -109,7 +109,7 @@ namespace tgui
                         continue;
 
                     // Skip "Font = null"
-                    if (pair.first == "Font" && value == "null")
+                    if (pair.first == U"Font" && value == U"null")
                         continue;
 
                     node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(value);
@@ -427,7 +427,7 @@ namespace tgui
         std::size_t fileSize;
         auto fileContents = readFileToMemory(filenameInResources, fileSize);
         if (!fileContents)
-            throw Exception{"Failed to open '" + filenameInResources + "' to load the widgets from it."};
+            throw Exception{U"Failed to open '" + filenameInResources + U"' to load the widgets from it."};
 
         /// TODO: Optimize this (parse function should be able to use a string view directly on file contents)
         std::stringstream stream{std::string{reinterpret_cast<const char*>(fileContents.get()), fileSize}};
@@ -461,7 +461,7 @@ namespace tgui
         saveWidgetsToStream(stream, formFileDir);
 
         if (!writeFile(filenameInResources, stream))
-            throw Exception{"Failed to write '" + filenameInResources + "' while trying to save widgets in it."};
+            throw Exception{U"Failed to write '" + filenameInResources + U"' while trying to save widgets in it."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,7 +509,7 @@ namespace tgui
             if (nameSeparator != String::npos)
                 objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
 
-            if (widgetType == "Renderer")
+            if (widgetType == U"Renderer")
             {
                 if (!objectName.empty())
                     availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
@@ -528,7 +528,7 @@ namespace tgui
                     widgetsToLoad.emplace_back(widget, std::cref(node));
                 }
                 else
-                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+                    throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
             }
         }
 
@@ -1013,12 +1013,12 @@ namespace tgui
     {
         Widget::rendererChanged(property);
 
-        if ((property == "Opacity") || (property == "OpacityDisabled"))
+        if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             for (const auto& widget : m_widgets)
                 widget->setInheritedOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             for (const auto& widget : m_widgets)
             {
@@ -1068,7 +1068,7 @@ namespace tgui
                 widgetsToLoad.emplace_back(childWidget, std::cref(childNode));
             }
             else
-                throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+                throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
         }
 
         for (auto& pair : widgetsToLoad)
@@ -1463,7 +1463,7 @@ namespace tgui
                     continue;
 #endif
                 // Skip embedded data
-                if (filename.starts_with("data:"))
+                if (filename.starts_with(U"data:"))
                     continue;
 
                 // If this image already appeared in the form file, then we already know whether it exists or not,

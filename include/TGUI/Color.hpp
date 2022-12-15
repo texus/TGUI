@@ -266,11 +266,7 @@ namespace tgui
         static const Color Cyan;        //!< Cyan predefined color
         static const Color Transparent; //!< Transparent (black) predefined color
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         static const std::array<std::pair<StringView, Color>, 9> colorNamesMap;
-#else
-        static const std::array<std::pair<std::decay_t<StringView>, Color>, 9> colorNamesMap;
-#endif
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

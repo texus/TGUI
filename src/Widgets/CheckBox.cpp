@@ -185,9 +185,9 @@ namespace tgui
 
     void CheckBox::rendererChanged(const String& property)
     {
-        if (property == "TextureUnchecked")
+        if (property == U"TextureUnchecked")
             m_textureUncheckedCached = getSharedRenderer()->getTextureUnchecked();
-        else if (property == "TextureChecked")
+        else if (property == U"TextureChecked")
             m_textureCheckedCached = getSharedRenderer()->getTextureChecked();
 
         RadioButton::rendererChanged(property);

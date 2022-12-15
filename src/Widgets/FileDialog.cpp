@@ -1046,17 +1046,17 @@ namespace tgui
 
     void FileDialog::rendererChanged(const String& property)
     {
-        if (property == "ListView")
+        if (property == U"ListView")
         {
             m_listView->setRenderer(getSharedRenderer()->getListView());
         }
-        else if (property == "EditBox")
+        else if (property == U"EditBox")
         {
             const auto& renderer = getSharedRenderer()->getEditBox();
             m_editBoxFilename->setRenderer(renderer);
             m_editBoxPath->setRenderer(renderer);
         }
-        else if (property == "Button")
+        else if (property == U"Button")
         {
             const auto& renderer = getSharedRenderer()->getButton();
             m_buttonCancel->setRenderer(renderer);
@@ -1069,36 +1069,36 @@ namespace tgui
             if (!getSharedRenderer()->getUpButton())
                 m_buttonUp->setRenderer(renderer);
         }
-        else if (property == "BackButton")
+        else if (property == U"BackButton")
         {
             if (getSharedRenderer()->getBackButton())
                 m_buttonBack->setRenderer(getSharedRenderer()->getBackButton());
             else
                 m_buttonBack->setRenderer(getSharedRenderer()->getButton());
         }
-        else if (property == "ForwardButton")
+        else if (property == U"ForwardButton")
         {
             if (getSharedRenderer()->getForwardButton())
                 m_buttonForward->setRenderer(getSharedRenderer()->getForwardButton());
             else
                 m_buttonForward->setRenderer(getSharedRenderer()->getButton());
         }
-        else if (property == "UpButton")
+        else if (property == U"UpButton")
         {
             if (getSharedRenderer()->getUpButton())
                 m_buttonUp->setRenderer(getSharedRenderer()->getUpButton());
             else
                 m_buttonUp->setRenderer(getSharedRenderer()->getButton());
         }
-        else if (property == "FilenameLabel")
+        else if (property == U"FilenameLabel")
         {
             m_labelFilename->setRenderer(getSharedRenderer()->getFilenameLabel());
         }
-        else if (property == "FileTypeComboBox")
+        else if (property == U"FileTypeComboBox")
         {
             m_comboBoxFileTypes->setRenderer(getSharedRenderer()->getFileTypeComboBox());
         }
-        else if (property == "ArrowsOnNavigationButtonsVisible")
+        else if (property == U"ArrowsOnNavigationButtonsVisible")
         {
             if (getSharedRenderer()->getArrowsOnNavigationButtonsVisible())
             {
@@ -1113,7 +1113,7 @@ namespace tgui
                 m_buttonUp->setText(U"");
             }
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             ChildWindow::rendererChanged(property);
 
@@ -1141,25 +1141,25 @@ namespace tgui
         // Child widgets are saved indirectly by saving the child window.
         // The list view however contained items which shouldn't be saved, so we removed the nodes that were created for them.
         const auto listViewNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == "ListView.\"#TGUI_INTERNAL$ListView#\"";
+            return child->name == U"ListView.\"#TGUI_INTERNAL$ListView#\"";
         });
         TGUI_ASSERT(listViewNodeIt != node->children.end(), "FileDialog::save couldn't find its ListView");
         const auto& listViewNode = *listViewNodeIt;
         listViewNode->children.erase(std::remove_if(listViewNode->children.begin(), listViewNode->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == "Item";
+            return child->name == U"Item";
         }), listViewNode->children.end());
 
         // We currently don't save the path, so the text in the path edit box shouldn't be saved either
         const auto pathEditBoxNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == "EditBox.\"#TGUI_INTERNAL$EditBoxPath#\"";
+            return child->name == U"EditBox.\"#TGUI_INTERNAL$EditBoxPath#\"";
         });
         TGUI_ASSERT(pathEditBoxNodeIt != node->children.end(), "FileDialog::save couldn't find its path EditBox");
         const auto& pathEditBoxNode = *pathEditBoxNodeIt;
-        pathEditBoxNode->propertyValuePairs.erase("Text");
+        pathEditBoxNode->propertyValuePairs.erase(U"Text");
 
-        node->propertyValuePairs["FileMustExist"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_fileMustExist));
-        node->propertyValuePairs["SelectingDirectory"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_selectingDirectory));
-        node->propertyValuePairs["MultiSelect"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_multiSelect));
+        node->propertyValuePairs[U"FileMustExist"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_fileMustExist));
+        node->propertyValuePairs[U"SelectingDirectory"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_selectingDirectory));
+        node->propertyValuePairs[U"MultiSelect"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_multiSelect));
 
         if (!m_fileTypeFilters.empty())
         {
@@ -1180,12 +1180,12 @@ namespace tgui
                 }
                 patternListStr += "]";
 
-                filterNode->propertyValuePairs["Description"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(filter.first));
-                filterNode->propertyValuePairs["Pattern"] = std::make_unique<DataIO::ValueNode>(patternListStr);
+                filterNode->propertyValuePairs[U"Description"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(filter.first));
+                filterNode->propertyValuePairs[U"Pattern"] = std::make_unique<DataIO::ValueNode>(patternListStr);
             }
 
             if (m_fileTypeFilters.size() > 1)
-                node->propertyValuePairs["SelectedFileTypeFilter"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedFileTypeFilter));
+                node->propertyValuePairs[U"SelectedFileTypeFilter"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedFileTypeFilter));
         }
 
         return node;
@@ -1198,21 +1198,21 @@ namespace tgui
         std::vector<std::pair<String, std::vector<String>>> fileTypeFilters;
         for (const auto& childNode : node->children)
         {
-            if (childNode->name != "FileTypeFilter")
+            if (childNode->name != U"FileTypeFilter")
                 continue;
 
-            if (!childNode->propertyValuePairs["Description"])
-                throw Exception{"Failed to parse 'FileTypeFilter' property, no Description property found"};
+            if (!childNode->propertyValuePairs[U"Description"])
+                throw Exception{U"Failed to parse 'FileTypeFilter' property, no Description property found"};
 
-            if (!childNode->propertyValuePairs["Pattern"])
-                throw Exception{"Failed to parse 'FileTypeFilter' property, no Pattern property found"};
-            if (!childNode->propertyValuePairs["Pattern"]->listNode)
-                throw Exception{"Failed to parse 'Pattern' property inside the 'FileTypeFilter' property, expected a list as value"};
+            if (!childNode->propertyValuePairs[U"Pattern"])
+                throw Exception{U"Failed to parse 'FileTypeFilter' property, no Pattern property found"};
+            if (!childNode->propertyValuePairs[U"Pattern"]->listNode)
+                throw Exception{U"Failed to parse 'Pattern' property inside the 'FileTypeFilter' property, expected a list as value"};
 
-            String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Description"]->value).getString();
+            String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
 
             std::vector<String> patterns;
-            for (const auto& item : childNode->propertyValuePairs["Pattern"]->valueList)
+            for (const auto& item : childNode->propertyValuePairs[U"Pattern"]->valueList)
                 patterns.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
 
             fileTypeFilters.emplace_back(description, patterns);
@@ -1221,7 +1221,7 @@ namespace tgui
         // We have to remove FileTypeFilter nodes before calling the load function on the base class, because Container will
         // assume that all child sections are widgets.
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == "FileTypeFilter";
+            return child->name == U"FileTypeFilter";
         }), node->children.end());
 
         // Remove the widgets that the constructor created because they will be created when loading the child window
@@ -1232,18 +1232,18 @@ namespace tgui
         identifyChildWidgets();
         connectSignals();
 
-        if (node->propertyValuePairs["FileMustExist"])
-            setFileMustExist(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["FileMustExist"]->value).getBool());
-        if (node->propertyValuePairs["SelectingDirectory"])
-            setSelectingDirectory(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["SelectingDirectory"]->value).getBool());
-        if (node->propertyValuePairs["MultiSelect"])
-            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["MultiSelect"]->value).getBool());
+        if (node->propertyValuePairs[U"FileMustExist"])
+            setFileMustExist(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"FileMustExist"]->value).getBool());
+        if (node->propertyValuePairs[U"SelectingDirectory"])
+            setSelectingDirectory(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"SelectingDirectory"]->value).getBool());
+        if (node->propertyValuePairs[U"MultiSelect"])
+            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"MultiSelect"]->value).getBool());
 
         if (!fileTypeFilters.empty())
         {
             std::size_t filterIndex = 0;
-            if (node->propertyValuePairs["SelectedFileTypeFilter"])
-                filterIndex = static_cast<std::size_t>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["SelectedFileTypeFilter"]->value).getNumber());
+            if (node->propertyValuePairs[U"SelectedFileTypeFilter"])
+                filterIndex = static_cast<std::size_t>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"SelectedFileTypeFilter"]->value).getNumber());
 
             setFileTypeFilters(fileTypeFilters, filterIndex);
         }

@@ -174,7 +174,7 @@ namespace tgui
 
     void BitmapButton::rendererChanged(const String& property)
     {
-        if ((property == "Opacity") || (property == "OpacityDisabled"))
+        if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Button::rendererChanged(property);
             m_imageComponent->setOpacity(m_opacityCached);
@@ -188,8 +188,8 @@ namespace tgui
     std::unique_ptr<DataIO::Node> BitmapButton::save(SavingRenderersMap& renderers) const
     {
         auto node = Button::save(renderers);
-        node->propertyValuePairs["Image"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(icon.getValue()));
-        node->propertyValuePairs["ImageScaling"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_relativeGlyphHeight));
+        node->propertyValuePairs[U"Image"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(icon.getValue()));
+        node->propertyValuePairs[U"ImageScaling"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_relativeGlyphHeight));
         return node;
     }
 
@@ -199,10 +199,10 @@ namespace tgui
     {
         Button::load(node, renderers);
 
-        if (node->propertyValuePairs["Image"])
-            setImage(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["Image"]->value).getTexture());
-        if (node->propertyValuePairs["ImageScaling"])
-            setImageScaling(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["ImageScaling"]->value).getNumber());
+        if (node->propertyValuePairs[U"Image"])
+            setImage(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs[U"Image"]->value).getTexture());
+        if (node->propertyValuePairs[U"ImageScaling"])
+            setImageScaling(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"ImageScaling"]->value).getNumber());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

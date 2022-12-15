@@ -766,41 +766,41 @@ namespace tgui
 
     void ListBox::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "Padding")
+        else if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateItemColorsAndStyle();
         }
-        else if (property == "TextColorHover")
+        else if (property == U"TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateItemColorsAndStyle();
         }
-        else if (property == "SelectedTextColor")
+        else if (property == U"SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateItemColorsAndStyle();
         }
-        else if (property == "SelectedTextColorHover")
+        else if (property == U"SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateItemColorsAndStyle();
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextStyle")
+        else if (property == U"TextStyle")
         {
             m_textStyleCached = getSharedRenderer()->getTextStyle();
 
@@ -810,7 +810,7 @@ namespace tgui
             if ((m_selectedItem >= 0) && m_selectedTextStyleCached.isSet())
                 m_items[static_cast<std::size_t>(m_selectedItem)].text.setStyle(m_selectedTextStyleCached);
         }
-        else if (property == "SelectedTextStyle")
+        else if (property == U"SelectedTextStyle")
         {
             m_selectedTextStyleCached = getSharedRenderer()->getSelectedTextStyle();
 
@@ -822,7 +822,7 @@ namespace tgui
                     m_items[static_cast<std::size_t>(m_selectedItem)].text.setStyle(m_textStyleCached);
             }
         }
-        else if (property == "Scrollbar")
+        else if (property == U"Scrollbar")
         {
             m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
 
@@ -833,33 +833,33 @@ namespace tgui
                 setSize(m_size);
             }
         }
-        else if (property == "ScrollbarWidth")
+        else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
             m_scroll->setSize({width, m_scroll->getSize().y});
             setSize(m_size);
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "SelectedBackgroundColor")
+        else if (property == U"SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "SelectedBackgroundColorHover")
+        else if (property == U"SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -868,7 +868,7 @@ namespace tgui
             for (auto& item : m_items)
                 item.text.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
 
@@ -914,24 +914,24 @@ namespace tgui
             itemList += "]";
             itemIdList += "]";
 
-            node->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs[U"Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             if (itemIdsUsed)
-                node->propertyValuePairs["ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
+                node->propertyValuePairs[U"ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
         }
 
         if (!m_autoScroll)
-            node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (m_selectedItem >= 0)
-            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
+            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
 
         if (m_textAlignment == TextAlignment::Center)
-            node->propertyValuePairs["TextAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"TextAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_textAlignment == TextAlignment::Right)
-            node->propertyValuePairs["TextAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+            node->propertyValuePairs[U"TextAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
-        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
+        node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs[U"MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
 
         return node;
     }
@@ -942,56 +942,56 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["Items"])
+        if (node->propertyValuePairs[U"Items"])
         {
-            if (!node->propertyValuePairs["Items"]->listNode)
-                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"Items"]->listNode)
+                throw Exception{U"Failed to parse 'Items' property, expected a list as value"};
 
-            if (node->propertyValuePairs["ItemIds"])
+            if (node->propertyValuePairs[U"ItemIds"])
             {
-                if (!node->propertyValuePairs["ItemIds"]->listNode)
-                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+                if (!node->propertyValuePairs[U"ItemIds"]->listNode)
+                    throw Exception{U"Failed to parse 'ItemIds' property, expected a list as value"};
 
-                if (node->propertyValuePairs["Items"]->valueList.size() != node->propertyValuePairs["ItemIds"]->valueList.size())
-                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+                if (node->propertyValuePairs[U"Items"]->valueList.size() != node->propertyValuePairs[U"ItemIds"]->valueList.size())
+                    throw Exception{U"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
 
-                for (std::size_t i = 0; i < node->propertyValuePairs["Items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < node->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
-                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Items"]->valueList[i]).getString(),
-                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ItemIds"]->valueList[i]).getString());
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Items"]->valueList[i]).getString(),
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i]).getString());
                 }
             }
             else // There are no item ids
             {
-                for (const auto& item : node->propertyValuePairs["Items"]->valueList)
+                for (const auto& item : node->propertyValuePairs[U"Items"]->valueList)
                     addItem(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
             }
         }
         else // If there are no items, there should be no item ids
         {
-            if (node->propertyValuePairs["ItemIds"])
-                throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            if (node->propertyValuePairs[U"ItemIds"])
+                throw Exception{U"Found 'ItemIds' property while there is no 'Items' property"};
         }
 
-        if (node->propertyValuePairs["TextAlignment"])
+        if (node->propertyValuePairs[U"TextAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["TextAlignment"]->value).getString();
-            if (alignment == "Right")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
+            if (alignment == U"Right")
                 setTextAlignment(TextAlignment::Right);
-            else if (alignment == "Center")
+            else if (alignment == U"Center")
                 setTextAlignment(TextAlignment::Center);
-            else if (alignment != "Left")
-                throw Exception{"Failed to parse TextAlignment property, found unknown value."};
+            else if (alignment != U"Left")
+                throw Exception{U"Failed to parse TextAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs["AutoScroll"])
-            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
-        if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
-        if (node->propertyValuePairs["MaximumItems"])
-            setMaximumItems(node->propertyValuePairs["MaximumItems"]->value.toUInt());
-        if (node->propertyValuePairs["SelectedItemIndex"])
-            setSelectedItemByIndex(node->propertyValuePairs["SelectedItemIndex"]->value.toUInt());
+        if (node->propertyValuePairs[U"AutoScroll"])
+            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoScroll"]->value).getBool());
+        if (node->propertyValuePairs[U"ItemHeight"])
+            setItemHeight(node->propertyValuePairs[U"ItemHeight"]->value.toUInt());
+        if (node->propertyValuePairs[U"MaximumItems"])
+            setMaximumItems(node->propertyValuePairs[U"MaximumItems"]->value.toUInt());
+        if (node->propertyValuePairs[U"SelectedItemIndex"])
+            setSelectedItemByIndex(node->propertyValuePairs[U"SelectedItemIndex"]->value.toUInt());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

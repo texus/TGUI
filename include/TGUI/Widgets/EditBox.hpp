@@ -73,10 +73,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Validator
         {
-            static TGUI_API const char* All;   //!< Accept any input
-            static TGUI_API const char* Int;   //!< Accept negative and positive integers
-            static TGUI_API const char* UInt;  //!< Accept only positive integers
-            static TGUI_API const char* Float; //!< Accept decimal numbers
+            static TGUI_API const char32_t* All;   //!< Accept any input
+            static TGUI_API const char32_t* Int;   //!< Accept negative and positive integers
+            static TGUI_API const char32_t* UInt;  //!< Accept only positive integers
+            static TGUI_API const char32_t* Float; //!< Accept decimal numbers
         };
 
 

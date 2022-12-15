@@ -34,7 +34,7 @@ namespace tgui
     {
         bool isSeparator(const MenuBar::Menu& menuItem)
         {
-            return menuItem.text.getString() == "-";
+            return menuItem.text.getString() == U"-";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,9 +134,9 @@ namespace tgui
                 auto menuNode = std::make_unique<DataIO::Node>();
                 menuNode->name = "Menu";
 
-                menuNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.text.getString()));
+                menuNode->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.text.getString()));
                 if (!menu.enabled)
-                    menuNode->propertyValuePairs["Enabled"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.enabled));
+                    menuNode->propertyValuePairs[U"Enabled"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.enabled));
 
                 if (!menu.menuItems.empty())
                 {
@@ -152,7 +152,7 @@ namespace tgui
                             itemList += ", " + Serializer::serialize(menu.menuItems[i].text.getString());
                         itemList += "]";
 
-                        menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+                        menuNode->propertyValuePairs[U"Items"] = std::make_unique<DataIO::ValueNode>(itemList);
                     }
                 }
 
@@ -748,68 +748,68 @@ namespace tgui
 
     void MenuBar::rendererChanged(const String& property)
     {
-        if (property == "TextColor")
+        if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "SelectedTextColor")
+        else if (property == U"SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "TextColorDisabled")
+        else if (property == U"TextColorDisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
             updateTextColors(m_menus, m_visibleMenu);
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextureItemBackground")
+        else if (property == U"TextureItemBackground")
         {
             m_spriteItemBackground.setTexture(getSharedRenderer()->getTextureItemBackground());
         }
-        else if (property == "TextureSelectedItemBackground")
+        else if (property == U"TextureSelectedItemBackground")
         {
             m_spriteSelectedItemBackground.setTexture(getSharedRenderer()->getTextureSelectedItemBackground());
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "SelectedBackgroundColor")
+        else if (property == U"SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "DistanceToSide")
+        else if (property == U"DistanceToSide")
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
         }
-        else if (property == "SeparatorColor")
+        else if (property == U"SeparatorColor")
         {
             m_separatorColorCached = getSharedRenderer()->getSeparatorColor();
         }
-        else if (property == "SeparatorThickness")
+        else if (property == U"SeparatorThickness")
         {
             m_separatorThicknessCached = getSharedRenderer()->getSeparatorThickness();
         }
-        else if (property == "SeparatorVerticalPadding")
+        else if (property == U"SeparatorVerticalPadding")
         {
             m_separatorVerticalPaddingCached = getSharedRenderer()->getSeparatorVerticalPadding();
         }
-        else if (property == "SeparatorSidePadding")
+        else if (property == U"SeparatorSidePadding")
         {
             m_separatorSidePaddingCached = getSharedRenderer()->getSeparatorSidePadding();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
             updateTextOpacity(m_menus);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
             updateTextFont(m_menus);
@@ -826,9 +826,9 @@ namespace tgui
 
         saveMenus(node, m_menus);
 
-        node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimumSubMenuWidth));
+        node->propertyValuePairs[U"MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimumSubMenuWidth));
         if (m_invertedMenuDirection)
-            node->propertyValuePairs["InvertedMenuDirection"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"InvertedMenuDirection"] = std::make_unique<DataIO::ValueNode>("true");
 
         return node;
     }
@@ -839,16 +839,16 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["MinimumSubMenuWidth"])
-            setMinimumSubMenuWidth(node->propertyValuePairs["MinimumSubMenuWidth"]->value.toFloat());
-        if (node->propertyValuePairs["InvertedMenuDirection"])
-            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["InvertedMenuDirection"]->value).getBool());
+        if (node->propertyValuePairs[U"MinimumSubMenuWidth"])
+            setMinimumSubMenuWidth(node->propertyValuePairs[U"MinimumSubMenuWidth"]->value.toFloat());
+        if (node->propertyValuePairs[U"InvertedMenuDirection"])
+            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedMenuDirection"]->value).getBool());
 
         loadMenus(node, m_menus);
 
         // Remove the 'menu' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == "Menu"; }), node->children.end());
+            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Menu"; }), node->children.end());
 
         // Update the text colors to properly display disabled menus
         updateTextColors(m_menus, m_visibleMenu);
@@ -1027,31 +1027,31 @@ namespace tgui
     {
         for (const auto& childNode : node->children)
         {
-            if (childNode->name != "Menu")
+            if (childNode->name != U"Menu")
                 continue;
 
-            if (!childNode->propertyValuePairs["Text"])
-                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
+            if (!childNode->propertyValuePairs[U"Text"])
+                throw Exception{U"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
 
-            const String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Text"]->value).getString();
+            const String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString();
             createMenu(menus, menuText);
 
-            if (childNode->propertyValuePairs["Enabled"])
-                menus.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["Enabled"]->value).getBool();
+            if (childNode->propertyValuePairs[U"Enabled"])
+                menus.back().enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs[U"Enabled"]->value).getBool();
 
             // Recursively handle the menu nodes
             if (!childNode->children.empty())
                 loadMenus(childNode, menus.back().menuItems);
 
             // Menu items can also be stored in an string array in the 'Items' property instead of as a nested Menu section
-            if (childNode->propertyValuePairs["Items"])
+            if (childNode->propertyValuePairs[U"Items"])
             {
-                if (!childNode->propertyValuePairs["Items"]->listNode)
-                    throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+                if (!childNode->propertyValuePairs[U"Items"]->listNode)
+                    throw Exception{U"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
 
-                for (std::size_t i = 0; i < childNode->propertyValuePairs["Items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < childNode->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
-                    const String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Items"]->valueList[i]).getString();
+                    const String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Items"]->valueList[i]).getString();
                     createMenu(menus.back().menuItems, menuItemText);
                 }
             }

@@ -39,10 +39,10 @@ namespace tgui
         if ((GLAD_VERSION_MAJOR(version) < 3) || ((GLAD_VERSION_MAJOR(version) == 3) && GLAD_VERSION_MINOR(version) < 3))
         {
             if (version == 0)
-                throw Exception{"BackendRendererOpenGL failed to query OpenGL version, or requested OpenGL version wasn't supported. Has an OpenGL context been created yet?"};
+                throw Exception{U"BackendRendererOpenGL failed to query OpenGL version, or requested OpenGL version wasn't supported. Has an OpenGL context been created yet?"};
             else
             {
-                throw Exception{"BackendRendererOpenGL expects at least OpenGL 3.3, found version "
+                throw Exception{U"BackendRendererOpenGL expects at least OpenGL 3.3, found version "
                     + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
             }
         }

@@ -447,7 +447,7 @@ namespace tgui
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
 
                 String word = readWord(stream);
-                if (word == "")
+                if (word == U"")
                 {
                     if (stream.peek() == EOF)
                         return "Found EOF while trying to read property or nested section name.";
@@ -502,7 +502,7 @@ namespace tgui
             REMOVE_WHITESPACE_AND_COMMENTS(false)
 
             String word = readWord(stream);
-            if (word == "")
+            if (word == U"")
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() != '{')
@@ -580,10 +580,10 @@ namespace tgui
                 {
                     String str = stream.str();
                     auto lineNumber = std::count(str.begin(), str.begin() + static_cast<std::ptrdiff_t>(position), U'\n') + 1;
-                    throw Exception{"Error while parsing input at line " + String::fromNumber(lineNumber) + ". " + error};
+                    throw Exception{U"Error while parsing input at line " + String::fromNumber(lineNumber) + U". " + error};
                 }
                 else
-                    throw Exception{"Error while parsing input. " + error};
+                    throw Exception{U"Error while parsing input. " + error};
             }
         }
 

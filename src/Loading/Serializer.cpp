@@ -103,7 +103,7 @@ namespace tgui
 
         String serializeEmptyObject(ObjectConverter&&)
         {
-            throw Exception{"Can't serialize empty object"};
+            throw Exception{U"Can't serialize empty object"};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

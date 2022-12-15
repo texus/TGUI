@@ -520,7 +520,7 @@ namespace tgui
         while ((entry = readdir(dir)) != nullptr)
         {
             const String filename(static_cast<const char*>(entry->d_name));
-            if ((filename == ".") || (filename == ".."))
+            if ((filename == U".") || (filename == U".."))
                 continue;
 
             const Path filePath = path / filename;

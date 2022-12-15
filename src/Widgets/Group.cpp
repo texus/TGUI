@@ -135,7 +135,7 @@ namespace tgui
 
     void Group::rendererChanged(const String& property)
     {
-        if (property == "Padding")
+        if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);

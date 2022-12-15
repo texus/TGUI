@@ -779,7 +779,7 @@ namespace tgui
 
     void Scrollbar::rendererChanged(const String& property)
     {
-        if (property == "TextureTrack")
+        if (property == U"TextureTrack")
         {
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
             if (m_sizeSet)
@@ -794,70 +794,70 @@ namespace tgui
                 m_sizeSet = false;
             }
         }
-        else if (property == "TextureTrackHover")
+        else if (property == U"TextureTrackHover")
         {
             m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
-        else if (property == "TextureThumb")
+        else if (property == U"TextureThumb")
         {
             m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             updateSize();
         }
-        else if (property == "TextureThumbHover")
+        else if (property == U"TextureThumbHover")
         {
             m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
         }
-        else if (property == "TextureArrowUp")
+        else if (property == U"TextureArrowUp")
         {
             m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
             updateSize();
         }
-        else if (property == "TextureArrowUpHover")
+        else if (property == U"TextureArrowUpHover")
         {
             m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
-        else if (property == "TextureArrowDown")
+        else if (property == U"TextureArrowDown")
         {
             m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
             updateSize();
         }
-        else if (property == "TextureArrowDownHover")
+        else if (property == U"TextureArrowDownHover")
         {
             m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
-        else if (property == "TrackColor")
+        else if (property == U"TrackColor")
         {
             m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
-        else if (property == "TrackColorHover")
+        else if (property == U"TrackColorHover")
         {
             m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
-        else if (property == "ThumbColor")
+        else if (property == U"ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "ThumbColorHover")
+        else if (property == U"ThumbColorHover")
         {
             m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
-        else if (property == "ArrowBackgroundColor")
+        else if (property == U"ArrowBackgroundColor")
         {
             m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
         }
-        else if (property == "ArrowBackgroundColorHover")
+        else if (property == U"ArrowBackgroundColorHover")
         {
             m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
         }
-        else if (property == "ArrowColor")
+        else if (property == U"ArrowColor")
         {
             m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
-        else if (property == "ArrowColorHover")
+        else if (property == U"ArrowColorHover")
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -880,11 +880,11 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["AutoHide"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
-        node->propertyValuePairs["ViewportSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_viewportSize));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
-        node->propertyValuePairs["ScrollAmount"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_scrollAmount));
+        node->propertyValuePairs[U"AutoHide"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
+        node->propertyValuePairs[U"ViewportSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_viewportSize));
+        node->propertyValuePairs[U"Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs[U"Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
+        node->propertyValuePairs[U"ScrollAmount"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_scrollAmount));
 
         return node;
     }
@@ -895,16 +895,16 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["ViewportSize"])
-            setViewportSize(node->propertyValuePairs["ViewportSize"]->value.toUInt());
-        if (node->propertyValuePairs["Maximum"])
-            setMaximum(node->propertyValuePairs["Maximum"]->value.toUInt());
-        if (node->propertyValuePairs["Value"])
-            setValue(node->propertyValuePairs["Value"]->value.toUInt());
-        if (node->propertyValuePairs["ScrollAmount"])
-            setScrollAmount(node->propertyValuePairs["ScrollAmount"]->value.toUInt());
-        if (node->propertyValuePairs["AutoHide"])
-            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoHide"]->value).getBool());
+        if (node->propertyValuePairs[U"ViewportSize"])
+            setViewportSize(node->propertyValuePairs[U"ViewportSize"]->value.toUInt());
+        if (node->propertyValuePairs[U"Maximum"])
+            setMaximum(node->propertyValuePairs[U"Maximum"]->value.toUInt());
+        if (node->propertyValuePairs[U"Value"])
+            setValue(node->propertyValuePairs[U"Value"]->value.toUInt());
+        if (node->propertyValuePairs[U"ScrollAmount"])
+            setScrollAmount(node->propertyValuePairs[U"ScrollAmount"]->value.toUInt());
+        if (node->propertyValuePairs[U"AutoHide"])
+            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoHide"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

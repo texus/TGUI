@@ -1659,25 +1659,25 @@ namespace tgui
 
     void ListView::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "Padding")
+        else if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
-        else if (property == "TextureHeaderBackground")
+        else if (property == U"TextureHeaderBackground")
         {
             m_spriteHeaderBackground.setTexture(getSharedRenderer()->getTextureHeaderBackground());
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateItemColors();
@@ -1685,22 +1685,22 @@ namespace tgui
             if (!m_headerTextColorCached.isSet())
                 updateHeaderTextsColor();
         }
-        else if (property == "TextColorHover")
+        else if (property == U"TextColorHover")
         {
             m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateItemColors();
         }
-        else if (property == "SelectedTextColor")
+        else if (property == U"SelectedTextColor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateItemColors();
         }
-        else if (property == "SelectedTextColorHover")
+        else if (property == U"SelectedTextColorHover")
         {
             m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateItemColors();
         }
-        else if (property == "Scrollbar")
+        else if (property == U"Scrollbar")
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
@@ -1713,51 +1713,51 @@ namespace tgui
                 setSize(m_size);
             }
         }
-        else if (property == "ScrollbarWidth")
+        else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
             m_horizontalScrollbar->setSize({m_verticalScrollbar->getSize().x, width});
             setSize(m_size);
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "SeparatorColor")
+        else if (property == U"SeparatorColor")
         {
             m_separatorColorCached = getSharedRenderer()->getSeparatorColor();
         }
-        else if (property == "GridLinesColor")
+        else if (property == U"GridLinesColor")
         {
             m_gridLinesColorCached = getSharedRenderer()->getGridLinesColor();
         }
-        else if (property == "HeaderTextColor")
+        else if (property == U"HeaderTextColor")
         {
             m_headerTextColorCached = getSharedRenderer()->getHeaderTextColor();
             updateHeaderTextsColor();
         }
-        else if (property == "HeaderBackgroundColor")
+        else if (property == U"HeaderBackgroundColor")
         {
             m_headerBackgroundColorCached = getSharedRenderer()->getHeaderBackgroundColor();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "BackgroundColorHover")
+        else if (property == U"BackgroundColorHover")
         {
             m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
-        else if (property == "SelectedBackgroundColor")
+        else if (property == U"SelectedBackgroundColor")
         {
             m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
-        else if (property == "SelectedBackgroundColorHover")
+        else if (property == U"SelectedBackgroundColorHover")
         {
             m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -1778,7 +1778,7 @@ namespace tgui
                 item.icon.setOpacity(m_opacityCached);
             }
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
 
@@ -1822,14 +1822,14 @@ namespace tgui
             auto columnNode = std::make_unique<DataIO::Node>();
             columnNode->name = "Column";
 
-            columnNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.text.getString()));
+            columnNode->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.text.getString()));
             if (column.designWidth != 0)
-                columnNode->propertyValuePairs["Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
+                columnNode->propertyValuePairs[U"Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
 
             if (column.alignment == ColumnAlignment::Center)
-                columnNode->propertyValuePairs["Alignment"] = std::make_unique<DataIO::ValueNode>("Center");
+                columnNode->propertyValuePairs[U"Alignment"] = std::make_unique<DataIO::ValueNode>("Center");
             else if (column.alignment == ColumnAlignment::Right)
-                columnNode->propertyValuePairs["Alignment"] = std::make_unique<DataIO::ValueNode>("Right");
+                columnNode->propertyValuePairs[U"Alignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
             node->children.push_back(std::move(columnNode));
         }
@@ -1846,29 +1846,29 @@ namespace tgui
                     textsList += ", " + Serializer::serialize(item.texts[i].getString());
                 textsList += "]";
 
-                itemNode->propertyValuePairs["Texts"] = std::make_unique<DataIO::ValueNode>(textsList);
+                itemNode->propertyValuePairs[U"Texts"] = std::make_unique<DataIO::ValueNode>(textsList);
             }
 
             if (item.icon.isSet())
-                itemNode->propertyValuePairs["Icon"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(item.icon.getTexture()));
+                itemNode->propertyValuePairs[U"Icon"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(item.icon.getTexture()));
 
             node->children.push_back(std::move(itemNode));
         }
 
         if (!m_autoScroll)
-            node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (!m_headerVisible)
-            node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs[U"HeaderVisible"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (m_headerTextSize)
-            node->propertyValuePairs["HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerTextSize));
+            node->propertyValuePairs[U"HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerTextSize));
 
         if (m_multiSelect)
-            node->propertyValuePairs["MultiSelect"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"MultiSelect"] = std::make_unique<DataIO::ValueNode>("true");
 
         if ((m_fixedIconSize.x != 0) || (m_fixedIconSize.y != 0))
-            node->propertyValuePairs["FixedIconSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_fixedIconSize.x) + "," + String::fromNumber(m_fixedIconSize.y) + ")");
+            node->propertyValuePairs[U"FixedIconSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_fixedIconSize.x) + "," + String::fromNumber(m_fixedIconSize.y) + ")");
 
         if (!m_selectedItems.empty())
         {
@@ -1879,38 +1879,38 @@ namespace tgui
 
             iList += "]";
 
-            node->propertyValuePairs["SelectedItemIndices"] = std::make_unique<DataIO::ValueNode>(iList);
+            node->propertyValuePairs[U"SelectedItemIndices"] = std::make_unique<DataIO::ValueNode>(iList);
         }
 
         if (m_gridLinesWidth != 1)
-            node->propertyValuePairs["GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_gridLinesWidth));
+            node->propertyValuePairs[U"GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_gridLinesWidth));
 
         if (m_showHorizontalGridLines)
-            node->propertyValuePairs["ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showHorizontalGridLines));
+            node->propertyValuePairs[U"ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showHorizontalGridLines));
 
         if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
             if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
             else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
         if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
             if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
             else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
-        node->propertyValuePairs["ResizableColumns"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_resizableColumns));
-        node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
-        node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
-        node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_separatorWidth));
-        node->propertyValuePairs["HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerSeparatorHeight));
-        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
-        node->propertyValuePairs["ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showVerticalGridLines));
-        node->propertyValuePairs["ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_expandLastColumn));
+        node->propertyValuePairs[U"ResizableColumns"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_resizableColumns));
+        node->propertyValuePairs[U"HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
+        node->propertyValuePairs[U"HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
+        node->propertyValuePairs[U"SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_separatorWidth));
+        node->propertyValuePairs[U"HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_headerSeparatorHeight));
+        node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
+        node->propertyValuePairs[U"ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showVerticalGridLines));
+        node->propertyValuePairs[U"ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_expandLastColumn));
 
         return node;
     }
@@ -1923,27 +1923,27 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (childNode->name != "Column")
+            if (childNode->name != U"Column")
                 continue;
 
             String text;
             float width = 0;
             ColumnAlignment alignment = ColumnAlignment::Left;
 
-            if (childNode->propertyValuePairs["Text"])
-                text = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Text"]->value).getString();
-            if (childNode->propertyValuePairs["Width"])
-                width = Deserializer::deserialize(ObjectConverter::Type::Number, childNode->propertyValuePairs["Width"]->value).getNumber();
+            if (childNode->propertyValuePairs[U"Text"])
+                text = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString();
+            if (childNode->propertyValuePairs[U"Width"])
+                width = Deserializer::deserialize(ObjectConverter::Type::Number, childNode->propertyValuePairs[U"Width"]->value).getNumber();
 
-            if (childNode->propertyValuePairs["Alignment"])
+            if (childNode->propertyValuePairs[U"Alignment"])
             {
-                String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["Alignment"]->value).getString();
-                if (alignmentString == "Right")
+                String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
+                if (alignmentString == U"Right")
                     alignment = ColumnAlignment::Right;
-                else if (alignmentString == "Center")
+                else if (alignmentString == U"Center")
                     alignment = ColumnAlignment::Center;
-                else if (alignmentString != "Left")
-                    throw Exception{"Failed to parse Alignment property, found unknown value '" + alignmentString + "'."};
+                else if (alignmentString != U"Left")
+                    throw Exception{U"Failed to parse Alignment property, found unknown value '" + alignmentString + U"'."};
             }
 
             addColumn(text, width, alignment);
@@ -1951,88 +1951,88 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (childNode->name != "Item")
+            if (childNode->name != U"Item")
                 continue;
 
-            if (!childNode->propertyValuePairs["Texts"])
-                throw Exception{"Failed to parse 'Item' property, no Texts property found"};
-            if (!childNode->propertyValuePairs["Texts"]->listNode)
-                throw Exception{"Failed to parse 'Texts' property inside the 'Item' property, expected a list as value"};
+            if (!childNode->propertyValuePairs[U"Texts"])
+                throw Exception{U"Failed to parse 'Item' property, no Texts property found"};
+            if (!childNode->propertyValuePairs[U"Texts"]->listNode)
+                throw Exception{U"Failed to parse 'Texts' property inside the 'Item' property, expected a list as value"};
 
             std::vector<String> itemRow;
-            itemRow.reserve(childNode->propertyValuePairs["Texts"]->valueList.size());
-            for (const auto& item : childNode->propertyValuePairs["Texts"]->valueList)
+            itemRow.reserve(childNode->propertyValuePairs[U"Texts"]->valueList.size());
+            for (const auto& item : childNode->propertyValuePairs[U"Texts"]->valueList)
                 itemRow.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
 
             const std::size_t index = addItem(itemRow);
 
-            if (childNode->propertyValuePairs["Icon"])
-                setItemIcon(index, Deserializer::deserialize(ObjectConverter::Type::Texture, childNode->propertyValuePairs["Icon"]->value).getTexture());
+            if (childNode->propertyValuePairs[U"Icon"])
+                setItemIcon(index, Deserializer::deserialize(ObjectConverter::Type::Texture, childNode->propertyValuePairs[U"Icon"]->value).getTexture());
         }
 
-        if (node->propertyValuePairs["AutoScroll"])
-            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoScroll"]->value).getBool());
-        if (node->propertyValuePairs["ResizableColumns"])
-            setResizableColumns(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ResizableColumns"]->value).getBool());
-        if (node->propertyValuePairs["HeaderVisible"])
-            setHeaderVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["HeaderVisible"]->value).getBool());
-        if (node->propertyValuePairs["HeaderHeight"])
-            setHeaderHeight(node->propertyValuePairs["HeaderHeight"]->value.toFloat());
-        if (node->propertyValuePairs["HeaderTextSize"])
-            setHeaderTextSize(node->propertyValuePairs["HeaderTextSize"]->value.toUInt());
-        if (node->propertyValuePairs["SeparatorWidth"])
-            setSeparatorWidth(node->propertyValuePairs["SeparatorWidth"]->value.toUInt());
-        if (node->propertyValuePairs["HeaderSeparatorHeight"])
-            setHeaderSeparatorHeight(node->propertyValuePairs["HeaderSeparatorHeight"]->value.toUInt());
-        if (node->propertyValuePairs["ItemHeight"])
-            setItemHeight(node->propertyValuePairs["ItemHeight"]->value.toUInt());
-        if (node->propertyValuePairs["MultiSelect"])
-            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["MultiSelect"]->value).getBool());
+        if (node->propertyValuePairs[U"AutoScroll"])
+            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoScroll"]->value).getBool());
+        if (node->propertyValuePairs[U"ResizableColumns"])
+            setResizableColumns(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ResizableColumns"]->value).getBool());
+        if (node->propertyValuePairs[U"HeaderVisible"])
+            setHeaderVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"HeaderVisible"]->value).getBool());
+        if (node->propertyValuePairs[U"HeaderHeight"])
+            setHeaderHeight(node->propertyValuePairs[U"HeaderHeight"]->value.toFloat());
+        if (node->propertyValuePairs[U"HeaderTextSize"])
+            setHeaderTextSize(node->propertyValuePairs[U"HeaderTextSize"]->value.toUInt());
+        if (node->propertyValuePairs[U"SeparatorWidth"])
+            setSeparatorWidth(node->propertyValuePairs[U"SeparatorWidth"]->value.toUInt());
+        if (node->propertyValuePairs[U"HeaderSeparatorHeight"])
+            setHeaderSeparatorHeight(node->propertyValuePairs[U"HeaderSeparatorHeight"]->value.toUInt());
+        if (node->propertyValuePairs[U"ItemHeight"])
+            setItemHeight(node->propertyValuePairs[U"ItemHeight"]->value.toUInt());
+        if (node->propertyValuePairs[U"MultiSelect"])
+            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"MultiSelect"]->value).getBool());
 
-        if (node->propertyValuePairs["FixedIconSize"])
-            setFixedIconSize(Vector2f(node->propertyValuePairs["FixedIconSize"]->value));
+        if (node->propertyValuePairs[U"FixedIconSize"])
+            setFixedIconSize(Vector2f(node->propertyValuePairs[U"FixedIconSize"]->value));
 
-        if (node->propertyValuePairs["SelectedItemIndices"])
+        if (node->propertyValuePairs[U"SelectedItemIndices"])
         {
-            if (!node->propertyValuePairs["SelectedItemIndices"]->listNode)
-                throw Exception{"Failed to parse 'SelectedItemIndices' property, expected a list as value"};
+            if (!node->propertyValuePairs[U"SelectedItemIndices"]->listNode)
+                throw Exception{U"Failed to parse 'SelectedItemIndices' property, expected a list as value"};
 
-            for (const auto& item : node->propertyValuePairs["SelectedItemIndices"]->valueList)
+            for (const auto& item : node->propertyValuePairs[U"SelectedItemIndices"]->valueList)
                 addSelectedItem(item.toInt());
         }
-        if (node->propertyValuePairs["GridLinesWidth"])
-            setGridLinesWidth(node->propertyValuePairs["GridLinesWidth"]->value.toUInt());
-        if (node->propertyValuePairs["ShowHorizontalGridLines"])
-            setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ShowHorizontalGridLines"]->value).getBool());
-        if (node->propertyValuePairs["ShowVerticalGridLines"])
-            setShowVerticalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ShowVerticalGridLines"]->value).getBool());
-        if (node->propertyValuePairs["ExpandLastColumn"])
-            setExpandLastColumn(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ExpandLastColumn"]->value).getBool());
+        if (node->propertyValuePairs[U"GridLinesWidth"])
+            setGridLinesWidth(node->propertyValuePairs[U"GridLinesWidth"]->value.toUInt());
+        if (node->propertyValuePairs[U"ShowHorizontalGridLines"])
+            setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ShowHorizontalGridLines"]->value).getBool());
+        if (node->propertyValuePairs[U"ShowVerticalGridLines"])
+            setShowVerticalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ShowVerticalGridLines"]->value).getBool());
+        if (node->propertyValuePairs[U"ExpandLastColumn"])
+            setExpandLastColumn(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ExpandLastColumn"]->value).getBool());
 
-        if (node->propertyValuePairs["VerticalScrollbarPolicy"])
+        if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["VerticalScrollbarPolicy"]->value.trim();
-            if (policy == "Automatic")
+            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "Always")
+            else if (policy == U"Always")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "Never")
+            else if (policy == U"Never")
                 setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + "'."};
+                throw Exception{U"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + U"'."};
         }
 
-        if (node->propertyValuePairs["HorizontalScrollbarPolicy"])
+        if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["HorizontalScrollbarPolicy"]->value.trim();
-            if (policy == "Automatic")
+            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "Always")
+            else if (policy == U"Always")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "Never")
+            else if (policy == U"Never")
                 setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + "'."};
+                throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
         }
     }
 

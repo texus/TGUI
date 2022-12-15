@@ -378,7 +378,7 @@ namespace tgui
 
     void Label::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
@@ -386,18 +386,18 @@ namespace tgui
                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
             rearrangeText();
         }
-        else if (property == "Padding")
+        else if (property == U"Padding")
         {
             m_paddingCached = getSharedRenderer()->getPadding();
             m_paddingCached.updateParentSize(getSize());
             rearrangeText();
         }
-        else if (property == "TextStyle")
+        else if (property == U"TextStyle")
         {
             m_textStyleCached = getSharedRenderer()->getTextStyle();
             rearrangeText();
         }
-        else if (property == "TextColor")
+        else if (property == U"TextColor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             for (auto& line : m_lines)
@@ -406,24 +406,24 @@ namespace tgui
                     textPiece.setColor(m_textColorCached);
             }
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "TextOutlineThickness")
+        else if (property == U"TextOutlineThickness")
         {
             m_textOutlineThicknessCached = getSharedRenderer()->getTextOutlineThickness();
             rearrangeText();
         }
-        else if (property == "TextOutlineColor")
+        else if (property == U"TextOutlineColor")
         {
             m_textOutlineColorCached = getSharedRenderer()->getTextOutlineColor();
             for (auto& line : m_lines)
@@ -432,7 +432,7 @@ namespace tgui
                     textPiece.setOutlineColor(m_textOutlineColorCached);
             }
         }
-        else if (property == "Scrollbar")
+        else if (property == U"Scrollbar")
         {
             m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
@@ -443,18 +443,18 @@ namespace tgui
                 rearrangeText();
             }
         }
-        else if (property == "ScrollbarWidth")
+        else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
             m_scrollbar->setSize({width, m_scrollbar->getSize().y});
             rearrangeText();
         }
-        else if (property == "Font")
+        else if (property == U"Font")
         {
             Widget::rendererChanged(property);
             rearrangeText();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -478,30 +478,30 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (m_horizontalAlignment == Label::HorizontalAlignment::Center)
-            node->propertyValuePairs["HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_horizontalAlignment == Label::HorizontalAlignment::Right)
-            node->propertyValuePairs["HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
+            node->propertyValuePairs[U"HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         if (m_verticalAlignment == Label::VerticalAlignment::Center)
-            node->propertyValuePairs["VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
+            node->propertyValuePairs[U"VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
         else if (m_verticalAlignment == Label::VerticalAlignment::Bottom)
-            node->propertyValuePairs["VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
+            node->propertyValuePairs[U"VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
 
         if (!m_string.empty())
-            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
+            node->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
         if (m_maximumTextWidth > 0)
-            node->propertyValuePairs["MaximumTextWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTextWidth));
+            node->propertyValuePairs[U"MaximumTextWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTextWidth));
         if (m_autoSize)
-            node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>("true");
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs["IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
 
         if (m_scrollbarPolicy != Scrollbar::Policy::Automatic)
         {
             if (m_scrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+                node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
             else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+                node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
         return node;
@@ -513,50 +513,50 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["HorizontalAlignment"])
+        if (node->propertyValuePairs[U"HorizontalAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["HorizontalAlignment"]->value).getString();
-            if (alignment == "Right")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
+            if (alignment == U"Right")
                 setHorizontalAlignment(Label::HorizontalAlignment::Right);
-            else if (alignment == "Center")
+            else if (alignment == U"Center")
                 setHorizontalAlignment(Label::HorizontalAlignment::Center);
-            else if (alignment != "Left")
-                throw Exception{"Failed to parse HorizontalAlignment property, found unknown value."};
+            else if (alignment != U"Left")
+                throw Exception{U"Failed to parse HorizontalAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs["VerticalAlignment"])
+        if (node->propertyValuePairs[U"VerticalAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["VerticalAlignment"]->value).getString();
-            if (alignment == "Bottom")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
+            if (alignment == U"Bottom")
                 setVerticalAlignment(Label::VerticalAlignment::Bottom);
-            else if (alignment == "Center")
+            else if (alignment == U"Center")
                 setVerticalAlignment(Label::VerticalAlignment::Center);
-            else if (alignment != "Top")
-                throw Exception{"Failed to parse VerticalAlignment property, found unknown value."};
+            else if (alignment != U"Top")
+                throw Exception{U"Failed to parse VerticalAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs["ScrollbarPolicy"])
+        if (node->propertyValuePairs[U"ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs["ScrollbarPolicy"]->value.trim();
-            if (policy == "Automatic")
+            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
                 setScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == "Always")
+            else if (policy == U"Always")
                 setScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == "Never")
+            else if (policy == U"Never")
                 setScrollbarPolicy(Scrollbar::Policy::Never);
             else
-                throw Exception{"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + "'."};
+                throw Exception{U"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + U"'."};
         }
 
-        if (node->propertyValuePairs["Text"])
-            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["MaximumTextWidth"])
-            setMaximumTextWidth(node->propertyValuePairs["MaximumTextWidth"]->value.toFloat());
-        if (node->propertyValuePairs["AutoSize"])
-            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["AutoSize"]->value).getBool());
+        if (node->propertyValuePairs[U"Text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
+        if (node->propertyValuePairs[U"MaximumTextWidth"])
+            setMaximumTextWidth(node->propertyValuePairs[U"MaximumTextWidth"]->value.toFloat());
+        if (node->propertyValuePairs[U"AutoSize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool());
 
-        if (node->propertyValuePairs["IgnoreMouseEvents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["IgnoreMouseEvents"]->value).getBool());
+        if (node->propertyValuePairs[U"IgnoreMouseEvents"])
+            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

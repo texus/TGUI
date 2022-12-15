@@ -469,38 +469,38 @@ namespace tgui
 
     void Knob::rendererChanged(const String& property)
     {
-        if (property == "Borders")
+        if (property == U"Borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "TextureBackground")
+        else if (property == U"TextureBackground")
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
             setSize(m_size);
         }
-        else if (property == "TextureForeground")
+        else if (property == U"TextureForeground")
         {
             m_spriteForeground.setTexture(getSharedRenderer()->getTextureForeground());
             setSize(m_size);
         }
-        else if (property == "BorderColor")
+        else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
-        else if (property == "BackgroundColor")
+        else if (property == U"BackgroundColor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "ThumbColor")
+        else if (property == U"ThumbColor")
         {
             m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
-        else if (property == "ImageRotation")
+        else if (property == U"ImageRotation")
         {
             m_imageRotationCached = getSharedRenderer()->getImageRotation();
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
 
@@ -517,12 +517,12 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["ClockwiseTurning"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
-        node->propertyValuePairs["StartRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_startRotation));
-        node->propertyValuePairs["EndRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_endRotation));
-        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
-        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
-        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
+        node->propertyValuePairs[U"ClockwiseTurning"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
+        node->propertyValuePairs[U"StartRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_startRotation));
+        node->propertyValuePairs[U"EndRotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_endRotation));
+        node->propertyValuePairs[U"Minimum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_minimum));
+        node->propertyValuePairs[U"Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
+        node->propertyValuePairs[U"Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
 
         return node;
     }
@@ -533,18 +533,18 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["StartRotation"])
-            setStartRotation(node->propertyValuePairs["StartRotation"]->value.toFloat());
-        if (node->propertyValuePairs["EndRotation"])
-            setEndRotation(node->propertyValuePairs["EndRotation"]->value.toFloat());
-        if (node->propertyValuePairs["Minimum"])
-            setMinimum(node->propertyValuePairs["Minimum"]->value.toFloat());
-        if (node->propertyValuePairs["Maximum"])
-            setMaximum(node->propertyValuePairs["Maximum"]->value.toFloat());
-        if (node->propertyValuePairs["Value"])
-            setValue(node->propertyValuePairs["Value"]->value.toFloat());
-        if (node->propertyValuePairs["ClockwiseTurning"])
-            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ClockwiseTurning"]->value).getBool());
+        if (node->propertyValuePairs[U"StartRotation"])
+            setStartRotation(node->propertyValuePairs[U"StartRotation"]->value.toFloat());
+        if (node->propertyValuePairs[U"EndRotation"])
+            setEndRotation(node->propertyValuePairs[U"EndRotation"]->value.toFloat());
+        if (node->propertyValuePairs[U"Minimum"])
+            setMinimum(node->propertyValuePairs[U"Minimum"]->value.toFloat());
+        if (node->propertyValuePairs[U"Maximum"])
+            setMaximum(node->propertyValuePairs[U"Maximum"]->value.toFloat());
+        if (node->propertyValuePairs[U"Value"])
+            setValue(node->propertyValuePairs[U"Value"]->value.toFloat());
+        if (node->propertyValuePairs[U"ClockwiseTurning"])
+            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ClockwiseTurning"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

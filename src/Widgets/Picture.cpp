@@ -177,7 +177,7 @@ namespace tgui
 
     void Picture::rendererChanged(const String& property)
     {
-        if (property == "Texture")
+        if (property == U"Texture")
         {
             const auto& texture = getSharedRenderer()->getTexture();
 
@@ -186,7 +186,7 @@ namespace tgui
 
             m_sprite.setTexture(texture);
         }
-        else if ((property == "Opacity") || (property == "OpacityDisabled"))
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
             m_sprite.setOpacity(m_opacityCached);
@@ -202,7 +202,7 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs["IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
 
         return node;
     }
@@ -213,8 +213,8 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["IgnoreMouseEvents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["IgnoreMouseEvents"]->value).getBool());
+        if (node->propertyValuePairs[U"IgnoreMouseEvents"])
+            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

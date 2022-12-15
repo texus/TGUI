@@ -356,11 +356,11 @@ namespace tgui
         auto node = SubwidgetContainer::save(renderers);
 
         if (m_tabAlign == tgui::TabContainer::TabAlign::Top)
-            node->propertyValuePairs["TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
+            node->propertyValuePairs[U"TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
         else
-            node->propertyValuePairs["TabAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
+            node->propertyValuePairs[U"TabAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
 
-        node->propertyValuePairs["TabFixedSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_tabFixedSize));
+        node->propertyValuePairs[U"TabFixedSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_tabFixedSize));
 
         return node;
     }
@@ -373,25 +373,25 @@ namespace tgui
 
         // Buffer the value to apply it after child widget creation with default align.
         auto tabAlign = tgui::TabContainer::TabAlign::Top;
-        if (node->propertyValuePairs["TabAlignment"])
+        if (node->propertyValuePairs[U"TabAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["TabAlignment"]->value).getString();
-            if (alignment == "Bottom")
+            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
+            if (alignment == U"Bottom")
                 tabAlign = tgui::TabContainer::TabAlign::Bottom;
-            else if (alignment != "Top")
-                throw Exception{"Failed to parse TabAlignment property, found unknown value."};
+            else if (alignment != U"Top")
+                throw Exception{U"Failed to parse TabAlignment property, found unknown value."};
         }
 
         // Buffer the value to apply it after child widget creation with default size.
-        float tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["TabFixedSize"]->value).getNumber();
+        float tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TabFixedSize"]->value).getNumber();
 
         m_panels.clear();
         m_selectedPanel = nullptr;
 
-        m_tabs = m_container->get<Tabs>("Tabs");
+        m_tabs = m_container->get<Tabs>(U"Tabs");
         m_tabAlign = TabAlign::Top;
         if (!m_tabs)
-            throw Exception{"Failed to find Tabs child when loading TabContainer"};
+            throw Exception{U"Failed to find Tabs child when loading TabContainer"};
 
         auto widgets = m_container->getWidgets();
         for (const auto& widget : widgets)
