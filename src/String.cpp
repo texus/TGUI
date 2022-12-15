@@ -1099,7 +1099,7 @@ namespace tgui
         return m_string.insert(pos, first, last);
     }
 
-    String::iterator String::insert(const_iterator pos, std::u32string_view::const_iterator first, std::u32string_view::const_iterator last)
+    String::iterator String::insert(const_iterator pos, StringView::const_iterator first, StringView::const_iterator last)
     {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.insert(pos, first, last);

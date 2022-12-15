@@ -586,7 +586,7 @@ namespace tgui
         iterator insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last);
         iterator insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last);
         iterator insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last);
-        iterator insert(const_iterator pos, std::u32string_view::const_iterator first, std::u32string_view::const_iterator last);
+        iterator insert(const_iterator pos, StringView::const_iterator first, StringView::const_iterator last);
 
         String& erase(std::size_t index = 0, std::size_t count = npos);
 
