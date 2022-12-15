@@ -255,6 +255,9 @@ namespace tgui
 #if defined(__GNUC__) && !defined(__clang__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wliteral-suffix"
+#elif defined (_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4455) // literal suffix identifiers that do not start with an underscore are reserved
 #endif
     inline namespace literals
     {
@@ -283,9 +286,11 @@ namespace tgui
     }
 #if defined(__GNUC__) && !defined(__clang__)
 #   pragma GCC diagnostic pop
+#elif defined (_MSC_VER)
+#   pragma warning(pop)
 #endif
 
-#endif
+#endif // TGUI_COMPILED_WITH_CPP_VER
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
     inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
