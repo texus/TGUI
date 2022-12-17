@@ -32,6 +32,7 @@
 #   pragma GCC diagnostic ignored "-Wsign-conversion"
 #elif defined (_MSC_VER) && defined(__clang__)
 #   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wsign-conversion"
 #   pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 

@@ -46,7 +46,13 @@
 #elif defined (_MSC_VER)
 #   if defined(__clang__)
 #       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wold-style-cast"
+#       pragma clang diagnostic ignored "-Wsign-compare"
+#       pragma clang diagnostic ignored "-Wsign-conversion"
+#       pragma clang diagnostic ignored "-Wdouble-promotion"
 #       pragma clang diagnostic ignored "-Wunused-function"
+#       pragma clang diagnostic ignored "-Wcast-align"
+#       pragma clang diagnostic ignored "-Wimplicit-fallthrough"
 #   else
 #       pragma warning(push)
 #       pragma warning(disable: 4505) // Unreferenced local function

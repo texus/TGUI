@@ -41,7 +41,11 @@
 #elif defined (_MSC_VER)
 #   if defined(__clang__)
 #       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wold-style-cast"
+#       pragma clang diagnostic ignored "-Wnull-dereference"
+#       pragma clang diagnostic ignored "-Wsign-conversion"
 #       pragma clang diagnostic ignored "-Wunused-function"
+#       pragma clang diagnostic ignored "-Wimplicit-fallthrough"
 #       pragma clang diagnostic ignored "-Wmissing-field-initializers"
 #   else
 #       pragma warning(push)
