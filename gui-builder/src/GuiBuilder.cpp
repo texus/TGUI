@@ -776,9 +776,12 @@ void GuiBuilder::loadStartScreen()
     m_propertiesWindow = nullptr;
     m_propertiesContainer = nullptr;
     m_selectedWidgetComboBox = nullptr;
+    m_propertiesContainer_Editbox_w_p.clear();
+    m_propertiesContainer_Combobox_w_p.clear();
 
     m_gui->removeAllWidgets();
     m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
+
 
     if (!loadGuiBuilderState())
     {
@@ -1029,6 +1032,9 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
 void GuiBuilder::initProperties()
 {
     m_propertiesContainer->removeAllWidgets();
+    //Empties weak pointer containers
+    m_propertiesContainer_Editbox_w_p.clear();
+    m_propertiesContainer_Combobox_w_p.clear();
 
     auto selectedWidget = m_selectedForm->getSelectedWidget();
 
@@ -1095,7 +1101,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         propertyEditBox->setText(property);
         m_propertiesContainer->add(propertyEditBox, "Property" + property);
         propertyEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
-        propertyEditBox->onFocus([=]{ m_propertiesContainer->focusNextWidget(); });
+        propertyEditBox->onFocus([&]{ m_propertiesContainer->focusNextWidget(); });
     }
 
     if (type == "Bool")
@@ -1495,6 +1501,7 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& prope
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
 
     auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
+
     if (!valueEditBox)
     {
         valueEditBox = tgui::EditBox::create();
@@ -1502,13 +1509,16 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& prope
         valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
     }
 
+    m_propertiesContainer_Editbox_w_p.try_emplace("Value" + property, valueEditBox); // Use weak pointer for callbacks to prevent leaks
     valueEditBox->onUnfocus.disconnectAll();
     valueEditBox->onReturnKeyPress.disconnectAll();
     valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - rightPadding, EDIT_BOX_HEIGHT});
-    valueEditBox->setText(value);
-
-    valueEditBox->onReturnOrUnfocus([=]{ onChange(valueEditBox->getText()); });
+    valueEditBox->setText(value);  
+    valueEditBox->onReturnOrUnfocus([=] { 
+        if (auto listener = m_propertiesContainer_Editbox_w_p.find("Value" + property)->second.lock()) // Check that weak pointer still exists before manipulating
+        onChange(listener->getText()); });
+    
     return valueEditBox;
 }
 
@@ -1524,7 +1534,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const tgui::String& pro
         buttonMore = tgui::Button::create();
         buttonMore->setText(L"\u22EF");
         buttonMore->setTextSize(18);
-        buttonMore->onFocus([=]{ m_propertiesContainer->focusNextWidget(); });
+        buttonMore->onFocus([&]{ m_propertiesContainer->focusNextWidget(); });
         m_propertiesContainer->add(buttonMore, "ValueButton" + property);
     }
 
@@ -1550,7 +1560,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
         valueComboBox->addItem("True");
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
     }
-
+    m_propertiesContainer_Combobox_w_p.try_emplace("ValueComboBox" + property, valueComboBox); //Weak pointers to prevent memory leaks
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
@@ -1561,7 +1571,9 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
     else
         valueComboBox->setSelectedItemByIndex(0);
 
-    valueComboBox->onItemSelect([=]{ onChange(valueComboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([=]{
+        if (auto listener = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property)->second.lock()) // Check that weak pointer still exists before manipulating
+        onChange(listener->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2101,6 +2113,7 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->addItem(enumValue);
     }
 
+    m_propertiesContainer_Combobox_w_p.try_emplace("ValueComboBox" + property, valueComboBox); // Use weak pointer for callbacks to prevent leaks
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
@@ -2112,7 +2125,9 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->setSelectedItemByIndex(i);
     }
 
-    valueComboBox->onItemSelect([=]{ onChange(valueComboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([=]{ 
+        if (auto listener = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property)->second.lock()) // Check that weak pointer still exists before manipulating
+        onChange(listener->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2481,6 +2496,8 @@ void GuiBuilder::loadUndoState()
         m_propertiesWindow = nullptr;
         m_propertiesContainer = nullptr;
         m_selectedWidgetComboBox = nullptr;
+        m_propertiesContainer_Combobox_w_p.clear(); 
+        m_propertiesContainer_Editbox_w_p.clear();
 
         m_gui->removeAllWidgets();
         m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");

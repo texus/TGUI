@@ -133,6 +133,8 @@ private:
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
+    std::map<tgui::String, std::weak_ptr<tgui::EditBox>> m_propertiesContainer_Editbox_w_p;
+    std::map<tgui::String, std::weak_ptr<tgui::ComboBox>> m_propertiesContainer_Combobox_w_p;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
     tgui::TreeView::Ptr m_widgetHierarchyTree;

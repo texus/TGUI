@@ -421,7 +421,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, tgui::ChildWind
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
         square->setSize(tgui::Vector2f{square->getRenderer()->getTexture().getImageSize()});
         square->setVisible(false);
-        square->onMousePress([=](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
+        square->onMousePress([&](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
 }
