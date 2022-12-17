@@ -1524,7 +1524,10 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& prope
         valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
     }
 
-    m_propertiesContainer_Editbox_w_p.try_emplace("Value" + property, valueEditBox); // Use weak pointer for callbacks to prevent leaks
+    auto pointFind = m_propertiesContainer_Editbox_w_p.find("Value" + property);
+    if (pointFind == m_propertiesContainer_Editbox_w_p.end())
+        m_propertiesContainer_Editbox_w_p.emplace("Value" + property, valueEditBox); // Create weak pointer for callbacks to prevent leaks
+
     valueEditBox->onUnfocus.disconnectAll();
     valueEditBox->onReturnKeyPress.disconnectAll();
     valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
@@ -1575,7 +1578,11 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
         valueComboBox->addItem("True");
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
     }
-    m_propertiesContainer_Combobox_w_p.try_emplace("ValueComboBox" + property, valueComboBox); //Weak pointers to prevent memory leaks
+
+    auto pointFind = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property);
+    if (pointFind == m_propertiesContainer_Combobox_w_p.end())
+        m_propertiesContainer_Combobox_w_p.emplace("ValueComboBox" + property, valueComboBox); // Create weak pointer for callbacks to prevent leaks
+
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
@@ -2128,7 +2135,10 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->addItem(enumValue);
     }
 
-    m_propertiesContainer_Combobox_w_p.try_emplace("ValueComboBox" + property, valueComboBox); // Use weak pointer for callbacks to prevent leaks
+    auto pointFind = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property);
+    if (pointFind == m_propertiesContainer_Combobox_w_p.end())
+        m_propertiesContainer_Combobox_w_p.emplace("ValueComboBox" + property, valueComboBox); // Create weak pointer for callbacks to prevent leaks
+
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
