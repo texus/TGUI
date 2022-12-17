@@ -269,6 +269,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
     m_undoSaveMaxSaves = 1000;
+    isFromPropUpdate = false;
 
     loadStartScreen();
 }
@@ -592,7 +593,10 @@ void GuiBuilder::reloadProperties()
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const tgui::String& value){
                 if (selectedWidget->name != value)
+                {
+                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                     changeWidgetName(value);
+                }
             });
 
         topPosition += 10;
@@ -601,8 +605,12 @@ void GuiBuilder::reloadProperties()
         {
             addPropertyValueWidgets(topPosition, property,
                 [=](const tgui::String& value){
+                    isFromPropUpdate = true;
                     if (updateWidgetProperty(property.first, value))
+                    {
                         m_selectedForm->setChanged(true);
+                    }
+                    isFromPropUpdate = false;
                 });
         }
 
@@ -617,8 +625,10 @@ void GuiBuilder::reloadProperties()
             {
                 addPropertyValueWidgets(topPosition, property,
                     [=](const tgui::String& value){
+                        isFromPropUpdate = true;
                         if (updateWidgetProperty(property.first, value))
                         {
+                            saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                             m_selectedForm->setChanged(true);
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
@@ -626,6 +636,7 @@ void GuiBuilder::reloadProperties()
                             // back to the widget, so that the string stored in the renderer is always a valid string.
                             m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
                         }
+                        isFromPropUpdate = false;
                     });
             }
 
@@ -648,6 +659,7 @@ void GuiBuilder::reloadProperties()
             [=](const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().x) != value)
                 {
+                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                     // Form is not marked as changed since the width is saved as editor property
                     const float newWidth = value.toFloat();
                     m_formSize = { newWidth, m_selectedForm->getSize().y };
@@ -659,6 +671,7 @@ void GuiBuilder::reloadProperties()
             [=](const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().y) != value)
                 {
+                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                     // Form is not marked as changed since the height is saved as editor property
                     const float newHeight = value.toFloat();
                     m_formSize = { m_selectedForm->getSize().x, newHeight};
@@ -1010,6 +1023,8 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
     bool valueChanged;
     try
     {
+        if (isFromPropUpdate)
+        saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, value);
         valueChanged = true;
     }
@@ -2466,6 +2481,9 @@ void GuiBuilder::saveUndoState(GuiBuilder::eUndoType type)
         break;
     case GuiBuilder::eUndoType::CreateNew:
         descString = "Create New";
+        break;
+    case GuiBuilder::eUndoType::PropertyEdit:
+        descString = "Property Edit";
         break;
     }
     // Starts deleting beginning history of saved states if > max ammount set to prevent overflow or excess memory usage

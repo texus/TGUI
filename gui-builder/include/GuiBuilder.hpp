@@ -42,7 +42,7 @@ public:
 
     enum class eUndoType
     {
-        Delete, Move, Paste, SendtoFront, SendtoBack, CreateNew
+        Delete, Move, Paste, SendtoFront, SendtoBack, CreateNew, PropertyEdit
     };
 
     void reloadProperties();
@@ -90,6 +90,7 @@ private:
     void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
     void pasteWidgetFromInternalClipboard();
     void loadUndoState();
+    bool isFromPropUpdate;
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
