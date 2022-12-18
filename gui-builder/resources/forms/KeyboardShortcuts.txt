@@ -3,204 +3,226 @@ Renderer.1 {
     BorderColor = #3C3C3C;
     Borders = (0, 0, 0, 0);
     TextColor = #3C3C3C;
+    TextureBackground = None;
 }
 
 Label.Widget1 {
     AutoSize = true;
     Position = (10, 10);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (48.2, 18);
     Text = Arrows;
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget2 {
     AutoSize = true;
     Position = (10, 70);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (88.2, 18);
     Text = "Ctrl + Arrows";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget3 {
     AutoSize = true;
     Position = (10, 40);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (95.2, 18);
     Text = "Shift + Arrows";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget4 {
     AutoSize = true;
     Position = (10, 100);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (135.2, 18);
     Text = "Ctrl + Shift + Arrows";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget5 {
     AutoSize = true;
     Position = (10, 220);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (52.2, 18);
     Text = "Ctrl + C";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget6 {
     AutoSize = true;
     Position = (10, 250);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (52.2, 18);
     Text = "Ctrl + V";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget7 {
     AutoSize = true;
     Position = (10, 190);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (52.2, 18);
     Text = "Ctrl + X";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget8 {
     AutoSize = true;
     Position = (10, 160);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (24.2, 18);
     Text = Del;
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget9 {
     AutoSize = true;
     Position = (10, 130);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (25.2, 18);
     Text = Esc;
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget10 {
     AutoSize = true;
     Position = (10, 280);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (51.2, 18);
     Text = "Ctrl + S";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget11 {
     AutoSize = true;
     Position = (180, 10);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (148.2, 18);
     Text = "Select different widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget12 {
     AutoSize = true;
     Position = (180, 40);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (92.2, 18);
     Text = "Resize widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget13 {
     AutoSize = true;
     Position = (180, 70);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (130.2, 18);
     Text = "Move widget 1 pixel";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget14 {
     AutoSize = true;
     Position = (180, 100);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (180.2, 18);
     Text = "Move widget multiple pixels";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget15 {
     AutoSize = true;
     Position = (180, 130);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (152.2, 18);
     Text = "Select parent of widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget16 {
     AutoSize = true;
     Position = (180, 160);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (104.2, 18);
     Text = "Remove widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget17 {
     AutoSize = true;
     Position = (180, 190);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (165.2, 18);
     Text = "Copy and remove widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget18 {
     AutoSize = true;
     Position = (180, 220);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (83.2, 18);
     Text = "Copy widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget19 {
     AutoSize = true;
     Position = (180, 250);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (86.2, 18);
     Text = "Paste widget";
     TextSize = 13;
-    Renderer = &1;
 }
 
 Label.Widget20 {
     AutoSize = true;
     Position = (180, 280);
+    Renderer = &1;
     ScrollbarPolicy = Never;
     Size = (70.2, 18);
     Text = "Save form";
     TextSize = 13;
+}
+
+Label.Widget21 {
+    AutoSize = true;
+    Position = (10, 310);
     Renderer = &1;
+    ScrollbarPolicy = Never;
+    Size = (53.2, 18);
+    Text = "Ctrl + Z";
+    TextSize = 13;
+}
+
+Label.Widget22 {
+    AutoSize = true;
+    Position = (180, 310);
+    Renderer = &1;
+    ScrollbarPolicy = Never;
+    Size = (80.2, 18);
+    Text = "Undo Action";
+    TextSize = 13;
+
 }
