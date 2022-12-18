@@ -29,6 +29,7 @@
 #include "WidgetInfo.hpp"
 #include <TGUI/TGUI.hpp>
 #include <array>
+#include <sstream>
 
 class GuiBuilder;
 
@@ -63,8 +64,8 @@ public:
     bool hasFocus() const;
     void load();
     void save();
-    tgui::String saveState();
-    bool loadState(tgui::String);
+    std::stringstream saveState();
+    void loadState(std::stringstream& state);
     void updateAlignmentLines();
 
 private:
@@ -75,7 +76,6 @@ private:
     void onDrag(tgui::Vector2i mousePos);
     void selectWidget(std::shared_ptr<WidgetInfo> widget);
     std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
-    bool onDragSaved;
 
 private:
 
@@ -89,6 +89,7 @@ private:
     std::map<tgui::String, std::shared_ptr<WidgetInfo>> m_widgets;
     bool m_changed = false;
     bool m_draggingWidget = false;
+    bool m_onDragSaved = false;
     tgui::Button::Ptr m_draggingSelectionSquare;
     tgui::Vector2f m_draggingPos;
     tgui::String m_filename;
