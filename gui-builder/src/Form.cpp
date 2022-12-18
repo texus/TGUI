@@ -405,7 +405,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::Chi
 
     m_formWindow->setTitle(filename);
     m_formWindow->onClose([this]{ m_guiBuilder->closeForm(this); });
-    m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
+    m_formWindow->onSizeChange([this]{ m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->onMousePress([this](tgui::Vector2f pos){ onFormMousePress(pos); });

@@ -637,8 +637,8 @@ void GuiBuilder::reloadProperties()
         }
 
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
-            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
-                if (selectedWidget->name != value)
+            [this,widget=selectedWidget.get()](const tgui::String& value){
+                if (widget->name != value)
                 {
                     saveUndoState(GuiBuilder::UndoType::PropertyEdit);
                     changeWidgetName(value);
@@ -650,10 +650,10 @@ void GuiBuilder::reloadProperties()
         for (const auto& property : m_propertyValuePairs.first)
         {
             addPropertyValueWidgets(topPosition, property,
-                TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
+                [this,propertyName=property.first](const tgui::String& value){
                     saveUndoState(GuiBuilder::UndoType::PropertyEdit);
 
-                    if (updateWidgetProperty(property.first, value))
+                    if (updateWidgetProperty(propertyName, value))
                         m_selectedForm->setChanged(true);
                     else
                     {
@@ -674,18 +674,18 @@ void GuiBuilder::reloadProperties()
             for (const auto& property : m_propertyValuePairs.second)
             {
                 addPropertyValueWidgets(topPosition, property,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
+                    [this,propertyName=property.first,widgetPtr=selectedWidget->ptr.get()](const tgui::String& value){
                         saveUndoState(GuiBuilder::UndoType::PropertyEdit);
 
-                        if (updateWidgetProperty(property.first, value))
+                        if (updateWidgetProperty(propertyName, value))
                         {
                             m_selectedForm->setChanged(true);
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
                             // back to the widget, so that the string stored in the renderer is always a valid string.
-                            m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(
-                                selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
+                            m_widgetProperties.at(widgetPtr->getWidgetType())->updateProperty(
+                                widgetPtr->shared_from_this(), propertyName, m_propertyValuePairs.second[propertyName].second);
                         }
                         else
                         {
@@ -702,7 +702,7 @@ void GuiBuilder::reloadProperties()
     else // The form itself was selected
     {
         addPropertyValueWidgets(topPosition, {"Filename", {"String", m_selectedForm->getFilename()}},
-            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
+            [this](const tgui::String& value){
                 if (m_selectedForm->getFilename() != value)
                 {
                     m_selectedForm->setChanged(true);
@@ -712,7 +712,7 @@ void GuiBuilder::reloadProperties()
             });
 
         addPropertyValueWidgets(topPosition, {"Width", {"UInt", tgui::String::fromNumber(m_selectedForm->getSize().x)}},
-            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
+            [this](const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().x) != value)
                 {
                     // Form is not marked as changed since the width is saved as editor property
@@ -723,7 +723,7 @@ void GuiBuilder::reloadProperties()
             });
 
         addPropertyValueWidgets(topPosition, {"Height", {"UInt", tgui::String::fromNumber(m_selectedForm->getSize().y)}},
-            TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
+            [this](const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().y) != value)
                 {
                     // Form is not marked as changed since the height is saved as editor property
@@ -906,7 +906,7 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
     m_selectedWidgetComboBox->onItemSelect([this](const tgui::String&, const tgui::String& id){ m_selectedForm->selectWidgetById(id); });
 
     m_menuBar = m_gui->get<tgui::MenuBar>("MenuBar");
-    m_menuBar->onMouseEnter([this]{ m_menuBar->moveToFront(); });
+    m_menuBar->onMouseEnter([menuBar=m_menuBar.get()]{ menuBar->moveToFront(); });
     m_menuBar->connectMenuItem({"File", "New"}, [this]{ menuBarCallbackNewForm(); });
     m_menuBar->connectMenuItem({"File", "Load"}, [this]{ menuBarCallbackLoadForm(); });
     m_menuBar->connectMenuItem({"File", "Save"}, [this]{ menuBarCallbackSaveFile(); });
@@ -1002,7 +1002,7 @@ void GuiBuilder::loadToolbox()
         verticalLayout->add(panel);
         toolbox->add(verticalLayout);
 
-        panel->onClick(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+        panel->onClick([this,widget]{
             saveUndoState(GuiBuilder::UndoType::CreateNew);
 
             createNewWidget(widget.second());
@@ -1129,12 +1129,12 @@ void GuiBuilder::initProperties()
         rendererComboBox->setSelectedItem(selectedWidget->theme);
         m_propertiesContainer->add(rendererComboBox, "RendererSelectorComboBox");
 
-        rendererComboBox->onItemSelect(TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& item){
-            selectedWidget->theme = item;
+        rendererComboBox->onItemSelect([this,widget=selectedWidget.get()](const tgui::String& item){
+            widget->theme = item;
             if (item != "Custom")
-                selectedWidget->ptr->setRenderer(m_themes[item].getRendererNoThrow(selectedWidget->ptr->getWidgetType()));
+                widget->ptr->setRenderer(m_themes[item].getRendererNoThrow(widget->ptr->getWidgetType()));
             else
-                selectedWidget->ptr->setRenderer(selectedWidget->ptr->getRenderer()->getData());
+                widget->ptr->setRenderer(widget->ptr->getRenderer()->getData());
 
             m_selectedForm->setChanged(true);
             initProperties();
@@ -1318,9 +1318,9 @@ void GuiBuilder::createNewForm(tgui::String filename)
         messageBox->setPosition("(&.size - size) / 2");
         m_gui->add(messageBox);
 
-        messageBox->onButtonPress(TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& button){
-            m_gui->remove(panel);
-            m_gui->remove(messageBox);
+        messageBox->onButtonPress([this,filename,panelPtr=panel.get(),messageBoxPtr=messageBox.get()](const tgui::String& button){
+            m_gui->remove(panelPtr->shared_from_this());
+            m_gui->remove(messageBoxPtr->shared_from_this());
 
             if (button == "Yes")
             {
@@ -1416,7 +1416,7 @@ void GuiBuilder::displayErrorMessage(const tgui::String& error)
     messageBox->setPosition("(&.size - size) / 2");
     openWindowWithFocus(messageBox);
 
-    messageBox->onButtonPress([messageBox]{ messageBox->close(); });
+    messageBox->onButtonPress([messageBoxPtr=messageBox.get()]{ messageBoxPtr->close(); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1433,9 +1433,9 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
     window->setFocused(true);
 
     const bool tabUsageEnabled = m_gui->isTabKeyUsageEnabled();
-    auto closeWindow = TGUI_LAMBDA_CAPTURE_EQ_THIS{
-        m_gui->remove(window);
-        m_gui->remove(panel);
+    auto closeWindow = [this,windowPtr=window.get(),panelPtr=panel.get(),tabUsageEnabled]{
+        m_gui->remove(windowPtr->shared_from_this());
+        m_gui->remove(panelPtr->shared_from_this());
         m_gui->setTabKeyUsageEnabled(tabUsageEnabled);
         m_foregroundPanel = nullptr;
     };
@@ -1634,7 +1634,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
     else
         valueComboBox->setSelectedItemByIndex(0);
 
-    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox.get()]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1668,11 +1668,11 @@ void GuiBuilder::addPropertyValueColor(const tgui::String& property, const tgui:
         colorPreviewPanel->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
 
     colorPreviewPanel->onClick.disconnectAll();
-    colorPreviewPanel->onClick(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    colorPreviewPanel->onClick([this,value,onChange]{
         const tgui::Color color = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Color, value).getColor();
         auto colorPicker = tgui::ColorPicker::create("Select color", color);
         openWindowWithFocus(colorPicker);
-        colorPicker->onOkPress([=](tgui::Color newColor){
+        colorPicker->onOkPress([onChange](tgui::Color newColor){
             onChange(tgui::Serializer::serialize(newColor));
         });
     });
@@ -1685,7 +1685,7 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto textStyleWindow = openWindowWithFocus();
         textStyleWindow->setTitle("Set text style");
         textStyleWindow->setClientSize({180, 160});
@@ -1702,15 +1702,16 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
         checkBoxUnderlined->setChecked((style & tgui::TextStyle::Underlined) != 0);
         checkBoxStrikeThrough->setChecked((style & tgui::TextStyle::StrikeThrough) != 0);
 
-        auto updateTextStyleProperty = [=]{
+        auto updateTextStyleProperty = [onChange,cbBold=checkBoxBold.get(),cbItalic=checkBoxItalic.get(),
+                                        cbUnderlined=checkBoxUnderlined.get(),cbStrikeThrough=checkBoxStrikeThrough.get()]{
             unsigned int newStyle = 0;
-            if (checkBoxBold->isChecked())
+            if (cbBold->isChecked())
                 newStyle |= tgui::TextStyle::Bold;
-            if (checkBoxItalic->isChecked())
+            if (cbItalic->isChecked())
                 newStyle |= tgui::TextStyle::Italic;
-            if (checkBoxUnderlined->isChecked())
+            if (cbUnderlined->isChecked())
                 newStyle |= tgui::TextStyle::Underlined;
-            if (checkBoxStrikeThrough->isChecked())
+            if (cbStrikeThrough->isChecked())
                 newStyle |= tgui::TextStyle::StrikeThrough;
             onChange(tgui::Serializer::serialize(tgui::TextStyles{newStyle}));
         };
@@ -1728,7 +1729,7 @@ void GuiBuilder::addPropertyValueOutline(const tgui::String& property, const tgu
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set outline");
         outlineWindow->setClientSize({150, 150});
@@ -1745,12 +1746,12 @@ void GuiBuilder::addPropertyValueOutline(const tgui::String& property, const tgu
         editRight->setText(tgui::String::fromNumber(outline.getRight()));
         editBottom->setText(tgui::String::fromNumber(outline.getBottom()));
 
-        auto updateOutlineProperty = [=]{
+        auto updateOutlineProperty = [onChange,ebLeft=editLeft.get(),ebTop=editTop.get(),ebRight=editRight.get(),ebBottom=editBottom.get()]{
             const tgui::Outline newOutline{
-                tgui::AbsoluteOrRelativeValue{editLeft->getText()},
-                tgui::AbsoluteOrRelativeValue{editTop->getText()},
-                tgui::AbsoluteOrRelativeValue{editRight->getText()},
-                tgui::AbsoluteOrRelativeValue{editBottom->getText()},
+                tgui::AbsoluteOrRelativeValue{ebLeft->getText()},
+                tgui::AbsoluteOrRelativeValue{ebTop->getText()},
+                tgui::AbsoluteOrRelativeValue{ebRight->getText()},
+                tgui::AbsoluteOrRelativeValue{ebBottom->getText()},
             };
             onChange(tgui::Serializer::serialize(newOutline));
         };
@@ -1768,7 +1769,7 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto multilineStringWindow = openWindowWithFocus();
         multilineStringWindow->setTitle("Set multiline text");
         multilineStringWindow->setClientSize({470, 220});
@@ -1776,7 +1777,7 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property, c
 
         auto textArea = multilineStringWindow->get<tgui::TextArea>("TextArea");
         textArea->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
-        textArea->onTextChange([=]{ onChange(tgui::Serializer::serialize(textArea->getText())); });
+        textArea->onTextChange([onChange,textAreaPtr=textArea.get()]{ onChange(tgui::Serializer::serialize(textAreaPtr->getText())); });
         textArea->setFocused(true);
 
         m_gui->setTabKeyUsageEnabled(false);
@@ -1796,7 +1797,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
     };
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange,setArrowColor]{
         auto stringListWindow = openWindowWithFocus();
         stringListWindow->setTitle("Set string list");
         stringListWindow->setClientSize({352, 215});
@@ -1819,82 +1820,82 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         buttonArrowUp->setEnabled(false);
         buttonArrowDown->setEnabled(false);
 
-        listBox->onItemSelect([=]{
-            const int index = listBox->getSelectedItemIndex();
+        listBox->onItemSelect([this,setArrowColor,lb=listBox.get(),eb=editBox.get(),btnRemove=buttonRemove.get(),btnUp=buttonArrowUp.get(),btnDown=buttonArrowDown.get()]{
+            const int index = lb->getSelectedItemIndex();
             if (index >= 0)
             {
-                buttonRemove->setEnabled(true);
-                editBox->setText(listBox->getSelectedItem());
+                btnRemove->setEnabled(true);
+                eb->setText(lb->getSelectedItem());
             }
             else
-                buttonRemove->setEnabled(false);
+                btnRemove->setEnabled(false);
 
             if (index > 0)
             {
-                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColor());
-                buttonArrowUp->setEnabled(true);
+                setArrowColor(btnUp->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColor());
+                btnUp->setEnabled(true);
             }
             else
             {
-                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
-                buttonArrowUp->setEnabled(false);
+                setArrowColor(btnUp->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColorDisabled());
+                btnUp->setEnabled(false);
             }
 
-            if ((index >= 0) && (static_cast<std::size_t>(index) + 1 < listBox->getItemCount()))
+            if ((index >= 0) && (static_cast<std::size_t>(index) + 1 < lb->getItemCount()))
             {
-                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColor());
-                buttonArrowDown->setEnabled(true);
+                setArrowColor(btnDown->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColor());
+                btnDown->setEnabled(true);
             }
             else
             {
-                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
-                buttonArrowDown->setEnabled(false);
+                setArrowColor(btnDown->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColorDisabled());
+                btnDown->setEnabled(false);
             }
         });
 
-        auto updateValue = [=]{
-            onChange(WidgetProperties::serializeList(listBox->getItems()));
+        auto updateValue = [onChange,lb=listBox.get()]{
+            onChange(WidgetProperties::serializeList(lb->getItems()));
         };
 
-        buttonArrowUp->onPress([=]{
-            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
-            tgui::String value1 = listBox->getItemByIndex(index - 1);
-            tgui::String value2 = listBox->getItemByIndex(index);
-            listBox->changeItemByIndex(index - 1, value2);
-            listBox->changeItemByIndex(index, value1);
-            listBox->setSelectedItemByIndex(index - 1);
+        buttonArrowUp->onPress([updateValue,lb=listBox.get()]{
+            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            tgui::String value1 = lb->getItemByIndex(index - 1);
+            tgui::String value2 = lb->getItemByIndex(index);
+            lb->changeItemByIndex(index - 1, value2);
+            lb->changeItemByIndex(index, value1);
+            lb->setSelectedItemByIndex(index - 1);
             updateValue();
         });
 
-        buttonArrowDown->onPress([=]{
-            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
-            tgui::String value1 = listBox->getItemByIndex(index);
-            tgui::String value2 = listBox->getItemByIndex(index + 1);
-            listBox->changeItemByIndex(index, value2);
-            listBox->changeItemByIndex(index + 1, value1);
-            listBox->setSelectedItemByIndex(index + 1);
+        buttonArrowDown->onPress([updateValue,lb=listBox.get()]{
+            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            tgui::String value1 = lb->getItemByIndex(index);
+            tgui::String value2 = lb->getItemByIndex(index + 1);
+            lb->changeItemByIndex(index, value2);
+            lb->changeItemByIndex(index + 1, value1);
+            lb->setSelectedItemByIndex(index + 1);
             updateValue();
         });
 
-        buttonRemove->onPress([=]{
-            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
-            listBox->removeItemByIndex(index);
-            if (listBox->getItemCount() > 0)
+        buttonRemove->onPress([updateValue,lb=listBox.get()]{
+            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            lb->removeItemByIndex(index);
+            if (lb->getItemCount() > 0)
             {
-                if (index == listBox->getItemCount())
-                    listBox->setSelectedItemByIndex(index - 1);
+                if (index == lb->getItemCount())
+                    lb->setSelectedItemByIndex(index - 1);
                 else
-                    listBox->setSelectedItemByIndex(index);
+                    lb->setSelectedItemByIndex(index);
             }
 
             updateValue();
         });
 
-        auto addItem = [=]{
-            listBox->addItem(editBox->getText());
-            listBox->setSelectedItemByIndex(listBox->getItemCount() - 1);
-            editBox->setText("");
-            editBox->setFocused(true);
+        auto addItem = [updateValue,lb=listBox.get(),eb=editBox.get()]{
+            lb->addItem(eb->getText());
+            lb->setSelectedItemByIndex(lb->getItemCount() - 1);
+            eb->setText("");
+            eb->setFocused(true);
             updateValue();
         };
         buttonAdd->onPress(addItem);
@@ -1909,7 +1910,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto textureWindow = openWindowWithFocus();
         textureWindow->setTitle("Set texture");
         textureWindow->setClientSize({235, 250});
@@ -1937,10 +1938,13 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
 
         previewPicture->setUserData(std::make_shared<tgui::Texture>());
 
-        auto separators = std::make_shared<std::vector<tgui::SeparatorLine::Ptr>>();
+        auto separators = std::make_shared<std::vector<tgui::SeparatorLine*>>();
 
-        auto updateForm = TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& filename, tgui::UIntRect partRect, tgui::UIntRect middleRect, bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
-            auto texture = previewPicture->getUserData<std::shared_ptr<tgui::Texture>>();
+        auto updateForm = [this,onChange,separators,window=textureWindow.get(),picPreview=previewPicture.get(),btnSelect=buttonSelectFile.get(),
+                           ebPart=editBoxPartRect.get(),ebMiddle=editBoxMiddleRect.get(),cbSmooth=checkBoxSmooth.get()]
+                          (const tgui::String& filename, tgui::UIntRect partRect, tgui::UIntRect middleRect,
+                           bool smooth, bool resetPartRect, bool resetMiddleRect, bool resetSmooth){
+            auto texture = picPreview->getUserData<std::shared_ptr<tgui::Texture>>();
 
             try
             {
@@ -1951,46 +1955,46 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             {
             }
 
-            buttonSelectFile->setUserData(filename); // Not using texture.getId() as it would be empty if file didn't exist
+            btnSelect->setUserData(filename); // Not using texture.getId() as it would be empty if file didn't exist
 
             const tgui::Vector2u imageSize = texture->getImageSize();
             const tgui::Vector2f extraSpace{20, 180};
             const tgui::Vector2f minSize{235, 165};
             const tgui::Layout2d maxSize{tgui::bindWidth(*m_gui) - 50, tgui::bindHeight(*m_gui) - 50};
             const tgui::Layout scaling = tgui::bindMin(1.f, tgui::bindMin((maxSize.x - extraSpace.x) / imageSize.x, (maxSize.y - extraSpace.y) / imageSize.y));
-            previewPicture->setSize({imageSize.x * scaling, imageSize.y * scaling});
-            textureWindow->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
+            picPreview->setSize({imageSize.x * scaling, imageSize.y * scaling});
+            window->setSize({tgui::bindMax(minSize.x, (imageSize.x * scaling) + extraSpace.x), tgui::bindMax(minSize.y, (imageSize.y * scaling) + extraSpace.y)});
 
             if (resetPartRect)
             {
                 partRect = texture->getPartRect();
-                editBoxPartRect->onTextChange.setEnabled(false);
-                editBoxPartRect->setText("(" + tgui::String::fromNumber(partRect.left) + ", " + tgui::String::fromNumber(partRect.top)
+                ebPart->onTextChange.setEnabled(false);
+                ebPart->setText("(" + tgui::String::fromNumber(partRect.left) + ", " + tgui::String::fromNumber(partRect.top)
                     + ", " + tgui::String::fromNumber(partRect.width) + ", " + tgui::String::fromNumber(partRect.height) + ")");
-                editBoxPartRect->onTextChange.setEnabled(true);
+                ebPart->onTextChange.setEnabled(true);
             }
 
             if (resetMiddleRect)
             {
                 middleRect = texture->getMiddleRect();
 
-                editBoxMiddleRect->onTextChange.setEnabled(false);
-                editBoxMiddleRect->setText("(" + tgui::String::fromNumber(middleRect.left) + ", " + tgui::String::fromNumber(middleRect.top)
+                ebMiddle->onTextChange.setEnabled(false);
+                ebMiddle->setText("(" + tgui::String::fromNumber(middleRect.left) + ", " + tgui::String::fromNumber(middleRect.top)
                     + ", " + tgui::String::fromNumber(middleRect.width) + ", " + tgui::String::fromNumber(middleRect.height) + ")");
-                editBoxMiddleRect->onTextChange.setEnabled(true);
+                ebMiddle->onTextChange.setEnabled(true);
             }
 
             if (resetSmooth)
             {
-                checkBoxSmooth->onChange.setEnabled(false);
-                checkBoxSmooth->setChecked(texture->isSmooth());
-                checkBoxSmooth->onChange.setEnabled(true);
+                cbSmooth->onChange.setEnabled(false);
+                cbSmooth->setChecked(texture->isSmooth());
+                cbSmooth->onChange.setEnabled(true);
             }
 
-            previewPicture->getRenderer()->setTexture(*texture);
+            picPreview->getRenderer()->setTexture(*texture);
 
             for (auto& separator : *separators)
-                textureWindow->remove(separator);
+                window->remove(separator->shared_from_this());
             separators->clear();
 
             if ((middleRect != tgui::UIntRect{}) && (middleRect != tgui::UIntRect{0, 0, imageSize.x, imageSize.y}))
@@ -2014,26 +2018,26 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                 for (const auto& line : lines)
                 {
                     auto separator = tgui::SeparatorLine::create();
-                    separator->setPosition(previewPicture->getPosition() + line.first);
+                    separator->setPosition(picPreview->getPosition() + line.first);
                     separator->setSize(std::max(line.second.x - line.first.x, 1.f), std::max(line.second.y - line.first.y, 1.f));
                     separator->getRenderer()->setColor({255, 128, 255});
-                    textureWindow->add(separator);
-                    separators->push_back(separator);
+                    window->add(separator);
+                    separators->push_back(separator.get());
                 }
             }
         };
 
-        editBoxPartRect->onTextChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
-                       {}, checkBoxSmooth->isChecked(), false, true, false);
+        editBoxPartRect->onTextChange([=,btnSel=buttonSelectFile.get(),ebPart=editBoxPartRect.get(),cbSmooth=checkBoxSmooth.get()]{
+            updateForm(btnSel->getUserData<tgui::String>(), deserializeRect(ebPart->getText()),
+                       {}, cbSmooth->isChecked(), false, true, false);
         });
-        editBoxMiddleRect->onTextChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
-                       deserializeRect(editBoxMiddleRect->getText()), checkBoxSmooth->isChecked(), false, false, false);
+        editBoxMiddleRect->onTextChange([=,btnSel=buttonSelectFile.get(),ebPart=editBoxPartRect.get(),ebMiddle=editBoxMiddleRect.get(),cbSmooth=checkBoxSmooth.get()]{
+            updateForm(btnSel->getUserData<tgui::String>(), deserializeRect(ebPart->getText()),
+                       deserializeRect(ebMiddle->getText()), cbSmooth->isChecked(), false, false, false);
         });
-        checkBoxSmooth->onChange([=]{
-            updateForm(buttonSelectFile->getUserData<tgui::String>(), deserializeRect(editBoxPartRect->getText()),
-                       deserializeRect(editBoxMiddleRect->getText()), checkBoxSmooth->isChecked(), false, false, false);
+        checkBoxSmooth->onChange([=,btnSel=buttonSelectFile.get(),ebPart=editBoxPartRect.get(),ebMiddle=editBoxMiddleRect.get(),cbSmooth=checkBoxSmooth.get()]{
+            updateForm(btnSel->getUserData<tgui::String>(), deserializeRect(ebPart->getText()),
+                       deserializeRect(ebMiddle->getText()), cbSmooth->isChecked(), false, false, false);
         });
 
         tgui::Texture originalTexture;
@@ -2053,10 +2057,11 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         const bool originalSmooth = originalTexture.isSmooth();
         updateForm(originalFilename, originalPartRect, originalMiddleRect, originalSmooth, true, true, true);
 
-        buttonSelectFile->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
-            showLoadFileWindow("Load image", "Load", true, buttonSelectFile->getUserData<tgui::String>(), [=](const tgui::String& filename){
-                updateForm(filename, {}, {}, checkBoxSmooth->isChecked(), true, true, false);
-            });
+        buttonSelectFile->onPress([this,updateForm,btnSelect=buttonSelectFile.get(),cbSmooth=checkBoxSmooth.get()]{
+            showLoadFileWindow("Load image", "Load", true, btnSelect->getUserData<tgui::String>(),
+                [updateForm,cbSmooth](const tgui::String& filename){
+                    updateForm(filename, {}, {}, cbSmooth->isChecked(), true, true, false);
+                });
         });
     });
 }
@@ -2068,7 +2073,7 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const tgui::String& prope
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set accepted input");
         outlineWindow->setClientSize({190, 215});
@@ -2094,15 +2099,15 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const tgui::String& prope
 
         editValidator->setText(value);
 
-        auto updateCustomValidator = [=]{
-            checkCustom->setChecked(true);
-            onChange(editValidator->getText());
+        auto updateCustomValidator = [onChange,cbCustom=checkCustom.get(),ebValid=editValidator.get()]{
+            cbCustom->setChecked(true);
+            onChange(ebValid->getText());
         };
-        auto updateValidator = [=](const tgui::String& newValue){
-            editValidator->onReturnKeyPress.disconnectAll();
-            editValidator->onUnfocus.disconnectAll();
-            editValidator->setText(newValue);
-            editValidator->onReturnOrUnfocus(updateCustomValidator);
+        auto updateValidator = [onChange,updateCustomValidator,ebValid=editValidator.get()](const tgui::String& newValue){
+            ebValid->onReturnKeyPress.disconnectAll();
+            ebValid->onUnfocus.disconnectAll();
+            ebValid->setText(newValue);
+            ebValid->onReturnOrUnfocus(updateCustomValidator);
             onChange(newValue);
         };
         checkAny->onCheck([=]{ updateValidator(tgui::EditBox::Validator::All); });
@@ -2120,7 +2125,7 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
-    buttonMore->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonMore->onPress([this,value,onChange]{
         auto titleButtonWindow = openWindowWithFocus();
         titleButtonWindow->setTitle("Set title buttons");
         titleButtonWindow->setClientSize({125, 125});
@@ -2141,13 +2146,13 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
                 checkMinimize->setChecked(true);
         }
 
-        auto updateTitleButtons = [=]{
+        auto updateTitleButtons = [onChange,cbMin=checkMinimize.get(),cbMax=checkMaximize.get(),cbClose=checkClose.get()]{
             tgui::String newValue;
-            if (checkMinimize->isChecked())
+            if (cbMin->isChecked())
                 newValue += " | Minimize";
-            if (checkMaximize->isChecked())
+            if (cbMax->isChecked())
                 newValue += " | Maximize";
-            if (checkClose->isChecked())
+            if (cbClose->isChecked())
                 newValue += " | Close";
 
             if (!newValue.empty())
@@ -2192,7 +2197,7 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->setSelectedItemByIndex(i);
     }
 
-    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox.get()]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2268,30 +2273,30 @@ void GuiBuilder::menuBarCallbackEditThemes()
             themesList->addItem(theme.second.getPrimary());
     }
 
-    themesList->onItemSelect([=](const tgui::String& item){
+    themesList->onItemSelect([btnDel=buttonDelete.get(),ebNew=newThemeEditBox.get()](const tgui::String& item){
         if (item.empty())
-            buttonDelete->setEnabled(false);
+            btnDel->setEnabled(false);
         else
-            buttonDelete->setEnabled(true);
+            btnDel->setEnabled(true);
 
-        newThemeEditBox->setText(item);
+        ebNew->setText(item);
     });
 
-    newThemeEditBox->onTextChange([=](const tgui::String& text){
+    newThemeEditBox->onTextChange([btnAdd=buttonAdd.get()](const tgui::String& text){
         if (text.empty())
-            buttonAdd->setEnabled(false);
+            btnAdd->setEnabled(false);
         else
-            buttonAdd->setEnabled(true);
+            btnAdd->setEnabled(true);
     });
 
-    buttonAdd->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonAdd->onPress([this,ebNew=newThemeEditBox.get(),lbThemes=themesList.get()]{
         try
         {
-            const tgui::String filename = newThemeEditBox->getText();
-            if (!themesList->contains(filename))
+            const tgui::String filename = ebNew->getText();
+            if (!lbThemes->contains(filename))
             {
                 tgui::Theme theme{(tgui::getResourcePath() / filename).asString()};
-                themesList->addItem(filename);
+                lbThemes->addItem(filename);
                 m_themes[filename] = theme;
             }
         }
@@ -2304,29 +2309,29 @@ void GuiBuilder::menuBarCallbackEditThemes()
         saveGuiBuilderState();
     });
 
-    buttonDelete->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
-        auto item = themesList->getSelectedItem();
+    buttonDelete->onPress([this,btnDel=buttonDelete.get(),lbThemes=themesList.get()]{
+        auto item = lbThemes->getSelectedItem();
         m_themes.erase(item);
-        themesList->removeItem(item);
-        buttonDelete->setEnabled(false);
+        lbThemes->removeItem(item);
+        btnDel->setEnabled(false);
         initProperties();
         saveGuiBuilderState();
     });
 
-    buttonBrowse->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+    buttonBrowse->onPress([this,ebNew=newThemeEditBox.get()]{
         auto fileDialog = tgui::FileDialog::create("Select theme file", "Select");
         fileDialog->setFileMustExist(true);
 
-        if (!newThemeEditBox->getText().empty())
+        if (!ebNew->getText().empty())
         {
-            const auto inputPath = tgui::Filesystem::Path(newThemeEditBox->getText());
+            const auto inputPath = tgui::Filesystem::Path(ebNew->getText());
             fileDialog->setPath((tgui::getResourcePath() / inputPath).getParentPath().getNormalForm());
             fileDialog->setFilename(inputPath.getFilename());
         }
         openWindowWithFocus(fileDialog);
 
-        fileDialog->onFileSelect([newThemeEditBox](const tgui::String& selectedFile){
-            newThemeEditBox->setText(selectedFile);
+        fileDialog->onFileSelect([ebNew](const tgui::String& selectedFile){
+            ebNew->setText(selectedFile);
         });
     });
 }
@@ -2469,7 +2474,7 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui:
 
     auto widgets = m_selectedForm->getWidgets();
 
-    auto it = std::find_if(widgets.begin(), widgets.end(), [&](const std::shared_ptr<WidgetInfo>& otherWidget){
+    auto it = std::find_if(widgets.begin(), widgets.end(), [widget](const std::shared_ptr<WidgetInfo>& otherWidget){
         return otherWidget->ptr.get() == widget;
     });
 
