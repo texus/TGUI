@@ -62,6 +62,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static const float EDIT_BOX_HEIGHT = 24;
+static const unsigned int UNDO_MAX_SAVES = 1000;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -274,8 +275,6 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
-    m_undoSaveMaxSaves = 1000;
-    isFromPropUpdate = false;
 
     loadStartScreen();
 }
@@ -296,6 +295,7 @@ void GuiBuilder::mainLoop()
         tgui::Event event;
         while (m_window->pollEvent(event))
         {
+            bool passEventToGui = true;
             if (event.type == tgui::Event::Type::Closed)
             {
                 while (!m_forms.empty())
@@ -379,32 +379,50 @@ void GuiBuilder::mainLoop()
                  || (event.key.code == tgui::Event::KeyboardKey::Up) || (event.key.code == tgui::Event::KeyboardKey::Down))
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    {
                         m_selectedForm->arrowKeyPressed(event.key);
+                        passEventToGui = false;
+                    }
                 }
                 else if (event.key.code == tgui::Event::KeyboardKey::Delete)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    {
                         removeSelectedWidget();
+                        passEventToGui = false;
+                    }
                 }
                 else if (event.key.code == tgui::Event::KeyboardKey::Escape)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    {
                         m_selectedForm->selectParent();
+                        passEventToGui = false;
+                    }
                 }
                 else if ((event.key.code == tgui::Event::KeyboardKey::S) && controlPressed)
                 {
                     if (m_selectedForm)
+                    {
                         m_selectedForm->save();
+                        passEventToGui = false;
+                    }
                 }
                 else if ((event.key.code == tgui::Event::KeyboardKey::C) && controlPressed)
                 {
                     if (m_selectedForm && m_selectedForm->getSelectedWidget() && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    {
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+                        passEventToGui = false;
+                    }
                 }
                 else if ((event.key.code == tgui::Event::KeyboardKey::V) && controlPressed)
                 {
                     if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    {
                         pasteWidgetFromInternalClipboard();
+                        passEventToGui = false;
+                    }
                 }
                 else if ((event.key.code == tgui::Event::KeyboardKey::X) && controlPressed)
                 {
@@ -412,16 +430,26 @@ void GuiBuilder::mainLoop()
                     {
                         copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
                         removeSelectedWidget();
+                        passEventToGui = false;
                     }
                 }
-                else if ((event.key.code == tgui::Event::KeyboardKey::Z) && event.key.control)
+                else if ((event.key.code == tgui::Event::KeyboardKey::Z) && controlPressed)
                 {
-                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused()))
+                    if (m_selectedForm && (m_selectedForm->hasFocus() || m_widgetHierarchyTree->isFocused() || m_propertiesWindow->isFocused()))
+                    {
+                        // Make sure no property field is still focused as removing the widgets causes
+                        // an unfocus event to be fired. Instead we trigger unfocus here, before destroying things.
+                        if (m_propertiesWindow->isFocused())
+                            m_propertiesWindow->setFocused(false);
+
                         loadUndoState();
+                        passEventToGui = false;
+                    }
                 }
             }
-                                            
-            m_gui->handleEvent(event);
+
+            if (passEventToGui)
+                m_gui->handleEvent(event);
         }
 
         if (m_selectedForm && m_selectedForm->hasFocus())
@@ -612,7 +640,7 @@ void GuiBuilder::reloadProperties()
             TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (selectedWidget->name != value)
                 {
-                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
+                    saveUndoState(GuiBuilder::UndoType::PropertyEdit);
                     changeWidgetName(value);
                 }
             });
@@ -623,12 +651,16 @@ void GuiBuilder::reloadProperties()
         {
             addPropertyValueWidgets(topPosition, property,
                 TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
-                    isFromPropUpdate = true;
+                    saveUndoState(GuiBuilder::UndoType::PropertyEdit);
+
                     if (updateWidgetProperty(property.first, value))
-                    {
                         m_selectedForm->setChanged(true);
+                    else
+                    {
+                        // The change wasn't accepted, so we don't need the undo state which we stored before the change
+                        m_undoSaves.pop_back();
+                        m_undoSavesDesc.pop_back();
                     }
-                    isFromPropUpdate = false;
                 });
         }
 
@@ -643,18 +675,24 @@ void GuiBuilder::reloadProperties()
             {
                 addPropertyValueWidgets(topPosition, property,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
-                        isFromPropUpdate = true;
+                        saveUndoState(GuiBuilder::UndoType::PropertyEdit);
+
                         if (updateWidgetProperty(property.first, value))
                         {
-                            saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                             m_selectedForm->setChanged(true);
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
                             // back to the widget, so that the string stored in the renderer is always a valid string.
-                            m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
+                            m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(
+                                selectedWidget->ptr, property.first, m_propertyValuePairs.second[property.first].second);
                         }
-                        isFromPropUpdate = false;
+                        else
+                        {
+                            // The change wasn't accepted, so we don't need the undo state which we stored before the change
+                            m_undoSaves.pop_back();
+                            m_undoSavesDesc.pop_back();
+                        }
                     });
             }
 
@@ -677,10 +715,9 @@ void GuiBuilder::reloadProperties()
             TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().x) != value)
                 {
-                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                     // Form is not marked as changed since the width is saved as editor property
                     const float newWidth = value.toFloat();
-                    m_formSize = { newWidth, m_selectedForm->getSize().y };
+                    m_formSize = {newWidth, m_selectedForm->getSize().y};
                     m_selectedForm->setSize(m_formSize);
                 }
             });
@@ -689,10 +726,9 @@ void GuiBuilder::reloadProperties()
             TGUI_LAMBDA_CAPTURE_EQ_THIS(const tgui::String& value){
                 if (tgui::String::fromNumber(m_selectedForm->getSize().y) != value)
                 {
-                    saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
                     // Form is not marked as changed since the height is saved as editor property
                     const float newHeight = value.toFloat();
-                    m_formSize = { m_selectedForm->getSize().x, newHeight};
+                    m_formSize = {m_selectedForm->getSize().x, newHeight};
                     m_selectedForm->setSize(m_formSize);
                 }
             });
@@ -729,13 +765,13 @@ void GuiBuilder::closeForm(Form* form)
         return;
     }
 
-        auto panel = tgui::Panel::create({ "100%", "100%" });
-        panel->getRenderer()->setBackgroundColor({ 0, 0, 0, 175 });
-        m_gui->add(panel);
+    auto panel = tgui::Panel::create({"100%", "100%"});
+    panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+    m_gui->add(panel);
 
-        auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", { "Yes", "No" });
-        messageBox->setPosition("(&.size - size) / 2");
-        m_gui->add(messageBox);
+    auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", {"Yes", "No"});
+    messageBox->setPosition("(&.size - size) / 2");
+    m_gui->add(messageBox);
 
     bool haltProgram = true;
 #if __cplusplus > 201703L
@@ -746,39 +782,38 @@ void GuiBuilder::closeForm(Form* form)
         if (button == "Yes")
             m_selectedForm->save();
 
-            m_gui->remove(panel);
-            m_gui->remove(messageBox);
+        m_gui->remove(panel);
+        m_gui->remove(messageBox);
 
-            if (m_selectedForm == form)
-                m_selectedForm = nullptr;
+        if (m_selectedForm == form)
+            m_selectedForm = nullptr;
 
-            m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
-            if (m_forms.empty())
-                loadStartScreen();
+        m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f){ return f.get() == form; }));
+        if (m_forms.empty())
+            loadStartScreen();
 
-            haltProgram = false;
-            });
+        haltProgram = false;
+    });
 
-        // The closeForm function has to halt the execution of the normal main loop (to be able to prevent closing the window)
-        while (haltProgram && m_window->isOpen())
+    // The closeForm function has to halt the execution of the normal main loop (to be able to prevent closing the window)
+    while (haltProgram && m_window->isOpen())
+    {
+        tgui::Event event;
+        while (m_window->pollEvent(event))
         {
-            tgui::Event event;
-            while (m_window->pollEvent(event))
+            if (event.type == tgui::Event::Type::Closed)
             {
-                if (event.type == tgui::Event::Type::Closed)
-                {
-                    // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
-                    m_window->close();
-                    m_forms.clear();
-                }
-
-                m_gui->handleEvent(event);
+                // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
+                m_window->close();
+                m_forms.clear();
             }
 
-            m_window->draw();
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            m_gui->handleEvent(event);
         }
-    
+
+        m_window->draw();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -810,12 +845,9 @@ void GuiBuilder::loadStartScreen()
     m_propertiesWindow = nullptr;
     m_propertiesContainer = nullptr;
     m_selectedWidgetComboBox = nullptr;
-    m_propertiesContainer_Editbox_w_p.clear();
-    m_propertiesContainer_Combobox_w_p.clear();
 
     m_gui->removeAllWidgets();
     m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
-
 
     if (!loadGuiBuilderState())
     {
@@ -830,7 +862,7 @@ void GuiBuilder::loadStartScreen()
         });
     });
     panel->get<tgui::Panel>("PnlLoadForm")->onClick([this]{
-        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename, 0); });
+        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
     });
 
     if (m_recentFiles.empty())
@@ -842,7 +874,7 @@ void GuiBuilder::loadStartScreen()
             auto labelRecentForm = panel->get<tgui::Label>("LblRecentForm" + tgui::String::fromNumber(i+1));
             labelRecentForm->setText(m_recentFiles[i]);
             labelRecentForm->setVisible(true);
-            labelRecentForm->onClick([this,filename=m_recentFiles[i]]{ loadForm(filename, 0); });
+            labelRecentForm->onClick([this,filename=m_recentFiles[i]]{ loadForm(filename); });
 
             auto buttonRemoveFormFromList = panel->get<tgui::ClickableWidget>("BtnDeleteRecentForm" + tgui::String::fromNumber(i+1));
             buttonRemoveFormFromList->setVisible(true);
@@ -971,7 +1003,8 @@ void GuiBuilder::loadToolbox()
         toolbox->add(verticalLayout);
 
         panel->onClick(TGUI_LAMBDA_CAPTURE_EQ_THIS{
-            saveUndoState(GuiBuilder::eUndoType::CreateNew);
+            saveUndoState(GuiBuilder::UndoType::CreateNew);
+
             createNewWidget(widget.second());
 
             auto selectedWidget = m_selectedForm->getSelectedWidget();
@@ -1042,8 +1075,6 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
     bool valueChanged;
     try
     {
-        if (isFromPropUpdate)
-        saveUndoState(GuiBuilder::eUndoType::PropertyEdit);
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, value);
         valueChanged = true;
     }
@@ -1066,9 +1097,6 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
 void GuiBuilder::initProperties()
 {
     m_propertiesContainer->removeAllWidgets();
-    //Empties weak pointer containers
-    m_propertiesContainer_Editbox_w_p.clear();
-    m_propertiesContainer_Combobox_w_p.clear();
 
     auto selectedWidget = m_selectedForm->getSelectedWidget();
 
@@ -1217,7 +1245,7 @@ void GuiBuilder::initSelectedWidgetComboBoxAfterLoad()
 
 void GuiBuilder::removeSelectedWidget()
 {
-    saveUndoState(GuiBuilder::eUndoType::Delete);
+    saveUndoState(GuiBuilder::UndoType::Delete);
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
@@ -1310,7 +1338,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // For load type, 0 for saved file load, 1 for undo save load
-bool GuiBuilder::loadForm(tgui::String filename, int loadType)
+bool GuiBuilder::loadForm(tgui::String filename, bool loadingFromFile)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
     const tgui::String basePath = tgui::getResourcePath().getNormalForm().asString();
@@ -1325,7 +1353,7 @@ bool GuiBuilder::loadForm(tgui::String filename, int loadType)
 
     try
     {
-        if (loadType == 0)
+        if (loadingFromFile)
         {
             m_selectedForm->load();
             m_undoSaves.clear(); // Reset undo saves
@@ -1337,7 +1365,6 @@ bool GuiBuilder::loadForm(tgui::String filename, int loadType)
             m_undoSaves.pop_back();
             m_undoSavesDesc.pop_back();
         }
-
     }
     catch (const tgui::Exception& e)
     {
@@ -1485,7 +1512,7 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
     if (m_copiedWidgets.empty())
         return;
 
-    saveUndoState(GuiBuilder::eUndoType::Paste);
+    saveUndoState(GuiBuilder::UndoType::Paste);
 
     // When selecting a container and pressing ctrl+C immediately followed by ctrl+V, the the new container should be a sibling
     // of the old one, not a child. So don't try to paste a container inside itself.
@@ -1548,19 +1575,13 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& prope
         valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
     }
 
-    auto pointFind = m_propertiesContainer_Editbox_w_p.find("Value" + property);
-    if (pointFind == m_propertiesContainer_Editbox_w_p.end())
-        m_propertiesContainer_Editbox_w_p.emplace("Value" + property, valueEditBox); // Create weak pointer for callbacks to prevent leaks
-
     valueEditBox->onUnfocus.disconnectAll();
     valueEditBox->onReturnKeyPress.disconnectAll();
     valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - rightPadding, EDIT_BOX_HEIGHT});
-    valueEditBox->setText(value);  
-    valueEditBox->onReturnOrUnfocus([=] { 
-        if (auto listener = m_propertiesContainer_Editbox_w_p.find("Value" + property)->second.lock()) // Check that weak pointer still exists before manipulating
-        onChange(listener->getText()); });
-    
+    valueEditBox->setText(value);
+    valueEditBox->onReturnOrUnfocus([onChange,editBox=valueEditBox.get()]{ onChange(editBox->getText()); });
+
     return valueEditBox;
 }
 
@@ -1603,10 +1624,6 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
     }
 
-    auto pointFind = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property);
-    if (pointFind == m_propertiesContainer_Combobox_w_p.end())
-        m_propertiesContainer_Combobox_w_p.emplace("ValueComboBox" + property, valueComboBox); // Create weak pointer for callbacks to prevent leaks
-
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
@@ -1617,9 +1634,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
     else
         valueComboBox->setSelectedItemByIndex(0);
 
-    valueComboBox->onItemSelect([=]{
-        if (auto listener = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property)->second.lock()) // Check that weak pointer still exists before manipulating
-        onChange(listener->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2166,10 +2181,6 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->addItem(enumValue);
     }
 
-    auto pointFind = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property);
-    if (pointFind == m_propertiesContainer_Combobox_w_p.end())
-        m_propertiesContainer_Combobox_w_p.emplace("ValueComboBox" + property, valueComboBox); // Create weak pointer for callbacks to prevent leaks
-
     valueComboBox->onItemSelect.disconnectAll();
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
@@ -2181,9 +2192,7 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->setSelectedItemByIndex(i);
     }
 
-    valueComboBox->onItemSelect([=]{ 
-        if (auto listener = m_propertiesContainer_Combobox_w_p.find("ValueComboBox" + property)->second.lock()) // Check that weak pointer still exists before manipulating
-        onChange(listener->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2204,7 +2213,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
     loadStartScreen();
 
     showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){
-        loadForm(filename, 0);
+        loadForm(filename);
     });
 }
 
@@ -2213,7 +2222,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
 void GuiBuilder::menuBarCallbackLoadRecent(const tgui::String& filename)
 {
     loadStartScreen();
-    loadForm(filename, 0);
+    loadForm(filename);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2326,7 +2335,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
 
 void GuiBuilder::menuBarCallbackBringWidgetToFront()
 {
-    saveUndoState(GuiBuilder::eUndoType::SendtoFront);
+    saveUndoState(GuiBuilder::UndoType::SendtoFront);
     m_selectedForm->getSelectedWidget()->ptr->moveToFront();
     m_selectedForm->setChanged(true);
 
@@ -2337,7 +2346,7 @@ void GuiBuilder::menuBarCallbackBringWidgetToFront()
 
 void GuiBuilder::menuBarCallbackSendWidgetToBack()
 {
-    saveUndoState(GuiBuilder::eUndoType::SendtoBack);
+    saveUndoState(GuiBuilder::UndoType::SendtoBack);
     m_selectedForm->getSelectedWidget()->ptr->moveToBack();
     m_selectedForm->setChanged(true);
 
@@ -2521,43 +2530,47 @@ void GuiBuilder::menuBarCallbackAbout()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Save state to program interal memory for undo command
-void GuiBuilder::saveUndoState(GuiBuilder::eUndoType type)
+void GuiBuilder::saveUndoState(GuiBuilder::UndoType type)
 {
     tgui::String descString;
     switch (type)
     {
-    case GuiBuilder::eUndoType::Move:
-        descString = "Move";
-        break;
-    case GuiBuilder::eUndoType::Delete:
+    case GuiBuilder::UndoType::Delete:
         descString = "Delete";
         break;
-    case GuiBuilder::eUndoType::Paste:
+    case GuiBuilder::UndoType::Move:
+        descString = "Move";
+        break;
+    case GuiBuilder::UndoType::Resize:
+        descString = "Resize";
+        break;
+    case GuiBuilder::UndoType::Paste:
         descString = "Paste";
         break;
-    case GuiBuilder::eUndoType::SendtoBack:
+    case GuiBuilder::UndoType::SendtoBack:
         descString = "Send to Back";
         break;
-    case GuiBuilder::eUndoType::SendtoFront:
+    case GuiBuilder::UndoType::SendtoFront:
         descString = "Send to Front";
         break;
-    case GuiBuilder::eUndoType::CreateNew:
+    case GuiBuilder::UndoType::CreateNew:
         descString = "Create New";
         break;
-    case GuiBuilder::eUndoType::PropertyEdit:
+    case GuiBuilder::UndoType::PropertyEdit:
         descString = "Property Edit";
         break;
     }
+
     // Starts deleting beginning history of saved states if > max ammount set to prevent overflow or excess memory usage
-    if (m_undoSaves.size() >= m_undoSaveMaxSaves)
+    if (m_undoSaves.size() >= UNDO_MAX_SAVES)
     {
         m_undoSaves.erase(m_undoSaves.begin());
         m_undoSavesDesc.erase(m_undoSavesDesc.begin());
     }
+
     // Save state and desc of saved state
     m_undoSaves.push_back(m_selectedForm->saveState());
-    m_undoSavesDesc.push_back( descString);
-
+    m_undoSavesDesc.push_back(descString);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2565,31 +2578,38 @@ void GuiBuilder::saveUndoState(GuiBuilder::eUndoType type)
 // Clear page and load previous state
 void GuiBuilder::loadUndoState()
 {
-    if (!m_undoSaves.empty())
+    if (m_undoSaves.empty())
+        return;
+
+    tgui::String selectedWidgetName;
+    const auto formSize = m_selectedForm->getSize();
+    const auto selectedWidget = m_selectedForm->getSelectedWidget();
+    if (selectedWidget)
+        selectedWidgetName = selectedWidget->name;
+
+    const tgui::String filename = m_selectedForm->getFilename();
+    m_selectedForm = nullptr;
+    m_forms.clear();
+
+    m_propertiesWindow = nullptr;
+    m_propertiesContainer = nullptr;
+    m_selectedWidgetComboBox = nullptr;
+
+    m_gui->removeAllWidgets();
+    m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
+
+    if (!loadGuiBuilderState())
     {
-        tgui::String filename = m_selectedForm->getFilename();
-        Form* form = m_forms[0].get();
-        m_forms.erase(std::find_if(m_forms.begin(), m_forms.end(), [form](const auto& f) { return f.get() == form; }));
-        m_selectedForm = nullptr;
-        m_forms.clear();
-
-        m_propertiesWindow = nullptr;
-        m_propertiesContainer = nullptr;
-        m_selectedWidgetComboBox = nullptr;
-        m_propertiesContainer_Combobox_w_p.clear(); 
-        m_propertiesContainer_Editbox_w_p.clear();
-
-        m_gui->removeAllWidgets();
-        m_gui->loadWidgetsFromFile("resources/forms/StartScreen.txt");
-
-        if (!loadGuiBuilderState())
-        {
-            m_themes["themes/Black.txt"] = { (tgui::getResourcePath() / "themes/Black.txt").asString() };
-            m_themes["themes/BabyBlue.txt"] = { (tgui::getResourcePath() / "themes/BabyBlue.txt").asString() };
-            m_themes["themes/TransparentGrey.txt"] = { (tgui::getResourcePath() / "themes/TransparentGrey.txt").asString() };
-        }
-        auto panel = m_gui->get<tgui::Panel>("MainPanel");
-        loadForm(filename, 1);
-        m_selectedForm->focus();
+        m_themes["themes/Black.txt"] = { (tgui::getResourcePath() / "themes/Black.txt").asString() };
+        m_themes["themes/BabyBlue.txt"] = { (tgui::getResourcePath() / "themes/BabyBlue.txt").asString() };
+        m_themes["themes/TransparentGrey.txt"] = { (tgui::getResourcePath() / "themes/TransparentGrey.txt").asString() };
     }
+
+    loadForm(filename, false);
+    m_selectedForm->focus();
+    m_selectedForm->setSize(formSize);
+    m_selectedForm->setChanged(true);
+
+    if (!selectedWidgetName.empty())
+        m_selectedForm->selectWidgetByName(selectedWidgetName);
 }

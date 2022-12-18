@@ -36,20 +36,27 @@ class GuiBuilder
 {
 public:
 
+    enum class UndoType
+    {
+        Delete,
+        Move,
+        Resize,
+        Paste,
+        SendtoFront,
+        SendtoBack,
+        CreateNew,
+        PropertyEdit
+    };
+
     GuiBuilder(const tgui::String& programName);
     ~GuiBuilder();
     void mainLoop();
-
-    enum class eUndoType
-    {
-        Delete, Move, Paste, SendtoFront, SendtoBack, CreateNew, PropertyEdit
-    };
 
     void reloadProperties();
     void widgetSelected(const tgui::Widget::Ptr& widget);
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
-    void saveUndoState(eUndoType);
+    void saveUndoState(UndoType type);
 
 private:
 
@@ -80,7 +87,7 @@ private:
     void removeSelectedWidget();
     void removePopupMenu();
     void createNewForm(tgui::String filename);
-    bool loadForm(tgui::String filename, int loadType);
+    bool loadForm(tgui::String filename, bool loadingFromFile = true);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
@@ -90,7 +97,6 @@ private:
     void copyWidgetToInternalClipboard(const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetFromInternalClipboard();
     void loadUndoState();
-    bool isFromPropUpdate;
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
@@ -134,8 +140,6 @@ private:
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
-    std::map<tgui::String, std::weak_ptr<tgui::EditBox>> m_propertiesContainer_Editbox_w_p;
-    std::map<tgui::String, std::weak_ptr<tgui::ComboBox>> m_propertiesContainer_Combobox_w_p;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
     tgui::TreeView::Ptr m_widgetHierarchyTree;
@@ -158,10 +162,8 @@ private:
     tgui::String m_defaultPath;
     tgui::Filesystem::Path m_programPath;
 
-    std::vector<tgui::String> m_undoSaves;
+    std::vector<std::stringstream> m_undoSaves;
     std::vector<tgui::String> m_undoSavesDesc;
-    unsigned int m_undoSaveMaxSaves;
-
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP
