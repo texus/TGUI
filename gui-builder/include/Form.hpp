@@ -63,6 +63,8 @@ public:
     bool hasFocus() const;
     void load();
     void save();
+    tgui::String saveState();
+    bool loadState(tgui::String);
     void updateAlignmentLines();
 
 private:
@@ -73,6 +75,7 @@ private:
     void onDrag(tgui::Vector2i mousePos);
     void selectWidget(const std::shared_ptr<WidgetInfo>& widget);
     std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
+    bool onDragSaved;
 
 private:
 

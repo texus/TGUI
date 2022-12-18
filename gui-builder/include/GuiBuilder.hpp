@@ -40,10 +40,16 @@ public:
     ~GuiBuilder();
     void mainLoop();
 
+    enum class eUndoType
+    {
+        Delete, Move, Paste, SendtoFront, SendtoBack, CreateNew, PropertyEdit
+    };
+
     void reloadProperties();
     void widgetSelected(const tgui::Widget::Ptr& widget);
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
+    void saveUndoState(eUndoType);
 
 private:
 
@@ -57,6 +63,7 @@ private:
         tgui::Widget::Ptr originalWidget;
         std::vector<CopiedWidget> childWidgets;
     };
+
 
     bool loadGuiBuilderState();
     void saveGuiBuilderState();
@@ -73,7 +80,7 @@ private:
     void removeSelectedWidget();
     void removePopupMenu();
     void createNewForm(tgui::String filename);
-    bool loadForm(tgui::String filename);
+    bool loadForm(tgui::String filename, int loadType);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     tgui::String getDefaultFilename() const;
@@ -82,6 +89,8 @@ private:
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
     void copyWidgetToInternalClipboard(const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetFromInternalClipboard();
+    void loadUndoState();
+    bool isFromPropUpdate;
 
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
@@ -125,6 +134,8 @@ private:
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
+    std::map<tgui::String, std::weak_ptr<tgui::EditBox>> m_propertiesContainer_Editbox_w_p;
+    std::map<tgui::String, std::weak_ptr<tgui::ComboBox>> m_propertiesContainer_Combobox_w_p;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
     tgui::TreeView::Ptr m_widgetHierarchyTree;
@@ -133,6 +144,7 @@ private:
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
     tgui::Panel::Ptr m_foregroundPanel = nullptr;
+
 
     std::map<tgui::String, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
@@ -145,6 +157,11 @@ private:
     tgui::Vector2f m_formSize{800.f, 600.f};
     tgui::String m_defaultPath;
     tgui::Filesystem::Path m_programPath;
+
+    std::vector<tgui::String> m_undoSaves;
+    std::vector<tgui::String> m_undoSavesDesc;
+    unsigned int m_undoSaveMaxSaves;
+
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP
