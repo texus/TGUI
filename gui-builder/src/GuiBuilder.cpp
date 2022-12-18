@@ -1613,7 +1613,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
     else
         valueComboBox->setSelectedItemByIndex(0);
 
-    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox.get()]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2164,7 +2164,7 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
             valueComboBox->setSelectedItemByIndex(i);
     }
 
-    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox]{ onChange(comboBox->getSelectedItem()); });
+    valueComboBox->onItemSelect([onChange,comboBox=valueComboBox.get()]{ onChange(comboBox->getSelectedItem()); });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

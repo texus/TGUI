@@ -1,3 +1,9 @@
+TGUI 0.9.6  (TBD)
+-----------------
+
+- Added Ctrl+Z shortcut in Gui Builder to undo the last change ([PR #176](https://github.com/texus/TGUI/pull/176))
+
+
 TGUI 0.9.5  (17 July 2022)
 --------------------------
 
