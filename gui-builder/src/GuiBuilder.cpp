@@ -1820,7 +1820,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         buttonArrowUp->setEnabled(false);
         buttonArrowDown->setEnabled(false);
 
-        listBox->onItemSelect([this,setArrowColor,lb=listBox.get(),eb=editBox.get(),btnRemove=buttonRemove.get(),btnUp=buttonArrowUp.get(),btnDown=buttonArrowDown.get()]{
+        listBox->onItemSelect([setArrowColor,lb=listBox.get(),eb=editBox.get(),btnRemove=buttonRemove.get(),btnUp=buttonArrowUp.get(),btnDown=buttonArrowDown.get()]{
             const int index = lb->getSelectedItemIndex();
             if (index >= 0)
             {
