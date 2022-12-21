@@ -94,7 +94,11 @@ namespace tgui
 
     public:
 
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+        static constexpr auto npos = std::u32string_view::npos;
+#else
         static const decltype(std::u32string::npos) npos;
+#endif
 
         using iterator = std::u32string::iterator;
         using const_iterator = std::u32string::const_iterator;
