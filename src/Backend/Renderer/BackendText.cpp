@@ -283,6 +283,9 @@ namespace tgui
         if (m_outlineVertices)
             m_outlineVertices->clear();
 
+        if (m_characterSize == 0)
+            return;
+
         const Vertex::Color vertexFillColor(m_fillColor);
         const Vertex::Color vertexOutlineColor(m_outlineColor);
 
