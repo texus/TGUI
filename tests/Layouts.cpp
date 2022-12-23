@@ -468,5 +468,30 @@ TEST_CASE("[Layouts]")
             panel->setSize(200, 100);
             REQUIRE(button->getSize() == tgui::Vector2f(180, 100));
         }
+
+        SECTION("Copying complex layout during layout update (https://forum.tgui.eu/index.php?topic=989)")
+        {
+            class CustomWidget : public tgui::ClickableWidget
+            {
+            public:
+                using Ptr = std::shared_ptr<CustomWidget>;
+
+                void setSize(const tgui::Layout2d& size) override
+                {
+                    tgui::Layout2d newSize = size;
+                    ClickableWidget::setSize(newSize);
+                }
+            };
+
+            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+            panel->setSize({400, 300});
+
+            CustomWidget::Ptr widget = std::make_shared<CustomWidget>();
+            widget->setSize({bindWidth(panel) + 50, bindHeight(panel) * 2});
+
+            // The line below causes CustomWidget::setSize to be executed while looping over the
+            // layouts that are connected to the panel.
+            panel->setSize({800, 600});
+        }
     }
 }

@@ -546,7 +546,9 @@ namespace tgui
             m_prevPosition = getPosition();
             onPositionChange.emit(this, getPosition());
 
-            for (auto& layout : m_boundPositionLayouts)
+            // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
+            // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
+            for (auto* layout : std::unordered_set<Layout*>(m_boundPositionLayouts))
                 layout->recalculateValue();
         }
     }
@@ -564,7 +566,9 @@ namespace tgui
             m_prevSize = getSize();
             onSizeChange.emit(this, getSize());
 
-            for (auto& layout : m_boundSizeLayouts)
+            // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
+            // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
+            for (auto* layout : std::unordered_set<Layout*>(m_boundSizeLayouts))
                 layout->recalculateValue();
 
             // If the origin isn't in the top left then changing the size also changes the position of the widget.
@@ -572,7 +576,7 @@ namespace tgui
             // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
             if ((m_origin.x != 0) || (m_origin.y != 0))
             {
-                for (auto& layout : m_boundPositionLayouts)
+                for (auto* layout : std::unordered_set<Layout*>(m_boundPositionLayouts))
                     layout->recalculateValue();
             }
         }
