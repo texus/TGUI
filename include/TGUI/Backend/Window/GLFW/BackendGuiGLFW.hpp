@@ -54,23 +54,26 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the gui about a focus event when a callback from glfwSetWindowFocusCallback occurs
         /// @param focused  GLFW_TRUE if the window was given input focus, or GLFW_FALSE if it lost it
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void windowFocusCallback(int focused);
+        bool windowFocusCallback(int focused);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the gui about a framebuffer size event when a callback from glfwSetFramebufferSizeCallback occurs
         /// @param width  The new width, in pixels, of the framebuffer
         /// @param height The new height, in pixels, of the framebuffer
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void sizeCallback(int width, int height);
+        bool sizeCallback(int width, int height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the gui about a char event when a callback from glfwSetCharCallback occurs
         /// @param codepoint  The Unicode code point of the character
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void charCallback(unsigned int codepoint);
+        bool charCallback(unsigned int codepoint);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,24 +82,27 @@ namespace tgui
         /// @param scancode The system-specific scancode of the key
         /// @param action   GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
         /// @param mods     Bit field describing which modifier keys were held down
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void keyCallback(int key, int scancode, int action, int mods);
+        bool keyCallback(int key, int scancode, int action, int mods);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the gui about a scroll event when a callback from glfwSetScrollCallback occurs
         /// @param xoffset  The scroll offset along the x-axis
         /// @param yoffset  The scroll offset along the y-axis
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scrollCallback(double xoffset, double yoffset);
+        bool scrollCallback(double xoffset, double yoffset);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the gui about a cursor position event when a callback from glfwSetCursorPosCallback occurs
         /// @param xpos  The new cursor x-coordinate, relative to the left edge of the content area
         /// @param ypos  The new cursor y-coordinate, relative to the top edge of the content area
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void cursorPosCallback(double xpos, double ypos);
+        bool cursorPosCallback(double xpos, double ypos);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,8 +110,9 @@ namespace tgui
         /// @param button  The mouse button that was pressed or released
         /// @param action  One of GLFW_PRESS or GLFW_RELEASE
         /// @param mods    Bit field describing which modifier keys were held down
+        /// @return Has the event been consumed? When this function returns false, then the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void mouseButtonCallback(int button, int action, int mods);
+        bool mouseButtonCallback(int button, int action, int mods);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

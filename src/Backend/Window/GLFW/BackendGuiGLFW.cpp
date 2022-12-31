@@ -149,65 +149,79 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::windowFocusCallback(int focused)
+    bool BackendGuiGLFW::windowFocusCallback(int focused)
     {
         const auto event = convertWindowFocusEvent(focused);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::sizeCallback(int width, int height)
+    bool BackendGuiGLFW::sizeCallback(int width, int height)
     {
         const auto event = convertSizeEvent(width, height);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::charCallback(unsigned int codepoint)
+    bool BackendGuiGLFW::charCallback(unsigned int codepoint)
     {
         const auto event = convertCharEvent(codepoint);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::keyCallback(int key, int scancode, int action, int mods)
+    bool BackendGuiGLFW::keyCallback(int key, int scancode, int action, int mods)
     {
         const auto event = convertKeyEvent(key, scancode, action, mods);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::scrollCallback(double xoffset, double yoffset)
+    bool BackendGuiGLFW::scrollCallback(double xoffset, double yoffset)
     {
         const auto event = convertScrollEvent(xoffset, yoffset);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::cursorPosCallback(double xpos, double ypos)
+    bool BackendGuiGLFW::cursorPosCallback(double xpos, double ypos)
     {
         const auto event = convertCursorPosEvent(xpos, ypos);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGuiGLFW::mouseButtonCallback(int button, int action, int mods)
+    bool BackendGuiGLFW::mouseButtonCallback(int button, int action, int mods)
     {
         const auto event = convertMouseButtonEvent(button, action, mods);
         if (event)
-            handleEvent(*event);
+            return handleEvent(*event);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
