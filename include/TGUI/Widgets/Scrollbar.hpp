@@ -30,6 +30,8 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/ScrollbarRenderer.hpp>
 
+#include <chrono>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -384,6 +386,9 @@ namespace tgui
         bool m_mouseDownOnArrow = false;
 
         bool m_sizeSet = false; // Has setSize been called?
+
+        std::chrono::steady_clock::time_point m_lastSuccessfulScrollTime; // Timestamp of the last mouse wheel scroll event
+        Vector2f m_lastSuccessfulScrollPos; // Mouse position at the last mouse wheel scroll event
 
         FloatRect m_track;
         FloatRect m_thumb;

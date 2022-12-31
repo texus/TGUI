@@ -542,12 +542,23 @@ namespace tgui
         if (horizontalScrollbarVisible)
             innerSize.y -= m_horizontalScrollbar->getSize().y;
 
-        if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, innerSize.x, innerSize.y}.contains(pos))
+        // If we are scrolling through the panel and it causes the mouse to end up on a scrollable child widget,
+        // we should continue scrolling the panel instead of passing the event to the child.
+        // We will pass the event to the child if the mouse moved or the last scroll event on the panel was more than a second ago.
+        const bool allowChildScrolling = ((m_lastSuccessfulScrollTime == std::chrono::steady_clock::time_point())
+                                       || (pos != m_lastSuccessfulScrollPos)
+                                       || (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime} > Duration{std::chrono::seconds(1)}));
+
+        // First try to pass the scroll event to a child widget
+        if (allowChildScrolling
+         && FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, innerSize.x, innerSize.y}.contains(pos)
+         && Container::mouseWheelScrolled(delta, pos + getContentOffset()))
         {
-            if (Container::mouseWheelScrolled(delta, pos + getContentOffset()))
-                return true; // A child widget swallowed the event
+            m_lastSuccessfulScrollTime = std::chrono::steady_clock::time_point(); // Reset the time as the panel didn't process this event
+            return true; // A child widget swallowed the event
         }
 
+        // If the scroll event wasn't handled by a child widget then pass them to the scrollbars in this panel
         bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
             && (!m_verticalScrollbar->isShown()
@@ -562,7 +573,11 @@ namespace tgui
         }
 
         if (scrollbarMoved)
+        {
             mouseMoved(pos);
+            m_lastSuccessfulScrollPos = pos;
+            m_lastSuccessfulScrollTime = std::chrono::steady_clock::now();
+        }
 
         return scrollbarMoved;
     }

@@ -498,7 +498,7 @@ namespace tgui
         const auto timePointNow = std::chrono::steady_clock::now();
 
         bool screenRefreshRequired = false;
-        if (m_lastUpdateTime > decltype(m_lastUpdateTime){})
+        if (m_lastUpdateTime > std::chrono::steady_clock::time_point())
             screenRefreshRequired = updateTime(timePointNow - m_lastUpdateTime);
 
         m_lastUpdateTime = timePointNow;

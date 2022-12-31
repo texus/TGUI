@@ -598,8 +598,25 @@ namespace tgui
         if (isMouseOnWidget(pos - getPosition()))
             mouseMoved(pos - getPosition());
 
-        // Return true unless the scrollbar was already at the top or bottom and you are trying to scroll past it
-        return (m_value != oldValue) || ((oldValue != 0) && (oldValue != m_maximum - m_viewportSize));
+        // If we aren't stuck at the lowest or highest value then we return true to mark the mouse wheel event as processed
+        const bool scrollingIsPossible = ((oldValue != 0) || (delta <= 0)) && ((oldValue != m_maximum - m_viewportSize) || (delta >= 0));
+        if (scrollingIsPossible)
+        {
+            m_lastSuccessfulScrollTime = std::chrono::steady_clock::now();
+            m_lastSuccessfulScrollPos = pos;
+            return true;
+        }
+
+        // If the mouse moved then make sure scrolling is no longer locked to this widget
+        if (pos != m_lastSuccessfulScrollPos)
+            m_lastSuccessfulScrollTime = std::chrono::steady_clock::time_point();
+
+        // We can't scroll any further. In this case we want to let the event be handled by our parent in case of nested
+        // scrollbars, but we don't want to do this when the user accidentally scrolled a bit too far.
+        // So we will absorb the event (by returning true) if a previous scroll event was recent, or let our parent
+        // handle the event (by returning false) if we were already stuck at the end of the scrollbar for a while.
+        return ((m_lastSuccessfulScrollTime != std::chrono::steady_clock::time_point())
+             && (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime} <= Duration{std::chrono::seconds(1)}));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

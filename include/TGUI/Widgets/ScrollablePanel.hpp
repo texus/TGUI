@@ -31,6 +31,8 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
 
+#include <chrono>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -423,6 +425,9 @@ namespace tgui
 
         Scrollbar::Policy m_verticalScrollbarPolicy = Scrollbar::Policy::Automatic;
         Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Automatic;
+
+        std::chrono::steady_clock::time_point m_lastSuccessfulScrollTime; // Timestamp of the last mouse wheel scroll event
+        Vector2f m_lastSuccessfulScrollPos; // Mouse position at the last mouse wheel scroll event
 
         unsigned int m_verticalScrollAmount = 0;
         unsigned int m_horizontalScrollAmount = 0;
