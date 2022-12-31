@@ -144,7 +144,13 @@ namespace tgui
                 if (event.type == Event::Type::MouseMoved)
                     return m_container->processMouseMoveEvent(mouseCoords);
                 else if (event.type == Event::Type::MouseWheelScrolled)
-                    return m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords);
+                {
+                    if (m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords))
+                        return true;
+
+                    // Even if no scrollbar moved, we will still absorb the scroll event when the mouse is on top of a widget
+                    return m_container->getWidgetAtPosition(mouseCoords) != nullptr;
+                }
                 else if (event.type == Event::Type::MouseButtonPressed)
                     return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
                 else // if (event.type == Event::Type::MouseButtonReleased)

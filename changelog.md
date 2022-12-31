@@ -1,3 +1,9 @@
+TGUI 1.0  (TBD)
+---------------
+
+- handleEvent now always returns true for scroll events when mouse is on top of a widget
+
+
 TGUI 1.0-beta  (10 December 2022)
 ---------------------------------
 
