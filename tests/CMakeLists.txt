@@ -85,6 +85,7 @@ set(TEST_SOURCES
     Widgets/RadioButton.cpp
     Widgets/RadioButtonGroup.cpp
     Widgets/RangeSlider.cpp
+    Widgets/RichTextLabel.cpp
     Widgets/ScrollablePanel.cpp
     Widgets/Scrollbar.cpp
     Widgets/SeparatorLine.cpp
