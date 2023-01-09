@@ -152,7 +152,7 @@
     #define TGUI_DEPRECATED(msg)
 #endif
 
-#ifdef __has_cpp_attribute
+#if defined(__has_cpp_attribute) && (__cplusplus >= 201703L)
 #   if __has_cpp_attribute(nodiscard)
 #       define TGUI_NODISCARD [[nodiscard]]
 #   else
