@@ -72,7 +72,7 @@ private:
     };
 
 
-    bool loadGuiBuilderState();
+    TGUI_NODISCARD bool loadGuiBuilderState();
     void saveGuiBuilderState();
     void loadStartScreen();
     void loadEditingScreen(const tgui::String& filename);
@@ -90,7 +90,7 @@ private:
     bool loadForm(tgui::String filename, bool loadingFromFile = true);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
-    tgui::String getDefaultFilename() const;
+    TGUI_NODISCARD tgui::String getDefaultFilename() const;
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
@@ -101,7 +101,7 @@ private:
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
     void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, const std::shared_ptr<tgui::Widget>& parentWidget);
-    bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
+    TGUI_NODISCARD bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
 
     tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
     tgui::Button::Ptr addPropertyValueButtonMore(const tgui::String& property, float topPosition);

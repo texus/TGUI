@@ -42,7 +42,7 @@ namespace tgui
     ///
     /// @return String with base64-encoded data. The string is padded with '=' at the end if needed, and contains no prefix.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API std::string base64Encode(const std::uint8_t* data, std::size_t nrBytes);
+    TGUI_NODISCARD TGUI_API std::string base64Encode(const std::uint8_t* data, std::size_t nrBytes);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ namespace tgui
     ///
     /// @return Binary data contained in the base64-encoded string
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API std::vector<std::uint8_t> base64Decode(CharStringView data);
+    TGUI_NODISCARD TGUI_API std::vector<std::uint8_t> base64Decode(CharStringView data);
 
 } // namespace tgui
 

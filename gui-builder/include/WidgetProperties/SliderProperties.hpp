@@ -50,7 +50,7 @@ struct SliderProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto slider = widget->cast<tgui::Slider>();

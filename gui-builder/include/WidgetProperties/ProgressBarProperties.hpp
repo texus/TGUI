@@ -50,7 +50,7 @@ struct ProgressBarProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto progressBar = widget->cast<tgui::ProgressBar>();
@@ -76,7 +76,7 @@ struct ProgressBarProperties : WidgetProperties
 
 private:
 
-    static tgui::ProgressBar::FillDirection deserializeFillDirection(tgui::String value)
+    TGUI_NODISCARD static tgui::ProgressBar::FillDirection deserializeFillDirection(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "bottomtotop")
@@ -89,7 +89,7 @@ private:
             return tgui::ProgressBar::FillDirection::LeftToRight;
     }
 
-    static tgui::String serializeFillDirection(tgui::ProgressBar::FillDirection direction)
+    TGUI_NODISCARD static tgui::String serializeFillDirection(tgui::ProgressBar::FillDirection direction)
     {
         if (direction == tgui::ProgressBar::FillDirection::BottomToTop)
             return "BottomToTop";

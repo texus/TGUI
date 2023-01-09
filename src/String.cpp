@@ -43,7 +43,7 @@ namespace tgui
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
+    TGUI_NODISCARD static inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
         if (char1 == char2)
             return true;
         else if ((char1 < 128) && (char2 < 128))

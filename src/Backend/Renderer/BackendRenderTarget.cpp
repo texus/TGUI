@@ -40,7 +40,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<Vector2f> drawCircleHelperGetPoints(unsigned int nrPoints, float radius, float offset)
+    TGUI_NODISCARD static std::vector<Vector2f> drawCircleHelperGetPoints(unsigned int nrPoints, float radius, float offset)
     {
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float twoPi = 2.f * std::numbers::pi_v<float>;
@@ -61,7 +61,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const Vector2f& size, float radius, float offset)
+    TGUI_NODISCARD static std::vector<Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const Vector2f& size, float radius, float offset)
     {
         assert(nrCornerPoints != 0);
 

@@ -36,7 +36,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static Event::KeyboardKey convertKeyCode(int key)
+    TGUI_NODISCARD static Event::KeyboardKey convertKeyCode(int key)
     {
         switch (key)
         {

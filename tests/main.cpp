@@ -14,7 +14,7 @@ tgui::BackendGui* globalGui = nullptr;  // Declared as extern in Tests.hpp
 struct TestsWindowBase
 {
     virtual ~TestsWindowBase() = default;
-    virtual tgui::BackendGui* getGui() const { return gui.get(); }
+    TGUI_NODISCARD virtual tgui::BackendGui* getGui() const { return gui.get(); }
     virtual void close() = 0;
 
 protected:
@@ -23,7 +23,7 @@ protected:
 
 struct TestsWindowDefault : public TestsWindowBase
 {
-    tgui::BackendGui* getGui() const override { return window->getGui(); }
+    TGUI_NODISCARD tgui::BackendGui* getGui() const override { return window->getGui(); }
     void close() override { window->close(); }
 
     std::shared_ptr<tgui::DefaultBackendWindow> window = tgui::DefaultBackendWindow::create(windowWidth, windowHeight, windowTitle);

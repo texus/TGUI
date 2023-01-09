@@ -27,6 +27,7 @@
 #define TGUI_COPIED_SHARED_PTR_HPP
 
 
+#include <TGUI/Config.hpp>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +88,7 @@ namespace tgui
             return m_WidgetPtr.get();
         }
 
-        WidgetType* get() const noexcept
+        TGUI_NODISCARD WidgetType* get() const noexcept
         {
             return m_WidgetPtr.get();
         }

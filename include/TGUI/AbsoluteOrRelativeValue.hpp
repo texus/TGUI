@@ -98,7 +98,7 @@ namespace tgui
         ///
         /// @return The constant value or the value based on the given ratio and parent size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr float getValue() const
+        TGUI_NODISCARD constexpr float getValue() const
         {
             return m_value;
         }
@@ -109,7 +109,7 @@ namespace tgui
         ///
         /// @return The ratio that is multiplied with the parent size to get the value, when the value isn't a constant
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr float getRatio() const
+        TGUI_NODISCARD constexpr float getRatio() const
         {
             return m_ratio;
         }
@@ -120,7 +120,7 @@ namespace tgui
         ///
         /// @return Does the value contain a constant?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr bool isConstant() const
+        TGUI_NODISCARD constexpr bool isConstant() const
         {
             return m_constant;
         }
@@ -148,7 +148,7 @@ namespace tgui
         ///
         /// @return String representation of the value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        String toString() const
+        TGUI_NODISCARD String toString() const
         {
             if (m_constant)
                 return String::fromNumber(m_value);

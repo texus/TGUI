@@ -88,59 +88,59 @@ namespace tgui
         {
         }
 
-        constexpr const_iterator begin() const noexcept
+        TGUI_NODISCARD constexpr const_iterator begin() const noexcept
         {
             return m_string;
         }
-        constexpr const_iterator cbegin() const noexcept
+        TGUI_NODISCARD constexpr const_iterator cbegin() const noexcept
         {
             return m_string;
         }
 
-        constexpr const_iterator end() const noexcept
+        TGUI_NODISCARD constexpr const_iterator end() const noexcept
         {
             return m_string + static_cast<std::ptrdiff_t>(m_length);
         }
-        constexpr const_iterator cend() const noexcept
+        TGUI_NODISCARD constexpr const_iterator cend() const noexcept
         {
             return m_string + static_cast<std::ptrdiff_t>(m_length);
         }
 
-        constexpr const CharType& operator[](std::size_t index) const
+        TGUI_NODISCARD constexpr const CharType& operator[](std::size_t index) const
         {
             return m_string[index];
         }
 
-        constexpr const CharType& front() const
+        TGUI_NODISCARD constexpr const CharType& front() const
         {
             return m_string[0];
         }
 
-        constexpr const CharType& back() const
+        TGUI_NODISCARD constexpr const CharType& back() const
         {
             return m_string[m_length-1];
         }
 
-        constexpr const CharType* data() const noexcept
+        TGUI_NODISCARD constexpr const CharType* data() const noexcept
         {
             return m_string;
         }
 
-        constexpr std::size_t size() const noexcept
+        TGUI_NODISCARD constexpr std::size_t size() const noexcept
         {
             return m_length;
         }
-        constexpr std::size_t length() const noexcept
+        TGUI_NODISCARD constexpr std::size_t length() const noexcept
         {
             return m_length;
         }
 
-        constexpr bool empty() const noexcept
+        TGUI_NODISCARD constexpr bool empty() const noexcept
         {
             return (m_length == 0);
         }
 
-        constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const
+        TGUI_NODISCARD constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const
         {
             if (count != std::u32string::npos)
                 return StringViewImpl(&m_string[pos], count);
@@ -148,7 +148,7 @@ namespace tgui
                 return StringViewImpl(&m_string[pos], m_length - pos);
         }
 
-        constexpr int compare(StringViewImpl strView) const noexcept
+        TGUI_NODISCARD constexpr int compare(StringViewImpl strView) const noexcept
         {
             const std::size_t rlen = std::min(length(), strView.length());
             const int ret = std::char_traits<CharType>::compare(data(), strView.data(), rlen);
@@ -163,7 +163,7 @@ namespace tgui
                 return 0;
         }
 
-        constexpr std::size_t find(StringViewImpl strView, std::size_t pos = 0) const noexcept
+        TGUI_NODISCARD constexpr std::size_t find(StringViewImpl strView, std::size_t pos = 0) const noexcept
         {
             if (empty() || (strView.length() > m_length))
                 return std::u32string::npos;
@@ -193,15 +193,15 @@ namespace tgui
             return std::u32string::npos;
         }
 
-        constexpr std::size_t find(CharType ch, std::size_t pos = 0) const noexcept
+        TGUI_NODISCARD constexpr std::size_t find(CharType ch, std::size_t pos = 0) const noexcept
         {
             return find(StringViewImpl(&ch, 1), pos);
         }
-        constexpr std::size_t find(const CharType* str, std::size_t pos, std::size_t count) const
+        TGUI_NODISCARD constexpr std::size_t find(const CharType* str, std::size_t pos, std::size_t count) const
         {
             return find(StringViewImpl(str, count), pos);
         }
-        constexpr std::size_t find(const CharType* str, std::size_t pos = 0) const
+        TGUI_NODISCARD constexpr std::size_t find(const CharType* str, std::size_t pos = 0) const
         {
             return find(StringViewImpl(str), pos);
         }
@@ -212,37 +212,37 @@ namespace tgui
     };
 
     template <typename CharType>
-    constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) == 0;
     }
 
     template <typename CharType>
-    constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) != 0;
     }
 
     template <typename CharType>
-    constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) < 0;
     }
 
     template <typename CharType>
-    constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) <= 0;
     }
 
     template <typename CharType>
-    constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) > 0;
     }
 
     template <typename CharType>
-    constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    TGUI_NODISCARD constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
        return lhs.compare(rhs) >= 0;
     }
@@ -293,27 +293,27 @@ namespace tgui
 #endif // TGUI_COMPILED_WITH_CPP_VER
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
-    inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
+    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.starts_with(viewToLookFor);
     }
 
-    inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
+    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.starts_with(charToLookFor);
     }
 
-    inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
+    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.ends_with(viewToLookFor);
     }
 
-    inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
+    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.ends_with(charToLookFor);
     }
 #else
-    inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
+    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -321,12 +321,12 @@ namespace tgui
         return viewToLookInto.substr(0, viewToLookFor.length()) == viewToLookFor;
     }
 
-    inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
+    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.front() == charToLookFor);
     }
 
-    inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
+    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -334,7 +334,7 @@ namespace tgui
         return StringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor) == 0;
     }
 
-    inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
+    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);
     }

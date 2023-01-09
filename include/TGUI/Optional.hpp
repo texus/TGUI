@@ -122,12 +122,12 @@ namespace tgui
 
         Optional& operator=(Optional&& val) noexcept = default;
 
-        bool operator==(std::nullptr_t) const noexcept
+        TGUI_NODISCARD bool operator==(std::nullptr_t) const noexcept
         {
             return m_ptr == nullptr;
         }
 
-        bool operator!=(std::nullptr_t) const noexcept
+        TGUI_NODISCARD bool operator!=(std::nullptr_t) const noexcept
         {
             return m_ptr != nullptr;
         }
@@ -137,17 +137,17 @@ namespace tgui
             return m_ptr != nullptr;
         }
 
-        bool has_value() const noexcept
+        TGUI_NODISCARD bool has_value() const noexcept
         {
             return m_ptr != nullptr;
         }
 
-        const T& value() const
+        TGUI_NODISCARD const T& value() const
         {
             return *m_ptr;
         }
 
-        T& value()
+        TGUI_NODISCARD T& value()
         {
             return *m_ptr;
         }

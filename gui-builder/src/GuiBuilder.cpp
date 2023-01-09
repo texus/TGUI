@@ -1463,7 +1463,7 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
     copiedWidget.theme = widgetInfo->theme;
     copiedWidget.widget = widgetInfo->ptr->clone();
     copiedWidget.originalWidget = widgetInfo->ptr;
-    copiedWidget.widget->getRenderer(); // Make sure renderer isn't still shared
+    (void)copiedWidget.widget->getRenderer(); // Make sure renderer isn't still shared
 
     if (widgetInfo->ptr->isContainer())
     {

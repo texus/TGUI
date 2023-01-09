@@ -56,7 +56,7 @@ struct LabelProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto label = widget->cast<tgui::Label>();
@@ -85,7 +85,7 @@ struct LabelProperties : WidgetProperties
 
 private:
 
-    static tgui::Label::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
+    TGUI_NODISCARD static tgui::Label::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "right")
@@ -96,7 +96,7 @@ private:
             return tgui::Label::HorizontalAlignment::Left;
     }
 
-    static tgui::Label::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
+    TGUI_NODISCARD static tgui::Label::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "bottom")
@@ -107,7 +107,7 @@ private:
             return tgui::Label::VerticalAlignment::Top;
     }
 
-    static tgui::String serializeHorizontalAlignment(tgui::Label::HorizontalAlignment alignment)
+    TGUI_NODISCARD static tgui::String serializeHorizontalAlignment(tgui::Label::HorizontalAlignment alignment)
     {
         if (alignment == tgui::Label::HorizontalAlignment::Center)
             return "Center";
@@ -117,7 +117,7 @@ private:
             return "Left";
     }
 
-    static tgui::String serializeVerticalAlignment(tgui::Label::VerticalAlignment alignment)
+    TGUI_NODISCARD static tgui::String serializeVerticalAlignment(tgui::Label::VerticalAlignment alignment)
     {
         if (alignment == tgui::Label::VerticalAlignment::Center)
             return "Center";

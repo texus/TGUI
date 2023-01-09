@@ -165,7 +165,7 @@ namespace tgui
         ///
         /// @return Value of the layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getValue() const
+        TGUI_NODISCARD float getValue() const
         {
             return m_value;
         }
@@ -176,7 +176,7 @@ namespace tgui
         ///
         /// @return Value of the layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool isConstant() const
+        TGUI_NODISCARD bool isConstant() const
         {
             return m_operation == Operation::Value;
         }
@@ -188,7 +188,7 @@ namespace tgui
         ///
         /// @return String representation of layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        String toString() const;
+        TGUI_NODISCARD String toString() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,14 +220,14 @@ namespace tgui
         /// @internal
         /// Returns a pointer to the left operand (or nullptr if this layout does not store an operation on two operands)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Layout* getLeftOperand() const;
+        TGUI_NODISCARD Layout* getLeftOperand() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// Returns a pointer to the right operand (or nullptr if this layout does not store an operation on two operands)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Layout* getRightOperand() const;
+        TGUI_NODISCARD Layout* getRightOperand() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +342,7 @@ namespace tgui
         ///
         /// @return Value of the layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f getValue() const
+        TGUI_NODISCARD Vector2f getValue() const
         {
             return {x.getValue(), y.getValue()};
         }
@@ -354,7 +354,7 @@ namespace tgui
         ///
         /// @return String representation of layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        String toString() const
+        TGUI_NODISCARD String toString() const
         {
             return U"(" + x.toString() + U", " + y.toString() + U")";
         }
@@ -370,57 +370,57 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Unary minus operator for the Layout class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout operator-(Layout right);
+    TGUI_NODISCARD TGUI_API Layout operator-(Layout right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief + operator for the Layout class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout operator+(Layout left, Layout right);
+    TGUI_NODISCARD TGUI_API Layout operator+(Layout left, Layout right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief - operator for the Layout class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout operator-(Layout left, Layout right);
+    TGUI_NODISCARD TGUI_API Layout operator-(Layout left, Layout right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief * operator for the Layout class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout operator*(Layout left, Layout right);
+    TGUI_NODISCARD TGUI_API Layout operator*(Layout left, Layout right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief / operator for the Layout class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout operator/(Layout left, Layout right);
+    TGUI_NODISCARD TGUI_API Layout operator/(Layout left, Layout right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Unary minus operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator-(Layout2d right);
+    TGUI_NODISCARD TGUI_API Layout2d operator-(Layout2d right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief + operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator+(Layout2d left, Layout2d right);
+    TGUI_NODISCARD TGUI_API Layout2d operator+(Layout2d left, Layout2d right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief - operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator-(Layout2d left, Layout2d right);
+    TGUI_NODISCARD TGUI_API Layout2d operator-(Layout2d left, Layout2d right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief * operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator*(Layout2d left, const Layout& right);
+    TGUI_NODISCARD TGUI_API Layout2d operator*(Layout2d left, const Layout& right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief * operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator*(const Layout& left, Layout2d right);
+    TGUI_NODISCARD TGUI_API Layout2d operator*(const Layout& left, Layout2d right);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief / operator for the Layout2d class
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API Layout2d operator/(Layout2d left, const Layout& right);
+    TGUI_NODISCARD TGUI_API Layout2d operator/(Layout2d left, const Layout& right);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,58 +428,58 @@ namespace tgui
     inline namespace bind_functions
     {
         /// @brief Bind to the x position of the widget (same as bindLeft unless widget origin is changed)
-        TGUI_API Layout bindPosX(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindPosX(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the y position of the widget (same as bindTop unless widget origin is changed)
-        TGUI_API Layout bindPosY(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindPosY(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the left position of the widget
-        TGUI_API Layout bindLeft(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindLeft(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the top position of the widget
-        TGUI_API Layout bindTop(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindTop(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the width of the widget
-        TGUI_API Layout bindWidth(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindWidth(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the height of the widget
-        TGUI_API Layout bindHeight(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindHeight(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the inner width of the container widget
-        TGUI_API Layout bindInnerWidth(const std::shared_ptr<Container>& container);
+        TGUI_NODISCARD TGUI_API Layout bindInnerWidth(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the inner height of the container widget
-        TGUI_API Layout bindInnerHeight(const std::shared_ptr<Container>& container);
+        TGUI_NODISCARD TGUI_API Layout bindInnerHeight(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the right position of the widget
-        TGUI_API Layout bindRight(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindRight(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the bottom of the widget
-        TGUI_API Layout bindBottom(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout bindBottom(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the position of the widget
-        TGUI_API Layout2d bindPosition(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout2d bindPosition(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the size of the widget
-        TGUI_API Layout2d bindSize(const std::shared_ptr<Widget>& widget);
+        TGUI_NODISCARD TGUI_API Layout2d bindSize(const std::shared_ptr<Widget>& widget);
 
         /// @brief Bind to the inner size of the container widget
-        TGUI_API Layout2d bindInnerSize(const std::shared_ptr<Container>& container);
+        TGUI_NODISCARD TGUI_API Layout2d bindInnerSize(const std::shared_ptr<Container>& container);
 
         /// @brief Bind to the width of the gui view
-        TGUI_API Layout bindWidth(const BackendGui& gui);
+        TGUI_NODISCARD TGUI_API Layout bindWidth(const BackendGui& gui);
 
         /// @brief Bind to the height of the gui view
-        TGUI_API Layout bindHeight(const BackendGui& gui);
+        TGUI_NODISCARD TGUI_API Layout bindHeight(const BackendGui& gui);
 
         /// @brief Bind to the size of the gui view
-        TGUI_API Layout2d bindSize(const BackendGui& gui);
+        TGUI_NODISCARD TGUI_API Layout2d bindSize(const BackendGui& gui);
 
         /// @brief Bind to the minimum value of two layouts
-        TGUI_API Layout bindMin(const Layout& value1, const Layout& value2);
+        TGUI_NODISCARD TGUI_API Layout bindMin(const Layout& value1, const Layout& value2);
 
         /// @brief Bind to the maximum value of two layouts
-        TGUI_API Layout bindMax(const Layout& value1, const Layout& value2);
+        TGUI_NODISCARD TGUI_API Layout bindMax(const Layout& value1, const Layout& value2);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

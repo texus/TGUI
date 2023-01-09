@@ -31,7 +31,7 @@
 
 namespace tgui
 {
-    static std::pair<String, String> parseMinMaxExpresssion(const String& expression)
+    TGUI_NODISCARD static std::pair<String, String> parseMinMaxExpresssion(const String& expression)
     {
         unsigned int bracketCount = 0;
         auto commaOrBracketPos = expression.find_first_of(",()");

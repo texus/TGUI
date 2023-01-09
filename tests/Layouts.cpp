@@ -478,7 +478,7 @@ TEST_CASE("[Layouts]")
 
                 void setSize(const tgui::Layout2d& size) override
                 {
-                    tgui::Layout2d newSize = size;
+                    tgui::Layout2d newSize = size; // NOLINT(performance-unnecessary-copy-initialization)
                     ClickableWidget::setSize(newSize);
                 }
             };

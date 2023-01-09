@@ -40,7 +40,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static Color hsv2rgb(float h, float s, float v)
+    TGUI_NODISCARD static Color hsv2rgb(float h, float s, float v)
     {
         /**
          * vec3 hsv2rgb(vec3 c) {
@@ -76,7 +76,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static Color calculateColor(Vector2f position, float v, float a)
+    TGUI_NODISCARD static Color calculateColor(Vector2f position, float v, float a)
     {
         /**
          * vec2 position = ( gl_FragCoord.xy / resolution.xy );
@@ -118,7 +118,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static float logInvCurve(float x)
+    TGUI_NODISCARD static float logInvCurve(float x)
     {
         /**
          * 0.1  - normal curve

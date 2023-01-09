@@ -51,7 +51,7 @@ TEST_CASE("[Picture]")
     SECTION("Create")
     {
         tgui::Vector2u imageSize;
-        tgui::ImageLoader::loadFromFile("resources/image.png", imageSize);
+        (void)tgui::ImageLoader::loadFromFile("resources/image.png", imageSize);
 
         SECTION("from tgui::Texture")
         {

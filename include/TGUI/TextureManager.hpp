@@ -47,7 +47,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a texture
         ///
-        /// @param texture    The texture object to store the loaded image
+        /// @param texture    The texture object that will store the loaded image
         /// @param filename   Filename of the image to load
         /// @param smooth     Enable smoothing on the texture
         ///
@@ -56,7 +56,7 @@ namespace tgui
         /// @return Texture data when loaded successfully, nullptr otherwise
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, bool smooth);
+        TGUI_NODISCARD static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, bool smooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ namespace tgui
         ///
         /// This function is used in the tests to verify that there are no textures being leaked when the tests are finished.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static std::size_t getCachedImagesCount();
+        TGUI_NODISCARD static std::size_t getCachedImagesCount();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -62,7 +62,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        static Layout2d parseLayout(String str)
+        TGUI_NODISCARD static Layout2d parseLayout(String str)
         {
             if (str.empty())
                 throw Exception{U"Failed to parse layout. String was empty."};
@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static Vector2f parseVector2f(String str)
+    TGUI_NODISCARD static Vector2f parseVector2f(String str)
     {
         if (str.empty())
             throw Exception{U"Failed to parse Vector2f string. String was empty."};

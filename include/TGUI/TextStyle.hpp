@@ -111,7 +111,7 @@ namespace tgui
         ///
         /// @return True if a text style was passed to the constructor, false when the default constructor was used
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr bool isSet() const
+        TGUI_NODISCARD constexpr bool isSet() const
         {
             return m_isSet;
         }

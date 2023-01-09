@@ -62,7 +62,7 @@ struct WidgetProperties
             widget->getRenderer()->setProperty(property, value);
     }
 
-    virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
+    TGUI_NODISCARD virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
     {
         PropertyValueMap pairs;
         pairs["Left"] = {"String", widget->getPositionLayout().x.toString()};
@@ -92,7 +92,7 @@ struct WidgetProperties
     }
 
 
-    static bool parseBoolean(tgui::String str, bool defaultValue)
+    TGUI_NODISCARD static bool parseBoolean(tgui::String str, bool defaultValue)
     {
         str = str.trim().toLower();
         if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
@@ -103,7 +103,7 @@ struct WidgetProperties
             return defaultValue;
     }
 
-    static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
+    TGUI_NODISCARD static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
     {
         try
         {
@@ -127,7 +127,7 @@ struct WidgetProperties
         return {};
     }
 
-    static tgui::String serializeList(const std::vector<tgui::String>& list)
+    TGUI_NODISCARD static tgui::String serializeList(const std::vector<tgui::String>& list)
     {
         if (list.empty())
             return "[]";
@@ -140,7 +140,7 @@ struct WidgetProperties
         return itemList;
     }
 
-    static tgui::Scrollbar::Policy deserializeScrollbarPolicy(tgui::String value)
+    TGUI_NODISCARD static tgui::Scrollbar::Policy deserializeScrollbarPolicy(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "always")
@@ -151,7 +151,7 @@ struct WidgetProperties
             return tgui::Scrollbar::Policy::Automatic;
     }
 
-    static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
+    TGUI_NODISCARD static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
     {
         if (policy == tgui::Scrollbar::Policy::Always)
             return "Always";
@@ -161,7 +161,7 @@ struct WidgetProperties
             return "Automatic";
     }
 
-    static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
+    TGUI_NODISCARD static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "text")
@@ -194,7 +194,7 @@ struct WidgetProperties
             return tgui::Cursor::Type::Arrow;
     }
 
-    static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
+    TGUI_NODISCARD static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
     {
         switch (cursor)
         {

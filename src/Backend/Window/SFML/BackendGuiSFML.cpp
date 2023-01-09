@@ -35,7 +35,7 @@
 
 namespace tgui
 {
-    static Event::KeyboardKey convertKeyCode(sf::Keyboard::Key key)
+    TGUI_NODISCARD static Event::KeyboardKey convertKeyCode(sf::Keyboard::Key key)
     {
         switch (key)
         {

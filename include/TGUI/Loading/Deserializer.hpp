@@ -44,13 +44,13 @@ namespace tgui
     public:
         using DeserializeFunc = std::function<ObjectConverter(const String&)>;
 
-        static ObjectConverter deserialize(ObjectConverter::Type type, const String& serializedString);
+        TGUI_NODISCARD static ObjectConverter deserialize(ObjectConverter::Type type, const String& serializedString);
 
         static void setFunction(ObjectConverter::Type type, const DeserializeFunc& deserializer);
-        static const DeserializeFunc& getFunction(ObjectConverter::Type type);
+        TGUI_NODISCARD static const DeserializeFunc& getFunction(ObjectConverter::Type type);
 
     public:
-        static std::vector<String> split(const String& str, char delim);
+        TGUI_NODISCARD static std::vector<String> split(const String& str, char delim);
 
     private:
         static std::map<ObjectConverter::Type, DeserializeFunc> m_deserializers;  /// We can't use unordered_map with enum class in GCC < 6

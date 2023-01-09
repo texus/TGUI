@@ -49,10 +49,10 @@ namespace tgui
         RendererData(const RendererData& other);
         RendererData& operator=(const RendererData& other);
 
-        static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
+        TGUI_NODISCARD static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
 
         /// @internal
-        static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
+        TGUI_NODISCARD static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
 
         std::map<String, ObjectConverter> propertyValuePairs;
         std::unordered_set<Widget*> observers;
@@ -110,7 +110,7 @@ namespace tgui
         /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getOpacity() const;
+        TGUI_NODISCARD float getOpacity() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ namespace tgui
         /// @return The opacity of the widget in disabled state, or -1 when using the not using a different opacity when
         ///         the widget is enabled or disabled.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getOpacityDisabled() const;
+        TGUI_NODISCARD float getOpacityDisabled() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,7 +149,7 @@ namespace tgui
         /// @return Font used by widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Font getFont() const;
+        TGUI_NODISCARD Font getFont() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ namespace tgui
         ///
         /// @return Text size of the widget or 0 if the renderer doesn't specify a text size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const;
+        TGUI_NODISCARD unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace tgui
         /// @return Whether mouse events on transparent texture parts are ignored
         /// @see setTransparentTexture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getTransparentTexture() const;
+        TGUI_NODISCARD bool getTransparentTexture() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +216,7 @@ namespace tgui
         ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter getProperty(const String& property) const;
+        TGUI_NODISCARD ObjectConverter getProperty(const String& property) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace tgui
         /// @return Property-value pairs of the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::map<String, ObjectConverter>& getPropertyValuePairs() const;
+        TGUI_NODISCARD const std::map<String, ObjectConverter>& getPropertyValuePairs() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ namespace tgui
         /// @warning You should not make changed to this data directly. Instead, use the function from the renderer classes
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<RendererData> getData() const;
+        TGUI_NODISCARD std::shared_ptr<RendererData> getData() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,7 +271,7 @@ namespace tgui
         /// You can pass this to a widget with the setRenderer function to have a separate non-shared copy of this renderer.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<RendererData> clone() const;
+        TGUI_NODISCARD std::shared_ptr<RendererData> clone() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

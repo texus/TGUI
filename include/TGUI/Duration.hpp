@@ -94,7 +94,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the duration in seconds
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr float asSeconds() const
+        TGUI_NODISCARD constexpr float asSeconds() const
         {
             return static_cast<float>(static_cast<double>(m_duration.count()) / 1000000000.0);
         }
@@ -136,78 +136,78 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    constexpr bool operator==(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator==(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) == std::chrono::nanoseconds(rhs);
     }
 
-    constexpr bool operator!=(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator!=(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) != std::chrono::nanoseconds(rhs);
     }
 
-    constexpr bool operator>(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator>(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) > std::chrono::nanoseconds(rhs);
     }
 
-    constexpr bool operator>=(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator>=(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) >= std::chrono::nanoseconds(rhs);
     }
 
-    constexpr bool operator<(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator<(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) < std::chrono::nanoseconds(rhs);
     }
 
-    constexpr bool operator<=(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr bool operator<=(const Duration& lhs, const Duration& rhs)
     {
         return std::chrono::nanoseconds(lhs) <= std::chrono::nanoseconds(rhs);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    constexpr Duration operator+(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr Duration operator+(const Duration& lhs, const Duration& rhs)
     {
         return {std::chrono::nanoseconds(lhs) + std::chrono::nanoseconds(rhs)};
     }
 
-    constexpr Duration operator-(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr Duration operator-(const Duration& lhs, const Duration& rhs)
     {
         return {std::chrono::nanoseconds(lhs) - std::chrono::nanoseconds(rhs)};
     }
 
     template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    constexpr Duration operator*(const Duration& lhs, T rhs)
+    TGUI_NODISCARD constexpr Duration operator*(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) * rhs};
     }
 
     template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    constexpr Duration operator*(T lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr Duration operator*(T lhs, const Duration& rhs)
     {
         return {lhs * std::chrono::nanoseconds(rhs)};
     }
 
     template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    constexpr Duration operator/(const Duration& lhs, T rhs)
+    TGUI_NODISCARD constexpr Duration operator/(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) / rhs};
     }
 
-    constexpr float operator/(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr float operator/(const Duration& lhs, const Duration& rhs)
     {
         return lhs.asSeconds() / rhs.asSeconds();
     }
 
     template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    constexpr Duration operator%(const Duration& lhs, T rhs)
+    TGUI_NODISCARD constexpr Duration operator%(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) % rhs};
     }
 
-    constexpr Duration operator%(const Duration& lhs, const Duration& rhs)
+    TGUI_NODISCARD constexpr Duration operator%(const Duration& lhs, const Duration& rhs)
     {
         return {std::chrono::nanoseconds(lhs) % std::chrono::nanoseconds(rhs)};
     }

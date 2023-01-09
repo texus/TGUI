@@ -410,7 +410,6 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::Chi
     auto eventHandler = tgui::ClickableWidget::create();
     eventHandler->onMousePress([this](tgui::Vector2f pos){ onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
-    m_onDragSaved = false;
 
     setSize(formSize);
 

@@ -194,10 +194,10 @@ TEST_CASE("[Theme]")
         REQUIRE(tgui::Theme::getThemeLoader() == loader);
 
         tgui::Theme theme1;
-        theme1.getRenderer("Button");
+        (void)theme1.getRenderer("Button");
 
         tgui::Theme theme2("resources/Black.txt");
-        theme2.getRenderer("EditBox");
+        (void)theme2.getRenderer("EditBox");
 
         tgui::Theme::setThemeLoader(std::make_shared<tgui::DefaultThemeLoader>());
         REQUIRE(tgui::Theme::getThemeLoader() != loader);

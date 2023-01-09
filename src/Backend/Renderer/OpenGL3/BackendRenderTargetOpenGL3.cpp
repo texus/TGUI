@@ -36,7 +36,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static GLuint createShaderProgram()
+    TGUI_NODISCARD static GLuint createShaderProgram()
     {
         const GLchar* vertexShaderSource;
         if (TGUI_GLAD_GL_VERSION_4_3)

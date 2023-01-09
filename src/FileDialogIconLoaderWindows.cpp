@@ -75,12 +75,12 @@ namespace tgui
         FileDialogIconLoaderWindows();
         ~FileDialogIconLoaderWindows() override;
 
-        bool update() override;
-        bool supportsSystemIcons() const override;
-        bool hasGenericIcons() const override;
-        Texture getGenericFileIcon(const Filesystem::FileInfo& file) override;
+        TGUI_NODISCARD bool update() override;
+        TGUI_NODISCARD bool supportsSystemIcons() const override;
+        TGUI_NODISCARD bool hasGenericIcons() const override;
+        TGUI_NODISCARD Texture getGenericFileIcon(const Filesystem::FileInfo& file) override;
         void requestFileIcons(const std::vector<Filesystem::FileInfo>&) override;
-        std::vector<Texture> retrieveFileIcons() override;
+        TGUI_NODISCARD std::vector<Texture> retrieveFileIcons() override;
 
     private:
         struct IconData
@@ -99,8 +99,8 @@ namespace tgui
             HANDLE finishedEvent = nullptr;
         };
 
-        static IconData loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
-        static Texture loadIcon(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
+        TGUI_NODISCARD static IconData loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
+        TGUI_NODISCARD static Texture loadIcon(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory);
         static DWORD WINAPI loadIconsThread(void* parameter);
 
     private:

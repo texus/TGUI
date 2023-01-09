@@ -127,7 +127,7 @@ namespace tgui
         ///
         /// @return Rectangle position
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr Vector2<T> getPosition() const
+        TGUI_NODISCARD constexpr Vector2<T> getPosition() const
         {
             return {left, top};
         }
@@ -150,7 +150,7 @@ namespace tgui
         ///
         /// @return Rectangle size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr Vector2<T> getSize() const
+        TGUI_NODISCARD constexpr Vector2<T> getSize() const
         {
             return {width, height};
         }
@@ -176,7 +176,7 @@ namespace tgui
         ///
         /// @warning This code assumes the width and height are positive.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr bool contains(const Vector2<T>& pos) const
+        TGUI_NODISCARD constexpr bool contains(const Vector2<T>& pos) const
         {
             return (pos.x >= left) && (pos.x < left + width) && (pos.y >= top) && (pos.y < top + height);
         }
@@ -191,7 +191,7 @@ namespace tgui
         ///
         /// @warning This code assumes the width and height of both rectangles are positive.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr bool intersects(const Rect<T>& rect) const
+        TGUI_NODISCARD constexpr bool intersects(const Rect<T>& rect) const
         {
             // Compute the intersection boundaries
             const T interLeft   = std::max(left, rect.left);
@@ -218,7 +218,7 @@ namespace tgui
     /// @brief Checks if two Rect objects are equal
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    constexpr bool operator==(const Rect<T>& left, const Rect<T>& right)
+    TGUI_NODISCARD constexpr bool operator==(const Rect<T>& left, const Rect<T>& right)
     {
         return (left.left == right.left) && (left.width == right.width)
             && (left.top == right.top) && (left.height == right.height);
@@ -229,7 +229,7 @@ namespace tgui
     /// @brief Checks if two Rect objects are different
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    constexpr bool operator!=(const Rect<T>& left, const Rect<T>& right)
+    TGUI_NODISCARD constexpr bool operator!=(const Rect<T>& left, const Rect<T>& right)
     {
         return !(left == right);
     }

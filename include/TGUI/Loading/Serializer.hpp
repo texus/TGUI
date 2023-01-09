@@ -43,10 +43,10 @@ namespace tgui
     public:
         using SerializeFunc = std::function<String(ObjectConverter&&)>;
 
-        static String serialize(ObjectConverter&& object);
+        TGUI_NODISCARD static String serialize(ObjectConverter&& object);
 
         static void setFunction(ObjectConverter::Type type, const SerializeFunc& serializer);
-        static const SerializeFunc& getFunction(ObjectConverter::Type type);
+        TGUI_NODISCARD static const SerializeFunc& getFunction(ObjectConverter::Type type);
 
     private:
         static std::map<ObjectConverter::Type, SerializeFunc> m_serializers;  /// We can't use unordered_map with enum class in GCC < 6

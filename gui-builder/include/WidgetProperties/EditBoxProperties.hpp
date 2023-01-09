@@ -58,7 +58,7 @@ struct EditBoxProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto editBox = widget->cast<tgui::EditBox>();
@@ -105,7 +105,7 @@ struct EditBoxProperties : WidgetProperties
 
 private:
 
-    static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
+    TGUI_NODISCARD static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "right")
@@ -116,7 +116,7 @@ private:
             return tgui::EditBox::Alignment::Left;
     }
 
-    static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
+    TGUI_NODISCARD static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
     {
         if (alignment == tgui::EditBox::Alignment::Center)
             return "Center";
