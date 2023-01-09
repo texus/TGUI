@@ -175,7 +175,7 @@ jobs:
         if: steps.cache-sdl-ttf.outputs.cache-hit != 'true'
         run: |
           mkdir -p $SDL_TTF_INSTALL_DIR
-          git clone --recurse-submodules --depth 1 $SDL_TTF_GITHUB_URL $GITHUB_WORKSPACE/SDL_TTF
+          git clone --recurse-submodules --branch SDL2 --single-branch --depth 1 $SDL_TTF_GITHUB_URL $GITHUB_WORKSPACE/SDL_TTF
           mkdir $GITHUB_WORKSPACE/SDL_TTF-build
           cd $GITHUB_WORKSPACE/SDL_TTF-build
           cmake -DCMAKE_INSTALL_PREFIX=$SDL_TTF_INSTALL_DIR -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2 -DBUILD_SHARED_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_BUILD_TYPE=Release ../SDL_TTF
