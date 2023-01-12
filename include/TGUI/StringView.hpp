@@ -252,7 +252,10 @@ namespace tgui
 
     // Allow using operator ""sv
     // Note that this only affects code placed inside the tgui namespace.
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__clang__)
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wuser-defined-literals"
+#elif defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wliteral-suffix"
 #elif defined (_MSC_VER)
@@ -284,7 +287,9 @@ namespace tgui
             }
         }
     }
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__clang__)
+#   pragma clang diagnostic pop
+#elif defined(__GNUC__)
 #   pragma GCC diagnostic pop
 #elif defined (_MSC_VER)
 #   pragma warning(pop)
