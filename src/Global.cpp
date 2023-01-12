@@ -157,10 +157,15 @@ namespace tgui
         else
 #endif
         {
-#if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
+            // On Windows, we use _wfopen_s with MSVC, MinGW-w64 and Clang (both LLVM Clang and Clang-CL).
+            // With MinGW.org based TDM-GCC, we can't use _wfopen_s so we call _wfopen if the function is defined (i.e. if __STRICT_ANSI__ is undefined).
+            // If _wfopen is unavailable, we simply use fopen (and hope that the system uses UTF-8 or that filename only contains ASCII characters).
+#if defined(TGUI_SYSTEM_WINDOWS) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR) || defined(__clang__))
             FILE* rawFilePtr = nullptr;
             if (_wfopen_s(&rawFilePtr, filename.toWideString().c_str(), L"rb") != 0)
                 return nullptr;
+#elif defined(TGUI_SYSTEM_WINDOWS) && !defined(__STRICT_ANSI__)
+            FILE* rawFilePtr = _wfopen(filename.toWideString().c_str(), L"rb");
 #else
             FILE* rawFilePtr = fopen(filename.toStdString().c_str(), "rb");
 #endif
@@ -210,10 +215,15 @@ namespace tgui
 
     bool writeFile(const String& filename, CharStringView stringView)
     {
-#if defined(TGUI_SYSTEM_WINDOWS) // _wfopen_s is supported by MSVC and MinGW-w64
+        // On Windows, we use _wfopen_s with MSVC, MinGW-w64 and Clang (both LLVM Clang and Clang-CL).
+        // With MinGW.org based TDM-GCC, we can't use _wfopen_s so we call _wfopen if the function is defined (i.e. if __STRICT_ANSI__ is undefined).
+        // If _wfopen is unavailable, we simply use fopen (and hope that the system uses UTF-8 or that filename only contains ASCII characters).
+#if defined(TGUI_SYSTEM_WINDOWS) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR) || defined(__clang__))
         FILE* file = nullptr;
         if (_wfopen_s(&file, filename.toWideString().c_str(), L"w") != 0)
             return false;
+#elif defined(TGUI_SYSTEM_WINDOWS) && !defined(__STRICT_ANSI__)
+        FILE* file = _wfopen(filename.toWideString().c_str(), L"w");
 #else
         FILE* file = fopen(filename.toStdString().c_str(), "w");
 #endif
