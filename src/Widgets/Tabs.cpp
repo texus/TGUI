@@ -48,7 +48,7 @@ namespace tgui
         }
 
         setTextSize(getGlobalTextSize());
-        setTabHeight(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom());
+        setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTop() + m_bordersCached.getBottom());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

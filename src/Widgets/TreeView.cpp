@@ -253,7 +253,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
+            setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 10,
                      (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }

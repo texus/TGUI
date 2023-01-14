@@ -304,7 +304,7 @@ namespace tgui
         if (m_fontCached)
         {
             buttonWidth = 4.0f * Text::getLineHeight(m_fontCached, m_textSizeCached);
-            buttonHeight = Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f;
+            buttonHeight = std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f);
 
             for (const auto& button : m_buttons)
             {

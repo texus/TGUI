@@ -26,6 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,7 +65,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({m_textFull.getLineHeight() * 10,
-                     m_textFull.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
     }
 

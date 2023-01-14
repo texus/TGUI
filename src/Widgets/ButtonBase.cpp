@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/ButtonBase.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -484,7 +485,7 @@ namespace tgui
             const float spaceAroundText = m_textComponent->getLineHeight();
             const Outline& borders = m_backgroundComponent->getBorders();
             Widget::setSize({m_textComponent->getSize().x + spaceAroundText + borders.getLeft() + borders.getRight(),
-                             m_textComponent->getLineHeight() * 1.25f + borders.getTop() + borders.getBottom()});
+                             std::round(m_textComponent->getLineHeight() * 1.25f) + borders.getTop() + borders.getBottom()});
         }
 
         m_backgroundComponent->setSize(getSize());

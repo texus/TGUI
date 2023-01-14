@@ -230,7 +230,7 @@ namespace tgui
 
     float Text::getExtraHorizontalPadding(const Font& font, unsigned int characterSize)
     {
-        return getLineHeight(font, characterSize) / 10.f;
+        return std::round(getLineHeight(font, characterSize) / 10.f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ namespace tgui
 
     float Text::getExtraHorizontalOffset(const Font& font, unsigned int characterSize)
     {
-        return getLineHeight(font, characterSize) / 6.f;
+        return std::round(getLineHeight(font, characterSize) / 6.f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

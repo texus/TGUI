@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -172,7 +173,7 @@ namespace tgui
     MenuBar::MenuBar(const char* typeName, bool initRenderer) :
         Widget{typeName, false},
         m_menuWidgetPlaceholder(std::make_shared<MenuBarMenuPlaceholder>(this)),
-        m_distanceToSideCached(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f)
+        m_distanceToSideCached(std::round(Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f))
     {
         if (initRenderer)
         {
@@ -182,7 +183,7 @@ namespace tgui
 
         setTextSize(getGlobalTextSize());
         setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSizeCached) * 4) + (2 * m_distanceToSideCached));
-        setSize({"100%", Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f});
+        setSize({"100%", std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

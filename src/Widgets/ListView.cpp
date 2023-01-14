@@ -56,7 +56,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
+            setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
             setSize({m_itemHeight * 12,
                      getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
                      + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
@@ -236,7 +236,7 @@ namespace tgui
         if (m_requestedHeaderHeight > 0)
             return m_requestedHeaderHeight;
         else
-            return m_itemHeight * 1.25f;
+            return std::round(m_itemHeight * 1.25f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

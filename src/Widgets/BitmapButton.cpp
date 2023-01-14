@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/BitmapButton.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -220,7 +221,7 @@ namespace tgui
             const Outline& borders = m_backgroundComponent->getBorders();
 
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            Widget::setSize({getSize().x, m_textComponent->getLineHeight() * 1.25f + borders.getTop() + borders.getBottom()});
+            Widget::setSize({getSize().x, std::round(m_textComponent->getLineHeight() * 1.25f) + borders.getTop() + borders.getBottom()});
 
             recalculateGlyphSize();
 
@@ -234,7 +235,7 @@ namespace tgui
             }
             else
             {
-                const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
+                const float distanceBetweenTextAndImage = std::round(m_textComponent->getLineHeight() / 5.f);
                 const float spaceAroundImageAndText = m_textComponent->getLineHeight();
 
                 // NOLINTNEXTLINE(bugprone-parent-virtual-call)
@@ -288,7 +289,7 @@ namespace tgui
             return Button::updateTextPosition();
 
         const Vector2f innerSize = m_backgroundComponent->getClientSize();
-        const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
+        const float distanceBetweenTextAndImage = std::round(m_textComponent->getLineHeight() / 5.f);
         Vector2f contentSize = m_imageComponent->getSize();
         if (!m_string.empty())
         {

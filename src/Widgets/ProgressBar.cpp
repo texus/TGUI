@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/ProgressBar.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +49,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({m_textBack.getLineHeight() * 15,
-                     m_textBack.getLineHeight() * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     std::round(m_textBack.getLineHeight() * 1.25f) + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
     }
 

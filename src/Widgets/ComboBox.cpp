@@ -25,6 +25,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +53,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({m_text.getLineHeight() * 10,
-                     m_text.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     std::round(m_text.getLineHeight() * 1.25f) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
     }
 
