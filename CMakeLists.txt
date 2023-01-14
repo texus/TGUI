@@ -321,7 +321,7 @@ if(NOT TGUI_BUILD_FRAMEWORK)
     install(DIRECTORY include/
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
             COMPONENT devel
-            FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
+            PATTERN "*.in" EXCLUDE)
 endif()
 
 # Install PDB file
