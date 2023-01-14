@@ -60,10 +60,16 @@
 #endif
 
 #define STBI_NO_STDIO
-#define STB_IMAGE_STATIC
 #define STBI_WINDOWS_UTF8
+
+#define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
-#include <TGUI/extlibs/stb/stb_image.h>
+
+#if TGUI_USE_SYSTEM_STB
+#   include <stb_image.h>
+#else
+#   include <TGUI/extlibs/stb/stb_image.h>
+#endif
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop

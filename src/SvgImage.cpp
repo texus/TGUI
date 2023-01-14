@@ -37,10 +37,15 @@
 #endif
 
 #define NANOSVG_IMPLEMENTATION
-#include "TGUI/extlibs/nanosvg/nanosvg.h"
-
 #define NANOSVGRAST_IMPLEMENTATION
-#include "TGUI/extlibs/nanosvg/nanosvgrast.h"
+
+#if TGUI_USE_SYSTEM_NANOSVG
+#   include <nanosvg.h>
+#   include <nanosvgrast.h>
+#else
+#   include <TGUI/extlibs/nanosvg/nanosvg.h>
+#   include <TGUI/extlibs/nanosvg/nanosvgrast.h>
+#endif
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop

@@ -33,8 +33,34 @@
     #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
-// Include all functions from OpenGL 4.6 and OpenGL ES 3.2
-#include <TGUI/extlibs/glad/gl.h>
+#if TGUI_USE_SYSTEM_GLAD
+    #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
+        #include <glad/gl.h>
+
+        #define tgui_gladLoadGL             gladLoadGL
+        #define TGUI_GLAD_GL_VERSION_3_3    GLAD_GL_VERSION_3_3
+        #define TGUI_GLAD_GL_VERSION_4_0    GLAD_GL_VERSION_4_0
+        #define TGUI_GLAD_GL_VERSION_4_1    GLAD_GL_VERSION_4_1
+        #define TGUI_GLAD_GL_VERSION_4_2    GLAD_GL_VERSION_4_2
+        #define TGUI_GLAD_GL_VERSION_4_3    GLAD_GL_VERSION_4_3
+        #define TGUI_GLAD_GL_VERSION_4_4    GLAD_GL_VERSION_4_4
+        #define TGUI_GLAD_GL_VERSION_4_5    GLAD_GL_VERSION_4_5
+        #define TGUI_GLAD_GL_VERSION_4_6    GLAD_GL_VERSION_4_6
+    #endif
+
+    #if TGUI_HAS_RENDERER_BACKEND_GLES2
+        #include <glad/gles2.h>
+
+        #define tgui_gladLoadGLES2          gladLoadGLES2
+        #define TGUI_GLAD_GL_ES_VERSION_2_0 GLAD_GL_ES_VERSION_2_0
+        #define TGUI_GLAD_GL_ES_VERSION_3_0 GLAD_GL_ES_VERSION_3_0
+        #define TGUI_GLAD_GL_ES_VERSION_3_1 GLAD_GL_ES_VERSION_3_1
+        #define TGUI_GLAD_GL_ES_VERSION_3_2 GLAD_GL_ES_VERSION_3_2
+    #endif
+#else
+    // Include all functions from OpenGL 4.6 and OpenGL ES 3.2
+    #include <TGUI/extlibs/glad/gl.h>
+#endif
 
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop

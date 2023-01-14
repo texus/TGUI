@@ -53,10 +53,16 @@
 #   endif
 #endif
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_STATIC
 #define STBI_WRITE_NO_STDIO
-#include <TGUI/extlibs/stb/stb_image_write.h>
+
+#define STB_IMAGE_WRITE_STATIC
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#if TGUI_USE_SYSTEM_STB
+#   include <stb_image_write.h>
+#else
+#   include <TGUI/extlibs/stb/stb_image_write.h>
+#endif
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop

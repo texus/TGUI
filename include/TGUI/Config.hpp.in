@@ -106,6 +106,13 @@
 // Settig this option to FALSE in CMake will remove the X11 dependency but will cause those cursors to not show up when using them.
 #cmakedefine01 TGUI_USE_X11
 
+// Options to use system-wide dependencies instead of version TGUI ships in its extlibs folder.
+// This might be useful for package managers.
+#cmakedefine01 TGUI_USE_SYSTEM_STB
+#cmakedefine01 TGUI_USE_SYSTEM_GLAD
+#cmakedefine01 TGUI_USE_SYSTEM_NANOSVG
+#cmakedefine01 TGUI_USE_SYSTEM_AURORA
+
 // Define that specifies the mininmum c++ support in both the TGUI code and user code.
 // This constant can be lower than the actual c++ standard version used to compile with,
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.

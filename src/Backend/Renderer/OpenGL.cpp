@@ -24,7 +24,9 @@
 
 #include <TGUI/Config.hpp>
 
-#define TGUI_GLAD_GL_IMPLEMENTATION
+#if !TGUI_USE_SYSTEM_GLAD
+    #define TGUI_GLAD_GL_IMPLEMENTATION
+#endif
 
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
 #include <TGUI/String.hpp>

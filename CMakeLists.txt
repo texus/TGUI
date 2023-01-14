@@ -210,6 +210,26 @@ include(${PROJECT_SOURCE_DIR}/cmake/Dependencies.cmake)
 # Set up the TGUI library
 add_subdirectory(src)
 
+# If system dependencies are used instead of the headers from the extlibs directory then locate the header files
+if(TGUI_USE_SYSTEM_STB)
+    find_path(TGUI_SYSTEM_STB_IMAGE_INCLUDE_DIR stb_image.h REQUIRED)
+    target_include_directories(tgui PRIVATE "${TGUI_SYSTEM_STB_IMAGE_INCLUDE_DIR}")
+
+    find_path(TGUI_SYSTEM_STB_IMAGE_WRITE_INCLUDE_DIR stb_image_write.h REQUIRED)
+    target_include_directories(tgui PRIVATE "${TGUI_SYSTEM_STB_IMAGE_WRITE_INCLUDE_DIR}")
+endif()
+if(TGUI_USE_SYSTEM_NANOSVG)
+    find_path(TGUI_SYSTEM_NANOSVG_INCLUDE_DIR nanosvg.h REQUIRED)
+    target_include_directories(tgui PRIVATE "${TGUI_SYSTEM_NANOSVG_INCLUDE_DIR}")
+
+    find_path(TGUI_SYSTEM_NANOSVG_RAST_INCLUDE_DIR nanosvgrast.h REQUIRED)
+    target_include_directories(tgui PRIVATE "${TGUI_SYSTEM_NANOSVG_RAST_INCLUDE_DIR}")
+endif()
+if(TGUI_USE_SYSTEM_GLAD)
+    find_package(glad CONFIG REQUIRED)
+    target_link_libraries(tgui PRIVATE glad::glad)
+endif()
+
 # Create an interface to create a console app that uses TGUI (used to build the tests)
 add_library(tgui-console-app-interface INTERFACE)
 target_link_libraries(tgui-console-app-interface INTERFACE tgui)
