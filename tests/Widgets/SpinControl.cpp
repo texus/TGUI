@@ -125,6 +125,15 @@ TEST_CASE("[spinControl]")
         REQUIRE(spinControl->getDecimalPlaces() == 3);
     }
 
+    SECTION("UseWideArrows")
+    {
+        REQUIRE(!spinControl->getUseWideArrows());
+        spinControl->setUseWideArrows(true);
+        REQUIRE(spinControl->getUseWideArrows());
+        spinControl->setUseWideArrows(false);
+        REQUIRE(!spinControl->getUseWideArrows());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ValueChanged")

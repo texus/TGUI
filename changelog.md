@@ -1,6 +1,8 @@
 TGUI 1.0  (TBD)
 ---------------
 
+- Improved scrolling with nested scrollbars
+- Added UseWideArrows property to SpinControl
 - handleEvent now always returns true for scroll events when mouse is on top of a widget
 
 

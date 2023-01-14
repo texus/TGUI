@@ -45,6 +45,8 @@ struct SpinControlProperties : WidgetProperties
             spinControl->setStep(value.toFloat());
         else if (property == "DecimalPlaces")
             spinControl->setDecimalPlaces(value.toUInt());
+        else if (property == "UseWideArrows")
+            spinControl->setUseWideArrows(parseBoolean(value, false));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -59,6 +61,7 @@ struct SpinControlProperties : WidgetProperties
         pair.first["Step"] = {"Float", tgui::String::fromNumber(spinControl->getStep())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(spinControl->getStep())};
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(spinControl->getDecimalPlaces())};
+        pair.first["UseWideArrows"] = {"Bool", tgui::Serializer::serialize(spinControl->getUseWideArrows())};
 
         const auto buttonRenderer = spinControl->getSpinButtonSharedRenderer();
         pair.second["SpinButton.ButtonsBorders"] = {"Outline", tgui::Serializer::serialize(buttonRenderer->getBorders())};

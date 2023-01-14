@@ -38,7 +38,7 @@ namespace tgui
         SubwidgetContainer{typeName, initRenderer}
     {
         m_spinText->setInputValidator(EditBox::Validator::Float);
-        m_spinText->setSize(m_spinText->getSize().x, m_spinButton->getSize().y);
+        m_spinText->setSize(m_spinText->getSize().x - m_spinButton->getSize().x, m_spinButton->getSize().y);
 
         m_container->add(m_spinText, "SpinText");
         m_container->add(m_spinButton, "SpinButton");
@@ -120,8 +120,16 @@ namespace tgui
 
         if (getSize().x > getSize().y)
         {
-            m_spinButton->setSize({getSize().y / 2, getSize().y});
-            m_spinText->setSize({getSize().x - getSize().y / 2, getSize().y});
+            if (m_useWideArrows)
+            {
+                m_spinButton->setSize({getSize().y, getSize().y});
+                m_spinText->setSize({getSize().x - getSize().y, getSize().y});
+            }
+            else
+            {
+                m_spinButton->setSize({getSize().y / 2, getSize().y});
+                m_spinText->setSize({getSize().x - getSize().y / 2, getSize().y});
+            }
         }
         else
         {
@@ -209,10 +217,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinControl::setUseWideArrows(bool useWideArrows)
+    {
+        m_useWideArrows = useWideArrows;
+        setSize(m_size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SpinControl::getUseWideArrows() const
+    {
+        return m_useWideArrows;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<DataIO::Node> SpinControl::save(SavingRenderersMap& renderers) const
     {
         auto node = SubwidgetContainer::save(renderers);
         node->propertyValuePairs[U"DecimalPlaces"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_decimalPlaces));
+        node->propertyValuePairs[U"UseWideArrows"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_useWideArrows));
         return node;
     }
 
@@ -224,6 +248,8 @@ namespace tgui
 
         if (node->propertyValuePairs[U"DecimalPlaces"])
             setDecimalPlaces(node->propertyValuePairs[U"DecimalPlaces"]->value.toUInt());
+        if (node->propertyValuePairs[U"UseWideArrows"])
+            setUseWideArrows(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"UseWideArrows"]->value).getBool());
 
         m_spinText = m_container->get<tgui::EditBox>("SpinText");
         m_spinButton = m_container->get<tgui::SpinButton>("SpinButton");
