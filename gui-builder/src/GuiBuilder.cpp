@@ -1180,6 +1180,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueStringList(property, value, onChange, topPosition);
     else if (type == "Texture")
         addPropertyValueTexture(property, value, onChange, topPosition);
+    else if (type == "ListViewColumns")
+        addPropertyListViewColumns(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type == "ChildWindowTitleButtons")
@@ -2063,6 +2065,151 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                     updateForm(filename, {}, {}, cbSmooth->isChecked(), true, true, false);
                 });
         });
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto setArrowColor = [](const tgui::BitmapButton::Ptr& button, const tgui::Color& color){
+        tgui::Texture texture = button->getImage();
+        texture.setColor(color);
+        button->setImage(texture);
+    };
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->onPress([this,value,onChange,setArrowColor]{
+        auto stringListWindow = openWindowWithFocus();
+        stringListWindow->setTitle("Set columns");
+        stringListWindow->setClientSize({423, 312});
+        stringListWindow->loadWidgetsFromFile("resources/forms/SetListViewColumns.txt");
+
+        auto listView = stringListWindow->get<tgui::ListView>("ListView");
+        auto editCaption = stringListWindow->get<tgui::EditBox>("EditCaption");
+        auto spinWidth = stringListWindow->get<tgui::SpinControl>("SpinWidth");
+        auto comboBoxAlignment = stringListWindow->get<tgui::ComboBox>("ComboBoxAlignment");
+        auto buttonAdd = stringListWindow->get<tgui::Button>("BtnAdd");
+        auto buttonReplace = stringListWindow->get<tgui::Button>("BtnReplace");
+        auto buttonRemove = stringListWindow->get<tgui::Button>("BtnRemove");
+        auto buttonArrowUp = stringListWindow->get<tgui::BitmapButton>("BtnArrowUp");
+        auto buttonArrowDown = stringListWindow->get<tgui::BitmapButton>("BtnArrowDown");
+
+        auto serializedColumns = WidgetProperties::deserializeList(value);
+        for (const auto& serializedColumn : serializedColumns)
+        {
+            tgui::String text;
+            float width;
+            tgui::ListView::ColumnAlignment alignment;
+            if (ListViewProperties::deserializeColumn(serializedColumn, text, width, alignment))
+                listView->addItem({text, tgui::Serializer::serialize(width), ListViewProperties::serializeColumnAlignment(alignment)});
+        }
+
+        setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+        setArrowColor(buttonArrowDown, buttonArrowDown->getSharedRenderer()->getTextColorDisabled());
+        buttonRemove->setEnabled(false);
+        buttonArrowUp->setEnabled(false);
+        buttonArrowDown->setEnabled(false);
+
+        listView->onItemSelect([setArrowColor,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get(),btnReplace=buttonReplace.get(),btnRemove=buttonRemove.get(),btnUp=buttonArrowUp.get(),btnDown=buttonArrowDown.get()]{
+            const int index = lv->getSelectedItemIndex();
+            if (index >= 0)
+            {
+                btnRemove->setEnabled(true);
+                btnReplace->setEnabled(true);
+
+                const std::vector<tgui::String>& selectedItem = lv->getItemRow(static_cast<std::size_t>(index));
+                ebCaption->setText(selectedItem[0]);
+                scWidth->setValue(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, selectedItem[1]).getNumber());
+                cbAlign->setSelectedItem(selectedItem[2]);
+            }
+            else
+            {
+                btnRemove->setEnabled(false);
+                btnReplace->setEnabled(false);
+            }
+
+            if (index > 0)
+            {
+                setArrowColor(btnUp->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColor());
+                btnUp->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(btnUp->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColorDisabled());
+                btnUp->setEnabled(false);
+            }
+
+            if ((index >= 0) && (static_cast<std::size_t>(index) + 1 < lv->getItemCount()))
+            {
+                setArrowColor(btnDown->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColor());
+                btnDown->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(btnDown->cast<tgui::BitmapButton>(), btnUp->getSharedRenderer()->getTextColorDisabled());
+                btnDown->setEnabled(false);
+            }
+        });
+
+        auto updateValue = [onChange,lv=listView.get()]{
+            std::vector<tgui::String> serializedColumns;
+            for (std::size_t i = 0; i < lv->getItemCount(); ++i)
+            {
+                const std::vector<tgui::String> item = lv->getItemRow(i);
+                serializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2] + ')');
+            }
+            onChange(WidgetProperties::serializeList(serializedColumns));
+        };
+
+        buttonArrowUp->onPress([updateValue,lv=listView.get()]{
+            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            std::vector<tgui::String> value1 = lv->getItemRow(index - 1);
+            std::vector<tgui::String> value2 = lv->getItemRow(index);
+            lv->changeItem(index - 1, value2);
+            lv->changeItem(index, value1);
+            lv->setSelectedItem(index - 1);
+            updateValue();
+        });
+
+        buttonArrowDown->onPress([updateValue,lv=listView.get()]{
+            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            std::vector<tgui::String> value1 = lv->getItemRow(index);
+            std::vector<tgui::String> value2 = lv->getItemRow(index + 1);
+            lv->changeItem(index, value2);
+            lv->changeItem(index + 1, value1);
+            lv->setSelectedItem(index + 1);
+            updateValue();
+        });
+
+        buttonRemove->onPress([updateValue,lv=listView.get()]{
+            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            lv->removeItem(index);
+            if (lv->getItemCount() > 0)
+            {
+                if (index == lv->getItemCount())
+                    lv->setSelectedItem(index - 1);
+                else
+                    lv->setSelectedItem(index);
+            }
+
+            updateValue();
+        });
+
+        buttonReplace->onPress([updateValue,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get()]{
+            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            lv->changeItem(index, {ebCaption->getText(), tgui::Serializer::serialize(scWidth->getValue()), cbAlign->getSelectedItem()});
+            updateValue();
+        });
+
+        auto addItem = [updateValue,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get()]{
+            lv->addItem({ebCaption->getText(), tgui::Serializer::serialize(scWidth->getValue()), cbAlign->getSelectedItem()});
+            lv->setSelectedItem(lv->getItemCount() - 1);
+            updateValue();
+        };
+        buttonAdd->onPress(addItem);
     });
 }
 

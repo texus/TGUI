@@ -89,7 +89,7 @@ struct ListViewProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto listView = widget->cast<tgui::ListView>();
-        pair.first["Columns"] = {"List<String>", serializeColumns(listView)}; // TODO: Should have its own type
+        pair.first["Columns"] = {"ListViewColumns", serializeColumns(listView)};
         pair.first["HeaderHeight"] = {"Float", tgui::String::fromNumber(listView->getHeaderHeight())};
         pair.first["HeaderVisible"] = {"Bool", tgui::Serializer::serialize(listView->getHeaderVisible())};
         pair.first["MultiSelect"] = {"Bool", tgui::Serializer::serialize(listView->getMultiSelect())};
@@ -127,7 +127,18 @@ struct ListViewProperties : WidgetProperties
         return pair;
     }
 
-private:
+    TGUI_NODISCARD static tgui::String serializeColumnAlignment(tgui::ListView::ColumnAlignment alignment)
+    {
+        switch (alignment)
+        {
+            case tgui::ListView::ColumnAlignment::Center:
+                return "Center";
+            case tgui::ListView::ColumnAlignment::Right:
+                return "Right";
+            default: // tgui::ListView::ColumnAlignment::Left
+                return "Left";
+        }
+    }
 
     TGUI_NODISCARD static tgui::String serializeColumns(const tgui::ListView::Ptr& listView)
     {
@@ -137,16 +148,7 @@ private:
             const tgui::String caption = listView->getColumnText(i);
             const float width = listView->getColumnWidth(i);
             const tgui::ListView::ColumnAlignment alignment = listView->getColumnAlignment(i);
-
-            tgui::String serializedAlignment;
-            switch (alignment)
-            {
-                case tgui::ListView::ColumnAlignment::Left:    serializedAlignment = "Left";   break;
-                case tgui::ListView::ColumnAlignment::Center:  serializedAlignment = "Center"; break;
-                case tgui::ListView::ColumnAlignment::Right:   serializedAlignment = "Right";  break;
-            }
-
-            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ',' + serializedAlignment + ')');
+            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ',' + serializeColumnAlignment(alignment) + ')');
         }
 
         return serializeList(serializedColumns);
