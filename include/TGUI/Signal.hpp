@@ -250,13 +250,13 @@ namespace tgui
         }
 #else
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
-        template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<std::decay_t<Func>>::value>::type* = nullptr>
+        template <typename Func, typename... Args, typename std::enable_if_t<std::is_member_pointer<std::decay_t<Func>>::value>* = nullptr>
         static void invokeFunc(Func&& func, Args&&... args)
         {
             (std::mem_fn(func))(std::forward<Args>(args)...);
         }
 
-        template <typename Func, typename... Args, typename std::enable_if<!std::is_member_pointer<std::decay_t<Func>>::value>::type* = nullptr>
+        template <typename Func, typename... Args, typename std::enable_if_t<!std::is_member_pointer<std::decay_t<Func>>::value>* = nullptr>
         static void invokeFunc(Func&& func, Args&&... args)
         {
             std::forward<Func>(func)(std::forward<Args>(args)...);

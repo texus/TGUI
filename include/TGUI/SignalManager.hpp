@@ -120,7 +120,7 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
+        template <typename Func, typename... Args, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>* = nullptr>
         unsigned int connect(String widgetName, String signalName, Func&& handler, const Args&... args);
 
 
@@ -135,8 +135,8 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                                && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type* = nullptr>
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                                                                                && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
         unsigned int connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args);
 #endif
 
@@ -248,7 +248,7 @@ namespace tgui
         return id;
     }
 #else
-    template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type*>
+    template <typename Func, typename... Args, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>*>
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const Args&... args)
     {
         const unsigned int id = generateUniqueId();
@@ -258,8 +258,8 @@ namespace tgui
         return id;
     }
 
-    template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                            && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>::type*>
+    template <typename Func, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                                                                            && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>*>
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args)
     {
         const unsigned int id = generateUniqueId();

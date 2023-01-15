@@ -56,7 +56,7 @@ namespace tgui
     template <typename T>
     TGUI_NODISCARD std::unique_ptr<T> MakeUniqueForOverwrite(const std::size_t size)
     {
-        return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]);
+        return std::unique_ptr<T>(new typename std::remove_extent_t<T>[size]);
     }
 #endif
 

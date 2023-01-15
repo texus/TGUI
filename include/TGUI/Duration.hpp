@@ -178,19 +178,19 @@ namespace tgui
         return {std::chrono::nanoseconds(lhs) - std::chrono::nanoseconds(rhs)};
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     TGUI_NODISCARD constexpr Duration operator*(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) * rhs};
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     TGUI_NODISCARD constexpr Duration operator*(T lhs, const Duration& rhs)
     {
         return {lhs * std::chrono::nanoseconds(rhs)};
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     TGUI_NODISCARD constexpr Duration operator/(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) / rhs};
@@ -201,7 +201,7 @@ namespace tgui
         return lhs.asSeconds() / rhs.asSeconds();
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     TGUI_NODISCARD constexpr Duration operator%(const Duration& lhs, T rhs)
     {
         return {std::chrono::nanoseconds(lhs) % rhs};
@@ -225,19 +225,19 @@ namespace tgui
         return lhs = lhs - rhs;
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     constexpr Duration& operator*=(Duration& lhs, T rhs)
     {
         return lhs = lhs * rhs;
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     constexpr Duration& operator/=(Duration& lhs, T rhs)
     {
         return lhs = lhs / rhs;
     }
 
-    template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
     constexpr Duration& operator%=(Duration& lhs, T rhs)
     {
         return lhs = lhs % rhs;
