@@ -289,7 +289,7 @@ namespace tgui
             return Button::updateTextPosition();
 
         const Vector2f innerSize = m_backgroundComponent->getClientSize();
-        const float distanceBetweenTextAndImage = std::round(m_textComponent->getLineHeight() / 5.f);
+        const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;
         Vector2f contentSize = m_imageComponent->getSize();
         if (!m_string.empty())
         {
@@ -302,7 +302,7 @@ namespace tgui
 
         m_imageComponent->setPosition({m_textPosition.x.getValue() - m_textOrigin.x * contentSize.x,
                                        m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_imageComponent->getSize().y) / 2.f});
-        m_textComponent->setPosition({m_imageComponent->getPosition().x + distanceBetweenTextAndImage + m_imageComponent->getSize().x,
+        m_textComponent->setPosition({m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
                                       m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_textComponent->getSize().y) / 2.f});
     }
 
