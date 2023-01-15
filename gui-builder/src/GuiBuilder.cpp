@@ -2155,13 +2155,13 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         });
 
         auto updateValue = [onChange,lv=listView.get()]{
-            std::vector<tgui::String> serializedColumns;
+            std::vector<tgui::String> newSerializedColumns;
             for (std::size_t i = 0; i < lv->getItemCount(); ++i)
             {
                 const std::vector<tgui::String> item = lv->getItemRow(i);
-                serializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2] + ')');
+                newSerializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2] + ')');
             }
-            onChange(WidgetProperties::serializeList(serializedColumns));
+            onChange(WidgetProperties::serializeList(newSerializedColumns));
         };
 
         buttonArrowUp->onPress([updateValue,lv=listView.get()]{
