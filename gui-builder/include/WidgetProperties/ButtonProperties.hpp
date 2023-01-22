@@ -33,7 +33,7 @@ struct ButtonProperties : WidgetProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
-        auto button = widget->cast<tgui::Button>();
+        auto button = widget->cast<tgui::ButtonBase>(); // Cast to ButtonBase instead of button to reuse code for ToggleButton
         if (property == "Text")
             button->setText(value);
         else if (property == "TextSize")
@@ -45,7 +45,7 @@ struct ButtonProperties : WidgetProperties
     TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto button = widget->cast<tgui::Button>();
+        auto button = widget->cast<tgui::ButtonBase>(); // Cast to ButtonBase instead of button to reuse code for ToggleButton
         pair.first["Text"] = {"String", button->getText()};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(button->getTextSize())};
 

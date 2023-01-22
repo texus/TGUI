@@ -61,6 +61,7 @@ int main(int, char* argv[])
         }
 
         const tgui::String exePath = argvW[0];
+        LocalFree(argvW);
 #else
         const tgui::String exePath = argv[0];
 #endif

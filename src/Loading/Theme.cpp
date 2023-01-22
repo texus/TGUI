@@ -322,6 +322,7 @@ namespace tgui
         {"ListView", "ListBox"},
         {"MessageBox", "ChildWindow"},
         {"RangeSlider", "Slider"},
+        {"RichTextLabel", "Label"},
         {"ScrollablePanel", "Panel"},
         {"ToggleButton", "Button"},
         {"TreeView", "ListBox"},

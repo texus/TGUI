@@ -59,7 +59,7 @@ struct ScrollbarProperties : WidgetProperties
         pair.first["ViewportSize"] = {"UInt", tgui::String::fromNumber(scrollbar->getViewportSize())};
         pair.first["ScrollAmount"] = {"UInt", tgui::String::fromNumber(scrollbar->getScrollAmount())};
         pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(scrollbar->getVerticalScroll())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(scrollbar->getVerticalScroll())};
 
         const auto renderer = scrollbar->getSharedRenderer();
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};

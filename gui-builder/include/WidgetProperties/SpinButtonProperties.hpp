@@ -56,7 +56,7 @@ struct SpinButtonProperties : WidgetProperties
         pair.first["Maximum"] = {"Float", tgui::String::fromNumber(spinButton->getMaximum())};
         pair.first["Value"] = {"Float", tgui::String::fromNumber(spinButton->getValue())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(spinButton->getStep())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(spinButton->getVerticalScroll())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(spinButton->getVerticalScroll())};
 
         const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

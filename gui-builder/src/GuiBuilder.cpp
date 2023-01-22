@@ -39,6 +39,7 @@
 #include "WidgetProperties/ProgressBarProperties.hpp"
 #include "WidgetProperties/RadioButtonProperties.hpp"
 #include "WidgetProperties/RangeSliderProperties.hpp"
+#include "WidgetProperties/RichTextLabelProperties.hpp"
 #include "WidgetProperties/ScrollablePanelProperties.hpp"
 #include "WidgetProperties/ScrollbarProperties.hpp"
 #include "WidgetProperties/SliderProperties.hpp"
@@ -46,6 +47,7 @@
 #include "WidgetProperties/SpinControlProperties.hpp"
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextAreaProperties.hpp"
+#include "WidgetProperties/ToggleButtonProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include "GuiBuilder.hpp"
 
@@ -265,6 +267,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
     m_widgetProperties["RadioButton"] = std::make_unique<RadioButtonProperties>();
     m_widgetProperties["RangeSlider"] = std::make_unique<RangeSliderProperties>();
+    m_widgetProperties["RichTextLabel"] = std::make_unique<RichTextLabelProperties>();
     m_widgetProperties["ScrollablePanel"] = std::make_unique<ScrollablePanelProperties>();
     m_widgetProperties["Scrollbar"] = std::make_unique<ScrollbarProperties>();
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
@@ -272,6 +275,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["SpinControl"] = std::make_unique<SpinControlProperties>();
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
+    m_widgetProperties["ToggleButton"] = std::make_unique<ToggleButtonProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
@@ -972,6 +976,7 @@ void GuiBuilder::loadToolbox()
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
         {"RangeSlider", []{ return tgui::RangeSlider::create(); }},
+        {"RichTextLabel", []{ return tgui::RichTextLabel::create("RichTextLabel"); }},
         {"ScrollablePanel", []{ return tgui::ScrollablePanel::create({150, 150}); }},
         {"Scrollbar", []{ return tgui::Scrollbar::create(); }},
         {"Slider", []{ return tgui::Slider::create(); }},
@@ -979,6 +984,7 @@ void GuiBuilder::loadToolbox()
         {"SpinControl", []{ return tgui::SpinControl::create(); }},
         {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
         {"TextArea", []{ return tgui::TextArea::create(); }},
+        {"ToggleButton", []{ return tgui::ToggleButton::create(); }},
         {"TreeView", []{ return tgui::TreeView::create(); }},
     };
 

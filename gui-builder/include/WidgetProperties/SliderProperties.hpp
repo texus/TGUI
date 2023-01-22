@@ -58,8 +58,8 @@ struct SliderProperties : WidgetProperties
         pair.first["Maximum"] = {"Float", tgui::String::fromNumber(slider->getMaximum())};
         pair.first["Value"] = {"Float", tgui::String::fromNumber(slider->getValue())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(slider->getStep())};
-        pair.first["InvertedDirection"] = {"Bool", tgui::String::fromNumber(slider->getInvertedDirection())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::String::fromNumber(slider->getVerticalScroll())};
+        pair.first["InvertedDirection"] = {"Bool", tgui::Serializer::serialize(slider->getInvertedDirection())};
+        pair.first["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(slider->getVerticalScroll())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

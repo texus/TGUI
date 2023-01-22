@@ -122,6 +122,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ToggleButton::save(SavingRenderersMap& renderers) const
+    {
+        auto node = ButtonBase::save(renderers);
+        node->propertyValuePairs[U"Down"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_down));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ToggleButton::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        ButtonBase::load(node, renderers);
+
+        if (node->propertyValuePairs[U"Down"])
+            setDown(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Down"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr ToggleButton::clone() const
     {
         return std::make_shared<ToggleButton>(*this);
