@@ -31,7 +31,10 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
-#include <limits>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <limits>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -29,8 +29,11 @@
 
 #include <TGUI/Vector2.hpp>
 #include <TGUI/String.hpp>
-#include <cstdint>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

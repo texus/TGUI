@@ -30,9 +30,11 @@
 #include <TGUI/Duration.hpp>
 #include <TGUI/Optional.hpp>
 
-#include <functional>
-#include <memory>
-#include <vector>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <functional>
+    #include <memory>
+    #include <vector>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

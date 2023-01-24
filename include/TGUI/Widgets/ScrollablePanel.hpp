@@ -31,7 +31,9 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
 
-#include <chrono>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <chrono>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

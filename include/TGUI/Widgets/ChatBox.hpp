@@ -31,7 +31,10 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ChatBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
-#include <deque>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <deque>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

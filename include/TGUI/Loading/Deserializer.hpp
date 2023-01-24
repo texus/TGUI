@@ -28,8 +28,11 @@
 
 
 #include <TGUI/ObjectConverter.hpp>
-#include <map>
-#include <vector>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <map>
+    #include <vector>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

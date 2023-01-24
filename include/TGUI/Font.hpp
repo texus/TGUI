@@ -28,10 +28,13 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
-#include <cstdint>
-#include <string>
-#include <cstddef>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <string>
+    #include <cstddef>
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

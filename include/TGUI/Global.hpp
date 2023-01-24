@@ -33,12 +33,15 @@
 #include <TGUI/Font.hpp>
 #include <TGUI/String.hpp>
 #include <TGUI/Filesystem.hpp>
-#include <cstdint>
-#include <string>
-#include <memory>
 
-#ifdef TGUI_DEBUG
-    #include <iostream>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <string>
+    #include <memory>
+
+    #ifdef TGUI_DEBUG
+        #include <iostream>
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

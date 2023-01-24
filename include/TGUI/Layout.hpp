@@ -28,10 +28,13 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Vector2.hpp>
-#include <type_traits>
-#include <functional>
-#include <memory>
-#include <string>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <type_traits>
+    #include <functional>
+    #include <memory>
+    #include <string>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

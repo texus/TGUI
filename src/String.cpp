@@ -25,12 +25,14 @@
 
 #include <TGUI/String.hpp>
 
-#include <algorithm>
-#include <cctype> // tolower, toupper, isspace
-#include <iterator> // distance
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <algorithm>
+    #include <cctype> // tolower, toupper, isspace
+    #include <iterator> // distance
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <charconv> // from_chars
+    #if TGUI_COMPILED_WITH_CPP_VER >= 17
+        #include <charconv> // from_chars
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

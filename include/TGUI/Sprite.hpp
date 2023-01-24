@@ -31,8 +31,11 @@
 #include <TGUI/Rect.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/RenderStates.hpp>
-#include <vector>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <vector>
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

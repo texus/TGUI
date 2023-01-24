@@ -30,7 +30,10 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Global.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
-#include <cstdint>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

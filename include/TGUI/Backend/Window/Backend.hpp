@@ -34,9 +34,12 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#include <cstdint>
-#include <memory>
-#include <set>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <memory>
+    #include <set>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

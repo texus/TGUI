@@ -35,9 +35,11 @@
 #include <TGUI/extlibs/Aurora/Tools/Swap.hpp>
 #include <TGUI/extlibs/Aurora/Config.hpp>
 
-#include <algorithm>
-#include <type_traits>
-#include <utility>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+	#include <algorithm>
+	#include <type_traits>
+	#include <utility>
+#endif
 
 
 namespace aurora

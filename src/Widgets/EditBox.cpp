@@ -26,7 +26,10 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
-#include <cmath>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

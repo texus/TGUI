@@ -25,8 +25,10 @@
 
 #include <TGUI/Widgets/Label.hpp>
 
-#include <numeric> // accumulate
-#include <algorithm>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <numeric> // accumulate
+    #include <algorithm>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

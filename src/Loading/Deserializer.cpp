@@ -29,7 +29,10 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Global.hpp>
-#include <cstdint>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+#endif
 
 namespace tgui
 {

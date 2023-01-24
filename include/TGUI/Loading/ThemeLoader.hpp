@@ -29,11 +29,14 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Loading/DataIO.hpp>
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
-#include <set>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+    #include <string>
+    #include <vector>
+    #include <map>
+    #include <set>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

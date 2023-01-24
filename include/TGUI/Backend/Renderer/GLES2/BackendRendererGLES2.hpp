@@ -30,7 +30,10 @@
 #include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

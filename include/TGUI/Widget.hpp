@@ -53,7 +53,9 @@
     #include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
 #endif
 
-#include <unordered_set>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_set>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

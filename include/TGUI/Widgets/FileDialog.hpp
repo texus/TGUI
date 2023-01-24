@@ -36,7 +36,10 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Renderers/FileDialogRenderer.hpp>
 #include <TGUI/Filesystem.hpp>
-#include <tuple>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <tuple>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

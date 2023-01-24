@@ -26,12 +26,15 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Widget.hpp>
-#include <cassert>
-#include <array>
-#include <cmath>
 
-#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
-    #include <numbers>
+#include <cassert>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <array>
+    #include <cmath>
+
+    #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        #include <numbers>
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,8 +27,11 @@
 
 #include <TGUI/Texture.hpp>
 #include <TGUI/Filesystem.hpp>
-#include <memory>
-#include <vector>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+    #include <vector>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

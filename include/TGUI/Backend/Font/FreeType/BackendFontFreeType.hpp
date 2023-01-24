@@ -27,7 +27,10 @@
 #define TGUI_BACKEND_FONT_FREETYPE_HPP
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
-#include <unordered_map>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_map>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

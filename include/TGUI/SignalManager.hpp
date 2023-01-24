@@ -28,8 +28,11 @@
 
 
 #include <TGUI/Widget.hpp>
-#include <unordered_map>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_map>
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

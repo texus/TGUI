@@ -38,8 +38,10 @@
     #include <SFML/Graphics/Shader.hpp>
 #endif
 
-#include <memory>
-#include <cstdint>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+    #include <cstdint>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

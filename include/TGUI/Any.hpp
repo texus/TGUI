@@ -28,12 +28,15 @@
 #define TGUI_ANY_HPP
 
 #include <TGUI/Config.hpp>
-#include <type_traits>
-#include <utility>
-#include <typeinfo>
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <any>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <type_traits>
+    #include <utility>
+    #include <typeinfo>
+
+    #if TGUI_COMPILED_WITH_CPP_VER >= 17
+        #include <any>
+    #endif
 #endif
 
 namespace tgui

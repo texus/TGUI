@@ -28,9 +28,12 @@
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <SFML/Graphics/Font.hpp>
-#include <unordered_set>
-#include <memory>
-#include <map>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_set>
+    #include <memory>
+    #include <map>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

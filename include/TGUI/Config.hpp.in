@@ -118,6 +118,10 @@
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.
 #define TGUI_COMPILED_WITH_CPP_VER @TGUI_CXX_STANDARD@
 
+#if TGUI_EXPERIMENTAL_USE_STD_MODULE
+    import std;
+#endif
+
 // Include the version header when c++20 is available to use the library feature-testing macros
 #if TGUI_COMPILED_WITH_CPP_VER >= 20
     #include <version>
@@ -190,16 +194,20 @@
 #endif
 
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
-    #include <iostream>
+    #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+        #include <iostream>
+    #endif
     #define TGUI_PRINT_WARNING(msg) { std::cerr << "TGUI warning: " << msg << "\n"; }
 #else
     #define TGUI_PRINT_WARNING(msg)
 #endif
 
 #if !defined(NDEBUG) && !defined(TGUI_DISABLE_ASSERTS)
-    #include <iostream>
     #include <cassert>
-    #include <exception>
+    #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+        #include <iostream>
+        #include <exception>
+    #endif
     #define TGUI_ASSERT(condition, msg) { \
         if (!(condition)) { \
             std::cerr << "TGUI assertion: " << msg << "\n"; \

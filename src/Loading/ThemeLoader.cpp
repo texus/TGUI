@@ -27,8 +27,10 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 
-#include <sstream>
-#include <fstream>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <sstream>
+    #include <fstream>
+#endif
 
 // Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
 #if defined _MSC_VER

@@ -30,8 +30,11 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
-#include <unordered_set>
-#include <map>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_set>
+    #include <map>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

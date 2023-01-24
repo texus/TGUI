@@ -25,10 +25,14 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
-#include <functional>
-#include <sstream>
-#include <locale>
-#include <limits>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <functional>
+    #include <sstream>
+    #include <locale>
+    #include <limits>
+#endif
+
 #include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

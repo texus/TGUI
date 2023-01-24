@@ -26,8 +26,11 @@
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
-#include <cassert>
-#include <cmath>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cassert>
+    #include <cmath>
+#endif
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>

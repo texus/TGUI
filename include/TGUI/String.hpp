@@ -29,15 +29,18 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/StringView.hpp>
 #include <TGUI/Utf.hpp>
-#include <string>
-#include <vector>
-#include <cstring>
-#include <locale>
-#include <iomanip>
-#include <ostream>
-#include <sstream>
-#include <type_traits>
-#include <initializer_list>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <string>
+    #include <vector>
+    #include <cstring>
+    #include <locale>
+    #include <iomanip>
+    #include <ostream>
+    #include <sstream>
+    #include <type_traits>
+    #include <initializer_list>
+#endif
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/String.hpp>

@@ -27,7 +27,10 @@
 #define TGUI_FONT_FACTORY_HPP
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

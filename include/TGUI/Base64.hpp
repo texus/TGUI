@@ -27,8 +27,11 @@
 #define TGUI_BASE64_HPP
 
 #include <TGUI/String.hpp>
-#include <cstdint>
-#include <vector>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <vector>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

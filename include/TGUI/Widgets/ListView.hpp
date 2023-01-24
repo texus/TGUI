@@ -31,7 +31,10 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListViewRenderer.hpp>
 #include <TGUI/Text.hpp>
-#include <set>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <set>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -26,12 +26,14 @@
 #ifndef TGUI_STRING_VIEW_HPP
 #define TGUI_STRING_VIEW_HPP
 
-#include <string>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <string>
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <string_view>
-#else
-    #include <algorithm> // min
+    #if TGUI_COMPILED_WITH_CPP_VER >= 17
+        #include <string_view>
+    #else
+        #include <algorithm> // min
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

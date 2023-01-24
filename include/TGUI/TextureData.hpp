@@ -34,8 +34,10 @@
 
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
-#include <memory>
-#include <string>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+    #include <string>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

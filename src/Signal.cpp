@@ -27,8 +27,10 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 
-#include <set>
 #include <cassert>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <set>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

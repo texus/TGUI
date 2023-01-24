@@ -25,9 +25,16 @@
 
 #include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/FileDialogIconLoader.hpp>
-#include <vector>
-#include <map>
-#include <ctime>
+
+#if TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #ifdef TGUI_SYSTEM_WINDOWS
+        #include <time.h> // localtime_s
+    #endif
+#else
+    #include <vector>
+    #include <map>
+    #include <ctime>
+#endif
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
@@ -804,10 +811,10 @@ namespace tgui
             bool modificationTimeConverted = false;
             char buffer[19];
 #if defined(TGUI_SYSTEM_WINDOWS) && defined(_MSC_VER)
-            tm TimeStructure;
+            std::tm TimeStructure;
             if (localtime_s(&TimeStructure, &file.modificationTime) == 0)
             {
-                if (strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", &TimeStructure) != 0)
+                if (std::strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", &TimeStructure) != 0)
                     modificationTimeConverted = true;
             }
 #elif defined(TGUI_SYSTEM_WINDOWS) && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)

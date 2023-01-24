@@ -27,12 +27,15 @@
 #define TGUI_FILESYSTEM_HPP
 
 #include <TGUI/String.hpp>
-#include <cstdint>
-#include <vector>
-#include <ctime>
 
-#ifdef TGUI_USE_STD_FILESYSTEM
-    #include <filesystem>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <vector>
+    #include <ctime>
+
+    #ifdef TGUI_USE_STD_FILESYSTEM
+        #include <filesystem>
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

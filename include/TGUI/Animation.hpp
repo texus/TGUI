@@ -28,8 +28,11 @@
 
 #include <TGUI/Layout.hpp>
 #include <TGUI/Duration.hpp>
-#include <functional>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <functional>
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

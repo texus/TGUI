@@ -34,7 +34,10 @@
 #include <TGUI/Global.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Rect.hpp>
-#include <functional>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <functional>
+#endif
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     namespace sf

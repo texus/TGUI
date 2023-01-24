@@ -25,8 +25,11 @@
 
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
+
 #include <cassert>
-#include <cmath>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

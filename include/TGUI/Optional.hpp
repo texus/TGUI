@@ -27,10 +27,12 @@
 
 #include <TGUI/Config.hpp>
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <optional>
-#else
-    #include <memory>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #if TGUI_COMPILED_WITH_CPP_VER >= 17
+        #include <optional>
+    #else
+        #include <memory>
+    #endif
 #endif
 
 namespace tgui

@@ -31,8 +31,11 @@
 #include <TGUI/RelFloatRect.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Cursor.hpp>
-#include <chrono>
-#include <stack>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <chrono>
+    #include <stack>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -30,7 +30,10 @@
 #include <TGUI/Renderers/EditBoxRenderer.hpp>
 #include <TGUI/Rect.hpp>
 #include <TGUI/Text.hpp>
-#include <regex>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <regex>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

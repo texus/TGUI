@@ -34,13 +34,16 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Filesystem.hpp>
-#include <unordered_map>
-#include <type_traits>
-#include <functional>
-#include <typeindex>
-#include <memory>
-#include <vector>
-#include <deque>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_map>
+    #include <type_traits>
+    #include <functional>
+    #include <typeindex>
+    #include <memory>
+    #include <vector>
+    #include <deque>
+#endif
 
 #undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
 

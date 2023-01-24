@@ -26,10 +26,13 @@
 #include <TGUI/Widgets/ColorPicker.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
-#include <cmath>
 
-#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
-    #include <numbers>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+
+    #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        #include <numbers>
+    #endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

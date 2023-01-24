@@ -30,7 +30,10 @@
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#include <memory>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <memory>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

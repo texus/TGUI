@@ -28,8 +28,11 @@
 
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
-#include <unordered_map>
-#include <map>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <unordered_map>
+    #include <map>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

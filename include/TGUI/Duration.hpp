@@ -27,8 +27,11 @@
 #define TGUI_DURATION_HPP
 
 #include <TGUI/Config.hpp>
-#include <cstdint>
-#include <chrono>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <chrono>
+#endif
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/Time.hpp>

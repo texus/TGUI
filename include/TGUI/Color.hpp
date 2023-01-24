@@ -28,9 +28,12 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Vertex.hpp>
-#include <cstdint>
-#include <string>
-#include <map>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cstdint>
+    #include <string>
+    #include <map>
+#endif
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
     #include <SFML/Graphics/Color.hpp>

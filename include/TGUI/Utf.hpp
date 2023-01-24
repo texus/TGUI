@@ -27,8 +27,11 @@
 #define TGUI_UTF_HPP
 
 #include <TGUI/Config.hpp>
-#include <string>
-#include <array>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <string>
+    #include <array>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
