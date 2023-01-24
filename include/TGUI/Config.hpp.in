@@ -142,10 +142,10 @@
     #endif
 #endif
 
-// No compiler supports clock_cast yet, so enabling the following define has never been tested
-//#if __cpp_lib_chrono >= 201907L && defined(TGUI_USE_STD_FILESYSTEM)
-//    #define TGUI_USE_STD_FILESYSTEM_FILE_TIME
-//#endif
+// Use clock_cast to convert file time to system time when clock_cast is available
+#if __cpp_lib_chrono >= 201907L && defined(TGUI_USE_STD_FILESYSTEM)
+    #define TGUI_USE_STD_FILESYSTEM_FILE_TIME
+#endif
 
 #if __cplusplus >= 201703L
     #define TGUI_EMPLACE_BACK(object, vector) auto& object = vector.emplace_back();

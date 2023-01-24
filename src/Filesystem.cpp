@@ -28,24 +28,17 @@
 
 #include <cstdlib> // getenv
 
-#if !defined(TGUI_SYSTEM_WINDOWS)
-    #include <unistd.h> // getuid
+#if defined(TGUI_SYSTEM_WINDOWS)
+    #include <TGUI/extlibs/IncludeWindows.hpp>
+#else
+    #include <unistd.h> // getuid, getcwd
     #include <pwd.h> // getpwuid
-#endif
 
-#if !defined(TGUI_USE_STD_FILESYSTEM) && !defined(TGUI_SYSTEM_WINDOWS)
-    #include <cerrno> // errno
-    #include <unistd.h> // getcwd
-#endif
-
-#if !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
-    #if defined(TGUI_SYSTEM_WINDOWS)
-        #include <TGUI/extlibs/IncludeWindows.hpp>
-    #else
+    #if !defined(TGUI_USE_STD_FILESYSTEM) || !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
         #include <sys/types.h> // stat
         #include <sys/stat.h> // stat
-        #include <unistd.h> // getcwd
         #include <dirent.h> // opendir, readdir, closedir
+        #include <cerrno> // errno
     #endif
 #endif
 
@@ -55,7 +48,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(TGUI_SYSTEM_WINDOWS)
+#if defined(TGUI_SYSTEM_WINDOWS) && !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
     TGUI_NODISCARD static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
     {
         const auto WINDOWS_TICK = 10000000ULL;
