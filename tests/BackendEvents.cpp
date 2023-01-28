@@ -111,7 +111,11 @@ TEST_CASE("[Backend events]")
                         {sf::Keyboard::Key::Semicolon,  tgui::Event::KeyboardKey::Semicolon},
                         {sf::Keyboard::Key::Comma,      tgui::Event::KeyboardKey::Comma},
                         {sf::Keyboard::Key::Period,     tgui::Event::KeyboardKey::Period},
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6
                         {sf::Keyboard::Key::Quote,      tgui::Event::KeyboardKey::Quote},
+#else
+                        {sf::Keyboard::Key::Apostrophe, tgui::Event::KeyboardKey::Quote},
+#endif
                         {sf::Keyboard::Key::Slash,      tgui::Event::KeyboardKey::Slash},
                         {sf::Keyboard::Key::Backslash,  tgui::Event::KeyboardKey::Backslash},
                         {sf::Keyboard::Key::Equal,      tgui::Event::KeyboardKey::Equal},
