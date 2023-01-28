@@ -90,7 +90,11 @@ namespace tgui
         case sf::Keyboard::Key::Semicolon:  return Event::KeyboardKey::Semicolon;
         case sf::Keyboard::Key::Comma:      return Event::KeyboardKey::Comma;
         case sf::Keyboard::Key::Period:     return Event::KeyboardKey::Period;
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6
         case sf::Keyboard::Key::Quote:      return Event::KeyboardKey::Quote;
+#else
+        case sf::Keyboard::Key::Apostrophe: return Event::KeyboardKey::Quote;
+#endif
         case sf::Keyboard::Key::Slash:      return Event::KeyboardKey::Slash;
         case sf::Keyboard::Key::Backslash:  return Event::KeyboardKey::Backslash;
         case sf::Keyboard::Key::Equal:      return Event::KeyboardKey::Equal;
