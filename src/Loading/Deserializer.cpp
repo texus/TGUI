@@ -104,19 +104,19 @@ namespace tgui
 
         ObjectConverter deserializeBool(const String& str)
         {
-            if (str.equalIgnoreCase("true") || str.equalIgnoreCase("yes") || str.equalIgnoreCase("on") || str.equalIgnoreCase("1"))
+            if (viewEqualIgnoreCase(str, U"true") || viewEqualIgnoreCase(str, U"yes") || viewEqualIgnoreCase(str, U"on") || viewEqualIgnoreCase(str, U"1"))
                 return {true};
-            else if (str.equalIgnoreCase("false") || str.equalIgnoreCase("no") || str.equalIgnoreCase("off") || str.equalIgnoreCase("0"))
+            else if (viewEqualIgnoreCase(str, U"false") || viewEqualIgnoreCase(str, U"no") || viewEqualIgnoreCase(str, U"off") || viewEqualIgnoreCase(str, U"0"))
                 return {false};
             else
-                throw Exception{U"Failed to deserialize boolean from '" + str + "'"};
+                throw Exception{U"Failed to deserialize boolean from '" + str + U"'"};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ObjectConverter deserializeFont(const String& value)
         {
-            if (value.equalIgnoreCase("null") || value.equalIgnoreCase("nullptr"))
+            if (viewEqualIgnoreCase(value, U"null") || viewEqualIgnoreCase(value, U"nullptr"))
                 return Font{};
 
             String filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
@@ -132,7 +132,7 @@ namespace tgui
 #endif
             {
                 if (!font->loadFromFile((getResourcePath() / filename).asString()))
-                    throw Exception{U"Failed to load font from '" + (getResourcePath() / filename).asString() + "'"};
+                    throw Exception{U"Failed to load font from '" + (getResourcePath() / filename).asString() + U"'"};
             }
             else
             {
@@ -294,7 +294,7 @@ namespace tgui
 
         ObjectConverter deserializeTexture(const String& value)
         {
-            if (value.empty() || value.equalIgnoreCase("none"))
+            if (value.empty() || viewEqualIgnoreCase(value, U"none"))
                 return Texture{};
 
             String filename;
@@ -344,12 +344,12 @@ namespace tgui
                     else
                     {
                         const String& smoothParam = value.substr(startOffset).trim();
-                        if (smoothParam.equalIgnoreCase("smooth"))
+                        if (viewEqualIgnoreCase(smoothParam, U"smooth"))
                         {
                             smooth = true;
                             break;
                         }
-                        else if (smoothParam.equalIgnoreCase("nosmooth"))
+                        else if (viewEqualIgnoreCase(smoothParam, U"nosmooth"))
                         {
                             smooth = false;
                             break;
@@ -363,12 +363,12 @@ namespace tgui
 
                     bool rectRequiresFourValues = true;
                     UIntRect* rect = nullptr;
-                    if (word.equalIgnoreCase("part"))
+                    if (viewEqualIgnoreCase(word, U"part"))
                     {
                         rect = &partRect;
                         std::advance(c, 4);
                     }
-                    else if (word.equalIgnoreCase("middle"))
+                    else if (viewEqualIgnoreCase(word, U"middle"))
                     {
                         rectRequiresFourValues = false;
                         rect = &middleRect;
@@ -417,13 +417,13 @@ namespace tgui
             std::vector<String> styles = Deserializer::split(style, '|');
             for (const auto& elem : styles)
             {
-                if (elem.equalIgnoreCase("bold"))
+                if (viewEqualIgnoreCase(elem, U"bold"))
                     decodedStyle |= TextStyle::Bold;
-                else if (elem.equalIgnoreCase("italic"))
+                else if (viewEqualIgnoreCase(elem, U"italic"))
                     decodedStyle |= TextStyle::Italic;
-                else if (elem.equalIgnoreCase("underlined"))
+                else if (viewEqualIgnoreCase(elem, U"underlined"))
                     decodedStyle |= TextStyle::Underlined;
-                else if (elem.equalIgnoreCase("strikethrough"))
+                else if (viewEqualIgnoreCase(elem, U"strikethrough"))
                     decodedStyle |= TextStyle::StrikeThrough;
             }
 

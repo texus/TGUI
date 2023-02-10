@@ -28,6 +28,7 @@
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <string>
+    #include <cctype> // tolower
 
     #if TGUI_COMPILED_WITH_CPP_VER >= 17
         #include <string_view>
@@ -298,6 +299,21 @@ namespace tgui
 #endif
 
 #endif // TGUI_COMPILED_WITH_CPP_VER
+
+    TGUI_NODISCARD inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
+    {
+        return std::equal(view1.begin(), view1.end(), view2.begin(), view2.end(),
+            [](char32_t char1, char32_t char2)
+            {
+                if (char1 == char2)
+                    return true;
+                else if ((char1 < 128) && (char2 < 128))
+                    return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
+                else
+                    return false;
+            }
+        );
+    }
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
     TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)

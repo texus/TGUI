@@ -42,7 +42,7 @@ namespace tgui
         texture.setCopyCallback(&TextureManager::copyTexture);
         texture.setDestructCallback(&TextureManager::removeTexture);
 
-        const bool isSvg = ((filename.length() > 4) && (filename.substr(filename.length() - 4, 4).equalIgnoreCase(".svg")));
+        const bool isSvg = ((filename.length() > 4) && (viewEqualIgnoreCase(StringView(filename.c_str() + (filename.length() - 4), 4), U".svg")));
 
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);

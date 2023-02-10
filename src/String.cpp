@@ -223,7 +223,7 @@ namespace tgui
 
     bool String::equalIgnoreCase(const String& other) const
     {
-        return std::equal(m_string.begin(), m_string.end(), other.begin(), other.end(), &compareCharIgnoreCase);
+        return viewEqualIgnoreCase(*this, other);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1456,6 +1456,20 @@ TEST_CASE("[String]")
         REQUIRE(str.toUpper() == "ABCDEFGHIJ \u20AC");
     }
 
+    SECTION("equalIgnoreCase")
+    {
+        str = "aBc";
+        REQUIRE(str.equalIgnoreCase("aBc"));
+        REQUIRE(str.equalIgnoreCase("Abc"));
+
+        REQUIRE(!str.equalIgnoreCase(""));
+        REQUIRE(!str.equalIgnoreCase("xyz"));
+        REQUIRE(!str.equalIgnoreCase("abcde"));
+        REQUIRE(!str.equalIgnoreCase(U"\u03b1\u03b2\u03b3"));
+
+        REQUIRE(tgui::viewEqualIgnoreCase(U"aBc", U"Abc"));
+    }
+
     SECTION("split")
     {
         const tgui::String listStr("alpha, bravo, charlie");
