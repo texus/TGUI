@@ -300,6 +300,35 @@ namespace tgui
 
 #endif // TGUI_COMPILED_WITH_CPP_VER
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Returns whether two view are equal if letters would have been lowercase
+    ///
+    /// @param view1  First view to compare
+    /// @param view2  Second view to compare
+    ///
+    /// @return Are the views equal except for the case of letters?
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewEqualIgnoreCase(CharStringView view1, CharStringView view2)
+    {
+        return std::equal(view1.begin(), view1.end(), view2.begin(), view2.end(),
+            [](char char1, char char2)
+            {
+                if (char1 == char2)
+                    return true;
+                else
+                    return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
+            }
+        );
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Returns whether two view are equal if ASCII letters would have been lowercase
+    ///
+    /// @param view1  First view to compare
+    /// @param view2  Second view to compare
+    ///
+    /// @return Are the views equal except for the case of ASCII letters?
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
     {
         return std::equal(view1.begin(), view1.end(), view2.begin(), view2.end(),
@@ -316,26 +345,176 @@ namespace tgui
     }
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the first characters of the view
+    ///
+    /// @return True if the view starts with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    {
+        return viewToLookInto.starts_with(viewToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the first character of the view
+    ///
+    /// @return True if the view starts with the character, false if the view starts with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
+    {
+        return viewToLookInto.starts_with(charToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the last characters of the view
+    ///
+    /// @return True if the view ends with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    {
+        return viewToLookInto.ends_with(viewToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the last character of the view
+    ///
+    /// @return True if the view ends with the character, false if the view ends with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
+    {
+        return viewToLookInto.ends_with(charToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the first characters of the view
+    ///
+    /// @return True if the view starts with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.starts_with(viewToLookFor);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the first character of the view
+    ///
+    /// @return True if the view starts with the character, false if the view starts with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.starts_with(charToLookFor);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the last characters of the view
+    ///
+    /// @return True if the view ends with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.ends_with(viewToLookFor);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the last character of the view
+    ///
+    /// @return True if the view ends with the character, false if the view ends with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.ends_with(charToLookFor);
     }
 #else
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the first characters of the view
+    ///
+    /// @return True if the view starts with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    {
+        if (viewToLookFor.length() > viewToLookInto.length())
+            return false;
+
+        return viewToLookInto.substr(0, viewToLookFor.length()) == viewToLookFor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the first character of the view
+    ///
+    /// @return True if the view starts with the character, false if the view starts with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
+    {
+        return !viewToLookInto.empty() && (viewToLookInto.front() == charToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the last characters of the view
+    ///
+    /// @return True if the view ends with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    {
+        if (viewToLookFor.length() > viewToLookInto.length())
+            return false;
+
+        return CharStringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor) == 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the last character of the view
+    ///
+    /// @return True if the view ends with the character, false if the view ends with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
+    {
+        return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the first characters of the view
+    ///
+    /// @return True if the view starts with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
@@ -344,11 +523,27 @@ namespace tgui
         return viewToLookInto.substr(0, viewToLookFor.length()) == viewToLookFor;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view starts with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the first character of the view
+    ///
+    /// @return True if the view starts with the character, false if the view starts with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.front() == charToLookFor);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given substring
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param viewToLookFor   String that will be compared with the last characters of the view
+    ///
+    /// @return True if the view ends with the substring, false otherwise
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
@@ -357,6 +552,14 @@ namespace tgui
         return StringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor) == 0;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Checks whether the view ends with the given character
+    ///
+    /// @param viewToLookInto  View to check
+    /// @param charToLookFor   Character that will be compared with the last character of the view
+    ///
+    /// @return True if the view ends with the character, false if the view ends with a different character or is empty
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);

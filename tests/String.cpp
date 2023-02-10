@@ -1467,6 +1467,7 @@ TEST_CASE("[String]")
         REQUIRE(!str.equalIgnoreCase("abcde"));
         REQUIRE(!str.equalIgnoreCase(U"\u03b1\u03b2\u03b3"));
 
+        REQUIRE(tgui::viewEqualIgnoreCase("aBc", "Abc"));
         REQUIRE(tgui::viewEqualIgnoreCase(U"aBc", U"Abc"));
     }
 
@@ -1528,6 +1529,9 @@ TEST_CASE("[String]")
         REQUIRE(!tgui::String(U"abc\u20ACxyz").starts_with(U"123abc\u20ACxyz"));
         REQUIRE(!tgui::String(U"abc\u20ACxyz").starts_with("xyz"));
         REQUIRE(!tgui::String(U"abc\u20ACxyz").starts_with("o"));
+
+        REQUIRE(tgui::viewStartsWith("abcxyz", "abc"));
+        REQUIRE(tgui::viewStartsWith(U"abc\u20ACxyz", U"abc"));
     }
 
     SECTION("ends_with")
@@ -1540,6 +1544,9 @@ TEST_CASE("[String]")
         REQUIRE(!tgui::String(U"abc\u20ACxyz").ends_with(U"123abc\u20ACxyz"));
         REQUIRE(!tgui::String(U"abc\u20ACxyz").ends_with("abc"));
         REQUIRE(!tgui::String(U"abc\u20ACxyz").ends_with("o"));
+
+        REQUIRE(tgui::viewEndsWith("abcxyz", "xyz"));
+        REQUIRE(tgui::viewEndsWith(U"abc\u20ACxyz", U"xyz"));
     }
 
     SECTION("isWhitespace")
