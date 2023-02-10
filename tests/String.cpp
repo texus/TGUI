@@ -678,6 +678,7 @@ TEST_CASE("[String]")
         str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {U'\x03b1', U'\x03b2', U'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
 
         str = "^ab:abc:abc:bc$"; REQUIRE(str.replace("abc", "xyz") == "^ab:xyz:xyz:bc$");
+        str = "123"; REQUIRE(str.replace("", "xyz") == "xyz1xyz2xyz3xyz");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, u8"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
@@ -688,6 +689,20 @@ TEST_CASE("[String]")
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == U"^\u03b2\u03b3\u03b4$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::u8string(u8"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
 #endif
+    }
+
+    SECTION("remove")
+    {
+        str = "^ab:abc:abc:bc$";
+        str.remove("abc");
+        REQUIRE(str == "^ab:::bc$");
+
+        str.remove("0123456789");
+        REQUIRE(str == "^ab:::bc$");
+
+        // Removing an empty string does nothing
+        str.remove("");
+        REQUIRE(str == "^ab:::bc$");
     }
 
     SECTION("copy")
@@ -1444,7 +1459,7 @@ TEST_CASE("[String]")
     SECTION("split")
     {
         const tgui::String listStr("alpha, bravo, charlie");
-        std::vector<tgui::String> parts = listStr.split(',');
+        std::vector<tgui::String> parts = listStr.split(U',');
         REQUIRE(parts.size() == 3);
         REQUIRE(parts[0] == "alpha");
         REQUIRE(parts[1] == " bravo");
@@ -1468,6 +1483,17 @@ TEST_CASE("[String]")
         REQUIRE(parts.size() == 2);
         REQUIRE(parts[0] == "a");
         REQUIRE(parts[1] == "b");
+
+        parts = tgui::String("a<br>b").split("<br>");
+        REQUIRE(parts.size() == 2);
+        REQUIRE(parts[0] == "a");
+        REQUIRE(parts[1] == "b");
+
+        parts = tgui::String("abc").split("");
+        REQUIRE(parts.size() == 3);
+        REQUIRE(parts[0] == "a");
+        REQUIRE(parts[1] == "b");
+        REQUIRE(parts[2] == "c");
     }
 
     SECTION("join")

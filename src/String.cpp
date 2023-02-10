@@ -269,11 +269,14 @@ namespace tgui
 
     String& String::replace(const String& searchFor, const String& replaceWith)
     {
+        const std::size_t len = searchFor.length();
         std::size_t step = replaceWith.length();
-        std::size_t len = searchFor.length();
-        std::size_t pos = find(searchFor);
 
-        // Replace each occurrence of search
+        // When searching for an empty string, insert the replacement between each character and at the front and back
+        if (len == 0)
+            step += 1;
+
+        std::size_t pos = find(searchFor);
         while (pos != npos)
         {
             replace(pos, len, replaceWith);
@@ -285,23 +288,49 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<String> String::split(char32_t delimiter, bool trim) const
+    void String::remove(const String& substring)
+    {
+        const std::size_t len = substring.length();
+        if (len == 0)
+            return;
+
+        std::size_t pos = find(substring);
+
+        while (pos != npos)
+        {
+            erase(pos, len);
+            pos = find(substring, pos);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<String> String::split(const String& delimiter, bool trim) const
     {
         std::vector<String> substrings;
 
-        std::size_t startPos = 0;
-        std::size_t endPos = find(delimiter);
-        while (endPos != npos)
+        const std::size_t delimiterLength = delimiter.length();
+        if (delimiterLength > 0)
         {
-            substrings.push_back(substr(startPos, endPos - startPos));
-            startPos = endPos + 1;
-            endPos = find(delimiter, startPos);
-        }
+            std::size_t startPos = 0;
+            std::size_t endPos = find(delimiter);
+            while (endPos != npos)
+            {
+                substrings.push_back(substr(startPos, endPos - startPos));
+                startPos = endPos + delimiterLength;
+                endPos = find(delimiter, startPos);
+            }
 
-        if (startPos == 0)
-            substrings.push_back(*this);
-        else
-            substrings.push_back(substr(startPos, length() - startPos));
+            if (startPos == 0)
+                substrings.push_back(*this);
+            else
+                substrings.push_back(substr(startPos, length() - startPos));
+        }
+        else // When the delimeter is empty, each character is put in its own part
+        {
+            for (char32_t c : m_string)
+                substrings.push_back(c);
+        }
 
         if (trim)
         {
