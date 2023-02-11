@@ -54,6 +54,12 @@ namespace tgui
         return m_font.hasGlyph(codePoint);
 #else
         const sf::Glyph& glyph = m_font.getGlyph(codePoint, getGlobalTextSize(), false, 0);
+
+        // If the internal SFML texture changes size as a result of the above getGlyph call, then the texture size wouldn't match
+        // with ours anymore, causing corrupted text rendering. Luckily this hasGlyph function is never actually used in practice
+        // and SFML 2.6 has a way to query the font, so we patch it here by resetting the texture and forcing a reload later.
+        const_cast<BackendFontSFML*>(this)->m_textures[getGlobalTextSize()] = nullptr;
+
         return (glyph.advance != 0) || (glyph.bounds != sf::FloatRect{}) || (glyph.textureRect != sf::IntRect{});
 #endif
     }
@@ -134,14 +140,14 @@ namespace tgui
         if (!m_font.hasGlyph(U'\u00CA'))
             return static_cast<float>(scaledTextSize) / m_fontScale;
 
-        const sf::Glyph& glyph = m_font.getGlyph(U'\u00CA', scaledTextSize, false, 0);
+        const FontGlyph& glyph = getGlyph(U'\u00CA', scaledTextSize, false, 0);
 #else
-        const sf::Glyph& glyph = m_font.getGlyph(U'\u00CA', scaledTextSize, false, 0);
-        if ((glyph.advance == 0) && (glyph.bounds == sf::FloatRect{}) && (glyph.textureRect == sf::IntRect{}))
+        const FontGlyph& glyph = getGlyph(U'\u00CA', scaledTextSize, false, 0);
+        if ((glyph.advance == 0) && (glyph.bounds == FloatRect{}) && (glyph.textureRect == UIntRect{}))
             return static_cast<float>(scaledTextSize) / m_fontScale;
 #endif
 
-        return glyph.bounds.height / m_fontScale;
+        return glyph.bounds.height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,9 +157,8 @@ namespace tgui
         // SFML doesn't provide a method to access the descent of the font.
         // We extract the descent by examining the 'g' glyph, assuming it exists.
         const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
-        const float descent = m_font.getGlyph(U'g', scaledTextSize, false).bounds.height
-                            + m_font.getGlyph(U'g', scaledTextSize, false).bounds.top;
-        return descent / m_fontScale;
+        const FontGlyph& glyph = getGlyph(U'g', scaledTextSize, false);
+        return glyph.bounds.height + glyph.bounds.top;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +190,6 @@ namespace tgui
         // Unfortunately we currently need to extract the pixel data from the sf::Font texture, in order to load a
         // texture with TGUI, even if the TGUI texture also uses sf::Texture.
         const sf::Image& image = m_font.getTexture(scaledTextSize).copyToImage();
-
         auto texture = getBackend()->getRenderer()->createTexture();
         texture->loadTextureOnly({image.getSize().x, image.getSize().y}, image.getPixelsPtr(), m_isSmooth);
         m_textures[scaledTextSize] = texture;
