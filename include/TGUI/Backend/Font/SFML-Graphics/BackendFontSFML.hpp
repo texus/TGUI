@@ -26,8 +26,14 @@
 #ifndef TGUI_BACKEND_FONT_SFML_HPP
 #define TGUI_BACKEND_FONT_SFML_HPP
 
-#include <TGUI/Backend/Font/BackendFont.hpp>
 #include <SFML/Graphics/Font.hpp>
+
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Font/BackendFont.hpp>
+#endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <unordered_set>
@@ -37,7 +43,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Font implementation that makes use of SFML

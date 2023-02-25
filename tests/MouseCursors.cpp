@@ -23,7 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Loading/ImageLoader.hpp>
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Loading/ImageLoader.hpp>
+#endif
 
 TEST_CASE("[Mouse cursors]")
 {

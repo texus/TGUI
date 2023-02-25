@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_KNOB_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Knob.hpp>
 
 struct KnobProperties : WidgetProperties
 {

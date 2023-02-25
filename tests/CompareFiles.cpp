@@ -22,10 +22,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Loading/ImageLoader.hpp>
 #include <fstream>
 #include <cstring>
+
+#include "Tests.hpp"
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Loading/ImageLoader.hpp>
+#endif
 
 // Rendering isn't identical on different computers, so we just check that the image looks similar enough.
 // The worst encountered difference was 1.43% on Label_Simple.png, so errors less than 1.5% of the entire

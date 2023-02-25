@@ -27,9 +27,13 @@
 #define TGUI_GUI_BUILDER_FORM_HPP
 
 #include "WidgetInfo.hpp"
-#include <TGUI/TGUI.hpp>
-#include <array>
-#include <sstream>
+
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/TGUI.hpp>
+#endif
 
 class GuiBuilder;
 

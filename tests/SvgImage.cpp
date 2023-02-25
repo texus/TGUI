@@ -23,9 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/SvgImage.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Widgets/Picture.hpp>
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/SvgImage.hpp>
+#endif
 
 TEST_CASE("[SvgImage]")
 {

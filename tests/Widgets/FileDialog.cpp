@@ -23,8 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Widgets/FileDialog.hpp>
-#include <TGUI/FileDialogIconLoader.hpp>
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/FileDialogIconLoader.hpp>
+#endif
 
 TEST_CASE("[FileDialog]")
 {

@@ -74,7 +74,7 @@ else() # Use c++14 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
 endif()
 
-tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17 or 20. Projects using TGUI must use a c++ version equal or higher to this")
+tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING "C++ standard version to build TGUI with. Possible values: 14, 17, 20 or 23. Projects using TGUI must use a c++ version equal or higher to this")
 
 # At least c++14 has to be used
 if(TGUI_CXX_STANDARD LESS "14")
@@ -140,6 +140,16 @@ if(NOT backend_provided)
 endif()
 
 string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
+
+# Add an option to build TGUI as a c++20 module (when using CMake >= 3.25)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
+    option(TGUI_BUILD_AS_CXX_MODULE "ON to build TGUI as a c++20 module instead of using header files" OFF)
+    if(TGUI_BUILD_AS_CXX_MODULE)
+        if(TGUI_CXX_STANDARD LESS 20)
+            message(FATAL_ERROR "TGUI_BUILD_AS_CXX_MODULE can only be turned on if TGUI_CXX_STANDARD is set to at least 20")
+        endif()
+    endif()
+endif()
 
 # Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)
@@ -296,6 +306,10 @@ endif()
 if(NOT TGUI_OS_ANDROID)
     option(TGUI_BUILD_EXAMPLES "TRUE to build the TGUI examples, FALSE to ignore them" FALSE)
     if(TGUI_BUILD_EXAMPLES)
+        if(TGUI_BUILD_AS_CXX_MODULE)
+            message(FATAL_ERROR "Examples don't support c++20 modules. Turn off either TGUI_BUILD_AS_CXX_MODULE or TGUI_BUILD_EXAMPLES.")
+        endif()
+
         add_subdirectory(examples)
     endif()
 endif()

@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "Form.hpp"
 #include "GuiBuilder.hpp"
+#include "Form.hpp"
 
 // WidgetProperties are only included to allow importing 0.8 form files.
 // No new widgets need to be added here and this can be removed again in the future.
@@ -52,14 +52,6 @@
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
-
-#include <TGUI/Backend/Window/Backend.hpp>
-
-#include <stack>
-#include <cassert>
-#include <cmath>
-#include <fstream>
-#include <set>
 
 const static float MOVE_STEP = 10;
 

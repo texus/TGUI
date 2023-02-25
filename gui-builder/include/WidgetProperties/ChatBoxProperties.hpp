@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_CHAT_BOX_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ChatBox.hpp>
 
 struct ChatBoxProperties : WidgetProperties
 {

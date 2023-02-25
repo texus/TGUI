@@ -1,0 +1,150 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus' Graphical User Interface
+// Copyright (C) 2012-2023 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module;
+
+// Including headers from dependencies inside the module can cause issues.
+// So we include all the required headers here so that the includes inside the TGUI source code
+// will turn into no-ops.
+
+#define TGUI_MODULE_EXPORT export
+#include <TGUI/Config.hpp>
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <map>
+    #include <set>
+    #include <any>
+    #include <list>
+    #include <array>
+    #include <deque>
+    #include <regex>
+    #include <queue>
+    #include <tuple>
+    #include <stack>
+    #include <chrono>
+    #include <string>
+    #include <vector>
+    #include <memory>
+    #include <locale>
+    #include <limits>
+    #include <fstream>
+    #include <codecvt>
+    #include <iomanip>
+    #include <ostream>
+    #include <sstream>
+    #include <utility>
+    #include <version>
+    #include <variant>
+    #include <numeric>
+    #include <iterator>
+    #include <iostream>
+    #include <charconv>
+    #include <typeinfo>
+    #include <optional>
+    #include <stdexcept>
+    #include <typeindex>
+    #include <exception>
+    #include <algorithm>
+    #include <filesystem>
+    #include <functional>
+    #include <type_traits>
+    #include <string_view>
+    #include <unordered_map>
+    #include <unordered_set>
+    #include <initializer_list>
+
+    #include <cmath>
+    #include <ctime>
+    #include <cstdio>
+    #include <cctype>
+    #include <cstring>
+    #include <cstddef>
+    #include <cstdint>
+    #include <cstdlib>
+#endif
+
+#include <cassert>
+
+#ifdef TGUI_SYSTEM_WINDOWS
+	#include <TGUI/extlibs/IncludeWindows.hpp>
+#endif
+
+#if TGUI_USE_SYSTEM_AURORA
+    #include <Aurora/SmartPtr/CopiedPtr.hpp>
+    #include <Aurora/Tools/Downcast.hpp>
+#else
+    #include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
+    #include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
+#endif
+
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS || TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics.hpp>
+#elif TGUI_HAS_WINDOW_BACKEND_SFML
+    #include <SFML/Window.hpp>
+#endif
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS && defined(TGUI_SYSTEM_IOS)
+  #include <SFML/Main.hpp>
+#endif
+
+#if TGUI_HAS_WINDOW_BACKEND_SDL || TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
+    #include <TGUI/extlibs/IncludeSDL.hpp>
+#endif
+#if TGUI_HAS_WINDOW_BACKEND_SDL
+    #include <SDL_touch.h>
+    #include <SDL_syswm.h>
+#endif
+
+#if TGUI_HAS_FONT_BACKEND_SDL_TTF
+    #include <SDL_ttf.h>
+#endif
+
+#if TGUI_HAS_WINDOW_BACKEND_GLFW
+    #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
+    #include <GLFW/glfw3.h>
+#endif
+
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((TGUI_HAS_WINDOW_BACKEND_SFML && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) || TGUI_HAS_WINDOW_BACKEND_SDL)
+    #include <X11/Xlib.h>
+    #include <X11/cursorfont.h>
+#endif
+
+#ifdef TGUI_SYSTEM_ANDROID
+    #ifdef TGUI_HAS_WINDOW_BACKEND_SFML
+        #include <SFML/System/NativeActivity.hpp>
+        #include <android/asset_manager_jni.h>
+        #include <android/asset_manager.h>
+        #include <android/native_activity.h>
+        #include <android/configuration.h>
+    #endif
+
+    #if TGUI_HAS_WINDOW_BACKEND_SDL
+        #include <jni.h>
+        #include <android/asset_manager.h>
+        #include <android/asset_manager_jni.h>
+    #endif
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
+#endif

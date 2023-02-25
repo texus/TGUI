@@ -28,7 +28,6 @@ set(TGUI_SRC
     Container.cpp
     Cursor.cpp
     CustomWidgetForBindings.cpp
-    DefaultBackendWindow.cpp
     FileDialogIconLoader.cpp
     Filesystem.cpp
     Font.cpp
@@ -179,6 +178,18 @@ if(TGUI_OPTIMIZE_SINGLE_BUILD)
     endif()
 endif()
 
+if (TGUI_BUILD_AS_CXX_MODULE)
+    tgui_create_module_from_sources("${TGUI_SRC}" "tgui")
+    set(TGUI_SRC "${module_source}")
+endif()
+
+if (TGUI_BUILD_AS_CXX_MODULE)
+    tgui_create_module_from_sources(DefaultBackendWindow.cpp "tgui.default_backend_window")
+    list(APPEND TGUI_SRC "${module_source}")
+else()
+    list(APPEND TGUI_SRC DefaultBackendWindow.cpp)
+endif()
+
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
     add_library(tgui SHARED ${TGUI_SRC})
@@ -215,9 +226,11 @@ else()
     # Since grouping some files requires manually grouping ALL files, we have to manually create batches here.
     set_target_properties(tgui PROPERTIES UNITY_BUILD_MODE GROUP)
 
-    # Enable unity build by default
-    if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
-        set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
+    if(NOT TGUI_BUILD_AS_CXX_MODULE)
+        # Enable unity build by default
+        if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+            set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
+        endif()
     endif()
 
     if(UNITY_BUILD_BATCH_SIZE)
@@ -283,9 +296,10 @@ endif()
 tgui_set_global_compile_flags(tgui)
 tgui_set_stdlib(tgui)
 
-if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
+if((TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_BUILD_AS_CXX_MODULE) AND TGUI_COMPILER_MSVC)
     # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
     # because the new batching doesn't result in such huge object files.
+    # Building TGUI as a module currently concatenates ALL source files, which is why /bigobj is required again.
     target_compile_options(tgui PRIVATE /bigobj)
 endif()
 
@@ -377,8 +391,10 @@ endif()
 # Generate the Config.hpp header
 configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
-# Use a precompiled header to speed up compilation
-target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
+if(NOT TGUI_BUILD_AS_CXX_MODULE)
+    # Use a precompiled header to speed up compilation
+    target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
+endif()
 
 # Install library
 install(TARGETS tgui EXPORT TGUIConfigExport

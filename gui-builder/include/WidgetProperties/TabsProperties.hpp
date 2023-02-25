@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_TABS_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Tabs.hpp>
 
 struct TabsProperties : WidgetProperties
 {

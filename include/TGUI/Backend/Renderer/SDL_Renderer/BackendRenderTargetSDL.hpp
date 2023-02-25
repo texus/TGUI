@@ -26,12 +26,17 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_SDL_HPP
 #define TGUI_BACKEND_RENDER_TARGET_SDL_HPP
 
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Render target implementation that makes use of SDL_Renderer

@@ -26,7 +26,12 @@
 #ifndef TGUI_BACKEND_FONT_FREETYPE_HPP
 #define TGUI_BACKEND_FONT_FREETYPE_HPP
 
-#include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Font/BackendFont.hpp>
+#endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <unordered_map>
@@ -40,7 +45,7 @@ using FT_Stroker = struct FT_StrokerRec_*;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Font implementations that uses FreeType directly to load glyphs

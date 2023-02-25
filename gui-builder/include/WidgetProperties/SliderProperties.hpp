@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_SLIDER_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Slider.hpp>
 
 struct SliderProperties : WidgetProperties
 {

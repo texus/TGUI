@@ -26,14 +26,18 @@
 #ifndef TGUI_CANVAS_GLES2_HPP
 #define TGUI_CANVAS_GLES2_HPP
 
-#include <TGUI/Config.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+    #include <TGUI/Widgets/ClickableWidget.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// CanvasGLES2 provides a way to directly render OpenGL ES contents on a widget

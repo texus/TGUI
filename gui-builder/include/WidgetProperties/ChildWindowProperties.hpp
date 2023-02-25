@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_CHILD_WINDOW_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ChildWindow.hpp>
 
 struct ChildWindowProperties : WidgetProperties
 {

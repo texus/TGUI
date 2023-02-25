@@ -105,11 +105,6 @@ function(tgui_try_find_sdl_config)
         set(TGUI_FOUND_SDL2_CONFIG TRUE PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL2_CONFIG FALSE PARENT_SCOPE)
-
-        # Remove the empty SDL2_DIR variable as it will cause confusion with SDL2_PATH which we will create next
-        if(NOT SDL2_DIR)
-            unset(SDL2_DIR CACHE)
-        endif()
     endif()
 endfunction()
 
@@ -129,11 +124,15 @@ macro(tgui_find_dependency_sdl)
                 if(NOT SDL2_FOUND)
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2.\n"
-                            "Set SDL2_PATH to the root folder of the Development Libraries that you downloaded from https://libsdl.org/download-2.0.php \n")
+                            "For SDL >= 2.24, set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake.\n"
+                            "For older versions, if you downloaded SDL2-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL/releases then set SDL2_PATH to the root directory.\n")
                 endif()
             elseif(TGUI_OS_MACOS)
                 find_package(SDL2)
+
                 if(NOT SDL2_FOUND)
+                    # TODO: For SDL >= 2.24 we should suggest setting SDL2_DIR instead of using our own SDL2_PATH.
+                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_DIR exactly.
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2.\n"
                             "Set SDL2_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2.framework file. You can get the framework file by downloading the Development Libraries from https://libsdl.org/download-2.0.php and extracting it from the downloaded .dmg file.\n")
@@ -142,6 +141,18 @@ macro(tgui_find_dependency_sdl)
                 # On Linux we should always find SDL2 automatically when it has been installed
                 find_package(SDL2 REQUIRED)
             endif()
+        endif()
+
+        # Remove the empty SDL2_DIR variable if we found SDL via SDL2_PATH and vice versa
+        if(NOT SDL2_DIR)
+            unset(SDL2_DIR CACHE)
+        endif()
+        if(SDL2_DIR AND NOT SDL2_PATH AND NOT SDL2_LIBRARY)
+            unset(SDL2_PATH CACHE)
+            unset(SDL2_LIBRARY CACHE)
+            unset(SDL2MAIN_LIBRARY CACHE)
+            unset(SDL2_INCLUDE_DIR CACHE)
+            unset(SDL2_NO_DEFAULT_PATH CACHE)
         endif()
 
         # The version doesn't seem to always be defined (e.g. Ubuntu doesn't seem to have it while Arch Linux
@@ -285,18 +296,13 @@ macro(tgui_add_dependency_sdl_ttf)
                 if(NOT SDL2_ttf_FOUND)
                     message(FATAL_ERROR
                             "CMake couldn't find SDL2_ttf.\n"
-                            "For SDL2_ttf >= 2.20, set SDL2_ttf_DIR to the directory containing sdl2_ttf-config.cmake.\n"
+                            "For SDL2_ttf >= 2.20, set SDL2_ttf_DIR to the directory containing either SDL2_ttfConfig.cmake or sdl2_ttf-config.cmake.\n"
                             "For older versions, if you downloaded SDL2_ttf-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL_ttf/releases then set SDL2_TTF_PATH to the root directory.\n")
                 endif()
             elseif(TGUI_OS_MACOS)
                 find_package(SDL2_ttf)
 
-                if(SDL2_ttf_FOUND)
-                    # If found automatically (e.g. when installed via brew) then don't keep the SDL2_TTF_PATH variable
-                    if(NOT SDL2_TTF_PATH)
-                        unset(SDL2_TTF_PATH CACHE)
-                    endif()
-                else()
+                if(NOT SDL2_ttf_FOUND)
                     # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting SDL2_ttf_DIR instead of using our own SDL2_TTF_PATH.
                     #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_ttf_DIR exactly.
                     message(FATAL_ERROR
@@ -307,11 +313,17 @@ macro(tgui_add_dependency_sdl_ttf)
                 # On Linux we should always find SDL2_ttf automatically when it has been installed
                 find_package(SDL2_ttf REQUIRED)
             endif()
+        endif()
 
-            # Remove the empty SDL2_ttf_DIR variable if we found SDL_ttf via the alternative way
-            if(NOT SDL2_ttf_DIR)
-                unset(SDL2_ttf_DIR CACHE)
-            endif()
+        # Remove the empty SDL2_ttf_DIR variable if we found SDL_ttf via SDL2_TTF_PATH and vice versa
+        if(NOT SDL2_ttf_DIR)
+            unset(SDL2_ttf_DIR CACHE)
+        endif()
+        if(SDL2_ttf_DIR AND NOT SDL2_TTF_PATH AND NOT SDL2_TTF_LIBRARY)
+            unset(SDL2_TTF_PATH CACHE)
+            unset(SDL2_TTF_LIBRARY CACHE)
+            unset(SDL2_TTF_INCLUDE_DIR CACHE)
+            unset(SDL2_TTF_NO_DEFAULT_PATH CACHE)
         endif()
 
         if(DEFINED sdl2_ttf_VERSION)
@@ -412,7 +424,7 @@ macro(tgui_add_dependency_freetype)
                 set(FREETYPE_WINDOWS_BINARIES_PATH "" CACHE PATH "Path to FreeType windows binaries (contains 'include', 'release dll' and 'release static' folders)")
                 message(FATAL_ERROR
                     "CMake couldn't find FreeType.\n"
-                    "If you don't have FreeType installed then you can download binaries from https://github.com/ubawurinna/freetype-windows-binaries/releases/tag/v2.10.4 ('Source code (zip)' link under 'Assets') and set the FREETYPE_WINDOWS_BINARIES_PATH variable to the extracted freetype-windows-binaries folder.\n")
+                    "If you don't have FreeType installed then you can download binaries from github.com/ubawurinna/freetype-windows-binaries/releases/ ('Source code (zip)' link under 'Assets') and set the FREETYPE_WINDOWS_BINARIES_PATH variable to the extracted freetype-windows-binaries folder.\n")
             endif()
         else()
             # Use CMake's built-in FindFreetype script to find FreeType

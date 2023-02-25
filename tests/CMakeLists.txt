@@ -145,9 +145,11 @@ add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
-# Enable unity build by default
-if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
-    set_target_properties(tests PROPERTIES UNITY_BUILD ON)
+if(NOT TGUI_BUILD_AS_CXX_MODULE)
+    # Enable unity build by default
+    if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+        set_target_properties(tests PROPERTIES UNITY_BUILD ON)
+    endif()
 endif()
 
 tgui_set_global_compile_flags(tests)
@@ -163,11 +165,13 @@ if(TGUI_ENABLE_DRAW_TESTS)
     target_compile_definitions(tests PRIVATE TGUI_ENABLE_DRAW_TESTS)
 endif()
 
-# Use a precompiled header to speed up compilation.
-# We must exclude the main file since it contains the implementation of Catch.
-target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")
-set_source_files_properties(main.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
-set_source_files_properties(main.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+if(NOT TGUI_BUILD_AS_CXX_MODULE)
+    # Use a precompiled header to speed up compilation.
+    # We must exclude the main file since it contains the implementation of Catch.
+    target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")
+    set_source_files_properties(main.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+    set_source_files_properties(main.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+endif()
 
 # Copy the resources folder to the build directory to execute the tests without installing them
 add_custom_command(TARGET tests

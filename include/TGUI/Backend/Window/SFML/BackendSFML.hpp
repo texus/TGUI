@@ -26,8 +26,15 @@
 #ifndef TGUI_BACKEND_SFML_HPP
 #define TGUI_BACKEND_SFML_HPP
 
-#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
+
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
+
 #include <SFML/Window.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
@@ -37,7 +44,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     class TGUI_API BackendSFML : public Backend
     {

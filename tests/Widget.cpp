@@ -22,13 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
 #include <iostream>
+
+#include "Tests.hpp"
 
 TEST_CASE("[Widget]")
 {

@@ -22,13 +22,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-
+#include <TGUI/Config.hpp>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
+
+#include "Tests.hpp"
 
 tgui::String getClipboardContents()
 {

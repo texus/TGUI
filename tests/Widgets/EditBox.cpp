@@ -22,12 +22,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/EditBox.hpp>
-
+#include <TGUI/Config.hpp>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
+
+#include "Tests.hpp"
 
 TEST_CASE("[EditBox]")
 {

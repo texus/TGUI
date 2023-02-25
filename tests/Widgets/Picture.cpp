@@ -22,15 +22,23 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/Picture.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Loading/ImageLoader.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-
+#include <TGUI/Config.hpp>
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/Texture.hpp>
-    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#endif
+
+#include "Tests.hpp"
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Loading/ImageLoader.hpp>
+#endif
+
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.renderer.sfml_graphics;
+    #else
+        #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+    #endif
 #endif
 
 TEST_CASE("[Picture]")

@@ -22,13 +22,25 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
+module;
 
-TEST_CASE("[Font]")
-{
-    REQUIRE(tgui::Font() == nullptr);
-    REQUIRE(tgui::Font(nullptr) == nullptr);
-    REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
+#define TGUI_MODULE_EXPORT export
+#include <TGUI/Config.hpp>
 
-    REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
-}
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <string>
+#endif
+
+#ifdef _MSC_VER
+    #pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
+#endif
+
+#if !TGUI_USE_SYSTEM_GLAD
+    #define TGUI_GLAD_GL_IMPLEMENTATION
+#endif
+
+#define TGUI_BUILDING_OPENGL_MODULE
+
+export module tgui.opengl;
+
+#include <TGUI/Backend/Renderer/OpenGL.hpp>

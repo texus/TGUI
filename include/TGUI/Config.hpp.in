@@ -118,8 +118,16 @@
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.
 #define TGUI_COMPILED_WITH_CPP_VER @TGUI_CXX_STANDARD@
 
+#cmakedefine01 TGUI_BUILD_AS_CXX_MODULE
+
 #if TGUI_EXPERIMENTAL_USE_STD_MODULE
     import std;
+#endif
+
+// When TGUI_BUILD_AS_CXX_MODULE is set to 1, TGUI_MODULE_EXPORT will be defined as "export" while
+// TGUI is being build. This define takes place before this header is included.
+#ifndef TGUI_MODULE_EXPORT
+    #define TGUI_MODULE_EXPORT
 #endif
 
 // Include the version header when c++20 is available to use the library feature-testing macros
@@ -143,12 +151,12 @@
      || (defined(__GNUC__) && (__GNUC__ >= 9)) \
      || (defined(_MSC_VER) && (_MSC_VER >= 1914))
         #define TGUI_USE_STD_FILESYSTEM
-    #endif
-#endif
 
-// Use clock_cast to convert file time to system time when clock_cast is available
-#if __cpp_lib_chrono >= 201907L && defined(TGUI_USE_STD_FILESYSTEM)
-    #define TGUI_USE_STD_FILESYSTEM_FILE_TIME
+        // Use clock_cast to convert file time to system time when clock_cast is available
+        #if __cpp_lib_chrono >= 201907L
+            #define TGUI_USE_STD_FILESYSTEM_FILE_TIME
+        #endif
+    #endif
 #endif
 
 #if __cplusplus >= 201703L

@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_LIST_BOX_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ListBox.hpp>
 
 struct ListBoxProperties : WidgetProperties
 {

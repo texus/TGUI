@@ -26,16 +26,20 @@
 #ifndef TGUI_CANVAS_SDL_HPP
 #define TGUI_CANVAS_SDL_HPP
 
-#include <TGUI/Config.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+    #include <TGUI/Widgets/ClickableWidget.hpp>
+#endif
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// CanvasSDL provides a way to directly render SDL contents on a widget

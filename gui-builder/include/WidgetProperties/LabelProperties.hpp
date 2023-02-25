@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_LABEL_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Label.hpp>
 
 struct LabelProperties : WidgetProperties
 {

@@ -24,7 +24,13 @@
 
 
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
+
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

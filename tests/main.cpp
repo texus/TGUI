@@ -1,9 +1,31 @@
+
+#include <TGUI/Config.hpp>
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics.hpp>
+#endif
+#if TGUI_HAS_BACKEND_SFML_OPENGL3
+    #include <SFML/Window.hpp>
+#endif
+#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <TGUI/extlibs/IncludeSDL.hpp>
+#endif
+#if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <SDL_ttf.h>
+#endif
+#if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+    #define GLFW_INCLUDE_NONE
+    #include <GLFW/glfw3.h>
+#endif
+
 #define CATCH_CONFIG_RUNNER
 #include "Tests.hpp"
 
-#include <TGUI/TextureManager.hpp>
-#include <TGUI/DefaultBackendWindow.hpp>
-#include <TGUI/Timer.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.default_backend_window;
+#else
+    #include <TGUI/TextureManager.hpp>
+    #include <TGUI/DefaultBackendWindow.hpp>
+#endif
 
 const unsigned int windowWidth = 400;
 const unsigned int windowHeight = 300;
@@ -30,7 +52,11 @@ struct TestsWindowDefault : public TestsWindowBase
 };
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #include <TGUI/Backend/SFML-Graphics.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sfml_graphics;
+    #else
+        #include <TGUI/Backend/SFML-Graphics.hpp>
+    #endif
     struct TestsWindowSfmlGraphics : public TestsWindowBase
     {
         TestsWindowSfmlGraphics()
@@ -58,7 +84,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
-    #include <TGUI/Backend/SFML-OpenGL3.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sfml_opengl3;
+    #else
+        #include <TGUI/Backend/SFML-OpenGL3.hpp>
+    #endif
     struct TestsWindowSfmlOpenGL3 : public TestsWindowBase
     {
         TestsWindowSfmlOpenGL3()
@@ -92,7 +122,11 @@ struct TestsWindowDefault : public TestsWindowBase
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_RENDERER
-    #include <TGUI/Backend/SDL-Renderer.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_renderer;
+    #else
+        #include <TGUI/Backend/SDL-Renderer.hpp>
+    #endif
     struct TestsWindowSdlRenderer : public TestsWindowBase
     {
         TestsWindowSdlRenderer()
@@ -128,7 +162,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-    #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_ttf_opengl3;
+    #else
+        #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
+    #endif
     struct TestsWindowSdlTtfOpenGL3 : public TestsWindowBase
     {
         TestsWindowSdlTtfOpenGL3()
@@ -167,7 +205,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2
-    #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_ttf_gles2;
+    #else
+        #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
+    #endif
     struct TestsWindowSdlTtfGLES2 : public TestsWindowBase
     {
         TestsWindowSdlTtfGLES2()
@@ -206,7 +248,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_OPENGL3
-    #include <TGUI/Backend/SDL-OpenGL3.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_opengl3;
+    #else
+        #include <TGUI/Backend/SDL-OpenGL3.hpp>
+    #endif
     struct TestsWindowSdlOpenGL3 : public TestsWindowBase
     {
         TestsWindowSdlOpenGL3()
@@ -243,7 +289,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_GLES2
-    #include <TGUI/Backend/SDL-GLES2.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_gles2;
+    #else
+        #include <TGUI/Backend/SDL-GLES2.hpp>
+    #endif
     struct TestsWindowSdlGLES2 : public TestsWindowBase
     {
         TestsWindowSdlGLES2()
@@ -280,9 +330,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3
-    #include <TGUI/Backend/GLFW-OpenGL3.hpp>
-    #define GLFW_INCLUDE_NONE
-    #include <GLFW/glfw3.h>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.glfw_opengl3;
+    #else
+        #include <TGUI/Backend/GLFW-OpenGL3.hpp>
+    #endif
     struct TestsWindowGlfwOpenGL3 : public TestsWindowBase
     {
         TestsWindowGlfwOpenGL3()
@@ -313,9 +365,11 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_GLES2
-    #include <TGUI/Backend/GLFW-GLES2.hpp>
-    #define GLFW_INCLUDE_NONE
-    #include <GLFW/glfw3.h>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.glfw_gles2;
+    #else
+        #include <TGUI/Backend/GLFW-GLES2.hpp>
+    #endif
     struct TestsWindowGlfwGLES2 : public TestsWindowBase
     {
         TestsWindowGlfwGLES2()

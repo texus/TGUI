@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include "GuiBuilder.hpp"
 #include "WidgetProperties/BitmapButtonProperties.hpp"
 #include "WidgetProperties/ButtonProperties.hpp"
 #include "WidgetProperties/ChatBoxProperties.hpp"
@@ -49,17 +50,6 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/ToggleButtonProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
-#include "GuiBuilder.hpp"
-
-#include <fstream>
-#include <cassert>
-#include <memory>
-#include <string>
-#include <thread> // this_thread::sleep_for
-#include <cctype> // isdigit
-#include <cmath> // max
-#include <stack>
-#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

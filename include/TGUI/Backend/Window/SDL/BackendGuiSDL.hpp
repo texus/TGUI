@@ -26,13 +26,19 @@
 #ifndef TGUI_BACKEND_GUI_SDL_HPP
 #define TGUI_BACKEND_GUI_SDL_HPP
 
-#include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <SDL_touch.h>
 
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/BackendGui.hpp>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

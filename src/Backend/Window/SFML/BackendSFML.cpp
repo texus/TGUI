@@ -24,7 +24,12 @@
 
 
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-#include <TGUI/Timer.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Timer.hpp>
+#endif
 
 #include <SFML/Config.hpp>
 #include <SFML/Window/Window.hpp>

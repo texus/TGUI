@@ -25,12 +25,19 @@
 
 #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Timer.hpp>
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 
-#include <thread>
-#include <cmath>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Timer.hpp>
+#endif
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <thread>
+    #include <cmath>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

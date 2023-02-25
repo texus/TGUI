@@ -24,8 +24,15 @@
 
 
 #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
-#include <TGUI/Exception.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Exception.hpp>
+    #include <TGUI/Loading/WidgetFactory.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,6 +53,9 @@ namespace tgui
                     + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
             }
         }
+
+        if (!WidgetFactory::getConstructFunction(U"CanvasGLES2"))
+            WidgetFactory::setConstructFunction(U"CanvasGLES2", std::make_shared<CanvasGLES2>);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

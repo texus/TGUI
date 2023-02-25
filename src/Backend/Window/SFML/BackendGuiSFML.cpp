@@ -24,12 +24,17 @@
 
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-#include <TGUI/ToolTip.hpp>
-#include <TGUI/Timer.hpp>
-#include <thread>
 
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/ToolTip.hpp>
+    #include <TGUI/Timer.hpp>
+#endif
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <thread>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

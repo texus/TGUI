@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_PROGRESS_BAR_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ProgressBar.hpp>
 
 struct ProgressBarProperties : WidgetProperties
 {

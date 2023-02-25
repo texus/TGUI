@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_COMBO_BOX_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ComboBox.hpp>
 
 struct ComboBoxProperties : WidgetProperties
 {

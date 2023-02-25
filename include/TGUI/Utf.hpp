@@ -42,7 +42,7 @@
     #pragma warning(disable:4127)
 #endif
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     namespace utf
     {

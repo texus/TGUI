@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_RANGE_SLIDER_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/RangeSlider.hpp>
 
 struct RangeSliderProperties : WidgetProperties
 {

@@ -22,19 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/RadioButtonGroup.hpp>
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>
-#include <TGUI/Widgets/TextArea.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Group.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Label.hpp>
 #include <stack>
 #include <set>
+
+#include "Tests.hpp"
 
 static tgui::Container::Ptr rootContainer;
 

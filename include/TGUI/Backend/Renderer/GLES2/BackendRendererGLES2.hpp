@@ -26,10 +26,15 @@
 #ifndef TGUI_BACKEND_RENDERER_GLES2_HPP
 #define TGUI_BACKEND_RENDERER_GLES2_HPP
 
-#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <memory>
@@ -37,7 +42,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Backend renderer that uses OpenGL ES 2 or 3 (depending on the loaded OpenGL ES context that you have to provide)

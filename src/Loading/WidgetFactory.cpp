@@ -26,37 +26,12 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/AllWidgets.hpp>
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-    #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
-    #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_OPENGL3
-    #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_GLES2
-    #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     std::map<String, std::function<Widget::Ptr()>> WidgetFactory::m_constructFunctions =
     {
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-        {"CanvasSFML", std::make_shared<CanvasSFML>},
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
-        {"CanvasSDL", std::make_shared<CanvasSDL>},
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_OPENGL3
-        {"CanvasOpenGL3", std::make_shared<CanvasOpenGL3>},
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_GLES2
-        {"CanvasGLES2", std::make_shared<CanvasGLES2>},
-#endif
         {"BitmapButton", std::make_shared<BitmapButton>},
         {"Button", std::make_shared<Button>},
         {"ChatBox", std::make_shared<ChatBox>},

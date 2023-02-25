@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_SCROLLBAR_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Scrollbar.hpp>
 
 struct ScrollbarProperties : WidgetProperties
 {

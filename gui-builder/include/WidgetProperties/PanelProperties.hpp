@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
 
 #include "GroupProperties.hpp"
-#include <TGUI/Widgets/Panel.hpp>
 
 struct PanelProperties : GroupProperties
 {

@@ -24,12 +24,25 @@
 
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Loading/WidgetFactory.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendRendererSFML::BackendRendererSFML()
+    {
+        if (!WidgetFactory::getConstructFunction(U"CanvasSFML"))
+            WidgetFactory::setConstructFunction(U"CanvasSFML", std::make_shared<CanvasSFML>);
+    }
 
     std::shared_ptr<BackendTexture> BackendRendererSFML::createTexture()
     {

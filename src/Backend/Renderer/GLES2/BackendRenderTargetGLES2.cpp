@@ -24,11 +24,19 @@
 
 
 #include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
-#include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <numeric>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendText.hpp>
+    #include <TGUI/Backend/Window/Backend.hpp>
+    #include <TGUI/Container.hpp>
+#endif
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <numeric>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

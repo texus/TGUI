@@ -26,9 +26,14 @@
 #ifndef TGUI_BACKEND_SDL_HPP
 #define TGUI_BACKEND_SDL_HPP
 
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
 #include <TGUI/extlibs/IncludeSDL.hpp>
+#include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <unordered_map>
@@ -37,7 +42,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     class TGUI_API BackendSDL : public Backend
     {

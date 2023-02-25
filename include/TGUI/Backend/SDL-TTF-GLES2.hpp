@@ -42,11 +42,17 @@
     //       This situation will no longer be supported once we drop support for ndk-build and require the use of CMake
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
-#include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.window.sdl;
+    import tgui.backend.renderer.gles2;
+    import tgui.backend.font.sdl_ttf;
+#else
+    #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
+    #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+    #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#endif
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     inline namespace SDL_TTF_GLES2
     {

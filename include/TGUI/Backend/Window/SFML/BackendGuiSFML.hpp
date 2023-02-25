@@ -26,13 +26,18 @@
 #ifndef TGUI_BACKEND_GUI_SFML_HPP
 #define TGUI_BACKEND_GUI_SFML_HPP
 
-#include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/BackendGui.hpp>
+#endif
 
 #include <SFML/Window.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

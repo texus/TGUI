@@ -27,8 +27,6 @@
 #define TGUI_GUI_BUILDER_SPIN_CONTROL_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/SpinControl.hpp>
-#include <set>
 
 struct SpinControlProperties : WidgetProperties
 {

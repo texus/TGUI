@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_SCROLLABLE_PANEL_PROPERTIES_HPP
 
 #include "PanelProperties.hpp"
-#include <TGUI/Widgets/ScrollablePanel.hpp>
 
 struct ScrollablePanelProperties : PanelProperties
 {

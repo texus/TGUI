@@ -33,7 +33,6 @@
 #include <TGUI/Loading/ImageLoader.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
     #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Shader.hpp>
 #endif
@@ -213,9 +212,6 @@ namespace tgui
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     void Texture::load(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middleRect)
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSFML>(getBackend()->getRenderer()),
-                    "Loading a texture from an sf::Texture is only supported when using the SFML-Graphics backend renderer");
-
         if (getData() && (m_destructCallback != nullptr))
         {
             m_destructCallback(getData());

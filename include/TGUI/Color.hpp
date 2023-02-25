@@ -48,8 +48,10 @@ namespace tgui
     {
         TGUI_API Color constructColorFromString(const String& string);
     }
+}
 
-
+TGUI_MODULE_EXPORT namespace tgui
+{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Wrapper for colors
     ///

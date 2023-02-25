@@ -26,7 +26,9 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 
-#include <array>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <array>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

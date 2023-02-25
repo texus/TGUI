@@ -23,9 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/SignalManager.hpp>
-#include <TGUI/Widgets/Button.hpp>
 
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/SignalManager.hpp>
+#endif
 
 TEST_CASE("[SignalManager]")
 {

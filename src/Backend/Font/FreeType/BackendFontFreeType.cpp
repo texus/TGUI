@@ -24,7 +24,12 @@
 
 
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
 
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
@@ -42,7 +47,9 @@
     #pragma GCC diagnostic pop
 #endif
 
-#include <cmath>
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

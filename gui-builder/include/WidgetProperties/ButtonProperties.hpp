@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_BUTTON_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Button.hpp>
 
 struct ButtonProperties : WidgetProperties
 {

@@ -23,10 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/ToolTip.hpp>
-#include <TGUI/TextureManager.hpp>
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[ToolTip]")
 {

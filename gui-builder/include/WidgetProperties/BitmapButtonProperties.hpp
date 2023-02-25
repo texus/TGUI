@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_BITMAP_BUTTON_PROPERTIES_HPP
 
 #include "ButtonProperties.hpp"
-#include <TGUI/Widgets/BitmapButton.hpp>
 
 struct BitmapButtonProperties : ButtonProperties
 {

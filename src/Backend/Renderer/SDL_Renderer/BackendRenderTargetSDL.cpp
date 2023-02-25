@@ -23,12 +23,20 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
-#include <TGUI/Backend/Renderer/BackendText.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Container.hpp>
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#include <numeric>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendText.hpp>
+    #include <TGUI/Backend/Window/Backend.hpp>
+    #include <TGUI/Container.hpp>
+#endif
+
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <numeric>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

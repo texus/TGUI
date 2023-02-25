@@ -26,19 +26,24 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_SFML_HPP
 #define TGUI_BACKEND_RENDER_TARGET_SFML_HPP
 
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+
+    namespace sf
+    {
+        class RenderTarget;
+    }
+#endif
 
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace sf
-{
-    class RenderTarget;
-}
-
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Render target that uses SFML to draw the gui

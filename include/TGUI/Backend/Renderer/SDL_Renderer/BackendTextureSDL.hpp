@@ -26,14 +26,19 @@
 #ifndef TGUI_BACKEND_TEXTURE_SDL_HPP
 #define TGUI_BACKEND_TEXTURE_SDL_HPP
 
-#include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 struct SDL_Texture;
 struct SDL_Renderer;
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Texture implementation that makes use of SDL_Texture

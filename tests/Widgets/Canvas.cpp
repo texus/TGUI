@@ -22,14 +22,23 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Config.hpp>
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics/View.hpp>
+    #include <SFML/Graphics/Sprite.hpp>
+#endif
+
 #include "Tests.hpp"
-#include <TGUI/Backend/Window/Backend.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 
-#include <SFML/Graphics/View.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.renderer.sfml_graphics;
+#else
+    #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#endif
+
 namespace sf  // Anonymous namespace didn't work for Clang on macOS
 {
     bool operator==(const sf::View& left, const sf::View& right)
@@ -138,8 +147,13 @@ TEST_CASE("[CanvasSFML]")
 #endif
 
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
-#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.renderer.sdl_renderer;
+#else
+    #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+    #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#endif
 
 TEST_CASE("[CanvasSDL]")
 {
@@ -188,8 +202,13 @@ TEST_CASE("[CanvasSDL]")
 #endif
 
 #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
-#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.renderer.opengl3;
+#else
+    #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
+    #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#endif
 
 TEST_CASE("[CanvasOpenGL3]")
 {
@@ -222,8 +241,13 @@ TEST_CASE("[CanvasOpenGL3]")
 #endif
 
 #if TGUI_HAS_RENDERER_BACKEND_GLES2
-#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
-#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.renderer.gles2;
+#else
+    #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
+    #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+#endif
 
 TEST_CASE("[CanvasGLES2]")
 {

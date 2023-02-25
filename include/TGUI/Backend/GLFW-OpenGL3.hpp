@@ -30,13 +30,19 @@
     #error "TGUI wasn't build with the GLFW_OPENGL3 backend"
 #endif
 
-#include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
-#include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.window.glfw;
+    import tgui.backend.renderer.opengl3;
+    import tgui.backend.font.freetype;
+#else
+    #include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
+    #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+    #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#endif
 
 using GLFWwindow = struct GLFWwindow;
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     inline namespace GLFW_OPENGL3
     {

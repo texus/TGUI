@@ -23,9 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/TextureManager.hpp>
-#include <TGUI/Exception.hpp>
-#include <TGUI/Texture.hpp>
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/TextureManager.hpp>
+#endif
 
 TEST_CASE("[TextureManager]")
 {

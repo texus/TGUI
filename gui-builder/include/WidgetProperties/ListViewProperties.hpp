@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_LIST_VIEW_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ListView.hpp>
 
 struct ListViewProperties : WidgetProperties
 {

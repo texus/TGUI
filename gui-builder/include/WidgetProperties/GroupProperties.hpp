@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_GROUP_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Group.hpp>
 
 struct GroupProperties : WidgetProperties
 {

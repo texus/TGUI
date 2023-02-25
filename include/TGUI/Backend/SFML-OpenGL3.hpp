@@ -30,11 +30,17 @@
     #error "TGUI wasn't build with the SFML_OPENGL3 backend"
 #endif
 
-#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
-#include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.window.sfml;
+    import tgui.backend.renderer.opengl3;
+    import tgui.backend.font.freetype;
+#else
+    #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
+    #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+    #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#endif
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     inline namespace SFML_OPENGL3
     {

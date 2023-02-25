@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_PICTURE_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/Picture.hpp>
 
 struct PictureProperties : WidgetProperties
 {

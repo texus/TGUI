@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_TOGGLE_BUTTON_PROPERTIES_HPP
 
 #include "ButtonProperties.hpp"
-#include <TGUI/Widgets/ToggleButton.hpp>
 
 struct ToggleButtonProperties : ButtonProperties
 {

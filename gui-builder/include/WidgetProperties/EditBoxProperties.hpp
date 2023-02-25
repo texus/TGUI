@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_EDIT_BOX_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/EditBox.hpp>
 
 struct EditBoxProperties : WidgetProperties
 {

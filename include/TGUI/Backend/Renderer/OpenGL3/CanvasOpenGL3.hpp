@@ -26,14 +26,18 @@
 #ifndef TGUI_CANVAS_OPENGL3_HPP
 #define TGUI_CANVAS_OPENGL3_HPP
 
-#include <TGUI/Config.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+    #include <TGUI/Widgets/ClickableWidget.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// CanvasOpenGL3 provides a way to directly render OpenGL contents on a widget

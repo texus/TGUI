@@ -23,8 +23,15 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/extlibs/IncludeSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Loading/WidgetFactory.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +43,9 @@ namespace tgui
         m_renderer{renderer}
     {
         TGUI_ASSERT(m_renderer, "renderer passed to BackendRendererSDL can't be a nullptr");
+
+        if (!WidgetFactory::getConstructFunction(U"CanvasSDL"))
+            WidgetFactory::setConstructFunction(U"CanvasSDL", std::make_shared<CanvasSDL>);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

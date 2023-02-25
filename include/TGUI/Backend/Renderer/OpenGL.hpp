@@ -28,6 +28,10 @@
 
 #include <TGUI/Config.hpp>
 
+#if TGUI_BUILD_AS_CXX_MODULE && !defined(TGUI_BUILDING_OPENGL_MODULE)
+    import tgui.opengl;
+#endif
+
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -66,21 +70,61 @@
     #pragma GCC diagnostic pop
 #endif
 
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <string>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
-{
 #if !defined(NDEBUG)
     #define TGUI_GL_CHECK(expr) do { expr; priv::checkAndLogErrorOpenGL(__FILE__, __LINE__, #expr); } while (false)
 #else
     #define TGUI_GL_CHECK(expr) expr
 #endif
 
+#if !TGUI_BUILD_AS_CXX_MODULE || defined(TGUI_BUILDING_OPENGL_MODULE)
+namespace tgui
+{
     namespace priv
     {
-        void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression);
+#if TGUI_BUILD_AS_CXX_MODULE
+        TGUI_MODULE_EXPORT
+#else
+        inline
+#endif
+#if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
+        void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
+        {
+            GLenum errorCode = glGetError();
+            if (errorCode == GL_NO_ERROR)
+                return;
+
+            const char* error;
+            switch (errorCode)
+            {
+            case GL_INVALID_ENUM:       error = "GL_INVALID_ENUM";      break;
+            case GL_INVALID_VALUE:      error = "GL_INVALID_VALUE";     break;
+            case GL_INVALID_OPERATION:  error = "GL_INVALID_OPERATION"; break;
+            case GL_STACK_OVERFLOW:     error = "GL_STACK_OVERFLOW";    break;
+            case GL_STACK_UNDERFLOW:    error = "GL_STACK_UNDERFLOW";   break;
+            case GL_OUT_OF_MEMORY:      error = "GL_OUT_OF_MEMORY";     break;
+            default:                    error = "Unknown error";        break;
+            }
+
+            std::string fileStr = file;
+            TGUI_PRINT_WARNING("An internal OpenGL call failed in "
+                + fileStr.substr(fileStr.find_last_of("\\/") + 1)
+                + "(" + std::to_string(line) + ")."
+                + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
+        }
+#else
+        void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
+        {
+        }
+#endif
     }
 }
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

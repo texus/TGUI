@@ -22,10 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <set>
+
 #include "Tests.hpp"
-#include <TGUI/Widgets/ListView.hpp>
-#include <TGUI/Widgets/Group.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
 
 TEST_CASE("[ListView]")
 {

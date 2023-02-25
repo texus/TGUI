@@ -23,10 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/HorizontalLayout.hpp>
 
 TEST_CASE("[Clipping]")
 {

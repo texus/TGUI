@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_RICH_TEXT_LABEL_PROPERTIES_HPP
 
 #include "LabelProperties.hpp"
-#include <TGUI/Widgets/RichTextLabel.hpp>
 
 struct RichTextLabelProperties : LabelProperties
 {

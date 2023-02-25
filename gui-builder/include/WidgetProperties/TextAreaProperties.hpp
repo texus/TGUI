@@ -27,7 +27,6 @@
 #define TGUI_GUI_BUILDER_TEXT_AREA_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/TextArea.hpp>
 
 struct TextAreaProperties : WidgetProperties
 {

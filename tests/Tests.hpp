@@ -36,16 +36,17 @@
 #endif
 
 #include "catch.hpp"
-#include <TGUI/Backend/Window/BackendGui.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Loading/Serializer.hpp>
+
+#include <memory>
+#include <chrono>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/RenderTexture.hpp>
-    #include <TGUI/Backend/SFML-Graphics.hpp>
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sfml_graphics;
+    #else
+        #include <TGUI/Backend/SFML-Graphics.hpp>
+    #endif
 
     #if SFML_VERSION_MAJOR >= 3
         #define TEST_DRAW_INIT(width, height, widget) \
@@ -115,6 +116,12 @@
     // We draw to the window, without clearing or presenting it
     #define TEST_DRAW(filename) \
                 gui.draw();
+#endif
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/TGUI.hpp>
 #endif
 
 static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);

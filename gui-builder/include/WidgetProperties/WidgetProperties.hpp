@@ -26,12 +26,12 @@
 #ifndef TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 #define TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 
-#include <TGUI/Widget.hpp>
-#include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Widgets/Scrollbar.hpp>
-#include <iostream>
+#include <TGUI/Config.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/TGUI.hpp>
+#endif
 
 using PropertyValueMap = std::map<tgui::String, std::pair<tgui::String, tgui::String>>;
 using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;

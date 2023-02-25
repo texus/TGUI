@@ -30,11 +30,17 @@
     #error "TGUI wasn't build with the SDL_RENDERER backend"
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
-#include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.window.sdl;
+    import tgui.backend.renderer.sdl_renderer;
+    import tgui.backend.font.sdl_ttf;
+#else
+    #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
+    #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+    #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#endif
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     inline namespace SDL_RENDERER
     {

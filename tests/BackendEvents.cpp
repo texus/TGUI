@@ -22,22 +22,42 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Config.hpp>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
-    #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
+    #include <SFML/Window.hpp>
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_SDL
-    #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
+    #include <TGUI/extlibs/IncludeSDL.hpp>
+    #include <SDL_touch.h>
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
-    #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
-
     #define GLFW_INCLUDE_NONE
     #include <GLFW/glfw3.h>
+#endif
+
+#include "Tests.hpp"
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    #if TGUI_HAS_WINDOW_BACKEND_SFML
+        import tgui.backend.window.sfml;
+    #endif
+    #if TGUI_HAS_WINDOW_BACKEND_SDL
+        import tgui.backend.window.sdl;
+    #endif
+    #if TGUI_HAS_WINDOW_BACKEND_GLFW
+        import tgui.backend.window.glfw;
+    #endif
+#else
+    #if TGUI_HAS_WINDOW_BACKEND_SFML
+        #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
+    #endif
+    #if TGUI_HAS_WINDOW_BACKEND_SDL
+        #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
+    #endif
+    #if TGUI_HAS_WINDOW_BACKEND_GLFW
+        #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
+    #endif
 #endif
 
 TEST_CASE("[Backend events]")

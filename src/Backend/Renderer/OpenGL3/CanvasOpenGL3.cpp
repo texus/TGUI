@@ -25,9 +25,14 @@
 
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+    import tgui.opengl;
+#else
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

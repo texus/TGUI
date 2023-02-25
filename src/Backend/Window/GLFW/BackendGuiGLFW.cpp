@@ -25,7 +25,12 @@
 
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
 #include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
-#include <TGUI/Timer.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+#else
+    #include <TGUI/Timer.hpp>
+#endif
 
 #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
 #include <GLFW/glfw3.h>

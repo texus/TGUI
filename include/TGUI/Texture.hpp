@@ -39,7 +39,7 @@
     #include <functional>
 #endif
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_BUILD_AS_CXX_MODULE
     namespace sf
     {
         class Texture;
@@ -49,7 +49,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     class TGUI_API Texture
     {

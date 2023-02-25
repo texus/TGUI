@@ -24,8 +24,16 @@
 
 
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
-#include <TGUI/Exception.hpp>
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+    import tgui.opengl;
+#else
+    #include <TGUI/Exception.hpp>
+    #include <TGUI/Loading/WidgetFactory.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,6 +54,9 @@ namespace tgui
                     + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
             }
         }
+
+        if (!WidgetFactory::getConstructFunction(U"CanvasOpenGL3"))
+            WidgetFactory::setConstructFunction(U"CanvasOpenGL3", std::make_shared<CanvasOpenGL3>);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
