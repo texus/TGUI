@@ -1,5 +1,6 @@
 
 #include <TGUI/Config.hpp>
+
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics.hpp>
 #endif
@@ -7,6 +8,10 @@
     #include <SFML/Window.hpp>
 #endif
 #if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
+    // If the program links to sfml-main then we shouldn't let SDL redefine "main" as "SDL_main"
+    #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
+        #define SDL_MAIN_HANDLED
+    #endif
     #include <TGUI/extlibs/IncludeSDL.hpp>
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
@@ -114,11 +119,6 @@ struct TestsWindowDefault : public TestsWindowBase
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
     #endif
     };
-#endif
-
-// If the program links to sfml-main then we shouldn't redefine "main" as "SDL_main"
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
-    #define SDL_MAIN_HANDLED
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_RENDERER
