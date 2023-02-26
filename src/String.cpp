@@ -28,6 +28,7 @@
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <algorithm>
     #include <cctype> // tolower, toupper, isspace
+    #include <cwctype> // iswspace
     #include <iterator> // distance
 
     #if TGUI_COMPILED_WITH_CPP_VER >= 17
@@ -58,20 +59,21 @@ namespace tgui
 
     bool isWhitespace(char character)
     {
-        if (character == ' ' || character == '\t' || character == '\r' || character == '\n')
-            return true;
-        else
-            return false;
+        return std::isspace(static_cast<unsigned char>(character));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool isWhitespace(char32_t character)
     {
-        if (character >= 128)
-            return false;
-        else
-            return isWhitespace(static_cast<char>(character));
+        // wchar_t is only 2 bytes on Windows
+        TGUI_IF_CONSTEXPR (sizeof(wchar_t) < 4)
+        {
+            if (character > 0xFFFF)
+                return false;
+        }
+
+        return std::iswspace(static_cast<wint_t>(character));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

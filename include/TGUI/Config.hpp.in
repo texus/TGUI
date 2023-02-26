@@ -234,4 +234,17 @@
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=]
 #endif
 
+#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
+    #define TGUI_IF_CONSTEXPR if constexpr
+#else
+    #define TGUI_IF_CONSTEXPR if
+
+    // Disable warning in some Visual Studio versions about being able to use "if constexpr",
+    // which we aren't doing because these VS versions didn't define __cpp_if_constexpr yet.
+    #if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
+        #pragma warning(push)
+        #pragma warning(disable:4127)
+    #endif
+#endif
+
 #endif // TGUI_CONFIG_HPP

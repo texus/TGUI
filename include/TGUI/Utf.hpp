@@ -35,13 +35,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Disable warning in Visual Studio about being able to use "if constexpr".
-// The code would use "if constexpr" if the compiler would just define __cpp_if_constexpr
-#if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable:4127)
-#endif
-
 TGUI_MODULE_EXPORT namespace tgui
 {
     namespace utf
@@ -285,11 +278,7 @@ TGUI_MODULE_EXPORT namespace tgui
             std::wstring outStr;
             outStr.reserve(strUtf32.length() + 1);
 
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
-            if constexpr (sizeof(wchar_t) == 4)
-#else
-            if (sizeof(wchar_t) == 4)
-#endif
+            TGUI_IF_CONSTEXPR (sizeof(wchar_t) == 4)
             {
                 // On Unix, wide characters are UCS-4 and we can just copy the characters
                 for (const char32_t codepoint : strUtf32)

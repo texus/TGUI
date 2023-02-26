@@ -78,6 +78,7 @@ module;
     #include <ctime>
     #include <cstdio>
     #include <cctype>
+    #include <cwctype>
     #include <cstring>
     #include <cstddef>
     #include <cstdint>
