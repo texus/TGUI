@@ -28,7 +28,7 @@
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <algorithm>
     #include <cctype> // tolower, toupper, isspace
-    #include <cwctype> // iswspace
+    #include <cwctype> // iswspace, iswalpha
     #include <iterator> // distance
 
     #if TGUI_COMPILED_WITH_CPP_VER >= 17
@@ -74,6 +74,27 @@ namespace tgui
         }
 
         return std::iswspace(static_cast<wint_t>(character));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool isAlpha(char32_t character)
+    {
+        // wchar_t is only 2 bytes on Windows
+        TGUI_IF_CONSTEXPR (sizeof(wchar_t) < 4)
+        {
+            if (character > 0xFFFF)
+                return false;
+        }
+
+        return std::iswalpha(static_cast<wint_t>(character));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool isDigit(char32_t character)
+    {
+        return ((character >= U'0') && (character <= U'9'));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
