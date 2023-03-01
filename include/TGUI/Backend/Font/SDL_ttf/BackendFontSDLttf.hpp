@@ -27,7 +27,11 @@
 #define TGUI_BACKEND_FONT_SDL_TTF_HPP
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#include <SDL_ttf.h>
+#if SDL_MAJOR_VERSION >= 3
+    #include <SDL3/SDL_ttf.h>
+#else
+    #include <SDL_ttf.h>
+#endif
 
 #include <TGUI/Config.hpp>
 #if TGUI_BUILD_AS_CXX_MODULE

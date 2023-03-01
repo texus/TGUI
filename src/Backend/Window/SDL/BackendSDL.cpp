@@ -26,13 +26,17 @@
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#include <SDL_syswm.h>
+#if SDL_MAJOR_VERSION >= 3
+    #include <SDL3/SDL_syswm.h>
+#else
+    #include <SDL_syswm.h>
+#endif
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11)
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && defined(SDL_ENABLE_SYSWM_X11)
     #include <X11/Xlib.h>
     #include <X11/cursorfont.h>
 #endif
@@ -54,7 +58,7 @@ namespace tgui
         for (auto& cursor : m_mouseCursors)
         {
             if (cursor.second)
-                SDL_FreeCursor(cursor.second);
+                SDL_DestroyCursor(cursor.second);
         }
     }
 
@@ -80,14 +84,21 @@ namespace tgui
 
     void BackendSDL::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
     {
+#if SDL_MAJOR_VERSION >= 3
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+        SDL_Surface* surface = SDL_CreateSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
+                                                     4 * static_cast<int>(size.x), SDL_PIXELFORMAT_RGBA32);
+#else
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
-            32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+                                                        32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+#endif
+
         if (!surface)
             return;
 
         SDL_Cursor* bitmapCursor = SDL_CreateColorCursor(surface, static_cast<int>(hotspot.x), static_cast<int>(hotspot.y));
-        SDL_FreeSurface(surface);
+        SDL_DestroySurface(surface);
 
         if (!bitmapCursor)
             return;
@@ -110,7 +121,7 @@ namespace tgui
             auto it = m_mouseCursors.find(type);
             if ((it != m_mouseCursors.end()) && it->second)
             {
-                SDL_FreeCursor(it->second);
+                SDL_DestroyCursor(it->second);
                 m_mouseCursors.erase(it);
             }
 
@@ -168,13 +179,13 @@ namespace tgui
         switch (modifierKey)
         {
         case Event::KeyModifier::System:
-            return (pressedModifiers & KMOD_GUI) != 0;
+            return (pressedModifiers & SDL_KMOD_GUI) != 0;
         case Event::KeyModifier::Control:
-            return (pressedModifiers & KMOD_CTRL) != 0;
+            return (pressedModifiers & SDL_KMOD_CTRL) != 0;
         case Event::KeyModifier::Shift:
-            return (pressedModifiers & KMOD_SHIFT) != 0;
+            return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
         case Event::KeyModifier::Alt:
-            return (pressedModifiers & KMOD_ALT) != 0;
+            return (pressedModifiers & SDL_KMOD_ALT) != 0;
         }
 
         TGUI_ASSERT(false, "BackendSDL::isKeyboardModifierPressed called with an invalid value");
@@ -308,7 +319,7 @@ namespace tgui
 #endif
 
         if (m_mouseCursors[type])
-            SDL_FreeCursor(m_mouseCursors[type]);
+            SDL_DestroyCursor(m_mouseCursors[type]);
 
         m_mouseCursors[type] = cursor;
 
@@ -334,7 +345,7 @@ namespace tgui
         // As of SDL 2.24, it uses an arrow pointing NW or NE. This is already much better, even though the arrow points on the wrong direction
         // for bottom corners. Having two-sided arrows for horizontal/vertical, but having a direction arrow for diagonal looks out of place though.
         // So we will continue to bypass SDL and use directional arrows in all directions.
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11)
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && defined(SDL_ENABLE_SYSWM_X11)
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
@@ -343,8 +354,12 @@ namespace tgui
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
                 SDL_SysWMinfo sysInfo;
+#if SDL_MAJOR_VERSION >= 3
+                if (SDL_GetWindowWMInfo(window, &sysInfo, SDL_SYSWM_CURRENT_VERSION) && (sysInfo.subsystem == SDL_SYSWM_X11) && sysInfo.info.x11.display)
+#else
                 SDL_VERSION(&sysInfo.version); // We must fill in the version before calling SDL_GetWindowWMInfo
                 if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11) && sysInfo.info.x11.display)
+#endif
                 {
                     auto* displayX11 = sysInfo.info.x11.display;
 

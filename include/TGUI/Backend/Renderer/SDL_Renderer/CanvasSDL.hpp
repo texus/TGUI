@@ -168,7 +168,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Pointer to the internal texture
         ///
         /// The texture has a size that is equal or larger than the size of the canvas widget.
-        /// The pixel format of the texture is SDL_PIXELFORMAT_RGBA8888.
+        /// The pixel format of the texture is SDL_PIXELFORMAT_RGBA32.
         /// The texture was created with SDL_TEXTUREACCESS_TARGET access.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD SDL_Texture* getTextureTarget()

@@ -27,7 +27,9 @@
 #define TGUI_BACKEND_GUI_SDL_HPP
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#include <SDL_touch.h>
+#if SDL_MAJOR_VERSION < 3
+    #include <SDL_touch.h>
+#endif
 
 #include <TGUI/Config.hpp>
 #if TGUI_BUILD_AS_CXX_MODULE
@@ -91,7 +93,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///     while (SDL_PollEvent(&event) != 0)
         ///     {
         ///         gui.handleEvent(event);
-        ///         if (e.type == SDL_QUIT)
+        ///         if (e.type == SDL_EVENT_QUIT)  // SDL_QUIT in SDL2, SDL_EVENT_QUIT in SDL3
         ///             quit = true;
         ///     }
         ///

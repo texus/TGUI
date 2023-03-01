@@ -81,13 +81,13 @@ namespace tgui
 
         // Store the current clipping settings, in case we need to change it
         SDL_Rect oldClipRect;
-        const SDL_bool oldClipEnabled = SDL_RenderIsClipEnabled(m_renderer);
+        const SDL_bool oldClipEnabled = SDL_RenderClipEnabled(m_renderer);
         if (oldClipEnabled)
-            SDL_RenderGetClipRect(m_renderer, &oldClipRect);
+            SDL_GetRenderClipRect(m_renderer, &oldClipRect);
 
         // Store the current viewport, in case we need to change it
         SDL_Rect oldViewport;
-        SDL_RenderGetViewport(m_renderer, &oldViewport);
+        SDL_GetRenderViewport(m_renderer, &oldViewport);
 
         // Store the current blend mode, in case we need to change it
         SDL_BlendMode oldBlendMode = SDL_BLENDMODE_BLEND;
@@ -102,7 +102,7 @@ namespace tgui
         const bool viewportNeedsUpdate = (oldViewport.x != newViewport.x) || (oldViewport.y != newViewport.y)
                                       || (oldViewport.w != newViewport.w) || (oldViewport.h != newViewport.h);
         if (viewportNeedsUpdate)
-            SDL_RenderSetViewport(m_renderer, &newViewport);
+            SDL_SetRenderViewport(m_renderer, &newViewport);
 
         m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
 
@@ -119,13 +119,13 @@ namespace tgui
 
         // Restore the old viewport
         if (viewportNeedsUpdate)
-            SDL_RenderSetViewport(m_renderer, &oldViewport);
+            SDL_SetRenderViewport(m_renderer, &oldViewport);
 
         // Restore the old clipping rect
         if (oldClipEnabled)
-            SDL_RenderSetClipRect(m_renderer, &oldClipRect);
+            SDL_SetRenderClipRect(m_renderer, &oldClipRect);
         else
-            SDL_RenderSetClipRect(m_renderer, nullptr);
+            SDL_SetRenderClipRect(m_renderer, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,13 +171,13 @@ namespace tgui
             clipRectSDL.y = static_cast<int>(clipViewport.top - m_viewport.top);
             clipRectSDL.w = static_cast<int>(clipViewport.width);
             clipRectSDL.h = static_cast<int>(clipViewport.height);
-            SDL_RenderSetClipRect(m_renderer, &clipRectSDL);
+            SDL_SetRenderClipRect(m_renderer, &clipRectSDL);
         }
         else // Clip the entire window
         {
             m_pixelsPerPoint = {1, 1};
 
-            SDL_RenderSetClipRect(m_renderer, nullptr);
+            SDL_SetRenderClipRect(m_renderer, nullptr);
         }
     }
 

@@ -113,7 +113,7 @@ namespace tgui
                     "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
                 SDL_Renderer* sdlRenderer = std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->getInternalRenderer();
 
-                m_textureTarget = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+                m_textureTarget = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET,
                                                     static_cast<int>(newTextureSize.x), static_cast<int>(newTextureSize.y));
 
                 // Move the ownership of the texture to our backend texture (we thus don't need to call SDL_DestroyTexture ourselves)

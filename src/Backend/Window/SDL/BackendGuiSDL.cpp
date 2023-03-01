@@ -159,6 +159,25 @@ namespace tgui
     {
         switch (eventSDL.type)
         {
+#if SDL_MAJOR_VERSION >= 3
+            case SDL_EVENT_WINDOW_FOCUS_GAINED:
+            {
+                eventTGUI.type = Event::Type::GainedFocus;
+                return true;
+            }
+            case SDL_EVENT_WINDOW_FOCUS_LOST:
+            {
+                eventTGUI.type = Event::Type::LostFocus;
+                return true;
+            }
+            case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+            {
+                eventTGUI.type = Event::Type::Resized;
+                eventTGUI.size.width = static_cast<unsigned int>(eventSDL.window.data1);
+                eventTGUI.size.height = static_cast<unsigned int>(eventSDL.window.data2);
+                return true;
+            }
+#else
             case SDL_WINDOWEVENT:
             {
                 if (eventSDL.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
@@ -181,12 +200,13 @@ namespace tgui
                 else // This window event is not handled by TGUI
                     return false;
             }
-            case SDL_QUIT:
+#endif
+            case SDL_EVENT_QUIT:
             {
                 eventTGUI.type = Event::Type::Closed;
                 return true;
             }
-            case SDL_TEXTINPUT:
+            case SDL_EVENT_TEXT_INPUT:
             {
                 const String& unicodeStr(static_cast<const char*>(eventSDL.text.text));
                 if (unicodeStr.empty())
@@ -197,7 +217,7 @@ namespace tgui
                 eventTGUI.text.unicode = unicodeStr[0];
                 return true;
             }
-            case SDL_KEYDOWN:
+            case SDL_EVENT_KEY_DOWN:
             {
                 const Event::KeyboardKey code = convertKeyCode(eventSDL.key.keysym.sym);
                 if (code == Event::KeyboardKey::Unknown)
@@ -205,19 +225,26 @@ namespace tgui
 
                 eventTGUI.type = Event::Type::KeyPressed;
                 eventTGUI.key.code = code;
-                eventTGUI.key.alt = ((eventSDL.key.keysym.mod & KMOD_ALT) != 0);
-                eventTGUI.key.control = ((eventSDL.key.keysym.mod & KMOD_CTRL) != 0);
-                eventTGUI.key.shift = ((eventSDL.key.keysym.mod & KMOD_SHIFT) != 0);
-                eventTGUI.key.system = ((eventSDL.key.keysym.mod & KMOD_GUI) != 0);
+                eventTGUI.key.alt = ((eventSDL.key.keysym.mod & SDL_KMOD_ALT) != 0);
+                eventTGUI.key.control = ((eventSDL.key.keysym.mod & SDL_KMOD_CTRL) != 0);
+                eventTGUI.key.shift = ((eventSDL.key.keysym.mod & SDL_KMOD_SHIFT) != 0);
+                eventTGUI.key.system = ((eventSDL.key.keysym.mod & SDL_KMOD_GUI) != 0);
                 return true;
             }
-            case SDL_MOUSEWHEEL:
+            case SDL_EVENT_MOUSE_WHEEL:
             {
                 eventTGUI.type = Event::Type::MouseWheelScrolled;
 
-#if (SDL_MAJOR_VERSION > 2) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 18))
+#if SDL_MAJOR_VERSION >= 3
+                if (eventSDL.wheel.y == 0)
+                    return false; // TGUI only handles the vertical mouse wheel
+
+                if (eventSDL.wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+                    eventTGUI.mouseWheel.delta = -eventSDL.wheel.y;
+                else
+                    eventTGUI.mouseWheel.delta = eventSDL.wheel.y;
+#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+    || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 18))
                 if (eventSDL.wheel.preciseY == 0)
                     return false; // TGUI only handles the vertical mouse wheel
 
@@ -235,7 +262,10 @@ namespace tgui
                     eventTGUI.mouseWheel.delta = static_cast<float>(eventSDL.wheel.y);
 #endif
 
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+#if SDL_MAJOR_VERSION >= 3
+                eventTGUI.mouseWheel.x = static_cast<int>(eventSDL.wheel.mouseX);
+                eventTGUI.mouseWheel.y = static_cast<int>(eventSDL.wheel.mouseY);
+#elif (SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26)
                 eventTGUI.mouseWheel.x = eventSDL.wheel.mouseX;
                 eventTGUI.mouseWheel.y = eventSDL.wheel.mouseY;
 #else
@@ -246,11 +276,11 @@ namespace tgui
 
                 return true;
             }
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
             {
                 // Ignore synthetic mouse events that SDL generates for touches on mobile platforms,
-                // because we handle them ourselves in the SDL_FINGERDOWN and SDL_FINGERUP events.
+                // because we handle them ourselves in the SDL_EVENT_FINGER_DOWN and SDL_EVENT_FINGER_UP events.
                 if (eventSDL.button.which == static_cast<std::uint32_t>(-1))
                     return false;
 
@@ -269,34 +299,44 @@ namespace tgui
                     return false;
                 }
 
-                if (eventSDL.type == SDL_MOUSEBUTTONDOWN)
+                if (eventSDL.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
                     eventTGUI.type = Event::Type::MouseButtonPressed;
                 else
                     eventTGUI.type = Event::Type::MouseButtonReleased;
 
+#if SDL_MAJOR_VERSION >= 3
+                eventTGUI.mouseButton.x = static_cast<int>(eventSDL.button.x);
+                eventTGUI.mouseButton.y = static_cast<int>(eventSDL.button.y);
+#else
                 eventTGUI.mouseButton.x = eventSDL.button.x;
                 eventTGUI.mouseButton.y = eventSDL.button.y;
+#endif
                 return true;
             }
-            case SDL_MOUSEMOTION:
+            case SDL_EVENT_MOUSE_MOTION:
             {
                 // Ignore synthetic mouse events that SDL generates for touches on mobile platforms,
-                // because we handle them ourselves in the SDL_FINGERMOTION event.
+                // because we handle them ourselves in the SDL_EVENT_FINGER_MOTION event.
                 if (eventSDL.motion.which == static_cast<std::uint32_t>(-1))
                     return false;
 
                 eventTGUI.type = Event::Type::MouseMoved;
+#if SDL_MAJOR_VERSION >= 3
+                eventTGUI.mouseMove.x = static_cast<int>(eventSDL.motion.x);
+                eventTGUI.mouseMove.y = static_cast<int>(eventSDL.motion.y);
+#else
                 eventTGUI.mouseMove.x = eventSDL.motion.x;
                 eventTGUI.mouseMove.y = eventSDL.motion.y;
+#endif
                 return true;
             }
-            case SDL_FINGERDOWN:
+            case SDL_EVENT_FINGER_DOWN:
             {
                 // Ignore this finger if another finger is already down
                 if (m_touchFirstFingerDown)
                     return false;
 
-                // Remember which finger this is, for when we receive SDL_FINGERMOTION and SDL_FINGERUP events
+                // Remember which finger this is, for when we receive SDL_EVENT_FINGER_MOTION and SDL_EVENT_FINGER_UP events
                 m_touchFirstFingerDown = true;
                 m_touchFirstFingerId = eventSDL.tfinger.fingerId;
                 m_touchFirstFingerTouchId = eventSDL.tfinger.touchId;
@@ -311,7 +351,7 @@ namespace tgui
                 eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_windowSize.y));
                 return true;
             }
-            case SDL_FINGERUP:
+            case SDL_EVENT_FINGER_UP:
             {
                 // Only handle the event if this is the first finger
                 if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerId) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchId))
@@ -329,7 +369,7 @@ namespace tgui
                 eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_windowSize.y));
                 return true;
             }
-            case SDL_FINGERMOTION:
+            case SDL_EVENT_FINGER_MOTION:
             {
                 // Only handle the event if this is the first finger
                 if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerId) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchId))
@@ -359,7 +399,7 @@ namespace tgui
 
         // For touches, always send a mouse move event before the mouse press,
         // because widgets may assume that the mouse had to move to the clicked location first
-        if ((event.type == Event::Type::MouseButtonPressed) && (sdlEvent.type == SDL_FINGERDOWN))
+        if ((event.type == Event::Type::MouseButtonPressed) && (sdlEvent.type == SDL_EVENT_FINGER_DOWN))
         {
             Event mouseMoveEvent;
             mouseMoveEvent.type = Event::Type::MouseMoved;
@@ -406,12 +446,16 @@ namespace tgui
                     if (handleEvent(event))
                         eventProcessed = true;
 
-                    if (event.type == SDL_QUIT)
+                    if (event.type == SDL_EVENT_QUIT)
                     {
                         quit = true;
                         eventProcessed = true;
                     }
+#if SDL_MAJOR_VERSION >= 3
+                    else if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+#else
                     else if ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+#endif
                     {
                         eventProcessed = true;
                     }

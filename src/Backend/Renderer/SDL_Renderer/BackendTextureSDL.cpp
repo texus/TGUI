@@ -41,11 +41,11 @@ namespace tgui
         const char *hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
 
         if (!hint || SDL_strcasecmp(hint, "nearest") == 0) {
-            return SDL_ScaleModeNearest;
+            return SDL_SCALEMODE_NEAREST;
         } else if (SDL_strcasecmp(hint, "linear") == 0) {
-            return SDL_ScaleModeLinear;
+            return SDL_SCALEMODE_LINEAR;
         } else if (SDL_strcasecmp(hint, "best") == 0) {
-            return SDL_ScaleModeBest;
+            return SDL_SCALEMODE_BEST;
         } else {
             return static_cast<SDL_ScaleMode>(SDL_atoi(hint));
         }
@@ -81,7 +81,7 @@ namespace tgui
 
             // Change the scale mode if it doesn't match our smoothing parameter
             const SDL_ScaleMode oldScaleMode = GetCurrentSDLScaleMode();
-            const SDL_ScaleMode newScaleMode = smooth ? SDL_ScaleModeLinear : SDL_ScaleModeNearest;
+            const SDL_ScaleMode newScaleMode = smooth ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST;
             if (oldScaleMode != newScaleMode)
             {
                 if (smooth)
@@ -97,13 +97,13 @@ namespace tgui
             {
                 switch (oldScaleMode)
                 {
-                case SDL_ScaleModeNearest:
+                case SDL_SCALEMODE_NEAREST:
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
                     break;
-                case SDL_ScaleModeLinear:
+                case SDL_SCALEMODE_LINEAR:
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
                     break;
-                case SDL_ScaleModeBest:
+                case SDL_SCALEMODE_BEST:
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
                     break;
                 }
@@ -131,7 +131,7 @@ namespace tgui
         BackendTexture::setSmooth(smooth);
 
         if (m_texture)
-            SDL_SetTextureScaleMode(m_texture, smooth ? SDL_ScaleModeLinear : SDL_ScaleModeNearest);
+            SDL_SetTextureScaleMode(m_texture, smooth ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,11 +161,11 @@ namespace tgui
  || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
         SDL_ScaleMode scaleMode;
         if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
-            m_isSmooth = (scaleMode != SDL_ScaleModeNearest);
+            m_isSmooth = (scaleMode != SDL_SCALEMODE_NEAREST);
 #else
         // We have no way of knowing whether the texture was created with smoothing enabled or not.
         // Except for some unrealistic edge cases it doesn't matter what we set the value to though.
-        m_isSmooth = (GetCurrentSDLScaleMode() != SDL_ScaleModeNearest);
+        m_isSmooth = (GetCurrentSDLScaleMode() != SDL_SCALEMODE_NEAREST);
 #endif
     }
 

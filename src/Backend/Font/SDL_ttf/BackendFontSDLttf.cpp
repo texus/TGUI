@@ -203,7 +203,7 @@ namespace tgui
                 m_texture = nullptr;
             }
 
-            SDL_FreeSurface(surface);
+            SDL_DestroySurface(surface);
         }
 
         return m_glyphs.insert({glyphKey, glyph}).first->second;
@@ -437,7 +437,7 @@ namespace tgui
                 ++thickness;
             }
 
-            SDL_FreeSurface(surface);
+            SDL_DestroySurface(surface);
         }
 
         // Restore the old style

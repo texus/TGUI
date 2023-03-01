@@ -256,7 +256,7 @@ namespace tgui
             // We send a quit event in case we are using the main loop of the gui.
             // We can't put a boolean in the mainLoop function of this class because it could be called directly on the gui object
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 
@@ -292,14 +292,18 @@ namespace tgui
             if (!pixelPtr)
                 return;
 
-            SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(),
-                static_cast<int>(iconSize.x), static_cast<int>(iconSize.y), 32, 4 * static_cast<int>(iconSize.x),
-                SDL_PIXELFORMAT_RGBA32);
+#if SDL_MAJOR_VERSION >= 3
+            SDL_Surface* icon = SDL_CreateSurfaceFrom(pixelPtr.get(), static_cast<int>(iconSize.x), static_cast<int>(iconSize.y),
+                                                      4 * static_cast<int>(iconSize.x), SDL_PIXELFORMAT_RGBA32);
+#else
+            SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(), static_cast<int>(iconSize.x), static_cast<int>(iconSize.y),
+                                                                   32, 4 * static_cast<int>(iconSize.x), SDL_PIXELFORMAT_RGBA32);
+#endif
             if (!icon)
                 return;
 
             SDL_SetWindowIcon(m_window, icon);
-            SDL_FreeSurface(icon);
+            SDL_DestroySurface(icon);
         }
 
     private:
