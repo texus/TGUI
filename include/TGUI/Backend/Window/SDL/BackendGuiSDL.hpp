@@ -153,7 +153,7 @@ TGUI_MODULE_EXPORT namespace tgui
     protected:
 
         SDL_Window* m_window = nullptr;
-        Vector2i m_windowSize;
+        float m_dpiScale = 1;
 
         bool m_touchFirstFingerDown = false;
         SDL_FingerID m_touchFirstFingerId = 0;      // Only valid if m_touchFirstFingerDown is true

@@ -262,12 +262,9 @@ namespace tgui
                     eventTGUI.mouseWheel.delta = static_cast<float>(eventSDL.wheel.y);
 #endif
 
-#if SDL_MAJOR_VERSION >= 3
-                eventTGUI.mouseWheel.x = static_cast<int>(eventSDL.wheel.mouseX);
-                eventTGUI.mouseWheel.y = static_cast<int>(eventSDL.wheel.mouseY);
-#elif (SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26)
-                eventTGUI.mouseWheel.x = eventSDL.wheel.mouseX;
-                eventTGUI.mouseWheel.y = eventSDL.wheel.mouseY;
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+                eventTGUI.mouseWheel.x = static_cast<int>(eventSDL.wheel.mouseX * m_dpiScale);
+                eventTGUI.mouseWheel.y = static_cast<int>(eventSDL.wheel.mouseY * m_dpiScale);
 #else
                 // SDL didn't include the mouse position in mouse wheel events, so we add the last known position ourself
                 eventTGUI.mouseWheel.x = static_cast<int>(m_lastMousePos.x);
@@ -304,13 +301,8 @@ namespace tgui
                 else
                     eventTGUI.type = Event::Type::MouseButtonReleased;
 
-#if SDL_MAJOR_VERSION >= 3
-                eventTGUI.mouseButton.x = static_cast<int>(eventSDL.button.x);
-                eventTGUI.mouseButton.y = static_cast<int>(eventSDL.button.y);
-#else
-                eventTGUI.mouseButton.x = eventSDL.button.x;
-                eventTGUI.mouseButton.y = eventSDL.button.y;
-#endif
+                eventTGUI.mouseButton.x = static_cast<int>(eventSDL.button.x * m_dpiScale);
+                eventTGUI.mouseButton.y = static_cast<int>(eventSDL.button.y * m_dpiScale);
                 return true;
             }
             case SDL_EVENT_MOUSE_MOTION:
@@ -321,13 +313,8 @@ namespace tgui
                     return false;
 
                 eventTGUI.type = Event::Type::MouseMoved;
-#if SDL_MAJOR_VERSION >= 3
-                eventTGUI.mouseMove.x = static_cast<int>(eventSDL.motion.x);
-                eventTGUI.mouseMove.y = static_cast<int>(eventSDL.motion.y);
-#else
-                eventTGUI.mouseMove.x = eventSDL.motion.x;
-                eventTGUI.mouseMove.y = eventSDL.motion.y;
-#endif
+                eventTGUI.mouseMove.x = static_cast<int>(eventSDL.motion.x * m_dpiScale);
+                eventTGUI.mouseMove.y = static_cast<int>(eventSDL.motion.y * m_dpiScale);
                 return true;
             }
             case SDL_EVENT_FINGER_DOWN:
@@ -341,14 +328,11 @@ namespace tgui
                 m_touchFirstFingerId = eventSDL.tfinger.fingerId;
                 m_touchFirstFingerTouchId = eventSDL.tfinger.touchId;
 
-                // Simulate a MouseButtonPressed event.
-                // Note that the coordinate can be wrong if the window isn't fullscreen!
-                // If event.tfinger.windowID (added in 2.0.12) differs from 0 then the coordinates are
-                // relative to the window, otherwise they are relative to the touch display itself.
+                // Simulate a MouseButtonPressed event
                 eventTGUI.type = Event::Type::MouseButtonPressed;
                 eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_windowSize.x));
-                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_windowSize.y));
+                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             case SDL_EVENT_FINGER_UP:
@@ -359,14 +343,11 @@ namespace tgui
 
                 m_touchFirstFingerDown = false;
 
-                // Simulate a MouseButtonReleased event.
-                // Note that the coordinate can be wrong if the window isn't fullscreen!
-                // If event.tfinger.windowID (added in 2.0.12) differs from 0 then the coordinates are
-                // relative to the window, otherwise they are relative to the touch display itself.
+                // Simulate a MouseButtonReleased event
                 eventTGUI.type = Event::Type::MouseButtonReleased;
                 eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_windowSize.x));
-                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_windowSize.y));
+                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             case SDL_EVENT_FINGER_MOTION:
@@ -375,13 +356,10 @@ namespace tgui
                 if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerId) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchId))
                     return false;
 
-                // Simulate a MouseMoved event.
-                // Note that the coordinate can be wrong if the window isn't fullscreen!
-                // If event.tfinger.windowID (added in 2.0.12) differs from 0 then the coordinates are
-                // relative to the window, otherwise they are relative to the touch display itself.
+                // Simulate a MouseMoved event
                 eventTGUI.type = Event::Type::MouseMoved;
-                eventTGUI.mouseMove.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_windowSize.x));
-                eventTGUI.mouseMove.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_windowSize.y));
+                eventTGUI.mouseMove.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.mouseMove.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             default: // This event is not handled by TGUI
@@ -517,13 +495,18 @@ namespace tgui
         if (!m_window)
             return;
 
-        SDL_GetWindowSize(m_window, &m_windowSize.x, &m_windowSize.y);
-
 #if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
         SDL_GetWindowSizeInPixels(m_window, &m_framebufferSize.x, &m_framebufferSize.y);
 #else
         updateFramebufferSize();
 #endif
+
+        Vector2i windowSize;
+        SDL_GetWindowSize(m_window, &windowSize.x, &windowSize.y);
+        if ((windowSize.y != 0) && (windowSize.y != m_framebufferSize.y))
+            m_dpiScale = static_cast<float>(m_framebufferSize.y) / static_cast<float>(windowSize.y);
+        else
+            m_dpiScale = 1;
 
         BackendGui::updateContainerSize();
     }
