@@ -13,9 +13,17 @@
         #define SDL_MAIN_HANDLED
     #endif
     #include <TGUI/extlibs/IncludeSDL.hpp>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_main.h>
+        #define SDL_WINDOW_SHOWN 0  // Flag was removed in SDL3
+    #endif
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
-    #include <SDL_ttf.h>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_ttf.h>
+    #else
+        #include <SDL_ttf.h>
+    #endif
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
     #define GLFW_INCLUDE_NONE
@@ -137,7 +145,11 @@ struct TestsWindowDefault : public TestsWindowBase
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#if SDL_MAJOR_VERSION >= 3
+            renderer = SDL_CreateRenderer(window, nullptr, SDL_RENDERER_ACCELERATED);
+#else
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+#endif
             gui = std::make_unique<tgui::SDL_RENDERER::Gui>(window, renderer);
         }
 
@@ -153,7 +165,7 @@ struct TestsWindowDefault : public TestsWindowBase
         void close() override
         {
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 
@@ -196,7 +208,7 @@ struct TestsWindowDefault : public TestsWindowBase
         void close() override
         {
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 
@@ -239,7 +251,7 @@ struct TestsWindowDefault : public TestsWindowBase
         void close() override
         {
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 
@@ -280,7 +292,7 @@ struct TestsWindowDefault : public TestsWindowBase
         void close() override
         {
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 
@@ -321,7 +333,7 @@ struct TestsWindowDefault : public TestsWindowBase
         void close() override
         {
             SDL_Event event;
-            event.type = SDL_QUIT;
+            event.type = SDL_EVENT_QUIT;
             SDL_PushEvent(&event);
         }
 

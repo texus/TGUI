@@ -25,7 +25,13 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SDL-OpenGL3.hpp>
 
-#include <SDL_opengl.h>
+#if SDL_MAJOR_VERSION >= 3
+    #include <SDL3/SDL_main.h>
+    #include <SDL3/SDL_opengl.h>
+    #define SDL_WINDOW_SHOWN 0  // To keep code below compatible between SDL2 and SDL3
+#else
+    #include <SDL_opengl.h>
+#endif
 
 bool runExample(tgui::BackendGui& gui);
 

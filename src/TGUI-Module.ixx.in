@@ -112,12 +112,20 @@ module;
     #include <TGUI/extlibs/IncludeSDL.hpp>
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_SDL
-    #include <SDL_touch.h>
-    #include <SDL_syswm.h>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_syswm.h>
+    #else
+        #include <SDL_syswm.h>
+        #include <SDL_touch.h>
+    #endif
 #endif
 
 #if TGUI_HAS_FONT_BACKEND_SDL_TTF
-    #include <SDL_ttf.h>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_ttf.h>
+    #else
+        #include <SDL_ttf.h>
+    #endif
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_GLFW

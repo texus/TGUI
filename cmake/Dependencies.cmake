@@ -94,9 +94,19 @@ macro(tgui_add_dependency_sfml component)
     endif()
 endmacro()
 
+# Check if we can find SDL3
+function(tgui_try_find_sdl3)
+    find_package(SDL3 CONFIG QUIET)
 
-# Check if we can find SDL with a config file, or whether we need to use our FindSDL2.cmake file
-function(tgui_try_find_sdl_config)
+    if(SDL3_FOUND)
+        set(TGUI_FOUND_SDL3 TRUE PARENT_SCOPE)
+    else()
+        set(TGUI_FOUND_SDL3 FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
+# Check if we can find SDL2 with a config file, or whether we need to use our FindSDL2.cmake file
+function(tgui_try_find_sdl2_config)
     find_package(SDL2 CONFIG QUIET)
 
     # Not all SDL config file are created equal. On ubuntu 20.04 a config file existed but it didn't create a target yet.
@@ -108,68 +118,134 @@ function(tgui_try_find_sdl_config)
     endif()
 endfunction()
 
+# Check if we can find SDL2 with our FindSDL2.cmake file
+function(tgui_try_find_sdl2_module)
+    find_package(SDL2 MODULE QUIET)
+
+    if(SDL2_FOUND)
+        set(TGUI_FOUND_SDL2_MODULE TRUE PARENT_SCOPE)
+    else()
+        set(TGUI_FOUND_SDL2_MODULE FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
 # Find SDL, but don't add it as a dependency to TGUI (used for e.g. building the examples and Gui Builder)
 macro(tgui_find_dependency_sdl)
-    if(NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static)
-        # First try looking for an SDL config file, which will be found on Linux or when using vcpkg
-        if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
-            tgui_try_find_sdl_config()
+    set(TGUI_FOUND_SDL3 FALSE)
+    set(TGUI_FOUND_SDL2_CONFIG FALSE)
+    set(TGUI_FOUND_SDL2_MODULE FALSE)
+    if(NOT DEFINED TGUI_USE_SDL3 OR TGUI_USE_SDL3)
+        if(TARGET SDL3::SDL3)
+            set(TGUI_FOUND_SDL3 TRUE)
+        else()
+            tgui_try_find_sdl3()
         endif()
+    endif()
+    if(NOT DEFINED TGUI_USE_SDL3 OR NOT TGUI_USE_SDL3)
+        if(TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static)
+            set(TGUI_FOUND_SDL2_CONFIG TRUE)
+        else()
+            if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
+                tgui_try_find_sdl2_config()
+            endif()
+            if(NOT TGUI_FOUND_SDL2_CONFIG)
+                tgui_try_find_sdl2_module()
+            endif()
+        endif()
+    endif()
 
-        if(TGUI_FOUND_SDL2_CONFIG)
-            find_package(SDL2 CONFIG REQUIRED)
-        else() # If it fails then use the FindSDL2.cmake file that ships with TGUI
-            if(TGUI_OS_WINDOWS)
-                find_package(SDL2)
-                if(NOT SDL2_FOUND)
-                    message(FATAL_ERROR
-                            "CMake couldn't find SDL2.\n"
-                            "For SDL >= 2.24, set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake.\n"
-                            "For older versions, if you downloaded SDL2-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL/releases then set SDL2_PATH to the root directory.\n")
-                endif()
-            elseif(TGUI_OS_MACOS)
-                find_package(SDL2)
+    # If either (or both) SDL2 or SDL3 was found, but no decision was made yet about which version to search, then make the decision now.
+    # An option is added to explicitly search for the other version, in case the default decision is unwanted.
+    if(NOT DEFINED TGUI_USE_SDL3)
+        set(description "Determines whether TGUI looks for SDL2 or SDL3")
+        if(TGUI_FOUND_SDL3)
+            option(TGUI_USE_SDL3 "${description}" TRUE)
+        elseif(TGUI_FOUND_SDL2_CONFIG OR TGUI_FOUND_SDL2_MODULE)
+            option(TGUI_USE_SDL3 "${description}" FALSE)
+        else()
+            message(FATAL_ERROR
+                    "CMake couldn't find SDL2 or SDL3.\n"
+                    "For SDL3, set SDL3_DIR to the directory containing either SDL3Config.cmake or sdl3-config.cmake\n"
+                    "For SDL2, set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake if such files exist\n"
+                    "For SDL2 < 2.24 on Windows or macOS, for SDL files downloaded from github.com/libsdl-org/SDL/releases, set SDL2_PATH to the folder containing the 'include' and 'lib' directories, or the SDL2.framework file.\n")
+        endif()
+    endif()
 
-                if(NOT SDL2_FOUND)
-                    # TODO: For SDL >= 2.24 we should suggest setting SDL2_DIR instead of using our own SDL2_PATH.
-                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_DIR exactly.
-                    message(FATAL_ERROR
-                            "CMake couldn't find SDL2.\n"
-                            "Set SDL2_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2.framework file. You can get the framework file by downloading the Development Libraries from https://libsdl.org/download-2.0.php and extracting it from the downloaded .dmg file.\n")
-                endif()
+    if(TGUI_USE_SDL3)
+        if(NOT TARGET SDL3::SDL3) # Only search if the target wasn't defined yet
+            if(TGUI_FOUND_SDL3)
+                find_package(SDL3 CONFIG REQUIRED)
             else()
-                # On Linux we should always find SDL2 automatically when it has been installed
-                find_package(SDL2 REQUIRED)
+                message(FATAL_ERROR
+                        "CMake couldn't find SDL3.\n"
+                        "Set SDL3_DIR to the directory containing either SDL3Config.cmake or sdl3-config.cmake\n"
+                        "If you wish to use SDL2 instead of SDL3 then set TGUI_USE_SDL3 = FALSE.\n")
             endif()
         endif()
 
-        # Remove the empty SDL2_DIR variable if we found SDL via SDL2_PATH and vice versa
-        if(NOT SDL2_DIR)
-            unset(SDL2_DIR CACHE)
-        endif()
-        if(SDL2_DIR AND NOT SDL2_PATH AND NOT SDL2_LIBRARY)
-            unset(SDL2_PATH CACHE)
-            unset(SDL2_LIBRARY CACHE)
-            unset(SDL2MAIN_LIBRARY CACHE)
-            unset(SDL2_INCLUDE_DIR CACHE)
-            unset(SDL2_NO_DEFAULT_PATH CACHE)
-        endif()
+        # We don't need to keep options that were created for SDL2
+        unset(SDL2_DIR CACHE)
+        unset(SDL2_PATH CACHE)
+        unset(SDL2_LIBRARY CACHE)
+        unset(SDL2MAIN_LIBRARY CACHE)
+        unset(SDL2_INCLUDE_DIR CACHE)
+        unset(SDL2_NO_DEFAULT_PATH CACHE)
+    else() # Using SDL2
+        if(NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static) # Only search if the target wasn't defined yet
+            if(TGUI_FOUND_SDL2_CONFIG)
+                find_package(SDL2 CONFIG REQUIRED)
 
-        # The version doesn't seem to always be defined (e.g. Ubuntu doesn't seem to have it while Arch Linux
-        # and the fallback FindSDL2.cmake module do provide the variable). So only check the version if we can.
-        if(DEFINED SDL2_VERSION)
-            # The minimum SDL version for using the SDL_RENDERER backend renderer lies a lot higher than what
-            # the rest of the SDL code requires.
-            if (TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
-                if (${SDL2_VERSION} VERSION_LESS "2.0.18")
-                    message(FATAL_ERROR "SDL 2.0.18 or higher is required for SDL_RENDERER backend")
-                endif()
+                # We don't need to keep options that were created in our FindSDL2.cmake (since we didn't use it)
+                unset(SDL2_PATH CACHE)
+                unset(SDL2_LIBRARY CACHE)
+                unset(SDL2MAIN_LIBRARY CACHE)
+                unset(SDL2_INCLUDE_DIR CACHE)
+                unset(SDL2_NO_DEFAULT_PATH CACHE)
+            elseif(TGUI_FOUND_SDL2_MODULE)
+                find_package(SDL2 MODULE REQUIRED)
+
+                # We don't need to keep options that were created for the SDL2 config file (since we used our FindSDL2.cmake file instead)
+                unset(SDL2_DIR CACHE)
             else()
-                if (${SDL2_VERSION} VERSION_LESS "2.0.6")
-                    message(FATAL_ERROR "SDL 2.0.6 or higher is required")
+                if(TGUI_OS_WINDOWS)
+                    message(FATAL_ERROR
+                            "CMake couldn't find SDL2.\n"
+                            "For SDL2 >= 2.24, set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake\n"
+                            "For older SDL versions, if you downloaded SDL2-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL/releases then set SDL2_PATH to the root directory.\n"
+                            "If you wish to use SDL3 instead of SDL2 then set TGUI_USE_SDL3 = TRUE.\n")
+                elseif(TGUI_OS_MACOS)
+                    message(FATAL_ERROR
+                            "CMake couldn't find SDL2.\n"
+                            "For SDL2 >= 2.24, set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake.\n"
+                            "For older versions, set SDL2_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2.framework file (found in SDL2-2.0.XX.dmg from github.com/libsdl-org/SDL/releases).\n"
+                            "If you wish to use SDL3 instead of SDL2 then set TGUI_USE_SDL3 = TRUE.\n")
+                else()
+                    message(FATAL_ERROR
+                            "CMake couldn't find SDL2.\n"
+                            "Set SDL2_DIR to the directory containing either SDL2Config.cmake or sdl2-config.cmake.\n"
+                            "If you wish to use SDL3 instead of SDL2 then set TGUI_USE_SDL3 = TRUE.\n")
+                endif()
+            endif()
+
+            # The version doesn't seem to always be defined (e.g. Ubuntu doesn't seem to have it while Arch Linux
+            # and the fallback FindSDL2.cmake module do provide the variable). So only check the version if we can.
+            if(DEFINED SDL2_VERSION)
+                # The minimum SDL version for using the SDL_RENDERER backend renderer lies a lot higher than what
+                # the rest of the SDL code requires.
+                if (TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
+                    if (SDL2_VERSION VERSION_LESS 2.0.18)
+                        message(FATAL_ERROR "SDL 2.0.18 or higher is required for SDL_RENDERER backend")
+                    endif()
+                else()
+                    if (SDL2_VERSION VERSION_LESS 2.0.6)
+                        message(FATAL_ERROR "SDL 2.0.6 or higher is required")
+                    endif()
                 endif()
             endif()
         endif()
+
+        # We don't need to keep options that were created for SDL3
+        unset(SDL3_DIR CACHE)
     endif()
 endmacro()
 
@@ -179,33 +255,57 @@ macro(tgui_add_dependency_sdl)
 
     # Link to SDL and set include and library search directories.
     # TGUI_USE_STATIC_SDL allows explicitly chosing how SDL is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
-    if(TGUI_USE_STATIC_SDL AND NOT TARGET SDL2::SDL2-static)
-        # If the user explicitly asks for a static target then it must exist
-        message(FATAL_ERROR "Couldn't link to SDL2::SDL2-static, no such target exists")
-    endif()
-    if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS))
-        if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL)
-            # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-            message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
-        endif()
-        if(TARGET SDL2::SDL2-static)
-            target_link_libraries(tgui PUBLIC SDL2::SDL2-static)
+    if(TGUI_USE_SDL3)
+        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3::SDL3-static))
+            set(link_static_sdl_libs TRUE)
         else()
-            # If no static version was found then fall back to a shared library
-            message(STATUS "Using shared SDL2 lib because static target didn't exist")
-            target_link_libraries(tgui PUBLIC SDL2::SDL2)
-        endif()
-    else() # Linking dynamically
-        if(TGUI_SHARED_LIBS)
-            # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
-            get_target_property(sdl_target_type SDL2::SDL2 TYPE)
-            if (TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
-                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
-            endif()
+            set(link_static_sdl_libs FALSE)
         endif()
 
-        target_link_libraries(tgui PUBLIC SDL2::SDL2)
+        if(link_static_sdl_libs)
+            if(TGUI_SHARED_LIBS)
+                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+            endif()
+            if(NOT TARGET SDL3::SDL3-static)
+                message(FATAL_ERROR "Couldn't link to SDL3::SDL3-static, no such target exists")
+            endif()
+            target_link_libraries(tgui PUBLIC SDL3::SDL3-static)
+        else()
+            if(NOT TARGET SDL3::SDL3-shared)
+                message(FATAL_ERROR "Couldn't link to SDL3::SDL3-shared, no such target exists")
+            endif()
+            target_link_libraries(tgui PUBLIC SDL3::SDL3-shared)
+        endif()
+    else() # Using SDL2
+        if(TGUI_USE_STATIC_SDL AND NOT TARGET SDL2::SDL2-static)
+            # If the user explicitly asks for a static target then it must exist
+            message(FATAL_ERROR "Couldn't link to SDL2::SDL2-static, no such target exists")
+        endif()
+        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS))
+            if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL)
+                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+            endif()
+            if(TARGET SDL2::SDL2-static)
+                target_link_libraries(tgui PUBLIC SDL2::SDL2-static)
+            else()
+                # If no static version was found then fall back to a shared library
+                message(STATUS "Using shared SDL2 lib because static target didn't exist")
+                target_link_libraries(tgui PUBLIC SDL2::SDL2)
+            endif()
+        else() # Linking dynamically
+            if(TGUI_SHARED_LIBS)
+                # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
+                get_target_property(sdl_target_type SDL2::SDL2 TYPE)
+                if (TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                    # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                    message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
+                endif()
+            endif()
+
+            target_link_libraries(tgui PUBLIC SDL2::SDL2)
+        endif()
     endif()
 endmacro()
 
@@ -272,8 +372,8 @@ macro(tgui_add_dependency_glfw)
 endmacro()
 
 
-# Check if we can find SDL_ttf with a config file (2.20.0 or newer), or whether we need to use our FindSDL2_ttf.cmake file
-function(tgui_try_find_sdl_ttf_config)
+# Check if we can find SDL2_ttf with a config file (2.20.0 or newer), or whether we need to use our FindSDL2_ttf.cmake file
+function(tgui_try_find_sdl2_ttf_config)
     find_package(SDL2_ttf CONFIG QUIET)
     if(SDL2_ttf_FOUND AND (TARGET SDL2_ttf::SDL2_ttf OR TARGET SDL2_ttf::SDL2_ttf-static))
         set(TGUI_FOUND_SDL2_TTF_CONFIG TRUE PARENT_SCOPE)
@@ -284,91 +384,132 @@ endfunction()
 
 # Find SDL_ttf and add it as a dependency
 macro(tgui_add_dependency_sdl_ttf)
-    if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
-        # First try looking for an SDL2_ttf config file
-        tgui_try_find_sdl_ttf_config()
+    if(TGUI_USE_SDL3)
+        if(NOT TARGET SDL3_ttf::SDL3_ttf AND NOT TARGET SDL3_ttf::SDL3_ttf-static)
+            find_package(SDL3_ttf CONFIG)
+            if(NOT SDL3_ttf_FOUND)
+                message(FATAL_ERROR
+                        "CMake couldn't find SDL3_ttf.\n"
+                        "Set SDL3_ttf_DIR to the directory containing either SDL3_ttfConfig.cmake or sdl3_ttf-config.cmake\n"
+                        "If you wish to use SDL2 instead of SDL3 then set TGUI_USE_SDL3 = FALSE.\n")
+            endif()
+        endif()
 
-        if(TGUI_FOUND_SDL2_TTF_CONFIG)
-            find_package(SDL2_ttf CONFIG REQUIRED)
+        # We don't need to keep options that were created for SDL2
+        unset(SDL2_ttf_DIR CACHE)
+        unset(SDL2_TTF_PATH CACHE)
+        unset(SDL2_TTF_LIBRARY CACHE)
+        unset(SDL2_TTF_INCLUDE_DIR CACHE)
+        unset(SDL2_TTF_NO_DEFAULT_PATH CACHE)
+
+        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3_ttf::SDL3_ttf-static))
+            set(link_static_sdl_libs TRUE)
         else()
-            if(TGUI_OS_WINDOWS)
-                find_package(SDL2_ttf)
-                if(NOT SDL2_ttf_FOUND)
-                    message(FATAL_ERROR
-                            "CMake couldn't find SDL2_ttf.\n"
-                            "For SDL2_ttf >= 2.20, set SDL2_ttf_DIR to the directory containing either SDL2_ttfConfig.cmake or sdl2_ttf-config.cmake.\n"
-                            "For older versions, if you downloaded SDL2_ttf-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL_ttf/releases then set SDL2_TTF_PATH to the root directory.\n")
-                endif()
-            elseif(TGUI_OS_MACOS)
-                find_package(SDL2_ttf)
+            set(link_static_sdl_libs FALSE)
+        endif()
 
-                if(NOT SDL2_ttf_FOUND)
-                    # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting SDL2_ttf_DIR instead of using our own SDL2_TTF_PATH.
-                    #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_ttf_DIR exactly.
-                    message(FATAL_ERROR
-                            "CMake couldn't find SDL2_ttf.\n"
-                            "Set SDL2_TTF_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2_ttf.framework file.\n")
-                endif()
+        if(link_static_sdl_libs)
+            if(TGUI_SHARED_LIBS)
+                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL to FALSE.")
+            endif()
+            if(NOT TARGET SDL3_ttf::SDL3_ttf-static)
+                message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf-static, no such target exists")
+            endif()
+            target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf-static)
+        else()
+            if(NOT TARGET SDL3_ttf::SDL3_ttf)
+                message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf, no such target exists")
+            endif()
+            target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf)
+        endif()
+    else() # Using SDL2
+        if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+            # First try looking for an SDL2_ttf config file
+            tgui_try_find_sdl2_ttf_config()
+
+            if(TGUI_FOUND_SDL2_TTF_CONFIG)
+                find_package(SDL2_ttf CONFIG REQUIRED)
             else()
-                # On Linux we should always find SDL2_ttf automatically when it has been installed
-                find_package(SDL2_ttf REQUIRED)
+                if(TGUI_OS_WINDOWS)
+                    find_package(SDL2_ttf)
+                    if(NOT SDL2_ttf_FOUND)
+                        message(FATAL_ERROR
+                                "CMake couldn't find SDL2_ttf.\n"
+                                "For SDL2_ttf >= 2.20, set SDL2_ttf_DIR to the directory containing either SDL2_ttfConfig.cmake or sdl2_ttf-config.cmake.\n"
+                                "For older versions, if you downloaded SDL2_ttf-devel-2.0.XX-VC.zip from github.com/libsdl-org/SDL_ttf/releases then set SDL2_TTF_PATH to the root directory.\n")
+                    endif()
+                elseif(TGUI_OS_MACOS)
+                    find_package(SDL2_ttf)
+
+                    if(NOT SDL2_ttf_FOUND)
+                        # TODO: For SDL2_ttf >= 2.20.0 we should suggest setting SDL2_ttf_DIR instead of using our own SDL2_TTF_PATH.
+                        #       The config file is located inside the framework, so it needs to be tested what path needs to be given to SDL2_ttf_DIR exactly.
+                        message(FATAL_ERROR
+                                "CMake couldn't find SDL2_ttf.\n"
+                                "Set SDL2_TTF_PATH to the folder that contains the 'include' and 'lib' subdirectories, or to the folder that contains the SDL2_ttf.framework file.\n")
+                    endif()
+                else()
+                    # On Linux we should always find SDL2_ttf automatically when it has been installed
+                    find_package(SDL2_ttf REQUIRED)
+                endif()
+            endif()
+
+            # Remove the empty SDL2_ttf_DIR variable if we found SDL_ttf via SDL2_TTF_PATH and vice versa
+            if(NOT SDL2_ttf_DIR)
+                unset(SDL2_ttf_DIR CACHE)
+            endif()
+            if(SDL2_ttf_DIR AND NOT SDL2_TTF_PATH AND NOT SDL2_TTF_LIBRARY)
+                unset(SDL2_TTF_PATH CACHE)
+                unset(SDL2_TTF_LIBRARY CACHE)
+                unset(SDL2_TTF_INCLUDE_DIR CACHE)
+                unset(SDL2_TTF_NO_DEFAULT_PATH CACHE)
+            endif()
+            unset(SDL3_ttf_DIR CACHE)
+
+            if(DEFINED sdl2_ttf_VERSION)
+                if (${sdl2_ttf_VERSION} VERSION_LESS "2.0.14")
+                    message(FATAL_ERROR "SDL_ttf 2.0.14 or higher is required")
+                endif()
             endif()
         endif()
 
-        # Remove the empty SDL2_ttf_DIR variable if we found SDL_ttf via SDL2_TTF_PATH and vice versa
-        if(NOT SDL2_ttf_DIR)
-            unset(SDL2_ttf_DIR CACHE)
+        # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
+        # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+        if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+            # If the user explicitly asks for a static target then it must exist
+            message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
         endif()
-        if(SDL2_ttf_DIR AND NOT SDL2_TTF_PATH AND NOT SDL2_TTF_LIBRARY)
-            unset(SDL2_TTF_PATH CACHE)
-            unset(SDL2_TTF_LIBRARY CACHE)
-            unset(SDL2_TTF_INCLUDE_DIR CACHE)
-            unset(SDL2_TTF_NO_DEFAULT_PATH CACHE)
-        endif()
-
-        if(DEFINED sdl2_ttf_VERSION)
-            if (${sdl2_ttf_VERSION} VERSION_LESS "2.0.14")
-                message(FATAL_ERROR "SDL_ttf 2.0.14 or higher is required")
+        if(TGUI_USE_STATIC_SDL_TTF OR (NOT DEFINED TGUI_USE_STATIC_SDL_TTF AND NOT TGUI_SHARED_LIBS))
+            if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL_TTF)
+                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL_TTF to FALSE.")
             endif()
-        endif()
-    endif()
+            if(TARGET SDL2_ttf::SDL2_ttf-static)
+                target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf-static)
+            else()
+                # If no static version was found then fall back to a shared library
+                message(STATUS "Using shared SDL2_ttf lib because static target didn't exist")
+                target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
+            endif()
+        else() # Linking dynamically
+            if(TGUI_SHARED_LIBS)
+                # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
+                get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
+                if (TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                    # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                    message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
+                endif()
+            endif()
 
-    # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
-    # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
-    if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
-        # If the user explicitly asks for a static target then it must exist
-        message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
-    endif()
-    if(TGUI_USE_STATIC_SDL_TTF OR (NOT DEFINED TGUI_USE_STATIC_SDL_TTF AND NOT TGUI_SHARED_LIBS))
-        if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL_TTF)
-            # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-            message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL_TTF to FALSE.")
-        endif()
-        if(TARGET SDL2_ttf::SDL2_ttf-static)
-            target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf-static)
-        else()
-            # If no static version was found then fall back to a shared library
-            message(STATUS "Using shared SDL2_ttf lib because static target didn't exist")
             target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
         endif()
-    else() # Linking dynamically
-        if(TGUI_SHARED_LIBS)
-            # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
-            get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
-            if (TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
-                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
-            endif()
-        endif()
-
-        target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
     endif()
 endmacro()
 
 
 # Find FreeType and add it as a dependency
 macro(tgui_add_dependency_freetype)
-
     if(NOT TARGET Freetype::Freetype)
         if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC)
             # On windows we will provide some help to find freetype (since it is more difficult on this platform).

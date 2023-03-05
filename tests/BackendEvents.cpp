@@ -523,13 +523,13 @@ TEST_CASE("[Backend events]")
             SECTION("KeyPressed")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_KEYDOWN;
+                eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.sym = SDLK_UNKNOWN;
-                eventSDL.key.keysym.mod = KMOD_NONE;
+                eventSDL.key.keysym.mod = SDL_KMOD_NONE;
 
                 SECTION("All key codes")
                 {
@@ -657,7 +657,7 @@ TEST_CASE("[Backend events]")
                 SECTION("Modifiers")
                 {
                     eventSDL.key.keysym.sym = SDLK_SPACE;
-                    eventSDL.key.keysym.mod = KMOD_LCTRL | KMOD_RSHIFT;
+                    eventSDL.key.keysym.mod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
 
                     tgui::Event eventTGUI;
                     REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -671,7 +671,7 @@ TEST_CASE("[Backend events]")
 
                 SECTION("Key release")
                 {
-                    eventSDL.type = SDL_KEYUP;
+                    eventSDL.type = SDL_EVENT_KEY_UP;
                     eventSDL.key.state = SDL_RELEASED;
                     eventSDL.key.keysym.sym = SDLK_SPACE;
 
@@ -683,8 +683,12 @@ TEST_CASE("[Backend events]")
             SECTION("GainedFocus")
             {
                 SDL_Event eventSDL;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
+#else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+#endif
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -694,8 +698,12 @@ TEST_CASE("[Backend events]")
             SECTION("LostFocus")
             {
                 SDL_Event eventSDL;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+#else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+#endif
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -705,7 +713,7 @@ TEST_CASE("[Backend events]")
             SECTION("Closed")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_QUIT;
+                eventSDL.type = SDL_EVENT_QUIT;
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -715,8 +723,12 @@ TEST_CASE("[Backend events]")
             SECTION("Resized")
             {
                 SDL_Event eventSDL;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+#else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+#endif
                 eventSDL.window.data1 = 400;
                 eventSDL.window.data2 = 300;
 
@@ -730,7 +742,7 @@ TEST_CASE("[Backend events]")
             SECTION("TextEntered")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_TEXTINPUT;
+                eventSDL.type = SDL_EVENT_TEXT_INPUT;
                 eventSDL.text.text[0] = static_cast<char>(static_cast<unsigned char>(0xE2));
                 eventSDL.text.text[1] = static_cast<char>(static_cast<unsigned char>(0x9C));
                 eventSDL.text.text[2] = static_cast<char>(static_cast<unsigned char>(0x85));
@@ -758,11 +770,11 @@ TEST_CASE("[Backend events]")
                 eventSDL.wheel.mouseY = 150;
 #endif
 
-                eventSDL.type = SDL_MOUSEWHEEL;
+                eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 2;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
-#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
@@ -782,7 +794,7 @@ TEST_CASE("[Backend events]")
                 // We only handle vertical scrolling
                 eventSDL.wheel.x = 2;
                 eventSDL.wheel.y = 0;
-#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
@@ -792,7 +804,7 @@ TEST_CASE("[Backend events]")
             SECTION("MouseButtonPressed")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_MOUSEBUTTONDOWN;
+                eventSDL.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
                 eventSDL.button.which = 1;
                 eventSDL.button.button = SDL_BUTTON_LEFT;
                 eventSDL.button.x = 200;
@@ -821,7 +833,7 @@ TEST_CASE("[Backend events]")
             SECTION("MouseButtonReleased")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_MOUSEBUTTONUP;
+                eventSDL.type = SDL_EVENT_MOUSE_BUTTON_UP;
                 eventSDL.button.which = 1;
                 eventSDL.button.button = SDL_BUTTON_LEFT;
                 eventSDL.button.x = 200;
@@ -850,7 +862,7 @@ TEST_CASE("[Backend events]")
             SECTION("MouseMoved")
             {
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_MOUSEMOTION;
+                eventSDL.type = SDL_EVENT_MOUSE_MOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 200;
                 eventSDL.motion.y = 150;
@@ -870,7 +882,7 @@ TEST_CASE("[Backend events]")
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
 
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_FINGERDOWN;
+                eventSDL.type = SDL_EVENT_FINGER_DOWN;
                 eventSDL.tfinger.touchId = 1;
                 eventSDL.tfinger.x = 200.f / windowSize.x;
                 eventSDL.tfinger.y = 150.f / windowSize.y;
@@ -881,7 +893,7 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.x == 200);
                 REQUIRE(eventTGUI.mouseButton.y == 150);
 
-                eventSDL.type = SDL_FINGERMOTION;
+                eventSDL.type = SDL_EVENT_FINGER_MOTION;
                 eventSDL.tfinger.x = 210.f / windowSize.x;
                 eventSDL.tfinger.y = 155.f / windowSize.y;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -889,7 +901,7 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseMove.x == 210);
                 REQUIRE(eventTGUI.mouseMove.y == 155);
 
-                eventSDL.type = SDL_FINGERUP;
+                eventSDL.type = SDL_EVENT_FINGER_UP;
                 eventSDL.tfinger.x = 220.f / windowSize.x;
                 eventSDL.tfinger.y = 160.f / windowSize.y;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -925,7 +937,7 @@ TEST_CASE("[Backend events]")
 
                 // Type 3 characters in the edit box
                 SDL_Event eventSDL;
-                eventSDL.type = SDL_TEXTINPUT;
+                eventSDL.type = SDL_EVENT_TEXT_INPUT;
                 eventSDL.text.text[0] = 'A';
                 eventSDL.text.text[1] = 0;
                 backendGuiSDL->handleEvent(eventSDL);
@@ -935,12 +947,12 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
 
                 // Erase the second character from the edit box
-                eventSDL.type = SDL_KEYDOWN;
+                eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
-                eventSDL.key.keysym.mod = KMOD_NONE;
+                eventSDL.key.keysym.mod = SDL_KMOD_NONE;
                 eventSDL.key.keysym.sym = SDLK_LEFT;
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.key.keysym.sym = SDLK_BACKSPACE;
@@ -960,17 +972,17 @@ TEST_CASE("[Backend events]")
                 eventSDL.wheel.mouseX = 260;
                 eventSDL.wheel.mouseY = 80;
 #endif
-                eventSDL.type = SDL_MOUSEWHEEL;
+                eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 4;
-#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.wheel.y = -1;
-#if (SDL_MAJOR_VERSION > 2) || (SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18)
+#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
 #endif
                 backendGuiSDL->handleEvent(eventSDL);
@@ -980,18 +992,18 @@ TEST_CASE("[Backend events]")
 
                 // Resize the child window using mouse events (decrease width with 20px)
                 // Note that the resizing ignores the position of the mouse released event
-                eventSDL.type = SDL_MOUSEBUTTONDOWN;
+                eventSDL.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
                 eventSDL.button.which = 1;
                 eventSDL.button.button = SDL_BUTTON_LEFT;
                 eventSDL.button.x = 320;
                 eventSDL.button.y = 100;
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.type = SDL_MOUSEMOTION;
+                eventSDL.type = SDL_EVENT_MOUSE_MOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 300;
                 eventSDL.motion.y = 105;
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.type = SDL_MOUSEBUTTONUP;
+                eventSDL.type = SDL_EVENT_MOUSE_BUTTON_UP;
                 eventSDL.button.which = 1;
                 eventSDL.button.button = SDL_BUTTON_LEFT;
                 eventSDL.button.x = 290;
@@ -1001,16 +1013,16 @@ TEST_CASE("[Backend events]")
                 // Resize the child window using touch events  (decrease height with 10px)
                 // Note that the resizing ignores the position of the touch ended event
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
-                eventSDL.type = SDL_FINGERDOWN;
+                eventSDL.type = SDL_EVENT_FINGER_DOWN;
                 eventSDL.tfinger.touchId = 1;
                 eventSDL.tfinger.x = 100.f / windowSize.x;
                 eventSDL.tfinger.y = 260.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.type = SDL_FINGERMOTION;
+                eventSDL.type = SDL_EVENT_FINGER_MOTION;
                 eventSDL.tfinger.x = 110.f / windowSize.x;
                 eventSDL.tfinger.y = 270.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.type = SDL_FINGERUP;
+                eventSDL.type = SDL_EVENT_FINGER_UP;
                 eventSDL.tfinger.x = 105.f / windowSize.x;
                 eventSDL.tfinger.y = 275.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);

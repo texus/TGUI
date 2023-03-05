@@ -204,12 +204,23 @@ namespace tgui
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 #endif
+
+#if SDL_MAJOR_VERSION >= 3
+            const Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+#else
+            const Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+#endif
+
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                        width, height,
-                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                                        static_cast<int>(width), static_cast<int>(height),
+                                        windowFlags);
 #if TGUI_HAS_BACKEND_SDL_RENDERER
+    #if SDL_MAJOR_VERSION >= 3
+            m_renderer = SDL_CreateRenderer(m_window, nullptr, SDL_RENDERER_ACCELERATED);
+    #else
             m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+    #endif
             m_gui = std::make_unique<Gui>(m_window, m_renderer);
 #else
             m_glContext = SDL_GL_CreateContext(m_window);

@@ -118,7 +118,9 @@ endif()
 
 # Search for SDL when a backend requires it
 if(@TGUI_HAS_WINDOW_BACKEND_SDL@ OR @TGUI_HAS_FONT_BACKEND_SDL_TTF@ OR @TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER@)
-    if(@TGUI_FOUND_SDL2_CONFIG@)
+    if(@TGUI_USE_SDL3@)
+        find_dependency(SDL3 CONFIG)
+    elseif(@TGUI_FOUND_SDL2_CONFIG@)
         find_dependency(SDL2 CONFIG)
     else()
         find_dependency(SDL2)
@@ -127,7 +129,9 @@ endif()
 
 # Search for SDL_ttf when a backend requires it
 if(@TGUI_HAS_FONT_BACKEND_SDL_TTF@)
-    if(@TGUI_FOUND_SDL2_TTF_CONFIG@)
+    if(@TGUI_USE_SDL3@)
+        find_dependency(SDL3_ttf CONFIG)
+    elseif(@TGUI_FOUND_SDL2_TTF_CONFIG@)
         find_dependency(SDL2_ttf CONFIG)
     else()
         find_dependency(SDL2_ttf)
