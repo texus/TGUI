@@ -418,7 +418,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         Vector2f         m_contentSize;
         Vector2f         m_mostBottomRightPosition;
