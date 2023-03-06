@@ -512,6 +512,11 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param index The index of the column for sorting
         /// @param cmp   The comparator
+        ///
+        /// Example:
+        /// @code
+        /// listView->sort(0, [](const tgui::String& a, const tgui::String& b) { return a < b; });
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void sort(std::size_t index, const std::function<bool(const String&, const String&)>& cmp);
 
