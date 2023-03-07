@@ -73,7 +73,7 @@ install(TARGETS gui-builder
         RUNTIME DESTINATION ${target_install_dir} COMPONENT gui-builder
         BUNDLE DESTINATION ${target_install_dir} COMPONENT gui-builder)
 
-# Install the resources next to the test executable
+# Install the resources next to the gui-builder executable
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/gui-builder/resources"
         DESTINATION "${target_install_dir}"
         COMPONENT gui-builder)

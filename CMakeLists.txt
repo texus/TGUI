@@ -292,6 +292,17 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STRE
     endif()
 endif()
 
+# Define the install directory for miscellaneous files
+if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
+    set(DEFAULT_INSTALL_MISC_DIR .)
+elseif(TGUI_OS_ANDROID)
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
+else()
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
+endif()
+tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
+mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
+
 # Optionally build the GUI Builder
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
     tgui_assign_bool(TGUI_DEFAULT_BUILD_GUI_BUILDER TGUI_DEFAULT_BACKEND)
@@ -327,17 +338,6 @@ option(TGUI_BUILD_DOC "TRUE to generate the API documentation, FALSE to ignore i
 if(TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
-
-# Define the install directory for miscellaneous files
-if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
-    set(DEFAULT_INSTALL_MISC_DIR .)
-elseif(TGUI_OS_ANDROID)
-    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
-else()
-    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
-endif()
-tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
-mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
 
 # Install pkg-config files by default on Linux (and BSD)
 tgui_assign_bool(TGUI_INSTALL_PKGCONFIG_DEFAULT TGUI_OS_LINUX)
