@@ -30,7 +30,9 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Event.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,8 +49,44 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        inline void openVirtualKeyboard(const FloatRect& inputRect)
+        inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
         {
+            const Widget* widget = requestingWidget;
+            while (widget)
+            {
+                const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
+                const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
+                if (defaultOrigin && !scaledOrRotated)
+                    inputRect.setPosition(inputRect.getPosition() + widget->getPosition());
+                else
+                {
+                    const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+                    if (!scaledOrRotated)
+                        inputRect.setPosition(inputRect.getPosition() + widget->getPosition() - origin);
+                    else
+                    {
+                        const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+                        const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+
+                        Transform transform;
+                        transform.translate(widget->getPosition() - origin);
+                        transform.rotate(widget->getRotation(), rotOrigin);
+                        transform.scale(widget->getScale(), scaleOrigin);
+                        inputRect = transform.transformRect(inputRect);
+                    }
+                }
+
+                widget = widget->getParent();
+            }
+
+            const auto gui = requestingWidget->getParentGui();
+            if (gui)
+            {
+                const Vector2f topLeftPos = gui->mapCoordsToPixel(inputRect.getPosition());
+                const Vector2f bottomRightPos = gui->mapCoordsToPixel(inputRect.getPosition() + inputRect.getSize());
+                inputRect = {topLeftPos, bottomRightPos - topLeftPos};
+            }
+
             getBackend()->openVirtualKeyboard(inputRect);
         }
 

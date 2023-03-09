@@ -572,13 +572,19 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Converts the pixel coordinate to a position within the view
-        /// @param x  X coordinate on the window
-        /// @param y  Y coordinate on the window
+        /// @param pixel  coordinate on the window
         /// @return Transformed coordinate within the coordinate system that is used by the widgets
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f mapPixelToView(int x, int y) const;
+        TGUI_NODISCARD Vector2f mapPixelToCoords(Vector2i pixel) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Converts a position within the view to the corresponding pixel coordinate
+        /// @param coord  position within the coordinate system that is used by the widgets
+        /// @return Pixel coordinate where the point would end up on the screen
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Vector2f mapCoordsToPixel(Vector2f coord) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

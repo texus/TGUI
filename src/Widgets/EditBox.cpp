@@ -408,7 +408,7 @@ namespace tgui
 
 #if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
         if (focused)
-            keyboard::openVirtualKeyboard({getAbsolutePosition(), getFullSize()});
+            keyboard::openVirtualKeyboard(this, {{}, getSize()});
         else
             keyboard::closeVirtualKeyboard();
 #endif

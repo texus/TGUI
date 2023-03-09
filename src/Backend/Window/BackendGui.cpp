@@ -114,17 +114,17 @@ namespace tgui
                 if (event.type == Event::Type::MouseMoved)
                 {
                     m_lastMousePos = {event.mouseMove.x, event.mouseMove.y};
-                    mouseCoords = mapPixelToView(event.mouseMove.x, event.mouseMove.y);
+                    mouseCoords = mapPixelToCoords({event.mouseMove.x, event.mouseMove.y});
                 }
                 else if (event.type == Event::Type::MouseWheelScrolled)
                 {
                     m_lastMousePos = {event.mouseWheel.x, event.mouseWheel.y};
-                    mouseCoords = mapPixelToView(event.mouseWheel.x, event.mouseWheel.y);
+                    mouseCoords = mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y});
                 }
                 else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
                 {
                     m_lastMousePos = {event.mouseButton.x, event.mouseButton.y};
-                    mouseCoords = mapPixelToView(event.mouseButton.x, event.mouseButton.y);
+                    mouseCoords = mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
                 }
 
                 // If a tooltip is visible then hide it now
@@ -322,7 +322,7 @@ namespace tgui
 
     Widget::Ptr BackendGui::getWidgetBelowMouseCursor(Vector2i mousePos) const
     {
-        return getWidgetAtPosition(mapPixelToView(mousePos.x, mousePos.y));
+        return getWidgetAtPosition(mapPixelToCoords(mousePos));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -521,7 +521,7 @@ namespace tgui
             m_tooltipTime += elapsedTime;
             if (m_tooltipTime >= ToolTip::getInitialDelay())
             {
-                const Vector2f lastMousePos = mapPixelToView(m_lastMousePos.x, m_lastMousePos.y);
+                const Vector2f lastMousePos = mapPixelToCoords(m_lastMousePos);
                 Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
                 if (tooltip)
                 {
@@ -553,10 +553,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f BackendGui::mapPixelToView(int x, int y) const
+    Vector2f BackendGui::mapPixelToCoords(Vector2i pixel) const
     {
-        return {((x - m_viewport.getLeft()) * (m_view.getWidth() / m_viewport.getWidth())) + m_view.getLeft(),
-                ((y - m_viewport.getTop()) * (m_view.getHeight() / m_viewport.getHeight())) + m_view.getTop()};
+        return {((pixel.x - m_viewport.getLeft()) * (m_view.getWidth() / m_viewport.getWidth())) + m_view.getLeft(),
+                ((pixel.y - m_viewport.getTop()) * (m_view.getHeight() / m_viewport.getHeight())) + m_view.getTop()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f BackendGui::mapCoordsToPixel(Vector2f coord) const
+    {
+        return {m_viewport.getLeft() + ((coord.x - m_view.getLeft()) / (m_view.getWidth() / m_viewport.getWidth())),
+                m_viewport.getTop() + ((coord.y - m_view.getTop()) / (m_view.getHeight() / m_viewport.getHeight()))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

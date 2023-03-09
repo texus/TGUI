@@ -54,7 +54,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param height Height of the rectangle
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr RelFloatRect(AbsoluteOrRelativeValue left, AbsoluteOrRelativeValue top,
-                                    AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
+                               AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
             m_left{left},
             m_top{top},
             m_width{width},

@@ -47,6 +47,10 @@
     #include <android/asset_manager_jni.h>
 #endif
 
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -181,10 +185,10 @@ namespace tgui
         }
 
         SDL_Rect inputRect;
-        inputRect.x = static_cast<int>(rect.left / dpiScale);
-        inputRect.y = static_cast<int>(rect.top / dpiScale);
-        inputRect.w = static_cast<int>(rect.width / dpiScale);
-        inputRect.h = static_cast<int>(rect.height / dpiScale);
+        inputRect.x = static_cast<int>(std::round(rect.left / dpiScale));
+        inputRect.y = static_cast<int>(std::round(rect.top / dpiScale));
+        inputRect.w = static_cast<int>(std::round(rect.width / dpiScale));
+        inputRect.h = static_cast<int>(std::round(rect.height / dpiScale));
 
         SDL_SetTextInputRect(&inputRect);
         SDL_StartTextInput();
