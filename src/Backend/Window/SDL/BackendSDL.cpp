@@ -154,11 +154,37 @@ namespace tgui
 
     void BackendSDL::openVirtualKeyboard(const FloatRect& rect)
     {
+        // If there is more than one window then we arbitrarily select one and assume they all have the same DPI scaling.
+        SDL_Window* window = nullptr;
+        for (const auto& pair : m_guiResources)
+        {
+            if (pair.second.window)
+            {
+                window = pair.second.window;
+                break;
+            }
+        }
+
+        // On a high-DPI screen, we work in pixel coordinates while the SDL rectangle needs to be provided in screen coordinates.
+        // So we need to calculate the DPI scaling of the window.
+        float dpiScale = 1;
+        if (window)
+        {
+            Vector2i windowSizeScreenCoords;
+            SDL_GetWindowSize(window, &windowSizeScreenCoords.x, &windowSizeScreenCoords.y);
+
+            Vector2i windowSizePixels;
+            SDL_GetWindowSizeInPixels(window, &windowSizePixels.x, &windowSizePixels.y);
+
+            if ((windowSizeScreenCoords.y != 0) && (windowSizeScreenCoords.y != windowSizePixels.y))
+                dpiScale = static_cast<float>(windowSizePixels.y) / static_cast<float>(windowSizeScreenCoords.y);
+        }
+
         SDL_Rect inputRect;
-        inputRect.x = static_cast<int>(rect.left);
-        inputRect.y = static_cast<int>(rect.top);
-        inputRect.w = static_cast<int>(rect.width);
-        inputRect.h = static_cast<int>(rect.height);
+        inputRect.x = static_cast<int>(rect.left / dpiScale);
+        inputRect.y = static_cast<int>(rect.top / dpiScale);
+        inputRect.w = static_cast<int>(rect.width / dpiScale);
+        inputRect.h = static_cast<int>(rect.height / dpiScale);
 
         SDL_SetTextInputRect(&inputRect);
         SDL_StartTextInput();
