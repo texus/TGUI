@@ -158,6 +158,11 @@ namespace tgui
 
     void BackendSDL::openVirtualKeyboard(const FloatRect& rect)
     {
+        // We only support high-DPI in this code with SDL 2.26 or newer.
+        // The rectangle passed to SDL_SetTextInputRect will be wrong in older SDL versions on high-DPI screens.
+        float dpiScale = 1;
+
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
         // If there is more than one window then we arbitrarily select one and assume they all have the same DPI scaling.
         SDL_Window* window = nullptr;
         for (const auto& pair : m_guiResources)
@@ -171,7 +176,6 @@ namespace tgui
 
         // On a high-DPI screen, we work in pixel coordinates while the SDL rectangle needs to be provided in screen coordinates.
         // So we need to calculate the DPI scaling of the window.
-        float dpiScale = 1;
         if (window)
         {
             Vector2i windowSizeScreenCoords;
@@ -183,6 +187,7 @@ namespace tgui
             if ((windowSizeScreenCoords.y != 0) && (windowSizeScreenCoords.y != windowSizePixels.y))
                 dpiScale = static_cast<float>(windowSizePixels.y) / static_cast<float>(windowSizeScreenCoords.y);
         }
+#endif
 
         SDL_Rect inputRect;
         inputRect.x = static_cast<int>(std::round(rect.left / dpiScale));
