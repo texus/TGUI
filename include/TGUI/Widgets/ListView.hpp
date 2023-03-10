@@ -262,6 +262,9 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param text  The caption of the item you want to add
         ///
         /// @return Index of the item that was just added
+        ///
+        /// This function only sets a value for the first column.
+        /// To add an item with values for multiple columns, see the addItem(std::vector<tgui::String>) function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t addItem(const String& text);
 
@@ -272,6 +275,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param item  Texts for each column
         ///
         /// @return Index of the item that was just added
+        ///
+        /// Example usage:
+        /// @code
+        /// listView->addItem({"DejaVuSans.ttf", "720.9 KB", "01 Jan 1970"});
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t addItem(const std::vector<String>& item);
 
