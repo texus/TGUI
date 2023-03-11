@@ -30,12 +30,22 @@
 
 struct GroupProperties : WidgetProperties
 {
+    void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
+    {
+        auto group = widget->cast<tgui::Group>();
+        if (property == "TextSize")
+            group->setTextSize(value.toUInt());
+        else
+            WidgetProperties::updateProperty(widget, property, value);
+    }
+
     TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto panel = widget->cast<tgui::Group>();
+        auto group = widget->cast<tgui::Group>();
+        pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(group->getTextSize())};
 
-        const auto renderer = panel->getSharedRenderer();
+        const auto renderer = group->getSharedRenderer();
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         return pair;
     }
