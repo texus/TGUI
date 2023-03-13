@@ -30,39 +30,89 @@
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wsign-conversion"
-#elif defined (_MSC_VER) && defined(__clang__)
-#   pragma clang diagnostic push
-#   pragma clang diagnostic ignored "-Wsign-conversion"
-#   pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#   pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#   pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#   pragma GCC diagnostic ignored "-Wdouble-promotion"
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
+#   pragma GCC diagnostic ignored "-Wfloat-conversion"
+#   pragma GCC diagnostic ignored "-Wfloat-equal"
+#   pragma GCC diagnostic ignored "-Wconversion"
+#   pragma GCC diagnostic ignored "-Wshadow"
+#elif defined (_MSC_VER)
+#   if defined(__clang__)
+#       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wsign-conversion"
+#       pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#       pragma clang diagnostic ignored "-Wunreachable-code-return"
+#       pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#       pragma clang diagnostic ignored "-Wdouble-promotion"
+#       pragma clang diagnostic ignored "-Wold-style-cast"
+#       pragma clang diagnostic ignored "-Wfloat-conversion"
+#       pragma clang diagnostic ignored "-Wfloat-equal"
+#       pragma clang diagnostic ignored "-Wconversion"
+#       pragma clang diagnostic ignored "-Wshadow"
+#   else
+#       pragma warning(push)
+#       pragma warning(disable: 4244) // conversion, possible loss of data
+#       pragma warning(disable: 4456) // declaration hides previous local declaration
+#       pragma warning(disable: 4702) // unreachable code
+#   endif
 #endif
-
-#define NANOSVG_IMPLEMENTATION
-#define NANOSVGRAST_IMPLEMENTATION
 
 #if TGUI_USE_SYSTEM_NANOSVG
 #   include <nanosvg.h>
 #   include <nanosvgrast.h>
 #else
-#   include <TGUI/extlibs/nanosvg/nanosvg.h>
-#   include <TGUI/extlibs/nanosvg/nanosvgrast.h>
+    #define NANOSVG_IMPLEMENTATION
+    #define NANOSVGRAST_IMPLEMENTATION
+
+    // Include the stdlib headers used by nanosvg to allow wrapping the includes in an anonymous namespace
+    #include <string.h>
+    #include <stdlib.h>
+    #include <stdio.h>
+    #include <math.h>
+
+    namespace
+    {
+        #include <TGUI/extlibs/nanosvg/nanosvg.h>
+        #include <TGUI/extlibs/nanosvg/nanosvgrast.h>
+    }
 #endif
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop
-#elif defined (_MSC_VER) && defined(__clang__)
-#   pragma clang diagnostic pop
+#elif defined (_MSC_VER)
+#   if defined(__clang__)
+#       pragma clang diagnostic pop
+#   else
+#       pragma warning(pop)
+#   endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    struct SvgImageData
+    {
+        NSVGimage* svg = nullptr;
+        NSVGrasterizer* rasterizer = nullptr;
+    };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SvgImage::SvgImage(const String& filename)
+    SvgImage::SvgImage() :
+        m_data{std::make_unique<SvgImageData>()}
     {
-        m_svg = nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
-        if (!m_svg)
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SvgImage::SvgImage(const String& filename) :
+        m_data{std::make_unique<SvgImageData>()}
+    {
+        m_data->svg = nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
+        if (!m_data->svg)
         {
             TGUI_PRINT_WARNING("Failed to load svg: " << filename);
         }
@@ -72,25 +122,25 @@ namespace tgui
 
     SvgImage::~SvgImage()
     {
-        if (m_rasterizer)
-            nsvgDeleteRasterizer(m_rasterizer);
-        if (m_svg)
-            nsvgDelete(m_svg);
+        if (m_data->rasterizer)
+            nsvgDeleteRasterizer(m_data->rasterizer);
+        if (m_data->svg)
+            nsvgDelete(m_data->svg);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SvgImage::isSet() const
     {
-        return (m_svg != nullptr);
+        return (m_data->svg != nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f SvgImage::getSize() const
     {
-        if (m_svg)
-            return {static_cast<float>(m_svg->width), static_cast<float>(m_svg->height)};
+        if (m_data->svg)
+            return {static_cast<float>(m_data->svg->width), static_cast<float>(m_data->svg->height)};
         else
             return {0, 0};
     }
@@ -99,18 +149,18 @@ namespace tgui
 
     void SvgImage::rasterize(BackendTexture& texture, Vector2u size)
     {
-        if (!m_svg)
+        if (!m_data->svg)
             return;
 
-        if (!m_rasterizer)
-            m_rasterizer = nsvgCreateRasterizer();
+        if (!m_data->rasterizer)
+            m_data->rasterizer = nsvgCreateRasterizer();
 
-        const float scaleX = size.x / static_cast<float>(m_svg->width);
-        const float scaleY = size.y / static_cast<float>(m_svg->height);
+        const float scaleX = size.x / static_cast<float>(m_data->svg->width);
+        const float scaleY = size.y / static_cast<float>(m_data->svg->height);
 
         auto pixels = MakeUniqueForOverwrite<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeFull(m_rasterizer, m_svg, 0, 0, static_cast<double>(scaleX), static_cast<double>(scaleY),
-                          pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
+        nsvgRasterizeXY(m_data->rasterizer, m_data->svg, 0, 0, scaleX, scaleY,
+                        pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
 
         texture.load(size, std::move(pixels), true);
     }
