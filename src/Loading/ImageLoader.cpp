@@ -55,6 +55,7 @@
 #       pragma clang diagnostic ignored "-Wimplicit-fallthrough"
 #   else
 #       pragma warning(push)
+#       pragma warning(disable: 4244) // conversion, possible loss of data
 #       pragma warning(disable: 4505) // Unreferenced local function
 #   endif
 #endif

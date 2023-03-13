@@ -37,6 +37,7 @@
 #   pragma GCC diagnostic ignored "-Wfloat-conversion"
 #   pragma GCC diagnostic ignored "-Wfloat-equal"
 #   pragma GCC diagnostic ignored "-Wconversion"
+#   pragma GCC diagnostic ignored "-Wcast-align"
 #   pragma GCC diagnostic ignored "-Wshadow"
 #elif defined (_MSC_VER)
 #   if defined(__clang__)
@@ -50,6 +51,7 @@
 #       pragma clang diagnostic ignored "-Wfloat-conversion"
 #       pragma clang diagnostic ignored "-Wfloat-equal"
 #       pragma clang diagnostic ignored "-Wconversion"
+#       pragma clang diagnostic ignored "-Wcast-align"
 #       pragma clang diagnostic ignored "-Wshadow"
 #   else
 #       pragma warning(push)
@@ -66,17 +68,29 @@
     #define NANOSVG_IMPLEMENTATION
     #define NANOSVGRAST_IMPLEMENTATION
 
-    // Include the stdlib headers used by nanosvg to allow wrapping the includes in an anonymous namespace
+    // Include the stdlib headers used by nanosvg to allow wrapping the includes in a namespace
     #include <string.h>
     #include <stdlib.h>
     #include <stdio.h>
     #include <math.h>
 
-    namespace
+    namespace tgui
     {
-        #include <TGUI/extlibs/nanosvg/nanosvg.h>
-        #include <TGUI/extlibs/nanosvg/nanosvgrast.h>
+        namespace priv
+        {
+            #include <TGUI/extlibs/nanosvg/nanosvg.h>
+            #include <TGUI/extlibs/nanosvg/nanosvgrast.h>
+        }
     }
+
+    // We place the functions in a namespace to prevent potential issues if the TGUI user also uses nanosvg in their own project.
+    // We don't use an anonymous namespace as it leads to a warning from some compilers because SvgImageData (which has to be
+    // forward declared in the header file and can't be anonymous) would have public members that have static linkage.
+    using tgui::priv::nsvgParseFromFile;
+    using tgui::priv::nsvgDelete;
+    using tgui::priv::nsvgCreateRasterizer;
+    using tgui::priv::nsvgRasterizeXY;
+    using tgui::priv::nsvgDeleteRasterizer;
 #endif
 
 #if defined(__GNUC__)
@@ -93,23 +107,26 @@
 
 namespace tgui
 {
-    struct SvgImageData
+    namespace priv
     {
-        NSVGimage* svg = nullptr;
-        NSVGrasterizer* rasterizer = nullptr;
-    };
+        struct SvgImageData
+        {
+            NSVGimage* svg = nullptr;
+            NSVGrasterizer* rasterizer = nullptr;
+        };
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SvgImage::SvgImage() :
-        m_data{std::make_unique<SvgImageData>()}
+        m_data{std::make_unique<priv::SvgImageData>()}
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SvgImage::SvgImage(const String& filename) :
-        m_data{std::make_unique<SvgImageData>()}
+        m_data{std::make_unique<priv::SvgImageData>()}
     {
         m_data->svg = nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
         if (!m_data->svg)
