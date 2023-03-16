@@ -190,10 +190,9 @@ namespace tgui
     {
         // If the widget lies outside of the clip rect then we can skip drawing it
         const FloatRect& clipRect = m_clipLayers.empty() ? m_viewRect : m_clipLayers.back().first;
-        const Vector2f widgetBottomRight{states.transform.transformPoint(widget->getWidgetOffset() + widget->getFullSize())};
-        const Vector2f widgetTopLeft = states.transform.transformPoint(widget->getWidgetOffset());
-        if ((widgetTopLeft.x > clipRect.left + clipRect.width) || (widgetTopLeft.y > clipRect.top + clipRect.height)
-         || (widgetBottomRight.x < clipRect.left) || (widgetBottomRight.y < clipRect.top))
+        const FloatRect& widgetRect = states.transform.transformRect({widget->getWidgetOffset(), widget->getFullSize()});
+        if ((widgetRect.left > clipRect.left + clipRect.width) || (widgetRect.top > clipRect.top + clipRect.height)
+         || (widgetRect.left + widgetRect.width < clipRect.left) || (widgetRect.top + widgetRect.height < clipRect.top))
             return;
 
         // Round widget positions to the nearest pixel
@@ -222,14 +221,12 @@ namespace tgui
             return;
         }
 
-        const Vector2f bottomRight{states.transform.transformPoint(rect.getPosition() + rect.getSize())};
-        const Vector2f topLeft = states.transform.transformPoint(rect.getPosition());
-
+        const FloatRect& transformedRect = states.transform.transformRect(rect);
         const FloatRect oldClipRect = m_clipLayers.empty() ? m_viewRect : m_clipLayers.back().first;
-        const float clipLeft = std::max(topLeft.x, oldClipRect.left);
-        const float clipTop = std::max(topLeft.y, oldClipRect.top);
-        const float clipRight = std::min(bottomRight.x, oldClipRect.left + oldClipRect.width);
-        const float clipBottom = std::min(bottomRight.y, oldClipRect.top + oldClipRect.height);
+        const float clipLeft = std::max(transformedRect.left, oldClipRect.left);
+        const float clipTop = std::max(transformedRect.top, oldClipRect.top);
+        const float clipRight = std::min(transformedRect.left + transformedRect.width, oldClipRect.left + oldClipRect.width);
+        const float clipBottom = std::min(transformedRect.top + transformedRect.height, oldClipRect.top + oldClipRect.height);
 
         if ((clipRight - clipLeft > 0) && (clipBottom - clipTop > 0))
         {
