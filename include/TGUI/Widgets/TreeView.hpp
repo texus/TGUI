@@ -144,6 +144,16 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param createParents Should the hierarchy be created if it did not exist yet?
         ///
         /// @return True when the item was added (always the case if createParents is true)
+        ///
+        /// Example code:
+        /// @code
+        /// treeView->addItem({"Smilies", "Happy"});
+        /// treeView->addItem({"Smilies", "Sad"});
+        /// treeView->addItem({"Smilies", "Neither"});
+        /// treeView->addItem({"Vehicles", "Parts", "Wheel"});
+        /// treeView->addItem({"Vehicles", "Whole", "Truck"});
+        /// treeView->addItem({"Vehicles", "Whole", "Car"});
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addItem(const std::vector<String>& hierarchy, bool createParents = true);
 
