@@ -74,7 +74,7 @@
     } \
     void CLASS::set##NAME(tgui::TextStyles style) \
     { \
-        setProperty(tgui::String(#NAME), ObjectConverter{style}); \
+        setProperty(tgui::String(#NAME), tgui::ObjectConverter{style}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@
     TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT) \
     void CLASS::set##NAME(float number) \
     { \
-        setProperty(tgui::String(#NAME), ObjectConverter{number}); \
+        setProperty(tgui::String(#NAME), tgui::ObjectConverter{number}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@
     TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT) \
     void CLASS::set##NAME(bool flag) \
     { \
-        setProperty(tgui::String(#NAME), ObjectConverter{flag}); \
+        setProperty(tgui::String(#NAME), tgui::ObjectConverter{flag}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
