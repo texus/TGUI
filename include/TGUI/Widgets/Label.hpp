@@ -332,7 +332,7 @@ TGUI_MODULE_EXPORT namespace tgui
         void mouseMoved(Vector2f pos) override;
 
         /// @internal
-        bool mouseWheelScrolled(float delta, Vector2f pos) override;
+        bool scrolled(float delta, Vector2f pos, bool touch) override;
 
         /// @internal
         void mouseNoLongerOnWidget() override;

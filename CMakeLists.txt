@@ -48,6 +48,13 @@ endif()
 # Add the modules directory to find some of the dependencies
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
+# When building for Android, we install everything in $NDK/sources/third_party by default.
+# The CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT variable is only TRUE on the first run,
+# so this code needs to be before the backend selection (or any other code that can fail).
+if(TGUI_OS_ANDROID AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_ANDROID_NDK}/sources/third_party/tgui CACHE PATH "Installation path (should be inside your NDK's 'sources' directory)" FORCE)
+endif()
+
 # Add an option for choosing the build type (shared or static)
 if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
     # If TGUI_SHARED_LIBS is explicitly set then it overrules BUILD_SHARED_LIBS, otherwise honor the global setting
@@ -195,11 +202,6 @@ if(TGUI_OS_ANDROID)
 
     if(CMAKE_ANDROID_API LESS 19)
         message(FATAL_ERROR "Android API level (${CMAKE_ANDROID_API}) must be equal or greater than 19.")
-    endif()
-
-    # Install everything in $NDK/sources/third_party by default
-    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        set(CMAKE_INSTALL_PREFIX ${CMAKE_ANDROID_NDK}/sources/third_party/tgui CACHE PATH "Installation path (should be inside your NDK's 'sources' directory)" FORCE)
     endif()
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)

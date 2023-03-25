@@ -392,10 +392,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::mouseWheelScrolled(float delta, Vector2f pos)
+    bool ChatBox::scrolled(float delta, Vector2f pos, bool touch)
     {
         if (m_scroll->getViewportSize() < m_scroll->getMaximum())
-            return m_scroll->mouseWheelScrolled(delta, pos - getPosition());
+            return m_scroll->scrolled(delta, pos - getPosition(), touch);
 
         return false;
     }

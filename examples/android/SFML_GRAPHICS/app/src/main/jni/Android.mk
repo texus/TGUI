@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := tgui-example
+LOCAL_MODULE    := app
 
 LOCAL_SRC_FILES := main.cpp
 

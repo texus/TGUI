@@ -10,8 +10,8 @@ set(SDL2_TTF_BUILD_DIR SDL_ttf-build)
 set(TGUI_ROOT_DIR "../../../../../")
 
 # Build SDL and SDL_ttf
-add_subdirectory("${TGUI_ROOT_DIR}/../SDL" ${SDL2_BUILD_DIR})
-add_subdirectory("${TGUI_ROOT_DIR}/../SDL_ttf" ${SDL2_TTF_BUILD_DIR})
+add_subdirectory("${TGUI_ROOT_DIR}/../SDL2" ${SDL2_BUILD_DIR})
+add_subdirectory("${TGUI_ROOT_DIR}/../SDL2_ttf" ${SDL2_TTF_BUILD_DIR})
 
 # Make sure TGUI can find SDL_ttf
 add_library(SDL2::SDL2_ttf ALIAS SDL2_ttf)

@@ -933,9 +933,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::mouseWheelScrolled(float delta, Vector2f pos)
+    bool Container::scrolled(float delta, Vector2f pos, bool touch)
     {
-        return processMouseWheelScrollEvent(delta, pos - getPosition() - getChildWidgetsOffset());
+        return processScrollEvent(delta, pos - getPosition() - getChildWidgetsOffset(), touch);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1183,12 +1183,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::processMouseWheelScrollEvent(float delta, Vector2f pos)
+    bool Container::processScrollEvent(float delta, Vector2f pos, bool touch)
     {
         // Send the event to the widget below the mouse
         Widget::Ptr widget = updateWidgetBelowMouse(pos);
         if (widget != nullptr)
-            return widget->mouseWheelScrolled(delta, transformMousePos(widget, pos));
+            return widget->scrolled(delta, transformMousePos(widget, pos), touch);
 
         return false;
     }

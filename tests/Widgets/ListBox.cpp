@@ -431,8 +431,8 @@ TEST_CASE("[ListBox]")
             listBox->addItem("Item 9");
 
             // Scrolling down with mouse wheel
-            container->mouseWheelScrolled(-1, {40, 70});
-            container->mouseWheelScrolled(-1, {40, 70});
+            container->scrolled(-1, {40, 70}, false);
+            container->scrolled(-1, {40, 70}, false);
 
             mousePressed({40, 52});
             REQUIRE(listBox->getSelectedItemIndex() == 4);

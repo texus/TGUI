@@ -371,6 +371,28 @@ namespace tgui
 
     bool BackendGuiSDL::handleEvent(const SDL_Event& sdlEvent)
     {
+        // Detect scrolling with two fingers by examining touch events
+        if ((sdlEvent.type == SDL_EVENT_FINGER_DOWN) || (sdlEvent.type == SDL_EVENT_FINGER_UP) || (sdlEvent.type == SDL_EVENT_FINGER_MOTION))
+        {
+            const bool wasScrolling = m_twoFingerScroll.isScrolling();
+
+            const auto fingerId = static_cast<std::intptr_t>(sdlEvent.tfinger.fingerId);
+            const float x = sdlEvent.tfinger.x * m_framebufferSize.x;
+            const float y = sdlEvent.tfinger.y * m_framebufferSize.y;
+
+            if (sdlEvent.type == SDL_EVENT_FINGER_DOWN)
+                m_twoFingerScroll.reportFingerDown(fingerId, x, y);
+            else if (sdlEvent.type == SDL_EVENT_FINGER_UP)
+                m_twoFingerScroll.reportFingerUp(fingerId);
+            else if (sdlEvent.type == SDL_EVENT_FINGER_MOTION)
+            {
+                m_twoFingerScroll.reportFingerMotion(fingerId, x, y);
+                if (m_twoFingerScroll.isScrolling())
+                    return handleTwoFingerScroll(wasScrolling);
+            }
+        }
+
+        // Convert the event to our own type so that we can process it in a backend-independent way afterwards
         Event event;
         if (!convertEvent(sdlEvent, event))
             return false; // We don't process this type of event

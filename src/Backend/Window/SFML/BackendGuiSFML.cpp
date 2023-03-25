@@ -157,6 +157,28 @@ namespace tgui
 
     bool BackendGuiSFML::handleEvent(sf::Event sfmlEvent)
     {
+        // Detect scrolling with two fingers by examining touch events
+        if ((sfmlEvent.type == sf::Event::TouchBegan) || (sfmlEvent.type == sf::Event::TouchEnded) || (sfmlEvent.type == sf::Event::TouchMoved))
+        {
+            const bool wasScrolling = m_twoFingerScroll.isScrolling();
+
+            const auto fingerId = static_cast<std::intptr_t>(sfmlEvent.touch.finger);
+            const float x = static_cast<float>(sfmlEvent.touch.x);
+            const float y = static_cast<float>(sfmlEvent.touch.y);
+
+            if (sfmlEvent.type == sf::Event::TouchBegan)
+                m_twoFingerScroll.reportFingerDown(fingerId, x, y);
+            else if (sfmlEvent.type == sf::Event::TouchEnded)
+                m_twoFingerScroll.reportFingerUp(fingerId);
+            else if (sfmlEvent.type == sf::Event::TouchMoved)
+            {
+                m_twoFingerScroll.reportFingerMotion(fingerId, x, y);
+                if (m_twoFingerScroll.isScrolling())
+                    return handleTwoFingerScroll(wasScrolling);
+            }
+        }
+
+        // Convert the event to our own type so that we can process it in a backend-independent way afterwards
         Event event;
         if (!convertEvent(sfmlEvent, event))
             return false; // We don't process this type of event

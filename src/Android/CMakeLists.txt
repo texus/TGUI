@@ -50,7 +50,17 @@ install(TARGETS tgui-activity
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
         FRAMEWORK DESTINATION "." COMPONENT bin)
 
+add_library(TGUI::Activity ALIAS tgui-activity)
+set_target_properties(tgui-activity PROPERTIES EXPORT_NAME TGUI::Activity)
+
 # Install Android.mk so the NDK knows how to set up TGUI
 if(TGUI_OS_ANDROID)
     install(FILES Android.mk DESTINATION .)
 endif()
+
+install(TARGETS tgui-activity EXPORT TGUIConfigExport
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+        FRAMEWORK DESTINATION "." COMPONENT bin
+)

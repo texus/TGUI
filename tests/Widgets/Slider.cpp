@@ -243,11 +243,17 @@ TEST_CASE("[Slider]")
 
                 SECTION("Mouse wheel scroll")
                 {
-                    slider->mouseWheelScrolled(-2, {});
+                    slider->scrolled(-2, {}, false);
                     REQUIRE(slider->getValue() == 14);
                     REQUIRE(valueChangedCount == 1);
-                    slider->mouseWheelScrolled(1, {});
+                    slider->scrolled(1, {}, false);
                     REQUIRE(slider->getValue() == 12);
+                    REQUIRE(valueChangedCount == 2);
+
+                    // If the scroll event originated from touch events (two finger scrolling) then it has no effect
+                    slider->scrolled(-1, {}, true);
+                    REQUIRE(valueChangedCount == 2);
+                    slider->scrolled(1, {}, true);
                     REQUIRE(valueChangedCount == 2);
                 }
             }
@@ -278,11 +284,17 @@ TEST_CASE("[Slider]")
 
                 SECTION("Mouse wheel scroll")
                 {
-                    slider->mouseWheelScrolled(-2, {});
+                    slider->scrolled(-2, {}, false);
                     REQUIRE(slider->getValue() == 14);
                     REQUIRE(valueChangedCount == 1);
-                    slider->mouseWheelScrolled(1, {});
+                    slider->scrolled(1, {}, false);
                     REQUIRE(slider->getValue() == 12);
+                    REQUIRE(valueChangedCount == 2);
+
+                    // If the scroll event originated from touch events (two finger scrolling) then it has no effect
+                    slider->scrolled(-1, {}, true);
+                    REQUIRE(valueChangedCount == 2);
+                    slider->scrolled(1, {}, true);
                     REQUIRE(valueChangedCount == 2);
                 }
             }

@@ -136,11 +136,21 @@ void* loadLibrary(const char* libraryName, JNIEnv* lJNIEnv, jobject& ObjectActiv
     const char* libraryPath = lJNIEnv->GetStringUTFChars(javaLibraryPath, NULL);
 
     // Manually load the library
-    void * handle = dlopen(libraryPath, RTLD_NOW | RTLD_GLOBAL);
+    void* handle = dlopen(libraryPath, RTLD_NOW | RTLD_GLOBAL);
     if (!handle)
     {
-        LOGE("dlopen(\"%s\"): %s", libraryPath, dlerror());
-        exit(1);
+        // When minSdkVersion is set to 23 (Android 6.0) or higher, the above dlopen call may fail to find the library.
+        // Searching for the library filename, without a path, makes Android automatically find the library at the correct location.
+        jstring javaLibraryFilename = static_cast<jstring>(ObjectName);
+        const char* libraryFilename = lJNIEnv->GetStringUTFChars(javaLibraryFilename, NULL);
+        handle = dlopen(libraryFilename, RTLD_NOW | RTLD_GLOBAL);
+        if (!handle)
+        {
+            LOGE("dlopen(\"%s\"): %s", libraryPath, dlerror());
+            exit(1);
+        }
+
+        lJNIEnv->ReleaseStringUTFChars(javaLibraryFilename, libraryFilename);
     }
 
     // Release the Java string
@@ -208,15 +218,16 @@ JNIEXPORT void ANativeActivity_onCreate(ANativeActivity* activity, void* savedSt
     loadLibrary("tgui", lJNIEnv, ObjectActivityInfo);
 #endif
 
-    // Call the original ANativeActivity_onCreate function
-    void* handle = loadLibrary(getLibraryName(lJNIEnv, ObjectActivityInfo), lJNIEnv, ObjectActivityInfo);
-    activityOnCreatePointer ANativeActivity_onCreate = reinterpret_cast<activityOnCreatePointer>(dlsym(handle, "ANativeActivity_onCreate"));
+    // Call the original ANativeActivity_onCreate function (the one in the library specified with the "tgui.app.lib_name" property)
+    const char* libName = getLibraryName(lJNIEnv, ObjectActivityInfo);
+    void* handle = loadLibrary(libName, lJNIEnv, ObjectActivityInfo);
+    activityOnCreatePointer AppDll_ANativeActivity_onCreate = reinterpret_cast<activityOnCreatePointer>(dlsym(handle, "ANativeActivity_onCreate"));
 
-    if (!ANativeActivity_onCreate)
+    if (!AppDll_ANativeActivity_onCreate)
     {
         LOGE("tgui-activity: Undefined symbol ANativeActivity_onCreate");
         exit(1);
     }
 
-    ANativeActivity_onCreate(activity, savedState, savedStateSize);
+    AppDll_ANativeActivity_onCreate(activity, savedState, savedStateSize);
 }

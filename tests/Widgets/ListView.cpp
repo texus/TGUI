@@ -682,8 +682,8 @@ TEST_CASE("[ListView]")
             listView->addItem("Item 9");
 
             // Scrolling down with mouse wheel
-            root->mouseWheelScrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y});
-            root->mouseWheelScrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y});
+            root->scrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y}, false);
+            root->scrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y}, false);
 
             mousePressed({40, 52});
             REQUIRE(listView->getSelectedItemIndex() == 4);

@@ -589,8 +589,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseWheelScrolled(float delta, Vector2f)
+    bool ComboBox::scrolled(float delta, Vector2f, bool touch)
     {
+        // Don't react to two finger scrolling
+        if (touch)
+            return false;
+
         // Don't do anything when changing item on scroll is disabled
         if (!m_changeItemOnScroll)
             return false;

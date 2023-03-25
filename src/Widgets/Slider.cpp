@@ -485,8 +485,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseWheelScrolled(float delta, Vector2f)
+    bool Slider::scrolled(float delta, Vector2f, bool touch)
     {
+        // Don't react to two finger scrolling
+        if (touch)
+            return false;
+
         // Don't do anything when changing value on scroll is disabled
         if (!m_changeValueOnScroll)
             return false;

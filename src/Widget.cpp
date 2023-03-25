@@ -1313,7 +1313,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::mouseWheelScrolled(float, Vector2f)
+    bool Widget::scrolled(float, Vector2f, bool)
     {
         return false;
     }

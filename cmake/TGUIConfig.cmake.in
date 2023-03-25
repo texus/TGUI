@@ -172,7 +172,8 @@ if (NOT TGUI_FOUND)
 endif()
 
 if (TGUI_FOUND)
-    add_library(TGUI::TGUI ALIAS tgui)
+    # Allow linking to "tgui" target for backwards compatibility
+    add_library(tgui ALIAS TGUI::TGUI)
 endif()
 
 if (TGUI_FOUND AND NOT TGUI_FIND_QUIETLY)

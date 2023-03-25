@@ -322,25 +322,31 @@ TEST_CASE("[ComboBox]")
 
             SECTION("Mouse wheel scroll")
             {
-                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                container->scrolled(-1, mousePosOnComboBox, false);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 1);
-                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                container->scrolled(-1, mousePosOnComboBox, false);
                 REQUIRE(comboBox->getSelectedItemIndex() == 1);
                 REQUIRE(itemSelectedCount == 2);
-                container->mouseWheelScrolled(1, mousePosOnComboBox);
+                container->scrolled(1, mousePosOnComboBox, false);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 3);
 
+                // If the scroll event originated from touch events (two finger scrolling) then it has no effect
+                container->scrolled(-1, mousePosOnComboBox, true);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                container->scrolled(1, mousePosOnComboBox, true);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+
                 // Changing item by scrolling can be disabled
                 comboBox->setChangeItemOnScroll(false);
-                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                container->scrolled(-1, mousePosOnComboBox, false);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 comboBox->setChangeItemOnScroll(true);
 
                 // Scrolling on the combo box has no effect when the list is open
                 mouseClick(mousePosOnComboBox);
-                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                container->scrolled(-1, mousePosOnComboBox, false);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 3);
             }

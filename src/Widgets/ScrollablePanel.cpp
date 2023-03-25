@@ -533,7 +533,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ScrollablePanel::mouseWheelScrolled(float delta, Vector2f pos)
+    bool ScrollablePanel::scrolled(float delta, Vector2f pos, bool touch)
     {
         const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
         const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
@@ -554,7 +554,7 @@ namespace tgui
         // First try to pass the scroll event to a child widget
         if (allowChildScrolling
          && FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, innerSize.x, innerSize.y}.contains(pos)
-         && Container::mouseWheelScrolled(delta, pos + getContentOffset()))
+         && Container::scrolled(delta, pos + getContentOffset(), touch))
         {
             m_lastSuccessfulScrollTime = std::chrono::steady_clock::time_point(); // Reset the time as the panel didn't process this event
             return true; // A child widget swallowed the event
@@ -563,15 +563,14 @@ namespace tgui
         // If the scroll event wasn't handled by a child widget then pass them to the scrollbars in this panel
         bool scrollbarMoved = false;
         if (m_horizontalScrollbar->isShown()
-            && (!m_verticalScrollbar->isShown()
-                || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
-                || keyboard::isShiftPressed()))
+         && !touch
+         && (!m_verticalScrollbar->isShown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
         {
-            scrollbarMoved = m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
+            scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
         else if (m_verticalScrollbar->isShown())
         {
-            scrollbarMoved = m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
+            scrollbarMoved = m_verticalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
 
         if (scrollbarMoved)

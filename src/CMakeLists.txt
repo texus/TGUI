@@ -47,6 +47,7 @@ set(TGUI_SRC
     Timer.cpp
     ToolTip.cpp
     Transform.cpp
+    TwoFingerScrollDetect.cpp
     Widget.cpp
     Backend/Font/BackendFont.cpp
     Backend/Renderer/BackendRenderTarget.cpp
@@ -277,6 +278,7 @@ if(TGUI_OS_LINUX)
 endif()
 
 add_library(TGUI::TGUI ALIAS tgui)
+set_target_properties(tgui PROPERTIES EXPORT_NAME TGUI::TGUI)
 
 # Add the backends to the library.
 # Without the ability to call target_link_libraries in a subdirectory (which was only added in CMake 3.13 in policy CMP0079),

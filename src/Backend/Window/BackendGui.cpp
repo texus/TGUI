@@ -145,7 +145,7 @@ namespace tgui
                     return m_container->processMouseMoveEvent(mouseCoords);
                 else if (event.type == Event::Type::MouseWheelScrolled)
                 {
-                    if (m_container->processMouseWheelScrollEvent(event.mouseWheel.delta, mouseCoords))
+                    if (m_container->processScrollEvent(event.mouseWheel.delta, mouseCoords, false))
                         return true;
 
                     // Even if no scrollbar moved, we will still absorb the scroll event when the mouse is on top of a widget
@@ -565,6 +565,39 @@ namespace tgui
     {
         return {m_viewport.getLeft() + ((coord.x - m_view.getLeft()) / (m_view.getWidth() / m_viewport.getWidth())),
                 m_viewport.getTop() + ((coord.y - m_view.getTop()) / (m_view.getHeight() / m_viewport.getHeight()))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BackendGui::handleTwoFingerScroll(bool wasAlreadyScrolling)
+    {
+        TGUI_ASSERT(m_twoFingerScroll.isScrolling(), "m_twoFingerScroll.isScrolling() must return true when BackendGui::handleTwoFingerScroll is called");
+
+        if (!wasAlreadyScrolling)
+        {
+            // If a tooltip is visible then hide it now
+            if (m_visibleToolTip != nullptr)
+            {
+                // Correct the position of the tool tip so that it is relative again
+                m_visibleToolTip->setPosition(m_toolTipRelativePos);
+
+                remove(m_visibleToolTip);
+                m_visibleToolTip = nullptr;
+            }
+            m_tooltipPossible = false;
+
+            // In case the touch of the first finger caused a widget to respond, we tell widgets the mouse isn't down on them
+            m_container->mouseNoLongerOnWidget();
+            m_container->leftMouseButtonNoLongerDown();
+        }
+
+        const Vector2f touchPos = mapPixelToCoords(Vector2i{m_twoFingerScroll.getTouchPosition()});
+        const float touchDelta = m_twoFingerScroll.getDelta(m_view.getHeight() / m_viewport.getHeight());
+        if ((touchDelta != 0) && (m_container->processScrollEvent(touchDelta, touchPos, true)))
+            return true;
+
+        // Even if no widget was scrolled, we will still absorb the event when the scrolling bagan on top of a widget
+        return m_container->getWidgetAtPosition(touchPos) != nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

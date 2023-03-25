@@ -944,9 +944,15 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        /// Returns whether the scrolling was handled by the widget or not.
+        /// @brief Handle a scroll event (either from the mouse wheel of from two finger scrolling on a touchscreen)
+        ///
+        /// @param delta  Scroll offset (positive is up, negative is down). High-precision mice may use non-integral offsets.
+        /// @param pos    Mouse position, or the initial position of the touch events
+        /// @param touch  Was this a touch event or a mouse wheel scroll?
+        ///
+        /// @return Was the scrolling was handled by the widget?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseWheelScrolled(float delta, Vector2f pos);
+        virtual bool scrolled(float delta, Vector2f pos, bool touch);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

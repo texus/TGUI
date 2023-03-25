@@ -696,12 +696,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseWheelScrolled(float delta, Vector2f pos)
+    bool ListBox::scrolled(float delta, Vector2f pos, bool touch)
     {
         if (!m_scroll->isShown())
             return false;
 
-        if (!m_scroll->mouseWheelScrolled(delta, pos - getPosition()))
+        if (!m_scroll->scrolled(delta, pos - getPosition(), touch))
             return false;
 
         triggerOnScroll();

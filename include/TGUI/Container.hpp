@@ -448,12 +448,13 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Inform the container about a mouse wheel scroll event
-        /// @param delta  Wheel offset (positive is up, negative is down). High-precision mice may use non-integral offsets.
+        /// @brief Inform the container about a scroll event (either mouse wheel or two finger scrolling on touchscreen)
+        /// @param delta  Scroll offset (positive is up, negative is down). High-precision mice may use non-integral offsets.
         /// @param pos    Mouse position
+        /// @param touch  Was this a touch event or a mouse wheel scroll?
         /// @return True if the event was handled, false if no widget responded to the event
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool processMouseWheelScrollEvent(float delta, Vector2f pos);
+        bool processScrollEvent(float delta, Vector2f pos, bool touch);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -517,7 +518,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool mouseWheelScrolled(float delta, Vector2f pos) override;
+        bool scrolled(float delta, Vector2f pos, bool touch) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

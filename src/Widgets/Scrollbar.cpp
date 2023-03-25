@@ -585,14 +585,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseWheelScrolled(float delta, Vector2f pos)
+    bool Scrollbar::scrolled(float delta, Vector2f pos, bool touch)
     {
         const auto oldValue = m_value;
 
-        if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
+        const float amountToScroll = touch ? delta : (delta * m_scrollAmount);
+        if (static_cast<int>(m_value) - static_cast<int>(amountToScroll) < 0)
             setValue(0);
         else
-            setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
+            setValue(static_cast<unsigned int>(m_value - (amountToScroll)));
 
         // Update over which part the mouse is hovering
         if (isMouseOnWidget(pos - getPosition()))

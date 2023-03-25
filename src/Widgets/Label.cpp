@@ -341,10 +341,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::mouseWheelScrolled(float delta, Vector2f pos)
+    bool Label::scrolled(float delta, Vector2f pos, bool touch)
     {
         if (!m_autoSize && m_scrollbar->isShown())
-            return m_scrollbar->mouseWheelScrolled(delta, pos - getPosition());
+            return m_scrollbar->scrolled(delta, pos - getPosition(), touch);
 
         return false;
     }

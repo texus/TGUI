@@ -143,10 +143,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SubwidgetContainer::mouseWheelScrolled(float delta, Vector2f pos)
+    bool SubwidgetContainer::scrolled(float delta, Vector2f pos, bool touch)
     {
-        m_container->mouseWheelScrolled(delta, pos - getPosition());
-        return Widget::mouseWheelScrolled(delta, pos);
+        m_container->scrolled(delta, pos - getPosition(), touch);
+        return Widget::scrolled(delta, pos, touch);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

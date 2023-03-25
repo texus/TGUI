@@ -1,25 +1,26 @@
 apply plugin: 'com.android.application'
 
 android {
-    ndkVersion '18.1.5063045'
-    compileSdkVersion 27
+    namespace 'eu.tgui.app'
+    ndkVersion '25.2.9519653'
+    compileSdkVersion 33
     defaultConfig {
-        applicationId "com.example.tgui"
-        minSdkVersion 19
-        targetSdkVersion 27
+        applicationId "eu.tgui.app"
+        minSdkVersion 21  // 23 or higher might not work (https://github.com/SFML/SFML/pull/2461)
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
         externalNativeBuild {
             ndkBuild {
-                // cppFlags "-std=c++14 -frtti -fexceptions"
+                cppFlags "-std=c++17 -fexceptions -frtti"
             }
-
+            //cmake {
+            //    arguments "-DCMAKE_ANDROID_STL_TYPE=c++_static"
+            //}
         }
-        ndk {
-            abiFilters 'x86'
-        }
-
     }
     buildTypes {
         release {
@@ -30,8 +31,11 @@ android {
     externalNativeBuild {
         ndkBuild {
             path "src/main/jni/Android.mk"
-
         }
+        //cmake {
+        //    path 'src/main/jni/CMakeLists.txt'
+        //    version '3.22.1'
+        //}
     }
 }
 

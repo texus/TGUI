@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    ndkVersion '23.0.7599858'
-    compileSdkVersion 31
+    namespace 'org.libsdl.app'
+    ndkVersion '25.2.9519653'
+    compileSdkVersion 33
     defaultConfig {
         applicationId "eu.tgui.app"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         ndk {
@@ -31,7 +32,7 @@ android {
         externalNativeBuild {
             cmake {
                 path 'jni/CMakeLists.txt'
-                version '3.22.2'
+                version '3.22.1'
             }
         }
     }

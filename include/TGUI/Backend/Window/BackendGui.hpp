@@ -30,6 +30,7 @@
 #include <TGUI/RelFloatRect.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Cursor.hpp>
+#include <TGUI/TwoFingerScrollDetect.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <chrono>
@@ -603,6 +604,12 @@ TGUI_MODULE_EXPORT namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Handles the backend-independent part of the two finger scrolling.
+        // Returns whether the touch event should be absorbed by the gui.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool handleTwoFingerScroll(bool wasAlreadyScrolling);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the view and changes the size of the root container when needed.
         // Derived classes should update m_framebufferSize in this function and then call this function from the base class.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -628,6 +635,7 @@ TGUI_MODULE_EXPORT namespace tgui
         bool m_tooltipPossible = false;
         Vector2f m_toolTipRelativePos;
         Vector2i m_lastMousePos;
+        TwoFingerScrollDetect m_twoFingerScroll;
 
         Vector2i m_framebufferSize;
         RelFloatRect m_viewport{RelativeValue{0}, RelativeValue{0}, RelativeValue{1}, RelativeValue{1}};

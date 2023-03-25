@@ -229,7 +229,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @internal
         /// Returns whether the scrolling was handled by the widget or not.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool mouseWheelScrolled(float delta, Vector2f pos) override;
+        bool scrolled(float delta, Vector2f pos, bool touch) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -306,7 +306,7 @@ TGUI_MODULE_EXPORT namespace tgui
         std::function<void(Vector2f)>                   implMouseMoved;
         std::function<void(const Event::KeyEvent&)>     implKeyPressed;
         std::function<void(char32_t)>                   implTextEntered;
-        std::function<bool(float, Vector2f)>            implMouseWheelScrolled;
+        std::function<bool(float, Vector2f, bool)>      implScrolled;
         std::function<void()>                           implMouseNoLongerOnWidget;
         std::function<void()>                           implLeftMouseButtonNoLongerDown;
         std::function<void()>                           implMouseEnteredWidget;
