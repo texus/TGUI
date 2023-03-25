@@ -113,15 +113,15 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ListViewRenderer* getSharedRenderer();
-        TGUI_NODISCARD const ListViewRenderer* getSharedRenderer() const;
+        TGUI_NODISCARD ListViewRenderer* getSharedRenderer() override;
+        TGUI_NODISCARD const ListViewRenderer* getSharedRenderer() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ListViewRenderer* getRenderer();
+        TGUI_NODISCARD ListViewRenderer* getRenderer() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
