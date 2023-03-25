@@ -31,6 +31,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
@@ -76,7 +77,17 @@ namespace tgui
                     }
                 }
 
-                widget = widget->getParent();
+                const Container* parent = widget->getParent();
+                if (parent)
+                {
+                    inputRect.setPosition(inputRect.getPosition() + parent->getChildWidgetsOffset());
+
+                    const ScrollablePanel* panel = dynamic_cast<const ScrollablePanel*>(parent);
+                    if (panel)
+                        inputRect.setPosition(inputRect.getPosition() - panel->getContentOffset());
+                }
+
+                widget = parent;
             }
 
             const auto gui = requestingWidget->getParentGui();
