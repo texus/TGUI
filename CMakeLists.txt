@@ -258,7 +258,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_RENDERER"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
-    if (TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
+    if (NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
         target_link_libraries(tgui-console-app-interface INTERFACE SDL2::SDL2main)
     endif()
 elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2")
@@ -281,7 +281,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_RENDERER"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
-    if (TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
+    if (NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
         target_link_libraries(tgui-gui-app-interface INTERFACE SDL2::SDL2main)
     endif()
 elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2")

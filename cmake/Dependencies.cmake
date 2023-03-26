@@ -246,6 +246,14 @@ macro(tgui_find_dependency_sdl)
 
         # We don't need to keep options that were created for SDL3
         unset(SDL3_DIR CACHE)
+
+        # SDL2main should appear before SDL2 in the linker options, at least for MinGW
+        if (TARGET SDL2::SDL2 AND TARGET SDL2::SDL2main)
+            target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2)
+        endif()
+        if (TARGET SDL2::SDL2-static AND TARGET SDL2::SDL2main)
+            target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2-static)
+        endif()
     endif()
 endmacro()
 
