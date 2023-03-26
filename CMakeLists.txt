@@ -289,7 +289,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STRE
         if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
             target_link_options(tgui-gui-app-interface INTERFACE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
         else()
-            target_link_options(tgui-gui-app-interface INTERFACE "-mwindow")
+            target_link_options(tgui-gui-app-interface INTERFACE "-mwindows")
         endif()
     endif()
 endif()
