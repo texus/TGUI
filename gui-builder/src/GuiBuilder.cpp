@@ -825,7 +825,9 @@ void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::Strin
     openWindowWithFocus(fileDialog);
 
     fileDialog->onFileSelect([onLoad](const tgui::String& selectedFile){
-        onLoad(selectedFile);
+        // We can't call onLoad here directly as it isn't allowed to destroy the file dialog during the callback.
+        // Instead we schedule a timer to call the onLoad function on the next iteration of the main loop.
+        tgui::Timer::scheduleCallback([onLoad, selectedFile]{ onLoad(selectedFile); });
     });
 }
 
