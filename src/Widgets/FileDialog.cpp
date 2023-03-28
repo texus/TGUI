@@ -66,6 +66,7 @@ namespace tgui
         m_comboBoxFileTypes = ComboBox::create();
         m_buttonCancel = Button::create();
         m_buttonConfirm = Button::create();
+        m_buttonCreateFolder = Button::create();
 
         m_buttonCancel->setText("Cancel");
         m_buttonConfirm->setText("Open");
@@ -185,6 +186,7 @@ namespace tgui
         m_comboBoxFileTypes     {std::move(other.m_comboBoxFileTypes)},
         m_buttonCancel          {std::move(other.m_buttonCancel)},
         m_buttonConfirm         {std::move(other.m_buttonConfirm)},
+        m_buttonCreateFolder    {std::move(other.m_buttonCreateFolder)},
         m_currentDirectory      {std::move(other.m_currentDirectory)},
         m_filesInDirectory      {std::move(other.m_filesInDirectory)},
         m_fileIcons             {std::move(other.m_fileIcons)},
@@ -256,6 +258,7 @@ namespace tgui
             m_comboBoxFileTypes = std::move(other.m_comboBoxFileTypes);
             m_buttonCancel = std::move(other.m_buttonCancel);
             m_buttonConfirm = std::move(other.m_buttonConfirm);
+            m_buttonCreateFolder = std::move(other.m_buttonCreateFolder);
             m_currentDirectory = std::move(other.m_currentDirectory);
             m_filesInDirectory = std::move(other.m_filesInDirectory);
             m_fileIcons = std::move(other.m_fileIcons);
@@ -280,11 +283,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog::Ptr FileDialog::create(const String& title, const String& confirmButtonText)
+    FileDialog::Ptr FileDialog::create(const String& title, const String& confirmButtonText, bool allowCreateFolder)
     {
         auto fileDialog = std::make_shared<FileDialog>();
         fileDialog->setTitle(title);
         fileDialog->setConfirmButtonText(confirmButtonText);
+        fileDialog->setAllowCreateFolder(allowCreateFolder);
         return fileDialog;
     }
 
@@ -451,6 +455,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void FileDialog::setCreateFolderButtonText(const String& text)
+    {
+        m_buttonCreateFolder->setText(text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const String& FileDialog::getCreateFolderButtonText() const
+    {
+        return m_buttonCreateFolder->getText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void FileDialog::setAllowCreateFolder(bool allowCreateFolder)
+    {
+        m_allowCreateFolder = allowCreateFolder;
+
+        if (nullptr == m_buttonCreateFolder->getParent() && m_allowCreateFolder)
+            addCreateFolderButton();
+        else
+            remove(m_buttonCreateFolder);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool FileDialog::getAllowCreateFolder() const
+    {
+        return m_allowCreateFolder;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void FileDialog::setFilenameLabelText(const String& labelText)
     {
         m_labelFilename->setText(labelText);
@@ -558,12 +595,26 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Enter) && (!m_editBoxPath->isFocused()))
         {
+            if (m_createFolderDialogOpen)
+            {
+                EditBox::Ptr folderNameEditBox = get<EditBox>("FolderNameEditBox");
+                createFolder(folderNameEditBox->getText());
+                destroyCreateFolderDialog();
+                return;
+            }
+            
             // Simulate a press on the confirm button
             if (m_buttonConfirm->isEnabled())
                 confirmButtonPressed();
         }
+        else if ((event.code == Event::KeyboardKey::Escape) && m_createFolderDialogOpen)
+        {
+            destroyCreateFolderDialog();
+        }
         else
+        {
             ChildWindow::keyPressed(event);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -917,6 +968,85 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void FileDialog::addCreateFolderButton()
+    {
+        m_buttonCreateFolder = Button::create();
+
+        m_buttonCreateFolder->setText("Create Folder");
+        m_buttonCreateFolder->setOrigin(0, 1);
+        m_buttonCreateFolder->setPosition("10", "100% - 10");
+
+        m_buttonCreateFolder->onPress.disconnectAll();
+        m_buttonCreateFolder->onPress([this]{ createCreateFolderDialog(); });
+
+        add(m_buttonCreateFolder, "#TGUI_INTERNAL%ButtonCreateFolder");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void FileDialog::createFolder(const String& name)
+    {
+        Filesystem::createDirectory(m_currentDirectory / name);
+        changePath(m_currentDirectory, false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    void FileDialog::createCreateFolderDialog()
+    {
+        // Create a transparent background
+        Panel::Ptr background_panel = Panel::create({"100%", "100%"});
+        background_panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+
+        ChildWindow::Ptr create_folder_window = ChildWindow::create(m_buttonCreateFolder->getText(), TitleButton::None);
+        create_folder_window->setPositionLocked(true);
+        create_folder_window->setPosition("50%", "50%");
+        create_folder_window->setSize("50%", "25%");
+        create_folder_window->setOrigin(0.5f, 0.5f);
+
+        EditBox::Ptr folder_name_edit_box = EditBox::create();
+        folder_name_edit_box->setPosition("50%", "30%");
+        folder_name_edit_box->setOrigin(0.5f, 0.5f);
+
+        Button::Ptr cancel_button = Button::create("Cancel");
+        cancel_button->setPosition("25%", "75%");
+        cancel_button->setOrigin(0.5f, 0.5f);
+
+        Button::Ptr confirm_button = Button::create("Confirm");
+        confirm_button->setPosition("75%", "75%");
+        confirm_button->setOrigin(0.5f, 0.5f);
+
+        cancel_button->onPress([this] {
+            destroyCreateFolderDialog();
+        } );
+        confirm_button->onPress([this, folder_name_edit_box] {
+            createFolder(folder_name_edit_box->getText());
+            destroyCreateFolderDialog();
+        } );
+
+        create_folder_window->add(folder_name_edit_box, "FolderNameEditBox");
+        create_folder_window->add(cancel_button);
+        create_folder_window->add(confirm_button);
+
+        background_panel->add(create_folder_window);
+
+        add(background_panel, "TransparentBackgroundPanel");
+
+        folder_name_edit_box->setFocused(true);
+
+        m_createFolderDialogOpen = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void FileDialog::destroyCreateFolderDialog()
+    {
+        remove(get("TransparentBackgroundPanel"));
+        m_createFolderDialogOpen = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void FileDialog::identifyChildWidgets()
     {
         m_buttonBack = get<Button>("#TGUI_INTERNAL$ButtonBack#");
@@ -929,6 +1059,7 @@ namespace tgui
         m_comboBoxFileTypes = get<ComboBox>("#TGUI_INTERNAL$ComboBoxFileTypes#");
         m_buttonCancel = get<Button>("#TGUI_INTERNAL$ButtonCancel#");
         m_buttonConfirm = get<Button>("#TGUI_INTERNAL$ButtonConfirm#");
+        m_buttonCreateFolder = get<Button>("#TGUI_INTERNAL%ButtonCreateFolder");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1068,6 +1199,7 @@ namespace tgui
             const auto& renderer = getSharedRenderer()->getButton();
             m_buttonCancel->setRenderer(renderer);
             m_buttonConfirm->setRenderer(renderer);
+            m_buttonCreateFolder->setRenderer(renderer);
 
             if (!getSharedRenderer()->getBackButton())
                 m_buttonBack->setRenderer(renderer);
@@ -1134,6 +1266,7 @@ namespace tgui
             m_comboBoxFileTypes->setInheritedFont(m_fontCached);
             m_buttonCancel->setInheritedFont(m_fontCached);
             m_buttonConfirm->setInheritedFont(m_fontCached);
+            m_buttonCreateFolder->setInheritedFont(m_fontCached);
         }
         else
             ChildWindow::rendererChanged(property);
