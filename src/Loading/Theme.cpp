@@ -201,6 +201,10 @@ namespace tgui
                                                          {"TextColor", Color::Black}})},
                     {"Panel", RendererData::create({{"BorderColor", Color::Black},
                                                     {"BackgroundColor", Color::White}})},
+                    {"PanelListBox", RendererData::create({{"ItemsBackgroundColor", Color{245, 245, 245}},
+                                                           {"ItemsBackgroundColorHover", Color::White},
+                                                           {"SelectedItemsBackgroundColor", Color{0, 110, 255}},
+                                                           {"SelectedItemsBackgroundColorHover", Color{30, 150, 255}}})},
                     {"Picture", RendererData::create()},
                     {"ProgressBar", RendererData::create({{"Borders", Borders{1}},
                                                           {"BorderColor", Color::Black},
@@ -324,6 +328,7 @@ namespace tgui
         {"RangeSlider", "Slider"},
         {"RichTextLabel", "Label"},
         {"ScrollablePanel", "Panel"},
+        {"PanelListBox", "ScrollablePanel"},
         {"ToggleButton", "Button"},
         {"TreeView", "ListBox"},
     };
@@ -433,6 +438,11 @@ namespace tgui
             {"BackgroundColor", ""},
             {"BorderColor", ""},
             {"Borders", ""},
+        }},
+        {"PanelListBox", {
+            {"BackgroundColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""}
         }},
         {"ProgressBar", {
             {"BackgroundColor", ""},
@@ -670,8 +680,9 @@ namespace tgui
     {
         // If we already have this renderer in cache then just return it
         auto it = m_renderers.find(id);
-        if (it != m_renderers.end())
+        if (it != m_renderers.end()) {
             return it->second;
+        }
 
         if (!m_themeLoader->canLoad(m_primary, id))
             return nullptr;

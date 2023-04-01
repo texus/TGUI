@@ -47,6 +47,7 @@
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
+#include <TGUI/Widgets/PanelListBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>

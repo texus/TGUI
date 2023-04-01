@@ -53,6 +53,7 @@ TGUI_MODULE_EXPORT namespace tgui
 {
     class Widget;
     class ChildWindow;
+    class Panel;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from
@@ -658,6 +659,173 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Optional unbound parameters:
+    /// - int (item index)
+    /// - std::shared_ptr<Panel> (item ptr)
+    /// - String (item id)
+    /// - int, std::shared_ptr<Panel> (item index and item ptr)
+    /// - std::shared_ptr<Panel>, String (item ptr and item id)
+    /// - int, std::shared_ptr<Panel>, String (item index, item ptr and item id)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalPanel : public Signal
+    {
+    public:
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalPanel(String&& name) :
+            Signal{std::move(name), 3}
+        { }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that can be passed to the connect function
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs>
+        unsigned int operator()(const Func& func, const BoundArgs&... args)
+        {
+            return connect(func, args...);
+        }
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function without unbound parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect(func, args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound integer (for the item index) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1)); });
+        }
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound std::shared_ptr<Panel> (for the item ptr) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel()); });
+        }
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has an unbound String (for the item id) as last parameter
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const String&)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(3)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has unbound integer and std::shared_ptr<Panel> (for the item index and ptr) as last parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel()); });
+        }
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has unbound std::shared_ptr<Panel> and String (for the item ptr and id) as last parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&, const String&)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel(), dereferenceParam<String>(3)); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param func  Callback function that has unbound integer, std::shared_ptr<Panel> and String (for the item index, ptr and id) as last parameters
+        /// @param args  Additional arguments to pass to the function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&, const String&)>>>* = nullptr>
+        unsigned int connect(const Func& func, const BoundArgs&... args)
+        {
+            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel(), dereferenceParam<String>(3)); });
+        }
+
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget Widget that is triggering the signal
+        /// @param index  Index of the item, or -1 if there is no item
+        /// @param panel  Pointer of the item, or an nullptr if there is no item
+        /// @param id     Id of the item, or an empty string if there is no item
+        ///
+        /// @return True when a callback function was executed, false when there weren't any connected callback functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, int index, const std::shared_ptr<Panel>& panel, const String& id);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Turns the void* parameter back into the std::shared_ptr<Panel> right before calling the callback function
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static std::shared_ptr<Panel> dereferencePanel();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Signal to which the user can subscribe to get callbacks from

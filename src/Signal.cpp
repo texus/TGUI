@@ -26,6 +26,7 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 #include <cassert>
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
@@ -131,6 +132,26 @@ namespace tgui
         m_parameters[2] = static_cast<const void*>(&item);
         m_parameters[3] = static_cast<const void*>(&id);
         return Signal::emit(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SignalPanel::emit(const Widget* widget, int index, const std::shared_ptr<Panel>& panel, const String& id)
+    {
+        if (m_handlers.empty())
+            return false;
+
+        m_parameters[1] = static_cast<const void*>(&index);
+        m_parameters[2] = static_cast<const void*>(&panel);
+        m_parameters[3] = static_cast<const void*>(&id);
+        return Signal::emit(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<Panel> SignalPanel::dereferencePanel()
+    {
+        return dereferenceParam<Panel*>(2)->shared_from_this()->cast<Panel>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
