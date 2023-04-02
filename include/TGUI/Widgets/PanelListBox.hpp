@@ -43,7 +43,7 @@ TGUI_MODULE_EXPORT namespace tgui
         using Ptr = std::shared_ptr<PanelListBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const PanelListBox>; //!< Shared constant widget pointer
 
-        static constexpr char StaticWidgetType[] = "PanelListBox"; //!< Type name of the widget
+        static constexpr const char StaticWidgetType[] = "PanelListBox"; //!< Type name of the widget
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

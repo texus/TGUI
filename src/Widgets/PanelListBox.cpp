@@ -29,11 +29,18 @@
 
 namespace tgui 
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     namespace constant {
-    const Layout defaultHeight(100);
-    const Layout defaultWidth(200);
+        const Layout defaultHeight(100);
+        const Layout defaultWidth(200);
     } // namespace constant
+
+#if TGUI_COMPILED_WITH_CPP_VER < 17
+    constexpr const char PanelListBox::StaticWidgetType[];
+#endif
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PanelListBox::PanelListBox(const char* typeName, const bool initRenderer) :
         ScrollablePanel(typeName, false),
