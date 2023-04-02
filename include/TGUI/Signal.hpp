@@ -705,7 +705,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect(func, args...);
@@ -720,7 +720,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1)); });
@@ -735,7 +735,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel()); });
@@ -750,7 +750,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const String&)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(3)); });
@@ -765,7 +765,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel()); });
@@ -780,7 +780,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&, const String&)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&, const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel(), dereferenceParam<String>(3)); });
@@ -795,7 +795,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible_v<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&, const String&)>>>* = nullptr>
+        template<typename Func, typename... BoundArgs, std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&, const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel(), dereferenceParam<String>(3)); });

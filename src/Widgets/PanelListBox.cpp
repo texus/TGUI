@@ -554,7 +554,7 @@ namespace tgui
         if (node->propertyValuePairs[U"SelectedItemIndex"]) {
             int selected_item(-1);
             if (node->propertyValuePairs[U"SelectedItemIndex"]->value.attemptToInt(selected_item)) {
-                setSelectedItemByIndex(selected_item);
+                setSelectedItemByIndex(static_cast<std::size_t>(selected_item));
             } else {
                 throw Exception{ U"Failed to parse SelectedItemIndex property, found unknown value '" + node->propertyValuePairs[U"SelectedItemIndex"]->value + U"'." };
             }
