@@ -53,6 +53,7 @@ namespace tgui
         {"MenuBar", std::make_shared<MenuBar>},
         {"MessageBox", std::make_shared<MessageBox>},
         {"Panel", std::make_shared<Panel>},
+        {"PanelListBox", std::make_shared<PanelListBox>},
         {"Picture", std::make_shared<Picture>},
         {"ProgressBar", std::make_shared<ProgressBar>},
         {"RadioButton", std::make_shared<RadioButton>},

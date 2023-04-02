@@ -358,6 +358,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::vector<Panel::Ptr> PanelListBox::getItems() const
+    {
+        std::vector<Panel::Ptr> items;
+        items.reserve(m_items.size());
+
+        for (const auto &item : m_items) {
+            items.push_back(item.panel);
+        }
+
+        return items;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::vector<String> PanelListBox::getItemIds() const
     {
         std::vector<String> ids;
@@ -486,6 +500,64 @@ namespace tgui
             updateSelectedAndHoveringItemColorsAndStyle();
         } else {
             ScrollablePanel::rendererChanged(property);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> PanelListBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = ScrollablePanel::save(renderers);
+
+        if (m_selectedItem >= 0) {
+            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedItemIndex()));
+        }
+
+        node->propertyValuePairs[U"ItemsHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsHeight().getValue()));
+        node->propertyValuePairs[U"ItemsWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsWidth().getValue()));
+        node->propertyValuePairs[U"MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumItems()));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void PanelListBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        ScrollablePanel::load(node, renderers);
+
+        for (const auto& widget : getWidgets()) {
+            if (widget->getWidgetType() == "Panel") {
+                m_items.emplace_back();
+                m_items.back().panel = std::dynamic_pointer_cast<Panel>(widget);
+                m_items.back().id = widget->getWidgetName();
+            }
+        }
+
+        if (node->propertyValuePairs[U"ItemsHeight"]) {
+            setItemsHeight(node->propertyValuePairs[U"ItemsHeight"]->value);
+        }
+
+        if (node->propertyValuePairs[U"ItemsWidth"]) {
+            setItemsWidth(node->propertyValuePairs[U"ItemsWidth"]->value);
+        }
+
+        if (node->propertyValuePairs[U"MaximumItems"]) {
+            unsigned max_items(0);
+            if (node->propertyValuePairs[U"MaximumItems"]->value.attemptToUInt(max_items)) {
+                setMaximumItems(max_items);
+            } else {
+                throw Exception{ U"Failed to parse MaximumItems property, found unknown value '" + node->propertyValuePairs[U"MaximumItems"]->value + U"'." };
+            }
+        }
+
+        if (node->propertyValuePairs[U"SelectedItemIndex"]) {
+            int selected_item(-1);
+            if (node->propertyValuePairs[U"SelectedItemIndex"]->value.attemptToInt(selected_item)) {
+                setSelectedItemByIndex(selected_item);
+            } else {
+                throw Exception{ U"Failed to parse SelectedItemIndex property, found unknown value '" + node->propertyValuePairs[U"SelectedItemIndex"]->value + U"'." };
+            }
         }
     }
 

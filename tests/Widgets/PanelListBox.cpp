@@ -77,6 +77,10 @@ TEST_CASE("[PanelListBox]")
         const auto item1 = panelListBox->addItem("1");
         const auto item2 = panelListBox->addItem("2");
 
+        REQUIRE(panelListBox->getItems().size() == 2);
+        REQUIRE(panelListBox->getItems()[0] == item1);
+        REQUIRE(panelListBox->getItems()[1] == item2);
+
         REQUIRE(panelListBox->getItemByIndex(0) == item1);
 
         REQUIRE(panelListBox->getItemById("1") == item1);
@@ -422,46 +426,22 @@ TEST_CASE("[PanelListBox]")
             REQUIRE(renderer->getProperty("SelectedItemsBackgroundColor").getColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("SelectedItemsBackgroundColorHover").getColor() == tgui::Color(40, 50, 60));
         }
-
-        // SECTION("textured")
-        // {
-        //     tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-        //
-        //     SECTION("set serialized property")
-        //     {
-        //         REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
-        //     }
-        //
-        //     SECTION("set object property")
-        //     {
-        //         REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
-        //     }
-        //
-        //     SECTION("functions")
-        //     {
-        //         renderer->setTextureBackground(textureBackground);
-        //     }
-        //
-        //     REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
-        //
-        //     REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
-        // }
     }
 
-    // SECTION("Saving and loading from file")
-    // {
-    //     panelListBox->addItem("Item 1", "1");
-    //     panelListBox->addItem("Item 2");
-    //     panelListBox->addItem("Item 3", "3");
-    //     panelListBox->setItemHeight(25);
-    //     panelListBox->setMaximumItems(5);
-    //     panelListBox->setSelectedItem("Item 2");
-    //     panelListBox->setTextSize(20);
-    //     panelListBox->setMaximumItems(5);
-    //     panelListBox->setAutoScroll(false);
+    SECTION("Saving and loading from file")
+    {
+        panelListBox->setSize(200, 100);
+        panelListBox->addItem("1");
+        panelListBox->addItem("2");
+        panelListBox->addItem("3");
+        panelListBox->setItemsHeight(25);
+        panelListBox->setMaximumItems(5);
+        panelListBox->setSelectedItemById("2");
+        panelListBox->setTextSize(20);
+        panelListBox->setMaximumItems(5);
 
-    //     testSavingWidget("panelListBox", panelListBox);
-    // }
+        testSavingWidget("PanelListBox", panelListBox, false);
+    }
 
     SECTION("Draw")
     {
@@ -564,73 +544,5 @@ TEST_CASE("[PanelListBox]")
                 }
             }
         }
-
-        // SECTION("Textured")
-        // {
-        //     renderer.setTextureBackground("resources/Texture1.png");
-        //
-        //     SECTION("No selected item")
-        //     {
-        //         SECTION("No hover")
-        //         {
-        //             TEST_DRAW("ListBox_NoSelectedNoHover_Texture.png")
-        //         }
-        //
-        //         SECTION("Hover")
-        //         {
-        //             panelListBox->mouseMoved(mousePos2);
-        //
-        //             SECTION("No hover properties set")
-        //             {
-        //                 TEST_DRAW("ListBox_NoSelectedHover_NoHoverSet_Texture.png")
-        //             }
-        //             SECTION("Hover properties set")
-        //             {
-        //                 setHoverRenderer();
-        //                 TEST_DRAW("ListBox_NoSelectedHover_HoverSet_Texture.png")
-        //             }
-        //         }
-        //     }
-        //
-        //     SECTION("Selected item")
-        //     {
-        //         panelListBox->setSelectedItem("4");
-        //
-        //         SECTION("No hover")
-        //         {
-        //             TEST_DRAW("ListBox_SelectedNoHover_Texture.png")
-        //         }
-        //
-        //         SECTION("Hover selected")
-        //         {
-        //             panelListBox->mouseMoved(mousePos1);
-        //
-        //             SECTION("No hover properties set")
-        //             {
-        //                 TEST_DRAW("ListBox_SelectedHoverSelected_NoHoverSet_Texture.png")
-        //             }
-        //             SECTION("Hover properties set")
-        //             {
-        //                 setHoverRenderer();
-        //                 TEST_DRAW("ListBox_SelectedHoverSelected_HoverSet_Texture.png")
-        //             }
-        //         }
-        //
-        //         SECTION("Hover other")
-        //         {
-        //             panelListBox->mouseMoved(mousePos3);
-        //
-        //             SECTION("No hover properties set")
-        //             {
-        //                 TEST_DRAW("ListBox_SelectedHoverOther_NoHoverSet_Texture.png")
-        //             }
-        //             SECTION("Hover properties set")
-        //             {
-        //                 setHoverRenderer();
-        //                 TEST_DRAW("ListBox_SelectedHoverOther_HoverSet_Texture.png")
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
