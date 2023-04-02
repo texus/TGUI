@@ -627,10 +627,8 @@ namespace tgui
         if (m_selectedItem >= 0) {
             const auto& selectedItemObj = m_items[static_cast<std::size_t>(m_selectedItem)];
             onItemSelect.emit(this, m_selectedItem, selectedItemObj.panel, selectedItemObj.id);
-        } else {
-            onItemSelect.emit(this, m_selectedItem, nullptr, "");
         }
-        
+
         updateSelectedAndHoveringItemColorsAndStyle();
     }
 
