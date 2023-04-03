@@ -768,16 +768,12 @@ void GuiBuilder::closeForm(Form* form)
     m_gui->add(messageBox);
 
     bool haltProgram = true;
-#if __cplusplus > 201703L
-    messageBox->onButtonPress([=,this,&haltProgram](const tgui::String& button){
-#else
-    messageBox->onButtonPress([=,&haltProgram](const tgui::String& button){
-#endif
+    messageBox->onButtonPress([this,form,&haltProgram,panelPtr=panel.get(),msgBoxPtr=messageBox.get()](const tgui::String& button){
         if (button == "Yes")
             m_selectedForm->save();
 
-        m_gui->remove(panel);
-        m_gui->remove(messageBox);
+        m_gui->remove(panelPtr->shared_from_this());
+        m_gui->remove(msgBoxPtr->shared_from_this());
 
         if (m_selectedForm == form)
             m_selectedForm = nullptr;
