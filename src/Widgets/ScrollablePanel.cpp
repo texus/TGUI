@@ -632,17 +632,30 @@ namespace tgui
     {
         const auto oldStates = states;
 
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        }
-
-        // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                     getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
-        target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+
+        if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
+        {
+            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                        m_roundedBorderRadius, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+        }
+        else
+        {
+            // Draw the borders
+            if (m_bordersCached != Borders{0})
+            {
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            }
+
+            // Draw the background
+            if (m_spriteBackground.isSet())
+                target.drawSprite(states, m_spriteBackground);
+            else
+                target.drawFilledRect(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
