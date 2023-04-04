@@ -53,7 +53,8 @@ namespace tgui
         
         m_panelTemplate->setSize({ constant::defaultWidth, constant::defaultHeight });
 
-        if (initRenderer) {
+        if (initRenderer)
+        {
             m_renderer = aurora::makeCopied<PanelListBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
@@ -70,9 +71,8 @@ namespace tgui
 
     PanelListBox::Ptr PanelListBox::copy(const ConstPtr& panelListBox)
     {
-        if (panelListBox) {
+        if (panelListBox)
             return std::static_pointer_cast<PanelListBox>(panelListBox->clone());
-        }
 
         return nullptr;
     }
@@ -111,23 +111,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr PanelListBox::addItem(const String& id)
+    Panel::Ptr PanelListBox::addItem(const String& id, int index)
     {
-        if (m_maxItems > 0 && m_items.size() >= m_maxItems) {
+        if (m_maxItems > 0 && m_items.size() >= m_maxItems)
             return nullptr;
-        }
-    
-        const auto itemVerticalPosition = m_panelTemplate->getSize().y * static_cast<float>(getItemCount());
-    
+
         auto newPanel = Panel::copy(m_panelTemplate);
-        newPanel->setPosition(0, itemVerticalPosition);
-        m_items.emplace_back();
-        m_items.back().panel = newPanel;
-        m_items.back().id = id;
-    
-        ScrollablePanel::add(m_items.back().panel, m_items.back().id);
-    
+
+        index = index != -1 ? index : static_cast<int>(getItemCount());
+        m_items.insert(m_items.begin() + index, Item{newPanel, id});
+
+        updateItemsPositions();
+
+        ScrollablePanel::add(newPanel, id);
+
         return newPanel;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Panel::Ptr PanelListBox::getPanelTemplate()
+    {
+        return m_panelTemplate;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,10 +174,10 @@ namespace tgui
 
     bool PanelListBox::setSelectedItem(const Panel::Ptr& panelPtr)
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].panel == panelPtr) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].panel == panelPtr)
                 return setSelectedItemByIndex(i);
-            }
         }
     
         deselectItem();
@@ -183,10 +188,10 @@ namespace tgui
 
     bool PanelListBox::setSelectedItemById(const String& id)
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].id == id) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].id == id)
                 return setSelectedItemByIndex(i);
-            }
         }
     
         deselectItem();
@@ -197,7 +202,8 @@ namespace tgui
 
     bool PanelListBox::setSelectedItemByIndex(const std::size_t index)
     {
-        if (index >= m_items.size()) {
+        if (index >= m_items.size())
+        {
             deselectItem();
             return false;
         }
@@ -218,10 +224,10 @@ namespace tgui
 
     bool PanelListBox::removeItem(const Panel::Ptr& panelPtr)
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].panel == panelPtr) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].panel == panelPtr)
                 return removeItemByIndex(i);
-            }
         }
     
         return false;
@@ -231,10 +237,10 @@ namespace tgui
 
     bool PanelListBox::removeItemById(const String& id)
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].id == id) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].id == id)
                 return removeItemByIndex(i);
-            }
         }
     
         return false;
@@ -244,22 +250,24 @@ namespace tgui
 
     bool PanelListBox::removeItemByIndex(const std::size_t index)
     {
-        if (index >= m_items.size()) {
+        if (index >= m_items.size())
             return false;
-        }
-    
+
         updateHoveringItem(-1);
-        if (m_selectedItem == static_cast<int>(index)) {
+        if (m_selectedItem == static_cast<int>(index))
+        {
             updateSelectedItem(-1);
-        } else if (m_selectedItem > static_cast<int>(index)) {
+        }
+        else if (m_selectedItem > static_cast<int>(index))
+        {
             m_selectedItem -= 1;
         }
-    
+
         ScrollablePanel::remove(m_items[index].panel);
         m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
-    
+
         updateItemsPositions();
-    
+
         return true;
     }
 
@@ -278,10 +286,10 @@ namespace tgui
 
     Panel::Ptr PanelListBox::getItemById(const String& id) const
     {
-        for (const auto& item : m_items) {
-            if (item.id == id) {
+        for (const auto& item : m_items)
+        {
+            if (item.id == id)
                 return item.panel;
-            }
         }
     
         return nullptr;
@@ -291,9 +299,8 @@ namespace tgui
 
     Panel::Ptr PanelListBox::getItemByIndex(const std::size_t index) const
     {
-        if (index >= m_items.size()) {
+        if (index >= m_items.size())
             return nullptr;
-        }
     
         return m_items[index].panel;
     }
@@ -302,10 +309,10 @@ namespace tgui
 
     int PanelListBox::getIndexById(const String& id) const
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].id == id) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].id == id)
                 return static_cast<int>(i);
-            }
         }
     
         return -1;
@@ -315,10 +322,10 @@ namespace tgui
 
     int PanelListBox::getIndexByItem(const Panel::Ptr& panelPtr) const
     {
-        for (std::size_t i = 0; i < m_items.size(); ++i) {
-            if (m_items[i].panel == panelPtr) {
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i].panel == panelPtr)
                 return static_cast<int>(i);
-            }
         }
     
         return -1;
@@ -328,9 +335,8 @@ namespace tgui
 
     String PanelListBox::getIdByIndex(const std::size_t index) const
     {
-        if (index >= m_items.size()) {
+        if (index >= m_items.size())
             return {};
-        }
     
         return m_items[index].id;
     }
@@ -370,9 +376,8 @@ namespace tgui
         std::vector<Panel::Ptr> items;
         items.reserve(m_items.size());
 
-        for (const auto &item : m_items) {
+        for (const auto &item : m_items)
             items.push_back(item.panel);
-        }
 
         return items;
     }
@@ -383,9 +388,8 @@ namespace tgui
     {
         std::vector<String> ids;
         ids.reserve(m_items.size());
-        for (const auto &item : m_items) {
+        for (const auto &item : m_items)
             ids.push_back(item.id);
-        }
 
         return ids;
     }
@@ -395,20 +399,20 @@ namespace tgui
     void PanelListBox::setMaximumItems(const std::size_t maximumItems)
     {
         m_maxItems = maximumItems;
-    
-        if (m_maxItems > 0 && m_maxItems < m_items.size()) {
-            if (m_hoveringItem >= static_cast<int>(maximumItems)) {
+
+        if (m_maxItems > 0 && m_maxItems < m_items.size())
+        {
+            if (m_hoveringItem >= static_cast<int>(maximumItems))
                 updateHoveringItem(-1);
-            }
-            if (m_selectedItem >= static_cast<int>(maximumItems)) {
+
+            if (m_selectedItem >= static_cast<int>(maximumItems))
                 updateSelectedItem(-1);
-            }
-    
-            for (std::size_t i = m_maxItems; i < getItemCount(); ++i) {
+
+            for (std::size_t i = m_maxItems; i < getItemCount(); ++i)
                 ScrollablePanel::remove(m_items[i].panel);
-            }
+
             m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.end());
-    
+
             updateItemsPositions();
         }
     }
@@ -442,16 +446,14 @@ namespace tgui
     
         updateHoveringItem(-1);
 
-        if (m_widgetBelowMouse) {
+        if (m_widgetBelowMouse)
+        {
             const auto widgetBelowMouseIndex = getIndexByItem(std::dynamic_pointer_cast<Panel>(m_widgetBelowMouse));
 
             updateHoveringItem(widgetBelowMouseIndex);
 
-            if (m_mouseDown) {
-                if (m_selectedItem != m_hoveringItem) {
-                    updateSelectedItem(m_hoveringItem);
-                }
-            }
+            if (m_mouseDown && m_selectedItem != m_hoveringItem)
+                updateSelectedItem(m_hoveringItem);
         }
     }
 
@@ -473,18 +475,16 @@ namespace tgui
     
         updateHoveringItem(widgetBelowMouseIndex);
     
-        if (m_selectedItem != m_hoveringItem) {
+        if (m_selectedItem != m_hoveringItem)
             updateSelectedItem(m_hoveringItem);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Signal& PanelListBox::getSignal(String signalName)
     {
-        if (signalName == onItemSelect.getName()) {
+        if (signalName == onItemSelect.getName())
             return onItemSelect;
-        }
         
         return ScrollablePanel::getSignal(std::move(signalName));
     }
@@ -493,19 +493,28 @@ namespace tgui
 
     void PanelListBox::rendererChanged(const String& property)
     {
-        if (property == "ItemsBackgroundColor") {
+        if (property == "ItemsBackgroundColor")
+        {
             m_itemsBackgroundColorCached = getSharedRenderer()->getItemsBackgroundColor();
             m_panelTemplate->getSharedRenderer()->setBackgroundColor(m_itemsBackgroundColorCached);
-        } else if (property == "ItemsBackgroundColorHover") {
+        }
+        else if (property == "ItemsBackgroundColorHover")
+        {
             m_itemsBackgroundColorHoverCached = getSharedRenderer()->getItemsBackgroundColorHover();
             updateSelectedAndHoveringItemColorsAndStyle();
-        } else if (property == "SelectedItemsBackgroundColor") {
+        }
+        else if (property == "SelectedItemsBackgroundColor")
+        {
             m_selectedItemsBackgroundColorCached = getSharedRenderer()->getSelectedItemsBackgroundColor();
             updateSelectedAndHoveringItemColorsAndStyle();
-        } else if (property == "SelectedItemsBackgroundColorHover") {
+        }
+        else if (property == "SelectedItemsBackgroundColorHover")
+        {
             m_selectedItemsBackgroundColorHoverCached = getSharedRenderer()->getSelectedItemsBackgroundColorHover();
             updateSelectedAndHoveringItemColorsAndStyle();
-        } else {
+        }
+        else
+        {
             ScrollablePanel::rendererChanged(property);
         }
     }
@@ -516,9 +525,8 @@ namespace tgui
     {
         auto node = ScrollablePanel::save(renderers);
 
-        if (m_selectedItem >= 0) {
+        if (m_selectedItem >= 0)
             node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedItemIndex()));
-        }
 
         node->propertyValuePairs[U"ItemsHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsHeight().getValue()));
         node->propertyValuePairs[U"ItemsWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsWidth().getValue()));
@@ -533,36 +541,44 @@ namespace tgui
     {
         ScrollablePanel::load(node, renderers);
 
-        for (const auto& widget : getWidgets()) {
-            if (widget->getWidgetType() == "Panel") {
+        for (const auto& widget : getWidgets())
+        {
+            if (widget->getWidgetType() == "Panel")
+            {
                 m_items.emplace_back();
                 m_items.back().panel = std::dynamic_pointer_cast<Panel>(widget);
                 m_items.back().id = widget->getWidgetName();
             }
         }
 
-        if (node->propertyValuePairs[U"ItemsHeight"]) {
+        if (node->propertyValuePairs[U"ItemsHeight"])
             setItemsHeight(node->propertyValuePairs[U"ItemsHeight"]->value);
-        }
 
-        if (node->propertyValuePairs[U"ItemsWidth"]) {
+        if (node->propertyValuePairs[U"ItemsWidth"])
             setItemsWidth(node->propertyValuePairs[U"ItemsWidth"]->value);
-        }
 
-        if (node->propertyValuePairs[U"MaximumItems"]) {
+        if (node->propertyValuePairs[U"MaximumItems"])
+        {
             unsigned max_items(0);
-            if (node->propertyValuePairs[U"MaximumItems"]->value.attemptToUInt(max_items)) {
+            if (node->propertyValuePairs[U"MaximumItems"]->value.attemptToUInt(max_items))
+            {
                 setMaximumItems(max_items);
-            } else {
+            }
+            else
+            {
                 throw Exception{ U"Failed to parse MaximumItems property, found unknown value '" + node->propertyValuePairs[U"MaximumItems"]->value + U"'." };
             }
         }
 
-        if (node->propertyValuePairs[U"SelectedItemIndex"]) {
+        if (node->propertyValuePairs[U"SelectedItemIndex"])
+        {
             int selected_item(-1);
-            if (node->propertyValuePairs[U"SelectedItemIndex"]->value.attemptToInt(selected_item)) {
+            if (node->propertyValuePairs[U"SelectedItemIndex"]->value.attemptToInt(selected_item))
+            {
                 setSelectedItemByIndex(static_cast<std::size_t>(selected_item));
-            } else {
+            }
+            else
+            {
                 throw Exception{ U"Failed to parse SelectedItemIndex property, found unknown value '" + node->propertyValuePairs[U"SelectedItemIndex"]->value + U"'." };
             }
         }
@@ -579,7 +595,8 @@ namespace tgui
 
     void PanelListBox::updateItemsPositions() const
     {
-        for (std::size_t i = 0; i < getItemCount(); ++i) {
+        for (std::size_t i = 0; i < getItemCount(); ++i)
+        {
             const auto itemVerticalPosition = i * getItemsHeight();
             m_items[i].panel->setPosition(0, itemVerticalPosition);
         }
@@ -589,9 +606,8 @@ namespace tgui
 
     void PanelListBox::updateItemsSize() const
     {
-        for (const auto& item : m_items) {
+        for (const auto& item : m_items)
             item.panel->setSize(m_panelTemplate->getSize());
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,9 +615,8 @@ namespace tgui
     float PanelListBox::getAllItemsHeight() const
     {
         float itemsHeight(0);
-        for (const auto& item : m_items) {
+        for (const auto& item : m_items)
             itemsHeight += item.panel->getSize().y;
-        }
         
         return itemsHeight;
     }
@@ -611,9 +626,8 @@ namespace tgui
     float PanelListBox::getItemsHeightUpToIndex(const std::size_t index) const
     {
         float itemsHeight(0);
-        for (std::size_t i = 0; i < index; ++i) {
+        for (std::size_t i = 0; i < index; ++i)
             itemsHeight += m_items[i].panel->getSize().y;
-        }
         
         return itemsHeight;
     }
@@ -622,16 +636,15 @@ namespace tgui
 
     void PanelListBox::updateSelectedItem(const int item)
     {
-        if (m_selectedItem == item) {
+        if (m_selectedItem == item)
             return;
-        }
         
-        if (m_selectedItem >= 0) {
+        if (m_selectedItem >= 0)
             clearItemStyle(m_selectedItem);
-        }
         
         m_selectedItem = item;
-        if (m_selectedItem >= 0) {
+        if (m_selectedItem >= 0)
+        {
             const auto& selectedItemObj = m_items[static_cast<std::size_t>(m_selectedItem)];
             onItemSelect.emit(this, m_selectedItem, selectedItemObj.panel, selectedItemObj.id);
         }
@@ -643,12 +656,13 @@ namespace tgui
 
     void PanelListBox::updateHoveringItem(const int item)
     {
-        if (m_hoveringItem != item) {
-            if (m_hoveringItem >= 0) {
+        if (m_hoveringItem != item)
+        {
+            if (m_hoveringItem >= 0)
                 clearItemStyle(m_hoveringItem);
-            }
+
             m_hoveringItem = item;
-        
+
             updateSelectedAndHoveringItemColorsAndStyle();
         }
     }
@@ -657,18 +671,18 @@ namespace tgui
 
     void PanelListBox::updateSelectedAndHoveringItemColorsAndStyle() const
     {
-        if (m_selectedItem >= 0 && m_selectedItemsBackgroundColorCached.isSet()) {
-            m_items[static_cast<std::size_t>(m_selectedItem)].panel->getRenderer()->setBackgroundColor(
-                m_selectedItemsBackgroundColorCached);
-        }
+        if (m_selectedItem >= 0 && m_selectedItemsBackgroundColorCached.isSet())
+            m_items[static_cast<std::size_t>(m_selectedItem)].panel->getRenderer()->setBackgroundColor(m_selectedItemsBackgroundColorCached);
         
-        if (m_hoveringItem >= 0) {
-            if (m_selectedItem == m_hoveringItem && m_selectedItemsBackgroundColorHoverCached.isSet()) {
-                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(
-                    m_selectedItemsBackgroundColorHoverCached);
-            } else if (m_itemsBackgroundColorHoverCached.isSet()) {
-                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(
-                    m_itemsBackgroundColorHoverCached);
+        if (m_hoveringItem >= 0)
+        {
+            if (m_selectedItem == m_hoveringItem && m_selectedItemsBackgroundColorHoverCached.isSet())
+            {
+                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(m_selectedItemsBackgroundColorHoverCached);
+            }
+            else if (m_itemsBackgroundColorHoverCached.isSet())
+            {
+                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(m_itemsBackgroundColorHoverCached);
             }
         }
     }
@@ -685,9 +699,8 @@ namespace tgui
 
     void PanelListBox::clearAllItemsStyle() const
     {
-        for (std::size_t i = 0; i < getItemCount(); ++i) {
+        for (std::size_t i = 0; i < getItemCount(); ++i)
             clearItemStyle(static_cast<int>(i));
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

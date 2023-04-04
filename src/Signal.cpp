@@ -136,7 +136,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalPanel::emit(const Widget* widget, int index, const std::shared_ptr<Panel>& panel, const String& id)
+    bool SignalPanelListBoxItem::emit(const Widget* widget, int index, const std::shared_ptr<Panel>& panel, const String& id)
     {
         if (m_handlers.empty())
             return false;
@@ -149,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<Panel> SignalPanel::dereferencePanel()
+    std::shared_ptr<Panel> SignalPanelListBoxItem::dereferencePanel()
     {
         return dereferenceParam<Panel*>(2)->shared_from_this()->cast<Panel>();
     }

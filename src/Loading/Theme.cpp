@@ -680,9 +680,8 @@ namespace tgui
     {
         // If we already have this renderer in cache then just return it
         auto it = m_renderers.find(id);
-        if (it != m_renderers.end()) {
+        if (it != m_renderers.end())
             return it->second;
-        }
 
         if (!m_themeLoader->canLoad(m_primary, id))
             return nullptr;

@@ -70,6 +70,13 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(panelListBox->getItemById("1") == item1);
         REQUIRE(panelListBox->getItemById("2") == item2);
         REQUIRE(panelListBox->getItemById("3") == item3);
+
+        const auto item4 = panelListBox->addItem("4", 1);
+        REQUIRE(panelListBox->getItemCount() == 4);
+        REQUIRE(panelListBox->getItemByIndex(0) == item1);
+        REQUIRE(panelListBox->getItemByIndex(1) == item4);
+        REQUIRE(panelListBox->getItemByIndex(2) == item2);
+        REQUIRE(panelListBox->getItemByIndex(3) == item3);
     }
 
     SECTION("Getters")
@@ -136,45 +143,21 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(panelListBox->getItemCount() == 0);
     }
 
-    // SECTION("Changing items")
-    // {
-    //     panelListBox->addItem("Item 1", "1");
-    //     panelListBox->addItem("Item 2", "2");
-    //     panelListBox->addItem("Item 3", "3");
+    SECTION("Changing template")
+    {
+        const auto item1 = panelListBox->addItem("1");
 
-    //     REQUIRE(!panelListBox->changeItem("Item 0", "Item 00"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 1");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 2");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 3");
-    //     REQUIRE(panelListBox->changeItem("Item 1", "Item 10"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 10");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 2");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 3");
+        const auto panelTemplate = panelListBox->getPanelTemplate();
+        const auto button = tgui::Button::create("Some button");
+        panelTemplate->add(button, "Template button");
 
-    //     REQUIRE(!panelListBox->changeItemById("0", "Item 00"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 10");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 2");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 3");
-    //     REQUIRE(panelListBox->changeItemById("3", "Item 30"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 10");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 2");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 30");
+        const auto item2 = panelListBox->addItem("2");
 
-    //     REQUIRE(!panelListBox->changeItemByIndex(3, "Item 00"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 10");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 2");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 30");
-    //     REQUIRE(panelListBox->changeItemByIndex(1, "Item 20"));
-    //     REQUIRE(panelListBox->getItemCount() == 3);
-    //     REQUIRE(panelListBox->getItems()[0] == "Item 10");
-    //     REQUIRE(panelListBox->getItems()[1] == "Item 20");
-    //     REQUIRE(panelListBox->getItems()[2] == "Item 30");
-    // }
+        REQUIRE(item1->getWidgets().empty());
+        REQUIRE(item2->getWidgets().size() == 1);
+        REQUIRE(item2->getWidgets()[0]->getWidgetName() == "Template button");
+
+    }
 
     SECTION("Selecting items")
     {

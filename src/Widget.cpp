@@ -374,9 +374,8 @@ namespace tgui
 
     void Widget::setRenderer(std::shared_ptr<RendererData> rendererData)
     {
-        if (rendererData == nullptr) {
+        if (rendererData == nullptr)
             rendererData = RendererData::create();
-        }
 
         // Fill in default and inherited properties in the renderer when it was loaded from a theme
         if (rendererData->connectedTheme && !rendererData->themePropertiesInherited)
