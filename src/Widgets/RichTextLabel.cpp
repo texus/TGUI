@@ -469,7 +469,7 @@ namespace tgui
                 case U'&':
                 {
                     const std::size_t semiColonPos = m_string.find(U';', i + 1);
-                    if ((semiColonPos == tgui::String::npos) || (semiColonPos <= i + 1))
+                    if ((semiColonPos == String::npos) || (semiColonPos <= i + 1))
                         break;
 
                     const std::size_t symbolLength = semiColonPos - (i + 1);
@@ -497,7 +497,7 @@ namespace tgui
                 case U'<':
                 {
                     const std::size_t rightAngleBracketPos = m_string.find(U'>', i + 1);
-                    if ((rightAngleBracketPos == tgui::String::npos) || (rightAngleBracketPos <= i + 1))
+                    if ((rightAngleBracketPos == String::npos) || (rightAngleBracketPos <= i + 1))
                         break;
 
                     const bool closingTag = (m_string[i + 1] == U'/');

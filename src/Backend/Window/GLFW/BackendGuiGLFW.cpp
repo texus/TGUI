@@ -233,7 +233,7 @@ namespace tgui
 
     Optional<Event> BackendGuiGLFW::convertWindowFocusEvent(int focused)
     {
-        tgui::Event event;
+        Event event;
         if (focused == GLFW_TRUE)
             event.type = Event::Type::GainedFocus;
         else
@@ -246,7 +246,7 @@ namespace tgui
 
     Optional<Event> BackendGuiGLFW::convertSizeEvent(int width, int height)
     {
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::Resized;
         event.size.width = static_cast<unsigned int>(width);
         event.size.height = static_cast<unsigned int>(height);
@@ -257,7 +257,7 @@ namespace tgui
 
     Optional<Event> BackendGuiGLFW::convertCharEvent(unsigned int codepoint)
     {
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::TextEntered;
         event.text.unicode = static_cast<char32_t>(codepoint);
         return event;
@@ -274,7 +274,7 @@ namespace tgui
         if (code == Event::KeyboardKey::Unknown)
             return {}; // This key isn't handled by TGUI
 
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::KeyPressed;
         event.key.code = code;
         event.key.alt = ((mods & GLFW_MOD_ALT) != 0);
@@ -291,7 +291,7 @@ namespace tgui
         if (yoffset == 0)
             return {}; // TGUI only handles the vertical mouse wheel
 
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::MouseWheelScrolled;
         event.mouseWheel.delta = static_cast<float>(yoffset);
 
@@ -305,7 +305,7 @@ namespace tgui
 
     Optional<Event> BackendGuiGLFW::convertCursorPosEvent(double xpos, double ypos)
     {
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::MouseMoved;
         event.mouseMove.x = static_cast<int>(xpos);
         event.mouseMove.y = static_cast<int>(ypos);
@@ -320,7 +320,7 @@ namespace tgui
          || ((button != GLFW_MOUSE_BUTTON_LEFT) && (button != GLFW_MOUSE_BUTTON_RIGHT) && (button != GLFW_MOUSE_BUTTON_MIDDLE)))
             return {};
 
-        tgui::Event event;
+        Event event;
         if (action == GLFW_PRESS)
             event.type = Event::Type::MouseButtonPressed;
         else

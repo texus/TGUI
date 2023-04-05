@@ -300,7 +300,7 @@ namespace tgui
             String filename;
             UIntRect partRect;
             UIntRect middleRect;
-            bool smooth = tgui::Texture::getDefaultSmooth();
+            bool smooth = Texture::getDefaultSmooth();
 
             // If there are no quotes then the value just contains a filename
             if (value[0] != '"')
@@ -395,7 +395,7 @@ namespace tgui
             if (filename.starts_with(U"data:"))
             {
                 const auto foundIndex = filename.find(U";base64,");
-                if (foundIndex == tgui::String::npos)
+                if (foundIndex == String::npos)
                     throw Exception{U"Failed to deserialize texture '" + value + U"'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
 
                 const auto dataIndex = foundIndex + 8;

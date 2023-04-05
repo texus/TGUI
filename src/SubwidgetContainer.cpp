@@ -201,7 +201,7 @@ namespace tgui
                 if (propertyValue.getType() != ObjectConverter::Type::None)
                     widget->setRenderer(propertyValue.getRenderer());
                 else
-                    widget->setRenderer(tgui::Theme::getDefault()->getRendererNoThrow(widget->getWidgetType()));
+                    widget->setRenderer(Theme::getDefault()->getRendererNoThrow(widget->getWidgetType()));
 
                 return;
             }

@@ -164,7 +164,7 @@ namespace tgui
         void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile((tgui::getResourcePath() / filename).asString(), iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((getResourcePath() / filename).asString(), iconSize);
             if (pixelPtr)
 #if SFML_VERSION_MAJOR >= 3
                 m_window.setIcon({iconSize.x, iconSize.y}, pixelPtr.get());
@@ -299,7 +299,7 @@ namespace tgui
         void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile((tgui::Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
             if (!pixelPtr)
                 return;
 
@@ -458,7 +458,7 @@ namespace tgui
         void setIcon(const String& filename) override
         {
             Vector2u iconSize;
-            auto pixelPtr = ImageLoader::loadFromFile((tgui::Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
+            auto pixelPtr = ImageLoader::loadFromFile((Filesystem::Path(getResourcePath()) / filename).asString(), iconSize);
             if (!pixelPtr)
                 return;
 

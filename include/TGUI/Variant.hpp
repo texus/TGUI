@@ -51,12 +51,12 @@ TGUI_MODULE_EXPORT namespace tgui
             static std::size_t findIndex(const Any&, std::size_t)
             {
                 // We should never pass here, it means that the Any object didn't hold anything.
-                throw tgui::Exception("tgui::Variant::index() called on uninitialized variant!");
+                throw Exception("tgui::Variant::index() called on uninitialized variant!");
             }
 
             static int getByIndex(const Any& any, std::size_t wantedIndex, std::size_t index)
             {
-                throw tgui::Exception("tgui::Variant::get() called with too high index!");
+                throw Exception("tgui::Variant::get() called with too high index!");
             }
         };
 

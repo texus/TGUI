@@ -384,7 +384,7 @@ namespace tgui
             String widgetType = getWidgetType();
             while (!widgetType.empty())
             {
-                widgetType = tgui::Theme::getRendererInheritanceParent(widgetType);
+                widgetType = Theme::getRendererInheritanceParent(widgetType);
                 if (!widgetType.empty())
                     parentTypes.push_back(widgetType);
             }
@@ -1588,7 +1588,7 @@ namespace tgui
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
             m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #else
-            m_userData = tgui::Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
+            m_userData = Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #endif
         }
         if (node->propertyValuePairs[U"TextSize"])
