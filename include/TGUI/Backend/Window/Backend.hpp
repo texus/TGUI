@@ -45,6 +45,7 @@
 
 TGUI_MODULE_EXPORT namespace tgui
 {
+    class Sprite;
     class Backend;
     class BackendGui;
     class BackendRenderer;
@@ -173,8 +174,20 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// Text may be rendered blurry if the font scale doesn't match the ratio between the window size and gui view.
         /// Default scaling is 1. If the scale is set to 1.5 then a font with text size 20 would be internally rendered at 30px.
+        ///
+        /// The font scale is also used rasterize SVG images at a different resolution.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setFontScale(float scale);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the scale factor to render text at a higher quality, e.g. to scale for DPI awareness
+        ///
+        /// @return Multiplier for the font size
+        ///
+        /// @see setFontScale
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getFontScale() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,12 +336,32 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        /// @brief Informs the backend about the existence of a font object
+        /// @brief Informs the backend about the destruction of a font object
         ///
         /// This function gets called internally when destroying a BackendFont object. The backend keeps track of font objects
         /// in order to recreate their internals when the font scale is changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unregisterFont(BackendFont* font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Informs the backend about the existence of a SVG texture
+        ///
+        /// This function gets called internally when Sprite creates a BackendTexture object for SVG rasterization.
+        /// The backend keeps track of these texture objects in order to rasterize again when the font scale is changed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void registerSvgSprite(Sprite* sprite);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Informs the backend about the destruction of an SVG texture
+        ///
+        /// This function gets called internally when Sprite destroys a BackendTexture object for SVG rasterization.
+        /// The backend keeps track of these texture objects in order to rasterize again when the font scale is changed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unregisterSvgSprite(Sprite* sprite);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,6 +376,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         std::set<BackendGui*> m_guis;
         std::set<BackendFont*> m_registeredFonts;
+        std::set<Sprite*> m_registeredSvgSprites;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

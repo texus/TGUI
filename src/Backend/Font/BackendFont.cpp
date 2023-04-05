@@ -78,9 +78,6 @@ namespace tgui
         {
             m_isSmooth = other.m_isSmooth;
             m_fontScale = other.m_fontScale;
-
-            TGUI_ASSERT(isBackendSet(), "Backend must exist while copying a font");
-            getBackend()->registerFont(this);
         }
 
         return *this;
@@ -94,9 +91,6 @@ namespace tgui
         {
             m_isSmooth = std::move(other.m_isSmooth);
             m_fontScale = std::move(other.m_fontScale);
-
-            TGUI_ASSERT(isBackendSet(), "Backend must exist while copying a font");
-            getBackend()->registerFont(this);
         }
 
         return *this;
