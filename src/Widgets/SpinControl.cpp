@@ -251,8 +251,8 @@ namespace tgui
         if (node->propertyValuePairs[U"UseWideArrows"])
             setUseWideArrows(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"UseWideArrows"]->value).getBool());
 
-        m_spinText = m_container->get<tgui::EditBox>("SpinText");
-        m_spinButton = m_container->get<tgui::SpinButton>("SpinButton");
+        m_spinText = m_container->get<EditBox>("SpinText");
+        m_spinButton = m_container->get<SpinButton>("SpinButton");
 
         init();
         setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));

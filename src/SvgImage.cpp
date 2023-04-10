@@ -25,6 +25,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/SvgImage.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
 #if defined(__GNUC__)
@@ -171,6 +172,10 @@ namespace tgui
 
         if (!m_data->rasterizer)
             m_data->rasterizer = nsvgCreateRasterizer();
+
+        const float fontScale = getBackend()->getFontScale();
+        size.x = static_cast<unsigned int>(size.x * fontScale);
+        size.y = static_cast<unsigned int>(size.y * fontScale);
 
         const float scaleX = size.x / static_cast<float>(m_data->svg->width);
         const float scaleY = size.y / static_cast<float>(m_data->svg->height);

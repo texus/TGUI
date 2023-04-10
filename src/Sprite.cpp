@@ -75,6 +75,23 @@ namespace tgui
         m_position   (std::move(other.m_position)),
         m_scalingType(std::move(other.m_scalingType))
     {
+        if (m_svgTexture)
+        {
+            TGUI_ASSERT(isBackendSet(), "Backend must still exist when Sprite is move-constructed");
+            getBackend()->unregisterSvgSprite(&other);
+            getBackend()->registerSvgSprite(this);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Sprite::~Sprite()
+    {
+        if (m_svgTexture)
+        {
+            TGUI_ASSERT(isBackendSet(), "Backend must still exist when Sprite is destroyed");
+            getBackend()->unregisterSvgSprite(this);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +100,9 @@ namespace tgui
     {
         if (this != &other)
         {
+            if (m_svgTexture)
+                getBackend()->unregisterSvgSprite(this);
+
             Sprite temp(other);
 
             std::swap(m_size,        temp.m_size);
@@ -107,6 +127,9 @@ namespace tgui
     {
         if (this != &other)
         {
+            if (m_svgTexture)
+                getBackend()->unregisterSvgSprite(this);
+
             m_size        = std::move(other.m_size);
             m_texture     = std::move(other.m_texture);
             m_svgTexture  = std::move(other.m_svgTexture);
@@ -118,6 +141,13 @@ namespace tgui
             m_rotation    = std::move(other.m_rotation);
             m_position    = std::move(other.m_position);
             m_scalingType = std::move(other.m_scalingType);
+
+            if (m_svgTexture)
+            {
+                TGUI_ASSERT(isBackendSet(), "Backend must still exist when Sprite is moved");
+                getBackend()->unregisterSvgSprite(&other);
+                getBackend()->registerSvgSprite(this);
+            }
         }
 
         return *this;
@@ -363,7 +393,12 @@ namespace tgui
         if (m_texture.getData()->svgImage)
         {
             if (!m_svgTexture)
+            {
                 m_svgTexture = getBackend()->createTexture();
+
+                TGUI_ASSERT(isBackendSet(), "Backend must still exist when SVG texture is loaded in Sprite");
+                getBackend()->registerSvgSprite(this);
+            }
 
             const Vector2u svgTextureSize{
                 static_cast<unsigned int>(std::round(getSize().x)),

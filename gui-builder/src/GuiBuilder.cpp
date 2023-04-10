@@ -768,16 +768,12 @@ void GuiBuilder::closeForm(Form* form)
     m_gui->add(messageBox);
 
     bool haltProgram = true;
-#if __cplusplus > 201703L
-    messageBox->onButtonPress([=,this,&haltProgram](const tgui::String& button){
-#else
-    messageBox->onButtonPress([=,&haltProgram](const tgui::String& button){
-#endif
+    messageBox->onButtonPress([this,form,&haltProgram,panelPtr=panel.get(),msgBoxPtr=messageBox.get()](const tgui::String& button){
         if (button == "Yes")
             m_selectedForm->save();
 
-        m_gui->remove(panel);
-        m_gui->remove(messageBox);
+        m_gui->remove(panelPtr->shared_from_this());
+        m_gui->remove(msgBoxPtr->shared_from_this());
 
         if (m_selectedForm == form)
             m_selectedForm = nullptr;
@@ -825,7 +821,9 @@ void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::Strin
     openWindowWithFocus(fileDialog);
 
     fileDialog->onFileSelect([onLoad](const tgui::String& selectedFile){
-        onLoad(selectedFile);
+        // We can't call onLoad here directly as it isn't allowed to destroy the file dialog during the callback.
+        // Instead we schedule a timer to call the onLoad function on the next iteration of the main loop.
+        tgui::Timer::scheduleCallback([onLoad, selectedFile]{ onLoad(selectedFile); });
     });
 }
 

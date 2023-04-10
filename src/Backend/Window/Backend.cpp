@@ -127,12 +127,23 @@ namespace tgui
         for (auto* font : m_registeredFonts)
             font->setFontScale(scale);
 
+        // Rasterize SVG images again
+        for (auto* sprite : m_registeredSvgSprites)
+            sprite->updateVertices();
+
         // Update the size of all texts in all widgets
         for (auto& gui : m_guis)
         {
             for (auto& widget : gui->getWidgets())
                 widget->updateTextSize();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Backend::getFontScale() const
+    {
+        return m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +256,20 @@ namespace tgui
     void Backend::unregisterFont(BackendFont* font)
     {
         m_registeredFonts.erase(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::registerSvgSprite(Sprite* sprite)
+    {
+        m_registeredSvgSprites.insert(sprite);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Backend::unregisterSvgSprite(Sprite* sprite)
+    {
+        m_registeredSvgSprites.erase(sprite);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

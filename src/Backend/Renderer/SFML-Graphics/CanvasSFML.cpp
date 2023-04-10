@@ -191,7 +191,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CanvasSFML::draw(const tgui::Sprite& sprite, const RenderStates& states)
+    void CanvasSFML::draw(const Sprite& sprite, const RenderStates& states)
     {
         // If the sprite is empty then don't try to draw it
         if (!sprite.getTexture().getData())

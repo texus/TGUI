@@ -231,7 +231,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @warning Only simple sprites can be drawn. There is currently no support for SVGs, shaders, clipping or rotation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(const tgui::Sprite& sprite, const RenderStates& states = {});
+        void draw(const Sprite& sprite, const RenderStates& states = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

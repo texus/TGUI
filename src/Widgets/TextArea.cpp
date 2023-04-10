@@ -652,13 +652,13 @@ namespace tgui
 
     void TextArea::keyPressed(const Event::KeyEvent& event)
     {
-        if (event.code == tgui::Event::KeyboardKey::Tab)
+        if (event.code == Event::KeyboardKey::Tab)
             textEntered('\t');
-        else if (event.code == tgui::Event::KeyboardKey::Enter)
+        else if (event.code == Event::KeyboardKey::Enter)
             textEntered('\n');
-        else if (event.code == tgui::Event::KeyboardKey::Backspace)
+        else if (event.code == Event::KeyboardKey::Backspace)
             backspaceKeyPressed();
-        else if (event.code == tgui::Event::KeyboardKey::Delete)
+        else if (event.code == Event::KeyboardKey::Delete)
             deleteKeyPressed();
         else if (keyboard::isKeyPressCopy(event))
             copySelectedTextToClipboard();
@@ -671,9 +671,9 @@ namespace tgui
         else
         {
             bool caretMoved = true;
-            if (event.code == tgui::Event::KeyboardKey::PageUp)
+            if (event.code == Event::KeyboardKey::PageUp)
                 moveCaretPageUp();
-            else if (event.code == tgui::Event::KeyboardKey::PageDown)
+            else if (event.code == Event::KeyboardKey::PageDown)
                 moveCaretPageDown();
             else if (keyboard::isKeyPressMoveCaretLeft(event))
                 moveCaretLeft(event.shift);

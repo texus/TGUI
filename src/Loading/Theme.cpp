@@ -757,7 +757,7 @@ namespace tgui
 
     void Theme::setDefault(const String& primary)
     {
-        setDefault(tgui::Theme::create(primary));
+        setDefault(Theme::create(primary));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

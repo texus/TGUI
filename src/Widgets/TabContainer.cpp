@@ -348,7 +348,7 @@ namespace tgui
     {
         auto node = SubwidgetContainer::save(renderers);
 
-        if (m_tabAlign == tgui::TabContainer::TabAlign::Top)
+        if (m_tabAlign == TabContainer::TabAlign::Top)
             node->propertyValuePairs[U"TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
         else
             node->propertyValuePairs[U"TabAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
@@ -365,12 +365,12 @@ namespace tgui
         SubwidgetContainer::load(node, renderers);
 
         // Buffer the value to apply it after child widget creation with default align.
-        auto tabAlign = tgui::TabContainer::TabAlign::Top;
+        auto tabAlign = TabContainer::TabAlign::Top;
         if (node->propertyValuePairs[U"TabAlignment"])
         {
             String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
             if (alignment == U"Bottom")
-                tabAlign = tgui::TabContainer::TabAlign::Bottom;
+                tabAlign = TabContainer::TabAlign::Bottom;
             else if (alignment != U"Top")
                 throw Exception{U"Failed to parse TabAlignment property, found unknown value."};
         }

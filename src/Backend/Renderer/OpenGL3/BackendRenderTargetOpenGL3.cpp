@@ -148,7 +148,7 @@ namespace tgui
         createBuffers();
 
         // Create a solid white 1x1 texture to pass to the shader when we aren't drawing a texture
-        m_emptyTexture = std::make_unique<tgui::BackendTextureOpenGL3>();
+        m_emptyTexture = std::make_unique<BackendTextureOpenGL3>();
         auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(4); // 4 bytes to store RGBA values
         for (unsigned int i = 0; i < 4; ++i)
             pixels[i] = 255;

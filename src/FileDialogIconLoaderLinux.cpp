@@ -262,7 +262,7 @@ namespace tgui
             m_iconCache[pathIt->first] = iconTexture;
             return iconTexture;
         }
-        catch (const tgui::Exception&)
+        catch (const Exception&)
         {
             // Failed to load the icon. Add an empty texture to the cache to prevent attempting to load it again
             m_iconCache[pathIt->first] = {};
@@ -337,7 +337,7 @@ namespace tgui
                 m_iconCache[iconName] = iconTexture;
                 icons.emplace_back(std::move(iconTexture));
             }
-            catch (const tgui::Exception&)
+            catch (const Exception&)
             {
                 // Failed to load the icon. Add an empty texture to the cache to prevent attempting to load it again
                 m_iconCache[iconName] = {};

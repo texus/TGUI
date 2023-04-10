@@ -79,7 +79,7 @@ namespace tgui
             if (widget->getWidgetType() != U"RadioButton")
                 continue;
 
-            tgui::RadioButton::Ptr radioButton = std::static_pointer_cast<RadioButton>(widget);
+            RadioButton::Ptr radioButton = std::static_pointer_cast<RadioButton>(widget);
             if (radioButton->isChecked())
                 return radioButton;
         }

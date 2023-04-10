@@ -846,7 +846,7 @@ namespace tgui
         if (node->propertyValuePairs[U"MinimumSubMenuWidth"])
             setMinimumSubMenuWidth(node->propertyValuePairs[U"MinimumSubMenuWidth"]->value.toFloat());
         if (node->propertyValuePairs[U"InvertedMenuDirection"])
-            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedMenuDirection"]->value).getBool());
+            setInvertedMenuDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedMenuDirection"]->value).getBool());
 
         loadMenus(node, m_menus);
 

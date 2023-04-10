@@ -172,8 +172,10 @@ if (NOT TGUI_FOUND)
 endif()
 
 if (TGUI_FOUND)
-    # Allow linking to "tgui" target for backwards compatibility
-    add_library(tgui ALIAS TGUI::TGUI)
+    # Allow linking to "tgui" target for backwards compatibility (when possible)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
+        add_library(tgui ALIAS TGUI::TGUI)
+    endif()
 endif()
 
 if (TGUI_FOUND AND NOT TGUI_FIND_QUIETLY)
