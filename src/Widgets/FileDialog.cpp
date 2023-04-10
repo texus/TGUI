@@ -961,10 +961,17 @@ namespace tgui
         });
         m_buttonUp->onPress([this]{
             auto parent = m_currentDirectory.getParentPath();
+
+            // If the path ended with a slash but without a filename, then getParentPath simply
+            // removed the slash. We however want to go up one level higher.
+            if (m_currentDirectory.getFilename().empty())
+                parent = parent.getParentPath();
+
 #ifdef TGUI_SYSTEM_WINDOWS
             if (parent.asString() == m_currentDirectory.asString())
                 parent = Filesystem::Path("");
 #endif // TGUI_SYSTEM_WINDOWS
+
             changePath(parent, true);
         });
         m_editBoxPath->onReturnKeyPress([this]{
