@@ -812,9 +812,9 @@ void GuiBuilder::closeForm(Form* form)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad)
+void GuiBuilder::showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool allowCreateFolder, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad)
 {
-    auto fileDialog = tgui::FileDialog::create(title, loadButtonCaption);
+    auto fileDialog = tgui::FileDialog::create(title, loadButtonCaption, allowCreateFolder);
     fileDialog->setFileMustExist(fileMustExist);
     if (m_forms.empty())
         fileDialog->setPath((tgui::getResourcePath() / m_defaultPath).getNormalForm());
@@ -851,12 +851,12 @@ void GuiBuilder::loadStartScreen()
     }
     auto panel = m_gui->get<tgui::Panel>("MainPanel");
     panel->get<tgui::Panel>("PnlNewForm")->onClick([this]{
-        showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [this](const tgui::String& filename){
+        showLoadFileWindow("New form", "Create", true, false, getDefaultFilename(), [this](const tgui::String& filename){
             createNewForm(filename);
         });
     });
     panel->get<tgui::Panel>("PnlLoadForm")->onClick([this]{
-        showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
+        showLoadFileWindow("Load form", "Load", false, true, getDefaultFilename(), [this](const tgui::String& filename){ loadForm(filename); });
     });
 
     if (m_recentFiles.empty())
@@ -2056,7 +2056,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         updateForm(originalFilename, originalPartRect, originalMiddleRect, originalSmooth, true, true, true);
 
         buttonSelectFile->onPress([this,updateForm,btnSelect=buttonSelectFile.get(),cbSmooth=checkBoxSmooth.get()]{
-            showLoadFileWindow("Load image", "Load", true, btnSelect->getUserData<tgui::String>(),
+            showLoadFileWindow("Load image", "Load", false, true, btnSelect->getUserData<tgui::String>(),
                 [updateForm,cbSmooth](const tgui::String& filename){
                     updateForm(filename, {}, {}, cbSmooth->isChecked(), true, true, false);
                 });
@@ -2349,7 +2349,7 @@ void GuiBuilder::menuBarCallbackNewForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("New form", "Create", false, getDefaultFilename(), [this](const tgui::String& filename){
+    showLoadFileWindow("New form", "Create", true, false, getDefaultFilename(), [this](const tgui::String& filename){
         createNewForm(filename);
     });
 }
@@ -2360,7 +2360,7 @@ void GuiBuilder::menuBarCallbackLoadForm()
 {
     loadStartScreen();
 
-    showLoadFileWindow("Load form", "Load", true, getDefaultFilename(), [this](const tgui::String& filename){
+    showLoadFileWindow("Load form", "Load", false, true, getDefaultFilename(), [this](const tgui::String& filename){
         loadForm(filename);
     });
 }
