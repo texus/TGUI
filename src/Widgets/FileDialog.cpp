@@ -1015,10 +1015,17 @@ namespace tgui
         Button::Ptr confirm_button = Button::create("Confirm");
         confirm_button->setPosition("75%", "75%");
         confirm_button->setOrigin(0.5f, 0.5f);
+        confirm_button->setEnabled(false);
+
+        folder_name_edit_box->onTextChange([this, folder_name_edit_box, confirm_button] {
+            bool isValid = isValidFolderName(folder_name_edit_box->getText());
+            confirm_button->setEnabled(isValid);
+        } );
 
         cancel_button->onPress([this] {
             destroyCreateFolderDialog();
         } );
+
         confirm_button->onPress([this, folder_name_edit_box] {
             createFolder(folder_name_edit_box->getText());
             destroyCreateFolderDialog();
@@ -1043,6 +1050,23 @@ namespace tgui
     {
         remove(get("TransparentBackgroundPanel"));
         m_createFolderDialogOpen = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool FileDialog::isValidFolderName(const tgui::String& name)
+    {
+        if (name.empty() || (name == U".") || (name == U".."))
+            return false;
+
+#ifdef TGUI_SYSTEM_WINDOWS
+        if (name.find_first_of(U"\\/:*?\"<>|") != tgui::String::npos)
+#else
+        if (name.contains(U'/'))
+#endif
+            return false;
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1092,6 +1116,7 @@ namespace tgui
         });
         m_buttonUp->onPress([this]{
             auto parent = m_currentDirectory.getParentPath();
+
 #ifdef TGUI_SYSTEM_WINDOWS
             if (parent.asString() == m_currentDirectory.asString())
                 parent = Filesystem::Path("");
