@@ -138,17 +138,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void PanelListBox::setItemsWidth(const Layout& width) const
-    {
-        const auto panelWidth = width.getValue() == 0.f ? getSize().x : std::min(width.getValue(), getSize().x);
-        m_panelTemplate->setSize(panelWidth, m_panelTemplate->getSize().y);
-
-        updateItemsSize();
-        updateItemsPositions();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Layout PanelListBox::getItemsWidth() const
     {
         return m_panelTemplate->getSize().x;
@@ -554,9 +543,6 @@ namespace tgui
 
         if (node->propertyValuePairs[U"ItemsHeight"])
             setItemsHeight(node->propertyValuePairs[U"ItemsHeight"]->value);
-
-        if (node->propertyValuePairs[U"ItemsWidth"])
-            setItemsWidth(node->propertyValuePairs[U"ItemsWidth"]->value);
 
         if (node->propertyValuePairs[U"MaximumItems"])
         {

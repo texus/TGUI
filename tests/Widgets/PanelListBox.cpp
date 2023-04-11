@@ -223,26 +223,6 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(panelListBox->getItemsHeight().getValue() == 20);
     }
 
-    SECTION("ItemsWidth")
-    {
-        panelListBox->setItemsWidth(20);
-        REQUIRE(panelListBox->getItemsWidth().getValue() == 0);
-
-        panelListBox->setSize(300, 400);
-
-        panelListBox->setItemsWidth(20);
-        REQUIRE(panelListBox->getItemsWidth().getValue() == 20);
-
-        panelListBox->setItemsWidth(2000);
-        REQUIRE(panelListBox->getItemsWidth().getValue() == 300);
-
-        panelListBox->setItemsWidth(20);
-        REQUIRE(panelListBox->getItemsWidth().getValue() == 20);
-
-        panelListBox->setItemsWidth(0);
-        REQUIRE(panelListBox->getItemsWidth().getValue() == 300);
-    }
-
     SECTION("MaximumItems")
     {
         const auto panel1 = panelListBox->addItem("1");
