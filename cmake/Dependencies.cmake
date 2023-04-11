@@ -242,19 +242,19 @@ macro(tgui_find_dependency_sdl)
                     endif()
                 endif()
             endif()
+
+            # SDL2main should appear before SDL2 in the linker options, at least for MinGW
+            if (TARGET SDL2::SDL2main)
+                if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS) AND TARGET SDL2::SDL2-static)
+                    target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2-static)
+                else()
+                    target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2)
+                endif()
+             endif()
         endif()
 
         # We don't need to keep options that were created for SDL3
         unset(SDL3_DIR CACHE)
-
-        # SDL2main should appear before SDL2 in the linker options, at least for MinGW
-        if (TARGET SDL2::SDL2main)
-            if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS) AND TARGET SDL2::SDL2-static)
-                target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2-static)
-            else()
-                target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2)
-            endif()
-         endif()
     endif()
 endmacro()
 
