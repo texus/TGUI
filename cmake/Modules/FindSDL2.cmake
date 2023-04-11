@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.
 # See https://cmake.org/licensing for details.
 
-#  Copyright 2021 Bruno Van de Velde <vdv_b@tgui.eu>
+#  Copyright 2021-2023 Bruno Van de Velde <vdv_b@tgui.eu>
 #  Copyright 2019 Amine Ben Hassouna <amine.benhassouna@gmail.com>
 #  Copyright 2000-2019 Kitware, Inc. and Contributors
 #  All rights reserved.
@@ -43,13 +43,11 @@ This module defines the following 'IMPORTED' targets:
 
 ::
 
-  SDL2::Core (and the SDL2::SDL2 alias)
-    The SDL2 library, if found.
-    Libraries should link to SDL2::Core
+  SDL2::SDL2 (and the SDL2::Core alias)
+    The SDL2 library, if found
 
-  SDL2::Main (and the SDL2::SDL2main alias)
-    The SDL2main library, if found.
-    Applications should link to SDL2::Main instead of SDL2::Core
+  SDL2::SDL2main (and the SDL2::Main alias)
+    The SDL2main library, if found
 
 This module will set the following variables in your project:
 
@@ -86,11 +84,11 @@ This module responds to the following cache variables:
 
   SDL2_BUILDING_LIBRARY
     This flag is useful only when linking to SDL2_LIBRARIES insead of
-    SDL2::Main. It is required only when building a library that links to
+    SDL2::SDL2main. It is required only when building a library that links to
     SDL2_LIBRARIES, because only applications need main() (No need to also
     link to SDL2main).
     If this flag is defined, then no SDL2main will be added to SDL2_LIBRARIES
-    and no SDL2::Main target will be created.
+    and no SDL2::SDL2main target will be created.
 
 
 Don't forget to include SDLmain.h and SDLmain.m in your project for the
@@ -105,8 +103,8 @@ configuration, it means CMake did not find your SDL2 library
 to your SDL2 library, and  configure again. Similarly, if you see an
 empty SDL2MAIN_LIBRARY, you should set this value as appropriate. These
 values are used to generate the final SDL2_LIBRARIES variable and the
-SDL2::Core and SDL2::Main targets, but when these values are unset,
-SDL2_LIBRARIES, SDL2::Core and SDL2::Main does not get created.
+SDL2::SDL2 and SDL2::SDL2main targets, but when these values are unset,
+SDL2_LIBRARIES, SDL2::SDL2 and SDL2::SDL2main does not get created.
 
 
 $SDL2DIR is an environment variable that would correspond to the
@@ -120,7 +118,7 @@ Created by Amine Ben Hassouna:
     SDL2_PATH, SDL2_NO_DEFAULT_PATH (for details, see doc above).
   Mark 'Threads' as a required dependency for non-OSX systems.
   Modernize the FindSDL2.cmake module by creating specific targets:
-    SDL2::Core and SDL2::Main (for details, see doc above).
+    SDL2::SDL2 and SDL2::SDL2main (for details, see doc above).
 
 
 Original FindSDL.cmake module:
@@ -335,7 +333,7 @@ else()
     mark_as_advanced(CLEAR SDL2_PATH)
 endif()
 
-# SDL2:: targets (SDL2::Core and SDL2::Main)
+# SDL2:: targets (SDL2::SDL2 and SDL2::SDL2main)
 if(SDL2_FOUND)
 
   # Fix for "ld: can't map file, errno=22" error when linking framework on macOS
@@ -343,49 +341,49 @@ if(SDL2_FOUND)
     set(SDL2_LIBRARY "${SDL2_LIBRARY}/SDL2")
   endif()
 
-  # SDL2::Core target
-  if(SDL2_LIBRARY AND NOT TARGET SDL2::Core)
-    add_library(SDL2::Core UNKNOWN IMPORTED)
-    set_target_properties(SDL2::Core PROPERTIES
+  # SDL2::SDL2 target
+  if(SDL2_LIBRARY AND NOT TARGET SDL2::SDL2)
+    add_library(SDL2::SDL2 UNKNOWN IMPORTED)
+    set_target_properties(SDL2::SDL2 PROPERTIES
                           IMPORTED_LOCATION "${SDL2_LIBRARY}"
                           INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
 
     if(APPLE)
       # For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
       # For more details, please see above.
-      set_property(TARGET SDL2::Core APPEND PROPERTY
+      set_property(TARGET SDL2::SDL2 APPEND PROPERTY
                    INTERFACE_LINK_OPTIONS -framework Cocoa)
     else()
       # For threads, as mentioned Apple doesn't need this.
       # For more details, please see above.
-      set_property(TARGET SDL2::Core APPEND PROPERTY
+      set_property(TARGET SDL2::SDL2 APPEND PROPERTY
                    INTERFACE_LINK_LIBRARIES Threads::Threads)
     endif()
 
     if(${CMAKE_VERSION} VERSION_LESS "3.18")
-      add_library(SDL2::SDL2 UNKNOWN IMPORTED)
-      set_target_properties(SDL2::SDL2 PROPERTIES
+      add_library(SDL2::Core UNKNOWN IMPORTED)
+      set_target_properties(SDL2::Core PROPERTIES
                             IMPORTED_LOCATION "${SDL2_LIBRARY}"
                             INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
       if(APPLE)
-        set_property(TARGET SDL2::SDL2 APPEND PROPERTY INTERFACE_LINK_OPTIONS -framework Cocoa)
+        set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_OPTIONS -framework Cocoa)
       else()
-        set_property(TARGET SDL2::SDL2 APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
+        set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
       endif()
     else()
-      add_library(SDL2::SDL2 ALIAS SDL2::Core)
+      add_library(SDL2::Core ALIAS SDL2::SDL2)
     endif()
   endif()
 
-  # SDL2::Main target
-  # Applications should link to SDL2::Main instead of SDL2::Core
+  # SDL2::SDL2main target
+  # Applications should link to SDL2::SDL2main instead of SDL2::SDL2
   # For more details, please see above.
-  if(NOT SDL2_BUILDING_LIBRARY AND NOT TARGET SDL2::Main)
+  if(NOT SDL2_BUILDING_LIBRARY AND NOT TARGET SDL2::SDL2main)
 
     if(SDL2_INCLUDE_DIR MATCHES ".framework" OR NOT SDL2MAIN_LIBRARY)
-      add_library(SDL2::Main INTERFACE IMPORTED)
-      set_property(TARGET SDL2::Main PROPERTY
-                   INTERFACE_LINK_LIBRARIES SDL2::Core)
+      add_library(SDL2::SDL2main INTERFACE IMPORTED)
+      set_property(TARGET SDL2::SDL2main PROPERTY
+                   INTERFACE_LINK_LIBRARIES SDL2::SDL2)
     elseif(SDL2MAIN_LIBRARY)
       # MinGW requires that the mingw32 library is specified before the
       # libSDL2main.a static library when linking.
@@ -395,17 +393,17 @@ if(SDL2_FOUND)
       set_property(TARGET SDL2::MainInternal PROPERTY
                    IMPORTED_LOCATION "${SDL2MAIN_LIBRARY}")
       set_property(TARGET SDL2::MainInternal PROPERTY
-                   INTERFACE_LINK_LIBRARIES SDL2::Core)
+                   INTERFACE_LINK_LIBRARIES SDL2::SDL2)
 
-      add_library(SDL2::Main INTERFACE IMPORTED)
+      add_library(SDL2::SDL2main INTERFACE IMPORTED)
 
       if(MINGW)
         # MinGW needs an additional link flag '-mwindows' and link to mingw32
-        set_property(TARGET SDL2::Main PROPERTY
+        set_property(TARGET SDL2::SDL2main PROPERTY
                      INTERFACE_LINK_LIBRARIES "mingw32" "-mwindows")
       endif()
 
-      set_property(TARGET SDL2::Main APPEND PROPERTY
+      set_property(TARGET SDL2::SDL2main APPEND PROPERTY
                    INTERFACE_LINK_LIBRARIES SDL2::MainInternal)
     endif()
 
@@ -418,14 +416,14 @@ if(SDL2_FOUND)
           add_library(SDL2::MainInternal2 UNKNOWN IMPORTED)
           set_property(TARGET SDL2::MainInternal2 PROPERTY IMPORTED_LOCATION "${SDL2MAIN_LIBRARY}")
           set_property(TARGET SDL2::MainInternal2 PROPERTY INTERFACE_LINK_LIBRARIES SDL2::SDL2)
-          add_library(SDL2::SDL2main INTERFACE IMPORTED)
+          add_library(SDL2::Main INTERFACE IMPORTED)
           if(MINGW)
-            set_property(TARGET SDL2::SDL2main PROPERTY INTERFACE_LINK_LIBRARIES "mingw32" "-mwindows")
+            set_property(TARGET SDL2::Main PROPERTY INTERFACE_LINK_LIBRARIES "mingw32" "-mwindows")
           endif()
-          set_property(TARGET SDL2::SDL2main APPEND PROPERTY INTERFACE_LINK_LIBRARIES SDL2::MainInternal2)
+          set_property(TARGET SDL2::Main APPEND PROPERTY INTERFACE_LINK_LIBRARIES SDL2::MainInternal2)
         endif()
     else()
-      add_library(SDL2::SDL2main ALIAS SDL2::Main)
+      add_library(SDL2::Main ALIAS SDL2::SDL2main)
     endif()
   endif()
 endif()
