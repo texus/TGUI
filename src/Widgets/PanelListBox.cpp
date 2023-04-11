@@ -27,14 +27,14 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui 
+namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    namespace constant {
-        const Layout defaultHeight(100);
-        const Layout defaultWidth(200);
-    } // namespace constant
+    namespace
+    {
+        const float defaultWidth = 160;
+        const float defaultHeight = 140;
+        const float defaultPanelHeight = 40;
+    }
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr const char PanelListBox::StaticWidgetType[];
@@ -50,14 +50,15 @@ namespace tgui
         m_hoveringItem(-1)
     {
         setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
-        
-        m_panelTemplate->setSize({ constant::defaultWidth, constant::defaultHeight });
 
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<PanelListBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
+
+        m_panelTemplate->setHeight(defaultPanelHeight);
+        setSize({defaultWidth, defaultHeight});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +105,7 @@ namespace tgui
     {
         ScrollablePanel::setSize(size);
         m_panelTemplate->setSize(size.x, m_panelTemplate->getSize().y);
-    
+
         updateItemsSize();
         updateItemsPositions();
     }
@@ -141,7 +142,7 @@ namespace tgui
     {
         const auto panelWidth = width.getValue() == 0.f ? getSize().x : std::min(width.getValue(), getSize().x);
         m_panelTemplate->setSize(panelWidth, m_panelTemplate->getSize().y);
-    
+
         updateItemsSize();
         updateItemsPositions();
     }
@@ -158,7 +159,7 @@ namespace tgui
     void PanelListBox::setItemsHeight(const Layout& height) const
     {
         m_panelTemplate->setSize(m_panelTemplate->getSize().x, height);
-    
+
         updateItemsSize();
         updateItemsPositions();
     }
@@ -179,7 +180,7 @@ namespace tgui
             if (m_items[i].panel == panelPtr)
                 return setSelectedItemByIndex(i);
         }
-    
+
         deselectItem();
         return false;
     }
@@ -193,7 +194,7 @@ namespace tgui
             if (m_items[i].id == id)
                 return setSelectedItemByIndex(i);
         }
-    
+
         deselectItem();
         return false;
     }
@@ -207,9 +208,9 @@ namespace tgui
             deselectItem();
             return false;
         }
-    
+
         updateSelectedItem(static_cast<int>(index));
-    
+
         return true;
     }
 
@@ -229,7 +230,7 @@ namespace tgui
             if (m_items[i].panel == panelPtr)
                 return removeItemByIndex(i);
         }
-    
+
         return false;
     }
 
@@ -242,7 +243,7 @@ namespace tgui
             if (m_items[i].id == id)
                 return removeItemByIndex(i);
         }
-    
+
         return false;
     }
 
@@ -277,7 +278,7 @@ namespace tgui
     {
         updateHoveringItem(-1);
         updateSelectedItem(-1);
-    
+
         m_items.clear();
         ScrollablePanel::removeAllWidgets();
     }
@@ -291,7 +292,7 @@ namespace tgui
             if (item.id == id)
                 return item.panel;
         }
-    
+
         return nullptr;
     }
 
@@ -301,7 +302,7 @@ namespace tgui
     {
         if (index >= m_items.size())
             return nullptr;
-    
+
         return m_items[index].panel;
     }
 
@@ -314,7 +315,7 @@ namespace tgui
             if (m_items[i].id == id)
                 return static_cast<int>(i);
         }
-    
+
         return -1;
     }
 
@@ -327,7 +328,7 @@ namespace tgui
             if (m_items[i].panel == panelPtr)
                 return static_cast<int>(i);
         }
-    
+
         return -1;
     }
 
@@ -337,7 +338,7 @@ namespace tgui
     {
         if (index >= m_items.size())
             return {};
-    
+
         return m_items[index].id;
     }
 
@@ -443,7 +444,7 @@ namespace tgui
     void PanelListBox::mouseMoved(const Vector2f pos)
     {
         ScrollablePanel::mouseMoved(pos);
-    
+
         updateHoveringItem(-1);
 
         if (m_widgetBelowMouse)
@@ -470,11 +471,11 @@ namespace tgui
     void PanelListBox::leftMousePressed(const Vector2f pos)
     {
         ScrollablePanel::leftMousePressed(pos);
-    
+
         const auto widgetBelowMouseIndex = getIndexByItem(std::dynamic_pointer_cast<Panel>(m_widgetBelowMouse));
-    
+
         updateHoveringItem(widgetBelowMouseIndex);
-    
+
         if (m_selectedItem != m_hoveringItem)
             updateSelectedItem(m_hoveringItem);
     }
@@ -485,7 +486,7 @@ namespace tgui
     {
         if (signalName == onItemSelect.getName())
             return onItemSelect;
-        
+
         return ScrollablePanel::getSignal(std::move(signalName));
     }
 
@@ -617,7 +618,7 @@ namespace tgui
         float itemsHeight(0);
         for (const auto& item : m_items)
             itemsHeight += item.panel->getSize().y;
-        
+
         return itemsHeight;
     }
 
@@ -628,7 +629,7 @@ namespace tgui
         float itemsHeight(0);
         for (std::size_t i = 0; i < index; ++i)
             itemsHeight += m_items[i].panel->getSize().y;
-        
+
         return itemsHeight;
     }
 
@@ -638,10 +639,10 @@ namespace tgui
     {
         if (m_selectedItem == item)
             return;
-        
+
         if (m_selectedItem >= 0)
             clearItemStyle(m_selectedItem);
-        
+
         m_selectedItem = item;
         if (m_selectedItem >= 0)
         {
@@ -673,7 +674,7 @@ namespace tgui
     {
         if (m_selectedItem >= 0 && m_selectedItemsBackgroundColorCached.isSet())
             m_items[static_cast<std::size_t>(m_selectedItem)].panel->getRenderer()->setBackgroundColor(m_selectedItemsBackgroundColorCached);
-        
+
         if (m_hoveringItem >= 0)
         {
             if (m_selectedItem == m_hoveringItem && m_selectedItemsBackgroundColorHoverCached.isSet())
