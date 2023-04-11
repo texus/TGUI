@@ -80,6 +80,7 @@ set(TEST_SOURCES
     Widgets/MenuBar.cpp
     Widgets/MessageBox.cpp
     Widgets/Panel.cpp
+    Widgets/PanelListBox.cpp
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp

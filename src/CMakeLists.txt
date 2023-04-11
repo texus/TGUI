@@ -78,6 +78,7 @@ set(TGUI_SRC
     Renderers/MenuBarRenderer.cpp
     Renderers/MessageBoxRenderer.cpp
     Renderers/PanelRenderer.cpp
+    Renderers/PanelListBoxRenderer.cpp
     Renderers/PictureRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
@@ -115,6 +116,7 @@ set(TGUI_SRC
     Widgets/MenuBar.cpp
     Widgets/MessageBox.cpp
     Widgets/Panel.cpp
+    Widgets/PanelListBox.cpp
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
