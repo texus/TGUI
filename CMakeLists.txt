@@ -40,8 +40,9 @@ include(GNUInstallDirs)
 include(${PROJECT_SOURCE_DIR}/cmake/Config.cmake)
 
 if(TGUI_OS_IOS)
-    # SFML currently doesn't detect iOS in SFMLConfigDependencies.cmake when CMAKE_SYSTEM_NAME isn't Darwin,
+    # SFML 2 doesn't detect iOS in SFMLConfigDependencies.cmake when CMAKE_SYSTEM_NAME isn't "Darwin",
     # but luckily they don't have an error case so we just manually set the option about which OS was detected.
+    # This hack is no longer needed for SFML 3.
     set(FIND_SFML_OS_IOS 1)
 endif()
 
@@ -56,7 +57,9 @@ if(TGUI_OS_ANDROID AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 # Add an option for choosing the build type (shared or static)
-if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
+if(TGUI_OS_ANDROID)
+    set(TGUI_SHARED_LIBS TRUE)
+else()
     # If TGUI_SHARED_LIBS is explicitly set then it overrules BUILD_SHARED_LIBS, otherwise honor the global setting
     if(NOT DEFINED TGUI_SHARED_LIBS)
         if(NOT DEFINED BUILD_SHARED_LIBS)
@@ -64,12 +67,6 @@ if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
         endif()
 
         set(TGUI_SHARED_LIBS ${BUILD_SHARED_LIBS})
-    endif()
-else()
-    if(TGUI_OS_IOS)
-        set(TGUI_SHARED_LIBS FALSE)
-    elseif(TGUI_OS_ANDROID)
-        set(TGUI_SHARED_LIBS TRUE)
     endif()
 endif()
 
@@ -173,14 +170,15 @@ if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC AND (CMAKE_GENERATOR MATCHES "Visual S
     option(TGUI_USE_MULTI_PROCESSOR_COMPILATION "Use /MP to speed up compilation of the TGUI library by using all cores" ON)
 endif()
 
-# macOS-specific options
-if(TGUI_OS_MACOS)
+# Apple-specific options
+if(TGUI_OS_MACOS OR TGUI_OS_IOS)
 
     # Add an option to build framework instead of dylib (release only)
     option(TGUI_BUILD_FRAMEWORK "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS" ${TGUI_SHARED_LIBS})
 
-    # Enable to use of RPATH according to CMake Policy CMP0042
-    set(CMAKE_MACOSX_RPATH 1)
+    if (TGUI_OS_IOS AND TGUI_SHARED_LIBS AND NOT TGUI_BUILD_FRAMEWORK)
+        message(FATAL_ERROR "Naked dynamic libs not supported for iOS, build static or frameworks instead")
+    endif()
 
     if(TGUI_BUILD_FRAMEWORK)
         # Frameworks are only available for release (because cmake currently doesn't allow specifying a custom framework name so TGUI-d is not possible)
