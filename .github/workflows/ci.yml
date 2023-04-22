@@ -819,6 +819,7 @@ jobs:
           -DSFML_DIR=$SFML_INSTALL_DIR/lib/cmake/SFML/
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Debug
+          -DBUILD_SHARED_LIBS=OFF
           -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
