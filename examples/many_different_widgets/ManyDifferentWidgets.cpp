@@ -32,7 +32,7 @@ bool runExample(tgui::BackendGui& gui)
     {
         tgui::Theme theme{"../../themes/Black.txt"};
 
-        gui.add(tgui::Picture::create("../RedBackground.jpg"));
+        gui.add(tgui::Picture::create("RedBackground.jpg"));
 
         auto tabs = tgui::Tabs::create();
         tabs->setRenderer(theme.getRenderer("Tabs"));

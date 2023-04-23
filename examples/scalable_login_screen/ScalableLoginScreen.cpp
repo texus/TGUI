@@ -50,7 +50,7 @@ void loadWidgets(tgui::BackendGui& gui)
     // Create the background image
     // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<tgui::Picture>
     // The picture will fit the entire window and will scale with it
-    auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
+    auto picture = tgui::Picture::create("xubuntu_bg_aluminium.jpg");
     picture->setSize({"100%", "100%"});
     gui.add(picture);
 
