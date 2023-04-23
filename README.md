@@ -12,8 +12,8 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=1.0)](https://github.com/texus/TGUI/actions)
-[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/1.0/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/1.0)
+[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=1.x)](https://github.com/texus/TGUI/actions)
+[![Code coverage](https://codecov.io/gh/texus/TGUI/branch/1.x/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/1.x)
 
 OS support for each backend:
 
@@ -49,7 +49,7 @@ Dependencies for each backend:
 Download
 --------
 
-You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/1.0): [Download ZIP](https://github.com/texus/TGUI/archive/1.0.zip)
+You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/1.x): [Download ZIP](https://github.com/texus/TGUI/archive/1.x.zip)
 
 Precompiled libraries for some compilers are available for each [release](https://github.com/texus/TGUI/releases).
 
