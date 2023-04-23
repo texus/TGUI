@@ -3,7 +3,7 @@ project(TGUI-CMake-test)
 
 add_executable(TguiTest main.cpp)
 
-find_package(TGUI 0.10 REQUIRED)
+find_package(TGUI 1 REQUIRED)
 target_link_libraries(TguiTest PRIVATE TGUI::TGUI)
 
 set_target_properties(TguiTest PROPERTIES CXX_STANDARD 20)

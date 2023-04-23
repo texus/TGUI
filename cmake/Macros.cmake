@@ -126,7 +126,7 @@ function(tgui_export_target export_name)
     include(CMakePackageConfigHelpers)
         write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
                                          VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
-                                         COMPATIBILITY SameMinorVersion)
+                                         COMPATIBILITY SameMajorVersion)
 
     if (TGUI_SHARED_LIBS)
         set(targets_config_filename TGUISharedTargets.cmake)

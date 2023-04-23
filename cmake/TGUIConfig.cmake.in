@@ -27,14 +27,14 @@
 # -----
 #
 # Examples:
-#   find_package(TGUI 0.10)
-#   find_package(TGUI 0.10 REQUIRED)
+#   find_package(TGUI 1)
+#   find_package(TGUI 1 REQUIRED)
 #
 # If you have both dynamic and static TGUI libraries installed then you need to set the TGUI_STATIC_LIBRARIES variable
 # before calling find_package(TGUI ...) in order to select the right library type.
 # example:
 #   set(TGUI_STATIC_LIBRARIES TRUE)
-#   find_package(TGUI 0.10 REQUIRED)
+#   find_package(TGUI 1 REQUIRED)
 #
 # On macOS by default CMake will search for frameworks. If you want to use static libraries and have installed
 # both TGUI frameworks and TGUI static libraries, your must set CMAKE_FIND_FRAMEWORK to "NEVER" or "LAST"
@@ -62,7 +62,7 @@
 # when using dynamic or static TGUI libraries.
 #
 # example:
-#   find_package(TGUI 0.10 REQUIRED)
+#   find_package(TGUI 1 REQUIRED)
 #   add_executable(myapp ...)
 #   target_link_libraries(myapp TGUI::TGUI)
 
