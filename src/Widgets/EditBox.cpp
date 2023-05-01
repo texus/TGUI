@@ -59,8 +59,6 @@ namespace tgui
         m_textSuffix.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<EditBoxRenderer>();
@@ -431,7 +429,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::leftMousePressed(Vector2f pos)
+    bool EditBox::leftMousePressed(Vector2f pos)
     {
         ClickableWidget::leftMousePressed(pos);
 
@@ -477,6 +475,9 @@ namespace tgui
         // The caret should be visible
         m_caretVisible = true;
         m_animationTimeElapsed = {};
+
+        // The user may be dragging to select text
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

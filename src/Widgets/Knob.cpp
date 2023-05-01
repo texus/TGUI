@@ -56,8 +56,6 @@ namespace tgui
     Knob::Knob(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<KnobRenderer>();
@@ -298,12 +296,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::leftMousePressed(Vector2f pos)
+    bool Knob::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         // Change the value of the knob depending on where you clicked
         mouseMoved(pos);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

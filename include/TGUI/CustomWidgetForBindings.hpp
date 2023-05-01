@@ -193,7 +193,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void leftMousePressed(Vector2f pos) override;
+        bool leftMousePressed(Vector2f pos) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -299,7 +299,7 @@ TGUI_MODULE_EXPORT namespace tgui
         std::function<Vector2f()>                       implGetWidgetOffset;
         std::function<bool(Duration)>                   implUpdateTimeFunction;
         std::function<bool(Vector2f)>                   implMouseOnWidget;
-        std::function<void(Vector2f)>                   implLeftMousePressed;
+        std::function<bool(Vector2f)>                   implLeftMousePressed;
         std::function<void(Vector2f)>                   implLeftMouseReleased;
         std::function<void(Vector2f)>                   implRightMousePressed;
         std::function<void(Vector2f)>                   implRightMouseReleased;

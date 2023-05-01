@@ -457,9 +457,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void PanelListBox::leftMousePressed(const Vector2f pos)
+    bool PanelListBox::leftMousePressed(const Vector2f pos)
     {
-        ScrollablePanel::leftMousePressed(pos);
+        const bool isDragging = ScrollablePanel::leftMousePressed(pos);
 
         const auto widgetBelowMouseIndex = getIndexByItem(std::dynamic_pointer_cast<Panel>(m_widgetBelowMouse));
 
@@ -467,6 +467,8 @@ namespace tgui
 
         if (m_selectedItem != m_hoveringItem)
             updateSelectedItem(m_hoveringItem);
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

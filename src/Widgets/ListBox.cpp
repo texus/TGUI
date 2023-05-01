@@ -42,8 +42,6 @@ namespace tgui
     ListBox::ListBox(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<ListBoxRenderer>();
@@ -568,15 +566,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::leftMousePressed(Vector2f pos)
+    bool ListBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
         Widget::leftMousePressed(pos);
 
+        bool isDragging = false;
         if (m_scroll->isMouseOnWidget(pos))
         {
-            m_scroll->leftMousePressed(pos);
+            isDragging = m_scroll->leftMousePressed(pos);
             triggerOnScroll();
         }
         else
@@ -587,7 +586,7 @@ namespace tgui
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
+                const int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
@@ -608,6 +607,8 @@ namespace tgui
                 }
             }
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

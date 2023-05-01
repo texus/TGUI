@@ -245,8 +245,6 @@ namespace tgui
     TreeView::TreeView(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         // Rotate the horizontal scrollbar
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
 
@@ -664,16 +662,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TreeView::leftMousePressed(Vector2f pos)
+    bool TreeView::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         pos -= getPosition();
 
+        bool isDragging = false;
         if (m_verticalScrollbar->isMouseOnWidget(pos))
-            m_verticalScrollbar->leftMousePressed(pos);
+            isDragging = m_verticalScrollbar->leftMousePressed(pos);
         else if (m_horizontalScrollbar->isMouseOnWidget(pos))
-            m_horizontalScrollbar->leftMousePressed(pos);
+            isDragging = m_horizontalScrollbar->leftMousePressed(pos);
         else
         {
             float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
@@ -693,6 +692,8 @@ namespace tgui
                 updateSelectedItem(selectedItem);
             }
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

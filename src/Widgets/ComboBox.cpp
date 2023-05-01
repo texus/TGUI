@@ -43,7 +43,6 @@ namespace tgui
     ComboBox::ComboBox(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
         m_text.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
@@ -569,7 +568,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMousePressed(Vector2f pos)
+    bool ComboBox::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
@@ -585,6 +584,8 @@ namespace tgui
         }
         else // This list was already open, so close it now
             hideListBox();
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

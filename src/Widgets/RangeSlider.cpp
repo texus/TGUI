@@ -42,8 +42,6 @@ namespace tgui
     RangeSlider::RangeSlider(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<RangeSliderRenderer>();
@@ -400,12 +398,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::leftMousePressed(Vector2f pos)
+    bool RangeSlider::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         // Refresh the value
         mouseMoved(pos);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

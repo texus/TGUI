@@ -899,8 +899,13 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
+        /// @brief This function is called when the left mouse button goes down on top of the widget
+        /// @param pos  Mouse position in view coordinates relative to the parent widget
+        /// @return True if the clicked part of the widget is draggable, i.e. if the widget should continue to receive mouse move
+        ///         events until the mouse is released, even when the mouse leaves the widget. When false is returned,
+        ///         the mouse move events will only be sent to the widget as long as the mouse is on top of the widget.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void leftMousePressed(Vector2f pos);
+        virtual bool leftMousePressed(Vector2f pos);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -916,11 +921,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void rightMouseReleased(Vector2f pos);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mousePressed(Event::MouseButton button, Vector2f pos);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -1205,9 +1205,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         // Keep track of the elapsed time.
         Duration m_animationTimeElapsed;
-
-        // This is set to true for widgets that have something to be dragged around (e.g. sliders and scrollbars)
-        bool m_draggableWidget = false;
 
         // This is set to true for widgets that store other widgets inside them
         bool m_containerWidget = false;

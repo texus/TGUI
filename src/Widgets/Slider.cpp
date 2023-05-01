@@ -42,8 +42,6 @@ namespace tgui
     Slider::Slider(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<SliderRenderer>();
@@ -387,7 +385,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMousePressed(Vector2f pos)
+    bool Slider::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
@@ -403,6 +401,7 @@ namespace tgui
 
         // Refresh the value
         mouseMoved(pos);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

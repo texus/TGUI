@@ -38,8 +38,6 @@ namespace tgui
     Scrollbar::Scrollbar(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<ScrollbarRenderer>();
@@ -258,7 +256,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMousePressed(Vector2f pos)
+    bool Scrollbar::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -304,6 +302,8 @@ namespace tgui
         // Refresh the scrollbar value
         if (!m_mouseDownOnArrow)
             mouseMoved(pos + getPosition());
+
+        return !m_mouseDownOnArrow;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

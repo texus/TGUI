@@ -49,8 +49,6 @@ namespace tgui
     ListView::ListView(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
 
         if (initRenderer)
@@ -1301,19 +1299,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::leftMousePressed(Vector2f pos)
+    bool ListView::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         pos -= getPosition();
 
+        bool isDragging = false;
         if (m_verticalScrollbar->isMouseOnWidget(pos))
         {
-            m_verticalScrollbar->leftMousePressed(pos);
+            isDragging = m_verticalScrollbar->leftMousePressed(pos);
         }
         else if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->isMouseOnWidget(pos))
         {
-            m_horizontalScrollbar->leftMousePressed(pos);
+            isDragging = m_horizontalScrollbar->leftMousePressed(pos);
         }
         // Check if a border between two columns was clicked
         else if (m_resizableColumns && findBorderBelowMouse(pos, m_resizingColumn, m_resizingColumnPixelOffset))
@@ -1368,6 +1367,8 @@ namespace tgui
         {
             m_mouseOnHeaderIndex = getColumnIndexBelowMouse(pos.x);
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

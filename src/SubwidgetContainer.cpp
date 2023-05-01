@@ -34,7 +34,6 @@ namespace tgui
     SubwidgetContainer::SubwidgetContainer(const char* typeName, bool initRenderer) :
         Widget{typeName, initRenderer}
     {
-        m_draggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,10 +86,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SubwidgetContainer::leftMousePressed(Vector2f pos)
+    bool SubwidgetContainer::leftMousePressed(Vector2f pos)
     {
-        m_container->leftMousePressed(pos - getPosition());
+        const bool isDragging = m_container->leftMousePressed(pos - getPosition());
         Widget::leftMousePressed(pos);
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

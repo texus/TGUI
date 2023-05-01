@@ -475,19 +475,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::leftMousePressed(Vector2f pos)
+    bool ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
 
+        bool isDragging = false;
         if (m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
-            m_verticalScrollbar->leftMousePressed(pos - getPosition());
+            isDragging = m_verticalScrollbar->leftMousePressed(pos - getPosition());
         else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
-            m_horizontalScrollbar->leftMousePressed(pos - getPosition());
+            isDragging = m_horizontalScrollbar->leftMousePressed(pos - getPosition());
         else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
-            Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
-                                     pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
+            isDragging = Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                                  pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

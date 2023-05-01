@@ -191,7 +191,8 @@ namespace tgui
         m_widgetBelowMouse        {std::move(other.m_widgetBelowMouse)},
         m_widgetWithLeftMouseDown {std::move(other.m_widgetWithLeftMouseDown)},
         m_widgetWithRightMouseDown{std::move(other.m_widgetWithRightMouseDown)},
-        m_focusedWidget           {std::move(other.m_focusedWidget)}
+        m_focusedWidget           {std::move(other.m_focusedWidget)},
+        m_draggingWidget          {std::move(other.m_draggingWidget)}
     {
         // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
         // Otherwise calling setParent on one widget could cause another widget's position to be recalculated which could
@@ -227,6 +228,7 @@ namespace tgui
             m_widgetWithLeftMouseDown = nullptr;
             m_widgetWithRightMouseDown = nullptr;
             m_focusedWidget = nullptr;
+            m_draggingWidget = false;
 
             // Remove all the old widgets
             Container::removeAllWidgets();
@@ -257,6 +259,7 @@ namespace tgui
             m_widgetWithLeftMouseDown  = std::move(right.m_widgetWithLeftMouseDown);
             m_widgetWithRightMouseDown = std::move(right.m_widgetWithRightMouseDown);
             m_focusedWidget            = std::move(right.m_focusedWidget);
+            m_draggingWidget           = std::move(right.m_draggingWidget);
             Widget::operator=(std::move(right));
 
             // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
@@ -359,7 +362,10 @@ namespace tgui
             if (m_widgetBelowMouse == widget)
                 m_widgetBelowMouse = nullptr;
             if (m_widgetWithLeftMouseDown == widget)
+            {
                 m_widgetWithLeftMouseDown = nullptr;
+                m_draggingWidget = false;
+            }
             if (m_widgetWithRightMouseDown == widget)
                 m_widgetWithRightMouseDown = nullptr;
 
@@ -394,6 +400,7 @@ namespace tgui
         m_widgetWithLeftMouseDown = nullptr;
         m_widgetWithRightMouseDown = nullptr;
         m_focusedWidget = nullptr;
+        m_draggingWidget = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -879,10 +886,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::leftMousePressed(Vector2f pos)
+    bool Container::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
         processMousePressEvent(Event::MouseButton::Left, pos - getPosition() - getChildWidgetsOffset());
+        return m_draggingWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -964,6 +972,7 @@ namespace tgui
         {
             m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
             m_widgetWithLeftMouseDown = nullptr;
+            m_draggingWidget = false;
         }
     }
 
@@ -988,7 +997,7 @@ namespace tgui
             return nullptr;
 
         // We shouldn't show tooltips when dragging something
-        if (m_widgetWithLeftMouseDown && (m_widgetWithLeftMouseDown->isDraggableWidget() || m_widgetWithLeftMouseDown->isContainer()))
+        if (m_draggingWidget)
             return nullptr;
 
         Widget::Ptr toolTip = nullptr;
@@ -1086,13 +1095,10 @@ namespace tgui
     bool Container::processMouseMoveEvent(Vector2f mousePos)
     {
         // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them
-        if (m_widgetWithLeftMouseDown)
+        if (m_widgetWithLeftMouseDown && m_draggingWidget)
         {
-            if (m_widgetWithLeftMouseDown->isDraggableWidget() || m_widgetWithLeftMouseDown->isContainer())
-            {
-                m_widgetWithLeftMouseDown->mouseMoved(transformMousePos(m_widgetWithLeftMouseDown, mousePos));
-                return true;
-            }
+            m_widgetWithLeftMouseDown->mouseMoved(transformMousePos(m_widgetWithLeftMouseDown, mousePos));
+            return true;
         }
 
         const auto oldWidgetBelowMouse = m_widgetBelowMouse.get();
@@ -1137,13 +1143,20 @@ namespace tgui
             if (!widget->isContainer())
                 widget->setFocused(true);
 
-            widget->mousePressed(button, transformMousePos(widget, mousePos));
+            if (button == Event::MouseButton::Left)
+                m_draggingWidget = widget->leftMousePressed(transformMousePos(widget, mousePos));
+            else if (button == Event::MouseButton::Right)
+                widget->rightMousePressed(transformMousePos(widget, mousePos));
+
             return true;
         }
         else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
         {
             if (button == Event::MouseButton::Left)
+            {
                 m_widgetWithLeftMouseDown = nullptr;
+                m_draggingWidget = false;
+            }
             else if (button == Event::MouseButton::Right)
                 m_widgetWithRightMouseDown = nullptr;
 
@@ -1169,6 +1182,7 @@ namespace tgui
         {
             m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
             m_widgetWithLeftMouseDown = nullptr;
+            m_draggingWidget = false;
             return true;
         }
         else if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)

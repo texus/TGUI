@@ -391,9 +391,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ColorPicker::leftMousePressed(Vector2f pos)
+    bool ColorPicker::leftMousePressed(Vector2f pos)
     {
-        ChildWindow::leftMousePressed(pos);
+        bool isDragging = ChildWindow::leftMousePressed(pos);
 
         const Vector2f originalPos = pos;
         pos -= getPosition() + getChildWidgetsOffset();
@@ -414,11 +414,14 @@ namespace tgui
             if (length(position) > 1.f)
             {
                 m_colorRead = false;
-                return;
+                return false;
             }
 
             mouseMoved(originalPos);
+            isDragging = true;
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

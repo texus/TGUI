@@ -692,7 +692,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::leftMousePressed(Vector2f pos)
+    bool ChildWindow::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -703,10 +703,11 @@ namespace tgui
 
         onMousePress.emit(this);
 
+        bool isDragging = false;
         if (FloatRect{getChildWidgetsOffset(), getClientSize()}.contains(pos))
         {
             // Propagate the event to the child widgets
-            Container::leftMousePressed(pos + getPosition());
+            isDragging = Container::leftMousePressed(pos + getPosition());
         }
         else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getClientSize().x, getClientSize().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
         {
@@ -726,6 +727,8 @@ namespace tgui
                     m_resizeDirection |= ResizeRight;
                 if (pos.y >= getSize().y - m_bordersCached.getBottom())
                     m_resizeDirection |= ResizeBottom;
+
+                isDragging = true;
             }
 
             m_draggingPosition = pos;
@@ -741,7 +744,7 @@ namespace tgui
                 if (button->isVisible() && button->isMouseOnWidget(pos))
                 {
                     button->leftMousePressed(pos);
-                    return;
+                    return false;
                 }
             }
 
@@ -750,8 +753,11 @@ namespace tgui
             {
                 m_mouseDownOnTitleBar = true;
                 m_draggingPosition = pos;
+                isDragging = true;
             }
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

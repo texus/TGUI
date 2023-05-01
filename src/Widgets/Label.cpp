@@ -43,8 +43,6 @@ namespace tgui
     Label::Label(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<LabelRenderer>();
@@ -280,15 +278,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::leftMousePressed(Vector2f pos)
+    bool Label::leftMousePressed(Vector2f pos)
     {
+        bool isDragging = false;
         if (m_scrollbar->isShown() && m_scrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_mouseDown = true;
-            m_scrollbar->leftMousePressed(pos - getPosition());
+            isDragging = m_scrollbar->leftMousePressed(pos - getPosition());
         }
         else
             ClickableWidget::leftMousePressed(pos);
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

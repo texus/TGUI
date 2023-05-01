@@ -38,8 +38,6 @@ namespace tgui
     ChatBox::ChatBox(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<ChatBoxRenderer>();
@@ -343,13 +341,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::leftMousePressed(Vector2f pos)
+    bool ChatBox::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         // Pass the event to the scrollbar
+        bool isDragging = false;
         if (m_scroll->isMouseOnWidget(pos - getPosition()))
-            m_scroll->leftMousePressed(pos - getPosition());
+            isDragging = m_scroll->leftMousePressed(pos - getPosition());
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

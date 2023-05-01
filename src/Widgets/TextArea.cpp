@@ -44,7 +44,6 @@ namespace tgui
     TextArea::TextArea(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_draggableWidget = true;
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection1.setFont(m_fontCached);
         m_textSelection2.setFont(m_fontCached);
@@ -457,27 +456,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::leftMousePressed(Vector2f pos)
+    bool TextArea::leftMousePressed(Vector2f pos)
     {
         Widget::leftMousePressed(pos);
 
         pos -= getPosition();
 
+        bool isDragging = true; // User may start selecting text
+
         // If there is a scrollbar then pass the event
         if ((m_verticalScrollbar->isShown()) && (m_verticalScrollbar->isMouseOnWidget(pos)))
         {
-            m_verticalScrollbar->leftMousePressed(pos);
+            isDragging = m_verticalScrollbar->leftMousePressed(pos);
             recalculateVisibleLines();
         }
         else if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->isMouseOnWidget(pos))
         {
-            m_horizontalScrollbar->leftMousePressed(pos);
+            isDragging = m_horizontalScrollbar->leftMousePressed(pos);
         }
         else // The click occurred on the text area
         {
             // Don't continue when line height is 0
             if (m_lineHeight == 0)
-                return;
+                return false;
 
             const auto caretPosition = findCaretPosition(pos);
 
@@ -542,6 +543,8 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
         }
+
+        return isDragging;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

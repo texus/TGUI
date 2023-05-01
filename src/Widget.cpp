@@ -178,7 +178,6 @@ namespace tgui
         m_visible                      {other.m_visible},
         m_parent                       {nullptr},
         m_parentGui                    {nullptr},
-        m_draggableWidget              {other.m_draggableWidget},
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
         m_renderer                     {other.m_renderer},
@@ -226,7 +225,6 @@ namespace tgui
         m_mouseDown                    {std::move(other.m_mouseDown)},
         m_focused                      {std::move(other.m_focused)},
         m_animationTimeElapsed         {std::move(other.m_animationTimeElapsed)},
-        m_draggableWidget              {std::move(other.m_draggableWidget)},
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
         m_renderer                     {other.m_renderer},
@@ -289,7 +287,6 @@ namespace tgui
             m_mouseDown            = false;
             m_focused              = false;
             m_animationTimeElapsed = {};
-            m_draggableWidget      = other.m_draggableWidget;
             m_containerWidget      = other.m_containerWidget;
             m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
             m_renderer             = other.m_renderer;
@@ -344,7 +341,6 @@ namespace tgui
             m_mouseDown            = std::move(other.m_mouseDown);
             m_focused              = std::move(other.m_focused);
             m_animationTimeElapsed = std::move(other.m_animationTimeElapsed);
-            m_draggableWidget      = std::move(other.m_draggableWidget);
             m_containerWidget      = std::move(other.m_containerWidget);
             m_toolTip              = std::move(other.m_toolTip);
             m_renderer             = std::move(other.m_renderer);
@@ -1181,13 +1177,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::isDraggableWidget() const
-    {
-        return m_draggableWidget;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool Widget::isMouseDown() const
     {
         return m_mouseDown;
@@ -1247,9 +1236,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::leftMousePressed(Vector2f)
+    bool Widget::leftMousePressed(Vector2f)
     {
         m_mouseDown = true;
+        return false; // Widgets aren't draggable by default
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1269,16 +1259,6 @@ namespace tgui
 
     void Widget::rightMouseReleased(Vector2f)
     {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::mousePressed(Event::MouseButton button, Vector2f pos)
-    {
-        if (button == Event::MouseButton::Left)
-            leftMousePressed(pos);
-        else if (button == Event::MouseButton::Right)
-            rightMousePressed(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
