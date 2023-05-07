@@ -123,8 +123,7 @@ TEST_CASE("[CanvasSFML]")
             sf::Texture texture;
             REQUIRE(texture.loadFromFile("resources/image.png"));
 
-            sf::Sprite sprite;
-            sprite.setTexture(texture);
+            sf::Sprite sprite(texture);
             sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
             sprite.setPosition({15, 20});
 
