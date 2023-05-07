@@ -135,6 +135,7 @@ function(tgui_export_target export_name)
     endif()
 
     export(EXPORT ${export_name}
+           NAMESPACE TGUI::
            FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
 
     if (TGUI_BUILD_FRAMEWORK)
@@ -147,6 +148,7 @@ function(tgui_export_target export_name)
         INSTALL_DESTINATION "${config_package_location}")
 
     install(EXPORT ${export_name}
+            NAMESPACE TGUI::
             FILE ${targets_config_filename}
             DESTINATION ${config_package_location})
 
@@ -233,6 +235,6 @@ function(tgui_create_module_from_sources source_file_list module_name)
     foreach(source_file ${source_file_list})
         string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
     endforeach()
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.ixx" "${file_contents}")
-    set(module_source "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.ixx" PARENT_SCOPE)
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.cppm" "${file_contents}")
+    set(module_source "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.cppm" PARENT_SCOPE)
 endfunction()

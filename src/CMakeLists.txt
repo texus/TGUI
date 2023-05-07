@@ -195,7 +195,7 @@ endif()
 
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
-    add_library(tgui SHARED ${TGUI_SRC})
+    add_library(tgui SHARED)
     set_target_properties(tgui PROPERTIES DEFINE_SYMBOL TGUI_EXPORTS)
     set_target_properties(tgui PROPERTIES DEBUG_POSTFIX -d)
 
@@ -214,11 +214,22 @@ if(TGUI_SHARED_LIBS)
     endif()
 
 else()
-    add_library(tgui STATIC ${TGUI_SRC})
+    add_library(tgui STATIC)
     set_target_properties(tgui PROPERTIES DEBUG_POSTFIX -s-d)
     set_target_properties(tgui PROPERTIES RELEASE_POSTFIX -s)
     set_target_properties(tgui PROPERTIES MINSIZEREL_POSTFIX -s)
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
+endif()
+
+if (TGUI_BUILD_AS_CXX_MODULE)
+    target_sources(tgui
+                   PRIVATE
+                   FILE_SET tgui_cxx_module_files
+                   TYPE CXX_MODULES
+                   BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
+                   FILES ${TGUI_SRC})
+else()
+    target_sources(tgui PRIVATE ${TGUI_SRC})
 endif()
 
 if (${CMAKE_VERSION} VERSION_LESS "3.18")
@@ -280,7 +291,7 @@ if(TGUI_OS_LINUX)
 endif()
 
 add_library(TGUI::TGUI ALIAS tgui)
-set_target_properties(tgui PROPERTIES EXPORT_NAME TGUI::TGUI)
+set_target_properties(tgui PROPERTIES EXPORT_NAME TGUI)
 
 # Add the backends to the library.
 # Without the ability to call target_link_libraries in a subdirectory (which was only added in CMake 3.13 in policy CMP0079),

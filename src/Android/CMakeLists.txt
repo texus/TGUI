@@ -51,7 +51,7 @@ install(TARGETS tgui-activity
         FRAMEWORK DESTINATION "." COMPONENT bin)
 
 add_library(TGUI::Activity ALIAS tgui-activity)
-set_target_properties(tgui-activity PROPERTIES EXPORT_NAME TGUI::Activity)
+set_target_properties(tgui-activity PROPERTIES EXPORT_NAME Activity)
 
 # Install Android.mk so the NDK knows how to set up TGUI
 if(TGUI_OS_ANDROID)

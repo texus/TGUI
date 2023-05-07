@@ -41,7 +41,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /// @internal
     /// Used by the gui to detect when the user is trying to scroll with two finger touches
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TwoFingerScrollDetect
+    class TGUI_API TwoFingerScrollDetect
     {
     public:
 
