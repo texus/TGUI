@@ -97,8 +97,8 @@ jobs:
       SDL_INSTALL_DIR: ${{github.workspace}}/SDL_INSTALL
       SDL_TTF_INSTALL_DIR: ${{github.workspace}}/SDL_TTF_INSTALL
       GLFW_INSTALL_DIR: ${{github.workspace}}/GLFW_INSTALL
-      CMAKE_VERSION: 3.21
-      CMAKE_VERSION_PATCH: 4
+      CMAKE_VERSION: 3.26
+      CMAKE_VERSION_PATCH: 3
     steps:
       - name: Lookup dependency versions
         id: find-dependencies
