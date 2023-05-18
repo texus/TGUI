@@ -207,16 +207,15 @@ namespace
         tgui::Filesystem::Path guiBuilderDataDir;
         if (!localDataDir.isEmpty() && tgui::Filesystem::directoryExists(localDataDir))
         {
-            tgui::String versionNumber = tgui::String::fromNumber(TGUI_VERSION_MAJOR) + U"." + tgui::String::fromNumber(TGUI_VERSION_MINOR);
-            const auto destDir = localDataDir / U"tgui" / versionNumber / U"gui-builder";
+            const tgui::String tguiDirName = U"tgui-" + tgui::String::fromNumber(TGUI_VERSION_MAJOR);
+            const auto destDir = localDataDir / tguiDirName / U"gui-builder";
             if (tgui::Filesystem::directoryExists(destDir))
                 guiBuilderDataDir = destDir;
             else if (createIfNotFound)
             {
                 // Create the direcory structure if it doesn't exist yet
-                tgui::Filesystem::createDirectory(localDataDir / U"tgui");
-                tgui::Filesystem::createDirectory(localDataDir / U"tgui" / versionNumber);
-                if (tgui::Filesystem::createDirectory(localDataDir / U"tgui" / versionNumber / U"gui-builder"))
+                tgui::Filesystem::createDirectory(localDataDir / tguiDirName);
+                if (tgui::Filesystem::createDirectory(localDataDir / tguiDirName / U"gui-builder"))
                     guiBuilderDataDir = destDir;
             }
         }

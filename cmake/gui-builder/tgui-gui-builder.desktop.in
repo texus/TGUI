@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Version=@TGUI_VERSION_MAJOR@.@TGUI_VERSION_MINOR@
+Name=TGUI Gui Builder
+Icon=TexusGUI
+Exec=@TGUI_GUI_BUILDER_INSTALL_EXE_PATH@

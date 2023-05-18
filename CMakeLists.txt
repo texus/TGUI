@@ -304,7 +304,7 @@ if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
 elseif(TGUI_OS_ANDROID)
     set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
 else()
-    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
+    set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_INSTALL_DATAROOTDIR}/tgui-${TGUI_VERSION_MAJOR})
 endif()
 tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
 mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
@@ -352,7 +352,7 @@ option(TGUI_INSTALL_PKGCONFIG_FILES "TRUE to automatically install pkg-config fi
 if (TGUI_INSTALL_PKGCONFIG_FILES)
     tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
 
-    configure_file("pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
+    configure_file("cmake/pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
 endif()
 
