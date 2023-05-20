@@ -239,6 +239,24 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     // One case where this seems to be required is to start the executable on macOS by double-clicking it.
     tgui::setResourcePath((tgui::Filesystem::getCurrentWorkingDirectory() / m_programPath).getNormalForm());
 
+#ifdef TGUI_SYSTEM_LINUX
+    // When running the executable from the terminal, both the working directory and the program path via argv[0] may be
+    // incorrect if no relative or absolute path was provided but the executable was instead found inside the PATH.
+    // So if we can't find our 'resources' folder, we will ask the OS in which path our executable is located.
+    if (!tgui::Filesystem::directoryExists(tgui::getResourcePath() / U"resources"))
+    {
+        char pathStr[FILENAME_MAX];
+        const ssize_t pathLen = readlink("/proc/self/exe", pathStr, FILENAME_MAX);
+        if (pathLen > 0)
+        {
+            const tgui::Filesystem::Path absoluteFilePath(tgui::String(pathStr, static_cast<std::size_t>(pathLen)));
+            const tgui::Filesystem::Path dirContainingExe(absoluteFilePath.getParentPath());
+            if (tgui::Filesystem::directoryExists(dirContainingExe / U"resources"))
+                tgui::setResourcePath(dirContainingExe);
+        }
+    }
+#endif
+
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
     m_widgetProperties["ChatBox"] = std::make_unique<ChatBoxProperties>();

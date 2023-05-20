@@ -26,6 +26,8 @@
 #ifndef TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 #define TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 
+#include <TGUI/Config.hpp>
+
 // There are still issues with including std headers after importing the TGUI module (if TGUI_BUILD_AS_CXX_MODULE is 1),
 // so we include all std headers that are needed in the source files up here. This only works because this header file is
 // the first one to be included in both Form.cpp and GuiBuilder.cpp
@@ -44,9 +46,17 @@
     #include <array>
     #include <map>
     #include <set>
+
+    #ifdef TGUI_SYSTEM_LINUX
+        #include <cstdio> // FILENAME_MAX
+    #endif
 #endif
 
-#include <TGUI/Config.hpp>
+#ifdef TGUI_SYSTEM_LINUX
+    #include <sys/types.h> // ssize_t
+    #include <unistd.h> // readlink
+#endif
+
 #if TGUI_BUILD_AS_CXX_MODULE
     import tgui;
     import tgui.default_backend_window;
