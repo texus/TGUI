@@ -360,14 +360,23 @@ namespace tgui
                 m_parentGui->requestMouseCursor(m_mouseCursor);
 
             if (m_widgetBelowMouse == widget)
+            {
+                m_widgetBelowMouse->mouseNoLongerOnWidget();
                 m_widgetBelowMouse = nullptr;
+            }
+
             if (m_widgetWithLeftMouseDown == widget)
             {
+                m_widgetWithLeftMouseDown->leftMouseButtonNoLongerDown();
                 m_widgetWithLeftMouseDown = nullptr;
                 m_draggingWidget = false;
             }
+
             if (m_widgetWithRightMouseDown == widget)
+            {
+                m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
                 m_widgetWithRightMouseDown = nullptr;
+            }
 
             if (widget == m_focusedWidget)
             {
