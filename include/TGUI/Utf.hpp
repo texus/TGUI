@@ -27,6 +27,7 @@
 #define TGUI_UTF_HPP
 
 #include <TGUI/Config.hpp>
+#include <cstdint>
 #include <string>
 #include <array>
 
