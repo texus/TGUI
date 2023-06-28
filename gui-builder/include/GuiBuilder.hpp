@@ -142,8 +142,10 @@ private:
 
     tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
     tgui::Button::Ptr addPropertyValueButtonMore(const tgui::String& property, float topPosition);
+    tgui::Button::Ptr addPropertyValueButtonLayoutRelAbs(const tgui::String& property, float topPosition, bool valueIsAbsolute);
     void addPropertyValueBool(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueColor(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueLayout(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueTextStyle(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueOutline(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueStringList(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);

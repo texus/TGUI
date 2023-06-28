@@ -1181,6 +1181,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueBool(property, value, onChange, topPosition);
     else if (type == "Color")
         addPropertyValueColor(property, value, onChange, topPosition);
+    else if (type == "Layout")
+        addPropertyValueLayout(property, value, onChange, topPosition);
     else if (type == "TextStyle")
         addPropertyValueTextStyle(property, value, onChange, topPosition);
     else if (type == "Outline")
@@ -1622,6 +1624,29 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const tgui::String& pro
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+tgui::Button::Ptr GuiBuilder::addPropertyValueButtonLayoutRelAbs(const tgui::String& property, float topPosition, bool valueIsAbsolute)
+{
+    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+
+    auto buttonRelAbs = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
+    if (!buttonRelAbs)
+    {
+        buttonRelAbs = tgui::Button::create();
+        buttonRelAbs->setTextSize(9);
+        buttonRelAbs->onFocus([this]{ m_propertiesContainer->focusNextWidget(); });
+        m_propertiesContainer->add(buttonRelAbs, "ValueButton" + property);
+    }
+
+    buttonRelAbs->setText(valueIsAbsolute ? L"REL" : L"ABS");
+
+    buttonRelAbs->onPress.disconnectAll();
+    buttonRelAbs->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+    buttonRelAbs->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
+    return buttonRelAbs;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
@@ -1689,6 +1714,76 @@ void GuiBuilder::addPropertyValueColor(const tgui::String& property, const tgui:
             onChange(tgui::Serializer::serialize(newColor));
         });
     });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    const tgui::Layout layout(value);
+
+    assert(property == U"Left" || property == U"Top" || property == U"Width" || property == U"Height");
+    const bool isHorizontal = (property == U"Left") || (property == U"Width");
+
+    const bool layoutIsConstant = layout.isConstant();
+    const bool layoutIsPercentage = !layoutIsConstant
+        && value.ends_with(U'%')
+        && layout.getLeftOperand()
+        && layout.getRightOperand()
+        && layout.getLeftOperand()->isConstant()
+        && !layout.getRightOperand()->isConstant()
+        && !layout.getRightOperand()->getLeftOperand()
+        && !layout.getRightOperand()->getRightOperand();
+
+    if (layoutIsConstant || layoutIsPercentage)
+        addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+    else
+        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
+
+    if (layoutIsConstant)
+    {
+        const double layoutValue = layout.getValue();
+
+        auto buttonRel = addPropertyValueButtonLayoutRelAbs(property, topPosition, true);
+        buttonRel->onPress([this,isHorizontal,layoutValue,onChange]{
+            const auto selectedWidget = m_selectedForm->getSelectedWidget();
+            if (!selectedWidget || !selectedWidget->ptr || !selectedWidget->ptr->getParent())
+                return;
+
+            const auto parent = selectedWidget->ptr->getParent();
+            const double parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
+            if (parentSize <= 0)
+                return;
+
+            const double percentage = layoutValue / parentSize * 100;
+            onChange(tgui::String::fromNumberRounded(percentage, 2) + U"%");
+        });
+    }
+    else if (layoutIsPercentage)
+    {
+        const double ratio = layout.getLeftOperand()->getValue();
+
+        auto buttonAbs = addPropertyValueButtonLayoutRelAbs(property, topPosition, false);
+        buttonAbs->onPress([this,isHorizontal,ratio,onChange]{
+            const auto selectedWidget = m_selectedForm->getSelectedWidget();
+            if (!selectedWidget || !selectedWidget->ptr || !selectedWidget->ptr->getParent())
+                return;
+
+            const auto parent = selectedWidget->ptr->getParent();
+            const double parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
+            if (parentSize <= 0)
+                return;
+
+            const double absoluteSize = ratio * parentSize;
+            onChange(tgui::String::fromNumberRounded(absoluteSize, 0));
+        });
+    }
+    else // Layout is complex and no conversion button should be shown
+    {
+        auto buttonRelAbs = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
+        if (buttonRelAbs)
+            m_propertiesContainer->remove(buttonRelAbs);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

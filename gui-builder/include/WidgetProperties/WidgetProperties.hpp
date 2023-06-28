@@ -65,10 +65,10 @@ struct WidgetProperties
     TGUI_NODISCARD virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
     {
         PropertyValueMap pairs;
-        pairs["Left"] = {"String", widget->getPositionLayout().x.toString()};
-        pairs["Top"] = {"String", widget->getPositionLayout().y.toString()};
-        pairs["Width"] = {"String", widget->getSizeLayout().x.toString()};
-        pairs["Height"] = {"String", widget->getSizeLayout().y.toString()};
+        pairs["Left"] = {"Layout", widget->getPositionLayout().x.toString()};
+        pairs["Top"] = {"Layout", widget->getPositionLayout().y.toString()};
+        pairs["Width"] = {"Layout", widget->getSizeLayout().x.toString()};
+        pairs["Height"] = {"Layout", widget->getSizeLayout().y.toString()};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
         pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed}", serializeMouseCursor(widget->getMouseCursor())};
