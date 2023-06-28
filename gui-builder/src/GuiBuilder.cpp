@@ -1742,7 +1742,7 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
 
     if (layoutIsConstant)
     {
-        const double layoutValue = layout.getValue();
+        const float layoutValue = layout.getValue();
 
         auto buttonRel = addPropertyValueButtonLayoutRelAbs(property, topPosition, true);
         buttonRel->onPress([this,isHorizontal,layoutValue,onChange]{
@@ -1751,17 +1751,17 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
                 return;
 
             const auto parent = selectedWidget->ptr->getParent();
-            const double parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
+            const float parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
             if (parentSize <= 0)
                 return;
 
-            const double percentage = layoutValue / parentSize * 100;
+            const float percentage = layoutValue / parentSize * 100;
             onChange(tgui::String::fromNumberRounded(percentage, 2) + U"%");
         });
     }
     else if (layoutIsPercentage)
     {
-        const double ratio = layout.getLeftOperand()->getValue();
+        const float ratio = layout.getLeftOperand()->getValue();
 
         auto buttonAbs = addPropertyValueButtonLayoutRelAbs(property, topPosition, false);
         buttonAbs->onPress([this,isHorizontal,ratio,onChange]{
@@ -1770,11 +1770,11 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
                 return;
 
             const auto parent = selectedWidget->ptr->getParent();
-            const double parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
+            const float parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
             if (parentSize <= 0)
                 return;
 
-            const double absoluteSize = ratio * parentSize;
+            const float absoluteSize = ratio * parentSize;
             onChange(tgui::String::fromNumberRounded(absoluteSize, 0));
         });
     }
