@@ -419,6 +419,7 @@ namespace tgui
             Filesystem::Path("/usr/share/icons/breeze/places/32/"),
             Filesystem::Path("/usr/share/icons/Adwaita/32x32/mimetypes/"), // GTK3 default theme
             Filesystem::Path("/usr/share/icons/Adwaita/32x32/places/"),
+            Filesystem::Path("/usr/share/icons/Adwaita/scalable/mimetypes"),
             Filesystem::Path("/usr/share/icons/gnome/32x32/mimetypes/"),
             Filesystem::Path("/usr/share/icons/gnome/32x32/places/"),
             Filesystem::Path("/usr/share/icons/hicolor/48x48/mimetypes/"), // Fallback theme (mostly useless)
