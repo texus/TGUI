@@ -70,9 +70,10 @@ else()
     endif()
 endif()
 
-# Use c++17 by default on GCC >= 11 or Clang >= 16
+# Use c++17 by default on GCC >= 11, Clang >= 16 and IntelLLVM
 if ((TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
- OR (TGUI_COMPILER_LLVM_CLANG AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "16"))
+ OR (TGUI_COMPILER_LLVM_CLANG AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "16")
+ OR TGUI_COMPILER_INTEL_ONEAPI)
     set(TGUI_DEFAULT_CXX_STANDARD "17")
 else() # Use c++14 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
@@ -292,6 +293,8 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STRE
     if(TGUI_OS_WINDOWS)
         if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
             target_link_options(tgui-gui-app-interface INTERFACE "/ENTRY:mainCRTStartup" "/SUBSYSTEM:WINDOWS")
+        elseif(TGUI_COMPILER_LLVM_CLANG OR TGUI_COMPILER_INTEL_ONEAPI)
+            target_link_options(tgui-gui-app-interface INTERFACE "LINKER:/ENTRY:mainCRTStartup,/SUBSYSTEM:WINDOWS")
         else()
             target_link_options(tgui-gui-app-interface INTERFACE "-mwindows")
         endif()

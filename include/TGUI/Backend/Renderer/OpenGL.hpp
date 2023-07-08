@@ -35,6 +35,12 @@
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wold-style-cast"
+#elif defined (_MSC_VER)
+#   if defined(__clang__)
+#       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wold-style-cast"
+#       pragma clang diagnostic ignored "-Wlanguage-extension-token"
+#   endif
 #endif
 
 #if TGUI_USE_SYSTEM_GLAD
@@ -67,7 +73,11 @@
 #endif
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#   pragma GCC diagnostic pop
+#elif defined (_MSC_VER)
+#   if defined(__clang__)
+#       pragma clang diagnostic pop
+#   endif
 #endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE

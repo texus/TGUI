@@ -46,9 +46,15 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # The TGUI_COMPILER_GCC_TDM variable will contain a text if TDM and will be empty otherwise.
     execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "--version" OUTPUT_VARIABLE GCC_COMPILER_VERSION)
     string(REGEX MATCHALL ".*(tdm[64]*-[1-9]).*" TGUI_COMPILER_GCC_TDM "${GCC_COMPILER_VERSION}")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+    # The frontend of icpx on Linux is GNU while the frontend of icx-cl on Windows is MSVC.
+    # Basic GNU compiler flags do seem to work in either case though, so we won't bother with
+    # handling Windows differently. We don't pretend that this compiler is GCC as that would
+    # try to set flags that are unsupported and we don't pretend the compiler is Clang
+    # because the checks for compiler version wouldn't work.
+    set(TGUI_COMPILER_INTEL_ONEAPI 1)
 else()
-    message(FATAL_ERROR "Unsupported compiler")
-    return()
+    message(WARNING "Unrecognized compiler: ${CMAKE_CXX_COMPILER_ID}. Use at your own risk.")
 endif()
 
 # Set pkgconfig install directory

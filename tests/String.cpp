@@ -136,8 +136,10 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 6) == u8"\u03b4\u03b5");
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"\u03b2\u03b3\u03b4");
 
+    #if TGUI_COMPILED_WITH_CPP_VER >= 17
         REQUIRE(tgui::String(u8"\U00010348"sv) == u8"\U00010348");
         REQUIRE(tgui::String(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"sv, 2, 6) == u8"\u03b2\u03b3\u03b4");
+    #endif
 
         REQUIRE(tgui::String(view_u8s) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 #endif

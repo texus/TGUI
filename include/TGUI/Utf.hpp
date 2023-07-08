@@ -85,7 +85,7 @@ TGUI_MODULE_EXPORT namespace tgui
             bytes[0] = static_cast<CharT>(input | firstByteMask);
 
             // Add them to the output
-            outStrUtf8.append(bytes.begin(), bytes.begin() + bytestoWrite);
+            outStrUtf8.append(bytes.begin(), bytes.begin() + static_cast<std::ptrdiff_t>(bytestoWrite));
         }
 
 

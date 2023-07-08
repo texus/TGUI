@@ -348,7 +348,7 @@ namespace tgui
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
-            m_window = glfwCreateWindow(width, height, title.toStdString().c_str(), nullptr, nullptr);
+            m_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title.toStdString().c_str(), nullptr, nullptr);
             glfwMakeContextCurrent(m_window);
 
             glfwSwapInterval(1);
