@@ -31,6 +31,7 @@
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <cstdint>
     #include <chrono>
+    #include <type_traits>
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
