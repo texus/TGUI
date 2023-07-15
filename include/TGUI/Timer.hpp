@@ -60,7 +60,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the time that the mouse has to stand still before the tooltip becomes visible
+        /// @brief Creates a new timer
         ///
         /// @param callback  Function without parameters, to be called at every interval when the timer is enabled
         /// @param interval  How often the callback should be called
@@ -72,7 +72,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the time that the mouse has to stand still before the tooltip becomes visible
+        /// @brief Creates a new timer
         ///
         /// @param callback  Function that takes the timer as parameter, to be called at every interval when the timer is enabled
         /// @param interval  How often the callback should be called

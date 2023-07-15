@@ -97,7 +97,7 @@ TEST_CASE("[Timer]")
             timer->setEnabled(false);
         }
 
-        SECTION("Interval")
+        SECTION("Callback")
         {
             unsigned int otherCount = 0;
             const auto otherCallback = [&otherCount]{ ++otherCount; };
