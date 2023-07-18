@@ -406,7 +406,7 @@ endif()
 # Generate the Config.hpp header
 configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
-if(NOT TGUI_BUILD_AS_CXX_MODULE)
+if(NOT TGUI_BUILD_AS_CXX_MODULE AND NOT TGUI_DISABLE_PRECOMPILED_HEADER)
     # Use a precompiled header to speed up compilation
     target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
 endif()

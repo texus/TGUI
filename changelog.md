@@ -1,5 +1,5 @@
-TGUI 1.0  (TBD)
----------------
+TGUI 1.0-rc  (18 Juli 2023)
+---------------------------
 
 - Added PanelListBox widget ([PR #193](https://github.com/texus/TGUI/pull/193))
 - FileDialog can now create new folders ([PR #192](https://github.com/texus/TGUI/pull/192))
