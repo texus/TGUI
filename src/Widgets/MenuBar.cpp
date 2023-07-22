@@ -1285,7 +1285,10 @@ namespace tgui
 
     void MenuBar::leftMouseReleasedOnMenu()
     {
-        TGUI_ASSERT(m_visibleMenu >= 0, "MenuBar::leftMouseReleasedOnMenu can only be called when a menu is open");
+        // This function may be called while closing the menu (when removing the placeholder widget), in which case m_visibleMenu will be -1
+        if (m_visibleMenu < 0)
+            return;
+
         const auto visibleMenuIdx = static_cast<std::size_t>(m_visibleMenu);
 
         auto* menu = &m_menus[visibleMenuIdx];
