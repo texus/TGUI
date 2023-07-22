@@ -47,6 +47,9 @@ namespace tgui
 
         // Destroy the container and its widgets before destroying the backend.
         // This solves issues such as TextArea still accessing the backend when it gets unfocused (by removing it from its parent).
+        // We first explictly destroy the widgets before destroying the container, to handle the case where an onUnfocus signal
+        // is still being triggered that attempts to access the gui (and it's container).
+        m_container->removeAllWidgets();
         m_container = nullptr;
 
         if (isBackendSet())
