@@ -325,12 +325,69 @@ TEST_CASE("[MenuBar]")
 
     SECTION("Events / Signals")
     {
+        menuBar->setHeight(25);
+        menuBar->addMenu("File");
+        menuBar->addMenuItem("Load");
+        menuBar->addMenuItem("Save");
+        menuBar->addMenu("Edit");
+        menuBar->addMenuItem("Undo");
+        menuBar->addMenuItem("Redo");
+        menuBar->addMenuItem("Copy");
+        menuBar->addMenuItem("Paste");
+        menuBar->addMenu("Help");
+        menuBar->addMenuItem("About");
+
+        // The menu bar needs to be attached to a Gui object as it will create a new widget when a menu opens.
+        // All events also need to be send to the gui to determine to which widget the event goes.
+        globalGui->add(menuBar);
+        auto simulateLeftMouseClick = [](int x, int y){
+            tgui::Event event;
+            event.type = tgui::Event::Type::MouseMoved;
+            event.mouseMove.x = x;
+            event.mouseMove.y = y;
+            globalGui->handleEvent(event);
+
+            event.type = tgui::Event::Type::MouseButtonPressed;
+            event.mouseButton.button = tgui::Event::MouseButton::Left;
+            event.mouseButton.x = x;
+            event.mouseButton.y = y;
+            globalGui->handleEvent(event);
+
+            event.type = tgui::Event::Type::MouseButtonReleased;
+            event.mouseButton.button = tgui::Event::MouseButton::Left;
+            event.mouseButton.x = x;
+            event.mouseButton.y = y;
+            globalGui->handleEvent(event);
+        };
+
         SECTION("Widget")
         {
             testWidgetSignals(menuBar);
         }
 
-        /// TODO
+        SECTION("Opening and closing menu")
+        {
+            simulateLeftMouseClick(50, 10);
+
+            SECTION("By clicking the menu again")
+            {
+                simulateLeftMouseClick(50, 10);
+            }
+
+            SECTION("By clicking on a menu item")
+            {
+                simulateLeftMouseClick(50, 90);
+            }
+
+            SECTION("By clicking outside the menu bar")
+            {
+                simulateLeftMouseClick(10, 200);
+            }
+        }
+
+        /// TODO: more event tests
+
+        globalGui->removeAllWidgets();
     }
 
     testWidgetRenderer(menuBar->getRenderer());
