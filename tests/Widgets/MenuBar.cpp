@@ -337,6 +337,11 @@ TEST_CASE("[MenuBar]")
         menuBar->addMenu("Help");
         menuBar->addMenuItem("About");
 
+        SECTION("Widget")
+        {
+            testWidgetSignals(menuBar);
+        }
+
         // The menu bar needs to be attached to a Gui object as it will create a new widget when a menu opens.
         // All events also need to be send to the gui to determine to which widget the event goes.
         globalGui->add(menuBar);
@@ -359,11 +364,6 @@ TEST_CASE("[MenuBar]")
             event.mouseButton.y = y;
             globalGui->handleEvent(event);
         };
-
-        SECTION("Widget")
-        {
-            testWidgetSignals(menuBar);
-        }
 
         SECTION("Opening and closing menu")
         {

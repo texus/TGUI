@@ -196,6 +196,9 @@ TEST_CASE("[Layouts]")
 
                 button4->setSize(80, 120);
                 REQUIRE(button5->getSize() == tgui::Vector2f(120, 80));
+
+                button5->setPosition(bindSize(button5));
+                REQUIRE(button5->getPosition() == tgui::Vector2f(120, 80));
             }
 
             SECTION("Container inner size")
@@ -437,6 +440,21 @@ TEST_CASE("[Layouts]")
             REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
             REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
             REQUIRE(button3->getPositionLayout().toString() == "(((2 * (b1.left + b1.width)) + (b2.x / 4)) + b1.w, (50 - (b2.top + b2.height)) + (75 * b2.y))");
+
+            auto button4 = std::make_shared<tgui::Button>();
+            button4->setSize(200, 50);
+            panel->add(button4, "b4");
+
+            auto button5 = std::make_shared<tgui::Button>();
+            panel->add(button5);
+            button5->setSize({"max(b4.w, b4.h)", "min(b4.w, b4.h)"});
+            REQUIRE(button5->getSize() == tgui::Vector2f(200, 50));
+
+            button4->setSize(80, 120);
+            REQUIRE(button5->getSize() == tgui::Vector2f(120, 80));
+
+            button5->setPosition("size");
+            REQUIRE(button5->getPosition() == tgui::Vector2f(120, 80));
         }
 
         SECTION("No ambiguity with 0")
@@ -460,7 +478,7 @@ TEST_CASE("[Layouts]")
 
             // Button width becomes -10
             panel->setSize(10, 10);
-            button->setSize({"&.w - 20", "&.h"});
+            button->setSize({"&.iw - 20", "&.ih"});
             REQUIRE(button->getSize() == tgui::Vector2f(-10, 10));
 
             // Button width will become positive again
@@ -491,6 +509,28 @@ TEST_CASE("[Layouts]")
             // The line below causes CustomWidget::setSize to be executed while looping over the
             // layouts that are connected to the panel.
             panel->setSize({800, 600});
+        }
+
+        SECTION("Recursive layouts could crash (https://github.com/texus/TGUI/issues/198)")
+        {
+            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+
+            auto widget = tgui::ClickableWidget::create();
+            widget->setSize({100, 100});
+            widget->setSize({100, "5 + height"});
+            REQUIRE(widget->getSize().y == 5);
+
+            auto widget2 = tgui::ClickableWidget::create();
+            widget2->setSize(bindSize(widget) * 2);
+
+            widget->setSize({100, 100});
+            REQUIRE(widget2->getSize() == tgui::Vector2f{200, 200});
+
+            widget->setSize(bindSize(widget2) * 200);
+            REQUIRE(widget->getSize() == tgui::Vector2f{0, 0});
+            REQUIRE(widget2->getSize() == tgui::Vector2f{0, 0});
+
+            std::cerr.rdbuf(oldbuf);
         }
     }
 }

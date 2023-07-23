@@ -86,6 +86,8 @@ void testWidgetSignals(const tgui::Widget::Ptr& widget)
         parent->mouseMoved({220, 155});
         REQUIRE(mouseEnteredCount == 1);
         REQUIRE(mouseLeftCount == 1);
+
+        parent->remove(widget);
     }
 }
 
