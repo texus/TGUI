@@ -437,7 +437,7 @@ macro(tgui_add_dependency_sdl_ttf)
             if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
                 # First try looking for an SDL2_ttf config file
                 tgui_try_find_sdl2_ttf_config()
-            endif
+            endif()
             if(TGUI_FOUND_SDL2_TTF_CONFIG)
                 find_package(SDL2_ttf CONFIG REQUIRED)
             else()
