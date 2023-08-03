@@ -166,7 +166,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This property defines in which direction the foreground image is pointing.
         /// The rotation is in degrees, starts from the right side and increases when going counter-clockwise.
         ///
-        /// This property has no effect when
+        /// This property has no effect when TextureForeground isn't set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setImageRotation(float rotation);
