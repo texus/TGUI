@@ -434,9 +434,10 @@ macro(tgui_add_dependency_sdl_ttf)
         endif()
     else() # Using SDL2
         if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
-            # First try looking for an SDL2_ttf config file
-            tgui_try_find_sdl2_ttf_config()
-
+            if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
+                # First try looking for an SDL2_ttf config file
+                tgui_try_find_sdl2_ttf_config()
+            endif
             if(TGUI_FOUND_SDL2_TTF_CONFIG)
                 find_package(SDL2_ttf CONFIG REQUIRED)
             else()
