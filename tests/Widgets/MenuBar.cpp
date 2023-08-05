@@ -597,4 +597,77 @@ TEST_CASE("[MenuBar]")
             TEST_DRAW("MenuBar_Disabled_Textured.png")
         }
     }
+
+    SECTION("Scaling")
+    {
+        menuBar->setPosition(10, 5);
+        menuBar->setSize(130, 20);
+        menuBar->setTextSize(16);
+        menuBar->setMinimumSubMenuWidth(60);
+
+        menuBar->addMenu("File");
+        menuBar->addMenuItem("Quit");
+        menuBar->addMenu("Edit");
+        menuBar->addMenuItem("Undo");
+        menuBar->addMenuItem("Redo");
+        menuBar->addMenu("Help");
+
+        tgui::MenuBarRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setSelectedTextColor(tgui::Color::Blue);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setSelectedBackgroundColor(tgui::Color::Yellow);
+        renderer.setDistanceToSide(3);
+        menuBar->setRenderer(renderer.getData());
+
+        auto outerPanel = tgui::Panel::create({390, 185});
+        outerPanel->getRenderer()->setBackgroundColor(tgui::Color::Red);
+        outerPanel->getRenderer()->setBorderColor(tgui::Color::Cyan);
+        outerPanel->getRenderer()->setBorders({4});
+        outerPanel->setPosition({5, 10});
+
+        auto innerPanel = tgui::Panel::create({220, 80});
+        innerPanel->getRenderer()->setBackgroundColor(tgui::Color::Blue);
+        innerPanel->getRenderer()->setBorderColor(tgui::Color::Magenta);
+        innerPanel->getRenderer()->setBorders({5});
+        innerPanel->setPosition({20, 15});
+        outerPanel->add(innerPanel);
+
+        innerPanel->add(menuBar);
+
+        outerPanel->setScale(1.25f);
+        innerPanel->setScale(1.6f);
+        menuBar->setScale(1.5f);
+
+        TEST_DRAW_INIT(500, 250, outerPanel)
+        TEST_DRAW("MenuBar_Scaling_Normal.png")
+
+        tgui::Event event;
+        event.type = tgui::Event::Type::MouseMoved;
+        event.mouseMove.x = 190;
+        event.mouseMove.y = 70;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseButtonPressed;
+        event.mouseButton.button = tgui::Event::MouseButton::Left;
+        event.mouseButton.x = 190;
+        event.mouseButton.y = 70;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseButtonReleased;
+        gui.handleEvent(event);
+        TEST_DRAW("MenuBar_Scaling_MenuOpened.png")
+
+        event.type = tgui::Event::Type::MouseMoved;
+        event.mouseMove.x = 190;
+        event.mouseMove.y = 190;
+        gui.handleEvent(event);
+        TEST_DRAW("MenuBar_Scaling_HoveredItemChanged.png")
+
+        event.type = tgui::Event::Type::MouseMoved;
+        event.mouseMove.x = 150;
+        event.mouseMove.y = 70;
+        gui.handleEvent(event);
+        TEST_DRAW("MenuBar_Scaling_OpenMenuChanged.png")
+    }
 }

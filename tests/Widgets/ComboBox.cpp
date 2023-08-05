@@ -712,4 +712,77 @@ TEST_CASE("[ComboBox]")
             TEST_DRAW("ComboBox_DefaultText.png")
         }
     }
+
+    SECTION("Scaling")
+    {
+        comboBox->setPosition(10, 5);
+        comboBox->setSize(60, 24);
+        comboBox->setTextSize(14);
+        comboBox->addItem("1");
+        comboBox->addItem("2");
+        comboBox->setSelectedItemByIndex(0);
+
+        tgui::ComboBoxRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setBorderColor(tgui::Color::Blue);
+        renderer.setArrowBackgroundColor(tgui::Color::Cyan);
+        renderer.setArrowColor(tgui::Color::Magenta);
+        renderer.setBorders({2});
+        renderer.setTextStyle(tgui::TextStyle::Italic);
+        comboBox->setRenderer(renderer.getData());
+
+        auto outerPanel = tgui::Panel::create({214, 200});
+        outerPanel->getRenderer()->setBackgroundColor(tgui::Color::Blue);
+        outerPanel->getRenderer()->setBorderColor(tgui::Color::Cyan);
+        outerPanel->getRenderer()->setBorders({4});
+        outerPanel->setPosition({5, 10});
+
+        auto innerPanel = tgui::Panel::create({114, 80});
+        innerPanel->getRenderer()->setBackgroundColor(tgui::Color::Yellow);
+        innerPanel->getRenderer()->setBorderColor(tgui::Color::Magenta);
+        innerPanel->getRenderer()->setBorders({5});
+        innerPanel->setPosition({20, 15});
+        outerPanel->add(innerPanel);
+
+        innerPanel->add(comboBox);
+
+        outerPanel->setScale(1.25f);
+        innerPanel->setScale(1.6f);
+        comboBox->setScale(1.5f);
+
+        TEST_DRAW_INIT(275, 275, outerPanel)
+        TEST_DRAW("ComboBox_Scaling_Normal.png")
+
+        tgui::Event event;
+        event.type = tgui::Event::Type::MouseMoved;
+        event.mouseMove.x = 80;
+        event.mouseMove.y = 65;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseButtonPressed;
+        event.mouseButton.button = tgui::Event::MouseButton::Left;
+        event.mouseButton.x = 80;
+        event.mouseButton.y = 65;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseButtonReleased;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseMoved;
+        event.mouseMove.x = 230;
+        event.mouseMove.y = 230;
+        gui.handleEvent(event);
+
+        event.type = tgui::Event::Type::MouseButtonPressed;
+        event.mouseButton.button = tgui::Event::MouseButton::Left;
+        event.mouseButton.x = 230;
+        event.mouseButton.y = 230;
+        gui.handleEvent(event);
+
+        TEST_DRAW("ComboBox_Scaling_SelectingItem.png")
+
+        event.type = tgui::Event::Type::MouseButtonReleased;
+        gui.handleEvent(event);
+    }
 }

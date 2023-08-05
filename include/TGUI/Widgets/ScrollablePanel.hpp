@@ -144,7 +144,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @warning This function does not return the absolute position of the ScrollablePanel. It is implemented in a way
         ///          that allows calling getAbsolutePosition() on a child widget of the ScrollablePanel to work.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getAbsolutePosition() const override;
+        TGUI_NODISCARD Vector2f getAbsolutePosition(Vector2f offset) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

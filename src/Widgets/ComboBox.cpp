@@ -916,13 +916,18 @@ namespace tgui
 
         m_previousSelectedItemIndex = m_listBox->getSelectedItemIndex();
 
-        m_listBox->setVisible(true);
-        m_listBox->setScale(getScale());
-
         // Find the RootContainer that contains the combo box
-        Container* container = getParent();
+        Vector2f scale = getScale();
+        Container* container = m_parent;
         while (container->getParent() != nullptr)
+        {
+            scale.x *= container->getScale().x;
+            scale.y *= container->getScale().y;
             container = container->getParent();
+        }
+
+        m_listBox->setScale(scale);
+        m_listBox->setVisible(true);
 
         ExpandDirection direction = m_expandDirection;
         if (direction == ExpandDirection::Automatic)
@@ -935,9 +940,9 @@ namespace tgui
         }
 
         if (direction == ExpandDirection::Down)
-            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
+            m_listBox->setPosition(getAbsolutePosition({0, getSize().y - m_bordersCached.getBottom()}));
         else if (direction == ExpandDirection::Up)
-            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
+            m_listBox->setPosition(getAbsolutePosition({0, m_bordersCached.getTop() - m_listBox->getSize().y}));
 
         container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
 

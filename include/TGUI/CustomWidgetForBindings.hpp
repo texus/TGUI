@@ -122,14 +122,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the absolute position of the widget instead of the relative position to its parent
-        ///
-        /// @return Absolute position of the widget
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getAbsolutePosition() const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
         /// The offset is (0,0) for almost all widgets.
@@ -295,7 +287,6 @@ TGUI_MODULE_EXPORT namespace tgui
         std::function<void(bool)>                       implFocusChanged;
         std::function<bool()>                           implCanGainFocus;
         std::function<Vector2f()>                       implGetFullSize;
-        std::function<Vector2f()>                       implGetAbsolutePosition;
         std::function<Vector2f()>                       implGetWidgetOffset;
         std::function<bool(Duration)>                   implUpdateTimeFunction;
         std::function<bool(Vector2f)>                   implMouseOnWidget;

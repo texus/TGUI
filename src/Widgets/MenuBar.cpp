@@ -602,11 +602,17 @@ namespace tgui
         if (m_parent)
         {
             // Find the RootContainer that contains the menu bar
+            Vector2f scale = getScale();
             Container* container = m_parent;
             while (container->getParent() != nullptr)
+            {
+                scale.x *= container->getScale().x;
+                scale.y *= container->getScale().y;
                 container = container->getParent();
+            }
 
             m_menuWidgetPlaceholder->setPosition(getAbsolutePosition());
+            m_menuWidgetPlaceholder->setScale(scale);
             container->add(m_menuWidgetPlaceholder, "#TGUI_INTERNAL$MenuBarMenuPlaceholder#");
         }
     }
@@ -1667,7 +1673,7 @@ namespace tgui
 
             if (m_menuBar->getParent())
             {
-                const Vector2f menuBarMousePos = pos - m_menuBar->getParent()->getAbsolutePosition();
+                const Vector2f menuBarMousePos = pos - m_menuBar->getAbsolutePosition() + m_menuBar->getPosition();
                 if (m_menuBar->isMouseOnWidget(menuBarMousePos))
                 {
                     mouseOnMenuBar = true;

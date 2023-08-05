@@ -587,29 +587,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Widget::getAbsolutePosition() const
+    Vector2f Widget::getAbsolutePosition(Vector2f offset) const
     {
         Vector2f pos = getPosition();
-        if (m_parent)
-            pos += m_parent->getAbsolutePosition() + m_parent->getChildWidgetsOffset();
 
         const bool defaultOrigin = (getOrigin().x == 0) && (getOrigin().y == 0);
         const bool scaledOrRotated = (getScale().x != 1) || (getScale().y != 1) || (getRotation() != 0);
         if (defaultOrigin && !scaledOrRotated)
+            pos += offset; // Optimization when there is no custom origin and no scaling or rotation
+        else
+        {
+            const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
+            if (!scaledOrRotated)
+                pos += offset - origin; // Optimization when there is no scaling or rotation
+            else
+            {
+                const Vector2f rotOrigin{getRotationOrigin().x * getSize().x, getRotationOrigin().y * getSize().y};
+                const Vector2f scaleOrigin{getScaleOrigin().x * getSize().x, getScaleOrigin().y * getSize().y};
+
+                Transform transform;
+                transform.translate(-origin);
+                transform.rotate(getRotation(), rotOrigin);
+                transform.scale(getScale(), scaleOrigin);
+                pos += transform.transformPoint(offset);
+            }
+        }
+
+        if (m_parent)
+            return m_parent->getAbsolutePosition(pos + m_parent->getChildWidgetsOffset());
+        else
             return pos;
-
-        const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
-        if (!scaledOrRotated)
-            return pos - origin;
-
-        const Vector2f rotOrigin{getRotationOrigin().x * getSize().x, getRotationOrigin().y * getSize().y};
-        const Vector2f scaleOrigin{getScaleOrigin().x * getSize().x, getScaleOrigin().y * getSize().y};
-
-        Transform transform;
-        transform.translate(-origin);
-        transform.rotate(getRotation(), rotOrigin);
-        transform.scale(getScale(), scaleOrigin);
-        return Vector2f(transform.transformPoint({0, 0})) + pos;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

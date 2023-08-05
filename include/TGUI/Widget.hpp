@@ -285,11 +285,13 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the absolute position of the top-left point of the widget instead of the relative position to its parent
+        /// @brief Get the absolute position of the widget instead of the relative position to its parent
+        ///
+        /// @param offset  Offset of the top-left corner inside the widget to calculate the position for
         ///
         /// @return Absolute position of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getAbsolutePosition() const;
+        TGUI_NODISCARD virtual Vector2f getAbsolutePosition(Vector2f offset = {}) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
