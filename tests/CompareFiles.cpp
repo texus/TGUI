@@ -32,10 +32,7 @@
 #endif
 
 // Rendering isn't identical on different computers, so we just check that the image looks similar enough.
-// The worst encountered difference was 1.43% on Label_Simple.png, so errors less than 1.5% of the entire
-// image are allowed. Since 100% would mean going from a completely black to completely white image, the
-// percentage is high enough to make minor errors go unnoticed, but it is better than not checking at all.
-// Worse test on Github Actions: Clipping_NestedLayers.png at 1.71%
+// By using software rendering, we can reduce the error margin from 1.5% to 0.05% though.
 void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2)
 {
     tgui::Vector2u imageSize1;
@@ -64,7 +61,8 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
 
     const double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
     INFO("Filename: " + filename1.toStdString());
-    REQUIRE(diffPercentage < 1.75);
+
+    REQUIRE(diffPercentage < 0.05);
 }
 
 // The compareFiles can't be used to compare empty files because it uses readFileToMemory which

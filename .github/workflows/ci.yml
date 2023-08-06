@@ -230,6 +230,7 @@ jobs:
       - name: Run tests
         run: |
           cd $GITHUB_WORKSPACE/TGUI-build/tests
+          set -a && source ../../TGUI/tests/EnableSoftwareRenderer.env && set +a
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_RENDERER
