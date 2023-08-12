@@ -269,8 +269,8 @@ namespace tgui
         else
         {
             const Vector2f innerSize = m_backgroundComponent->getClientSize();
-            m_imageComponent->setSize({m_relativeGlyphHeight * innerSize.y,
-                                       (m_relativeGlyphHeight * innerSize.y) / icon.getValue().getImageSize().y * icon.getValue().getImageSize().x});
+            m_imageComponent->setSize({(m_relativeGlyphHeight * innerSize.y) * icon.getValue().getImageSize().x / icon.getValue().getImageSize().y,
+                                       (m_relativeGlyphHeight * innerSize.y)});
         }
     }
 

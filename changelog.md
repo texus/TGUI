@@ -1,3 +1,11 @@
+TGUI 1.0-rc2  (TBD)
+-------------------
+
+- MenuBar crashed when menu closed (regression in 1.0-rc)
+- Icon in BitmapButton had wrong ratio when rescaled
+- Prevent crash if provided layout is recursive
+
+
 TGUI 1.0-rc  (18 Juli 2023)
 ---------------------------
 
