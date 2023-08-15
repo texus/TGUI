@@ -516,5 +516,14 @@ TEST_CASE("[BitmapButton]")
                 }
             }
         }
+
+        SECTION("Non-square image")
+        {
+            button->setImage("resources/TextureRect3.png");
+            TEST_DRAW("BitmapButton_NonSquareImage.png")
+
+            button->setText("");
+            TEST_DRAW("BitmapButton_NonSquareImage_NoText.png")
+        }
     }
 }

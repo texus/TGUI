@@ -524,6 +524,30 @@ TEST_CASE("[Slider]")
                 renderer.setThumbWithinTrack(true);
                 TEST_DRAW("Slider_TextureThumbInsideTrack.png")
             }
+
+            SECTION("Non-square thumb texture")
+            {
+                tgui::Texture texture("resources/TextureRect1.png");
+
+                renderer.setTextureThumb(texture);
+                TEST_DRAW("Slider_NonSquareThumbTexture.png")
+
+                const auto imageSize = texture.getImageSize();
+                const auto pixels = texture.getData()->backendTexture->getPixels();
+
+                auto rotatedImagePixels = tgui::MakeUniqueForOverwrite<std::uint8_t[]>(imageSize.x * imageSize.y * 4);
+                for (unsigned y = 0; y < imageSize.y; ++y)
+                {
+                    for (unsigned x = 0; x < imageSize.x; ++x)
+                        std::memcpy(&rotatedImagePixels[(x * imageSize.y + y) * 4], &pixels[(y * imageSize.x + x) * 4], 4);
+                }
+
+                tgui::Texture rotatedTexture;
+                rotatedTexture.loadFromPixelData({imageSize.y, imageSize.x}, rotatedImagePixels.get());
+
+                renderer.setTextureThumb(rotatedTexture);
+                TEST_DRAW("Slider_NonSquareThumbTexture_Rotated.png")
+            }
         }
     }
 }
