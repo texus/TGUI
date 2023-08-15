@@ -157,6 +157,7 @@ namespace tgui
             {
                 m_spriteThumb.setRotation(-90);
                 m_spriteThumbHover.setRotation(-90);
+                std::swap(m_thumb.width, m_thumb.height);
             }
             else
             {

@@ -2,6 +2,7 @@ TGUI 1.0-rc2  (TBD)
 -------------------
 
 - MenuBar crashed when menu closed (regression in 1.0-rc)
+- Slider thumb had wrong position if texture needed to be rotated
 - Icon in BitmapButton had wrong ratio when rescaled
 - Prevent crash if provided layout is recursive
 
