@@ -39,12 +39,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
-{
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    using StringView = std::u32string_view;
-    using CharStringView = std::string_view;
-
+namespace tgui
+{
     inline namespace literals
     {
         inline namespace string_view_literals
@@ -54,6 +51,14 @@ TGUI_MODULE_EXPORT namespace tgui
             using namespace std::literals::string_view_literals;
         }
     }
+}
+#endif
+
+TGUI_MODULE_EXPORT namespace tgui
+{
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    using StringView = std::u32string_view;
+    using CharStringView = std::string_view;
 #else
     template <typename Type>
     struct TypeIdentity

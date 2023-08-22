@@ -223,7 +223,7 @@ endfunction()
 
 # Bundles a set of source files into a c++20 module
 function(tgui_create_module_from_sources source_file_list module_name)
-    file(READ "TGUI-Module.ixx.in" file_contents)
+    file(READ "TGUI-Module.cppm.in" file_contents)
     string(APPEND file_contents "\nexport module ${module_name};\n")
     if(${ARGC} GREATER 2)
         string(APPEND file_contents "\n")

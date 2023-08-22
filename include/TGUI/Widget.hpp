@@ -59,12 +59,16 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+TGUI_MODULE_EXPORT namespace tgui
 {
     class BackendGui;
     class Container;
 
     enum class ShowEffectType;
+}
+
+namespace tgui
+{
     namespace priv
     {
         class Animation;
