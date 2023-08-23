@@ -176,7 +176,8 @@ namespace tgui
             if (!rawFilePtr)
                 return nullptr;
 
-            std::unique_ptr<FILE, decltype(&fclose)> file(rawFilePtr, &fclose);
+            auto closeFileFunc = [](FILE* fp){ fclose(fp); };
+            std::unique_ptr<FILE, decltype(closeFileFunc)> file(rawFilePtr, closeFileFunc);
 
             if (fseek(file.get(), 0, SEEK_END) != 0)
                 return nullptr;
