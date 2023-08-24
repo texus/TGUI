@@ -48,6 +48,70 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpinControl::SpinControl(const SpinControl& other) :
+        SubwidgetContainer{other},
+        onValueChange     {other.onValueChange},
+        m_decimalPlaces   {other.m_decimalPlaces},
+        m_useWideArrows   {other.m_useWideArrows},
+        m_spinButton      {m_container->get<SpinButton>(U"SpinButton")},
+        m_spinText        {m_container->get<EditBox>(U"SpinText")}
+    {
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SpinControl::SpinControl(SpinControl&& other) noexcept :
+        SubwidgetContainer{std::move(other)},
+        onValueChange     {std::move(other.onValueChange)},
+        m_decimalPlaces   {std::move(other.m_decimalPlaces)},
+        m_useWideArrows   {std::move(other.m_useWideArrows)},
+        m_spinButton      {std::move(other.m_spinButton)},
+        m_spinText        {std::move(other.m_spinText)}
+    {
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SpinControl& SpinControl::operator= (const SpinControl& other)
+    {
+        if (this != &other)
+        {
+            SubwidgetContainer::operator=(other);
+            onValueChange   = other.onValueChange;
+            m_decimalPlaces = other.m_decimalPlaces;
+            m_useWideArrows = other.m_useWideArrows;
+            m_spinButton    = m_container->get<SpinButton>(U"SpinButton");
+            m_spinText      = m_container->get<EditBox>(U"SpinText");
+
+            init();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SpinControl& SpinControl::operator= (SpinControl&& other) noexcept
+    {
+        if (this != &other)
+        {
+            onValueChange   = std::move(other.onValueChange);
+            m_decimalPlaces = std::move(other.m_decimalPlaces);
+            m_useWideArrows = std::move(other.m_useWideArrows);
+            m_spinButton    = std::move(other.m_spinButton);
+            m_spinText      = std::move(other.m_spinText);
+            SubwidgetContainer::operator=(std::move(other));
+
+            init();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     SpinControl::Ptr SpinControl::create(float min, float max, float value, unsigned int decimal, float step)
     {
         auto spinControl = std::make_shared<SpinControl>();
@@ -263,11 +327,14 @@ namespace tgui
     void SpinControl::init()
     {
         m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
+
+        m_spinButton->onValueChange.disconnectAll();
         m_spinButton->onValueChange([this](const float val) {
             setString(String::fromNumberRounded(val, m_decimalPlaces));
             onValueChange.emit(this, val);
         });
 
+        m_spinText->onReturnOrUnfocus.disconnectAll();
         m_spinText->onReturnOrUnfocus([this](const String& text) {
             const float curValue = m_spinButton->getValue();
             const float defValue = m_spinButton->getMaximum() + 1;

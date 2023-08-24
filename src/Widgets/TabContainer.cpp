@@ -43,6 +43,96 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TabContainer::TabContainer(const TabContainer& other) :
+        SubwidgetContainer {other},
+        onSelectionChanged {other.onSelectionChanged},
+        onSelectionChanging{other.onSelectionChanging},
+        m_tabs             {m_container->get<Tabs>(U"Tabs")},
+        m_tabAlign         {other.m_tabAlign},
+        m_tabFixedSize     {other.m_tabFixedSize}
+    {
+        auto widgets = m_container->getWidgets();
+        for (const auto& widget : widgets)
+        {
+            auto panel = std::dynamic_pointer_cast<Panel>(widget);
+            if (panel)
+                m_panels.push_back(panel);
+        }
+
+        if ((m_tabs->getSelectedIndex() >= 0) && (static_cast<std::size_t>(m_tabs->getSelectedIndex()) < m_panels.size()))
+            m_selectedPanel = m_panels[static_cast<std::size_t>(m_tabs->getSelectedIndex())];
+
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabContainer::TabContainer(TabContainer&& other) noexcept :
+        SubwidgetContainer {std::move(other)},
+        onSelectionChanged {std::move(other.onSelectionChanged)},
+        onSelectionChanging{std::move(other.onSelectionChanging)},
+        m_panels           {std::move(other.m_panels)},
+        m_selectedPanel    {std::move(other.m_selectedPanel)},
+        m_tabs             {std::move(other.m_tabs)},
+        m_tabAlign         {std::move(other.m_tabAlign)},
+        m_tabFixedSize     {std::move(other.m_tabFixedSize)}
+    {
+        init();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabContainer& TabContainer::operator= (const TabContainer& other)
+    {
+        if (this != &other)
+        {
+            SubwidgetContainer::operator=(other);
+            onSelectionChanged  = other.onSelectionChanged;
+            onSelectionChanging = other.onSelectionChanging;
+            m_tabs              = m_container->get<Tabs>(U"Tabs");
+            m_tabAlign          = other.m_tabAlign;
+            m_tabFixedSize      = other.m_tabFixedSize;
+
+            auto widgets = m_container->getWidgets();
+            for (const auto& widget : widgets)
+            {
+                auto panel = std::dynamic_pointer_cast<Panel>(widget);
+                if (panel)
+                    m_panels.push_back(panel);
+            }
+
+            if ((m_tabs->getSelectedIndex() >= 0) && (static_cast<std::size_t>(m_tabs->getSelectedIndex()) < m_panels.size()))
+                m_selectedPanel = m_panels[static_cast<std::size_t>(m_tabs->getSelectedIndex())];
+
+            init();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabContainer& TabContainer::operator= (TabContainer&& other) noexcept
+    {
+        if (this != &other)
+        {
+            onSelectionChanged  = std::move(other.onSelectionChanged);
+            onSelectionChanging = std::move(other.onSelectionChanging);
+            m_panels            = std::move(other.m_panels);
+            m_selectedPanel     = std::move(other.m_selectedPanel);
+            m_tabs              = std::move(other.m_tabs);
+            m_tabAlign          = std::move(other.m_tabAlign);
+            m_tabFixedSize      = std::move(other.m_tabFixedSize);
+            SubwidgetContainer::operator=(std::move(other));
+
+            init();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TabContainer::Ptr TabContainer::create(const Layout2d& size)
     {
         auto tabControl = std::make_shared<TabContainer>();
@@ -411,6 +501,7 @@ namespace tgui
     void TabContainer::init()
     {
         layoutTabs();
+        m_tabs->onTabSelect.disconnectAll();
         m_tabs->onTabSelect([this](){
             TGUI_ASSERT(m_tabs->getSelectedIndex() >= 0, "TabContainer relies on Tabs::onTabSelect not firing on deselect");
             select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
