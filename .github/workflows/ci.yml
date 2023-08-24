@@ -29,6 +29,7 @@ jobs:
           cmake
           -DCMAKE_CXX_CPPCHECK="cppcheck;--enable=all;--inline-suppr;--quiet;--suppress=*:*/extlibs/*;--suppress=preprocessorErrorDirective;--suppress=noExplicitConstructor;--suppress=unmatchedSuppression;--suppress=missingIncludeSystem;--suppress=useStlAlgorithm;--suppress=passedByValue;--suppress=unusedFunction;--suppress=virtualCallInConstructor"
           -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -57,6 +58,7 @@ jobs:
 
           cmake
           -DCMAKE_CXX_COMPILER=clang++-$CLANG_VERSION
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Release
           -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -156,7 +158,7 @@ jobs:
           cd $GITHUB_WORKSPACE/SFML-build
           sed -i 's/#define SFML_VERSION_MINOR 5/#define SFML_VERSION_MINOR 6/' ../SFML/include/SFML/Config.hpp
           sed -i 's/#define SFML_VERSION_PATCH 1/#define SFML_VERSION_PATCH 0/' ../SFML/include/SFML/Config.hpp
-          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
+          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DBUILD_SHARED_LIBS=ON -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
           make -j2
           make install
 
@@ -205,6 +207,7 @@ jobs:
           -DSDL2_DIR=$SDL_INSTALL_DIR/lib/cmake/SDL2/
           -DSDL2_TTF_PATH=$SDL_TTF_INSTALL_DIR
           -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -311,7 +314,7 @@ jobs:
           cd $GITHUB_WORKSPACE/SFML-build
           mkdir $GITHUB_WORKSPACE/SFML
           wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/$SFML_VERSION.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SFML
-          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
+          cmake -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DBUILD_SHARED_LIBS=ON -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML
           make -j2
           make install
 
@@ -362,6 +365,7 @@ jobs:
           -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Release
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -395,6 +399,7 @@ jobs:
           -Dglfw3_DIR=$GLFW_INSTALL_DIR/lib/cmake/glfw3/
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -453,7 +458,7 @@ jobs:
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DCMAKE_UNITY_BUILD=OFF
           -DCMAKE_BUILD_TYPE=Debug
-          -DTGUI_SHARED_LIBS=ON
+          -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
@@ -510,7 +515,7 @@ jobs:
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
           -DCMAKE_BUILD_TYPE=Release
-          -DTGUI_SHARED_LIBS=OFF
+          -DBUILD_SHARED_LIBS=OFF
           -DTGUI_CXX_STANDARD=14
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -582,7 +587,7 @@ jobs:
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -DCMAKE_UNITY_BUILD=ON
           -DCMAKE_BUILD_TYPE=Release
-          -DTGUI_SHARED_LIBS=OFF
+          -DBUILD_SHARED_LIBS=OFF
           -DTGUI_USE_STATIC_STD_LIBS=ON
           -DTGUI_CXX_STANDARD=17
           -DTGUI_BUILD_EXAMPLES=ON
@@ -617,6 +622,7 @@ jobs:
 
           cmake
           -DCMAKE_UNITY_BUILD=ON
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_BUILD_FRAMEWORK=OFF
           -DTGUI_CXX_STANDARD=14
@@ -643,6 +649,7 @@ jobs:
 
           cmake
           -DCMAKE_UNITY_BUILD=ON
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Release
           -DTGUI_BUILD_FRAMEWORK=ON
           -DTGUI_CXX_STANDARD=17
@@ -734,7 +741,7 @@ jobs:
           wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/${SFML_VERSION}.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SFML
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_static -DCMAKE_BUILD_TYPE=Debug ../SFML
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_static -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Debug ../SFML
           make -j2
           make install
 
@@ -754,6 +761,7 @@ jobs:
           -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION
           -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI
           -DCMAKE_UNITY_BUILD=ON
+          -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_BACKEND=SFML_GRAPHICS
           -DTGUI_CXX_STANDARD=14
@@ -797,7 +805,7 @@ jobs:
           unzip SFML-$SFML_VERSION-sources.zip
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
-          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DCMAKE_TOOLCHAIN_FILE=../SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake -DIOS_PLATFORM=OS -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML-$SFML_VERSION
+          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$SFML_INSTALL_DIR -DCMAKE_TOOLCHAIN_FILE=../SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake -DIOS_PLATFORM=OS -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF ../SFML-$SFML_VERSION
           cmake --build . --config Debug --target install
 
       - name: Checkout TGUI
@@ -886,7 +894,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/x86/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DCMAKE_UNITY_BUILD=ON
-          -DTGUI_SHARED_LIBS=OFF
+          -DBUILD_SHARED_LIBS=OFF
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_DOC=ON
@@ -910,7 +918,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A x64
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/x64/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DCMAKE_UNITY_BUILD=ON
-          -DTGUI_SHARED_LIBS=OFF
+          -DBUILD_SHARED_LIBS=OFF
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_DOC=ON
@@ -934,7 +942,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/x86/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DCMAKE_UNITY_BUILD=ON
-          -DTGUI_SHARED_LIBS=ON
+          -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
@@ -957,7 +965,7 @@ jobs:
           -G "${env:INSTALLED_VS_VERSION}" -T v${env:MSVC_TOOLSET_VERSION} -A x64
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/x64/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DCMAKE_UNITY_BUILD=ON
-          -DTGUI_SHARED_LIBS=ON
+          -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
