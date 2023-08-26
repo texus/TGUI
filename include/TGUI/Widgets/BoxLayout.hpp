@@ -138,6 +138,20 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the index of a widget in this container
+        ///
+        /// Widgets are drawn in the order of the list, so widgets with a higher index will appear after others.
+        ///
+        /// @param widget  Widget that is to be moved to a different index
+        /// @param index   New index of the widget, corresponding to the widget position after the widget has been moved
+        ///
+        /// @return True when the index was changed, false if widget wasn't found in the container or index was too high
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setWidgetIndex(const Widget::Ptr& widget, std::size_t index) override;
+        using Container::setWidgetIndex;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

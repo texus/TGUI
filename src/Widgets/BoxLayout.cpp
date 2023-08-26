@@ -131,6 +131,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BoxLayout::setWidgetIndex(const Widget::Ptr& widget, std::size_t index)
+    {
+        const auto widgetIndexChanged = Container::setWidgetIndex(widget, index);
+        if (widgetIndexChanged)
+            updateWidgets();
+        return widgetIndexChanged;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BoxLayout::rendererChanged(const String& property)
     {
         if (property == U"SpaceBetweenWidgets")

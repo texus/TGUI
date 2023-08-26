@@ -345,7 +345,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return True when the index was changed, false if widget wasn't found in the container or index was too high
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setWidgetIndex(const Widget::Ptr& widget, std::size_t index);
+        virtual bool setWidgetIndex(const Widget::Ptr& widget, std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
