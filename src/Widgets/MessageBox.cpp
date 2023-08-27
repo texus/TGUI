@@ -427,7 +427,14 @@ namespace tgui
             rearrange();
         }
         else
+        {
+            const bool autoSize = m_autoSize;
             ChildWindow::rendererChanged(property);
+
+            // Updating e.g. the borders will cause setSize to be called and auto-sizing to be disabled.
+            // Make certain that updating the renderer never impacts our auto-size flag.
+            m_autoSize = autoSize;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
