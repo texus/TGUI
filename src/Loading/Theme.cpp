@@ -434,6 +434,9 @@ namespace tgui
             {"SelectedTextColor", ""},
             {"SeparatorColor", "BorderColor"},
         }},
+        {"MessageBox", {
+            {"TextColor", ""},
+        }},
         {"Panel", {
             {"BackgroundColor", ""},
             {"BorderColor", ""},
