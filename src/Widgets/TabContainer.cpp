@@ -510,6 +510,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Signal& TabContainer::getSignal(String signalName)
+    {
+        if (signalName == onSelectionChanged.getName())
+            return onSelectionChanged;
+        else if (signalName == onSelectionChanging.getName())
+            return onSelectionChanging;
+        else
+            return Widget::getSignal(std::move(signalName));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr TabContainer::clone() const
     {
         return std::make_shared<TabContainer>(*this);

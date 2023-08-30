@@ -111,9 +111,11 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
-        {
+        if (m_spriteBackground.isSet())
             m_spriteBackground.setSize(getSize());
+
+        if (m_spriteForeground.isSet())
+        {
             m_spriteForeground.setSize({(m_spriteForeground.getTexture().getImageSize().x / static_cast<float>(m_spriteBackground.getTexture().getImageSize().x)) * getSize().x,
                                         (m_spriteForeground.getTexture().getImageSize().y / static_cast<float>(m_spriteBackground.getTexture().getImageSize().y)) * getSize().y});
         }
@@ -279,8 +281,8 @@ namespace tgui
             if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
             {
                 // Only return true when the pixel under the mouse isn't transparent
-                if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos - m_bordersCached.getOffset())
-                 || !m_spriteForeground.isTransparentPixel(pos - m_bordersCached.getOffset() - ((getInnerSize() - m_spriteForeground.getSize()) / 2.f)))
+                if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos)
+                 || !m_spriteForeground.isTransparentPixel(pos - ((getInnerSize() - m_spriteForeground.getSize()) / 2.f)))
                     return true;
             }
             else // There is no texture, the widget has a circle shape
@@ -553,8 +555,11 @@ namespace tgui
 
     Vector2f Knob::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        if (m_spriteBackground.isSet())
+            return getSize();
+        else
+            return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
+                    std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

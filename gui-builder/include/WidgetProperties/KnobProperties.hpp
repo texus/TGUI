@@ -67,6 +67,7 @@ struct KnobProperties : WidgetProperties
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["TextureForeground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureForeground())};
+        pair.second["ImageRotation"] = {"Float", tgui::String::fromNumber(renderer->getImageRotation())};
         return pair;
     }
 };
