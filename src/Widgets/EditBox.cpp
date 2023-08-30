@@ -186,8 +186,8 @@ namespace tgui
 
     void EditBox::selectText(std::size_t start, std::size_t length)
     {
-        m_selStart = start;
-        updateSelEnd(std::min(m_text.length(), start + length));
+        m_selStart = std::min(m_text.length(), start);
+        updateSelEnd(length == String::npos ? m_text.length() : std::min(m_text.length(), start + length));
         updateSelection();
     }
 
