@@ -606,10 +606,18 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates m_selEnd with a new value and emits the onCaretPositionChange signal
+        // @param newValue the value to assign to m_selEnd.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateSelEnd(const Vector2<std::size_t>& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
         SignalString onTextChange = {"TextChanged"};     //!< The text was changed. Optional parameter: new text
         Signal onSelectionChange = {"SelectionChanged"}; //!< Selected text changed
+        SignalTyped<Vector2<std::size_t>> onCaretPositionChange = { "CaretPositionChanged" }; //!< The caret's position was changed. Optional parameter: new caret position, x is the column, y is the line
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -634,6 +642,8 @@ TGUI_MODULE_EXPORT namespace tgui
         Vector2<std::size_t> m_selStart;
         Vector2<std::size_t> m_selEnd;
         std::pair<Vector2<std::size_t>, Vector2<std::size_t>> m_lastSelection;
+        // Used to prevent updating m_selEnd more than once in setSelectedText()
+        bool m_retainSelEnd = false;
 
         // Information about the caret
         Vector2f m_caretPosition;

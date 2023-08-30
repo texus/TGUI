@@ -178,9 +178,9 @@ namespace tgui
     void TextArea::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
     {
         setCaretPosition(selectionEndIndex);
-        auto selEnd = m_selEnd;
+        m_retainSelEnd = true;
         setCaretPosition(selectionStartIndex);
-        m_selEnd = selEnd;
+        m_retainSelEnd = false;
         updateSelectionTexts();
     }
 
@@ -342,7 +342,8 @@ namespace tgui
                 m_selStart.y = i;
                 m_selStart.x = charactersBeforeCaret - count;
 
-                m_selEnd = m_selStart;
+                if (!m_retainSelEnd)
+                    updateSelEnd(m_selStart);
                 updateSelectionTexts();
                 break;
             }
@@ -480,6 +481,7 @@ namespace tgui
             if (m_lineHeight == 0)
                 return false;
 
+            const auto oldSelEnd = m_selEnd;
             const auto caretPosition = findCaretPosition(pos);
 
             // Check if this is a double click
@@ -535,6 +537,10 @@ namespace tgui
                 // If the next click comes soon enough then it will be a double click
                 m_possibleDoubleClick = true;
             }
+
+            // If the caret's position has changed, emit signal.
+            if (oldSelEnd != m_selEnd)
+                onCaretPositionChange.emit(this, m_selEnd);
 
             // Update the texts
             updateSelectionTexts();
@@ -601,6 +607,7 @@ namespace tgui
             if (caretPosition != m_selEnd)
             {
                 m_selEnd = caretPosition;
+                onCaretPositionChange.emit(this, m_selEnd);
                 updateSelectionTexts();
             }
 
@@ -687,17 +694,17 @@ namespace tgui
             else if (keyboard::isKeyPressMoveCaretWordEnd(event))
                 moveCaretWordEnd();
             else if (keyboard::isKeyPressMoveCaretUp(event))
-                m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y - (m_lineHeight / 2.f) - m_verticalScrollbar->getValue()});
+                updateSelEnd(findCaretPosition({m_caretPosition.x, m_caretPosition.y - (m_lineHeight / 2.f) - m_verticalScrollbar->getValue()}));
             else if (keyboard::isKeyPressMoveCaretDown(event))
-                m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y + (m_lineHeight * 1.5f) - m_verticalScrollbar->getValue()});
+                updateSelEnd(findCaretPosition({m_caretPosition.x, m_caretPosition.y + (m_lineHeight * 1.5f) - m_verticalScrollbar->getValue()}));
             else if (keyboard::isKeyPressMoveCaretLineStart(event))
-                m_selEnd.x = 0;
+                updateSelEnd({0, m_selEnd.y});
             else if (keyboard::isKeyPressMoveCaretLineEnd(event))
-                m_selEnd.x = m_lines[m_selEnd.y].length();
+                updateSelEnd({m_lines[m_selEnd.y].length(), m_selEnd.y});
             else if (keyboard::isKeyPressMoveCaretDocumentBegin(event))
-                m_selEnd = {0, 0};
+                updateSelEnd({0, 0});
             else if (keyboard::isKeyPressMoveCaretDocumentEnd(event))
-                m_selEnd = {m_lines[m_lines.size()-1].length(), m_lines.size()-1};
+                updateSelEnd({m_lines[m_lines.size()-1].length(), m_lines.size()-1});
             else
                 caretMoved = false;
 
@@ -753,6 +760,7 @@ namespace tgui
         if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
         {
             insert();
+            onCaretPositionChange.emit(this, m_selEnd);
         }
         else // There is no scrollbar, the text may not fit
         {
@@ -773,6 +781,10 @@ namespace tgui
 
                 rearrangeText(true);
             }
+
+            // If caret position changed, emit signal.
+            if (oldSelEnd != m_selEnd)
+                onCaretPositionChange.emit(this, m_selEnd);
         }
 
         // The caret should be visible again
@@ -900,7 +912,7 @@ namespace tgui
             if (selStart <= selEnd)
             {
                 m_text.erase(selStart, selEnd - selStart);
-                m_selEnd = m_selStart;
+                updateSelEnd(m_selStart);
             }
             else
             {
@@ -916,6 +928,7 @@ namespace tgui
 
     void TextArea::moveCaretLeft(bool shiftPressed)
     {
+        const auto oldSelEnd = m_selEnd;
         if ((m_selStart != m_selEnd) && !shiftPressed)
         {
             if ((m_selStart.y < m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x < m_selEnd.x)))
@@ -937,12 +950,15 @@ namespace tgui
                 }
             }
         }
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretRight(bool shiftPressed)
     {
+        const auto oldSelEnd = m_selEnd;
         if ((m_selStart != m_selEnd) && !shiftPressed)
         {
             if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
@@ -962,12 +978,15 @@ namespace tgui
             else
                 m_selEnd.x++;
         }
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretWordBegin()
     {
+        const auto oldSelEnd = m_selEnd;
         // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
         bool skippedWhitespace = false;
         bool done = false;
@@ -1010,12 +1029,15 @@ namespace tgui
             else
                 break;
         }
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretWordEnd()
     {
+        const auto oldSelEnd = m_selEnd;
         // Move to the end of the word (or to the end of the next word when already at the end)
         bool skippedWhitespace = false;
         bool done = false;
@@ -1058,12 +1080,15 @@ namespace tgui
             else
                 break;
         }
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretPageUp()
     {
+        const auto oldSelEnd = m_selEnd;
         // Move to the top line when not there already
         if (m_selEnd.y != m_topLine)
             m_selEnd.y = m_topLine;
@@ -1078,12 +1103,15 @@ namespace tgui
         }
 
         m_selEnd.x = 0;
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretPageDown()
     {
+        const auto oldSelEnd = m_selEnd;
         // Move to the bottom line when not there already
         if (m_topLine + m_visibleLines > m_lines.size())
             m_selEnd.y = m_lines.size() - 1;
@@ -1100,6 +1128,9 @@ namespace tgui
         }
 
         m_selEnd.x = m_lines[m_selEnd.y].length();
+
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1115,6 +1146,7 @@ namespace tgui
             const std::size_t pos = getSelectionEnd();
             if (pos > 0)
             {
+                const auto oldSelEnd = m_selEnd;
                 if (m_selEnd.x > 0)
                 {
                     // There is a specific case that we have to watch out for. When we are removing the last character on
@@ -1144,6 +1176,9 @@ namespace tgui
 
                 m_text.erase(pos - 1, 1);
                 rearrangeText(true);
+
+                if (oldSelEnd != m_selEnd)
+                    onCaretPositionChange.emit(this, m_selEnd);
             }
         }
         else // When you did select some characters then delete them
@@ -1222,6 +1257,7 @@ namespace tgui
             rearrangeText(true);
 
             onTextChange.emit(this, m_text);
+            onCaretPositionChange.emit(this, m_selEnd);
         }
     }
 
@@ -1230,7 +1266,7 @@ namespace tgui
     void TextArea::selectAllText()
     {
         m_selStart = {0, 0};
-        m_selEnd = Vector2<std::size_t>(m_lines[m_lines.size()-1].length(), m_lines.size()-1);
+        updateSelEnd(Vector2<std::size_t>(m_lines[m_lines.size()-1].length(), m_lines.size()-1));
         updateSelectionTexts();
     }
 
@@ -1345,18 +1381,18 @@ namespace tgui
             if (newSelStartFound && newSelEndFound)
             {
                 m_selStart = newSelStart;
-                m_selEnd = newSelEnd;
+                updateSelEnd(newSelEnd);
             }
             else // The text has changed too much, the selection can't be kept
             {
                 m_selStart = Vector2<std::size_t>(m_lines[m_lines.size()-1].length(), m_lines.size()-1);
-                m_selEnd = m_selStart;
+                updateSelEnd(m_selStart);
             }
         }
         else // Set the caret at the back of the text
         {
             m_selStart = Vector2<std::size_t>(m_lines[m_lines.size()-1].length(), m_lines.size()-1);
-            m_selEnd = m_selStart;
+            updateSelEnd(m_selEnd = m_selStart);
         }
 
         updateScrollbars();
@@ -1987,6 +2023,16 @@ namespace tgui
     Widget::Ptr TextArea::clone() const
     {
         return std::make_shared<TextArea>(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextArea::updateSelEnd(const Vector2<std::size_t>& newValue)
+    {
+        const bool emit = newValue != m_selEnd;
+        m_selEnd = newValue;
+        if (emit)
+            onCaretPositionChange.emit(this, m_selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
