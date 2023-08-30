@@ -1759,6 +1759,8 @@ namespace tgui
             return onTextChange;
         else if (signalName == onSelectionChange.getName())
             return onSelectionChange;
+        else if (signalName == onCaretPositionChange.getName())
+            return onCaretPositionChange;
         else
             return Widget::getSignal(std::move(signalName));
     }
