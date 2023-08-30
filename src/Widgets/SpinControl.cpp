@@ -375,6 +375,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Signal& SpinControl::getSignal(String signalName)
+    {
+        if (signalName == onValueChange.getName())
+            return onValueChange;
+        else
+            return Widget::getSignal(std::move(signalName));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr SpinControl::clone() const
     {
         return std::make_shared<SpinControl>(*this);
