@@ -358,6 +358,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::size_t TextArea::getCaretLine() const
+    {
+        const auto caret = getCaretPosition();
+        if (caret == 0)
+            return 1;
+        else
+            return m_text.count('\n', caret - 1) + 1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::size_t TextArea::getCaretColumn() const
+    {
+        const auto caret = getCaretPosition();
+        if (caret == 0)
+            return 1;
+        auto lineStart = m_text.rfind('\n', caret - 1);
+        if (lineStart == String::npos)
+            return caret + 1;
+        else
+            return caret - lineStart;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     void TextArea::setReadOnly(bool readOnly)
     {
         m_readOnly = readOnly;

@@ -2283,6 +2283,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::size_t String::count(char ch, std::size_t pos) const noexcept
+    {
+        return count(static_cast<char32_t>(ch), pos);
+    }
+
+    std::size_t String::count(wchar_t ch, std::size_t pos) const noexcept
+    {
+        return count(static_cast<char32_t>(ch), pos);
+    }
+
+    std::size_t String::count(char16_t ch, std::size_t pos) const noexcept
+    {
+        return count(static_cast<char32_t>(ch), pos);
+    }
+
+    std::size_t String::count(char32_t ch, std::size_t pos) const noexcept
+    {
+        std::size_t counter = 0;
+        for (std::size_t c = 0, end = std::min(m_string.size(), pos + 1); c < end; ++c)
+            if (m_string[c] == ch) ++counter;
+        return counter;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& str)
     {
         os << std::string(str);
