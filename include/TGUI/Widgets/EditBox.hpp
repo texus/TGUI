@@ -607,6 +607,7 @@ TGUI_MODULE_EXPORT namespace tgui
         SignalString             onReturnOrUnfocus     = {"ReturnOrUnfocused"};    //!< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
         SignalTyped<std::size_t> onCaretPositionChange = {"CaretPositionChanged"}; //!< The caret's position was changed. Optional parameter: new caret position
 
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
