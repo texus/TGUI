@@ -221,7 +221,7 @@ TGUI_MODULE_EXPORT namespace tgui
     public:
 
         SignalColor onColorChange = {"ColorChanged"}; ///< Color was changed
-        SignalColor onOkPress = {"OkPress"}; ///< Ok button was pressed
+        SignalColor onOkPress = {"OkPressed"}; ///< Ok button was pressed
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
