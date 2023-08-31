@@ -2303,7 +2303,11 @@ namespace tgui
         std::size_t counter = 0;
         const std::size_t end = m_string.size();
         for (std::size_t c = pos; c < end; ++c)
-            if (m_string[c] == ch) ++counter;
+        {
+            if (m_string[c] == ch)
+                ++counter;
+        }
+
         return counter;
     }
 

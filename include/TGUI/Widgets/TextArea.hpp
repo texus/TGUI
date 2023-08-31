@@ -247,10 +247,12 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This function will take word-wrap into account. So, if a caret is on a line that is
         /// currently wrapping, the caret will still register as being on the same line even if
         /// that line spans many lines in the TextArea.
+        ///
+        /// If the value is at the top, the value will be 1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::size_t getCaretLine() const;
-        
-        
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns which column the blinking cursor is currently located on
         ///
@@ -259,6 +261,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This function will take word-wrap into account. So, if a caret is on a line that is
         /// currently wrapping, the caret will still register as being on the same line even if
         /// that line spans many lines in the TextArea.
+        ///
+        /// If the caret is at the beginning of a line, the value will be 1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::size_t getCaretColumn() const;
 

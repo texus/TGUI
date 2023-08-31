@@ -53,7 +53,10 @@ TEST_CASE("[TextArea]")
         textArea->onTextChange([](){});
         textArea->onTextChange([](const tgui::String&){});
 
+        textArea->onCaretPositionChange([](){});
+
         REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("TextChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("CaretPositionChanged").connect([]{}));
     }
 
     SECTION("WidgetType")
@@ -118,6 +121,16 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getSelectedText() == "");
         REQUIRE(textArea->getSelectionStart() == 2);
         REQUIRE(textArea->getSelectionEnd() == 2);
+
+        textArea->setSelectedText(6, 10);
+        REQUIRE(textArea->getSelectedText() == "xt");
+        REQUIRE(textArea->getSelectionStart() == 6);
+        REQUIRE(textArea->getSelectionEnd() == 8);
+
+        textArea->setSelectedText(10, 20);
+        REQUIRE(textArea->getSelectedText() == "");
+        REQUIRE(textArea->getSelectionStart() == 8);
+        REQUIRE(textArea->getSelectionEnd() == 8);
     }
 
     SECTION("TextSize")
@@ -224,6 +237,34 @@ TEST_CASE("[TextArea]")
 
         textArea->setCaretPosition(25);
         REQUIRE(textArea->getCaretPosition() == 9);
+
+        textArea->setSize({50, 50});
+        textArea->setText("A long text that wouldn't fit on a single line.\nFollowed by more\nand more...");
+
+        textArea->setCaretPosition(0);
+        REQUIRE(textArea->getCaretLine() == 1);
+        REQUIRE(textArea->getCaretColumn() == 1);
+
+        textArea->setCaretPosition(10);
+        REQUIRE(textArea->getCaretLine() == 1);
+        REQUIRE(textArea->getCaretColumn() == 11);
+
+        textArea->setCaretPosition(60);
+        REQUIRE(textArea->getCaretLine() == 2);
+        REQUIRE(textArea->getCaretColumn() == 13);
+
+        textArea->setCaretPosition(70);
+        REQUIRE(textArea->getCaretLine() == 3);
+        REQUIRE(textArea->getCaretColumn() == 6);
+
+        textArea->setCaretPosition(100);
+        REQUIRE(textArea->getCaretLine() == 3);
+        REQUIRE(textArea->getCaretColumn() == 12);
+
+        textArea->setSelectedText(6, 2);
+        REQUIRE(textArea->getCaretPosition() == 2);
+        REQUIRE(textArea->getCaretLine() == 1);
+        REQUIRE(textArea->getCaretColumn() == 3);
     }
 
     SECTION("LinesCount")

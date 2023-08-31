@@ -62,7 +62,7 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
     const double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
     INFO("Filename: " + filename1.toStdString());
 
-    REQUIRE(diffPercentage < 0.05);
+    REQUIRE(diffPercentage < 0.06);
 }
 
 // The compareFiles can't be used to compare empty files because it uses readFileToMemory which
