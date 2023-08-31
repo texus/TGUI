@@ -225,6 +225,12 @@ namespace tgui
         }
 
         Widget::rendererChanged(property);
+
+        // Make sure to pass on the SubwidgetContainer's font to the internal container
+        if (property == U"Font")
+        {
+            m_container->setInheritedFont(m_fontCached);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
