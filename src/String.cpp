@@ -2301,7 +2301,8 @@ namespace tgui
     std::size_t String::count(char32_t ch, std::size_t pos) const noexcept
     {
         std::size_t counter = 0;
-        for (std::size_t c = 0, end = std::min(m_string.size(), pos + 1); c < end; ++c)
+        const std::size_t end = m_string.size();
+        for (std::size_t c = pos; c < end; ++c)
             if (m_string[c] == ch) ++counter;
         return counter;
     }
