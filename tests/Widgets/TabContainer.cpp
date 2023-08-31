@@ -30,8 +30,8 @@ TEST_CASE("[tabContainer]")
 
     SECTION("Signals")
     {
-        tabContainer->onSelectionChanged([]() {});
-        tabContainer->onSelectionChanged([](int) {});
+        tabContainer->onSelectionChange([]() {});
+        tabContainer->onSelectionChange([](int) {});
         tabContainer->onSelectionChanging([]() {});
         tabContainer->onSelectionChanging([](int, bool*) {});
     }

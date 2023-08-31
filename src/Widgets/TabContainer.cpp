@@ -45,7 +45,7 @@ namespace tgui
 
     TabContainer::TabContainer(const TabContainer& other) :
         SubwidgetContainer {other},
-        onSelectionChanged {other.onSelectionChanged},
+        onSelectionChange  {other.onSelectionChange},
         onSelectionChanging{other.onSelectionChanging},
         m_tabs             {m_container->get<Tabs>(U"Tabs")},
         m_tabAlign         {other.m_tabAlign},
@@ -69,7 +69,7 @@ namespace tgui
 
     TabContainer::TabContainer(TabContainer&& other) noexcept :
         SubwidgetContainer {std::move(other)},
-        onSelectionChanged {std::move(other.onSelectionChanged)},
+        onSelectionChange  {std::move(other.onSelectionChange)},
         onSelectionChanging{std::move(other.onSelectionChanging)},
         m_panels           {std::move(other.m_panels)},
         m_selectedPanel    {std::move(other.m_selectedPanel)},
@@ -87,7 +87,7 @@ namespace tgui
         if (this != &other)
         {
             SubwidgetContainer::operator=(other);
-            onSelectionChanged  = other.onSelectionChanged;
+            onSelectionChange   = other.onSelectionChange;
             onSelectionChanging = other.onSelectionChanging;
             m_tabs              = m_container->get<Tabs>(U"Tabs");
             m_tabAlign          = other.m_tabAlign;
@@ -116,7 +116,7 @@ namespace tgui
     {
         if (this != &other)
         {
-            onSelectionChanged  = std::move(other.onSelectionChanged);
+            onSelectionChange   = std::move(other.onSelectionChange);
             onSelectionChanging = std::move(other.onSelectionChanging);
             m_panels            = std::move(other.m_panels);
             m_selectedPanel     = std::move(other.m_selectedPanel);
@@ -298,7 +298,7 @@ namespace tgui
 
         m_tabs->select(index);
 
-        onSelectionChanged.emit(this, static_cast<int>(index));
+        onSelectionChange.emit(this, static_cast<int>(index));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,8 +512,8 @@ namespace tgui
 
     Signal& TabContainer::getSignal(String signalName)
     {
-        if (signalName == onSelectionChanged.getName())
-            return onSelectionChanged;
+        if (signalName == onSelectionChange.getName())
+            return onSelectionChange;
         else if (signalName == onSelectionChanging.getName())
             return onSelectionChanging;
         else

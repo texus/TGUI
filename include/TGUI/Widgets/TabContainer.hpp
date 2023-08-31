@@ -356,11 +356,11 @@ TGUI_MODULE_EXPORT namespace tgui
     public:
 
         /// Selection of the tab container changed. Optional parameter: index of panel with selection
-        SignalInt onSelectionChanged = { "SelectionChanged" };
+        SignalInt onSelectionChange = {"SelectionChanged"};
 
         /// Selection of the tab container changing.
         /// Selection changing can be vetoed if to set second parameter to false in handler.
-        SignalTyped2<int, bool*> onSelectionChanging = { "SelectionChanging" };
+        SignalTyped2<int, bool*> onSelectionChanging = {"SelectionChanging"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
