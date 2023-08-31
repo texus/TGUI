@@ -473,7 +473,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Rearrange the text inside the text area (by using word wrap).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void rearrangeText(bool keepSelection);
+        void rearrangeText(bool keepSelection, const bool emitCaretChangedPosition = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the physical size of the scrollbars, as well as the viewport size.
@@ -630,10 +630,18 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates m_selEnd with a new value and emits the onCaretPositionChange signal
+        // @param newValue the value to assign to m_selEnd.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateSelEnd(const Vector2<std::size_t>& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalString onTextChange = {"TextChanged"};     //!< The text was changed. Optional parameter: new text
-        Signal onSelectionChange = {"SelectionChanged"}; //!< Selected text changed
+        SignalString onTextChange = {"TextChanged"};             //!< The text was changed. Optional parameter: new text
+        Signal onSelectionChange = {"SelectionChanged"};         //!< Selected text changed
+        Signal onCaretPositionChange = {"CaretPositionChanged"}; //!< Caret position changed
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -658,6 +666,9 @@ TGUI_MODULE_EXPORT namespace tgui
         Vector2<std::size_t> m_selStart;
         Vector2<std::size_t> m_selEnd;
         std::pair<Vector2<std::size_t>, Vector2<std::size_t>> m_lastSelection;
+        // If true, m_selEnd will not be changed in setCaretPosition().
+        // Used internally when setSelectedText() is called.
+        bool m_retainSelEnd = false;
 
         // Information about the caret
         Vector2f m_caretPosition;
