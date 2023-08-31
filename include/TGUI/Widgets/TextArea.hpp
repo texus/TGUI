@@ -240,6 +240,30 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns which line the blinking cursor is currently located on
+        ///
+        /// @return The line the caret is currently located on
+        ///
+        /// This function will take word-wrap into account. So, if a caret is on a line that is
+        /// currently wrapping, the caret will still register as being on the same line even if
+        /// that line spans many lines in the TextArea.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD std::size_t getCaretLine() const;
+        
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns which column the blinking cursor is currently located on
+        ///
+        /// @return Characters before the caret on the caret's current line
+        ///
+        /// This function will take word-wrap into account. So, if a caret is on a line that is
+        /// currently wrapping, the caret will still register as being on the same line even if
+        /// that line spans many lines in the TextArea.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD std::size_t getCaretColumn() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes the text area read-only or make it writable again
         ///
         /// @param readOnly  Should the text area be read-only?
