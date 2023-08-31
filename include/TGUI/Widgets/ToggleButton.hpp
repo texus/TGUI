@@ -140,7 +140,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalBool onToggle   = {"Checked"}; //!< Button state was toggled. Optional parameter: bool containing whether the button is down or not
+        SignalBool onToggle = {"Toggled"}; //!< Button state was toggled. Optional parameter: bool containing whether the button is down or not
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
