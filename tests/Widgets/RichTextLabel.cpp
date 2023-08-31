@@ -33,6 +33,8 @@ TEST_CASE("[RichTextLabel]")
     {
         label->onDoubleClick([](){});
         label->onDoubleClick([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(label)->getSignal("DoubleClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

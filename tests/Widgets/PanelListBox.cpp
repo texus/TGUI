@@ -36,6 +36,8 @@ TEST_CASE("[PanelListBox]")
         panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&){});
         panelListBox->onItemSelect([](const tgui::Panel::Ptr&, const tgui::String&){});
         panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&, const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panelListBox)->getSignal("ItemSelected").connect([]{}));
     }
 
     SECTION("WidgetType")

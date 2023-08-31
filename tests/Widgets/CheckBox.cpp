@@ -39,6 +39,10 @@ TEST_CASE("[CheckBox]")
 
         checkBox->onChange([](){});
         checkBox->onChange([](bool){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(checkBox)->getSignal("Checked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(checkBox)->getSignal("Unchecked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(checkBox)->getSignal("Changed").connect([]{}));
     }
 
     SECTION("WidgetType")

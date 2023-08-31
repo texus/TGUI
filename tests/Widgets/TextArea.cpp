@@ -52,6 +52,8 @@ TEST_CASE("[TextArea]")
     {
         textArea->onTextChange([](){});
         textArea->onTextChange([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("TextChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

@@ -36,6 +36,8 @@ TEST_CASE("[SpinButton]")
     {
         spinButton->onValueChange([](){});
         spinButton->onValueChange([](float){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(spinButton)->getSignal("ValueChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

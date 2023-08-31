@@ -47,6 +47,13 @@ TEST_CASE("[ChildWindow]")
 
         childWindow->onEscapeKeyPress([](){});
         childWindow->onEscapeKeyPress([](const tgui::ChildWindow::Ptr&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("MousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closing").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Maximized").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Minimized").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("EscapeKeyPressed").connect([]{}));
     }
 
     SECTION("WidgetType")

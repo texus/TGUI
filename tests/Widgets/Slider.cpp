@@ -36,6 +36,8 @@ TEST_CASE("[Slider]")
     {
         slider->onValueChange([](){});
         slider->onValueChange([](float){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("ValueChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

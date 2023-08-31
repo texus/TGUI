@@ -44,6 +44,10 @@ TEST_CASE("[EditBox]")
 
         editBox->onReturnOrUnfocus([](){});
         editBox->onReturnOrUnfocus([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("TextChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnKeyPressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnOrUnfocused").connect([]{}));
     }
 
     SECTION("WidgetType")

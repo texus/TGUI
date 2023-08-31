@@ -36,6 +36,8 @@ TEST_CASE("[Scrollbar]")
     {
         scrollbar->onValueChange([](){});
         scrollbar->onValueChange([](unsigned int){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(scrollbar)->getSignal("ValueChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

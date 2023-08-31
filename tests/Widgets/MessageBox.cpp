@@ -33,6 +33,8 @@ TEST_CASE("[MessageBox]")
     {
         messageBox->onButtonPress([](){});
         messageBox->onButtonPress([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(messageBox)->getSignal("ButtonPressed").connect([]{}));
     }
 
     SECTION("WidgetType")

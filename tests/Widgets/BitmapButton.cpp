@@ -33,6 +33,8 @@ TEST_CASE("[BitmapButton]")
     {
         button->onPress([](){});
         button->onPress([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(button)->getSignal("Pressed").connect([]{}));
     }
 
     SECTION("WidgetType")

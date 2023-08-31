@@ -37,6 +37,8 @@ TEST_CASE("[MenuBar]")
 
         menuBar->connectMenuItem("File", "Save", [](){});
         menuBar->connectMenuItem({"Help", "About", "Version"}, [](){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(menuBar)->getSignal("MenuItemClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

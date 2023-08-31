@@ -36,6 +36,9 @@ TEST_CASE("[ColorPicker]")
 
         colorPicker->onOkPress([](){});
         colorPicker->onOkPress([](tgui::Color){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("ColorChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("OkPressed").connect([]{}));
     }
 
     SECTION("WidgetType")

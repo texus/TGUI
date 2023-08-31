@@ -51,6 +51,14 @@ TEST_CASE("[Panel]")
 
         panel->onRightClick([](){});
         panel->onRightClick([](tgui::Vector2f){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MouseReleased").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("Clicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMouseReleased").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

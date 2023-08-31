@@ -37,6 +37,8 @@ TEST_CASE("[RangeSlider]")
     {
         slider->onRangeChange([](){});
         slider->onRangeChange([](float, float){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("RangeChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

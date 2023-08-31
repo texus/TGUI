@@ -41,6 +41,10 @@ TEST_CASE("[ListView]")
 
         listView->onHeaderClick([](){});
         listView->onHeaderClick([](int){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("ItemSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("HeaderClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

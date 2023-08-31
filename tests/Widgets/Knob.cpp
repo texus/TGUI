@@ -36,6 +36,8 @@ TEST_CASE("[Knob]")
     {
         knob->onValueChange([](){});
         knob->onValueChange([](float){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(knob)->getSignal("ValueChanged").connect([]{}));
     }
 
     SECTION("WidgetType")

@@ -39,6 +39,10 @@ TEST_CASE("[RadioButton]")
 
         radioButton->onChange([](){});
         radioButton->onChange([](bool){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Checked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Unchecked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Changed").connect([]{}));
     }
 
     SECTION("WidgetType")

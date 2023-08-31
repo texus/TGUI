@@ -34,6 +34,8 @@ TEST_CASE("[tabContainer]")
         tabContainer->onSelectionChange([](int) {});
         tabContainer->onSelectionChanging([]() {});
         tabContainer->onSelectionChanging([](int, bool*) {});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabContainer)->getSignal("SelectionChanged").connect([]{}));
     }
 
     SECTION("WidgetType")
@@ -141,7 +143,7 @@ TEST_CASE("[tabContainer]")
             tabContainer->setTabsHeight(20);
 
             unsigned int tabContainerSelectedCount = 0;
-            tabContainer->onSelectionChanged(&genericCallback, std::ref(tabContainerSelectedCount));
+            tabContainer->onSelectionChange(&genericCallback, std::ref(tabContainerSelectedCount));
 
             tabContainer->addTab("1");
             tabContainer->addTab("2");

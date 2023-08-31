@@ -53,6 +53,12 @@ TEST_CASE("[ListBox]")
 
         listBox->onScroll([](){});
         listBox->onScroll([](unsigned int){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("ItemSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MouseReleased").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("Scrolled").connect([]{}));
     }
 
     SECTION("WidgetType")

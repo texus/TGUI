@@ -47,6 +47,13 @@ TEST_CASE("[ClickableWidget]")
 
         widget->onRightClick([](){});
         widget->onRightClick([](tgui::Vector2f){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MouseReleased").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("Clicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMousePressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMouseReleased").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

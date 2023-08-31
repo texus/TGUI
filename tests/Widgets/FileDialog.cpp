@@ -39,6 +39,8 @@ TEST_CASE("[FileDialog]")
         dialog->onFileSelect([](const tgui::String&){});
         dialog->onFileSelect([](const tgui::Filesystem::Path&){});
         dialog->onFileSelect([](const std::vector<tgui::Filesystem::Path>&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(dialog)->getSignal("FileSelected").connect([]{}));
     }
 
     SECTION("WidgetType")

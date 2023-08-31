@@ -49,6 +49,8 @@ TEST_CASE("[Picture]")
     {
         picture->onDoubleClick([](){});
         picture->onDoubleClick([](tgui::Vector2f){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(picture)->getSignal("DoubleClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

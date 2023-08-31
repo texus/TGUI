@@ -33,6 +33,8 @@ TEST_CASE("[ToggleButton]")
     {
         button->onToggle([](){});
         button->onToggle([](bool){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(button)->getSignal("Toggled").connect([]{}));
     }
 
     SECTION("WidgetType")

@@ -38,6 +38,9 @@ TEST_CASE("[ProgressBar]")
         progressBar->onValueChange([](unsigned int){});
 
         progressBar->onFull([](){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("Full").connect([]{}));
     }
 
     SECTION("WidgetType")

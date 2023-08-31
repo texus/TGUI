@@ -35,6 +35,8 @@ TEST_CASE("[ComboBox]")
         comboBox->onItemSelect([](int){});
         comboBox->onItemSelect([](const tgui::String&){});
         comboBox->onItemSelect([](const tgui::String&, const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(comboBox)->getSignal("ItemSelected").connect([]{}));
     }
 
     SECTION("WidgetType")

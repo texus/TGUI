@@ -50,6 +50,12 @@ TEST_CASE("[TreeView]")
         treeView->onRightClick([](){});
         treeView->onRightClick([](const tgui::String&){});
         treeView->onRightClick([](const std::vector<tgui::String>&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("ItemSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Expanded").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Collapsed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("RightClicked").connect([]{}));
     }
 
     SECTION("WidgetType")

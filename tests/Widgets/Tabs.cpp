@@ -33,6 +33,8 @@ TEST_CASE("[Tabs]")
     {
         tabs->onTabSelect([](){});
         tabs->onTabSelect([](const tgui::String&){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabs)->getSignal("TabSelected").connect([]{}));
     }
 
     SECTION("WidgetType")

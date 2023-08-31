@@ -33,6 +33,8 @@ TEST_CASE("[SeparatorLine]")
     {
         separator->onClick([](){});
         separator->onClick([](tgui::Vector2f){});
+
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(separator)->getSignal("Clicked").connect([]{}));
     }
 
     SECTION("WidgetType")
