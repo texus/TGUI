@@ -365,7 +365,7 @@ namespace tgui
         if (caret == 0)
             return 1;
         else
-            return m_text.count('\n', caret - 1) + 1;
+            return m_text.substr(0, caret).count('\n') + 1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

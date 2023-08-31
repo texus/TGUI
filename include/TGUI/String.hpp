@@ -873,10 +873,10 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD inline bool ends_with(char16_t ch) const noexcept;
         TGUI_NODISCARD inline bool ends_with(char32_t ch) const noexcept;
 
-        TGUI_NODISCARD std::size_t count(const char ch, const std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t count(const wchar_t ch, const std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t count(const char16_t ch, const std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t count(const char32_t ch, const std::size_t pos = npos) const noexcept;
+        TGUI_NODISCARD std::size_t count(const char ch, const std::size_t pos = 0) const noexcept;
+        TGUI_NODISCARD std::size_t count(const wchar_t ch, const std::size_t pos = 0) const noexcept;
+        TGUI_NODISCARD std::size_t count(const char16_t ch, const std::size_t pos = 0) const noexcept;
+        TGUI_NODISCARD std::size_t count(const char32_t ch, const std::size_t pos = 0) const noexcept;
 
         inline friend bool operator==(const String& left, StringView right);
         inline friend bool operator==(const String& left, const char32_t* right);

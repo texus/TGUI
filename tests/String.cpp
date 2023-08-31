@@ -1550,6 +1550,26 @@ TEST_CASE("[String]")
         REQUIRE(tgui::viewEndsWith(U"abc\u20ACxyz", U"xyz"));
     }
 
+    SECTION("count")
+    {
+        REQUIRE(tgui::String(U"abc\u20ACxyz").count('a') == 1);
+        REQUIRE(tgui::String(U"abc\u20ACxyz").count(L'a') == 1);
+        REQUIRE(tgui::String(U"abc\u20ACxyz").count(u'a') == 1);
+        REQUIRE(tgui::String(U"abc\u20ACxyz").count(U'a') == 1);
+
+        REQUIRE(tgui::String(U"\n\n\n\n\n").count(U'\n') == 5);
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'\n') == 5);
+        REQUIRE(tgui::String(U"").count(U'\n') == 0);
+        REQUIRE(tgui::String(U"\n").count(U'\n') == 1);
+        REQUIRE(tgui::String(U"abc\u20ACxyz").count(U'\u20AC') == 1);
+
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'\n', 1) == 5);
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'\n', 6) == 3);
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 0) == 1);
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 1) == 0);
+        REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 40) == 0);
+    }
+
     SECTION("isWhitespace")
     {
         REQUIRE(tgui::isWhitespace(' '));
