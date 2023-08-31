@@ -750,6 +750,24 @@ TEST_CASE("[EditBox]")
             TEST_DRAW("EditBox_DefaultText.png")
         }
 
+        SECTION("Selected text")
+        {
+            editBox->setText("Hello");
+            REQUIRE(editBox->getSelectedText() == "");
+
+            editBox->selectText(1, 3);
+            REQUIRE(editBox->getSelectedText() == "ell");
+
+            editBox->selectText(3);
+            REQUIRE(editBox->getSelectedText() == "lo");
+
+            editBox->selectText(2, 0);
+            REQUIRE(editBox->getSelectedText() == "");
+
+            editBox->selectText();
+            REQUIRE(editBox->getSelectedText() == "Hello");
+        }
+
         SECTION("PasswordCharacter")
         {
             editBox->setPasswordCharacter('+');

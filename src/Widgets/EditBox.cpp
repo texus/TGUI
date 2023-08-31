@@ -30,7 +30,7 @@
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <cmath>
 #endif
-
+#include <iostream>
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -195,7 +195,9 @@ namespace tgui
 
     String EditBox::getSelectedText() const
     {
-        return m_text.substr(std::min(m_selStart, m_selEnd), std::max(m_selStart, m_selEnd));
+        const auto startIndex = std::min(m_selStart, m_selEnd);
+        const auto endIndex = std::max(m_selStart, m_selEnd);
+        return m_text.substr(startIndex, endIndex - startIndex);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
