@@ -52,6 +52,7 @@ set(TEST_SOURCES
     TextureManager.cpp
     Timer.cpp
     ToolTip.cpp
+    Vector2.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Serializer.cpp
