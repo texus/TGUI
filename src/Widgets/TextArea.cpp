@@ -1180,8 +1180,6 @@ namespace tgui
             const std::size_t pos = getSelectionEnd();
             if (pos > 0)
             {
-                m_text.erase(pos - 1, 1);
-
                 if (m_selEnd.x > 0)
                 {
                     // There is a specific case that we have to watch out for. When we are removing the last character on
@@ -1209,6 +1207,7 @@ namespace tgui
 
                 m_selStart = m_selEnd;
 
+                m_text.erase(pos - 1, 1);
                 // If the "special case" above passes, and we let rearrangeText() emit the onCaretPositionChange signal,
                 // the same signal will be emitted twice. So prevent sending signal in rearrangeText() and always send it manually afterwards.
                 rearrangeText(true, false);
