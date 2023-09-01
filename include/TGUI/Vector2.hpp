@@ -197,7 +197,7 @@ TGUI_MODULE_EXPORT namespace tgui
     template <typename T>
     constexpr Vector2<T> operator*(const Vector2<T>& left, float right)
     {
-        return {left.x * right, left.y * right};
+        return {static_cast<T>(static_cast<float>(left.x) * right), static_cast<T>(static_cast<float>(left.y) * right)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ TGUI_MODULE_EXPORT namespace tgui
     template <typename T>
     constexpr Vector2<T> operator*(float left, const Vector2<T>& right)
     {
-        return {left * right.x, left * right.y};
+        return {static_cast<T>(left * static_cast<float>(right.x)), static_cast<T>(left * static_cast<float>(right.y))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,9 +215,7 @@ TGUI_MODULE_EXPORT namespace tgui
     template <typename T>
     constexpr Vector2<T>& operator*=(Vector2<T>& left, float right)
     {
-        left.x *= right;
-        left.y *= right;
-        return left;
+        return left = left * right;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +224,7 @@ TGUI_MODULE_EXPORT namespace tgui
     template <typename T>
     constexpr Vector2<T> operator/(const Vector2<T>& left, float right)
     {
-        return {left.x / right, left.y / right};
+        return {static_cast<T>(static_cast<float>(left.x) / right), static_cast<T>(static_cast<float>(left.y) / right)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,9 +233,7 @@ TGUI_MODULE_EXPORT namespace tgui
     template <typename T>
     constexpr Vector2<T>& operator/=(Vector2<T>& left, float right)
     {
-        left.x /= right;
-        left.y /= right;
-        return left;
+        return left = left / right;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

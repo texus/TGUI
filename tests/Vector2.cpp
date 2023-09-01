@@ -93,12 +93,16 @@ TEST_CASE("[Vector2]")
     {
         sf::Vector2i sfmlVec{1, 2};
         tgui::Vector2i tguiVec{sfmlVec};
+        REQUIRE(tguiVec.x == 1);
+        REQUIRE(tguiVec.y == 2);
     }
 
     SECTION("Convert to sf::Vector")
     {
         tgui::Vector2u tguiVec{1, 2};
         sf::Vector2u sfmlVec{tguiVec};
+        REQUIRE(sfmlVec.x == 1);
+        REQUIRE(sfmlVec.y == 2);
     }
 #endif
 
