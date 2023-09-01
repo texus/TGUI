@@ -35,24 +35,23 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabContainer::TabContainer(const char* typeName, bool initRenderer) :
-        SubwidgetContainer{typeName, initRenderer}
+        Container{typeName, initRenderer}
     {
-        m_container->add(m_tabs, "Tabs");
+        add(m_tabs, "Tabs");
         init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabContainer::TabContainer(const TabContainer& other) :
-        SubwidgetContainer {other},
+        Container          {other},
         onSelectionChange  {other.onSelectionChange},
         onSelectionChanging{other.onSelectionChanging},
-        m_tabs             {m_container->get<Tabs>(U"Tabs")},
+        m_tabs             {get<Tabs>(U"Tabs")},
         m_tabAlign         {other.m_tabAlign},
         m_tabFixedSize     {other.m_tabFixedSize}
     {
-        auto widgets = m_container->getWidgets();
-        for (const auto& widget : widgets)
+        for (const auto& widget : m_widgets)
         {
             auto panel = std::dynamic_pointer_cast<Panel>(widget);
             if (panel)
@@ -68,7 +67,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabContainer::TabContainer(TabContainer&& other) noexcept :
-        SubwidgetContainer {std::move(other)},
+        Container          {std::move(other)},
         onSelectionChange  {std::move(other.onSelectionChange)},
         onSelectionChanging{std::move(other.onSelectionChanging)},
         m_panels           {std::move(other.m_panels)},
@@ -86,15 +85,14 @@ namespace tgui
     {
         if (this != &other)
         {
-            SubwidgetContainer::operator=(other);
+            Container::operator=(other);
             onSelectionChange   = other.onSelectionChange;
             onSelectionChanging = other.onSelectionChanging;
-            m_tabs              = m_container->get<Tabs>(U"Tabs");
+            m_tabs              = get<Tabs>(U"Tabs");
             m_tabAlign          = other.m_tabAlign;
             m_tabFixedSize      = other.m_tabFixedSize;
 
-            auto widgets = m_container->getWidgets();
-            for (const auto& widget : widgets)
+            for (const auto& widget : m_widgets)
             {
                 auto panel = std::dynamic_pointer_cast<Panel>(widget);
                 if (panel)
@@ -123,7 +121,7 @@ namespace tgui
             m_tabs              = std::move(other.m_tabs);
             m_tabAlign          = std::move(other.m_tabAlign);
             m_tabFixedSize      = std::move(other.m_tabFixedSize);
-            SubwidgetContainer::operator=(std::move(other));
+            Container::operator=(std::move(other));
 
             init();
         }
@@ -175,7 +173,7 @@ namespace tgui
 
     void TabContainer::setSize(const Layout2d& size)
     {
-        SubwidgetContainer::setSize(size);
+        Container::setSize(size);
 
         for (auto& panel : m_panels)
             panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
@@ -203,7 +201,7 @@ namespace tgui
         m_tabs->add(name, false);
         layoutTabs();
 
-        m_container->add(panel, name);
+        add(panel, name);
         if (selectPanel)
             select(m_panels.size() - 1);
         else
@@ -227,8 +225,8 @@ namespace tgui
         m_tabs->insert(index, name, false);
         layoutTabs();
 
-        m_container->add(panel);
-        m_container->setWidgetIndex(panel, index + 1); // Plus one because first widget is Tabs
+        add(panel);
+        setWidgetIndex(panel, index + 1); // Plus one because first widget is Tabs
 
         if (selectPanel)
             select(index);
@@ -261,7 +259,7 @@ namespace tgui
         m_tabs->remove(index);
         layoutTabs();
 
-        m_container->remove(m_panels[index]);
+        remove(m_panels[index]);
         m_panels.erase(m_panels.begin() + static_cast<std::ptrdiff_t>(index));
 
         if (m_tabs->getSelectedIndex() >= 0)
@@ -434,9 +432,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TabContainer::isMouseOnWidget(Vector2f pos) const
+    {
+        pos -= getPosition() + getChildWidgetsOffset();
+
+        if (m_tabs->isMouseOnWidget(pos))
+            return true;
+
+        if (m_selectedPanel && m_selectedPanel->isMouseOnWidget(pos))
+            return true;
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<DataIO::Node> TabContainer::save(SavingRenderersMap& renderers) const
     {
-        auto node = SubwidgetContainer::save(renderers);
+        auto node = Container::save(renderers);
 
         if (m_tabAlign == TabContainer::TabAlign::Top)
             node->propertyValuePairs[U"TabAlignment"] = std::make_unique<DataIO::ValueNode>("Top");
@@ -452,7 +465,8 @@ namespace tgui
 
     void TabContainer::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
-        SubwidgetContainer::load(node, renderers);
+        removeAllWidgets();
+        Container::load(node, renderers);
 
         // Buffer the value to apply it after child widget creation with default align.
         auto tabAlign = TabContainer::TabAlign::Top;
@@ -471,13 +485,12 @@ namespace tgui
         m_panels.clear();
         m_selectedPanel = nullptr;
 
-        m_tabs = m_container->get<Tabs>(U"Tabs");
+        m_tabs = get<Tabs>(U"Tabs");
         m_tabAlign = TabAlign::Top;
         if (!m_tabs)
             throw Exception{U"Failed to find Tabs child when loading TabContainer"};
 
-        auto widgets = m_container->getWidgets();
-        for (const auto& widget : widgets)
+        for (const auto& widget : m_widgets)
         {
             auto panel = std::dynamic_pointer_cast<Panel>(widget);
             if (!panel)
