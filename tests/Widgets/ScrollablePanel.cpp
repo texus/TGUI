@@ -111,6 +111,35 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(panel->getHorizontalScrollAmount() == 10);
     }
 
+    SECTION("ScrollbarShown")
+    {
+        panel->setSize("1000", "1000");
+
+        panel->setContentSize({ 2000.f, 2000.f });
+        REQUIRE(panel->isVerticalScrollbarShown());
+        REQUIRE(panel->isHorizontalScrollbarShown());
+
+        panel->setContentSize({ 500.f, 2000.f });
+        REQUIRE(panel->isVerticalScrollbarShown());
+        REQUIRE(!panel->isHorizontalScrollbarShown());
+
+        panel->setContentSize({ 2000.f, 500.f });
+        REQUIRE(!panel->isVerticalScrollbarShown());
+        REQUIRE(panel->isHorizontalScrollbarShown());
+
+        panel->setContentSize({ 2000.f, 2000.f });
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(!panel->isVerticalScrollbarShown());
+        REQUIRE(!panel->isHorizontalScrollbarShown());
+
+        panel->setContentSize({ 100.f, 100.f });
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(panel->isVerticalScrollbarShown());
+        REQUIRE(panel->isHorizontalScrollbarShown());
+    }
+
     SECTION("Scrollbar width")
     {
         auto scrollbar = tgui::Scrollbar::create();
