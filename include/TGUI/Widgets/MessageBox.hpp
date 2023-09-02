@@ -196,6 +196,26 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds, removes, or updates buttons from the message box
+        ///
+        /// @param buttonCaptions  The captions to assign to new or existing buttons.
+        ///
+        /// This method has the following behaviour:
+        /// <ul>
+        /// <li>If the number of given captions is equal to the number of buttons added, each button will be renamed. The first
+        ///     button will be given the first caption in the vector, the second button the second caption, and so on.</li>
+        /// <li>If the number of given captions is greater than the number of buttons added, any existing buttons will be renamed
+        ///     as described above, and excess captions in buttonCaptions will be added as new buttons, in the order given in the
+        ///     vector.</li>
+        /// <li>If the number of given captions is smaller than the number of buttons added, any existing buttons will be renamed
+        ///     as described above, and buttons after the last renamed button will be removed.</li>
+        /// </ul>
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void changeButtons(const std::vector<String>& buttonCaptions);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the caption of the buttons
         ///
         /// @return Button texts
@@ -311,6 +331,12 @@ TGUI_MODULE_EXPORT namespace tgui
         // Passes our onButtonPress signal handler to the onPress signal of a button
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void connectButtonPressSignal(std::size_t buttonIndex);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Adds a button to the MessageBox.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addButtonImpl(const String& caption);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

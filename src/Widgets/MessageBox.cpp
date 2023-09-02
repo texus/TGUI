@@ -244,14 +244,36 @@ namespace tgui
 
     void MessageBox::addButton(const String& caption)
     {
-        auto button = Button::create(caption);
-        button->setRenderer(getSharedRenderer()->getButton());
-        button->setTextSize(m_textSizeCached);
+        addButtonImpl(caption);
+        rearrange();
+    }
 
-        add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
-        m_buttons.push_back(button);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        connectButtonPressSignal(m_buttons.size() - 1);
+    void MessageBox::changeButtons(const std::vector<String>& buttonCaptions)
+    {
+        // Go through given list of captions, and add or rename them.
+        std::size_t counter = 0;
+        for (const auto& caption : buttonCaptions) {
+            if (counter >= m_buttons.size())
+                addButtonImpl(caption);
+            else
+                m_buttons[counter]->setText(caption);
+            ++counter;
+        }
+
+        // If the given number of captions is smaller than the number of buttons, delete the excess buttons.
+        if (buttonCaptions.size() < m_buttons.size())
+        {
+            const auto indexOfFirstButtonToRemove = static_cast<int>(m_buttons.size() - (m_buttons.size() - buttonCaptions.size()));
+            for (auto offset = static_cast<int>(m_buttons.size() - 1); offset >= indexOfFirstButtonToRemove; --offset)
+            {
+                const auto button = m_buttons.begin() + offset;
+                remove(*button);
+                m_buttons.erase(button);
+            }
+        }
+
         rearrange();
     }
 
@@ -533,6 +555,20 @@ namespace tgui
             // We can however copy the index and access the button from m_buttons via the copied this pointer.
             onButtonPress.emit(this, m_buttons[buttonIndex]->getText());
         });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::addButtonImpl(const String& caption)
+    {
+        auto button = Button::create(caption);
+        button->setRenderer(getSharedRenderer()->getButton());
+        button->setTextSize(m_textSizeCached);
+
+        add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
+        m_buttons.push_back(button);
+
+        connectButtonPressSignal(m_buttons.size() - 1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
