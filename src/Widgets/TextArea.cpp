@@ -259,6 +259,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextArea::setTabString(String tabText)
+    {
+        // Do not allow evil cartridge returns.
+        m_tabText = tabText.replace('\r', U"");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    String TextArea::getTabString() const
+    {
+        return m_tabText;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextArea::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_verticalScrollbarPolicy = policy;
@@ -692,7 +707,7 @@ namespace tgui
     void TextArea::keyPressed(const Event::KeyEvent& event)
     {
         if (event.code == Event::KeyboardKey::Tab)
-            textEntered('\t');
+            insertTextAtCaretPosition(m_tabText);
         else if (event.code == Event::KeyboardKey::Enter)
             textEntered('\n');
         else if (event.code == Event::KeyboardKey::Backspace)
@@ -955,6 +970,33 @@ namespace tgui
 
             rearrangeText(true);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextArea::insertTextAtCaretPosition(String text)
+    {
+        if (text.empty())
+            return;
+
+        // If given string exceeds character limit, remove characters from the end until it fits.
+        const auto combinedSize = m_text.size() + text.size();
+        if (m_maxChars != 0 && combinedSize > m_maxChars)
+            text = text.substr(0, text.size() - (combinedSize - m_maxChars));
+
+        if (text.empty())
+            return;
+
+        // Insert string.
+        m_text.insert(getSelectionEnd(), text);
+        m_lines[m_selEnd.y].insert(m_selEnd.x, text);
+
+        m_selEnd.x += text.length();
+        m_selStart = m_selEnd;
+        rearrangeText(true, false);
+        onCaretPositionChange.emit(this);
+
+        onTextChange.emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1281,16 +1323,7 @@ namespace tgui
         if ((m_selStart != m_selEnd) || (clipboardContents != U""))
         {
             deleteSelectedCharacters();
-
-            m_text.insert(getSelectionEnd(), clipboardContents);
-            m_lines[m_selEnd.y].insert(m_selEnd.x, clipboardContents);
-
-            m_selEnd.x += clipboardContents.length();
-            m_selStart = m_selEnd;
-            onCaretPositionChange.emit(this);
-            rearrangeText(true);
-
-            onTextChange.emit(this, m_text);
+            insertTextAtCaretPosition(clipboardContents);
         }
     }
 
