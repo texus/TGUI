@@ -69,6 +69,67 @@ TEST_CASE("[MessageBox]")
         REQUIRE(messageBox->getButtons()[1] == "Second");
     }
 
+    SECTION("ChangeButtons")
+    {
+        REQUIRE(messageBox->getButtons().size() == 0);
+
+        // Empty captions on empty MessageBox does nothing.
+        messageBox->changeButtons({});
+        REQUIRE(messageBox->getButtons().size() == 0);
+
+        // Adding a single caption from empty.
+        messageBox->changeButtons({ "First" });
+        REQUIRE(messageBox->getButtons().size() == 1);
+        REQUIRE(messageBox->getButtons()[0] == "First");
+
+        // Empty captions on MessageBox removes single buttons.
+        messageBox->changeButtons({});
+        REQUIRE(messageBox->getButtons().size() == 0);
+
+        // Adding a multiple captions from empty.
+        messageBox->changeButtons({ "First", "Second", "Third" });
+        REQUIRE(messageBox->getButtons().size() == 3);
+        REQUIRE(messageBox->getButtons()[0] == "First");
+        REQUIRE(messageBox->getButtons()[1] == "Second");
+        REQUIRE(messageBox->getButtons()[2] == "Third");
+
+        // Empty captions on MessageBox also removes mutliple buttons.
+        messageBox->changeButtons({});
+        REQUIRE(messageBox->getButtons().size() == 0);
+
+        // Changing with a single caption will rename existing button.
+        messageBox->addButton("First");
+        messageBox->changeButtons({ "Renamed" });
+        REQUIRE(messageBox->getButtons().size() == 1);
+        REQUIRE(messageBox->getButtons()[0] == "Renamed");
+
+        // Changing with a excess captions will rename existing buttons and add new ones.
+        messageBox->addButton("Second");
+        messageBox->changeButtons({ "First", "Renamed", "Third", "Fourth" });
+        REQUIRE(messageBox->getButtons().size() == 4);
+        REQUIRE(messageBox->getButtons()[0] == "First");
+        REQUIRE(messageBox->getButtons()[1] == "Renamed");
+        REQUIRE(messageBox->getButtons()[2] == "Third");
+        REQUIRE(messageBox->getButtons()[3] == "Fourth");
+
+        // Changing with lower number of captions will rename existing buttons and remove excess ones.
+        messageBox->changeButtons({ "1", "2" });
+        REQUIRE(messageBox->getButtons().size() == 2);
+        REQUIRE(messageBox->getButtons()[0] == "1");
+        REQUIRE(messageBox->getButtons()[1] == "2");
+
+        // Applying the same button vector will not have any perceived effect.
+        messageBox->changeButtons(messageBox->getButtons());
+        REQUIRE(messageBox->getButtons().size() == 2);
+        REQUIRE(messageBox->getButtons()[0] == "1");
+        REQUIRE(messageBox->getButtons()[1] == "2");
+
+        auto currentButtons = messageBox->getButtons();
+        currentButtons.resize(10);
+        messageBox->changeButtons(currentButtons);
+        REQUIRE(messageBox->getButtons().size() == 10);
+    }
+
     SECTION("LabelAlignment")
     {
         REQUIRE(messageBox->getLabelAlignment() == tgui::MessageBox::Alignment::Left);
