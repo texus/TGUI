@@ -86,6 +86,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widget      Pointer to the widget you would like to add
         /// @param widgetName  An identifier to access to the widget later
         ///
+        /// @warning Widgets should be named as if they are C++ variables, i.e. names must not include any whitespace, or most
+        ///          symbols (e.g.: +, -, *, /, ., &), and should not start with a number. If you do not follow these rules,
+        ///          layout expressions may give unexpected results. Alphanumeric characters and underscores are safe to use,
+        ///          and widgets are permitted to have no name.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void add(const Widget::Ptr& widget, const String& widgetName = "") override;
 
@@ -98,6 +103,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widgetName  An identifier to access to the widget later
         ///
         /// If the index is too high, the widget will simply be added at the end of the list.
+        ///
+        /// @warning Widgets should be named as if they are C++ variables, i.e. names must not include any whitespace, or most
+        ///          symbols (e.g.: +, -, *, /, ., &), and should not start with a number. If you do not follow these rules,
+        ///          layout expressions may give unexpected results. Alphanumeric characters and underscores are safe to use,
+        ///          and widgets are permitted to have no name.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void insert(std::size_t index, const Widget::Ptr& widget, const String& widgetName = "");

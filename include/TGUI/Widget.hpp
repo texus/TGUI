@@ -784,6 +784,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param name  New name for the widget
         ///
         /// @warning This name is overwritten when adding the widget to its parent. You should only set it afterwards.
+        ///
+        /// @warning Widgets should be named as if they are C++ variables, i.e. names must not include any whitespace, or most
+        ///          symbols (e.g.: +, -, *, /, ., &), and should not start with a number. If you do not follow these rules,
+        ///          layout expressions may give unexpected results. Alphanumeric characters and underscores are safe to use,
+        ///          and widgets are permitted to have no name.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setWidgetName(const String& name);
 
