@@ -61,12 +61,12 @@ TGUI_MODULE_EXPORT namespace tgui
             // Get the number of bytes to write
             std::size_t bytestoWrite;
             std::uint8_t firstByteMask;
-            if (input <  0x800)
+            if (input < 0x800)
             {
                 bytestoWrite = 2;
                 firstByteMask = 0xC0;
             }
-            else if (input <  0x10000)
+            else if (input < 0x10000)
             {
                 bytestoWrite = 3;
                 firstByteMask = 0xE0;
@@ -231,25 +231,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
             return outStrUtf32;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-32 string to a latin-1 encoded string
-        /// @param strUtf32  Input UTF-32 string
-        /// @return Output latin-1 encoded string
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD inline std::string convertUtf32toLatin1(const std::u32string& strUtf32)
-        {
-            std::string outStr;
-            outStr.reserve(strUtf32.length() + 1);
-            for (const char32_t codepoint : strUtf32)
-            {
-                if (codepoint < 256)
-                    outStr.push_back(static_cast<char>(codepoint));
-            }
-
-            return outStr;
         }
 
 

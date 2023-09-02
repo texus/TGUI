@@ -138,4 +138,24 @@ TEST_CASE("[Signal]")
         signal.emit(nullptr);
         REQUIRE(x == 5);
     }
+
+    SECTION("Disable")
+    {
+        REQUIRE(widget->onPositionChange.isEnabled());
+
+        unsigned int i = 0;
+        widget->onPositionChange([&](){ i++; });
+
+        widget->onPositionChange.setEnabled(false);
+        REQUIRE(!widget->onPositionChange.isEnabled());
+
+        widget->setPosition(10, 10);
+        REQUIRE(i == 0);
+
+        widget->onPositionChange.setEnabled(true);
+        REQUIRE(widget->onPositionChange.isEnabled());
+
+        widget->setPosition(20, 20);
+        REQUIRE(i == 1);
+    }
 }

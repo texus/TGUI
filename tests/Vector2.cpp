@@ -72,6 +72,14 @@ TEST_CASE("[Vector2]")
         REQUIRE(vecStrInvalid3.x == 0);
         REQUIRE(vecStrInvalid3.y == 0);
 
+        tgui::Vector2i vecStrInvalid4{"(1,2"};
+        REQUIRE(vecStrInvalid4.x == 0); // "(1" to int
+        REQUIRE(vecStrInvalid4.y == 2); // "2" to int
+
+        tgui::Vector2i vecStrInvalid5{"3,4}"};
+        REQUIRE(vecStrInvalid5.x == 3); // "3" to int
+        REQUIRE(vecStrInvalid5.y == 4); // "4}" to int
+
         std::cerr.rdbuf(oldbuf);
     }
 

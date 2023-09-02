@@ -361,6 +361,19 @@ TEST_CASE("[Widget]")
         REQUIRE(w2->getWidgetName() == "NewName");
     }
 
+    SECTION("Cast")
+    {
+        auto button = tgui::Button::create();
+        tgui::Widget::Ptr widgetPtr{button};
+
+        REQUIRE(widgetPtr->cast<tgui::EditBox>() == nullptr);
+        REQUIRE(widgetPtr->cast<tgui::Button>() == button);
+        REQUIRE(widgetPtr->cast<tgui::ButtonBase>() == button);
+
+        tgui::Widget::ConstPtr constWidgetPtr{button};
+        REQUIRE(constWidgetPtr->cast<tgui::Button>() == button);
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();
