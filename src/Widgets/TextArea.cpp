@@ -177,10 +177,11 @@ namespace tgui
 
     void TextArea::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
     {
-        setCaretPosition(selectionEndIndex);
-        m_retainSelEnd = true;
-        setCaretPosition(selectionStartIndex);
-        m_retainSelEnd = false;
+        const auto oldSelEnd = m_selEnd;
+        setCaretPositionImpl(selectionEndIndex, false, false);  // Replace m_selEnd but do not emit onCaretPositionChange yet.
+        setCaretPositionImpl(selectionStartIndex, true, false); // Retain m_selEnd.
+        if (oldSelEnd != m_selEnd)
+            onCaretPositionChange.emit(this);                   // Emit onCaretPositionChange now.
         updateSelectionTexts();
     }
 
@@ -338,31 +339,7 @@ namespace tgui
 
     void TextArea::setCaretPosition(std::size_t charactersBeforeCaret)
     {
-        // The caret position has to stay inside the string
-        if (charactersBeforeCaret > m_text.length())
-            charactersBeforeCaret = m_text.length();
-
-        // Find the line and position on that line on which the caret is located
-        std::size_t count = 0;
-        for (std::size_t i = 0; i < m_lines.size(); ++i)
-        {
-            if (count + m_lines[i].length() < charactersBeforeCaret)
-            {
-                count += m_lines[i].length();
-                if ((count < m_text.length()) && (m_text[count] == U'\n'))
-                    count += 1;
-            }
-            else
-            {
-                m_selStart.y = i;
-                m_selStart.x = charactersBeforeCaret - count;
-
-                if (!m_retainSelEnd)
-                    updateSelEnd(m_selStart);
-                updateSelectionTexts();
-                break;
-            }
-        }
+        setCaretPositionImpl(charactersBeforeCaret, false, true); // Update m_selEnd and emit onCaretPositionChange.
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2093,6 +2070,41 @@ namespace tgui
 
         if (m_horizontalScrollbar->isShown())
             m_horizontalScrollbar->draw(target, statesForScrollbar);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, const bool retainSelEnd, const bool emitCaretChangedPosition)
+    {
+        // The caret position has to stay inside the string
+        if (charactersBeforeCaret > m_text.length())
+            charactersBeforeCaret = m_text.length();
+
+        // Find the line and position on that line on which the caret is located
+        std::size_t count = 0;
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+        {
+            if (count + m_lines[i].length() < charactersBeforeCaret)
+            {
+                count += m_lines[i].length();
+                if ((count < m_text.length()) && (m_text[count] == U'\n'))
+                    count += 1;
+            } else
+            {
+                m_selStart.y = i;
+                m_selStart.x = charactersBeforeCaret - count;
+
+                if (!retainSelEnd)
+                {
+                    if (emitCaretChangedPosition)
+                        updateSelEnd(m_selStart);
+                    else
+                        m_selEnd = m_selStart;
+                }
+                updateSelectionTexts();
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
