@@ -278,6 +278,23 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getLinesCount() == 4);
     }
 
+    SECTION("TabString")
+    {
+        REQUIRE(textArea->getTabString() == "\t");
+
+        textArea->setTabString("  ");
+        REQUIRE(textArea->getTabString() == "  ");
+
+        textArea->setTabString("\r\n");
+        REQUIRE(textArea->getTabString() == "\n");
+
+        textArea->setTabString("\r");
+        REQUIRE(textArea->getTabString() == "");
+
+        textArea->setTabString("a\rb\rc\u20AC\r");
+        REQUIRE(textArea->getTabString() == "abc\u20AC");
+    }
+
     SECTION("Events / Signals")
     {
         textArea->setSize(165, 100);
@@ -450,6 +467,15 @@ TEST_CASE("[TextArea]")
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::X, true, false));
                 REQUIRE(textArea->getText() == "12345");
                 REQUIRE(getClipboardContents() == "12345");
+
+                // Pasting too much text into a text area with a character limit will truncate the pasted text
+                textArea->setReadOnly(false);
+                textArea->setCaretPosition(0);
+                textArea->setMaximumCharacters(7);
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::V, true, false));
+                REQUIRE(textArea->getText() == "1212345");
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::V, true, false));
+                REQUIRE(textArea->getText() == "1212345");
             }
 
             SECTION("Pressing tab")
@@ -478,6 +504,36 @@ TEST_CASE("[TextArea]")
                 gui.setTabKeyUsageEnabled(true);
                 textArea->setText("");
                 textArea->setFocused(true);
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "");
+
+                gui.setTabKeyUsageEnabled(false);
+                textArea->setText("");
+                textArea->setFocused(true);
+                textArea->setTabString("   ");
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "   ");
+
+                textArea->setText("");
+                textArea->setTabString("\n\n\n\n\n");
+                textArea->setMaximumCharacters(5);
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "\n\n\n\n\n");
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "\n\n\n\n\n");
+
+                textArea->setText("");
+                textArea->setTabString("abc");
+                textArea->setMaximumCharacters(5);
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "abc");
+                textArea->setCaretPosition(1);
+                sendTabEventToGui(gui);
+                REQUIRE(textArea->getText() == "aabbc");
+
+                textArea->setText("");
+                textArea->setTabString("");
+                textArea->setMaximumCharacters(0);
                 sendTabEventToGui(gui);
                 REQUIRE(textArea->getText() == "");
             }
