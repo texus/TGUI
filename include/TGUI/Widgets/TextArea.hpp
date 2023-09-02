@@ -222,11 +222,13 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the string that is inserted when the Tab key is pressed
         ///
-        /// @param tabtext  The string to insert when Tab is pressed.
+        /// @param tabText  The string to insert when Tab is pressed.
         ///
         /// Defaults to "\t".
         ///
         /// @warning Any cartridge return characters given in this string (\r) will be removed!
+        ///
+        /// @warning Pressing the Tab key will not affect the TextArea unless BackendGui::setTabKeyUsageEnabled(false) is called.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTabString(String tabText);
