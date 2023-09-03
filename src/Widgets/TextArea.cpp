@@ -178,10 +178,10 @@ namespace tgui
     void TextArea::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
     {
         const auto oldSelEnd = m_selEnd;
-        setCaretPositionImpl(selectionEndIndex, false, false);  // Replace m_selEnd but do not emit onCaretPositionChange yet.
-        setCaretPositionImpl(selectionStartIndex, true, false); // Retain m_selEnd.
+        setCaretPositionImpl(selectionEndIndex, true, false);    // Replace m_selEnd but do not emit onCaretPositionChange yet.
+        setCaretPositionImpl(selectionStartIndex, false, false); // Retain m_selEnd.
         if (oldSelEnd != m_selEnd)
-            onCaretPositionChange.emit(this);                   // Emit onCaretPositionChange now.
+            onCaretPositionChange.emit(this);                    // Emit onCaretPositionChange now.
         updateSelectionTexts();
     }
 
@@ -339,7 +339,7 @@ namespace tgui
 
     void TextArea::setCaretPosition(std::size_t charactersBeforeCaret)
     {
-        setCaretPositionImpl(charactersBeforeCaret, false, true); // Update m_selEnd and emit onCaretPositionChange.
+        setCaretPositionImpl(charactersBeforeCaret, true, true); // Update m_selEnd and emit onCaretPositionChange.
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2074,7 +2074,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, const bool retainSelEnd, const bool emitCaretChangedPosition)
+    void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, const bool updateSelEnd, const bool emitCaretChangedPosition)
     {
         // The caret position has to stay inside the string
         if (charactersBeforeCaret > m_text.length())
@@ -2094,10 +2094,10 @@ namespace tgui
                 m_selStart.y = i;
                 m_selStart.x = charactersBeforeCaret - count;
 
-                if (!retainSelEnd)
+                if (updateSelEnd)
                 {
                     if (emitCaretChangedPosition)
-                        updateSelEnd(m_selStart);
+                        this->updateSelEnd(m_selStart);
                     else
                         m_selEnd = m_selStart;
                 }
