@@ -361,7 +361,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::size_t TextArea::getCaretColumn() const
     {
         const auto caret = getCaretPosition();
@@ -375,7 +375,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void TextArea::setReadOnly(bool readOnly)
     {
         m_readOnly = readOnly;
@@ -2074,7 +2074,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, const bool updateSelEnd, const bool emitCaretChangedPosition)
+    void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, bool selEndNeedUpdate, bool emitCaretChangedPosition)
     {
         // The caret position has to stay inside the string
         if (charactersBeforeCaret > m_text.length())
@@ -2094,10 +2094,10 @@ namespace tgui
                 m_selStart.y = i;
                 m_selStart.x = charactersBeforeCaret - count;
 
-                if (updateSelEnd)
+                if (selEndNeedUpdate)
                 {
                     if (emitCaretChangedPosition)
-                        this->updateSelEnd(m_selStart);
+                        updateSelEnd(m_selStart);
                     else
                         m_selEnd = m_selStart;
                 }

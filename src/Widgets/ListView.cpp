@@ -1592,11 +1592,11 @@ namespace tgui
         if (event.code == Event::KeyboardKey::Up && (m_focusedItemIndex > 0))
         {
             const auto indexAbove = static_cast<std::size_t>(m_focusedItemIndex - 1);
-            if (m_multiSelect && keyboard::isShiftPressed())
+            if (m_multiSelect && keyboard::isShiftPressed(event))
             {
                 selectRangeFromEvent(indexAbove);
             }
-            else if (m_multiSelect && keyboard::isMultiselectModifierPressed())
+            else if (m_multiSelect && keyboard::isMultiselectModifierPressed(event))
             {
                 if (m_selectedItems.find(indexAbove) != m_selectedItems.end())
                     removeSelectedItem(indexAbove);
@@ -1609,11 +1609,11 @@ namespace tgui
         else if (event.code == Event::KeyboardKey::Down && (m_focusedItemIndex + 1 < static_cast<int>(m_items.size())))
         {
             const std::size_t indexBelow = (m_focusedItemIndex >= 0) ? static_cast<std::size_t>(m_focusedItemIndex) + 1 : 0;
-            if (m_multiSelect && keyboard::isShiftPressed())
+            if (m_multiSelect && keyboard::isShiftPressed(event))
             {
                 selectRangeFromEvent(indexBelow);
             }
-            else if (m_multiSelect && keyboard::isMultiselectModifierPressed())
+            else if (m_multiSelect && keyboard::isMultiselectModifierPressed(event))
             {
                 if (m_selectedItems.find(indexBelow) != m_selectedItems.end())
                     removeSelectedItem(indexBelow);

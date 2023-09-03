@@ -162,8 +162,7 @@ TEST_CASE("[ListView]")
         listView->removeAllItems();
         REQUIRE(listView->getItemCount() == 0);
 
-        std::vector<std::vector<tgui::String>> items = {{"1,1"}, {"2,1", "2,2", "2,3"}, {"3,1", "3,2"}};
-        listView->addMultipleItems(items);
+        listView->addMultipleItems({{"1,1"}, {"2,1", "2,2", "2,3"}, {"3,1", "3,2"}});
         REQUIRE(listView->getItemCount() == 3);
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
 
@@ -176,6 +175,21 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->changeItem(3, {"d,1"}));
         REQUIRE(!listView->changeSubItem(3, 1, {"d,2"}));
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
+
+        listView->insertItem(2, "x,1");
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
+
+        listView->insertMultipleItems(1, {{"y,1", "y,2", "y,3"}, {"z,1"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"y,1", "y,2"}, {"z,1", ""}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
+
+        listView->removeAllItems();
+        listView->insertItem(0, "2,1");
+        listView->insertItem(0, {"1,1", "1,2"});
+        listView->insertItem(2, {"3,1", "3,2", "3,3"});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", ""}, {"3,1", "3,2"}});
+
+        listView->insertMultipleItems(3, {{"x,1", "x,2"}});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", ""}, {"3,1", "3,2"}, {"x,1", "x,2"}});
     }
 
     SECTION("Data")
@@ -749,6 +763,67 @@ TEST_CASE("[ListView]")
                 REQUIRE(listView->getColumnWidth(1) == 100);
             }
         }
+
+        SECTION("Changing selection with arrow keys")
+        {
+            mousePressed({127, 81});
+            mouseReleased({127, 81});
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{2});
+
+            tgui::Event::KeyEvent event;
+            event.alt = false;
+            event.shift = false;
+            event.control = false;
+            event.system = false;
+
+            event.code = tgui::Event::KeyboardKey::Up;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{1});
+
+            event.code = tgui::Event::KeyboardKey::Down;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{2});
+
+            event.shift = true;
+
+            event.code = tgui::Event::KeyboardKey::Up;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{1});
+
+            event.code = tgui::Event::KeyboardKey::Down;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{2});
+
+            listView->setMultiSelect(true);
+
+            event.code = tgui::Event::KeyboardKey::Up;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{1, 2});
+
+            event.shift = false;
+            event.code = tgui::Event::KeyboardKey::Up;
+            listView->keyPressed(event);
+
+            event.shift = true;
+            event.code = tgui::Event::KeyboardKey::Down;
+            listView->keyPressed(event);
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{0, 1, 2});
+
+            event.shift = false;
+#ifdef TGUI_SYSTEM_MACOS
+            event.system = true;
+#else
+            event.control = true;
+#endif
+            event.code = tgui::Event::KeyboardKey::Up;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{0, 2});
+
+            event.code = tgui::Event::KeyboardKey::Down;
+            listView->keyPressed(event);
+            REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{0});
+        }
     }
 
     testWidgetRenderer(listView->getRenderer());
@@ -1124,6 +1199,10 @@ TEST_CASE("[ListView]")
             listView->setItemIcon(3, {"resources/Texture6.png", {0, 0, 20, 14}});
             listView->setItemIcon(4, {"resources/Texture7.png", {0, 0, 14, 14}});
             TEST_DRAW("ListView_Icons.png")
+
+            listView->setItemIcon(3, {});
+            listView->setItemIcon(4, {});
+            TEST_DRAW("ListView_NoSelectedNoHover.png")
         }
 
         SECTION("Grid lines and separators")
