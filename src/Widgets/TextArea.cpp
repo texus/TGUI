@@ -2089,7 +2089,8 @@ namespace tgui
                 count += m_lines[i].length();
                 if ((count < m_text.length()) && (m_text[count] == U'\n'))
                     count += 1;
-            } else
+            }
+            else
             {
                 m_selStart.y = i;
                 m_selStart.x = charactersBeforeCaret - count;
