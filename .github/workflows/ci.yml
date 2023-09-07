@@ -675,7 +675,7 @@ jobs:
     env:
       SDL_VERSION: 2.0.14
       SDL_TTF_VERSION: 2.0.18
-      NDK_VERSION: 23.0.7599858
+      NDK_VERSION: 25.2.9519653
       ARCH_ABI: arm64-v8a
     steps:
       - name: Cache NDK
@@ -712,23 +712,23 @@ jobs:
           ln -s $GITHUB_WORKSPACE/SDL app/jni/SDL
           ln -s $GITHUB_WORKSPACE/SDL_TTF app/jni/SDL_TTF
           ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
-          ./gradlew buildRelease
+          ./gradlew assembleRelease
 
   #----------------------------------------
 
   android-sfml-graphics:
     runs-on: ubuntu-latest
     env:
-      SFML_VERSION: 2.5.1
-      NDK_VERSION: 18.1.5063045
-      ARCH_ABI: x86
+      SFML_VERSION: 2.6.0
+      NDK_VERSION: 25.2.9519653
+      ARCH_ABI: arm64-v8a
     steps:
       - name: Cache NDK with SFML
         id: cache-ndk
         uses: actions/cache@v3
         with:
           path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
-          key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}
+          key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}_ARCH_${{ARCH_ABI}}
 
       - name: Install NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
@@ -741,7 +741,7 @@ jobs:
           wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/${SFML_VERSION}.tar.gz" | tar --strip-components=1 -xz -C $GITHUB_WORKSPACE/SFML
           mkdir $GITHUB_WORKSPACE/SFML-build
           cd $GITHUB_WORKSPACE/SFML-build
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_static -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Debug ../SFML
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=23 -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_shared -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Debug ../SFML
           make -j2
           make install
 
@@ -758,8 +758,10 @@ jobs:
 
           cmake
           -DCMAKE_SYSTEM_NAME=Android
+          -DCMAKE_SYSTEM_VERSION=23
           -DCMAKE_ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/$NDK_VERSION
           -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI
+          -DCMAKE_ANDROID_STL_TYPE=c++_shared
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
@@ -775,9 +777,7 @@ jobs:
       - name: Build example
         run: |
           cd $GITHUB_WORKSPACE/TGUI/examples/android/SFML_GRAPHICS
-          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters '${ARCH_ABI}'/" app/build.gradle
-          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${NDK_VERSION}'/" app/build.gradle
-          ./gradlew buildDebug
+          ./gradlew assembleDebug -P NDK_VERSION=${NDK_VERSION} -P ARCH_ABI=${ARCH_ABI}
 
       - name: Remove TGUI from NDK before caching it
         run: rm -R ${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}/sources/third_party/tgui

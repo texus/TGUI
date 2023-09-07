@@ -12,12 +12,9 @@
               android:label="@string/app_name"
               android:icon="@drawable/tgui_logo"
               android:configChanges="keyboardHidden|orientation|screenSize"
-              android:preferMinimalPostProcessing="true"
               android:exported="true">
 
-        <meta-data android:name="android.app.lib_name" android:value="sfml-activity-d" />
-        <meta-data android:name="sfml.app.lib_name" android:value="tgui-activity-d" />
-        <meta-data android:name="tgui.app.lib_name" android:value="app" />
+        <meta-data android:name="android.app.lib_name" android:value="app" />
 
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
