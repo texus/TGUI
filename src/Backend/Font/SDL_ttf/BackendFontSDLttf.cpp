@@ -356,11 +356,19 @@ namespace tgui
         if (!m_fileContents || (m_fileSize == 0))
             return nullptr;
 
+#if TGUI_USE_SDL3
+        SDL_RWops* handle = SDL_RWFromConstMem(m_fileContents.get(), m_fileSize);
+        if (!handle)
+            return nullptr;
+
+        auto font = TTF_OpenFontRW(handle, SDL_TRUE, static_cast<int>(scaledTextSize));
+#else
         SDL_RWops* handle = SDL_RWFromConstMem(m_fileContents.get(), static_cast<int>(m_fileSize));
         if (!handle)
             return nullptr;
 
         auto font = TTF_OpenFontRW(handle, 1, static_cast<int>(scaledTextSize));
+#endif
         if (font)
         {
             m_fonts[scaledTextSize] = font;
