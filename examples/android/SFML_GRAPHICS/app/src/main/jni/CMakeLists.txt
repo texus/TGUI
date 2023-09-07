@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(tgui-example CXX)
 
-set(sfml_version 3)  # Choose whether you want to use SFML 2 or SFML 3
+set(sfml_version 2)  # Choose whether you want to use SFML 2 or SFML 3
 
 set(SFML_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/SFML")
 set(TGUI_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/tgui/lib/${CMAKE_ANDROID_ARCH_ABI}/cmake/TGUI")
@@ -22,7 +22,7 @@ if (sfml_version EQUAL 3)
     )
 else()
     find_package(SFML 2 REQUIRED COMPONENTS graphics window system CONFIG)
-    target_link_libraries(app sfml-graphics sfml-window sfml-system)
+    target_link_libraries(app PRIVATE sfml-graphics sfml-window sfml-system)
 
     target_link_libraries(app PUBLIC
       -Wl,--whole-archive
