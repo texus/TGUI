@@ -728,7 +728,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}
-          key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}_ARCH_${{ARCH_ABI}}
+          key: CACHE_NDK_${{env.NDK_VERSION}}_SFML_${{env.SFML_VERSION}}_ARCH_${{env.ARCH_ABI}}
 
       - name: Install NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'

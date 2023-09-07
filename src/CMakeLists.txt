@@ -398,11 +398,6 @@ if((TGUI_OS_MACOS OR TGUI_OS_IOS) AND TGUI_SHARED_LIBS)
     endif()
 endif()
 
-# Build tgui-activity on android
-if(TGUI_OS_ANDROID)
-    add_subdirectory(Android)
-endif()
-
 # Generate the Config.hpp header
 configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 

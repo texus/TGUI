@@ -1,5 +1,5 @@
 # This file is used to build TGUI on Android with the SDL-TTF-GLES2 backend.
-# For the SFML_GRAPHICS backend, CMake is used and this file can be ignored.
+# For the SFML_GRAPHICS or SDL_RENDERER backends, CMake is used and this file can be ignored.
 # No other backends are currently supported.
 
 LOCAL_PATH := $(call my-dir)
