@@ -29,6 +29,7 @@
     #include <SDL3/SDL_main.h>
     #include <SDL3/SDL_opengl.h>
     #define SDL_WINDOW_SHOWN 0  // To keep code below compatible between SDL2 and SDL3
+    #define SDL_CreateWindow SDL_CreateWindowWithPosition // To keep code below compatible between SDL2 and SDL3
 #else
     #include <SDL_opengl.h>
 #endif

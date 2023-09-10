@@ -30,7 +30,6 @@ set(TEST_SOURCES
     CompareFiles.cpp
     AbsoluteOrRelativeValue.cpp
     Animation.cpp
-    BackendEvents.cpp
     Clipboard.cpp
     Clipping.cpp
     Color.cpp
@@ -61,7 +60,6 @@ set(TEST_SOURCES
     Loading/ThemeLoader.cpp
     Widgets/BitmapButton.cpp
     Widgets/Button.cpp
-    Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     Widgets/ChildWindow.cpp
@@ -141,7 +139,10 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD)
     endif()
 endif()
 
-list(APPEND TEST_SOURCES main.cpp) # Main file has to be last and can't be part of unity build
+# Add some files last that shouldn't be part of the unity build as they may include different backends
+list(APPEND TEST_SOURCES Widgets/Canvas.cpp)
+list(APPEND TEST_SOURCES BackendEvents.cpp)
+list(APPEND TEST_SOURCES main.cpp)
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -172,7 +173,11 @@ if(NOT TGUI_BUILD_AS_CXX_MODULE)
     # We must exclude the main file since it contains the implementation of Catch.
     target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")
     set_source_files_properties(main.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+
+    # Mark some files that shouldn't be part of the unity build as they may include different backends
     set_source_files_properties(main.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+    set_source_files_properties(BackendEvents.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+    set_source_files_properties(Widgets/Canvas.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 endif()
 
 # Copy the resources folder to the build directory to execute the tests without installing them

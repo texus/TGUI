@@ -1,6 +1,9 @@
 
 #include <TGUI/Config.hpp>
 
+#define CATCH_CONFIG_RUNNER
+#include "Tests.hpp"
+
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics.hpp>
 #endif
@@ -15,12 +18,11 @@
     #include <TGUI/extlibs/IncludeSDL.hpp>
     #if SDL_MAJOR_VERSION >= 3
         #include <SDL3/SDL_main.h>
-        #define SDL_WINDOW_SHOWN 0  // Flag was removed in SDL3
     #endif
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
     #if SDL_MAJOR_VERSION >= 3
-        #include <SDL3/SDL_ttf.h>
+        #include <SDL3_ttf/SDL_ttf.h>
     #else
         #include <SDL_ttf.h>
     #endif
@@ -29,9 +31,6 @@
     #define GLFW_INCLUDE_NONE
     #include <GLFW/glfw3.h>
 #endif
-
-#define CATCH_CONFIG_RUNNER
-#include "Tests.hpp"
 
 #if TGUI_BUILD_AS_CXX_MODULE
     import tgui.default_backend_window;
@@ -141,13 +140,16 @@ struct TestsWindowDefault : public TestsWindowBase
         {
             SDL_Init(SDL_INIT_VIDEO);
             TTF_Init();
+#if SDL_MAJOR_VERSION >= 3
+            window = SDL_CreateWindow(windowTitle,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+            renderer = SDL_CreateRenderer(window, nullptr, SDL_RENDERER_ACCELERATED);
+#else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-#if SDL_MAJOR_VERSION >= 3
-            renderer = SDL_CreateRenderer(window, nullptr, SDL_RENDERER_ACCELERATED);
-#else
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 #endif
             gui = std::make_unique<tgui::SDL_RENDERER::Gui>(window, renderer);
@@ -188,10 +190,16 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#if SDL_MAJOR_VERSION >= 3
+            window = SDL_CreateWindow(windowTitle,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+#else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif
             glContext = SDL_GL_CreateContext(window);
             gui = std::make_unique<tgui::SDL_TTF_OPENGL3::Gui>(window);
         }
@@ -231,10 +239,16 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#if SDL_MAJOR_VERSION >= 3
+            window = SDL_CreateWindow(windowTitle,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+#else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif
             glContext = SDL_GL_CreateContext(window);
             gui = std::make_unique<tgui::SDL_TTF_GLES2::Gui>(window);
         }
@@ -273,10 +287,16 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#if SDL_MAJOR_VERSION >= 3
+            window = SDL_CreateWindow(windowTitle,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+#else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif
             glContext = SDL_GL_CreateContext(window);
             gui = std::make_unique<tgui::SDL_OPENGL3::Gui>(window);
         }
@@ -314,10 +334,16 @@ struct TestsWindowDefault : public TestsWindowBase
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#if SDL_MAJOR_VERSION >= 3
+            window = SDL_CreateWindow(windowTitle,
+                                      windowWidth, windowHeight,
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+#else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif
             glContext = SDL_GL_CreateContext(window);
             gui = std::make_unique<tgui::SDL_GLES2::Gui>(window);
         }

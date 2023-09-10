@@ -22,7 +22,7 @@
 
 # If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
 # When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
-cmake_minimum_required(VERSION 3.16...3.26)
+cmake_minimum_required(VERSION 3.16...3.27)
 
 # Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -148,8 +148,10 @@ string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
 
 # Add an option to build TGUI as a c++20 module (when using CMake >= 3.25)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
-    option(TGUI_BUILD_AS_CXX_MODULE "ON to build TGUI as a c++20 module instead of using header files" OFF)
-    mark_as_advanced(TGUI_BUILD_AS_CXX_MODULE)
+    # We currently don't create the option as it is still too experimental,
+    # it can still be used if the user manually specifies the option though.
+    #option(TGUI_BUILD_AS_CXX_MODULE "ON to build TGUI as a c++20 module instead of using header files" OFF)
+    #mark_as_advanced(TGUI_BUILD_AS_CXX_MODULE)
     if(TGUI_BUILD_AS_CXX_MODULE)
         if(TGUI_CXX_STANDARD LESS 20)
             message(FATAL_ERROR "TGUI_BUILD_AS_CXX_MODULE can only be turned on if TGUI_CXX_STANDARD is set to at least 20")

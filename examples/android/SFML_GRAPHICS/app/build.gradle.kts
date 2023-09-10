@@ -24,11 +24,6 @@ android {
             }
         }
     }
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging = true  // Required for SFML 2.x with minSdk >= 23
-        }
-    }
     buildTypes {
         release {
             isMinifyEnabled = false

@@ -206,15 +206,16 @@ namespace tgui
 #endif
 
 #if SDL_MAJOR_VERSION >= 3
-            const Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+            m_window = SDL_CreateWindow(title.toStdString().c_str(),
+                                        static_cast<int>(width), static_cast<int>(height),
+                                        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 #else
-            const Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-#endif
-
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                         static_cast<int>(width), static_cast<int>(height),
-                                        windowFlags);
+                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif
+
 #if TGUI_HAS_BACKEND_SDL_RENDERER
     #if SDL_MAJOR_VERSION >= 3
             m_renderer = SDL_CreateRenderer(m_window, nullptr, SDL_RENDERER_ACCELERATED);

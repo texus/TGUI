@@ -1210,6 +1210,7 @@ namespace tgui
     {
         // Send the event to the widget below the mouse
         Widget::Ptr widget = updateWidgetBelowMouse(pos);
+
         if (widget != nullptr)
             return widget->scrolled(delta, transformMousePos(widget, pos), touch);
 

@@ -49,6 +49,9 @@ TEST_CASE("[Clipping]")
         gui.setAbsoluteView({375, 300, 80, 40});
 
         TEST_DRAW("Clipping_Panel.png")
+
+        gui.setRelativeViewport({1, 1, 1, 1});
+        gui.setRelativeView({1, 1, 1, 1});
     }
 
     SECTION("EditBox")
@@ -80,6 +83,9 @@ TEST_CASE("[Clipping]")
 
             TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
         }
+
+        gui.setRelativeViewport({1, 1, 1, 1});
+        gui.setRelativeView({1, 1, 1, 1});
     }
 
     SECTION("Nesting")
