@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.libsdl.app'
     ndkVersion '25.2.9519653'
-    compileSdkVersion 33
+    compileSdk 33
     defaultConfig {
         applicationId "eu.tgui.app"
-        minSdkVersion 24
-        targetSdkVersion 33
+        minSdk 24
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         ndk {
