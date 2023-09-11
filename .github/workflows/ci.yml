@@ -3,6 +3,48 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  ios-sfml-graphics:
+    runs-on: macos-12
+    env:
+      SFML_VERSION: 2.5.1
+    steps:
+      - name: Checkout TGUI
+        uses: actions/checkout@v3
+
+      - name: Cache SFML
+        uses: actions/cache@v3
+        id: cache-sfml
+        with:
+          path: SFML_INSTALL
+          key: CACHE_IOS_SFML_${{env.SFML_VERSION}}
+
+      - name: Build SFML
+        if: steps.cache-sfml.outputs.cache-hit != 'true'
+        run: |
+          wget -nv https://github.com/SFML/SFML/releases/download/$SFML_VERSION/SFML-$SFML_VERSION-sources.zip
+          unzip SFML-$SFML_VERSION-sources.zip
+          cmake -GXcode -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DCMAKE_TOOLCHAIN_FILE="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake" -DIOS_PLATFORM=OS -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML-$SFML_VERSION -B SFML-build
+          cmake --build SFML-build --config Debug --target install
+
+      - name: Build TGUI
+        run: >
+          cmake -B TGUI-build
+          -GXcode
+          -DCMAKE_SYSTEM_NAME=iOS
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=14.4
+          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL
+          -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
+          -DCMAKE_UNITY_BUILD=ON
+          -DBUILD_SHARED_LIBS=OFF
+          -DTGUI_CXX_STANDARD=20
+          -DTGUI_WARNINGS_AS_ERRORS=ON
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BACKEND=SFML_GRAPHICS
+          -DFreeType_LIB="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a"
+
+          cmake --build TGUI-build --config Debug --target install
+
   ios-sdl:
     runs-on: macos-12
     env:
@@ -31,21 +73,22 @@ jobs:
           -DCMAKE_SYSTEM_NAME=iOS
           -DCMAKE_OSX_ARCHITECTURES=arm64
           -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0
+          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL_SDL_RENDERER
           -DTGUI_BACKEND=SDL_RENDERER
           -DTGUI_SHARED_LIBS=OFF
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
-          -DTGUI_BUILD_EXAMPLES=OFF
+          -DTGUI_BUILD_EXAMPLES=ON
           -DSDL2_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2.a"
           -DSDL2_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2-$SDL_VERSION/include"
           -DSDL2_TTF_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2_ttf.a"
           -DSDL2_TTF_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2_ttf-$SDL_TTF_VERSION"
           -DTGUI_SKIP_SDL_CONFIG=TRUE
 
-          xcodebuild -project TGUI-build-iOS-SDL_RENDERER/TGUI.xcodeproj -target ALL_BUILD -configuration Release CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/TGUI-iOS-lib"
+          cmake --build TGUI-build-iOS-SDL_RENDERER --config Release --target install
 
-          test -e TGUI-iOS-lib/libtgui-s.a
+          test -e TGUI_INSTALL_SDL_RENDERER/lib/libtgui-s.a
 
       - name: Build TGUI (SDL_TTF_GLES2)
         run: >
@@ -54,7 +97,7 @@ jobs:
           -DCMAKE_SYSTEM_NAME=iOS
           -DCMAKE_OSX_ARCHITECTURES=arm64
           -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
-          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL
+          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL_SDL_TTF_GLES2
           -DTGUI_BACKEND=SDL_TTF_GLES2
           -DTGUI_SHARED_LIBS=OFF
           -DCMAKE_UNITY_BUILD=ON
@@ -69,11 +112,5 @@ jobs:
 
           cmake --build TGUI-build-iOS-SDL_TTF_GLES2 --config Release --target install
 
-          ls
-
-          ls TGUI_INSTALL
-
-          ls TGUI_INSTALL/lib
-
-          test -e TGUI_INSTALL/lib/libtgui-s.a
+          test -e TGUI_INSTALL_SDL_TTF_GLES2/lib/libtgui-s.a
 
