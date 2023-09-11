@@ -158,9 +158,13 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
         endif()
 
         if (NOT CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
-            set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a") # CMake 3.26
+            if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
+                set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7") # CMake 3.27
+            else()
+                set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a") # CMake 3.26
+                set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
+            endif()
         endif()
-        set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
     endif()
 endif()
 
