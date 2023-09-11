@@ -37,10 +37,10 @@ jobs:
           -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
-          -DSDL2_LIBRARY=/Users/texus/Desktop/iOS-libs/libSDL2.a
-          -DSDL2_INCLUDE_DIR=/Users/texus/Desktop/SDL/include
-          -DSDL2_TTF_LIBRARY=/Users/texus/Desktop/iOS-libs/libSDL2_ttf.a
-          -DSDL2_TTF_INCLUDE_DIR=/Users/texus/Desktop/SDL_ttf
+          -DSDL2_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2.a"
+          -DSDL2_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2-$SDL_VERSION/include"
+          -DSDL2_TTF_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2_ttf.a"
+          -DSDL2_TTF_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2_ttf-$SDL_TTF_VERSION"
           -DTGUI_SKIP_SDL_CONFIG=TRUE
 
           xcodebuild -project TGUI-build-iOS-SDL_RENDERER/TGUI.xcodeproj -target ALL_BUILD -configuration Release CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/TGUI-iOS-lib"
@@ -61,10 +61,10 @@ jobs:
           -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
-          -DSDL2_LIBRARY=/Users/texus/Desktop/iOS-libs/libSDL2.a
-          -DSDL2_INCLUDE_DIR=/Users/texus/Desktop/SDL/include
-          -DSDL2_TTF_LIBRARY=/Users/texus/Desktop/iOS-libs/libSDL2_ttf.a
-          -DSDL2_TTF_INCLUDE_DIR=/Users/texus/Desktop/SDL_ttf
+          -DSDL2_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2.a"
+          -DSDL2_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2-$SDL_VERSION/include"
+          -DSDL2_TTF_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2_ttf.a"
+          -DSDL2_TTF_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2_ttf-$SDL_TTF_VERSION"
           -DTGUI_SKIP_SDL_CONFIG=TRUE
 
           cmake --build TGUI-build-iOS-SDL_TTF_GLES2 --config Release --target install
