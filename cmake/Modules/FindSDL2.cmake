@@ -270,7 +270,7 @@ if(SDL2_LIBRARY)
   # I think it has something to do with the CACHE STRING.
   # So I use a temporary variable until the end so I can set the
   # "real" variable in one-shot.
-  if(APPLE)
+  if(APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
     set(SDL2_LIBRARIES ${SDL2_LIBRARIES} -framework Cocoa)
   endif()
 
@@ -349,10 +349,12 @@ if(SDL2_FOUND)
                           INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
 
     if(APPLE)
-      # For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
-      # For more details, please see above.
-      set_property(TARGET SDL2::SDL2 APPEND PROPERTY
-                   INTERFACE_LINK_OPTIONS -framework Cocoa)
+      if (NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
+        # For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
+        # For more details, please see above.
+        set_property(TARGET SDL2::SDL2 APPEND PROPERTY
+                     INTERFACE_LINK_OPTIONS -framework Cocoa)
+      endif()
     else()
       # For threads, as mentioned Apple doesn't need this.
       # For more details, please see above.
@@ -366,7 +368,9 @@ if(SDL2_FOUND)
                             IMPORTED_LOCATION "${SDL2_LIBRARY}"
                             INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
       if(APPLE)
-        set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_OPTIONS -framework Cocoa)
+        if (NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
+          set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_OPTIONS -framework Cocoa)
+        endif()
       else()
         set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
       endif()
