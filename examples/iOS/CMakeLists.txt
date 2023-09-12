@@ -7,11 +7,13 @@ set_source_files_properties(${RESOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 macro(tgui_add_ios_example backend)
     tgui_add_example(ios_demo_${backend} SOURCES iOS-example-${backend}.cpp ${RESOURCES})
 
-    # The app needs an identifier and signing to work correctly
-    set_property(TARGET ios_demo_${backend} PROPERTY XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
     set_target_properties(ios_demo_${backend} PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER "eu.tgui.ios_demo"
         MACOSX_BUNDLE_BUNDLE_NAME "ios_demo_${backend}"
+        XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
+        XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+        #XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+        #XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "<DEVELOPMENT_TEAM>"
     )
 endmacro()
 

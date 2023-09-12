@@ -391,9 +391,9 @@ jobs:
 
           cmake --build TGUI-build-SDL_RENDERER --config Debug
 
-      - name: Build TGUI (SDL_GLES2)
+      - name: Build TGUI (SDL_TTF_GLES2)
         run: >
-          cmake -B TGUI-build-SDL_GLES2 -GNinja
+          cmake -B TGUI-build-SDL_TTF_GLES2 -GNinja
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -401,15 +401,29 @@ jobs:
           -DTGUI_BUILD_GUI_BUILDER=ON
           -DTGUI_BUILD_TESTS=OFF
           -DCMAKE_UNITY_BUILD=ON
-          -DTGUI_BACKEND=SDL_GLES2
+          -DTGUI_BACKEND=SDL_TTF_GLES2
 
-          cmake --build TGUI-build-SDL_GLES2 --config Release
+          cmake --build TGUI-build-SDL_TTF_GLES2 --config Release
+
+      - name: Build TGUI (SDL_OPENGL3)
+        run: >
+          cmake -B TGUI-build-SDL_OPENGL3 -GNinja
+          -DBUILD_SHARED_LIBS=ON
+          -DTGUI_CXX_STANDARD=23
+          -DTGUI_WARNINGS_AS_ERRORS=ON
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=OFF
+          -DCMAKE_UNITY_BUILD=ON
+          -DTGUI_BACKEND=SDL_OPENGL3
+
+          cmake --build TGUI-build-SDL_OPENGL3 --config Release
 
       - name: Build TGUI (GLFW_OPENGL3)
         run: >
           cmake -B TGUI-build-GLFW_OPENGL3 -GNinja
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=23
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -823,6 +837,77 @@ jobs:
           -DFreeType_LIB="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a"
 
           cmake --build TGUI-build --config Debug --target install
+
+  #----------------------------------------
+
+  ios-sdl:
+    runs-on: macos-12
+    env:
+      SDL_VERSION: 2.26.5
+      SDL_TTF_VERSION: 2.0.18
+    steps:
+      - name: Checkout TGUI
+        uses: actions/checkout@v3
+
+      - name: Build SDL
+        run: |
+          wget -nv https://github.com/libsdl-org/SDL/releases/download/release-$SDL_VERSION/SDL2-$SDL_VERSION.zip
+          unzip SDL2-$SDL_VERSION.zip
+          xcodebuild -project SDL2-$SDL_VERSION/Xcode/SDL/SDL.xcodeproj -scheme "Static Library-iOS" CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/SDL-iOS-libs"
+
+      - name: Build SDL_ttf
+        run: |
+          wget -nv https://github.com/libsdl-org/SDL_ttf/releases/download/release-$SDL_TTF_VERSION/SDL2_ttf-$SDL_TTF_VERSION.zip
+          unzip SDL2_ttf-$SDL_TTF_VERSION.zip
+          xcodebuild -project SDL2_ttf-$SDL_TTF_VERSION/Xcode/SDL_ttf.xcodeproj -scheme "Static Library" CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/SDL-iOS-libs"
+
+      - name: Build TGUI (SDL_RENDERER)
+        run: >
+          cmake -B TGUI-build-iOS-SDL_RENDERER
+          -GXcode
+          -DCMAKE_SYSTEM_NAME=iOS
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0
+          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL_SDL_RENDERER
+          -DTGUI_BACKEND=SDL_RENDERER
+          -DTGUI_SHARED_LIBS=OFF
+          -DCMAKE_UNITY_BUILD=ON
+          -DTGUI_CXX_STANDARD=17
+          -DTGUI_WARNINGS_AS_ERRORS=ON
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DSDL2_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2.a"
+          -DSDL2_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2-$SDL_VERSION/include"
+          -DSDL2_TTF_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2_ttf.a"
+          -DSDL2_TTF_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2_ttf-$SDL_TTF_VERSION"
+          -DTGUI_SKIP_SDL_CONFIG=TRUE
+
+          cmake --build TGUI-build-iOS-SDL_RENDERER --config Release --target install
+
+          test -e TGUI_INSTALL_SDL_RENDERER/lib/libtgui-s.a
+
+      - name: Build TGUI (SDL_TTF_GLES2)
+        run: >
+          cmake -B TGUI-build-iOS-SDL_TTF_GLES2
+          -GXcode
+          -DCMAKE_SYSTEM_NAME=iOS
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
+          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL_SDL_TTF_GLES2
+          -DTGUI_BACKEND=SDL_TTF_GLES2
+          -DTGUI_SHARED_LIBS=OFF
+          -DCMAKE_UNITY_BUILD=ON
+          -DTGUI_CXX_STANDARD=17
+          -DTGUI_WARNINGS_AS_ERRORS=ON
+          -DTGUI_BUILD_EXAMPLES=OFF
+          -DSDL2_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2.a"
+          -DSDL2_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2-$SDL_VERSION/include"
+          -DSDL2_TTF_LIBRARY="$GITHUB_WORKSPACE/SDL-iOS-libs/libSDL2_ttf.a"
+          -DSDL2_TTF_INCLUDE_DIR="$GITHUB_WORKSPACE/SDL2_ttf-$SDL_TTF_VERSION"
+          -DTGUI_SKIP_SDL_CONFIG=TRUE
+
+          cmake --build TGUI-build-iOS-SDL_TTF_GLES2 --config Release --target install
+
+          test -e TGUI_INSTALL_SDL_TTF_GLES2/lib/libtgui-s.a
 
   #----------------------------------------
 
