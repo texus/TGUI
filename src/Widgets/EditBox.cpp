@@ -1149,8 +1149,6 @@ namespace tgui
             // position jumps between its initial and later positions. Other backends (SFML and GLFW) currently ignore the rectangle.
             const Vector2f textPos = {m_bordersCached.getLeft() + m_paddingCached.getLeft(), textY};
             const auto absoluteTextPos = getAbsolutePosition(textPos);
-            const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getTop() - m_paddingCached.getBottom() - m_paddingCached.getBottom()};
             const FloatRect inputRect = {absoluteTextPos, getAbsolutePosition({textPos.x, textPos.y + m_textFull.getSize().y}) - absoluteTextPos};
             m_parentGui->updateTextCursorPosition(inputRect, getAbsolutePosition({caretLeft + m_caret.getSize().x, textY}));
         }

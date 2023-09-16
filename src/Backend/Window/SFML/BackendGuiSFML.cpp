@@ -455,9 +455,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef TGUI_SYSTEM_WINDOWS
     void BackendGuiSFML::updateTextCursorPosition(FloatRect, Vector2f caretPos)
     {
-#ifdef TGUI_SYSTEM_WINDOWS
         if (!m_window)
             return;
 
@@ -466,10 +466,13 @@ namespace tgui
     #else
         WindowsIMM::setCandidateWindowPosition(m_window->getSystemHandle(), mapCoordsToPixel(caretPos));
     #endif
-#else
-        BackendGui::updateTextCursorPosition(caretPos);
-#endif
     }
+#else
+    void BackendGuiSFML::updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos)
+    {
+        BackendGui::updateTextCursorPosition(inputRect, caretPos);
+    }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
