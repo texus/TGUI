@@ -39,9 +39,11 @@
 #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
 #include <GLFW/glfw3.h>
 
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_NATIVE_INCLUDE_NONE
-#include <GLFW/glfw3native.h>
+#ifdef TGUI_SYSTEM_WINDOWS
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #define GLFW_NATIVE_INCLUDE_NONE
+    #include <GLFW/glfw3native.h>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -432,19 +434,20 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifdef TGUI_SYSTEM_WINDOWS
     void BackendGuiGLFW::updateTextCursorPosition(FloatRect, Vector2f caretPos)
     {
-#ifdef TGUI_SYSTEM_WINDOWS
         if (!m_window)
             return;
 
         WindowsIMM::setCandidateWindowPosition(glfwGetWin32Window(m_window), mapCoordsToPixel(caretPos));
-#else
-        BackendGui::updateTextCursorPosition(caretPos);
-#endif
     }
-
+#else
+    void BackendGuiGLFW::updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos)
+    {
+        BackendGui::updateTextCursorPosition(inputRect, caretPos);
+    }
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendGuiGLFW::setGuiWindow(GLFWwindow* window)
