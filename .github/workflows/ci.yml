@@ -928,7 +928,7 @@ jobs:
   #       I've decided to just put the nightly build code in this file as well.
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/1.x'
-    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows-sfml-sdl, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics]
+    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows-sfml-sdl, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2019
     env:
       SFML_VERSION: 2.6.0
@@ -1031,13 +1031,14 @@ jobs:
         run: |
           echo d | xcopy /s TGUI TGUI-1.x-nightly
           mkdir TGUI-1.x-nightly\lib
+          mkdir TGUI-1.x-nightly\bin
           move TGUI-build-static-x86\lib\Release\tgui-s.lib TGUI-1.x-nightly\lib\
           move TGUI-build-static-x86\lib\Debug\tgui-s-d.lib TGUI-1.x-nightly\lib\
           move TGUI-build-static-x86\lib\Debug\tgui-s-d.pdb TGUI-1.x-nightly\lib\
           move TGUI-build-dynamic-x86\lib\Release\tgui.lib TGUI-1.x-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Release\tgui.dll TGUI-1.x-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Release\tgui.dll TGUI-1.x-nightly\bin\
           move TGUI-build-dynamic-x86\lib\Debug\tgui-d.lib TGUI-1.x-nightly\lib\
-          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.dll TGUI-1.x-nightly\lib\
+          move TGUI-build-dynamic-x86\lib\Debug\tgui-d.dll TGUI-1.x-nightly\bin\
           move TGUI-build-dynamic-x86\lib\Debug\tgui-d.pdb TGUI-1.x-nightly\lib\
           move TGUI-build-static-x86\doc\html TGUI-1.x-nightly\doc\
           7z a -tzip TGUI-1.x-nightly-VisualStudio-32bit-for-SFML-${env:SFML_VERSION}.zip TGUI-1.x-nightly
@@ -1047,13 +1048,14 @@ jobs:
         run: |
           echo d | xcopy /s TGUI TGUI-1.x-nightly
           mkdir TGUI-1.x-nightly\lib
+          mkdir TGUI-1.x-nightly\bin
           move TGUI-build-static-x64\lib\Release\tgui-s.lib TGUI-1.x-nightly\lib\
           move TGUI-build-static-x64\lib\Debug\tgui-s-d.lib TGUI-1.x-nightly\lib\
           move TGUI-build-static-x64\lib\Debug\tgui-s-d.pdb TGUI-1.x-nightly\lib\
           move TGUI-build-dynamic-x64\lib\Release\tgui.lib TGUI-1.x-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Release\tgui.dll TGUI-1.x-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Release\tgui.dll TGUI-1.x-nightly\bin\
           move TGUI-build-dynamic-x64\lib\Debug\tgui-d.lib TGUI-1.x-nightly\lib\
-          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.dll TGUI-1.x-nightly\lib\
+          move TGUI-build-dynamic-x64\lib\Debug\tgui-d.dll TGUI-1.x-nightly\bin\
           move TGUI-build-dynamic-x64\lib\Debug\tgui-d.pdb TGUI-1.x-nightly\lib\
           move TGUI-build-static-x64\doc\html TGUI-1.x-nightly\doc\
           7z a -tzip TGUI-1.x-nightly-VisualStudio-64bit-for-SFML-${env:SFML_VERSION}.zip TGUI-1.x-nightly
