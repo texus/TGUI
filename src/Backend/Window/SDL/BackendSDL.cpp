@@ -164,7 +164,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendSDL::openVirtualKeyboard(const FloatRect& rect)
     {
         // We only support high-DPI in this code with SDL 2.26 or newer.
@@ -214,7 +214,7 @@ namespace tgui
     {
         SDL_StopTextInput();
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendSDL::isKeyboardModifierPressed(Event::KeyModifier modifierKey)

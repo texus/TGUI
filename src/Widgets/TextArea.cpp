@@ -399,10 +399,35 @@ namespace tgui
 
     void TextArea::setFocused(bool focused)
     {
+        const Vector2f caretPosition = {m_caretPosition.x + m_bordersCached.getLeft() + m_paddingCached.getLeft() - static_cast<float>(m_horizontalScrollbar->getValue()),
+                                        m_caretPosition.y + m_bordersCached.getTop() + m_paddingCached.getTop() - static_cast<float>(m_verticalScrollbar->getValue())};
+
+        // The SDL backend will positions the IME candidate window outside the rectangle, so if we pass the entire
+        // size of the text area then it could appear far from the cursor. We want the window to be below the line
+        // that our cursor is on. For some reason the IME window is only placed at the correct location after the
+        // second character is typed, when the first character is typed the location is always at the top position
+        // of the rectangle instead of below the rectangle. So we choose the top of the rectangle as the top of the line
+        // instead of the top of the widget, so that distance between the initial and final window locations isn't huge.
+        // Other backends (SFML and GLFW) currently ignore the rectangle.
+        const auto absoluteLineTopPos = getAbsolutePosition({ 0, caretPosition.y });
+        const float caretHeight = std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight);
+        const FloatRect inputRect = {absoluteLineTopPos, getAbsolutePosition({getSize().x, caretPosition.y + caretHeight}) - absoluteLineTopPos};
+
+        if (m_parentGui)
+        {
+            if (focused)
+                m_parentGui->startTextInput(inputRect);
+            else
+                m_parentGui->stopTextInput();
+        }
+
         if (focused)
         {
             m_caretVisible = true;
             m_animationTimeElapsed = {};
+
+            if (m_parentGui)
+                m_parentGui->updateTextCursorPosition(inputRect, getAbsolutePosition({caretPosition.x + m_caretWidthCached, caretPosition.y}));
         }
         else // Unfocusing
         {
@@ -413,13 +438,6 @@ namespace tgui
                 updateSelectionTexts();
             }
         }
-
-#if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
-        if (focused)
-            keyboard::openVirtualKeyboard(this, {{}, getSize()});
-        else
-            keyboard::closeVirtualKeyboard();
-#endif
 
         Widget::setFocused(focused);
     }
@@ -1601,7 +1619,9 @@ namespace tgui
             if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].length()))
                 kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSizeCached, false);
 
-            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning, static_cast<float>(m_selEnd.y) * m_lineHeight};
+            const float caretLeft = textOffset + tempText.findCharacterPos(tempText.getString().length()).x + kerning;
+            const float caretTop = static_cast<float>(m_selEnd.y) * m_lineHeight;
+            m_caretPosition = {caretLeft, caretTop};
         }
 
         if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
@@ -1681,7 +1701,7 @@ namespace tgui
         // Calculate the position of the text objects
         m_selectionRects.clear();
         m_textBeforeSelection.setPosition({textOffset, 0});
-        m_defaultText.setPosition({ textOffset, 0 });
+        m_defaultText.setPosition({textOffset, 0});
 
         if (m_selStart != m_selEnd)
         {
@@ -1763,6 +1783,16 @@ namespace tgui
                         m_selectionRects.emplace_back(0.f, static_cast<float>(selectionEnd.y) * m_lineHeight, textOffset, m_lineHeight);
                 }
             }
+        }
+
+        if (m_parentGui)
+        {
+            const Vector2f caretPosition = {m_caretPosition.x + m_bordersCached.getLeft() + m_paddingCached.getLeft() - static_cast<float>(m_horizontalScrollbar->getValue()),
+                                            m_caretPosition.y + m_bordersCached.getTop() + m_paddingCached.getTop() - static_cast<float>(m_verticalScrollbar->getValue())};
+            const auto absoluteLineTopPos = getAbsolutePosition({0, caretPosition.y});
+            const float caretHeight = std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight);
+            const FloatRect inputRect = {absoluteLineTopPos, getAbsolutePosition({getSize().x, caretPosition.y + caretHeight}) - absoluteLineTopPos};
+            m_parentGui->updateTextCursorPosition(inputRect, getAbsolutePosition({caretPosition.x + m_caretWidthCached, caretPosition.y}));
         }
 
         recalculateVisibleLines();

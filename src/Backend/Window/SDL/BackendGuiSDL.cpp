@@ -208,13 +208,15 @@ namespace tgui
             }
             case SDL_EVENT_TEXT_INPUT:
             {
-                const String& unicodeStr(static_cast<const char*>(eventSDL.text.text));
+                const String unicodeStr(static_cast<const char*>(eventSDL.text.text));
                 if (unicodeStr.empty())
                     return false;
 
-                // This code assumes eventSDL.text.text never contains more than one UTF-32 character
+                // This code assumes eventSDL.text.text never contains more than one UTF-32 character.
+                // If there are more characters (which can happen when an IME is used) then this
+                // will be handled in BackendGuiSDL::handleEvent.
                 eventTGUI.type = Event::Type::TextEntered;
-                eventTGUI.text.unicode = unicodeStr[0];
+                eventTGUI.text.unicode = unicodeStr.back();
                 return true;
             }
             case SDL_EVENT_KEY_DOWN:
@@ -408,6 +410,27 @@ namespace tgui
             handleEvent(mouseMoveEvent);
         }
 
+        // If a text event consists of multiple unicode characters (which can happen when an IME is used) then our
+        // converted event only contains the last character. We will send all other unicode characters here.
+        if ((event.type == Event::Type::TextEntered) && (sdlEvent.type == SDL_EVENT_TEXT_INPUT) && (sdlEvent.text.text[1] != '\0'))
+        {
+            // Note that we also pass here if sdlEvent.text.text consists of multiple UTF-8 characters that still fit
+            // within a single UTF-32 codepoint. So we still need to check that there are multiple UTF-32 codepoints below.
+            const String unicodeStr(static_cast<const char*>(sdlEvent.text.text));
+            if (unicodeStr.length() >= 2)
+            {
+                // We send all characters except the last one here, as that one is part of the TGUI event
+                // that will be processed at the end of this function.
+                Event textEvent;
+                textEvent.type = Event::Type::TextEntered;
+                for (unsigned int i = 0; i < unicodeStr.length() - 1; ++i)
+                {
+                    textEvent.text.unicode = unicodeStr[i];
+                    handleEvent(textEvent);
+                }
+            }
+        }
+
         return handleEvent(event);
     }
 
@@ -500,6 +523,80 @@ namespace tgui
     SDL_Window* BackendGuiSDL::getWindow() const
     {
         return m_window;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSDL::startTextInput(FloatRect inputRect)
+    {
+        if (!m_textInputStarted)
+        {
+            // We need to call SDL_StartTextInput here, but we reuse the updateTextCursorPosition code as it needs the same calculations
+            updateTextCursorPosition(inputRect, {});
+
+            SDL_StartTextInput();
+            m_textInputStarted = true;
+
+            // For some weird reason the IME candidates window might remain on the old location when we move focus from
+            // one widget to another (even though SDL_StopTextInput was even called before we got here). The solution seems
+            // to be to call SDL_SetTextInputRect here again, after SDL_StartTextInput was called.
+            // We don't need to do this explicitly here because updateTextCursorPosition will be called shortly after
+            // startTextInput finishes, which already makes another SDL_SetTextInputRect call.
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSDL::stopTextInput()
+    {
+        if (m_textInputStarted)
+        {
+            SDL_StopTextInput();
+            m_textInputStarted = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSDL::updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos)
+    {
+        // We only support high-DPI in this code with SDL 2.26 or newer.
+        // The rectangle passed to SDL_SetTextInputRect will be wrong in older SDL versions on high-DPI screens.
+        float dpiScale = 1;
+
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+        // This code was originally added for iOS (https://github.com/texus/TGUI/issues/183).
+        // Apparently it isn't needed for the calculation of the IME window position on Windows, so maybe this code isn't correct anymore?
+        // Until more information is available, the code is disabled now except for when running on iOS.
+    #ifdef TGUI_SYSTEM_IOS
+        // On a high-DPI screen, we work in pixel coordinates while the SDL rectangle needs to be provided in screen coordinates.
+        // So we need to calculate the DPI scaling of the window.
+        if (m_window)
+        {
+            Vector2i windowSizeScreenCoords;
+            SDL_GetWindowSize(m_window, &windowSizeScreenCoords.x, &windowSizeScreenCoords.y);
+
+            Vector2i windowSizePixels;
+            SDL_GetWindowSizeInPixels(m_window, &windowSizePixels.x, &windowSizePixels.y);
+
+            if ((windowSizeScreenCoords.y != 0) && (windowSizeScreenCoords.y != windowSizePixels.y))
+                dpiScale = static_cast<float>(windowSizePixels.y) / static_cast<float>(windowSizeScreenCoords.y);
+        }
+    #endif
+#endif
+
+        const Vector2f topLeft = mapCoordsToPixel(inputRect.getPosition());
+        const Vector2f bottomRight = mapCoordsToPixel(inputRect.getPosition() + inputRect.getSize());
+        const Vector2f caretPosPixels = mapCoordsToPixel(caretPos);
+
+        // SDL positions the IME window at the left side of the input rect, but we want the window to follow the caret.
+        // So we set the left side of the rectangle to the current location of the caret.
+        SDL_Rect sdlRect;
+        sdlRect.x = static_cast<int>(std::round(std::max(caretPosPixels.x, topLeft.x) / dpiScale));
+        sdlRect.y = static_cast<int>(std::round(topLeft.y / dpiScale));
+        sdlRect.w = static_cast<int>(std::round(std::max(caretPosPixels.x, (bottomRight - topLeft).x) / dpiScale));
+        sdlRect.h = static_cast<int>(std::round((bottomRight - topLeft).y / dpiScale));
+        SDL_SetTextInputRect(&sdlRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

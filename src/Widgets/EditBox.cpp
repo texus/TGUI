@@ -391,6 +391,18 @@ namespace tgui
 
     void EditBox::setFocused(bool focused)
     {
+        if (m_parentGui)
+        {
+            if (focused)
+            {
+                const auto absoluteInnerPos = getAbsolutePosition(m_bordersCached.getOffset());
+                const FloatRect inputRect = {absoluteInnerPos, getAbsolutePosition(getInnerSize()) - absoluteInnerPos};
+                m_parentGui->startTextInput(inputRect);
+            }
+            else
+                m_parentGui->stopTextInput();
+        }
+
         if (focused)
         {
             m_caretVisible = true;
@@ -405,13 +417,6 @@ namespace tgui
             if (m_focused)
                 onReturnOrUnfocus.emit(this, m_text);
         }
-
-#if defined (TGUI_SYSTEM_ANDROID) || defined (TGUI_SYSTEM_IOS)
-        if (focused)
-            keyboard::openVirtualKeyboard(this, {{}, getSize()});
-        else
-            keyboard::closeVirtualKeyboard();
-#endif
 
         ClickableWidget::setFocused(focused);
     }
@@ -1135,6 +1140,20 @@ namespace tgui
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
         m_caret.setPosition({caretLeft, m_paddingCached.getTop()});
+
+        if (m_parentGui)
+        {
+            // The SDL backend will place the IME candidate window below the input rectangle, but for some reason, when the first
+            // character is typed it places the window inside the rectangle at the top position. Instead of making the entire
+            // edit box our rectangle, we will only select the area of the text itself, to reduce the distance that the window
+            // position jumps between its initial and later positions. Other backends (SFML and GLFW) currently ignore the rectangle.
+            const Vector2f textPos = {m_bordersCached.getLeft() + m_paddingCached.getLeft(), textY};
+            const auto absoluteTextPos = getAbsolutePosition(textPos);
+            const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getTop() - m_paddingCached.getBottom() - m_paddingCached.getBottom()};
+            const FloatRect inputRect = {absoluteTextPos, getAbsolutePosition({textPos.x, textPos.y + m_textFull.getSize().y}) - absoluteTextPos};
+            m_parentGui->updateTextCursorPosition(inputRect, getAbsolutePosition({caretLeft + m_caret.getSize().x, textY}));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

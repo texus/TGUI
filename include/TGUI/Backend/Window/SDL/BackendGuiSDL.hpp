@@ -126,6 +126,32 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function is called by TGUI when focusing a text field (EditBox or TextArea).
+        ///        It may result in the software keyboard being opened.
+        ///
+        /// @param inputRect  The rectangle where text is being inputted
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void startTextInput(FloatRect inputRect) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function is called by TGUI when unfocusing a text field (EditBox or TextArea).
+        ///        It may result in the software keyboard being closed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void stopTextInput() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function is called by TGUI when the position of the caret changes in a text field (EditBox or TextArea).
+        ///        If an IME is used then this function may move the IME candidate list to the text cursor position.
+        ///
+        /// @param inputRect The rectangle where text is being inputted
+        /// @param caretPos  Location of the text cursor, relative to the gui view
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +188,9 @@ TGUI_MODULE_EXPORT namespace tgui
 
         SDL_Window* m_window = nullptr;
         float m_dpiScale = 1;
+
+        bool m_textInputStarted = false;
+        SDL_Rect m_textInputRect = {};
 
         bool m_touchFirstFingerDown = false;
         SDL_FingerID m_touchFirstFingerId = 0;      // Only valid if m_touchFirstFingerDown is true

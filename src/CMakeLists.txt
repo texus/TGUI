@@ -49,6 +49,7 @@ set(TGUI_SRC
     Transform.cpp
     TwoFingerScrollDetect.cpp
     Widget.cpp
+    WindowsIMM.cpp
     Backend/Font/BackendFont.cpp
     Backend/Renderer/BackendRenderTarget.cpp
     Backend/Renderer/BackendText.cpp

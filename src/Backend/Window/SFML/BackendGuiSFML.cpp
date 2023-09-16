@@ -30,6 +30,10 @@
 #else
     #include <TGUI/ToolTip.hpp>
     #include <TGUI/Timer.hpp>
+
+    #ifdef TGUI_SYSTEM_WINDOWS
+        #include <TGUI/WindowsIMM.hpp>
+    #endif
 #endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
@@ -151,6 +155,24 @@ namespace tgui
         default: // We don't process the other keys
             return Event::KeyboardKey::Unknown;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendGuiSFML::BackendGuiSFML()
+    {
+#ifdef TGUI_SYSTEM_WINDOWS
+        WindowsIMM::initialize();
+#endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BackendGuiSFML::~BackendGuiSFML()
+    {
+#ifdef TGUI_SYSTEM_WINDOWS
+        WindowsIMM::release();
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,6 +435,40 @@ namespace tgui
     sf::Window* BackendGuiSFML::getWindow() const
     {
         return m_window;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSFML::startTextInput(FloatRect)
+    {
+        // Open the software keyboard on Android and iOS
+        sf::Keyboard::setVirtualKeyboardVisible(true);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSFML::stopTextInput()
+    {
+        // Open the software keyboard on Android and iOS
+        sf::Keyboard::setVirtualKeyboardVisible(false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSFML::updateTextCursorPosition(FloatRect, Vector2f caretPos)
+    {
+#ifdef TGUI_SYSTEM_WINDOWS
+        if (!m_window)
+            return;
+
+    #if SFML_VERSION_MAJOR >= 3
+        WindowsIMM::setCandidateWindowPosition(m_window->getNativeHandle(), mapCoordsToPixel(caretPos));
+    #else
+        WindowsIMM::setCandidateWindowPosition(m_window->getSystemHandle(), mapCoordsToPixel(caretPos));
+    #endif
+#else
+        BackendGui::updateTextCursorPosition(caretPos);
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

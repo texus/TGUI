@@ -142,7 +142,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void BackendSFML::openVirtualKeyboard(const FloatRect&)
     {
         sf::Keyboard::setVirtualKeyboardVisible(true);
@@ -154,7 +154,7 @@ namespace tgui
     {
         sf::Keyboard::setVirtualKeyboardVisible(false);
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendSFML::isKeyboardModifierPressed(Event::KeyModifier modifierKey)
