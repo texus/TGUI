@@ -83,7 +83,43 @@ TEST_CASE("[ToggleButton]")
             testClickableWidgetSignals(button);
         }
 
-        // TODO: Toggled signal
+        SECTION("Toggled signal")
+        {
+            button->setPosition(40, 30);
+            button->setSize(150, 100);
+
+            unsigned int toggleCount = 0;
+            button->onToggle(&genericCallback, std::ref(toggleCount));
+
+            SECTION("mouse click")
+            {
+                button->leftMouseReleased({115, 80});
+                REQUIRE(toggleCount == 0);
+
+                button->leftMousePressed({115, 80});
+                REQUIRE(toggleCount == 0);
+
+                button->leftMouseReleased({115, 80});
+                REQUIRE(toggleCount == 1);
+            }
+
+            SECTION("key pressed")
+            {
+                tgui::Event::KeyEvent keyEvent;
+                keyEvent.alt = false;
+                keyEvent.control = false;
+                keyEvent.shift = false;
+                keyEvent.system = false;
+
+                keyEvent.code = tgui::Event::KeyboardKey::Space;
+                button->keyPressed(keyEvent);
+                REQUIRE(toggleCount == 1);
+
+                keyEvent.code = tgui::Event::KeyboardKey::Enter;
+                button->keyPressed(keyEvent);
+                REQUIRE(toggleCount == 2);
+            }
+        }
     }
 
     testWidgetRenderer(button->getRenderer());
@@ -363,5 +399,255 @@ TEST_CASE("[ToggleButton]")
         testSavingWidget("ToggleButton", button);
     }
 
-    // TODO: Draw tests
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 35, button)
+
+        button->setEnabled(true);
+        button->setPosition(10, 5);
+        button->setSize(100, 25);
+        button->setText("Click me!");
+        button->setTextSize(16);
+
+        tgui::ButtonRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setBorderColor(tgui::Color::Blue);
+        renderer.setTextStyle(tgui::TextStyle::Italic);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        button->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTextColorHover(tgui::Color::Magenta);
+                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
+                                        renderer.setBorderColorHover(tgui::Color::Yellow);
+                                        renderer.setTextStyleHover(tgui::TextStyle::Bold);
+                                        if (textured)
+                                            renderer.setTextureHover("resources/Texture2.png");
+                                     };
+
+        auto setDownRenderer = [&](bool textured){
+                                        renderer.setTextColorDown(tgui::Color::Black);
+                                        renderer.setBackgroundColorDown(tgui::Color::White);
+                                        renderer.setBorderColorDown({128, 128, 128});
+                                        renderer.setTextStyleDown(tgui::TextStyle::Underlined);
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDown("resources/Texture3.png");
+                                    };
+
+        auto setDisabledRenderer = [&](bool textured){
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDisabled("resources/Texture4.png");
+                                    };
+
+        const auto mousePos = button->getPosition() + (button->getSize() / 2.f);
+
+        SECTION("Outline")
+        {
+            renderer.setTextOutlineThickness(1);
+            renderer.setTextOutlineColor(tgui::Color::White);
+            TEST_DRAW("ToggleButton_Normal_Outline.png")
+        }
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("ToggleButton_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("ToggleButton_Normal_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("ToggleButton_Normal_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved(mousePos);
+
+                TEST_DRAW("ToggleButton_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("ToggleButton_Hover_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("ToggleButton_Hover_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+                button->leftMouseReleased(mousePos);
+                button->mouseMoved({0, 0});
+
+                TEST_DRAW("ToggleButton_Down_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("ToggleButton_Down_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("ToggleButton_Down_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownHoverState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+                button->leftMouseReleased(mousePos);
+
+                TEST_DRAW("ToggleButton_DownHover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("ToggleButton_DownHover_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("ToggleButton_DownHover_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->setEnabled(false);
+
+                TEST_DRAW("ToggleButton_Disabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(false);
+                    TEST_DRAW("ToggleButton_Disabled_DisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTexture("resources/Texture1.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("ToggleButton_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("ToggleButton_Normal_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("ToggleButton_Normal_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved(mousePos);
+
+                TEST_DRAW("ToggleButton_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("ToggleButton_Hover_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("ToggleButton_Hover_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+                button->leftMouseReleased(mousePos);
+                button->mouseMoved({0, 0});
+
+                TEST_DRAW("ToggleButton_Down_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("ToggleButton_Down_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("ToggleButton_Down_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownHoverState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+                button->leftMouseReleased(mousePos);
+
+                TEST_DRAW("ToggleButton_DownHover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("ToggleButton_DownHover_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("ToggleButton_DownHover_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->setEnabled(false);
+
+                TEST_DRAW("ToggleButton_Disabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(true);
+                    TEST_DRAW("ToggleButton_Disabled_TextureDisabledSet.png")
+                }
+            }
+        }
+    }
 }
