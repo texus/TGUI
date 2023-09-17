@@ -91,6 +91,8 @@ jobs:
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v3
+        with:
+          path: TGUI
 
       - name: Lookup dependency versions
         id: find-dependencies
@@ -165,9 +167,10 @@ jobs:
           cmake --build GLFW-build --config Debug --target install
 
       - name: Build TGUI
+        working-directory: TGUI
         run: >
           CXXFLAGS="-fprofile-arcs -ftest-coverage -DTGUI_REMOVE_DEPRECATED_CODE"
-          cmake -B TGUI-build
+          cmake -B build
           -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
           -DSDL3_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL3/"
           -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
@@ -192,10 +195,10 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
 
-          make -C TGUI-build -j$(nproc)
+          make -C build -j$(nproc)
 
       - name: Run tests
-        working-directory: TGUI-build/tests
+        working-directory: TGUI/build/tests
         run: |
           set -a && source ../../tests/EnableSoftwareRenderer.env && set +a
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
@@ -209,7 +212,16 @@ jobs:
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
 
       - name: Upload coverage reports to Codecov
-        run: bash <(curl -s https://codecov.io/bash) -p TGUI-build -s . -a "-s . -pr"
+        working-directory: TGUI
+        run: |
+          curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --import
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+          gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+          shasum -a 256 -c codecov.SHA256SUM
+          chmod +x codecov
+          ./codecov -ga "-pr" -t ${{secrets.CODECOV_TOKEN}}
 
   #----------------------------------------
 
