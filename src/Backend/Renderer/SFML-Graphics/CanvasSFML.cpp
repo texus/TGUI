@@ -203,7 +203,7 @@ namespace tgui
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
-        statesSFML.transform.translate({sprite.getPosition()});
+        statesSFML.transform.translate({sprite.getPosition().x, sprite.getPosition().y});
 
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
                     "CanvasSFML::draw requires sprite to have a backend texture of type BackendTextureSFML");
