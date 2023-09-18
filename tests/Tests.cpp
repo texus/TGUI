@@ -35,7 +35,8 @@ tgui::String getClipboardContents()
     // Wait a moment before accessing the clipboard.
     // The data wasn't always there yet when requesting it immediately after changing it when using the SDL backend on Windows.
     // The problem might be with setting instead of getting though: setting two times quickly resulted in access denied error.
-    Sleep(1);
+    // There were still occational failures when only waiting 1ms.
+    Sleep(5);
 #endif
 
     return tgui::getBackend()->getClipboard();

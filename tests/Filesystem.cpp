@@ -48,12 +48,19 @@ TEST_CASE("[Filesystem]")
 
     SECTION("Absolute / relative")
     {
+#ifdef TGUI_SYSTEM_WINDOWS
+        REQUIRE(tgui::Filesystem::Path("C:/a/b/").isAbsolute());
+        REQUIRE(!tgui::Filesystem::Path("C:/a/b/").isRelative());
+
+        REQUIRE(tgui::Filesystem::Path("D:/a/b").isAbsolute());
+        REQUIRE(!tgui::Filesystem::Path("D:/a/b").isRelative());
+#else
         REQUIRE(tgui::Filesystem::Path("/a/b/").isAbsolute());
         REQUIRE(!tgui::Filesystem::Path("/a/b/").isRelative());
 
         REQUIRE(tgui::Filesystem::Path("/a/b").isAbsolute());
         REQUIRE(!tgui::Filesystem::Path("/a/b").isRelative());
-
+#endif
         REQUIRE(!tgui::Filesystem::Path("a/b/").isAbsolute());
         REQUIRE(tgui::Filesystem::Path("a/b/").isRelative());
 
