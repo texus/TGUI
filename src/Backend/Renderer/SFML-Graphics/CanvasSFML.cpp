@@ -197,22 +197,28 @@ namespace tgui
         if (!sprite.getTexture().getData())
             return;
 
-        const std::vector<Vertex>& vertices = sprite.getVertices();
-        const std::vector<unsigned int>& indices = sprite.getIndices();
-        std::vector<Vertex> triangleVertices(indices.size());
-        for (std::size_t i = 0; i < indices.size(); ++i)
-            triangleVertices[i] = vertices[indices[i]];
-
         sf::RenderStates statesSFML;
         const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
         statesSFML.transform = sf::Transform(
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+        statesSFML.transform.translate({sprite.getPosition()});
 
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
                     "CanvasSFML::draw requires sprite to have a backend texture of type BackendTextureSFML");
         statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
+
+        const sf::Vector2u textureSize{statesSFML.texture->getSize()};
+        const std::vector<Vertex>& vertices = sprite.getVertices();
+        const std::vector<unsigned int>& indices = sprite.getIndices();
+        std::vector<Vertex> triangleVertices(indices.size());
+        for (std::size_t i = 0; i < indices.size(); ++i)
+        {
+            triangleVertices[i] = vertices[indices[i]];
+            triangleVertices[i].texCoords.x *= textureSize.x;
+            triangleVertices[i].texCoords.y *= textureSize.y;
+        }
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());

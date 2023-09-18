@@ -127,6 +127,10 @@ TEST_CASE("[CanvasSFML]")
             sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
             sprite.setPosition({15, 20});
 
+            tgui::Sprite sprite2("resources/Texture6.png");
+            sprite2.setSize({25, 25});
+            sprite2.setPosition({40, 35});
+
             std::vector<sf::Vertex> vertices = {
                     {{80, 90}, tgui::Color::Red},
                     {{80, 115}, tgui::Color::Red},
@@ -136,6 +140,7 @@ TEST_CASE("[CanvasSFML]")
 
             canvas->clear(tgui::Color::Yellow);
             canvas->draw(sprite);
+            canvas->draw(sprite2);
             canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TriangleStrip);
             canvas->display();
 
