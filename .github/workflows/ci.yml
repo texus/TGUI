@@ -204,12 +204,12 @@ jobs:
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_RENDERER
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GLES2
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_OPENGL3
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_GLES2
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_OPENGL3
-          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
+          MESA_GL_VERSION_OVERRIDE=3.3 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
+          MESA_GLES_VERSION_OVERRIDE=3.2 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GLES2
+          MESA_GL_VERSION_OVERRIDE=4.1 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_OPENGL3
+          MESA_GLES_VERSION_OVERRIDE=3.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_GLES2
+          MESA_GL_VERSION_OVERRIDE=4.5 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_OPENGL3
+          MESA_GLES_VERSION_OVERRIDE=2.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
 
       - name: Upload coverage reports to Codecov
         working-directory: TGUI
