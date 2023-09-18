@@ -41,6 +41,25 @@
     #endif
 #endif
 
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+class CustomWidgetWithSFMLShader : public tgui::ClickableWidget
+{
+public:
+    tgui::Sprite sprite;
+
+    static std::shared_ptr<CustomWidgetWithSFMLShader> create()
+    {
+        return std::make_shared<CustomWidgetWithSFMLShader>();
+    }
+
+    void draw(tgui::BackendRenderTarget& target, tgui::RenderStates states) const override
+    {
+        states.transform.translate({5, -10});
+        target.drawSprite(states, sprite);
+    }
+};
+#endif
+
 TEST_CASE("[Texture]")
 {
     SECTION("Loading")
@@ -233,7 +252,7 @@ TEST_CASE("[Texture]")
     {
         SECTION("Shader")
         {
-            tgui::Texture texture{"resources/image.png"};
+            tgui::Texture texture{"resources/Texture6.png"};
             REQUIRE(!texture.getShader());
 
             sf::Shader shader;
@@ -242,6 +261,31 @@ TEST_CASE("[Texture]")
 
             texture.setShader(nullptr);
             REQUIRE(!texture.getShader());
+
+            SECTION("Draw")
+            {
+                (void)shader.loadFromMemory(R"(
+                    void main() {
+                        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                        gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+                        gl_FrontColor = gl_Color;
+                    })", R"(
+                    uniform sampler2D texture;
+                    void main() {
+                        gl_FragColor = gl_Color * texture2D(texture, gl_TexCoord[0].xy) * vec4(0.7, 1.0, 0.0, 1.0);
+                    })");
+                texture.setShader(&shader);
+
+                auto widget = CustomWidgetWithSFMLShader::create();
+                widget->sprite.setTexture(texture);
+                widget->sprite.setPosition({5, 20});
+                TEST_DRAW_INIT(70, 70, widget)
+
+                TEST_DRAW("Texture_SFML_Shader.png")
+
+                widget->sprite.setRotation(90);
+                TEST_DRAW("Texture_SFML_Shader_Rotation.png")
+            }
         }
     }
 #endif

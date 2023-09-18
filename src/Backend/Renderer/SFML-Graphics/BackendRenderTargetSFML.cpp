@@ -102,14 +102,15 @@ namespace tgui
             return BackendRenderTarget::drawSprite(states, sprite);
 
         RenderStates transformedStates = states;
-        if (sprite.getRotation() != 0)
+        if (sprite.getRotation() == 0)
+            transformedStates.transform.translate(sprite.getPosition());
+        else
         {
             // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
             transformedStates.transform.translate(-Transform().rotate(sprite.getRotation()).transformRect({{}, sprite.getSize()}).getPosition());
+            transformedStates.transform.translate(sprite.getPosition());
             transformedStates.transform.rotate(sprite.getRotation());
         }
-
-        transformedStates.transform.translate(sprite.getPosition());
 
         const FloatRect& visibleRect = sprite.getVisibleRect();
         const bool clippingRequired = (visibleRect != FloatRect{});
