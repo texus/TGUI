@@ -204,6 +204,20 @@ void testSavingWidget(const tgui::String& name, std::shared_ptr<WidgetType> widg
         REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile3.txt"));
         REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile3.txt"));
     }
+
+    SECTION("Loading empty widget")
+    {
+        try
+        {
+            // Loading an empty section may throw an error for some widgets, but it should never crash.
+            // After an exception is thrown, attempting to use the widget may however result in a crash,
+            // so we only test that attempting to load it works.
+            parent->loadWidgetsFromStream(std::stringstream((widget->getWidgetType() + " {}").toStdString()), true);
+        }
+        catch (const tgui::Exception&)
+        {
+        }
+    }
 }
 
 class GuiNull : public tgui::BackendGui

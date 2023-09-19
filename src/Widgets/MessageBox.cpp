@@ -522,6 +522,9 @@ namespace tgui
                 throw Exception{U"Failed to parse ButtonAlignment property. Only the values Left, Center and Right are correct."};
         }
 
+        if (!get<Label>(U"#TGUI_INTERNAL$MessageBoxText#"))
+            throw Exception{U"Failed to find the internal text label child while loading MessageBox"};
+
         identifyLabelAndButtons();
     }
 

@@ -473,6 +473,18 @@ TEST_CASE("[Widget]")
             REQUIRE(clonedRenderer->propertyValuePairs["Font"].getFont().getId() == "resources/DejaVuSans.ttf");
         }
 
+        SECTION("getSharedRenderer exists for both const and non-const widgets")
+        {
+            const auto& widgetTypes = tgui::WidgetFactory::getWidgetTypes();
+            for (const auto& type : widgetTypes)
+            {
+                tgui::Widget::Ptr widget2 = tgui::WidgetFactory::getConstructFunction(type)();
+                tgui::Widget::ConstPtr widget3 = widget2;
+
+                REQUIRE(widget2->getSharedRenderer() == widget3->getSharedRenderer());
+            }
+        }
+
         // TODO: Other tests with the renderer class (e.g. sharing and copying a renderer when using multiple widgets)
     }
 

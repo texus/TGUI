@@ -50,7 +50,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param type         Type of the widget
         /// @param constructor  Function used to construct the widget (all TGUI widgets use std::make_shared<WidgetType>)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setConstructFunction(const String& type, const std::function<Widget::Ptr()>& constructor);
+        static void setConstructFunction(const String& type, std::function<Widget::Ptr()> constructor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +59,10 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param type  Type of the widget
         ///
         /// @return Function used to construct the widget (all TGUI widgets use std::make_shared<WidgetType>)
+        ///
+        /// @warning A nullptr is returned if called with a type that isn't in the list returned by getWidgetTypes()
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static const std::function<Widget::Ptr()>& getConstructFunction(const String& type);
+        TGUI_NODISCARD static std::function<Widget::Ptr()> getConstructFunction(const String& type);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

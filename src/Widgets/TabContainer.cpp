@@ -480,7 +480,9 @@ namespace tgui
         }
 
         // Buffer the value to apply it after child widget creation with default size.
-        float tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TabFixedSize"]->value).getNumber();
+        float tabFixedSize = 0;
+        if (node->propertyValuePairs[U"TabFixedSize"])
+            tabFixedSize = Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TabFixedSize"]->value).getNumber();
 
         m_panels.clear();
         m_selectedPanel = nullptr;

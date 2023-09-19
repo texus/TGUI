@@ -602,6 +602,15 @@ namespace tgui
 
         ChildWindow::load(node, renderers);
 
+        if (!get<Slider>("#TGUI_INTERNAL$ColorPickerRed#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerGreen#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerBlue#")
+         || !get<Slider>("#TGUI_INTERNAL$ColorPickerAlpha#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerValue#") || !get<Panel>("#TGUI_INTERNAL$ColorPickerLast#")
+         || !get<Panel>("#TGUI_INTERNAL$ColorPickerCurrent#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLR#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLG#")
+         || !get<Label>("#TGUI_INTERNAL$ColorPickerLB#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLA#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerRedBox#")
+         || !get<EditBox>("#TGUI_INTERNAL$ColorPickerGreenBox#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#")
+         || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelLast#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#") || !get<Button>("#TGUI_INTERNAL$ColorPickerReset#")
+         || !get<Button>("#TGUI_INTERNAL$ColorPickerOK#") || !get<Button>("#TGUI_INTERNAL$ColorPickerCancel#"))
+            throw Exception{U"Failed to find all internal child widgets while loading ColorPicker"};
+
         identifyButtonsAndConnect();
     }
 

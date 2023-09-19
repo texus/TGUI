@@ -39,11 +39,15 @@ TEST_CASE("[ListView]")
         listView->onDoubleClick([](){});
         listView->onDoubleClick([](int){});
 
+        listView->onRightClick([](){});
+        listView->onRightClick([](int){});
+
         listView->onHeaderClick([](){});
         listView->onHeaderClick([](int){});
 
         REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("ItemSelected").connect([]{}));
         REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("RightClicked").connect([]{}));
         REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("HeaderClicked").connect([]{}));
     }
 
@@ -476,6 +480,43 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
         listView->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         REQUIRE(listView->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+    }
+
+    SECTION("VerticalScrollbarValue")
+    {
+        REQUIRE(listView->getVerticalScrollbarValue() == 0);
+        listView->setVerticalScrollbarValue(100);
+        REQUIRE(listView->getVerticalScrollbarValue() == 0);
+
+        listView->setSize(120, 45);
+        listView->setItemHeight(20);
+        listView->addMultipleItems({{"Item 1", "1,2"}, {"Item 2", "2,2"}, {"Item 3", "3,2"}});
+
+        listView->setVerticalScrollbarValue(10);
+        REQUIRE(listView->getVerticalScrollbarValue() == 10);
+    }
+
+    SECTION("HorizontalScrollbarValue")
+    {
+        REQUIRE(listView->getHorizontalScrollbarValue() == 0);
+        listView->setHorizontalScrollbarValue(100);
+        REQUIRE(listView->getHorizontalScrollbarValue() == 0);
+
+        listView->setSize(120, 60);
+        listView->addColumn("Col 1", 70);
+        listView->addColumn("Col 2", 80);
+
+        listView->setHorizontalScrollbarValue(10);
+        REQUIRE(listView->getHorizontalScrollbarValue() == 10);
+    }
+
+    SECTION("FixedIconSize")
+    {
+        REQUIRE(listView->getFixedIconSize() == tgui::Vector2f{0, 0});
+
+        listView->setFixedIconSize({20, 20});
+        REQUIRE(listView->getFixedIconSize() == tgui::Vector2f{20, 20});
+        listView->setFixedIconSize({20, 20}); // Call with same value is no-op
     }
 
     SECTION("MultiSelect")
@@ -1200,6 +1241,18 @@ TEST_CASE("[ListView]")
             listView->setItemIcon(4, {"resources/Texture7.png", {0, 0, 14, 14}});
             TEST_DRAW("ListView_Icons.png")
 
+            listView->setFixedIconSize({10, 10});
+            TEST_DRAW("ListView_Icons_FixedSize.png")
+
+            listView->setFixedIconSize({17, 0});
+            TEST_DRAW("ListView_Icons_FixedWidth.png")
+
+            listView->setFixedIconSize({0, 7});
+            TEST_DRAW("ListView_Icons_FixedHeight.png")
+
+            listView->setFixedIconSize({});
+            TEST_DRAW("ListView_Icons.png")
+
             listView->setItemIcon(3, {});
             listView->setItemIcon(4, {});
             TEST_DRAW("ListView_NoSelectedNoHover.png")
@@ -1291,6 +1344,12 @@ TEST_CASE("[ListView]")
                 TEST_DRAW("ListView_LongestItemAutoWidth_NoScrollbar.png")
 
                 listView->addItem({"+", "Item is too long"});
+                TEST_DRAW("ListView_LongestItemAutoWidth_WithScrollbar.png")
+
+                listView->changeItem(6, {"+", "Short"});
+                TEST_DRAW("ListView_LongestItemAutoWidth_NoScrollbarAgain.png")
+
+                listView->changeSubItem(6, 1, "Item is too long");
                 TEST_DRAW("ListView_LongestItemAutoWidth_WithScrollbar.png")
             }
         }

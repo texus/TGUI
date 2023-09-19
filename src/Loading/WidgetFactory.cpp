@@ -76,16 +76,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetFactory::setConstructFunction(const String& type, const std::function<Widget::Ptr()>& constructor)
+    void WidgetFactory::setConstructFunction(const String& type, std::function<Widget::Ptr()> constructor)
     {
-        m_constructFunctions[type] = constructor;
+        m_constructFunctions[type] = std::move(constructor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::function<Widget::Ptr()>& WidgetFactory::getConstructFunction(const String& type)
+    std::function<Widget::Ptr()> WidgetFactory::getConstructFunction(const String& type)
     {
-        return m_constructFunctions[type];
+        // If the type is not found then we will return a nullptr, without altering the list that could be returned by getWidgetTypes()
+        auto it = m_constructFunctions.find(type);
+        if (it != m_constructFunctions.end())
+            return it->second;
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

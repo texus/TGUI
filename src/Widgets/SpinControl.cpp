@@ -318,6 +318,9 @@ namespace tgui
         m_spinText = m_container->get<EditBox>("SpinText");
         m_spinButton = m_container->get<SpinButton>("SpinButton");
 
+        if (!m_spinText || !m_spinButton)
+            throw Exception{U"Failed to find SpinText and SpinButton children while loading SpinControl"};
+
         init();
         setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));
     }

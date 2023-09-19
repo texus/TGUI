@@ -599,7 +599,7 @@ jobs:
           cmake --build TGUI-build-LLVM-Clang --config Debug
 
       - name: Run tests
-        working-directory: TGUI-build-LLVM-Clang/tests/Release
+        working-directory: TGUI-build-LLVM-Clang/tests/Debug
         run: tests.exe
 
   #----------------------------------------

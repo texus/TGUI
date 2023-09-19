@@ -970,8 +970,6 @@ namespace tgui
 
     void FileDialog::addCreateFolderButton()
     {
-        m_buttonCreateFolder = Button::create();
-
         m_buttonCreateFolder->setText("Create Folder");
         m_buttonCreateFolder->setOrigin(0, 1);
         m_buttonCreateFolder->setPosition("10", "100% - 10");
@@ -1401,6 +1399,13 @@ namespace tgui
         ChildWindow::load(node, renderers);
 
         identifyChildWidgets();
+        if (!m_buttonCreateFolder)
+            m_buttonCreateFolder = Button::create();
+
+        if (!m_buttonBack || !m_buttonForward || !m_buttonUp || !m_editBoxPath || !m_listView || !m_labelFilename
+         || !m_editBoxFilename || !m_comboBoxFileTypes || !m_buttonCancel || !m_buttonConfirm)
+            throw Exception{U"Failed to find all internal child widgets while loading FileDialog"};
+
         connectSignals();
 
         if (node->propertyValuePairs[U"FileMustExist"])
