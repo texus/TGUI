@@ -238,14 +238,265 @@ TEST_CASE("[TreeView]")
         REQUIRE(treeView->getTextSize() == 25);
     }
 
+    SECTION("VerticalScrollbarValue + HorizontalScrollbarValue")
+    {
+        REQUIRE(treeView->getVerticalScrollbarValue() == 0);
+        treeView->setVerticalScrollbarValue(100);
+        REQUIRE(treeView->getVerticalScrollbarValue() == 0);
+
+        REQUIRE(treeView->getHorizontalScrollbarValue() == 0);
+        treeView->setHorizontalScrollbarValue(100);
+        REQUIRE(treeView->getHorizontalScrollbarValue() == 0);
+
+        treeView->setSize(70, 45);
+        treeView->setItemHeight(20);
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+
+        treeView->setVerticalScrollbarValue(10);
+        REQUIRE(treeView->getVerticalScrollbarValue() == 10);
+
+        treeView->setHorizontalScrollbarValue(15);
+        REQUIRE(treeView->getHorizontalScrollbarValue() == 15);
+    }
+
+    testWidgetSignals(treeView);
     SECTION("Events / Signals")
     {
-        SECTION("Widget")
+        auto root = std::make_shared<tgui::RootContainer>();
+        root->setSize(800, 600);
+
+        auto container = tgui::Group::create({400.f, 300.f});
+        container->setPosition(100, 50);
+        container->add(treeView);
+        root->add(container);
+
+        auto mouseMoved = [container](tgui::Vector2f pos){
+            container->processMouseMoveEvent(pos);
+        };
+        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
+            container->processMousePressEvent(button, pos);
+        };
+        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
+            container->processMouseReleaseEvent(button, pos);
+        };
+
+        treeView->setPosition(10, 20);
+        treeView->setSize(120, 64);
+        treeView->setItemHeight(20);
+        treeView->getRenderer()->setBorders(2);
+        treeView->getRenderer()->setScrollbarWidth(10);
+
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+
+        unsigned int itemSelectedCount = 0;
+        unsigned int doubleClickedCount = 0;
+        unsigned int expandedCount = 0;
+        unsigned int collapsedCount = 0;
+        treeView->onItemSelect(&genericCallback, std::ref(itemSelectedCount));
+        treeView->onDoubleClick(&genericCallback, std::ref(doubleClickedCount));
+        treeView->onExpand(&genericCallback, std::ref(expandedCount));
+        treeView->onCollapse(&genericCallback, std::ref(collapsedCount));
+
+        SECTION("Click on item")
         {
-            testWidgetSignals(treeView);
+            // Clicking the border does nothing
+            mouseMoved({11, 21});
+            mousePressed({11, 21});
+            mouseReleased({11, 21});
+            REQUIRE(itemSelectedCount == 0);
+            REQUIRE(treeView->getSelectedItem().empty());
+
+            // Select the first row
+            mouseMoved({12, 22});
+            mousePressed({12, 22});
+            mouseReleased({12, 22});
+            REQUIRE(itemSelectedCount == 1);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies"});
+
+            // Select the third row
+            mousePressed({60, 70});
+            mouseReleased({60, 70});
+            REQUIRE(itemSelectedCount == 2);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            SECTION("Double click")
+            {
+                // If a click happens a long time after the previous click then it isn't a double click
+                container->updateTime(std::chrono::milliseconds(10000));
+                mousePressed({60, 70});
+                mouseReleased({60, 70});
+                REQUIRE(doubleClickedCount == 0);
+
+                container->updateTime(std::chrono::milliseconds(5));
+                mousePressed({60, 70});
+                mouseReleased({60, 70});
+                REQUIRE(doubleClickedCount == 1);
+                REQUIRE(itemSelectedCount == 2);
+                REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+                // Third click is not registered as another double click
+                mousePressed({60, 70});
+                mouseReleased({60, 70});
+                REQUIRE(doubleClickedCount == 1);
+
+                // Double clicking on an open node will collapse it
+                container->updateTime(std::chrono::milliseconds(2000));
+                REQUIRE(collapsedCount == 0);
+                mousePressed({60, 30});
+                mouseReleased({60, 30});
+                mousePressed({60, 30});
+                mouseReleased({60, 30});
+                REQUIRE(collapsedCount == 1);
+                REQUIRE(doubleClickedCount == 1);
+
+                // Double clicking on a closed node will expand it
+                container->updateTime(std::chrono::milliseconds(2000));
+                REQUIRE(expandedCount == 0);
+                mousePressed({60, 30});
+                mouseReleased({60, 30});
+                mousePressed({60, 30});
+                mouseReleased({60, 30});
+                REQUIRE(expandedCount == 1);
+                REQUIRE(collapsedCount == 1);
+                REQUIRE(doubleClickedCount == 1);
+            }
         }
 
-        /// TODO
+        SECTION("Click on collapse/expand icon")
+        {
+            mousePressed({20, 30});
+            mouseReleased({20, 30});
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies"});
+            REQUIRE(collapsedCount == 1);
+            REQUIRE(expandedCount == 0);
+
+            mousePressed({20, 30});
+            mouseReleased({20, 30});
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies"});
+            REQUIRE(expandedCount == 1);
+            REQUIRE(collapsedCount == 1);
+        }
+
+        SECTION("Right click")
+        {
+            unsigned int rightClickCount = 0;
+            treeView->onRightClick(&genericCallback, std::ref(rightClickCount));
+
+            mousePressed({60, 70}, tgui::Event::MouseButton::Right);
+            mouseReleased({60, 70}, tgui::Event::MouseButton::Right);
+            REQUIRE(rightClickCount == 1);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+        }
+
+        SECTION("Vertical scrollbar interaction")
+        {
+            // There is no scrollbar yet
+            treeView->removeItem({"Smilies", "Neither"});
+            mousePressed({127, 81});
+            mouseReleased({127, 81});
+            REQUIRE(itemSelectedCount == 1);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            treeView->addItem({"Smilies", "Neither"});
+
+            // Clicking on scrollbar arrow down
+            mousePressed({127, 81});
+            mouseReleased({127, 81});
+
+            // Dragging scrollbar thumb
+            mouseMoved({125, 50});
+            mousePressed({125, 50});
+            mouseMoved({125, 45});
+            mouseReleased({125, 45});
+            REQUIRE(itemSelectedCount == 1);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            // Select the second and then third row
+            mouseMoved({40, 51});
+            mousePressed({40, 51});
+            mouseReleased({40, 51});
+            REQUIRE(itemSelectedCount == 2);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Happy"});
+            mouseMoved({40, 52});
+            mousePressed({40, 52});
+            mouseReleased({40, 52});
+            REQUIRE(itemSelectedCount == 3);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            treeView->addItem({"Vehicles", "Parts", "Wheel"});
+            treeView->addItem({"Vehicles", "Whole", "Truck"});
+            treeView->setVerticalScrollbarValue(0);
+
+            // Scrolling down with mouse wheel
+            root->scrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y}, false);
+            root->scrolled(-1, {40 + container->getPosition().x, 70 + container->getPosition().y}, false);
+
+            mousePressed({40, 52});
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Neither"});
+            mouseReleased({40, 52});
+        }
+
+        SECTION("Horizontal scrollbar interaction")
+        {
+            mousePressed({70, 80});
+            mouseReleased({70, 80});
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            treeView->deselectItem();
+            treeView->addItem({"Item too long to fit"});
+
+            mousePressed({70, 80});
+            mouseReleased({70, 80});
+            REQUIRE(treeView->getSelectedItem().empty());
+        }
+
+        SECTION("Changing selection with arrow keys")
+        {
+            treeView->removeItem({"Smilies", "Neither"});
+            mousePressed({127, 81});
+            mouseReleased({127, 81});
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            tgui::Event::KeyEvent event;
+            event.alt = false;
+            event.shift = false;
+            event.control = false;
+            event.system = false;
+
+            event.code = tgui::Event::KeyboardKey::Up;
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Happy"});
+
+            event.code = tgui::Event::KeyboardKey::Down;
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies", "Sad"});
+
+            event.code = tgui::Event::KeyboardKey::Up;
+            treeView->keyPressed(event);
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies"});
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getSelectedItem() == std::vector<tgui::String>{"Smilies"});
+            REQUIRE(treeView->getNodes()[0].expanded);
+
+            event.code = tgui::Event::KeyboardKey::Left;
+            treeView->keyPressed(event);
+            REQUIRE(!treeView->getNodes()[0].expanded);
+            treeView->keyPressed(event);
+            REQUIRE(!treeView->getNodes()[0].expanded);
+
+            event.code = tgui::Event::KeyboardKey::Right;
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getNodes()[0].expanded);
+            treeView->keyPressed(event);
+            REQUIRE(treeView->getNodes()[0].expanded);
+        }
     }
 
     testWidgetRenderer(treeView->getRenderer());
@@ -387,5 +638,181 @@ TEST_CASE("[TreeView]")
         testSavingWidget("TreeView", treeView);
     }
 
-    // TODO: Draw
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(140, 120, treeView)
+
+        treeView->setPosition(10, 5);
+        treeView->setSize(120, 110);
+        treeView->setTextSize(14);
+        treeView->setItemHeight(18);
+
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+        treeView->addItem({"Vehicles", "Parts", "Wheel"});
+        treeView->addItem({"Vehicles", "Whole", "Truck"});
+        treeView->addItem({"Vehicles", "Whole", "Car"});
+        treeView->collapse({"Smilies"});
+
+        tgui::TreeViewRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(tgui::Color::Green);
+        renderer.setTextColor(tgui::Color::Red);
+        renderer.setSelectedBackgroundColor(tgui::Color::White);
+        renderer.setSelectedTextColor(tgui::Color::Black);
+        renderer.setBorderColor(tgui::Color::Blue);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setPadding({4, 3, 2, 1});
+        renderer.setScrollbarWidth(14);
+        renderer.setOpacity(0.7f);
+        treeView->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&]{
+                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
+                                    renderer.setTextColorHover(tgui::Color::Magenta);
+                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
+                                    renderer.setSelectedTextColorHover("#808080");
+                                 };
+
+        const tgui::Vector2f mousePos1{30, 20};
+        const tgui::Vector2f mousePos2{30, 35};
+        const tgui::Vector2f mousePos3{30, 75};
+
+        SECTION("Colored")
+        {
+            SECTION("No selected item")
+            {
+                SECTION("No hover")
+                {
+                    TEST_DRAW("TreeView_NoSelectedNoHover.png")
+                }
+
+                SECTION("Hover")
+                {
+                    treeView->mouseMoved(mousePos2);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_NoSelectedHover_HoverSet.png")
+                    }
+                }
+            }
+
+            SECTION("Selected item")
+            {
+                treeView->selectItem({"Smilies"});
+
+                SECTION("No hover")
+                {
+                    TEST_DRAW("TreeView_SelectedNoHover.png")
+                }
+
+                SECTION("Hover selected")
+                {
+                    treeView->mouseMoved(mousePos1);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_SelectedHoverSelected_HoverSet.png")
+                    }
+                }
+
+                SECTION("Hover other")
+                {
+                    treeView->mouseMoved(mousePos3);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_SelectedHoverOther_HoverSet.png")
+                    }
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            renderer.setTextureBranchExpanded({"resources/Texture5.png", {0,0,15,15}});
+            renderer.setTextureBranchCollapsed({"resources/Texture7.png", {0,0,15,15}});
+            renderer.setTextureLeaf({"resources/Texture8.png", {0,0,15,15}});
+
+            SECTION("No selected item")
+            {
+                SECTION("No hover")
+                {
+                    TEST_DRAW("TreeView_NoSelectedNoHover_Texture.png")
+                }
+
+                SECTION("Hover")
+                {
+                    treeView->mouseMoved(mousePos2);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet_Texture.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_NoSelectedHover_HoverSet_Texture.png")
+                    }
+                }
+            }
+
+            SECTION("Selected item")
+            {
+                treeView->selectItem({"Smilies"});
+
+                SECTION("No hover")
+                {
+                    TEST_DRAW("TreeView_SelectedNoHover_Texture.png")
+                }
+
+                SECTION("Hover selected")
+                {
+                    treeView->mouseMoved(mousePos1);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet_Texture.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_SelectedHoverSelected_HoverSet_Texture.png")
+                    }
+                }
+
+                SECTION("Hover other")
+                {
+                    treeView->mouseMoved(mousePos3);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet_Texture.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer();
+                        TEST_DRAW("TreeView_SelectedHoverOther_HoverSet_Texture.png")
+                    }
+                }
+            }
+        }
+    }
 }

@@ -600,7 +600,7 @@ jobs:
 
       - name: Run tests
         working-directory: TGUI-build-LLVM-Clang/tests/Debug
-        run: tests.exe
+        run: ./tests.exe
 
   #----------------------------------------
 

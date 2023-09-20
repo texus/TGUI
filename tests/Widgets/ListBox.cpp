@@ -322,6 +322,22 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Left);
     }
 
+    SECTION("ScrollbarValue")
+    {
+        REQUIRE(listBox->getScrollbarValue() == 0);
+        listBox->setScrollbarValue(100);
+        REQUIRE(listBox->getScrollbarValue() == 0);
+
+        listBox->setSize(120, 45);
+        listBox->setItemHeight(20);
+        listBox->addItem("Item 1");
+        listBox->addItem("Item 2");
+        listBox->addItem("Item 3");
+
+        listBox->setScrollbarValue(10);
+        REQUIRE(listBox->getScrollbarValue() == 10);
+    }
+
     testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {
