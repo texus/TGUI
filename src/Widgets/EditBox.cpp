@@ -64,6 +64,8 @@ namespace tgui
             m_renderer = aurora::makeCopied<EditBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
+            m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor()); // Needs to be set here in case renderer lacks "DefaultTextColor" property
+
             setTextSize(getGlobalTextSize());
             setSize({m_textFull.getLineHeight() * 10,
                      std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
