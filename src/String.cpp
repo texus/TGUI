@@ -2313,16 +2313,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& str)
+    std::ostream& operator<<(std::ostream& os, const String& str)
     {
         os << std::string(str);
         return os;
     }
 
-    std::basic_ostream<wchar_t>& operator<<(std::basic_ostream<wchar_t>& os, const String& str)
+    std::wostream& operator<<(std::wostream& os, const String& str)
     {
         os << std::wstring(str);
         return os;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::istream& operator>>(std::istream& is, String& str)
+    {
+        std::string strVal;
+        is >> strVal;
+        str = std::move(strVal);
+        return is;
+    }
+
+    std::wistream& operator>>(std::wistream& is, String& str)
+    {
+        std::wstring strVal;
+        is >> strVal;
+        str = std::move(strVal);
+        return is;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

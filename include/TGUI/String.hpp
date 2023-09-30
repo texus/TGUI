@@ -1212,6 +1212,9 @@ TGUI_MODULE_EXPORT namespace tgui
     TGUI_API std::ostream& operator<<(std::ostream& os, const String& str);
     TGUI_API std::wostream& operator<<(std::wostream& os, const String& str);
 
+    TGUI_API std::istream& operator>>(std::istream& os, String& str);
+    TGUI_API std::wistream& operator>>(std::wistream& os, String& str);
+
 
     // UTF-8 function are defined in the header so that they can be enabled/disabled based on
     // the compiler settings without having to recompile TGUI with a different c++ standard.

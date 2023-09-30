@@ -1369,17 +1369,35 @@ TEST_CASE("[String]")
 #endif
     }
 
-    SECTION("operator<<")
+    SECTION("operator<< and operator>>")
     {
+        tgui::String str1;
+        tgui::String str2;
+        tgui::String str3;
+
         std::stringbuf streambuf;
         std::ostream ostream(&streambuf);
         ostream << tgui::String("abc");
         REQUIRE(streambuf.str() == "abc");
+        ostream << "1 2";
+
+        std::istream istream(&streambuf);
+        istream >> str1 >> str2 >> str3;
+        REQUIRE(str1 == "abc1");
+        REQUIRE(str2 == "2");
+        REQUIRE(str3 == "");
 
         std::wstringbuf wstreambuf;
         std::wostream wostream(&wstreambuf);
         wostream << (tgui::String(L"\u03b1\u03b2\u03b3") + tgui::String(U"\u03b4\u03b5"));
         REQUIRE(wstreambuf.str() == L"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        wostream << "3 4";
+
+        std::wistream wistream(&wstreambuf);
+        wistream >> str1 >> str2 >> str3;
+        REQUIRE(str1 == L"\u03b1\u03b2\u03b3\u03b4\u03b53");
+        REQUIRE(str2 == "4");
+        REQUIRE(str3 == "");
     }
 
     SECTION("attemptToInt")
