@@ -95,13 +95,6 @@ endfunction()
 
 # Set the appropriate standard library on each platform for the given target
 function(tgui_set_stdlib target)
-    # Make sure Xcode uses libc++ on macOS. This should no longer be needed for Xcode 13.3 (released March 2022) or newer.
-    if(TGUI_OS_MACOS)
-        if(${CMAKE_GENERATOR} MATCHES "Xcode")
-            set_property(TARGET ${target} PROPERTY XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-        endif()
-    endif()
-
     # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using GCC.
     if(TGUI_OS_WINDOWS AND TGUI_COMPILER_GCC)
         if(TGUI_USE_STATIC_STD_LIBS AND NOT TGUI_COMPILER_GCC_TDM)
