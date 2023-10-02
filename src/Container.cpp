@@ -943,6 +943,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Container::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if (m_focusedWidget && m_focusedWidget->isFocused())
+        {
+            if (m_focusedWidget->canHandleKeyPress(event)
+             || ((event.code == Event::KeyboardKey::Up) && m_focusedWidget->getNavigationUp())
+             || ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
+             || ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
+             || ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight()))
+            {
+                return true;
+            }
+        }
+
+        return Widget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::textEntered(char32_t key)
     {
         processTextEnteredEvent(key);
@@ -1230,7 +1249,31 @@ namespace tgui
         {
             // Tell the widget that the key was pressed
             m_focusedWidget->keyPressed(event);
-            return true;
+            const bool bHandled = m_focusedWidget->canHandleKeyPress(event); // TGUI_NEXT: Have keyPressed return a bool
+            if (!bHandled)
+            {
+                if ((event.code == Event::KeyboardKey::Up) && m_focusedWidget->getNavigationUp())
+                {
+                    m_focusedWidget->getNavigationUp()->setFocused(true);
+                    return true;
+                }
+                else if ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
+                {
+                    m_focusedWidget->getNavigationDown()->setFocused(true);
+                    return true;
+                }
+                else if ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
+                {
+                    m_focusedWidget->getNavigationLeft()->setFocused(true);
+                    return true;
+                }
+                else if ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight())
+                {
+                    m_focusedWidget->getNavigationRight()->setFocused(true);
+                    return true;
+                }
+            }
+            return bHandled;
         }
 
         return false;

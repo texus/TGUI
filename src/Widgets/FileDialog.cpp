@@ -617,6 +617,16 @@ namespace tgui
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool FileDialog::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Enter) || (event.code == Event::KeyboardKey::Escape))
+            return true;
+        else
+            return ChildWindow::canHandleKeyPress(event);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void FileDialog::textEntered(char32_t key)

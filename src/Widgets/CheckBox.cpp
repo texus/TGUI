@@ -186,6 +186,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool CheckBox::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+            return true;
+        else
+            return RadioButton::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void CheckBox::rendererChanged(const String& property)
     {
         if (property == U"TextureUnchecked")

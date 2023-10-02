@@ -184,7 +184,9 @@ namespace tgui
         m_showAnimations               {},
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached},
+        m_transparentTextureCached     {other.m_transparentTextureCached},
         m_textSizeCached               {other.m_textSizeCached},
+        m_userData                     {other.m_userData},
         m_mouseCursor                  {other.m_mouseCursor}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -215,6 +217,8 @@ namespace tgui
         m_scaleOrigin                  {std::move(other.m_scaleOrigin)},
         m_scaleFactors                 {std::move(other.m_scaleFactors)},
         m_rotationDeg                  {std::move(other.m_rotationDeg)},
+        m_prevPosition                 {std::move(other.m_prevPosition)},
+        m_prevSize                     {std::move(other.m_prevSize)},
         m_boundPositionLayouts         {std::move(other.m_boundPositionLayouts)},
         m_boundSizeLayouts             {std::move(other.m_boundSizeLayouts)},
         m_enabled                      {std::move(other.m_enabled)},
@@ -224,6 +228,11 @@ namespace tgui
         m_mouseHover                   {std::move(other.m_mouseHover)},
         m_mouseDown                    {std::move(other.m_mouseDown)},
         m_focused                      {std::move(other.m_focused)},
+        m_focusable                    {std::move(other.m_focusable)},
+        m_navWidgetUp                  {std::move(other.m_navWidgetUp)},
+        m_navWidgetDown                {std::move(other.m_navWidgetDown)},
+        m_navWidgetRight               {std::move(other.m_navWidgetRight)},
+        m_navWidgetLeft                {std::move(other.m_navWidgetLeft)},
         m_animationTimeElapsed         {std::move(other.m_animationTimeElapsed)},
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
@@ -231,7 +240,9 @@ namespace tgui
         m_showAnimations               {std::move(other.m_showAnimations)},
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)},
+        m_transparentTextureCached     {std::move(other.m_transparentTextureCached)},
         m_textSizeCached               {std::move(other.m_textSizeCached)},
+        m_userData                     {std::move(other.m_userData)},
         m_mouseCursor                  {std::move(other.m_mouseCursor)}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -277,6 +288,8 @@ namespace tgui
             m_scaleOrigin          = other.m_scaleOrigin;
             m_scaleFactors         = other.m_scaleFactors;
             m_rotationDeg          = other.m_rotationDeg;
+            m_prevPosition         = other.m_prevPosition;
+            m_prevSize             = other.m_prevSize;
             m_boundPositionLayouts = {};
             m_boundSizeLayouts     = {};
             m_enabled              = other.m_enabled;
@@ -286,13 +299,22 @@ namespace tgui
             m_mouseHover           = false;
             m_mouseDown            = false;
             m_focused              = false;
+            m_focusable            = other.m_focusable;
+            m_navWidgetUp          = {};
+            m_navWidgetDown        = {};
+            m_navWidgetRight       = {};
+            m_navWidgetLeft        = {};
             m_animationTimeElapsed = {};
             m_containerWidget      = other.m_containerWidget;
             m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
             m_renderer             = other.m_renderer;
+            m_inheritedFont        = {};
+            m_inheritedOpacity     = 1;
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
+            m_transparentTextureCached = other.m_transparentTextureCached;
             m_textSizeCached       = other.m_textSizeCached;
+            m_userData             = other.m_userData;
             m_mouseCursor          = other.m_mouseCursor;
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -331,6 +353,8 @@ namespace tgui
             m_scaleOrigin          = std::move(other.m_scaleOrigin);
             m_scaleFactors         = std::move(other.m_scaleFactors);
             m_rotationDeg          = std::move(other.m_rotationDeg);
+            m_prevPosition         = std::move(other.m_prevPosition);
+            m_prevSize             = std::move(other.m_prevSize);
             m_boundPositionLayouts = std::move(other.m_boundPositionLayouts);
             m_boundSizeLayouts     = std::move(other.m_boundSizeLayouts);
             m_enabled              = std::move(other.m_enabled);
@@ -340,14 +364,23 @@ namespace tgui
             m_mouseHover           = std::move(other.m_mouseHover);
             m_mouseDown            = std::move(other.m_mouseDown);
             m_focused              = std::move(other.m_focused);
+            m_focusable            = std::move(other.m_focusable);
+            m_navWidgetUp          = std::move(other.m_navWidgetUp);
+            m_navWidgetDown        = std::move(other.m_navWidgetDown);
+            m_navWidgetRight       = std::move(other.m_navWidgetRight);
+            m_navWidgetLeft        = std::move(other.m_navWidgetLeft);
             m_animationTimeElapsed = std::move(other.m_animationTimeElapsed);
             m_containerWidget      = std::move(other.m_containerWidget);
             m_toolTip              = std::move(other.m_toolTip);
             m_renderer             = std::move(other.m_renderer);
             m_showAnimations       = std::move(other.m_showAnimations);
+            m_inheritedFont        = {};
+            m_inheritedOpacity     = 1;
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
+            m_transparentTextureCached = std::move(other.m_transparentTextureCached);
             m_textSizeCached       = std::move(other.m_textSizeCached);
+            m_userData             = std::move(other.m_userData);
             m_mouseCursor          = std::move(other.m_mouseCursor);
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
@@ -1160,6 +1193,62 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setNavigationUp(const Widget::Ptr& widgetAbove)
+    {
+        m_navWidgetUp = widgetAbove;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Widget::getNavigationUp() const
+    {
+        return m_navWidgetUp.lock();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setNavigationDown(const Widget::Ptr& widgetBelow)
+    {
+        m_navWidgetDown = widgetBelow;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Widget::getNavigationDown() const
+    {
+        return m_navWidgetDown.lock();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setNavigationLeft(const Widget::Ptr& widgetLeft)
+    {
+        m_navWidgetLeft = widgetLeft;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Widget::getNavigationLeft() const
+    {
+        return m_navWidgetLeft.lock();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setNavigationRight(const Widget::Ptr& widgetRight)
+    {
+        m_navWidgetRight = widgetRight;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Widget::getNavigationRight() const
+    {
+        return m_navWidgetRight.lock();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::finishAllAnimations()
     {
         for (auto& animation : m_showAnimations)
@@ -1290,6 +1379,20 @@ namespace tgui
 
     void Widget::keyPressed(const Event::KeyEvent&)
     {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::canHandleKeyPress(const Event::KeyEvent&)
+    {
+        // For backwards compatibility in 1.0, by default we always absorb all key events (i.e. return true).
+        // This behavior can be disabled by calling gui.setKeyboardNavigationEnabled(true).
+        // TGUI_NEXT: Always return false here, irrelevant of whether keyboard navigation is enabled.
+        // TGUI_NEXT: Deprecate or remove this function and let keyPressed return a bool value.
+        if (m_parentGui && m_parentGui->isKeyboardNavigationEnabled())
+            return false;
+        else
+            return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1496,6 +1599,19 @@ namespace tgui
         if (m_textSize != 0)
             node->propertyValuePairs[U"TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
 
+        const auto navWidgetUp = m_navWidgetUp.lock();
+        const auto navWidgetDown = m_navWidgetDown.lock();
+        const auto navWidgetLeft = m_navWidgetLeft.lock();
+        const auto navWidgetRight = m_navWidgetRight.lock();
+        if (navWidgetUp)
+            node->propertyValuePairs[U"NavigationUp"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetUp->getWidgetName()));
+        if (navWidgetDown)
+            node->propertyValuePairs[U"NavigationDown"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetDown->getWidgetName()));
+        if (navWidgetLeft)
+            node->propertyValuePairs[U"NavigationLeft"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetLeft->getWidgetName()));
+        if (navWidgetRight)
+            node->propertyValuePairs[U"NavigationRight"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetRight->getWidgetName()));
+
         String mouseCursorStr;
         switch (m_mouseCursor)
         {
@@ -1580,6 +1696,18 @@ namespace tgui
         }
         if (node->propertyValuePairs[U"TextSize"])
             setTextSize(node->propertyValuePairs[U"TextSize"]->value.toUInt());
+
+        if (m_parentGui)
+        {
+            if (node->propertyValuePairs[U"NavigationUp"])
+                m_navWidgetUp = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationUp"]->value).getString());
+            if (node->propertyValuePairs[U"NavigationDown"])
+                m_navWidgetDown = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationDown"]->value).getString());
+            if (node->propertyValuePairs[U"NavigationLeft"])
+                m_navWidgetLeft = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationLeft"]->value).getString());
+            if (node->propertyValuePairs[U"NavigationRight"])
+                m_navWidgetRight = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationRight"]->value).getString());
+        }
 
         if (node->propertyValuePairs[U"MouseCursor"])
         {

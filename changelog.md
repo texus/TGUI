@@ -1,3 +1,9 @@
+TGUI 1.1  (TBD)
+---------------
+
+- Added methods for arrow key navigation between widgets
+
+
 TGUI 1.0  (30 September 2023)
 -----------------------------
 

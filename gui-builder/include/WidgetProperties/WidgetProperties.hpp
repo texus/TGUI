@@ -54,6 +54,14 @@ struct WidgetProperties
             widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")
             widget->setEnabled(parseBoolean(value, true));
+        else if (property == "NavigationUp")
+            widget->setNavigationUp(widget->getParentGui() ? widget->getParentGui()->get(value) : nullptr);
+        else if (property == "NavigationDown")
+            widget->setNavigationDown(widget->getParentGui() ? widget->getParentGui()->get(value) : nullptr);
+        else if (property == "NavigationLeft")
+            widget->setNavigationLeft(widget->getParentGui() ? widget->getParentGui()->get(value) : nullptr);
+        else if (property == "NavigationRight")
+            widget->setNavigationRight(widget->getParentGui() ? widget->getParentGui()->get(value) : nullptr);
         else if (property == "UserData")
             widget->setUserData(value);
         else if (property == "MouseCursor")
@@ -71,6 +79,10 @@ struct WidgetProperties
         pairs["Height"] = {"Layout", widget->getSizeLayout().y.toString()};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
+        pairs["NavigationUp"] = {"String", widget->getNavigationUp() ? widget->getNavigationUp()->getWidgetName() : U""};
+        pairs["NavigationDown"] = {"String", widget->getNavigationDown() ? widget->getNavigationDown()->getWidgetName() : U""};
+        pairs["NavigationLeft"] = {"String", widget->getNavigationLeft() ? widget->getNavigationLeft()->getWidgetName() : U""};
+        pairs["NavigationRight"] = {"String", widget->getNavigationRight() ? widget->getNavigationRight()->getWidgetName() : U""};
         pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed}", serializeMouseCursor(widget->getMouseCursor())};
         try
         {

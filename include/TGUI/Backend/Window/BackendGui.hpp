@@ -630,6 +630,30 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether using the arrow keys can be used to navigate between widgets
+        ///
+        /// @param enabled  Should keyboard navigation be enabled?
+        ///
+        /// Even when enabled, you may still need to tell widgets where they need to navigate to when an arrow key is pressed.
+        /// Kayboard navigation is disabled by default.
+        ///
+        /// Note that this option affects the return value of handleEvent for key press events. Normally all key events
+        /// are marked as handled, but by enabling this option handleEvent will only return true if the key was actually handled.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setKeyboardNavigationEnabled(bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether using the arrow keys can be used to navigate between widgets
+        ///
+        /// @return Should keyboard navigation be enabled?
+        ///
+        /// @see setKeyboardNavigationEnabled
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD bool isKeyboardNavigationEnabled() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -673,6 +697,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         bool m_drawUpdatesTime = true;
         bool m_tabKeyUsageEnabled = true;
+        bool m_keyboardNavigationEnabled = false; // TGUI_NEXT: Enable by default?
 
         Cursor::Type m_requestedMouseCursor = Cursor::Type::Arrow;
         std::stack<Cursor::Type> m_overrideMouseCursors;

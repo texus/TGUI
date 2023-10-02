@@ -948,6 +948,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ChildWindow::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if (event.code == Event::KeyboardKey::Escape)
+            return true;
+        else
+            return Container::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::mouseNoLongerOnWidget()
     {
         Container::mouseNoLongerOnWidget();

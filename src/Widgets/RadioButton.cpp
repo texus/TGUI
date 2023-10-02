@@ -257,6 +257,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool RadioButton::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+            return true;
+        else
+            return ClickableWidget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RadioButton::mouseEnteredWidget()
     {
         Widget::mouseEnteredWidget();

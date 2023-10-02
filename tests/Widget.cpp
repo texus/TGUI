@@ -374,6 +374,56 @@ TEST_CASE("[Widget]")
         REQUIRE(constWidgetPtr->cast<tgui::Button>() == button);
     }
 
+    SECTION("Arrow navigation")
+    {
+        auto buttonCenter = tgui::Button::create("Click me!");
+        auto buttonLeft = tgui::Button::copy(buttonCenter);
+        auto buttonRight = tgui::Button::copy(buttonCenter);
+        auto buttonTop = tgui::Button::copy(buttonCenter);
+        auto buttonBottom = tgui::Button::copy(buttonCenter);
+
+        GuiNull gui;
+        for (auto& button : {buttonLeft, buttonRight, buttonTop, buttonBottom, buttonCenter})
+            gui.add(button);
+
+        buttonCenter->setNavigationUp(buttonTop);
+        buttonCenter->setNavigationDown(buttonBottom);
+        buttonCenter->setNavigationLeft(buttonLeft);
+        buttonCenter->setNavigationRight(buttonRight);
+
+        tgui::Event::KeyEvent keyEvent;
+        keyEvent.code = tgui::Event::KeyboardKey::Up;
+        keyEvent.alt = false;
+        keyEvent.control = false;
+        keyEvent.shift = false;
+        keyEvent.system = false;
+
+        // Arrow navigation doesn't work when its not explicitly enabled
+        buttonCenter->setFocused(true);
+        gui.getContainer()->keyPressed(keyEvent);
+        REQUIRE(buttonCenter->isFocused());
+
+        gui.setKeyboardNavigationEnabled(true);
+        gui.getContainer()->keyPressed(keyEvent);
+        REQUIRE(!buttonCenter->isFocused());
+        REQUIRE(buttonTop->isFocused());
+
+        buttonCenter->setFocused(true);
+        keyEvent.code = tgui::Event::KeyboardKey::Down;
+        gui.getContainer()->keyPressed(keyEvent);
+        REQUIRE(buttonBottom->isFocused());
+
+        buttonCenter->setFocused(true);
+        keyEvent.code = tgui::Event::KeyboardKey::Left;
+        gui.getContainer()->keyPressed(keyEvent);
+        REQUIRE(buttonLeft->isFocused());
+
+        buttonCenter->setFocused(true);
+        keyEvent.code = tgui::Event::KeyboardKey::Right;
+        gui.getContainer()->keyPressed(keyEvent);
+        REQUIRE(buttonRight->isFocused());
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();

@@ -119,6 +119,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Button::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+            return true;
+        else
+            return ButtonBase::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& Button::getSignal(String signalName)
     {
         if (signalName == onPress.getName())

@@ -1644,6 +1644,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListView::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down) || keyboard::isKeyPressCopy(event))
+            return true;
+        else
+            return Widget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& ListView::getSignal(String signalName)
     {
         if (signalName == onItemSelect.getName())

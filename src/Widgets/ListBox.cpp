@@ -751,6 +751,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListBox::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down))
+            return true;
+        else
+            return Widget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& ListBox::getSignal(String signalName)
     {
         if (signalName == onItemSelect.getName())

@@ -971,6 +971,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TreeView::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Up)
+         || (event.code == Event::KeyboardKey::Down)
+         || (event.code == Event::KeyboardKey::Left)
+         || (event.code == Event::KeyboardKey::Right))
+        {
+            return true;
+        }
+        else
+            return Widget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& TreeView::getSignal(String signalName)
     {
         if (signalName == onItemSelect.getName())

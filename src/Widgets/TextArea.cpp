@@ -763,6 +763,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TextArea::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Tab)
+         || (event.code == Event::KeyboardKey::Enter)
+         || (event.code == Event::KeyboardKey::Backspace)
+         || (event.code == Event::KeyboardKey::Delete)
+         || (event.code == Event::KeyboardKey::PageUp)
+         || (event.code == Event::KeyboardKey::PageDown)
+         || (keyboard::isKeyPressCopy(event))
+         || (keyboard::isKeyPressCut(event))
+         || (keyboard::isKeyPressPaste(event))
+         || (keyboard::isKeyPressSelectAll(event))
+         || (keyboard::isKeyPressMoveCaretLeft(event))
+         || (keyboard::isKeyPressMoveCaretRight(event))
+         || (keyboard::isKeyPressMoveCaretWordBegin(event))
+         || (keyboard::isKeyPressMoveCaretWordEnd(event))
+         || keyboard::isKeyPressMoveCaretLineStart(event)
+         || keyboard::isKeyPressMoveCaretUp(event)
+         || keyboard::isKeyPressMoveCaretDown(event)
+         || keyboard::isKeyPressMoveCaretDocumentBegin(event)
+         || keyboard::isKeyPressMoveCaretLineEnd(event)
+         || keyboard::isKeyPressMoveCaretDocumentEnd(event))
+        {
+            return true;
+        }
+        else
+            return Widget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextArea::textEntered(char32_t key)
     {
         if (m_readOnly)

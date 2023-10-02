@@ -619,6 +619,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool EditBox::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if ((event.code == Event::KeyboardKey::Enter)
+         || (event.code == Event::KeyboardKey::Backspace)
+         || (event.code == Event::KeyboardKey::Delete)
+         || (event.code == Event::KeyboardKey::PageUp)
+         || (event.code == Event::KeyboardKey::PageDown)
+         || (keyboard::isKeyPressCopy(event))
+         || (keyboard::isKeyPressCut(event))
+         || (keyboard::isKeyPressPaste(event))
+         || (keyboard::isKeyPressSelectAll(event))
+         || (keyboard::isKeyPressMoveCaretLeft(event))
+         || (keyboard::isKeyPressMoveCaretRight(event))
+         || (keyboard::isKeyPressMoveCaretWordBegin(event))
+         || (keyboard::isKeyPressMoveCaretWordEnd(event))
+         || keyboard::isKeyPressMoveCaretLineStart(event)
+         || keyboard::isKeyPressMoveCaretDocumentBegin(event)
+         || keyboard::isKeyPressMoveCaretLineEnd(event)
+         || keyboard::isKeyPressMoveCaretDocumentEnd(event)
+         || (keyboard::isKeyPressMoveCaretUp(event) && !m_navWidgetUp.lock())
+         || (keyboard::isKeyPressMoveCaretDown(event) && !m_navWidgetDown.lock()))
+        {
+            return true;
+        }
+        else
+            return ClickableWidget::canHandleKeyPress(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::textEntered(char32_t key)
     {
         if (m_readOnly)
