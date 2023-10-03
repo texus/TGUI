@@ -25,6 +25,7 @@
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <array>
@@ -49,8 +50,7 @@ namespace tgui
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
         ClickableWidget  {other},
-        m_usedTextureSize{other.m_usedTextureSize},
-        m_backendTexture {other.m_backendTexture}
+        m_usedTextureSize{other.m_usedTextureSize}
     {
         setSize(other.getSize());
     }
@@ -59,8 +59,7 @@ namespace tgui
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
         ClickableWidget  {std::move(other)},
-        m_usedTextureSize{std::move(other.m_usedTextureSize)},
-        m_backendTexture {std::move(other.m_backendTexture)}
+        m_usedTextureSize{std::move(other.m_usedTextureSize)}
     {
         // sf::RenderTexture does not support move yet
         setSize(getSize());
@@ -74,7 +73,6 @@ namespace tgui
         {
             ClickableWidget::operator=(right);
             m_usedTextureSize = right.m_usedTextureSize;
-            m_backendTexture = right.m_backendTexture;
             setSize(right.getSize());
         }
 
@@ -88,7 +86,6 @@ namespace tgui
         if (this != &right)
         {
             m_usedTextureSize = std::move(right.m_usedTextureSize);
-            m_backendTexture = std::move(right.m_backendTexture);
             ClickableWidget::operator=(std::move(right));
 
             // sf::RenderTexture does not support move yet
@@ -230,9 +227,6 @@ namespace tgui
     void CanvasSFML::display()
     {
         m_renderTexture.display();
-
-        // Copy the texture of the render target
-        m_backendTexture->replaceInternalTexture(m_renderTexture.getTexture());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +250,36 @@ namespace tgui
             0, 2, 1,
             1, 2, 3
         }};
-        target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
+
+        // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
+        // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+
+        const sf::Texture& texture = m_renderTexture.getTexture();
+        const Vector2f textureSize = Vector2f{static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)};
+        auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indices.size());
+        for (std::size_t i = 0; i < indices.size(); ++i)
+        {
+            verticesSFML[i].position.x = vertices[indices[i]].position.x;
+            verticesSFML[i].position.y = vertices[indices[i]].position.y;
+            verticesSFML[i].color.red = vertices[indices[i]].color.red;
+            verticesSFML[i].color.green = vertices[indices[i]].color.green;
+            verticesSFML[i].color.blue = vertices[indices[i]].color.blue;
+            verticesSFML[i].color.alpha = vertices[indices[i]].color.alpha;
+            verticesSFML[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
+            verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+        }
+
+        sf::RenderStates statesSFML;
+        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
+        statesSFML.texture = &texture;
+        statesSFML.transform = sf::Transform(
+            transformMatrix[0], transformMatrix[4], transformMatrix[12],
+            transformMatrix[1], transformMatrix[5], transformMatrix[13],
+            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+
+        TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
+        static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -289,7 +289,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         sf::RenderTexture m_renderTexture;
         Vector2u m_usedTextureSize;
-        std::shared_ptr<BackendTextureSFML> m_backendTexture = std::make_shared<BackendTextureSFML>();
     };
 }
 
