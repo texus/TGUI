@@ -1248,7 +1248,15 @@ namespace tgui
         if (m_focusedWidget && m_focusedWidget->isFocused())
         {
             // Tell the widget that the key was pressed
+            const auto focusedWidget = m_focusedWidget;
             m_focusedWidget->keyPressed(event);
+
+            // It is possible for the focused widget to change if a user callback happens in the line above.
+            // If the focused widget is no longer the same, then the event was clearly handled and we
+            // no longer need to call canHandleKeyPress.
+            if (m_focusedWidget != focusedWidget)
+                return true;
+
             const bool bHandled = m_focusedWidget->canHandleKeyPress(event); // TGUI_NEXT: Have keyPressed return a bool
             if (!bHandled)
             {
