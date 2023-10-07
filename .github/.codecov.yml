@@ -1,4 +1,13 @@
 comment: false
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: no
+      loop: no
+      method: no
+      macro: no
+
 coverage:
   range: 50...90
   round: nearest
@@ -6,6 +15,7 @@ coverage:
     project: off
     patch: off
     changes: off
+
 ignore:
 - tests/.*
 - gui-builder/.*
