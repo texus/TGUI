@@ -273,8 +273,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Widget* m_boundWidget = nullptr; // The widget on which this layout depends in case the operation is a binding
         String m_boundString; // String referring to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
         std::function<void()> m_connectedWidgetCallback = nullptr; // Function to call when the value of the layout changes in case the layout and sublayouts are not all constants
-        bool m_callingCallbackDuringConnect = false; // Used to detect that connectWidget is called in an infinity loop if certain layouts depend on each other
-        bool m_callingCallbackDuringRecalculate = false; // Used to detect that recalculateValue is called in an infinity loop if layouts depend on each other
+        int m_callingCallbackCount = false; // Used to detect that connectWidget is called in an infinity loop if certain layouts depend on each other
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

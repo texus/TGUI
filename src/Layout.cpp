@@ -357,8 +357,7 @@ namespace tgui
         m_boundWidget    {other.m_boundWidget},
         m_boundString    {other.m_boundString},
         m_connectedWidgetCallback{nullptr},
-        m_callingCallbackDuringConnect{false},
-        m_callingCallbackDuringRecalculate{false}
+        m_callingCallbackCount{0}
     {
         // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
         if (!m_boundString.empty())
@@ -378,8 +377,7 @@ namespace tgui
         m_boundWidget    {other.m_boundWidget},
         m_boundString    {std::move(other.m_boundString)},
         m_connectedWidgetCallback{std::move(other.m_connectedWidgetCallback)},
-        m_callingCallbackDuringConnect{false},
-        m_callingCallbackDuringRecalculate{false}
+        m_callingCallbackCount{0}
     {
         resetPointers();
     }
@@ -400,8 +398,7 @@ namespace tgui
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = other.m_boundString;
             m_connectedWidgetCallback = nullptr;
-            m_callingCallbackDuringConnect = false;
-            m_callingCallbackDuringRecalculate = false;
+            m_callingCallbackCount = 0;
 
             // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
             if (!m_boundString.empty())
@@ -429,8 +426,7 @@ namespace tgui
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = std::move(other.m_boundString);
             m_connectedWidgetCallback = std::move(other.m_connectedWidgetCallback);
-            m_callingCallbackDuringConnect = false;
-            m_callingCallbackDuringRecalculate = false;
+            m_callingCallbackCount = 0;
 
             resetPointers();
         }
@@ -631,15 +627,15 @@ namespace tgui
         {
             if (m_connectedWidgetCallback)
             {
-                if (m_callingCallbackDuringConnect)
+                if (m_callingCallbackCount > 10)
                 {
                     TGUI_PRINT_WARNING("Dependency cycle detected in layout!")
                     return;
                 }
 
-                m_callingCallbackDuringConnect = true;
+                ++m_callingCallbackCount;
                 m_connectedWidgetCallback();
-                m_callingCallbackDuringConnect = false;
+                --m_callingCallbackCount;
             }
         }
     }
@@ -739,15 +735,15 @@ namespace tgui
                 // The topmost layout must tell the connected widget about the new value
                 if (m_connectedWidgetCallback)
                 {
-                    if (m_callingCallbackDuringRecalculate)
+                    if (m_callingCallbackCount > 10)
                     {
                         TGUI_PRINT_WARNING("Dependency cycle detected in layout!")
                         m_value = 0;
                     }
 
-                    m_callingCallbackDuringRecalculate = true;
+                    ++m_callingCallbackCount;
                     m_connectedWidgetCallback();
-                    m_callingCallbackDuringRecalculate = false;
+                    --m_callingCallbackCount;
                 }
             }
         }
