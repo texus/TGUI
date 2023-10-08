@@ -424,6 +424,17 @@ TEST_CASE("[Button]")
                     TEST_DRAW("Button_Disabled_DisabledSet.png")
                 }
             }
+
+            SECTION("RoundedRectangle")
+            {
+                renderer.setRoundedBorderRadius(9);
+
+                renderer.setBorders({0});
+                TEST_DRAW("Button_RoundedRectangle_WithoutBorder.png")
+
+                renderer.setBorders({3});
+                TEST_DRAW("Button_RoundedRectangle_WithBorder.png")
+            }
         }
 
         SECTION("Textured")
