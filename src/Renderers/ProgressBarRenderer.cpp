@@ -42,6 +42,9 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(ProgressBarRenderer, TextureFill)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ProgressBarRenderer, TextStyle, TextStyle::Regular)
+
+    TGUI_RENDERER_PROPERTY_NUMBER(ProgressBarRenderer, TextOutlineThickness, 0)
+    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, TextOutlineColor, {})
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -295,6 +295,18 @@ namespace tgui
             m_textBack.setStyle(getSharedRenderer()->getTextStyle());
             m_textFront.setStyle(getSharedRenderer()->getTextStyle());
         }
+        else if (property == U"TextOutlineThickness")
+        {
+            const float outlineThickness = getSharedRenderer()->getTextOutlineThickness();
+            m_textBack.setOutlineThickness(outlineThickness);
+            m_textFront.setOutlineThickness(outlineThickness);
+        }
+        else if (property == U"TextOutlineColor")
+        {
+            const Color& outlineColor = getSharedRenderer()->getTextOutlineColor();
+            m_textBack.setOutlineColor(outlineColor);
+            m_textFront.setOutlineColor(outlineColor);
+        }
         else if (property == U"BorderColor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
@@ -539,7 +551,7 @@ namespace tgui
         // Draw the text
         if (m_textBack.getString() != U"")
         {
-            Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
+            const Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 
             if (m_textBack.getColor() == m_textFront.getColor())
             {

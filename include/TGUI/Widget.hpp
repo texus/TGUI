@@ -783,6 +783,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widgetAbove  The widget located above this one, or nullptr if pressing the up arrow shouldn't change focus
         ///
         /// @warning Navigation only works if gui.setKeyboardNavigationEnabled(true) has been called
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setNavigationUp(const Widget::Ptr& widgetAbove);
 
@@ -790,6 +792,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns which widget would become focused when navigating upwards from this widget
         ///
         /// @return The widget located above this one, or nullptr if pressing the up arrow doesn't change focus
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr getNavigationUp() const;
 
@@ -799,6 +803,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widgetBelow  The widget located below this one, or nullptr if pressing the down arrow shouldn't change focus
         ///
         /// @warning Navigation only works if gui.setKeyboardNavigationEnabled(true) has been called
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setNavigationDown(const Widget::Ptr& widgetBelow);
 
@@ -806,6 +812,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns which widget would become focused when navigating downwards from this widget
         ///
         /// @return The widget located below this one, or nullptr if pressing the down arrow doesn't change focus
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr getNavigationDown() const;
 
@@ -815,6 +823,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widgetLeft  The widget located left of this one, or nullptr if pressing the left arrow shouldn't change focus
         ///
         /// @warning Navigation only works if gui.setKeyboardNavigationEnabled(true) has been called
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setNavigationLeft(const Widget::Ptr& widgetLeft);
 
@@ -822,6 +832,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns which widget would become focused when navigating to the left from this widget
         ///
         /// @return The widget located to the left of this one, or nullptr if pressing the left arrow doesn't change focus
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr getNavigationLeft() const;
 
@@ -831,6 +843,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widgetRight  The widget located right this one, or nullptr if pressing the right arrow shouldn't change focus
         ///
         /// @warning Navigation only works if gui.setKeyboardNavigationEnabled(true) has been called
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setNavigationRight(const Widget::Ptr& widgetRight);
 
@@ -838,6 +852,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns which widget would become focused when navigating to the right from this widget
         ///
         /// @return The widget located to the right of this one, or nullptr if pressing the right arrow doesn't change focus
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr getNavigationRight() const;
 
@@ -947,6 +963,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param event  Key event that took place
         ///
         /// @return True if the event would be handled by the widget, false if the key event doesn't affect the widget
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool canHandleKeyPress(const Event::KeyEvent& event);
 

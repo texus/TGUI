@@ -70,6 +70,8 @@ struct ProgressBarProperties : WidgetProperties
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["TextureFill"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFill())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["TextOutlineColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextOutlineColor())};
+        pair.second["TextOutlineThickness"] = {"Float", tgui::String::fromNumber(renderer->getTextOutlineThickness())};
         return pair;
     }
 

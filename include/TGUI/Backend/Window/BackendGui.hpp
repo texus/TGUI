@@ -639,6 +639,8 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// Note that this option affects the return value of handleEvent for key press events. Normally all key events
         /// are marked as handled, but by enabling this option handleEvent will only return true if the key was actually handled.
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setKeyboardNavigationEnabled(bool enabled);
 
@@ -649,6 +651,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Should keyboard navigation be enabled?
         ///
         /// @see setKeyboardNavigationEnabled
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isKeyboardNavigationEnabled() const;
 

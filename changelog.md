@@ -2,6 +2,7 @@ TGUI 1.1  (TBD)
 ---------------
 
 - Added methods for arrow key navigation between widgets
+- Added TextOutlineColor and TextOutlineThickness to ProgressBar renderer
 
 
 TGUI 1.0  (30 September 2023)

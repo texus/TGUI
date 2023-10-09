@@ -221,6 +221,8 @@ TEST_CASE("[ProgressBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("FillColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", "rgb(10, 20, 30)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Italic"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
@@ -232,6 +234,8 @@ TEST_CASE("[ProgressBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("FillColor", tgui::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", tgui::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", tgui::Color{10, 20, 30}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
@@ -243,6 +247,8 @@ TEST_CASE("[ProgressBar]")
                 renderer->setFillColor({30, 40, 50});
                 renderer->setTextColor({40, 50, 60});
                 renderer->setTextColorFilled({50, 60, 70});
+                renderer->setTextOutlineColor({10, 20, 30});
+                renderer->setTextOutlineThickness(2);
                 renderer->setBorderColor({60, 70, 80});
                 renderer->setTextStyle(tgui::TextStyle::Italic);
                 renderer->setBorders({1, 2, 3, 4});
@@ -252,6 +258,8 @@ TEST_CASE("[ProgressBar]")
             REQUIRE(renderer->getProperty("FillColor").getColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TextColorFilled").getColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TextOutlineColor").getColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getProperty("TextOutlineThickness").getNumber() == 2);
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
@@ -260,6 +268,8 @@ TEST_CASE("[ProgressBar]")
             REQUIRE(renderer->getFillColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getTextColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getTextColorFilled() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getTextOutlineColor() == tgui::Color(10, 20, 30));
+            REQUIRE(renderer->getTextOutlineThickness() == 2);
             REQUIRE(renderer->getBorderColor() == tgui::Color(60, 70, 80));
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
@@ -349,6 +359,13 @@ TEST_CASE("[ProgressBar]")
 
                     renderer.setTextColorFilled(tgui::Color::Magenta);
                     TEST_DRAW("ProgressBar_RightToLeft_TextFillColor.png")
+                }
+
+                SECTION("TextOutline")
+                {
+                    renderer.setTextOutlineThickness(2);
+                    renderer.setTextOutlineColor(tgui::Color::Cyan);
+                    TEST_DRAW("ProgressBar_TextOutline.png")
                 }
             }
 

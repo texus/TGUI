@@ -214,6 +214,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param event  Key event that took place
         ///
         /// @return True if the event would be handled by the widget, false if the key event doesn't affect the widget
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool canHandleKeyPress(const Event::KeyEvent& event) override;
 
