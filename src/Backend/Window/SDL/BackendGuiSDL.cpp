@@ -495,9 +495,9 @@ namespace tgui
                         eventProcessed = true;
                     }
 #if SDL_MAJOR_VERSION >= 3
-                    else if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+                    else if ((event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) || (event.type == SDL_EVENT_WINDOW_MOUSE_LEAVE))
 #else
-                    else if ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+                    else if ((event.type == SDL_WINDOWEVENT) && ((event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) || (event.window.event == SDL_WINDOWEVENT_LEAVE)))
 #endif
                     {
                         eventProcessed = true;

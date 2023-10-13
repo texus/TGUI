@@ -261,7 +261,7 @@ namespace tgui
                         windowOpen = false;
                         eventProcessed = true;
                     }
-                    else if (event.type == sf::Event::Resized)
+                    else if ((event.type == sf::Event::Resized) || (event.type == sf::Event::MouseLeft))
                     {
                         eventProcessed = true;
                     }
