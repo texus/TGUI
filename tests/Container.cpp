@@ -438,5 +438,4 @@ TEST_CASE("[Container]")
     }
 
     // TODO: Events
-    //       Test parameter of Widget::disable
 }

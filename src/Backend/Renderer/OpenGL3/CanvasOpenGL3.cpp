@@ -110,7 +110,8 @@ namespace tgui
 
     void CanvasOpenGL3::setSize(const Layout2d& size)
     {
-        Vector2f newSize = size.getValue();
+        Widget::setSize(size);
+        const Vector2f newSize = getSize();
 
         if ((newSize.x > 0) && (newSize.y > 0))
         {
@@ -126,8 +127,6 @@ namespace tgui
 
             m_usedTextureSize = newTextureSize;
         }
-
-        Widget::setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

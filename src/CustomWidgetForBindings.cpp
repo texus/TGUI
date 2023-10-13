@@ -52,7 +52,7 @@ namespace tgui
     void CustomWidgetForBindings::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
-        implPositionChanged(position.getValue());
+        implPositionChanged(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ namespace tgui
     void CustomWidgetForBindings::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
-        implSizeChanged(size.getValue());
+        implSizeChanged(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

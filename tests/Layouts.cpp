@@ -468,6 +468,372 @@ TEST_CASE("[Layouts]")
         }
     }
 
+    SECTION("AutoLayout")
+    {
+        auto parent = tgui::Panel::create({100, 100});
+
+        auto compareVector2f = [](tgui::Vector2f left, tgui::Vector2f right) {
+            return (std::fabs(left.x - right.x) < 0.00001f) && (std::fabs(left.y - right.y) < 0.00001f);
+        };
+
+        SECTION("All layouts")
+        {
+            auto leftmost1 = tgui::Panel::create({"2%", 0});
+            leftmost1->setAutoLayout(tgui::AutoLayout::Leftmost);
+            parent->add(leftmost1);
+
+            auto left1 = tgui::Panel::create({"4%", 0});
+            left1->setAutoLayout(tgui::AutoLayout::Left);
+            parent->add(left1);
+
+            auto top1 = tgui::Panel::create({0, "6%"});
+            top1->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(top1);
+
+            auto bottom1 = tgui::Panel::create({0, "8%"});
+            bottom1->setAutoLayout(tgui::AutoLayout::Bottom);
+            parent->add(bottom1);
+
+            auto rightmost1 = tgui::Panel::create({"10%", 0});
+            rightmost1->setAutoLayout(tgui::AutoLayout::Rightmost);
+            parent->add(rightmost1);
+
+            auto right1 = tgui::Panel::create({"12%", 0});
+            right1->setAutoLayout(tgui::AutoLayout::Right);
+            parent->add(right1);
+
+            auto right2 = tgui::Panel::create({"13%", 0});
+            right2->setAutoLayout(tgui::AutoLayout::Right);
+            parent->add(right2);
+
+            auto rightmost2 = tgui::Panel::create({"14%", 0});
+            rightmost2->setAutoLayout(tgui::AutoLayout::Rightmost);
+            parent->add(rightmost2);
+
+            auto bottom2 = tgui::Panel::create({0, "15%"});
+            bottom2->setAutoLayout(tgui::AutoLayout::Bottom);
+            parent->add(bottom2);
+
+            auto top2 = tgui::Panel::create({0, "16%"});
+            top2->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(top2);
+
+            auto left2 = tgui::Panel::create({"17%", 0});
+            left2->setAutoLayout(tgui::AutoLayout::Left);
+            parent->add(left2);
+
+            auto leftmost2 = tgui::Panel::create({"18%", 0});
+            leftmost2->setAutoLayout(tgui::AutoLayout::Leftmost);
+            parent->add(leftmost2);
+
+            auto fill = tgui::Panel::create({0, 0});
+            fill->setAutoLayout(tgui::AutoLayout::Fill);
+            parent->add(fill);
+
+            REQUIRE(compareVector2f(leftmost1->getSize(), {2, 100}));
+            REQUIRE(compareVector2f(left1->getSize(), {4, 55}));
+            REQUIRE(compareVector2f(top1->getSize(), {56, 6}));
+            REQUIRE(compareVector2f(bottom1->getSize(), {56, 8}));
+            REQUIRE(compareVector2f(rightmost1->getSize(), {10, 100}));
+            REQUIRE(compareVector2f(right1->getSize(), {12, 55}));
+            REQUIRE(compareVector2f(leftmost2->getSize(), {18, 100}));
+            REQUIRE(compareVector2f(left2->getSize(), {17, 55}));
+            REQUIRE(compareVector2f(top2->getSize(), {56, 16}));
+            REQUIRE(compareVector2f(bottom2->getSize(), {56, 15}));
+            REQUIRE(compareVector2f(rightmost2->getSize(), {14, 100}));
+            REQUIRE(compareVector2f(right2->getSize(), {13, 55}));
+            REQUIRE(compareVector2f(fill->getSize(), {10, 55}));
+
+            REQUIRE(compareVector2f(leftmost1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(left1->getPosition(), {20, 22}));
+            REQUIRE(compareVector2f(top1->getPosition(), {20, 0}));
+            REQUIRE(compareVector2f(bottom1->getPosition(), {20, 92}));
+            REQUIRE(compareVector2f(rightmost1->getPosition(), {90, 0}));
+            REQUIRE(compareVector2f(right1->getPosition(), {64, 22}));
+            REQUIRE(compareVector2f(leftmost2->getPosition(), {2, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {24, 22}));
+            REQUIRE(compareVector2f(top2->getPosition(), {20, 6}));
+            REQUIRE(compareVector2f(bottom2->getPosition(), {20, 77}));
+            REQUIRE(compareVector2f(rightmost2->getPosition(), {76, 0}));
+            REQUIRE(compareVector2f(right2->getPosition(), {51, 22}));
+            REQUIRE(compareVector2f(fill->getPosition(), {41, 22}));
+        }
+
+        SECTION("z-order")
+        {
+            auto left1 = tgui::Panel::create({20, 0});
+            left1->setAutoLayout(tgui::AutoLayout::Leftmost);
+            parent->add(left1);
+
+            auto left2 = tgui::Panel::create({40, 0});
+            left2->setAutoLayout(tgui::AutoLayout::Leftmost);
+            parent->add(left2);
+
+            REQUIRE(compareVector2f(left1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {20, 0}));
+
+            left2->moveToBack();
+            REQUIRE(compareVector2f(left1->getPosition(), {40, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {0, 0}));
+
+            left2->moveToFront();
+            REQUIRE(compareVector2f(left1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {20, 0}));
+
+            parent->moveWidgetForward(left1);
+            REQUIRE(compareVector2f(left1->getPosition(), {40, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {0, 0}));
+
+            parent->moveWidgetBackward(left1);
+            REQUIRE(compareVector2f(left1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {20, 0}));
+
+            parent->setWidgetIndex(left2, 0);
+            REQUIRE(compareVector2f(left1->getPosition(), {40, 0}));
+            REQUIRE(compareVector2f(left2->getPosition(), {0, 0}));
+        }
+
+        SECTION("Removing widget")
+        {
+            auto left1 = tgui::Panel::create({20, 0});
+            left1->setAutoLayout(tgui::AutoLayout::Left);
+            parent->add(left1);
+
+            auto left2 = tgui::Panel::create({40, 0});
+            left2->setAutoLayout(tgui::AutoLayout::Left);
+            parent->add(left2);
+
+            REQUIRE(compareVector2f(left2->getPosition(), {20, 0}));
+            parent->remove(left1);
+            REQUIRE(compareVector2f(left2->getPosition(), {0, 0}));
+        }
+
+        SECTION("Resizing widget")
+        {
+            auto top1 = tgui::Panel::create({0, 30});
+            top1->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(top1);
+
+            auto top2 = tgui::Panel::create({0, 20});
+            top2->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(top2);
+
+            REQUIRE(compareVector2f(top2->getPosition(), {0, 30}));
+            top1->setHeight(40);
+            REQUIRE(compareVector2f(top2->getPosition(), {0, 40}));
+        }
+
+        SECTION("Resizing parent")
+        {
+            auto panel1 = tgui::Panel::create({"20%", 0});
+            panel1->setAutoLayout(tgui::AutoLayout::Right);
+            parent->add(panel1);
+
+            auto panel2 = tgui::Panel::create({0, "30%"});
+            panel2->setAutoLayout(tgui::AutoLayout::Bottom);
+            parent->add(panel2);
+
+            REQUIRE(compareVector2f(panel1->getPosition(), {80, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 70}));
+            REQUIRE(compareVector2f(panel1->getSize(), {20, 70}));
+            REQUIRE(compareVector2f(panel2->getSize(), {100, 30}));
+
+            parent->setSize({50, 150});
+            REQUIRE(compareVector2f(panel1->getPosition(), {40, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 105}));
+            REQUIRE(compareVector2f(panel1->getSize(), {10, 105}));
+            REQUIRE(compareVector2f(panel2->getSize(), {50, 45}));
+
+            parent->getRenderer()->setBorders({5, 15});
+            REQUIRE(compareVector2f(panel1->getPosition(), {32, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 84}));
+            REQUIRE(compareVector2f(panel1->getSize(), {8, 84}));
+            REQUIRE(compareVector2f(panel2->getSize(), {40, 36}));
+
+            parent->getRenderer()->setPadding({5, 15});
+            REQUIRE(compareVector2f(panel1->getPosition(), {24, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 63}));
+            REQUIRE(compareVector2f(panel1->getSize(), {6, 63}));
+            REQUIRE(compareVector2f(panel2->getSize(), {30, 27}));
+        }
+
+        SECTION("Changing layout")
+        {
+            auto panel1 = tgui::Panel::create({20, 0});
+            parent->add(panel1);
+
+            auto panel2 = tgui::Panel::create({30, 0});
+            parent->add(panel2);
+
+            panel1->setAutoLayout(tgui::AutoLayout::Left);
+            panel2->setAutoLayout(tgui::AutoLayout::Left);
+            REQUIRE(compareVector2f(panel1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {20, 0}));
+
+            panel1->setAutoLayout(tgui::AutoLayout::Right);
+            REQUIRE(compareVector2f(panel1->getPosition(), {80, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 0}));
+
+            // Height can't be changed because it is still controlled by the AutoLayout
+            panel1->setHeight(50);
+            REQUIRE(compareVector2f(panel1->getPosition(), {80, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 0}));
+
+            panel1->setAutoLayout(tgui::AutoLayout::Top);
+            panel1->setHeight(40);
+            REQUIRE(compareVector2f(panel1->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 40}));
+        }
+
+        SECTION("Copying widget")
+        {
+            auto panel1 = tgui::Panel::create({20, 0});
+            panel1->setAutoLayout(tgui::AutoLayout::Rightmost);
+            parent->add(panel1);
+
+            auto panel2 = tgui::Panel::copy(panel1);
+            parent->add(panel2);
+
+            REQUIRE(compareVector2f(panel2->getPosition(), {60, 0}));
+            REQUIRE(compareVector2f(panel2->getSize(), {20, 100}));
+        }
+
+        SECTION("Copying parent")
+        {
+            auto panel1 = tgui::Panel::create();
+            panel1->setAutoLayout(tgui::AutoLayout::Fill);
+            parent->add(panel1, "Pnl1");
+
+            auto panel2 = tgui::Panel::create({0, "30%"});
+            panel2->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(panel2, "Pnl2");
+
+            tgui::Panel::Ptr parentCopy;
+            SECTION("Copy constructor")
+            {
+                parentCopy = tgui::Panel::copy(parent);
+            }
+            SECTION("Assignment operator")
+            {
+                parentCopy = tgui::Panel::create();
+                *parentCopy = *parent;
+            }
+
+            auto panelCopy1 = parentCopy->get<tgui::Panel>("Pnl1");
+            auto panelCopy2 = parentCopy->get<tgui::Panel>("Pnl2");
+
+            REQUIRE(compareVector2f(panel1->getPosition(), {0, 30}));
+            REQUIRE(compareVector2f(panel1->getSize(), {100, 70}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(panel2->getSize(), {100, 30}));
+            REQUIRE(compareVector2f(panelCopy1->getPosition(), {0, 30}));
+            REQUIRE(compareVector2f(panelCopy1->getSize(), {100, 70}));
+            REQUIRE(compareVector2f(panelCopy2->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(panelCopy2->getSize(), {100, 30}));
+
+            // The copies are independent of each other
+            auto panel3 = tgui::Panel::create({40, 0});
+            panel3->setAutoLayout(tgui::AutoLayout::Leftmost);
+            parent->add(panel3);
+
+            panel2->setHeight(20);
+            panelCopy2->setHeight(50);
+
+            REQUIRE(compareVector2f(panel1->getPosition(), {40, 20}));
+            REQUIRE(compareVector2f(panel1->getSize(), {60, 80}));
+            REQUIRE(compareVector2f(panel2->getPosition(), {40, 0}));
+            REQUIRE(compareVector2f(panel2->getSize(), {60, 20}));
+            REQUIRE(compareVector2f(panelCopy1->getPosition(), {0, 50}));
+            REQUIRE(compareVector2f(panelCopy1->getSize(), {100, 50}));
+            REQUIRE(compareVector2f(panelCopy2->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(panelCopy2->getSize(), {100, 50}));
+        }
+
+        SECTION("Dependent layouts")
+        {
+            auto panel1 = tgui::Panel::create({40, 30});
+            panel1->setPosition({35, 5});
+            parent->add(panel1);
+
+            auto panel2 = tgui::Panel::create({25, 20});
+            panel2->setPosition({45, 50});
+            parent->add(panel2);
+
+            auto panel3 = tgui::Panel::create({10, 10});
+            panel3->setPosition(bindPosition(panel1) + (bindSize(panel1) - bindSize(panel3)) / 2.f);
+            parent->add(panel3);
+
+            auto panel4 = tgui::Panel::create({15, bindHeight(panel2) / 2.f});
+            panel4->setPosition({bindRight(panel2) + 5, bindTop(panel2) + (bindHeight(panel2) - bindHeight(panel4)) / 2.f});
+            parent->add(panel4);
+
+            REQUIRE(compareVector2f(panel3->getPosition(), {50, 15}));
+            REQUIRE(compareVector2f(panel3->getSize(), {10, 10}));
+            REQUIRE(compareVector2f(panel4->getPosition(), {75, 55}));
+            REQUIRE(compareVector2f(panel4->getSize(), {15, 10}));
+
+            panel1->setAutoLayout(tgui::AutoLayout::Fill);
+            panel2->setAutoLayout(tgui::AutoLayout::Left);
+
+            REQUIRE(compareVector2f(panel3->getPosition(), {57.5f, 45}));
+            REQUIRE(compareVector2f(panel3->getSize(), {10, 10}));
+            REQUIRE(compareVector2f(panel4->getPosition(), {30, 25}));
+            REQUIRE(compareVector2f(panel4->getSize(), {15, 50}));
+
+            panel4->setWidth(bindWidth(panel1));
+            REQUIRE(compareVector2f(panel4->getSize(), {75, 50}));
+        }
+
+        SECTION("Nested layouts")
+        {
+            auto outerPanelLeft = tgui::Panel::create({"10%", 0});
+            outerPanelLeft->setAutoLayout(tgui::AutoLayout::Left);
+            parent->add(outerPanelLeft);
+
+            auto outerPanelTop = tgui::Panel::create({0, "30%"});
+            outerPanelTop->setAutoLayout(tgui::AutoLayout::Top);
+            parent->add(outerPanelTop);
+
+            auto container = tgui::Panel::create({0, 0});
+            container->setAutoLayout(tgui::AutoLayout::Fill);
+            parent->add(container);
+
+            auto innerPanelRight = tgui::Panel::create({"20%", 0});
+            innerPanelRight->setAutoLayout(tgui::AutoLayout::Right);
+            container->add(innerPanelRight);
+
+            auto innerPanelBottom = tgui::Panel::create({0, "25%"});
+            innerPanelBottom->setAutoLayout(tgui::AutoLayout::Bottom);
+            container->add(innerPanelBottom);
+
+            auto innerPanelFill = tgui::Panel::create();
+            innerPanelFill->setAutoLayout(tgui::AutoLayout::Fill);
+            container->add(innerPanelFill);
+
+            REQUIRE(compareVector2f(container->getPosition(), {10, 30}));
+            REQUIRE(compareVector2f(container->getSize(), {90, 70}));
+            REQUIRE(compareVector2f(innerPanelFill->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(innerPanelFill->getSize(), {72, 52.5f}));
+
+            outerPanelLeft->setWidth("20%");
+            outerPanelTop->setHeight("40%");
+
+            REQUIRE(compareVector2f(container->getPosition(), {20, 40}));
+            REQUIRE(compareVector2f(container->getSize(), {80, 60}));
+            REQUIRE(compareVector2f(innerPanelFill->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(innerPanelFill->getSize(), {64, 45}));
+
+            auto outerPanelRight = tgui::Panel::create({"15%", 0});
+            outerPanelRight->setAutoLayout(tgui::AutoLayout::Right);
+            parent->add(outerPanelRight);
+
+            REQUIRE(compareVector2f(container->getPosition(), {20, 40}));
+            REQUIRE(compareVector2f(container->getSize(), {65, 60}));
+            REQUIRE(compareVector2f(innerPanelFill->getPosition(), {0, 0}));
+            REQUIRE(compareVector2f(innerPanelFill->getSize(), {52, 45}));
+        }
+    }
+
     SECTION("Bug Fixes")
     {
         SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)")

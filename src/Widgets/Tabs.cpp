@@ -368,7 +368,7 @@ namespace tgui
 
     void Tabs::setTabHeight(float height)
     {
-        Widget::setSize({getSizeLayout().x, height});
+        Widget::setSize({m_size.x, height});
         m_bordersCached.updateParentSize(getSize());
 
         // Recalculate the size when the text is auto sizing
@@ -508,6 +508,7 @@ namespace tgui
 
         if (m_autoSize)
         {
+            m_autoLayout = AutoLayout::Manual;
             if (m_tabs.empty())
                 Widget::setSize({m_bordersCached.getLeft() + m_bordersCached.getRight(), getSizeLayout().y});
             else

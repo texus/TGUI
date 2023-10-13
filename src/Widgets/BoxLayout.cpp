@@ -133,7 +133,7 @@ namespace tgui
 
     bool BoxLayout::setWidgetIndex(const Widget::Ptr& widget, std::size_t index)
     {
-        const auto widgetIndexChanged = Container::setWidgetIndex(widget, index);
+        const auto widgetIndexChanged = Group::setWidgetIndex(widget, index);
         if (widgetIndexChanged)
             updateWidgets();
         return widgetIndexChanged;

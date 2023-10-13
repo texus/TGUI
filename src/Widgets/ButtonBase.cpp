@@ -488,6 +488,7 @@ namespace tgui
         {
             const float spaceAroundText = m_textComponent->getLineHeight();
             const Outline& borders = m_backgroundComponent->getBorders();
+            m_autoLayout = AutoLayout::Manual;
             Widget::setSize({m_textComponent->getSize().x + spaceAroundText + borders.getLeft() + borders.getRight(),
                              std::round(m_textComponent->getLineHeight() * 1.25f) + borders.getTop() + borders.getBottom()});
         }

@@ -181,6 +181,8 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
             widgetAdded(widget);
+
+        updateChildrenWithAutoLayout();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,6 +244,8 @@ namespace tgui
 
             for (auto& widget : m_widgets)
                 widgetAdded(widget);
+
+            updateChildrenWithAutoLayout();
         }
 
         return *this;
@@ -283,6 +287,7 @@ namespace tgui
         {
             Widget::setSize(size);
             m_prevInnerSize = getInnerSize();
+            updateChildrenWithAutoLayout();
         }
         else // Size didn't change, but also check the inner size in case the borders or padding changed
         {
@@ -292,6 +297,8 @@ namespace tgui
                 m_prevInnerSize = getInnerSize();
                 for (auto& layout : m_boundSizeLayouts)
                     layout->recalculateValue();
+
+                updateChildrenWithAutoLayout();
             }
         }
     }
@@ -307,6 +314,9 @@ namespace tgui
             widgetPtr->setWidgetName(widgetName);
 
         widgetAdded(widgetPtr);
+
+        if (widgetPtr->getAutoLayout() != AutoLayout::Manual)
+            updateChildrenWithAutoLayout();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,6 +397,10 @@ namespace tgui
             // Remove the widget
             widget->setParent(nullptr);
             m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i));
+
+            if (widget->getAutoLayout() != AutoLayout::Manual)
+                updateChildrenWithAutoLayout();
+
             return true;
         }
 
@@ -619,6 +633,10 @@ namespace tgui
 
             // Remove the old widget
             m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i));
+
+            if (widget->getAutoLayout() != AutoLayout::Manual)
+                updateChildrenWithAutoLayout();
+
             break;
         }
     }
@@ -639,6 +657,10 @@ namespace tgui
 
             // Remove the old widget
             m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i + 1));
+
+            if (widget->getAutoLayout() != AutoLayout::Manual)
+                updateChildrenWithAutoLayout();
+
             break;
         }
     }
@@ -657,6 +679,10 @@ namespace tgui
                 return m_widgets.size() - 1;
 
             std::swap(m_widgets[i], m_widgets[i+1]);
+
+            if (widget->getAutoLayout() != AutoLayout::Manual)
+                updateChildrenWithAutoLayout();
+
             return i + 1;
         }
 
@@ -678,6 +704,10 @@ namespace tgui
                 return 0;
 
             std::swap(m_widgets[i-2], m_widgets[i-1]);
+
+            if (widget->getAutoLayout() != AutoLayout::Manual)
+                updateChildrenWithAutoLayout();
+
             return i-2;
         }
 
@@ -711,6 +741,10 @@ namespace tgui
         // Move the widget to the new index
         m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(currentWidgetIndex));
         m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widget);
+
+        if (widget->getAutoLayout() != AutoLayout::Manual)
+            updateChildrenWithAutoLayout();
+
         return true;
     }
 
@@ -1343,6 +1377,102 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::updateChildrenWithAutoLayout()
+    {
+        // If all children have a manual layout then we don't need to do anything
+        bool allChildrenUseManualLayout = true;
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() != AutoLayout::Manual)
+            {
+                allChildrenUseManualLayout = false;
+                break;
+            }
+        }
+        if (allChildrenUseManualLayout)
+            return;
+
+        // Disable the callback that would cause a recursive call to this update function
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() != AutoLayout::Manual)
+                child->setAutoLayoutUpdateEnabled(false);
+        }
+
+        Vector2f topLeft = {0, 0};
+        Vector2f bottomRight = getInnerSize();
+
+        // Place the Leftmost and Rightmost widgets
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() == AutoLayout::Leftmost)
+            {
+                child->setPosition(topLeft);
+                child->setSize({child->getSizeLayout().x, bottomRight.y});
+                topLeft.x += child->getSize().x;
+            }
+            else if (child->getAutoLayout() == AutoLayout::Rightmost)
+            {
+                child->setPosition({bottomRight.x - bindWidth(child), topLeft.y});
+                child->setSize({child->getSizeLayout().x, bottomRight.y});
+                bottomRight.x -= child->getSize().x;
+            }
+        }
+
+        // Place the Top and Bottom widgets
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() == AutoLayout::Top)
+            {
+                child->setPosition(topLeft);
+                child->setSize({bottomRight.x - topLeft.x, child->getSizeLayout().y});
+                topLeft.y += child->getSize().y;
+            }
+            else if (child->getAutoLayout() == AutoLayout::Bottom)
+            {
+                child->setPosition({topLeft.x, bottomRight.y - bindHeight(child)});
+                child->setSize({bottomRight.x - topLeft.x, child->getSizeLayout().y});
+                bottomRight.y -= child->getSize().y;
+            }
+        }
+
+        // Place the Left and Right widgets
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() == AutoLayout::Left)
+            {
+                child->setPosition(topLeft);
+                child->setSize({child->getSizeLayout().x, bottomRight.y - topLeft.y});
+                topLeft.x += child->getSize().x;
+            }
+            else if (child->getAutoLayout() == AutoLayout::Right)
+            {
+                child->setPosition({bottomRight.x - bindWidth(child), topLeft.y});
+                child->setSize({child->getSizeLayout().x, bottomRight.y - topLeft.y});
+                bottomRight.x -= child->getSize().x;
+            }
+        }
+
+        // Place the widget that wishes to fill the remaining space
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() == AutoLayout::Fill)
+            {
+                child->setPosition(topLeft);
+                child->setSize(bottomRight - topLeft);
+            }
+        }
+
+        // Re-enable the callback so that this update function is called when the widget size changes
+        for (const auto& child : m_widgets)
+        {
+            if (child->getAutoLayout() != AutoLayout::Manual)
+                child->setAutoLayoutUpdateEnabled(true);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Widget::Ptr Container::getWidgetBelowMouse(Vector2f mousePos) const
     {
         for (auto it = m_widgets.crbegin(); it != m_widgets.crend(); ++it)
@@ -1587,19 +1717,6 @@ namespace tgui
     {
         m_focused = true;
         m_isolatedFocus = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RootContainer::setSize(const Layout2d& size)
-    {
-        if (m_size.getValue() == size.getValue())
-            return;
-
-        m_size = size;
-        onSizeChange.emit(this, size.getValue());
-        for (auto& layout : m_boundSizeLayouts)
-            layout->recalculateValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

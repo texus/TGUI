@@ -45,6 +45,23 @@ TGUI_MODULE_EXPORT namespace tgui
     class Container;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Alignments for how to position a widget in its parent
+    ///
+    /// @since TGUI 1.1
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    enum class AutoLayout
+    {
+        Manual,     //!< Position and size need to be manually set. This is the default.
+        Top,        //!< Places the widget on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+        Left,       //!< Places the widget on the left side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+        Right,      //!< Places the widget on the right side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+        Bottom,     //!< Places the widget on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+        Leftmost,   //!< Places the widget on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no widget uses Top or Bottom alignment.
+        Rightmost,  //!< Places the widget on the right side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no widget uses Top or Bottom alignment.
+        Fill        //!< Sets the position and size to fill the entire area that isn't already taken by components with the other AutoLayout values.
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Class to store the left, top, width or height of a widget
     ///
     /// You don't have to create an instance of this class, numbers are implicitly cast to this class.
@@ -273,7 +290,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Widget* m_boundWidget = nullptr; // The widget on which this layout depends in case the operation is a binding
         String m_boundString; // String referring to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
         std::function<void()> m_connectedWidgetCallback = nullptr; // Function to call when the value of the layout changes in case the layout and sublayouts are not all constants
-        int m_callingCallbackCount = false; // Used to detect that connectWidget is called in an infinity loop if certain layouts depend on each other
+        int m_callingCallbackCount = 0; // Used to detect that connectWidget is called in an infinity loop if certain layouts depend on each other
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -351,9 +351,6 @@ namespace tgui
             m_verticalScrollbar->setAutoHide(true);
         }
 
-///        for (auto& layout : m_boundSizeLayouts)
-///            layout->recalculateValue();
-
         updateScrollbars();
     }
 
@@ -472,7 +469,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     bool ScrollablePanel::isHorizontalScrollbarShown() const
     {
         return m_horizontalScrollbar->isShown();

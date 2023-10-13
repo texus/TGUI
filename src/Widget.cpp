@@ -182,12 +182,14 @@ namespace tgui
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
         m_renderer                     {other.m_renderer},
         m_showAnimations               {},
+        m_userData                     {other.m_userData},
+        m_mouseCursor                  {other.m_mouseCursor},
+        m_autoLayout                   {other.m_autoLayout},
+        m_autoLayoutUpdateEnabled      {other.m_autoLayoutUpdateEnabled},
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached},
         m_transparentTextureCached     {other.m_transparentTextureCached},
-        m_textSizeCached               {other.m_textSizeCached},
-        m_userData                     {other.m_userData},
-        m_mouseCursor                  {other.m_mouseCursor}
+        m_textSizeCached               {other.m_textSizeCached}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
         m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -238,12 +240,14 @@ namespace tgui
         m_toolTip                      {std::move(other.m_toolTip)},
         m_renderer                     {other.m_renderer},
         m_showAnimations               {std::move(other.m_showAnimations)},
+        m_userData                     {std::move(other.m_userData)},
+        m_mouseCursor                  {std::move(other.m_mouseCursor)},
+        m_autoLayout                   {std::move(other.m_autoLayout)},
+        m_autoLayoutUpdateEnabled      {std::move(other.m_autoLayoutUpdateEnabled)},
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)},
         m_transparentTextureCached     {std::move(other.m_transparentTextureCached)},
-        m_textSizeCached               {std::move(other.m_textSizeCached)},
-        m_userData                     {std::move(other.m_userData)},
-        m_mouseCursor                  {std::move(other.m_mouseCursor)}
+        m_textSizeCached               {std::move(other.m_textSizeCached)}
     {
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
         m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -310,12 +314,14 @@ namespace tgui
             m_renderer             = other.m_renderer;
             m_inheritedFont        = {};
             m_inheritedOpacity     = 1;
+            m_userData             = other.m_userData;
+            m_mouseCursor          = other.m_mouseCursor;
+            m_autoLayout           = other.m_autoLayout;
+            m_autoLayoutUpdateEnabled = other.m_autoLayoutUpdateEnabled;
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
             m_transparentTextureCached = other.m_transparentTextureCached;
             m_textSizeCached       = other.m_textSizeCached;
-            m_userData             = other.m_userData;
-            m_mouseCursor          = other.m_mouseCursor;
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
             m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -376,12 +382,14 @@ namespace tgui
             m_showAnimations       = std::move(other.m_showAnimations);
             m_inheritedFont        = {};
             m_inheritedOpacity     = 1;
+            m_userData             = std::move(other.m_userData);
+            m_mouseCursor          = std::move(other.m_mouseCursor);
+            m_autoLayout           = std::move(other.m_autoLayout);
+            m_autoLayoutUpdateEnabled = std::move(other.m_autoLayoutUpdateEnabled);
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
             m_transparentTextureCached = std::move(other.m_transparentTextureCached);
             m_textSizeCached       = std::move(other.m_textSizeCached);
-            m_userData             = std::move(other.m_userData);
-            m_mouseCursor          = std::move(other.m_mouseCursor);
 
             m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
             m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
@@ -577,8 +585,23 @@ namespace tgui
 
             // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
             // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
-            for (auto* layout : std::unordered_set<Layout*>(m_boundPositionLayouts))
-                layout->recalculateValue();
+            if (!m_boundPositionLayouts.empty())
+            {
+                std::unordered_set<Layout*> boundPositionLayouts(m_boundPositionLayouts);
+                auto layoutIt = boundPositionLayouts.begin();
+
+                // Because updating one layout could result in another layout being destroyed, we must also check that
+                // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
+                (*layoutIt)->recalculateValue();
+                while (++layoutIt != boundPositionLayouts.end())
+                {
+                    if (m_boundPositionLayouts.find(*layoutIt) != m_boundPositionLayouts.end())
+                        (*layoutIt)->recalculateValue();
+                }
+            }
+
+            if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)
+                m_parent->updateChildrenWithAutoLayout();
         }
     }
 
@@ -597,17 +620,44 @@ namespace tgui
 
             // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
             // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
-            for (auto* layout : std::unordered_set<Layout*>(m_boundSizeLayouts))
-                layout->recalculateValue();
+            if (!m_boundSizeLayouts.empty())
+            {
+                std::unordered_set<Layout*> boundSizeLayouts(m_boundSizeLayouts);
+                auto layoutIt = boundSizeLayouts.begin();
+
+                // Because updating one layout could result in another layout being destroyed, we must also check that
+                // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
+                (*layoutIt)->recalculateValue();
+                while (++layoutIt != boundSizeLayouts.end())
+                {
+                    if (m_boundSizeLayouts.find(*layoutIt) != m_boundSizeLayouts.end())
+                        (*layoutIt)->recalculateValue();
+                }
+            }
 
             // If the origin isn't in the top left then changing the size also changes the position of the widget.
             // Note that getPosition() will still return the same value (hence we don't trigger onPositionChange), but if a
             // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
             if ((m_origin.x != 0) || (m_origin.y != 0))
             {
-                for (auto* layout : std::unordered_set<Layout*>(m_boundPositionLayouts))
-                    layout->recalculateValue();
+                if (!m_boundPositionLayouts.empty())
+                {
+                    std::unordered_set<Layout*> boundPositionLayouts(m_boundPositionLayouts);
+                    auto layoutIt = boundPositionLayouts.begin();
+
+                    // Because updating one layout could result in another layout being destroyed, we must also check that
+                    // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
+                    (*layoutIt)->recalculateValue();
+                    while (++layoutIt != boundPositionLayouts.end())
+                    {
+                        if (m_boundPositionLayouts.find(*layoutIt) != m_boundPositionLayouts.end())
+                            (*layoutIt)->recalculateValue();
+                    }
+                }
             }
+
+            if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)
+                m_parent->updateChildrenWithAutoLayout();
         }
     }
 
@@ -657,6 +707,22 @@ namespace tgui
     Vector2f Widget::getWidgetOffset() const
     {
         return Vector2f{0, 0};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setAutoLayout(AutoLayout layout)
+    {
+        m_autoLayout = layout;
+        if (m_parent)
+            m_parent->updateChildrenWithAutoLayout();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    AutoLayout Widget::getAutoLayout() const
+    {
+        return m_autoLayout;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1328,6 +1394,13 @@ namespace tgui
         }
 
         return screenRefreshRequired;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setAutoLayoutUpdateEnabled(bool enabled)
+    {
+        m_autoLayoutUpdateEnabled = enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

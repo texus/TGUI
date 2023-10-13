@@ -413,7 +413,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTarget::drawRoundedRectangle(const RenderStates& states, const Vector2f& size, const Color& backgroundColor,
-                                                       float radius, const Borders& borders, const Color& borderColor)
+                                                   float radius, const Borders& borders, const Color& borderColor)
     {
         // Radius can never be larger than half the width or height
         if (radius > size.x / 2)

@@ -221,6 +221,8 @@ namespace tgui
 
         if (m_autoSize)
         {
+            m_autoLayout = AutoLayout::Manual;
+
             const Outline& borders = m_backgroundComponent->getBorders();
 
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)

@@ -1,6 +1,7 @@
 TGUI 1.1  (TBD)
 ---------------
 
+- Added AutoLayout that lets widget fill entire side of parent
 - Added methods for arrow key navigation between widgets
 - Added TextOutlineColor and TextOutlineThickness to ProgressBar renderer
 

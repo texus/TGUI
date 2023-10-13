@@ -166,6 +166,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
         /// widget->setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});
         /// @endcode
+        ///
+        /// @warning This function should not be used if the AutoLayout is set to something other than Manual
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const Layout2d& position);
 
@@ -180,6 +182,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param y  New y coordinate
         ///
         /// @warning This setPosition overload must never be used from internal TGUI code or by custom widget implementations
+        ///
+        /// @warning This function should not be used if the AutoLayout is set to something other than Manual
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPosition(Layout x, Layout y)
         {
@@ -293,6 +297,24 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD virtual Vector2f getWidgetOffset() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @param Sets how the position is determined compared to the other widgets in the parent
+        ///
+        /// @param layout  Alignment for how to position the widget in its parent
+        ///
+        /// The default value is Manual which means the position and size are manually set and are unrelated to other widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAutoLayout(AutoLayout layout);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @param Returns how the position is determined compared to the other widgets in the parent
+        ///
+        /// @return Alignment for how to position the widget in its parent
+        ///
+        /// The default value is Manual which means the position and size are manually set and are unrelated to other widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD AutoLayout getAutoLayout() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the origin point on which the position, scale and rotation is based
         ///
         /// @param x  Relative horizontal position of the origin point
@@ -300,7 +322,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// Valid x and y values range from 0 to 1, with 0 representing the left/top of the widget and 1 being right/bottom
         ///
-        /// @warning This functionality is still experimental.
+        /// @warning This function should not be used if the AutoLayout is set to something other than Manual
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setOrigin(float x, float y)
         {
@@ -314,14 +336,13 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// Valid x and y values range from 0 to 1, with 0 representing the left/top of the widget and 1 being right/bottom
         ///
-        /// @warning This functionality is still experimental.
+        /// @warning This function should not be used if the AutoLayout is set to something other than Manual
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setOrigin(Vector2f origin);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the relative origin point on which the position, scale and rotation is based
         /// @return Relative origin point of the widget (0 for left/top, 1 for right/bottom)
-        /// @see setOrigin
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f getOrigin() const
         {
@@ -913,6 +934,12 @@ TGUI_MODULE_EXPORT namespace tgui
         virtual bool updateTime(Duration elapsedTime);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// Called at the start and end of a layout update to temporarily disable AutoLayout callbacks during the update
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAutoLayoutUpdateEnabled(bool enabled);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         /// @return Is the mouse on top of the widget?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1236,14 +1263,16 @@ TGUI_MODULE_EXPORT namespace tgui
         Font m_inheritedFont;
         float m_inheritedOpacity = 1;
 
+        Any m_userData;
+        Cursor::Type m_mouseCursor = Cursor::Type::Arrow;
+        AutoLayout m_autoLayout = AutoLayout::Manual;
+        bool m_autoLayoutUpdateEnabled = true;
+
         // Cached renderer properties
         Font  m_fontCached = Font::getGlobalFont();
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
         unsigned int m_textSizeCached = 0;
-
-        Any m_userData;
-        Cursor::Type m_mouseCursor = Cursor::Type::Arrow;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

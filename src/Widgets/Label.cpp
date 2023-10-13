@@ -699,6 +699,7 @@ namespace tgui
         // Update the size of the label
         if (m_autoSize)
         {
+            m_autoLayout = AutoLayout::Manual;
             Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + 2*textOffset, requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
