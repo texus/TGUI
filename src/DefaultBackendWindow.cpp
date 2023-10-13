@@ -119,10 +119,11 @@ namespace tgui
 
         ~BackendWindowSFML() override
         {
-            // Make sure the window is closed before destroying the gui. This is necessary when mouse cursors are changed,
-            // because the mouse cursor (which is destroyed with the gui) has to live longer than the window.
-            // If this is not done, tests on Linux will print a BadCursor error in the terminal, but otherwise work fine.
+            // Destroy the gui before closing the window, as closing the window destroys the OpenGL context
+            // that will still be used when destructing the backend renderer.
+            m_gui = nullptr;
             close();
+            tgui::BackendSFML::cleanupLeakedCursors();
         }
 
         BackendGui* getGui() const override
