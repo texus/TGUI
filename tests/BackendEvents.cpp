@@ -410,6 +410,26 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.y == 160);
             }
 
+            SECTION("MouseEntered")
+            {
+                sf::Event eventSFML;
+                eventSFML.type = sf::Event::MouseEntered;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseEntered);
+            }
+
+            SECTION("MouseLeft")
+            {
+                sf::Event eventSFML;
+                eventSFML.type = sf::Event::MouseLeft;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseLeft);
+            }
+
             SECTION("Handling events")
             {
                 auto childWindow = tgui::ChildWindow::create();
@@ -471,6 +491,17 @@ TEST_CASE("[Backend events]")
                 backendGuiSFML->handleEvent(eventSFML);
 
                 REQUIRE(slider->getValue() == 5);
+
+                // The mouse leaving the window will remove the hover state of widgets
+                unsigned int mouseLeftCount = 0;
+                eventSFML.type = sf::Event::MouseMoved;
+                eventSFML.mouseMove.x = 260;
+                eventSFML.mouseMove.y = 80;
+                backendGuiSFML->handleEvent(eventSFML);
+                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                eventSFML.type = sf::Event::MouseLeft;
+                backendGuiSFML->handleEvent(eventSFML);
+                REQUIRE(mouseLeftCount == 1);
 
                 // Resize the child window using mouse events (decrease width with 20px)
                 // Note that the resizing ignores the position of the mouse released event
@@ -910,6 +941,34 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.y == 160);
             }
 
+            SECTION("MouseEntered")
+            {
+                SDL_Event eventSDL;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_MOUSE_ENTER;
+#else
+                eventSDL.type = SDL_WINDOWEVENT;
+                eventSDL.window.event = SDL_WINDOWEVENT_ENTER;
+#endif
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseEntered);
+            }
+
+            SECTION("MouseLeft")
+            {
+                SDL_Event eventSDL;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_MOUSE_LEAVE;
+#else
+                eventSDL.type = SDL_WINDOWEVENT;
+                eventSDL.window.event = SDL_WINDOWEVENT_LEAVE;
+#endif
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseLeft);
+            }
+
             SECTION("Handling events")
             {
                 auto childWindow = tgui::ChildWindow::create();
@@ -989,6 +1048,23 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
 
                 REQUIRE(slider->getValue() == 5);
+
+                // The mouse leaving the window will remove the hover state of widgets
+                unsigned int mouseLeftCount = 0;
+                eventSDL.type = SDL_EVENT_MOUSE_MOTION;
+                eventSDL.motion.which = 1;
+                eventSDL.motion.x = 260;
+                eventSDL.motion.y = 80;
+                backendGuiSDL->handleEvent(eventSDL);
+                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.type = SDL_EVENT_WINDOW_MOUSE_LEAVE;
+#else
+                eventSDL.type = SDL_WINDOWEVENT;
+                eventSDL.window.event = SDL_WINDOWEVENT_LEAVE;
+#endif
+                backendGuiSDL->handleEvent(eventSDL);
+                REQUIRE(mouseLeftCount == 1);
 
                 // Resize the child window using mouse events (decrease width with 20px)
                 // Note that the resizing ignores the position of the mouse released event
@@ -1284,6 +1360,20 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI->mouseMove.y == 150);
             }
 
+            SECTION("MouseEntered")
+            {
+                auto eventTGUI = backendGuiGLFW->convertCursorEnterEvent(true);
+                REQUIRE(eventTGUI);
+                REQUIRE(eventTGUI->type == tgui::Event::Type::MouseEntered);
+            }
+
+            SECTION("MouseLeft")
+            {
+                auto eventTGUI = backendGuiGLFW->convertCursorEnterEvent(false);
+                REQUIRE(eventTGUI);
+                REQUIRE(eventTGUI->type == tgui::Event::Type::MouseLeft);
+            }
+
             SECTION("Handling events")
             {
                 auto childWindow = tgui::ChildWindow::create();
@@ -1326,6 +1416,13 @@ TEST_CASE("[Backend events]")
                 backendGuiGLFW->scrollCallback(0, -1);
 
                 REQUIRE(slider->getValue() == 5);
+
+                // The mouse leaving the window will remove the hover state of widgets
+                unsigned int mouseLeftCount = 0;
+                backendGuiGLFW->cursorPosCallback(260, 80);
+                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                backendGuiGLFW->cursorEnterCallback(false);
+                REQUIRE(mouseLeftCount == 1);
 
                 // Resize the child window using mouse events (decrease width with 20px)
                 backendGuiGLFW->cursorPosCallback(320, 100);

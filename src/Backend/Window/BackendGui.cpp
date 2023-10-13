@@ -199,8 +199,15 @@ namespace tgui
                 updateContainerSize();
                 break;
             }
+            case Event::Type::MouseLeft:
+            {
+                m_container->mouseNoLongerOnWidget();
+                break;
+            }
+            case Event::Type::MouseEntered:
             case Event::Type::Closed:
             {
+                // We don't do anything with these events
                 break;
             }
         }

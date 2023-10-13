@@ -233,8 +233,10 @@ TGUI_MODULE_EXPORT namespace tgui
             MouseButtonPressed,     //!< A mouse button was pressed (data in event.mouseButton)
             MouseButtonReleased,    //!< A mouse button was released (data in event.mouseButton)
             MouseMoved,             //!< The mouse cursor moved (data in event.mouseMove)
+            MouseEntered,           //!< The mouse cursor entered the content area of the window (no data)
+            MouseLeft,              //!< The mouse cursor left the content area of the window (no data)
             Resized,                //!< The window was resized (data in event.size)
-            Closed                  //!< The window was closed
+            Closed                  //!< The window was closed (no data)
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

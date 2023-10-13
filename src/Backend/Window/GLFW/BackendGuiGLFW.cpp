@@ -259,6 +259,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BackendGuiGLFW::cursorEnterCallback(int entered)
+    {
+        const auto event = convertCursorEnterEvent(entered);
+        if (event)
+            return handleEvent(*event);
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Optional<Event> BackendGuiGLFW::convertWindowFocusEvent(int focused)
     {
         Event event;
@@ -369,6 +380,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Optional<Event> BackendGuiGLFW::convertCursorEnterEvent(int entered)
+    {
+        Event event;
+        if (entered)
+            event.type = Event::Type::MouseEntered;
+        else
+            event.type = Event::Type::MouseLeft;
+
+        return event;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendGuiGLFW::mainLoop(Color clearColor)
     {
         TGUI_ASSERT(m_window && m_backendRenderTarget, "Gui must be given an GLFWwindow (either at construction or via setWindow function) before mainLoop() is called");
@@ -398,6 +422,9 @@ namespace tgui
         });
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods){
             static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->mouseButtonCallback(button, action, mods);
+        });
+        glfwSetCursorEnterCallback(m_window, [](GLFWwindow* window, int entered) {
+            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->cursorEnterCallback(entered);
         });
 
         setDrawingUpdatesTime(false);

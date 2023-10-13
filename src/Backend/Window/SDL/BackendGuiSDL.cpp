@@ -177,6 +177,16 @@ namespace tgui
                 eventTGUI.size.height = static_cast<unsigned int>(eventSDL.window.data2);
                 return true;
             }
+            case SDL_EVENT_WINDOW_MOUSE_ENTER:
+            {
+                eventTGUI.type = Event::Type::MouseEntered;
+                return true;
+            }
+            case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+            {
+                eventTGUI.type = Event::Type::MouseLeft;
+                return true;
+            }
 #else
             case SDL_WINDOWEVENT:
             {
@@ -195,6 +205,16 @@ namespace tgui
                     eventTGUI.type = Event::Type::Resized;
                     eventTGUI.size.width = static_cast<unsigned int>(eventSDL.window.data1);
                     eventTGUI.size.height = static_cast<unsigned int>(eventSDL.window.data2);
+                    return true;
+                }
+                else if (eventSDL.window.event == SDL_WINDOWEVENT_ENTER)
+                {
+                    eventTGUI.type = Event::Type::MouseEntered;
+                    return true;
+                }
+                else if (eventSDL.window.event == SDL_WINDOWEVENT_LEAVE)
+                {
+                    eventTGUI.type = Event::Type::MouseLeft;
                     return true;
                 }
                 else // This window event is not handled by TGUI

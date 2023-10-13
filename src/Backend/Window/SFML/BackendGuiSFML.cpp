@@ -397,6 +397,16 @@ namespace tgui
                 eventTGUI.mouseMove.y = eventSFML.mouseMove.y;
                 return true;
             }
+            case sf::Event::MouseEntered:
+            {
+                eventTGUI.type = Event::Type::MouseEntered;
+                return true;
+            }
+            case sf::Event::MouseLeft:
+            {
+                eventTGUI.type = Event::Type::MouseLeft;
+                return true;
+            }
             case sf::Event::TouchMoved:
             {
                 if (eventSFML.touch.finger != 0)

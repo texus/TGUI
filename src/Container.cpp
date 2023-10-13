@@ -1736,6 +1736,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void RootContainer::mouseNoLongerOnWidget()
+    {
+        if (m_widgetBelowMouse)
+        {
+            m_widgetBelowMouse->mouseNoLongerOnWidget();
+            m_widgetBelowMouse = nullptr;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RootContainer::draw(BackendRenderTarget& target, RenderStates states) const
     {
         // The only reason to override this function was to change the access specifier, so just call the code from the base class
