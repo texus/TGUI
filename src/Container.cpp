@@ -295,9 +295,7 @@ namespace tgui
             if (getInnerSize() != m_prevInnerSize)
             {
                 m_prevInnerSize = getInnerSize();
-                for (auto& layout : m_boundSizeLayouts)
-                    layout->recalculateValue();
-
+                recalculateBoundSizeLayouts();
                 updateChildrenWithAutoLayout();
             }
         }

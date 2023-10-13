@@ -115,8 +115,7 @@ namespace tgui
         m_showTextOnTitleButtonsCached     {other.m_showTextOnTitleButtonsCached}
     {
         // The inner size has changed since the container created the child widgets
-        for (auto& layout : m_boundSizeLayouts)
-            layout->recalculateValue();
+        recalculateBoundSizeLayouts();
 
         connectTitleButtonCallbacks();
     }
@@ -157,8 +156,7 @@ namespace tgui
         m_showTextOnTitleButtonsCached     {std::move(other.m_showTextOnTitleButtonsCached)}
     {
         // The inner size has changed since the container created the child widgets
-        for (auto& layout : m_boundSizeLayouts)
-            layout->recalculateValue();
+        recalculateBoundSizeLayouts();
 
         connectTitleButtonCallbacks();
     }
@@ -204,8 +202,7 @@ namespace tgui
             m_showTextOnTitleButtonsCached      = other.m_showTextOnTitleButtonsCached;
 
             // The inner size has changed since the container created the child widgets
-            for (auto& layout : m_boundSizeLayouts)
-                layout->recalculateValue();
+            recalculateBoundSizeLayouts();
 
             connectTitleButtonCallbacks();
         }
@@ -253,8 +250,7 @@ namespace tgui
             Container::operator=(std::move(other));
 
             // The inner size has changed since the container created the child widgets
-            for (auto& layout : m_boundSizeLayouts)
-                layout->recalculateValue();
+            recalculateBoundSizeLayouts();
 
             connectTitleButtonCallbacks();
         }
@@ -1112,8 +1108,7 @@ namespace tgui
                     m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
 
                 // If the title bar changes in height then the inner size will also change
-                for (auto& layout : m_boundSizeLayouts)
-                    layout->recalculateValue();
+                recalculateBoundSizeLayouts();
             }
         }
         else if (property == U"TextureBackground")

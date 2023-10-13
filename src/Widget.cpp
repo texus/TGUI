@@ -583,22 +583,7 @@ namespace tgui
             m_prevPosition = getPosition();
             onPositionChange.emit(this, getPosition());
 
-            // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
-            // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
-            if (!m_boundPositionLayouts.empty())
-            {
-                std::unordered_set<Layout*> boundPositionLayouts(m_boundPositionLayouts);
-                auto layoutIt = boundPositionLayouts.begin();
-
-                // Because updating one layout could result in another layout being destroyed, we must also check that
-                // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
-                (*layoutIt)->recalculateValue();
-                while (++layoutIt != boundPositionLayouts.end())
-                {
-                    if (m_boundPositionLayouts.find(*layoutIt) != m_boundPositionLayouts.end())
-                        (*layoutIt)->recalculateValue();
-                }
-            }
+            recalculateBoundPositionLayouts();
 
             if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)
                 m_parent->updateChildrenWithAutoLayout();
@@ -618,43 +603,13 @@ namespace tgui
             m_prevSize = getSize();
             onSizeChange.emit(this, getSize());
 
-            // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
-            // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
-            if (!m_boundSizeLayouts.empty())
-            {
-                std::unordered_set<Layout*> boundSizeLayouts(m_boundSizeLayouts);
-                auto layoutIt = boundSizeLayouts.begin();
-
-                // Because updating one layout could result in another layout being destroyed, we must also check that
-                // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
-                (*layoutIt)->recalculateValue();
-                while (++layoutIt != boundSizeLayouts.end())
-                {
-                    if (m_boundSizeLayouts.find(*layoutIt) != m_boundSizeLayouts.end())
-                        (*layoutIt)->recalculateValue();
-                }
-            }
+            recalculateBoundSizeLayouts();
 
             // If the origin isn't in the top left then changing the size also changes the position of the widget.
             // Note that getPosition() will still return the same value (hence we don't trigger onPositionChange), but if a
             // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
             if ((m_origin.x != 0) || (m_origin.y != 0))
-            {
-                if (!m_boundPositionLayouts.empty())
-                {
-                    std::unordered_set<Layout*> boundPositionLayouts(m_boundPositionLayouts);
-                    auto layoutIt = boundPositionLayouts.begin();
-
-                    // Because updating one layout could result in another layout being destroyed, we must also check that
-                    // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
-                    (*layoutIt)->recalculateValue();
-                    while (++layoutIt != boundPositionLayouts.end())
-                    {
-                        if (m_boundPositionLayouts.find(*layoutIt) != m_boundPositionLayouts.end())
-                            (*layoutIt)->recalculateValue();
-                    }
-                }
-            }
+                recalculateBoundPositionLayouts();
 
             if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)
                 m_parent->updateChildrenWithAutoLayout();
@@ -1900,6 +1855,50 @@ namespace tgui
 
         m_mouseHover = false;
         onMouseLeave.emit(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::recalculateBoundPositionLayouts()
+    {
+        if (m_boundPositionLayouts.empty())
+            return;
+
+        // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
+        // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
+        std::unordered_set<Layout*> boundPositionLayouts(m_boundPositionLayouts);
+        auto layoutIt = boundPositionLayouts.begin();
+
+        // Because updating one layout could result in another layout being destroyed, we must also check that
+        // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
+        (*layoutIt)->recalculateValue();
+        while (++layoutIt != boundPositionLayouts.end())
+        {
+            if (m_boundPositionLayouts.find(*layoutIt) != m_boundPositionLayouts.end())
+                (*layoutIt)->recalculateValue();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::recalculateBoundSizeLayouts()
+    {
+        if (m_boundSizeLayouts.empty())
+            return;
+
+        // Update the connected layouts, but make a copy of the set before iterating over it to prevent issues
+        // with the list being changed during the loop if some layout gets copied in a called setSize or setPosition function.
+        std::unordered_set<Layout*> boundSizeLayouts(m_boundSizeLayouts);
+        auto layoutIt = boundSizeLayouts.begin();
+
+        // Because updating one layout could result in another layout being destroyed, we must also check that
+        // the layout still exists in the latest list before calling it. The first layout doesn't need this check.
+        (*layoutIt)->recalculateValue();
+        while (++layoutIt != boundSizeLayouts.end())
+        {
+            if (m_boundSizeLayouts.find(*layoutIt) != m_boundSizeLayouts.end())
+                (*layoutIt)->recalculateValue();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
