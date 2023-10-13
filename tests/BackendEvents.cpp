@@ -915,6 +915,7 @@ TEST_CASE("[Backend events]")
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
                 eventSDL.tfinger.touchId = 1;
+                eventSDL.tfinger.fingerId = 1;
                 eventSDL.tfinger.x = 200.f / windowSize.x;
                 eventSDL.tfinger.y = 150.f / windowSize.y;
 
