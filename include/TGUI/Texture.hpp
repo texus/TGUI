@@ -106,7 +106,7 @@ TGUI_MODULE_EXPORT namespace tgui
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
                 bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture from an existing sf::Texture
         ///
@@ -118,6 +118,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// This constructor just calls the corresponding load function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_DEPRECATED("Use Texture() and loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) instead")
         Texture(const sf::Texture& texture,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0));
@@ -164,7 +165,7 @@ TGUI_MODULE_EXPORT namespace tgui
                   const UIntRect& middleRect = {},
                   bool smooth = m_defaultSmooth);
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture from an existing sf::Texture
         ///
@@ -176,6 +177,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_DEPRECATED("Use loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) instead")
         void load(const sf::Texture& texture,
                   const UIntRect& partRect = {},
                   const UIntRect& middleRect = {});

@@ -68,11 +68,13 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
     Texture::Texture(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middlePart)
     {
         load(texture, partRect, middlePart);
     }
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -210,7 +212,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
     void Texture::load(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middleRect)
     {
         if (getData() && (m_destructCallback != nullptr))
