@@ -86,6 +86,18 @@ module;
     #include <cstdlib>
 #endif
 
+#if defined(TGUI_SYSTEM_LINUX)
+    #include <atomic>
+    #include <thread>
+    #include <dlfcn.h> // dlopen, dlsym, dlclose
+    #if defined(__has_include)
+        #if __has_include (<magic.h>)
+            #define TGUI_MAGIC_HEADER_INCLUDED
+            #include <magic.h>
+        #endif
+    #endif
+#endif
+
 #include <cassert>
 
 #ifdef TGUI_SYSTEM_WINDOWS
@@ -100,61 +112,16 @@ module;
     #include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
 #endif
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS || TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics.hpp>
-#elif TGUI_HAS_WINDOW_BACKEND_SFML
-    #include <SFML/Window.hpp>
-#endif
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS && defined(TGUI_SYSTEM_IOS)
-  #include <SFML/Main.hpp>
 #endif
 
-#if TGUI_HAS_WINDOW_BACKEND_SDL || TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
-    #include <TGUI/extlibs/IncludeSDL.hpp>
-#endif
-#if TGUI_HAS_WINDOW_BACKEND_SDL
-    #if SDL_MAJOR_VERSION >= 3
-        #include <SDL3/SDL_syswm.h>
-    #else
-        #include <SDL_syswm.h>
-        #include <SDL_touch.h>
-    #endif
-#endif
-
-#if TGUI_HAS_FONT_BACKEND_SDL_TTF
-    #if SDL_MAJOR_VERSION >= 3
-        #include <SDL3_ttf/SDL_ttf.h>
-    #else
-        #include <SDL_ttf.h>
-    #endif
-#endif
-
-#if TGUI_HAS_WINDOW_BACKEND_GLFW
-    #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
-    #include <GLFW/glfw3.h>
-#endif
-
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((TGUI_HAS_WINDOW_BACKEND_SFML && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) || TGUI_HAS_WINDOW_BACKEND_SDL)
-    #include <X11/Xlib.h>
-    #include <X11/cursorfont.h>
-#endif
-
-#ifdef TGUI_SYSTEM_ANDROID
-    #ifdef TGUI_HAS_WINDOW_BACKEND_SFML
-        #include <SFML/System/NativeActivity.hpp>
-        #include <android/asset_manager_jni.h>
-        #include <android/asset_manager.h>
-        #include <android/native_activity.h>
-        #include <android/configuration.h>
-    #endif
-
-    #if TGUI_HAS_WINDOW_BACKEND_SDL
-        #include <jni.h>
-        #include <android/asset_manager.h>
-        #include <android/asset_manager_jni.h>
-    #endif
-#endif
+#include <TGUI/extlibs/IncludeStbImageWrite.hpp> // Only needed by Serializer.cpp
+#include <TGUI/extlibs/IncludeStbImage.hpp> // Only needed by ImageLoader.cpp
+#include <TGUI/extlibs/IncludeNanoSVG.hpp> // Only needed by SvgImage.cpp
 
 #ifdef _MSC_VER
 	#pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
 #endif
+
+export module tgui;

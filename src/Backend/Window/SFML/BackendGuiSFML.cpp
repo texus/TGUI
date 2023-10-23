@@ -25,9 +25,7 @@
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/ToolTip.hpp>
     #include <TGUI/Timer.hpp>
 

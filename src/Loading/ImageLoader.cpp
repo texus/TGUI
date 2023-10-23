@@ -26,59 +26,8 @@
 #include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/Global.hpp>
 
-#if defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wold-style-cast"
-#   pragma GCC diagnostic ignored "-Wsign-compare"
-#   pragma GCC diagnostic ignored "-Wsign-conversion"
-#   pragma GCC diagnostic ignored "-Wdouble-promotion"
-#   pragma GCC diagnostic ignored "-Wunused-function"
-#   pragma GCC diagnostic ignored "-Wcast-align"
-#   pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-#   if defined(__clang__)
-#       if __has_warning("-Wunused-but-set-variable")
-#           pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#       endif
-#   else
-#       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#       pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#   endif
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic push
-#       pragma clang diagnostic ignored "-Wold-style-cast"
-#       pragma clang diagnostic ignored "-Wsign-compare"
-#       pragma clang diagnostic ignored "-Wsign-conversion"
-#       pragma clang diagnostic ignored "-Wdouble-promotion"
-#       pragma clang diagnostic ignored "-Wunused-function"
-#       pragma clang diagnostic ignored "-Wcast-align"
-#       pragma clang diagnostic ignored "-Wimplicit-fallthrough"
-#   else
-#       pragma warning(push)
-#       pragma warning(disable: 4244) // conversion, possible loss of data
-#       pragma warning(disable: 4505) // Unreferenced local function
-#   endif
-#endif
-
-#define STBI_NO_STDIO
-#define STBI_WINDOWS_UTF8
-
-#if TGUI_USE_SYSTEM_STB
-#   include <stb_image.h>
-#else
-#   define STB_IMAGE_STATIC
-#   define STB_IMAGE_IMPLEMENTATION
-#   include <TGUI/extlibs/stb/stb_image.h>
-#endif
-
-#if defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic pop
-#   else
-#       pragma warning(pop)
-#   endif
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/extlibs/IncludeStbImage.hpp>
 #endif
 
 #include <cstring> // memcpy

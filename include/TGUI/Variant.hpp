@@ -26,10 +26,9 @@
 #ifndef TGUI_VARIANT_HPP
 #define TGUI_VARIANT_HPP
 
+#include <TGUI/Config.hpp>
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #if TGUI_EXPERIMENTAL_USE_STD_MODULE
-        import std;
-    #else
+    #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
         #include <variant>
     #endif
 #else

@@ -30,47 +30,8 @@
 #include <TGUI/Base64.hpp>
 #include <cassert>
 
-#if defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wold-style-cast"
-#   pragma GCC diagnostic ignored "-Wnull-dereference"
-#   pragma GCC diagnostic ignored "-Wsign-conversion"
-#   pragma GCC diagnostic ignored "-Wunused-function"
-#   pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-#   pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic push
-#       pragma clang diagnostic ignored "-Wold-style-cast"
-#       pragma clang diagnostic ignored "-Wnull-dereference"
-#       pragma clang diagnostic ignored "-Wsign-conversion"
-#       pragma clang diagnostic ignored "-Wunused-function"
-#       pragma clang diagnostic ignored "-Wimplicit-fallthrough"
-#       pragma clang diagnostic ignored "-Wmissing-field-initializers"
-#   else
-#       pragma warning(push)
-#       pragma warning(disable: 4505) // Unreferenced local function
-#   endif
-#endif
-
-#define STBI_WRITE_NO_STDIO
-
-#if TGUI_USE_SYSTEM_STB
-#   include <stb_image_write.h>
-#else
-#   define STB_IMAGE_WRITE_STATIC
-#   define STB_IMAGE_WRITE_IMPLEMENTATION
-#   include <TGUI/extlibs/stb/stb_image_write.h>
-#endif
-
-#if defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic pop
-#   else
-#       pragma warning(pop)
-#   endif
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -30,9 +30,7 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #endif
 

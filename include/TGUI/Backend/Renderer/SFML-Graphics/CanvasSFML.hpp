@@ -28,9 +28,7 @@
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
     #include <TGUI/Widgets/ClickableWidget.hpp>
 #endif

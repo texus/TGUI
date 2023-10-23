@@ -26,9 +26,7 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Loading/WidgetFactory.hpp>
 #endif
 
