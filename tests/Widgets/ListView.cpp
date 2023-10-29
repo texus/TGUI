@@ -84,6 +84,10 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getColumnWidth(1) == 60);
         REQUIRE(listView->getColumnWidth(2) == 100);
 
+        REQUIRE(listView->getColumnWidth(0) > 0);
+        REQUIRE(listView->getColumnDesignWidth(0) == 0);
+        REQUIRE(listView->getColumnDesignWidth(1) == 60);
+
         REQUIRE(listView->getColumnAlignment(0) == tgui::ListView::ColumnAlignment::Left);
         REQUIRE(listView->getColumnAlignment(1) == tgui::ListView::ColumnAlignment::Right);
         REQUIRE(listView->getColumnAlignment(2) == tgui::ListView::ColumnAlignment::Center);

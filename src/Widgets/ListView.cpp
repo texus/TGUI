@@ -210,6 +210,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    float ListView::getColumnDesignWidth(std::size_t index) const
+    {
+        if (index < m_columns.size())
+            return m_columns[index].designWidth;
+        else
+        {
+            TGUI_PRINT_WARNING("getColumnDesignWidth called with invalid index.");
+            return 0;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::removeAllColumns()
     {
         m_columns.clear();

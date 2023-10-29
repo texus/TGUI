@@ -169,12 +169,25 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param index  Index of the column
         ///
-        /// @return Width of the column
+        /// @return Current width of the column
         ///
-        /// @warning This returns the actual width of the column, which may differ from the value passed with setColumnWidth
-        ///          when e.g. 0 was passed to setColumnWidth.
+        /// @warning This returns the actual width of the column, which may differ from the value passed to
+        ///          addColumn or setColumnWidth when e.g. the width was set to 0.
+        ///
+        /// @see getColumnDesignWidth
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getColumnWidth(std::size_t index) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the original width of a column (the value passed to addColumn or the last setColumnWidth call)
+        ///
+        /// @param index  Index of the column
+        ///
+        /// @return Width of the column prior to expanding the column and prior to the user resizing it
+        ///
+        /// @see getColumnWidth
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD float getColumnDesignWidth(std::size_t index) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text alignment within a column
