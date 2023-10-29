@@ -77,7 +77,11 @@ struct ListViewProperties : WidgetProperties
         else if (property == "ShowHorizontalGridLines")
             listView->setShowHorizontalGridLines(parseBoolean(value, false));
         else if (property == "ExpandLastColumn")
+        {
+            TGUI_IGNORE_DEPRECATED_WARNINGS_START
             listView->setExpandLastColumn(parseBoolean(value, false));
+            TGUI_IGNORE_DEPRECATED_WARNINGS_END
+        }
         else if (property == "ResizableColumns")
             listView->setResizableColumns(parseBoolean(value, false));
         else
@@ -101,8 +105,11 @@ struct ListViewProperties : WidgetProperties
         pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listView->getAutoScroll())};
         pair.first["ShowVerticalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowVerticalGridLines())};
         pair.first["ShowHorizontalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowHorizontalGridLines())};
-        pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};
         pair.first["ResizableColumns"] = {"Bool", tgui::Serializer::serialize(listView->getResizableColumns())};
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         const auto renderer = listView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

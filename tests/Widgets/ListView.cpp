@@ -501,6 +501,8 @@ TEST_CASE("[ListView]")
 
     SECTION("Expand last column (deprecated)")
     {
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
+
         // Works even when no columns exist yet
         REQUIRE(!listView->getExpandLastColumn());
         listView->setExpandLastColumn(true);
@@ -523,6 +525,8 @@ TEST_CASE("[ListView]")
         // it doesn't actually change those properties.
         REQUIRE(!listView->getColumnExpanded(2));
         REQUIRE(!listView->getColumnAutoResize(2));
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     SECTION("AutoScroll")
@@ -1089,9 +1093,14 @@ TEST_CASE("[ListView]")
         listView->setAutoScroll(false);
         listView->setShowVerticalGridLines(false);
         listView->setShowHorizontalGridLines(true);
-        listView->setExpandLastColumn(true);
+        listView->setColumnAutoResize(0, true);
+        listView->setColumnExpanded(1, true);
         listView->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         listView->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        listView->setExpandLastColumn(true);
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         testSavingWidget("ListView", listView);
     }
@@ -1390,11 +1399,47 @@ TEST_CASE("[ListView]")
                 listView->addColumn("C1", 40);
                 listView->addColumn("C2", 50);
 
-                listView->setExpandLastColumn(true);
-                TEST_DRAW("ListView_ExpandLastColumnTrue_NoScrollbar.png")
+                SECTION("Using setColumnExpanded (first column)")
+                {
+                    listView->setColumnExpanded(0, true);
+                    TEST_DRAW("ListView_ColumnExpanded_0_True.png")
 
-                listView->setExpandLastColumn(false);
-                TEST_DRAW("ListView_ExpandLastColumnFalse_NoScrollbar.png")
+                    listView->setColumnExpanded(0, false);
+                    TEST_DRAW("ListView_ColumnExpanded_0_False.png")
+                }
+
+                SECTION("Using setColumnExpanded (second column)")
+                {
+                    listView->setColumnExpanded(1, true);
+                    TEST_DRAW("ListView_ColumnExpanded_1_True.png")
+
+                    listView->setColumnExpanded(1, false);
+                    TEST_DRAW("ListView_ColumnExpanded_1_False.png")
+                }
+
+                SECTION("Using setColumnExpanded (both columns)")
+                {
+                    listView->setColumnExpanded(0, true);
+                    listView->setColumnExpanded(1, true);
+                    TEST_DRAW("ListView_ColumnExpanded_Both_True.png")
+
+                    listView->setColumnExpanded(0, false);
+                    listView->setColumnExpanded(1, false);
+                    TEST_DRAW("ListView_ColumnExpanded_Both_False.png")
+                }
+
+                SECTION("Using deprecated setExpandLastColumn")
+                {
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_START
+
+                    listView->setExpandLastColumn(true);
+                    TEST_DRAW("ListView_ExpandLastColumnTrue_NoScrollbar.png")
+
+                    listView->setExpandLastColumn(false);
+                    TEST_DRAW("ListView_ExpandLastColumnFalse_NoScrollbar.png")
+
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_END
+                }
             }
 
             SECTION("Horizontal scrollbar needed for column")
@@ -1402,18 +1447,46 @@ TEST_CASE("[ListView]")
                 listView->addColumn("C1", 70);
                 listView->addColumn("C2", 90);
 
-                listView->setExpandLastColumn(true);
-                TEST_DRAW("ListView_ExpandLastColumnTrue_WithScrollbar.png")
+                SECTION("Using setColumnAutoResize")
+                {
+                    listView->setColumnAutoResize(1, true);
+                    TEST_DRAW("ListView_ExpandLastColumnTrue_WithScrollbar.png")
 
-                listView->setExpandLastColumn(false);
-                TEST_DRAW("ListView_ExpandLastColumnFalse_WithScrollbar.png")
+                    listView->setColumnAutoResize(1, false);
+                    TEST_DRAW("ListView_ExpandLastColumnFalse_WithScrollbar.png")
+                }
+
+                SECTION("Using deprecated setExpandLastColumn")
+                {
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_START
+
+                    listView->setExpandLastColumn(true);
+                    TEST_DRAW("ListView_ExpandLastColumnTrue_WithScrollbar.png")
+
+                    listView->setExpandLastColumn(false);
+                    TEST_DRAW("ListView_ExpandLastColumnFalse_WithScrollbar.png")
+
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_END
+                }
             }
 
             SECTION("Horizontal scrollbar needed for item")
             {
                 listView->addColumn("C1", 70);
                 listView->addColumn("C2", 50);
-                listView->setExpandLastColumn(true);
+
+                SECTION("Using setColumnExpanded and setColumnAutoResize")
+                {
+                    listView->setColumnExpanded(1, true);
+                    listView->setColumnAutoResize(1, true);
+                }
+
+                SECTION("Using deprecated setExpandLastColumn")
+                {
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_START
+                    listView->setExpandLastColumn(true);
+                    TGUI_IGNORE_DEPRECATED_WARNINGS_END
+                }
 
                 TEST_DRAW("ListView_LongestItemAutoWidth_NoScrollbar.png")
 

@@ -1175,6 +1175,15 @@ namespace tgui
 
         m_expandLastColumn = expand;
 
+        // For backwards compatibility we reset the width when expanding is disabled
+        if (!expand && !m_columns.empty())
+        {
+            if (m_columns.back().designWidth > 0)
+                m_columns.back().width = m_columns.back().designWidth;
+            else
+                m_columns.back().width = calculateAutoColumnWidth(m_columns.back().text);
+        }
+
         updateWidestItemInColumn(m_columns.empty() ? 0 : (m_columns.size() - 1));
         updateColumnWidths();
     }
@@ -1484,12 +1493,6 @@ namespace tgui
             assert(m_resizableColumns && m_mouseDown);
             assert(m_resizingColumn <= m_columns.size());
             mouseOnResizableBorder = true;
-
-            const unsigned int separatorWidth = getTotalSeparatorWidth();
-            float borderCenterX = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
-            for (std::size_t i = 0; i < m_resizingColumn; ++i)
-                borderCenterX += m_columns[i].width + separatorWidth;
-            borderCenterX -= separatorWidth / 2.f;
 
             // When shrinking a column while the scrollbar is at the maximum value, the scrollbar value and maximum change while the column is resized.
             // In this case, the column shrinks from the left side while the right side stays stationary. This causes the mouse to no longer be on the border.
@@ -1892,6 +1895,11 @@ namespace tgui
             else if (column.alignment == ColumnAlignment::Right)
                 columnNode->propertyValuePairs[U"Alignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
+            if (column.autoResize)
+                columnNode->propertyValuePairs[U"AutoResize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.autoResize));
+            if (column.expanded)
+                columnNode->propertyValuePairs[U"Expanded"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.expanded));
+
             node->children.push_back(std::move(columnNode));
         }
 
@@ -2007,7 +2015,12 @@ namespace tgui
                     throw Exception{U"Failed to parse Alignment property, found unknown value '" + alignmentString + U"'."};
             }
 
-            addColumn(text, width, alignment);
+            const std::size_t columnIndex = addColumn(text, width, alignment);
+
+            if (childNode->propertyValuePairs[U"AutoResize"])
+                setColumnAutoResize(columnIndex, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs[U"AutoResize"]->value).getBool());
+            if (childNode->propertyValuePairs[U"Expanded"])
+                setColumnExpanded(columnIndex, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs[U"Expanded"]->value).getBool());
         }
 
         for (const auto& childNode : node->children)
@@ -2067,8 +2080,11 @@ namespace tgui
             setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ShowHorizontalGridLines"]->value).getBool());
         if (node->propertyValuePairs[U"ShowVerticalGridLines"])
             setShowVerticalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ShowVerticalGridLines"]->value).getBool());
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
         if (node->propertyValuePairs[U"ExpandLastColumn"])
             setExpandLastColumn(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ExpandLastColumn"]->value).getBool());
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
         {
@@ -2333,7 +2349,7 @@ namespace tgui
         }
 
         float& widestItemWidth = m_columns.empty() ? m_widestItemWidth : m_columns[columnIndex].widestItemWidth;
-        unsigned int& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
+        std::size_t& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
         const float oldWidestItemWidth = widestItemWidth;
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
 
@@ -2359,7 +2375,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::updateWidestItemInColumn(std::size_t columnIndex, unsigned int itemIndex)
+    bool ListView::updateWidestItemInColumn(std::size_t columnIndex, std::size_t itemIndex)
     {
         assert((m_columns.empty() && (columnIndex == 0)) || (!m_columns.empty() && (columnIndex < m_columns.size())));
 
@@ -2369,7 +2385,7 @@ namespace tgui
 
         const float itemWidth = getItemTotalWidth(m_items[itemIndex], columnIndex);
         float& widestItemWidth = m_columns.empty() ? m_widestItemWidth : m_columns[columnIndex].widestItemWidth;
-        unsigned int& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
+        std::size_t& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
         if (itemWidth > widestItemWidth)
         {
             widestItemWidth = itemWidth;
@@ -2406,7 +2422,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::updateWidestItem(unsigned int itemIndex)
+    bool ListView::updateWidestItem(std::size_t itemIndex)
     {
         if (m_columns.empty())
             return updateWidestItemInColumn(0, itemIndex);
@@ -3022,7 +3038,6 @@ namespace tgui
             const bool containsExpandedColumn = hasExpandedColumn();
 
             RenderStates headerStates = states;
-            float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
@@ -3046,7 +3061,6 @@ namespace tgui
                 }
 
                 headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
-                columnLeftPos += m_columns[col].width + separatorWidth;
             }
 
             states.transform.translate({0, totalHeaderHeight});
@@ -3058,7 +3072,6 @@ namespace tgui
         else
         {
             const bool containsExpandedColumn = hasExpandedColumn();
-            float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
                 drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
@@ -3086,8 +3099,6 @@ namespace tgui
 
                     states.transform.translate({static_cast<float>(separatorWidth), 0});
                 }
-
-                columnLeftPos += m_columns[col].width + separatorWidth;
             }
         }
 

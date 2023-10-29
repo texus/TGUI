@@ -75,7 +75,7 @@ TGUI_MODULE_EXPORT namespace tgui
             float width = 0;
             float designWidth = 0;
             float widestItemWidth = 0;
-            unsigned int widestItemIndex = std::numeric_limits<unsigned int>::max();
+            std::size_t widestItemIndex = std::numeric_limits<std::size_t>::max();
             Text text;
             ColumnAlignment alignment = ColumnAlignment::Left;
             bool autoResize = false;
@@ -670,14 +670,14 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param expand  Make the last column larger to make it fill the list view when it isn't full yet?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setExpandLastColumn(bool expand);
+        TGUI_DEPRECATED("Use setColumnAutoExpanded and setColumnAutoResize instead") void setExpandLastColumn(bool expand);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the last column is expanded to fill the list view (if all columns fit inside the list view)
         ///
         /// @return Is the last column larger to make it fill the list view when the list view isn't full yet?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getExpandLastColumn() const;
+        TGUI_DEPRECATED("Use ColumnAutoExpanded and ColumnAutoResize setters and getters instead") TGUI_NODISCARD bool getExpandLastColumn() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
@@ -942,7 +942,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates which item is the widest in the given column, when only one item has changed in width
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool updateWidestItemInColumn(std::size_t columnIndex, unsigned int itemIndex);
+        bool updateWidestItemInColumn(std::size_t columnIndex, std::size_t itemIndex);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates which item is the widest in all columns, by calculating the width of each item
@@ -952,7 +952,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates which item is the widest in all columns, when only one item has changed in width
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool updateWidestItem(unsigned int itemIndex);
+        bool updateWidestItem(std::size_t itemIndex);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function needs to be called when items are inserted into the list. If the widest item for each column is located
@@ -1073,7 +1073,7 @@ TGUI_MODULE_EXPORT namespace tgui
         unsigned int m_iconCount = 0;
         float m_maxIconWidth = 0;
         float m_widestItemWidth = 0; // If there are no columns, this is the maximum width from all items
-        unsigned int m_widestItemIndex = std::numeric_limits<unsigned int>::max(); // If there are no columns, this is the index of the item with the maximum width
+        std::size_t m_widestItemIndex = std::numeric_limits<std::size_t>::max(); // If there are no columns, this is the index of the item with the maximum width
         bool m_headerVisible = true;
         bool m_showHorizontalGridLines = false;
         bool m_showVerticalGridLines = true;
