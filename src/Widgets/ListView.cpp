@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
@@ -113,7 +112,11 @@ namespace tgui
 
         m_verticalScrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
         m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
-        updateScrollbars();
+
+        if (hasExpandedColumn())
+            updateColumnWidths();
+        else
+            updateScrollbars();
 
         m_spriteBackground.setSize(getInnerSize());
     }
@@ -126,15 +129,16 @@ namespace tgui
         column.text = createHeaderText(text);
         column.alignment = alignment;
         column.designWidth = width;
-        if (width != 0)
+        if (width > 0)
             column.width = width;
         else
             column.width = calculateAutoColumnWidth(column.text);
 
         m_columns.push_back(std::move(column));
 
-        updateLastColumnMaxItemWidth();
-        updateHorizontalScrollbarMaximum();
+        if (m_expandLastColumn)
+            updateWidestItemInColumn(m_columns.size()-1);
+        updateColumnWidths();
 
         m_resizingColumn = 0;
 
@@ -152,10 +156,11 @@ namespace tgui
         }
 
         m_columns[index].text = createHeaderText(text);
-        if (m_columns[index].designWidth == 0)
+        if (m_columns[index].designWidth <= 0)
+        {
             m_columns[index].width = calculateAutoColumnWidth(m_columns[index].text);
-
-        updateHorizontalScrollbarMaximum();
+            updateColumnWidths();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,12 +187,12 @@ namespace tgui
         }
 
         m_columns[index].designWidth = width;
-        if (width != 0)
+        if (width > 0)
             m_columns[index].width = width;
         else
             m_columns[index].width = calculateAutoColumnWidth(m_columns[index].text);
 
-        updateHorizontalScrollbarMaximum();
+        updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,8 +214,8 @@ namespace tgui
     {
         m_columns.clear();
 
-        updateLastColumnMaxItemWidth();
-        updateHorizontalScrollbarMaximum();
+        updateWidestItemInColumn(0);
+        updateColumnWidths();
 
         m_resizingColumn = 0;
     }
@@ -277,6 +282,63 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::setColumnAutoResize(std::size_t index, bool autoResize)
+    {
+        if (index < m_columns.size())
+        {
+            m_columns[index].autoResize = autoResize;
+            if (updateWidestItemInColumn(index))
+                updateColumnWidths();
+        }
+        else
+        {
+            TGUI_PRINT_WARNING("setColumnAutoResize called with invalid index.");
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getColumnAutoResize(std::size_t index) const
+    {
+        if (index < m_columns.size())
+            return m_columns[index].autoResize;
+        else
+        {
+            TGUI_PRINT_WARNING("getColumnAutoResize called with invalid index.");
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setColumnExpanded(std::size_t index, bool expand)
+    {
+        if (index < m_columns.size())
+        {
+            m_columns[index].expanded = expand;
+            updateColumnWidths();
+        }
+        else
+        {
+            TGUI_PRINT_WARNING("setColumnExpanded called with invalid index.");
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getColumnExpanded(std::size_t index) const
+    {
+        if (index < m_columns.size())
+            return m_columns[index].expanded;
+        else
+        {
+            TGUI_PRINT_WARNING("getColumnExpanded called with invalid index.");
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::setHeaderVisible(bool showHeader)
     {
         m_headerVisible = showHeader;
@@ -298,9 +360,9 @@ namespace tgui
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (updateWidestItem(m_items.size() - 1))
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -321,9 +383,9 @@ namespace tgui
 
         item.icon.setOpacity(m_opacityCached);
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (updateWidestItem(m_items.size() - 1))
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -337,8 +399,7 @@ namespace tgui
 
     void ListView::addMultipleItems(const std::vector<std::vector<String>>& items)
     {
-        bool updatedLastColumnMaxItemWidth = false;
-
+        bool columnWidthChanged = false;
         for (const auto& itemToInsert : items)
         {
             TGUI_EMPLACE_BACK(item, m_items)
@@ -348,11 +409,12 @@ namespace tgui
 
             item.icon.setOpacity(m_opacityCached);
 
-            updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidthWithNewItem(item);
+            columnWidthChanged |= updateWidestItem(m_items.size() - 1);
         }
 
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (columnWidthChanged)
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll down when auto-scrolling is enabled
@@ -374,9 +436,10 @@ namespace tgui
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        incrementWidestItemIndices(index);
+        if (updateWidestItem(index))
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -401,9 +464,10 @@ namespace tgui
 
         item.icon.setOpacity(m_opacityCached);
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(item);
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        incrementWidestItemIndices(index);
+        if (updateWidestItem(index))
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -421,8 +485,7 @@ namespace tgui
             return;
         }
 
-        bool updatedLastColumnMaxItemWidth = false;
-
+        bool columnWidthChanged = false;
         for (std::size_t i = 0; i < items.size(); ++i)
         {
             auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index + i));
@@ -432,11 +495,13 @@ namespace tgui
 
             item.icon.setOpacity(m_opacityCached);
 
-            updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidthWithNewItem(item);
+            incrementWidestItemIndices(index + i);
+            columnWidthChanged |= updateWidestItem(index + i);
         }
 
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (columnWidthChanged)
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         // Scroll to the item when auto-scrolling is enabled
@@ -452,27 +517,13 @@ namespace tgui
             return false;
 
         Item& item = m_items[index];
+        item.texts.clear();
+        item.texts.reserve(itemTexts.size());
+        for (const auto& text : itemTexts)
+            item.texts.push_back(createText(text));
 
-        if (m_columns.empty() || m_expandLastColumn)
-        {
-            const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
-
-            item.texts.clear();
-            item.texts.reserve(itemTexts.size());
-            for (const auto& text : itemTexts)
-                item.texts.push_back(createText(text));
-
-            const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithModifiedItem(item, oldDesiredWidthInLastColumn);
-            if (updatedLastColumnMaxItemWidth)
-                updateHorizontalScrollbarMaximum();
-        }
-        else
-        {
-            item.texts.clear();
-            item.texts.reserve(itemTexts.size());
-            for (const auto& text : itemTexts)
-                item.texts.push_back(createText(text));
-        }
+        if (updateWidestItem(index))
+            updateColumnWidths();
 
         // Update the text color in case the changed item was selected
         if (m_selectedItems.find(index) != m_selectedItems.end())
@@ -499,26 +550,13 @@ namespace tgui
 
         Item& item = m_items[index];
 
-        if ((m_columns.empty() || column == m_columns.size() - 1) && (m_columns.empty() || m_expandLastColumn))
-        {
-            const float oldDesiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
+        if (column >= item.texts.size())
+            item.texts.resize(column + 1);
 
-            if (column >= item.texts.size())
-                item.texts.resize(column + 1);
+        item.texts[column] = createText(itemText);
 
-            item.texts[column] = createText(itemText);
-
-            const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithModifiedItem(item, oldDesiredWidthInLastColumn);
-            if (updatedLastColumnMaxItemWidth)
-                updateHorizontalScrollbarMaximum();
-        }
-        else
-        {
-            if (column >= item.texts.size())
-                item.texts.resize(column + 1);
-
-            item.texts[column] = createText(itemText);
-        }
+        if (updateWidestItemInColumn(column, index))
+            updateColumnWidths();
 
         // Update the text color in case the changed item was selected
         if (m_selectedItems.find(index) != m_selectedItems.end())
@@ -540,6 +578,9 @@ namespace tgui
 
     bool ListView::removeItem(std::size_t index)
     {
+        if (index >= m_items.size())
+            return false;
+
         // Update the hovered item
         if (m_hoveredItem >= 0)
         {
@@ -599,11 +640,6 @@ namespace tgui
             updateSelectedAndhoveredItemColors();
         }
 
-        if (index >= m_items.size())
-            return false;
-
-        const float oldDesiredWidthInLastColumn = getItemTotalWidth(m_items[index], m_columns.empty() ? 0 : m_columns.size() - 1);
-
         const bool wasIconSet = m_items[index].icon.isSet();
         m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
 
@@ -628,23 +664,31 @@ namespace tgui
             }
         }
 
-        bool updatedLastColumnMaxItemWidth = false;
-
-        // Recalculate the last column's max item width if the old max was removed
-        const float epsilon = 0.00001f;
+        bool columnWidthChanged = false;
         if (m_columns.empty())
         {
-            if (std::abs(oldDesiredWidthInLastColumn - m_maxItemWidth) < epsilon)
-                updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+            if (m_widestItemIndex == index)
+                columnWidthChanged = updateWidestItemInColumn(0);
+            else if (m_widestItemIndex > index)
+                --m_widestItemIndex;
         }
         else
         {
-            if (std::abs(oldDesiredWidthInLastColumn - m_columns.back().maxItemWidth) < epsilon)
-                updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
+            {
+                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                {
+                    if (m_columns[columnIndex].widestItemIndex == index)
+                        columnWidthChanged |= updateWidestItemInColumn(columnIndex);
+                    else if (m_columns[columnIndex].widestItemIndex > index)
+                        --m_columns[columnIndex].widestItemIndex;
+                }
+            }
         }
 
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (columnWidthChanged)
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
 
         return true;
@@ -662,9 +706,9 @@ namespace tgui
         m_iconCount = 0;
         m_maxIconWidth = m_fixedIconSize.x;
 
-       const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
-       if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (updateWidestItem())
+            updateColumnWidths();
+
         updateVerticalScrollbarMaximum();
     }
 
@@ -829,9 +873,8 @@ namespace tgui
             }
         }
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(m_items[index]);
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        if (updateWidestItemInColumn(0, index))
+            updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -918,6 +961,9 @@ namespace tgui
 
                 return cmp(s1, s2);
             });
+
+        // While the width of the widest item didn't change, its index might have, so we need to locate it again
+        updateWidestItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -991,14 +1037,13 @@ namespace tgui
             {
                 column.text.setCharacterSize(headerTextSize);
 
-                if (column.designWidth == 0)
+                if (column.designWidth <= 0)
                     column.width = calculateAutoColumnWidth(column.text);
             }
         }
 
-        const bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidth();
-        if (updatedLastColumnMaxItemWidth)
-            updateHorizontalScrollbarMaximum();
+        updateWidestItem();
+        updateColumnWidths();
 
         m_horizontalScrollbar->setScrollAmount(m_textSizeCached);
     }
@@ -1014,11 +1059,11 @@ namespace tgui
         {
             column.text.setCharacterSize(headerTextSize);
 
-            if (column.designWidth == 0)
+            if (column.designWidth <= 0)
                 column.width = calculateAutoColumnWidth(column.text);
         }
 
-        updateHorizontalScrollbarMaximum();
+        updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1036,7 +1081,7 @@ namespace tgui
     void ListView::setSeparatorWidth(unsigned int width)
     {
         m_separatorWidth = width;
-        updateHorizontalScrollbarMaximum();
+        updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,7 +1111,7 @@ namespace tgui
     void ListView::setGridLinesWidth(unsigned int width)
     {
         m_gridLinesWidth = width;
-        updateHorizontalScrollbarMaximum();
+        updateColumnWidths();
         updateVerticalScrollbarMaximum();
     }
 
@@ -1096,7 +1141,7 @@ namespace tgui
     void ListView::setShowVerticalGridLines(bool showGridLines)
     {
         m_showVerticalGridLines = showGridLines;
-        updateHorizontalScrollbarMaximum();
+        updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1130,10 +1175,8 @@ namespace tgui
 
         m_expandLastColumn = expand;
 
-        if (expand)
-            updateLastColumnMaxItemWidth();
-
-        updateHorizontalScrollbarMaximum();
+        updateWidestItemInColumn(m_columns.empty() ? 0 : (m_columns.size() - 1));
+        updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1266,6 +1309,9 @@ namespace tgui
             item.icon.setSize(iconSize);
             m_maxIconWidth = std::max(m_maxIconWidth, iconSize.x);
         }
+
+        if (updateWidestItemInColumn(0))
+            updateColumnWidths();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1315,9 +1361,11 @@ namespace tgui
             isDragging = m_horizontalScrollbar->leftMousePressed(pos);
         }
         // Check if a border between two columns was clicked
-        else if (m_resizableColumns && findBorderBelowMouse(pos, m_resizingColumn, m_resizingColumnPixelOffset))
+        else if (m_resizableColumns && findBorderBelowMouse(pos, m_resizingColumn))
         {
             updateHoveredItem(-1);
+            m_resizingColumnLastMouseX = pos.x;
+            isDragging = true;
         }
         // Check if an item was clicked
         else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
@@ -1435,6 +1483,7 @@ namespace tgui
         {
             assert(m_resizableColumns && m_mouseDown);
             assert(m_resizingColumn <= m_columns.size());
+            mouseOnResizableBorder = true;
 
             const unsigned int separatorWidth = getTotalSeparatorWidth();
             float borderCenterX = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
@@ -1442,8 +1491,17 @@ namespace tgui
                 borderCenterX += m_columns[i].width + separatorWidth;
             borderCenterX -= separatorWidth / 2.f;
 
-            const float sizeDiff = pos.x - borderCenterX - m_resizingColumnPixelOffset;
+            // When shrinking a column while the scrollbar is at the maximum value, the scrollbar value and maximum change while the column is resized.
+            // In this case, the column shrinks from the left side while the right side stays stationary. This causes the mouse to no longer be on the border.
+            // If we ignore this (which Windows explorer seems to do) then for every pixel the mouse moves, the faster the column starts shrinking.
+            // In Windows explorer this is a smaller issue because columns have a high minimum width, but for TGUI this causes the resized column to
+            // very quickly end up only having a width of a few pixels.
+            // Similarly, when resizing a column that is to the right side of an expanded column, the left border moves while the right one is dragged.
+            // To counter this, we resize the column based on the distance moved by the mouse. The downside is that the mouse cursor start drifting away
+            // from the border which it is resizing, but the advantage is that the column resizes linearly with the mouse movement.
+            const float sizeDiff = pos.x - m_resizingColumnLastMouseX;
             float newWidth = std::round(m_columns[m_resizingColumn-1].width + sizeDiff);
+            m_resizingColumnLastMouseX += (newWidth - m_columns[m_resizingColumn-1].width);
 
             // Don't allow columns that are so small that we can't tell on which border the mouse is standing anymore.
             // If we allow 1 pixel columns then findBorderBelowMouse should be improved to not pick the first border it finds
@@ -1451,20 +1509,10 @@ namespace tgui
             if (newWidth < 5)
                 newWidth = 5;
 
+            m_columns[m_resizingColumn-1].expanded = false;
+            m_columns[m_resizingColumn-1].autoResize = false;
             m_columns[m_resizingColumn-1].width = newWidth;
-            mouseOnResizableBorder = true;
-
-            const auto oldScrollbarValue = m_horizontalScrollbar->getValue();
-            updateHorizontalScrollbarMaximum();
-
-            // When shrinking a column while the scrollbar is at the maximum value, the scrollbar value and maximum change while the column is resized.
-            // In this case, the column shrinks from the left side while the right side stays stationary. This causes the mouse to no longer be on the border.
-            // If we ignore this (which Windows explorer seems to do) then for every pixel the mouse moves, the faster the column starts shrinking.
-            // In Windows explorer this is a smaller issue because columns have a high minimum width, but for TGUI this causes the resized column to
-            // very quickly end up only having a width of a few pixels. To counter this, we remember the shifted offset. The downside is that the mouse cursor
-            // start drifting away from the border which it is resizing, but the advantage is that the column resizes linearly with the mouse movement.
-            if (m_horizontalScrollbar->getValue() != oldScrollbarValue)
-                m_resizingColumnPixelOffset += (static_cast<float>(m_horizontalScrollbar->getValue()) - static_cast<float>(oldScrollbarValue));
+            updateColumnWidths();
         }
         // Check if the mouse event should go to the scrollbar
         else if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos))
@@ -1483,8 +1531,7 @@ namespace tgui
             if (m_resizableColumns && !m_mouseDown && !m_verticalScrollbar->isMouseDown() && !m_horizontalScrollbar->isMouseDown())
             {
                 std::size_t columnIndex;
-                float borderPixelOffset;
-                mouseOnResizableBorder = findBorderBelowMouse(pos, columnIndex, borderPixelOffset);
+                mouseOnResizableBorder = findBorderBelowMouse(pos, columnIndex);
             }
 
             // Find out on which item the mouse is hovered
@@ -1811,13 +1858,14 @@ namespace tgui
             }
             else
             {
-                // Recalculate the width of the columns if they depended on the header text
                 for (auto& column : m_columns)
                 {
-                    if (column.designWidth == 0)
+                    if (column.designWidth <= 0)
                         column.width = calculateAutoColumnWidth(column.text);
                 }
-                updateHorizontalScrollbarMaximum();
+
+                updateWidestItem();
+                updateColumnWidths();
             }
         }
         else
@@ -1836,7 +1884,7 @@ namespace tgui
             columnNode->name = "Column";
 
             columnNode->propertyValuePairs[U"Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(column.text.getString()));
-            if (column.designWidth != 0)
+            if (column.designWidth > 0)
                 columnNode->propertyValuePairs[U"Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
 
             if (column.alignment == ColumnAlignment::Center)
@@ -2267,91 +2315,71 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::updateLastColumnMaxItemWidth()
+    bool ListView::updateWidestItemInColumn(std::size_t columnIndex)
     {
-        bool updatedLastColumnMaxItemWidth = false;
+        assert((m_columns.empty() && (columnIndex == 0)) || (!m_columns.empty() && (columnIndex < m_columns.size())));
 
-        // We don't need to know the maximum item width if all columns have fixed sizes
-        if (!m_columns.empty() && !m_expandLastColumn)
-            return updatedLastColumnMaxItemWidth;
+        // We don't track the width if the column isn't auto-resizing
+        if (!m_columns.empty() && !m_columns[columnIndex].autoResize && (!m_expandLastColumn || (columnIndex + 1 != m_columns.size())))
+        {
+            if (m_columns[columnIndex].widestItemIndex == std::numeric_limits<unsigned int>::max())
+                return false;
+            else
+            {
+                m_columns[columnIndex].widestItemWidth = 0;
+                m_columns[columnIndex].widestItemIndex = std::numeric_limits<unsigned int>::max();
+                return true;
+            }
+        }
 
+        float& widestItemWidth = m_columns.empty() ? m_widestItemWidth : m_columns[columnIndex].widestItemWidth;
+        unsigned int& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
+        const float oldWidestItemWidth = widestItemWidth;
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
-        if (m_columns.empty())
-        {
-            m_maxItemWidth = 0;
-            for (const auto& item : m_items)
-            {
-                const float iconWidth = item.icon.isSet() ? item.icon.getSize().x + textPadding : 0;
-                const float itemWidth = item.texts[0].getSize().x + (textPadding * 2) + iconWidth;
-                if (itemWidth > m_maxItemWidth)
-                {
-                    m_maxItemWidth = itemWidth;
-                    updatedLastColumnMaxItemWidth = true;
-                }
-            }
-        }
-        else if (m_columns.size() == 1)
-        {
-            m_columns[0].maxItemWidth = 0;
-            for (const auto& item : m_items)
-            {
-                if (item.texts.size() >= m_columns.size())
-                {
-                    const float iconWidth = item.icon.isSet() ? item.icon.getSize().x + textPadding : 0;
-                    const float itemWidth = item.texts[0].getSize().x + (textPadding * 2) + iconWidth;
-                    if (itemWidth > m_columns[0].maxItemWidth)
-                    {
-                        m_columns[0].maxItemWidth = itemWidth;
-                        updatedLastColumnMaxItemWidth = true;
-                    }
-                }
-            }
-        }
-        else
-        {
-            const std::size_t lastColumnIndex = m_columns.size() - 1;
 
-            m_columns[lastColumnIndex].maxItemWidth = 0;
-            for (const auto& item : m_items)
-            {
-                if (item.texts.size() < m_columns.size())
-                    continue;
+        widestItemWidth = 0;
+        widestItemIndex = std::numeric_limits<unsigned int>::max();
+        for (unsigned int i = 0; i < m_items.size(); ++i)
+        {
+            const auto& item = m_items[i];
+            if (item.texts.size() <= columnIndex)
+                continue;
 
-                const float itemWidth = item.texts[lastColumnIndex].getSize().x + (textPadding * 2);
-                if (itemWidth > m_columns[lastColumnIndex].maxItemWidth)
-                {
-                    m_columns[lastColumnIndex].maxItemWidth = itemWidth;
-                    updatedLastColumnMaxItemWidth = true;
-                }
+            const float iconWidth = ((columnIndex == 0) && item.icon.isSet()) ? item.icon.getSize().x + textPadding : 0;
+            const float itemWidth = item.texts[columnIndex].getSize().x + (textPadding * 2) + iconWidth;
+            if (itemWidth > widestItemWidth)
+            {
+                widestItemWidth = itemWidth;
+                widestItemIndex = i;
             }
         }
 
-        return updatedLastColumnMaxItemWidth;
+        return (widestItemWidth != oldWidestItemWidth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::updateLastColumnMaxItemWidthWithNewItem(const Item& item)
+    bool ListView::updateWidestItemInColumn(std::size_t columnIndex, unsigned int itemIndex)
     {
-        if (item.texts.size() < m_columns.size() || (!m_columns.empty() && !m_expandLastColumn))
+        assert((m_columns.empty() && (columnIndex == 0)) || (!m_columns.empty() && (columnIndex < m_columns.size())));
+
+        // We don't need to update anything when the column isn't auto-resizing
+        if (!m_columns.empty() && !m_columns[columnIndex].autoResize && (!m_expandLastColumn || (columnIndex + 1 != m_columns.size())))
             return false;
 
-        const float desiredWidthInLastColumn = getItemTotalWidth(item, m_columns.empty() ? 0 : m_columns.size() - 1);
-        if (m_columns.empty())
+        const float itemWidth = getItemTotalWidth(m_items[itemIndex], columnIndex);
+        float& widestItemWidth = m_columns.empty() ? m_widestItemWidth : m_columns[columnIndex].widestItemWidth;
+        unsigned int& widestItemIndex = m_columns.empty() ? m_widestItemIndex : m_columns[columnIndex].widestItemIndex;
+        if (itemWidth > widestItemWidth)
         {
-            if (desiredWidthInLastColumn > m_maxItemWidth)
-            {
-                m_maxItemWidth = desiredWidthInLastColumn;
-                return true;
-            }
+            widestItemWidth = itemWidth;
+            widestItemIndex = itemIndex;
+            return true;
         }
-        else
+        else if ((widestItemIndex == itemIndex) && (itemWidth < widestItemWidth))
         {
-            if (desiredWidthInLastColumn > m_columns.back().maxItemWidth)
-            {
-                m_columns.back().maxItemWidth = desiredWidthInLastColumn;
-                return true;
-            }
+            // If we shorten the length of the widest item then we need to go through all items again to find the new widest one
+            return updateWidestItemInColumn(columnIndex);
         }
 
         return false;
@@ -2359,27 +2387,132 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::updateLastColumnMaxItemWidthWithModifiedItem(const Item& modifiedItem, float oldDesiredWidthInLastColumn)
+    bool ListView::updateWidestItem()
     {
-        bool updatedLastColumnMaxItemWidth = updateLastColumnMaxItemWidthWithNewItem(modifiedItem);
-        // If this item change didn't increase the last column's max item width and the old item's width
-        // was the last column's max item width, do a recalculation.
-        if (!updatedLastColumnMaxItemWidth)
+        if (m_columns.empty())
+            return updateWidestItemInColumn(0);
+        else
         {
-            const float epsilon = 0.00001f;
-            if (m_columns.empty())
+            bool autoResizingColumnChanged = false;
+            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
             {
-                if (std::abs(oldDesiredWidthInLastColumn - m_maxItemWidth) < epsilon)
-                    updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                    autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex);
             }
+
+            return autoResizingColumnChanged;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::updateWidestItem(unsigned int itemIndex)
+    {
+        if (m_columns.empty())
+            return updateWidestItemInColumn(0, itemIndex);
+        else
+        {
+            bool autoResizingColumnChanged = false;
+            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
+            {
+                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                    autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex, itemIndex);
+            }
+
+            return autoResizingColumnChanged;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::incrementWidestItemIndices(std::size_t itemIndex)
+    {
+        if (m_columns.empty())
+        {
+            if (m_widestItemIndex >= itemIndex)
+                ++m_widestItemIndex;
+        }
+        else
+        {
+            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
+            {
+                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                    ++m_columns[columnIndex].widestItemIndex;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::updateColumnWidths()
+    {
+        float totalColumnsWidth = 0;
+        if (m_columns.empty())
+            totalColumnsWidth = m_widestItemWidth;
+        else
+        {
+            unsigned int nrExpandedColumns = false;
+            for (unsigned int i = 0; i < m_columns.size(); ++i)
+            {
+                auto& column = m_columns[i];
+
+                if (column.expanded || (m_expandLastColumn && (i + 1 == m_columns.size())))
+                    nrExpandedColumns++;
+
+                if (column.expanded || column.autoResize || (m_expandLastColumn && (i + 1 == m_columns.size())))
+                {
+                    const float minimumWidth = (column.designWidth > 0) ? column.designWidth : calculateAutoColumnWidth(column.text);
+
+                    if (column.autoResize || (m_expandLastColumn && (i + 1 == m_columns.size())))
+                        column.width = std::max(minimumWidth, column.widestItemWidth);
+                    else
+                        column.width = minimumWidth;
+                }
+
+                totalColumnsWidth += column.width;
+            }
+
+            if (nrExpandedColumns == 0)
+                totalColumnsWidth += m_columns.size() * static_cast<float>(getTotalSeparatorWidth());
             else
             {
-                if (std::abs(oldDesiredWidthInLastColumn - m_columns.back().maxItemWidth) < epsilon)
-                    updatedLastColumnMaxItemWidth |= updateLastColumnMaxItemWidth();
+                totalColumnsWidth += (m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth());
+
+                float availableWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+                if (m_verticalScrollbar->isShown())
+                    availableWidth -= m_verticalScrollbar->getSize().x;
+
+                if (availableWidth > totalColumnsWidth)
+                {
+                    const float additionalColumnWidth = (availableWidth - totalColumnsWidth) / nrExpandedColumns;
+                    for (unsigned int i = 0; i < m_columns.size(); ++i)
+                    {
+                        auto& column = m_columns[i];
+                        if (column.expanded || (m_expandLastColumn && (i + 1 == m_columns.size())))
+                            column.width += additionalColumnWidth;
+                    }
+                }
             }
         }
 
-        return updatedLastColumnMaxItemWidth;
+        m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(totalColumnsWidth));
+        updateScrollbars();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::hasExpandedColumn() const
+    {
+        if (m_columns.empty() || m_expandLastColumn)
+            return true;
+
+        for (const auto& column : m_columns)
+        {
+            if (column.expanded)
+                return true;
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2477,7 +2610,7 @@ namespace tgui
             return 0;
 
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
-        const float iconWidth = ((m_columns.empty() || m_columns.size() == 1) && columnIndex == 0 && item.icon.isSet()) ? item.icon.getSize().x + textPadding : 0;
+        const float iconWidth = ((columnIndex == 0) && item.icon.isSet()) ? item.icon.getSize().x + textPadding : 0;
         return item.texts[columnIndex].getSize().x + (textPadding * 2) + iconWidth;
     }
 
@@ -2485,6 +2618,8 @@ namespace tgui
 
     int ListView::getColumnIndexBelowMouse(float mouseLeft)
     {
+        assert(!m_columns.empty());
+
         float leftPos = mouseLeft - m_bordersCached.getLeft() - m_paddingCached.getLeft();
         if (m_horizontalScrollbar->isShown())
             leftPos += static_cast<float>(m_horizontalScrollbar->getValue());
@@ -2504,17 +2639,17 @@ namespace tgui
             }
         }
 
-        // If the last column is exanded and no matching column was found then we must have clicked on the last one
-        if (m_expandLastColumn)
-            return static_cast<int>(m_columns.size()) - 1;
-
         return -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListView::findBorderBelowMouse(Vector2f pos, std::size_t& columnIndex, float& pixelOffset) const
+    bool ListView::findBorderBelowMouse(Vector2f pos, std::size_t& columnIndex) const
     {
+        // If there are no columns then there are no borders
+        if (m_columns.empty())
+            return false;
+
         // The mouse can't be between two columns when it is on the outline of the list view
         if (!FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
                        m_bordersCached.getTop() + m_paddingCached.getTop(),
@@ -2527,7 +2662,7 @@ namespace tgui
         const bool mouseOnHeader = (pos.y < m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight);
 
         // If there are no vertical grid lines then we can't resize when the mouse is below the header
-        if (!mouseOnHeader && (!m_showVerticalGridLines || (m_gridLinesWidth == 0)))
+        if (!mouseOnHeader && (!m_showVerticalGridLines || (m_gridLinesWidth <= 0)))
             return false;
 
         const unsigned int separatorWidth = mouseOnHeader ? m_separatorWidth : m_gridLinesWidth;
@@ -2546,17 +2681,16 @@ namespace tgui
                                    m_gridLinesWidth + 2*margin, getInnerSize().y - headerHeight};
         }
 
-        const std::size_t expandedColumn = m_expandLastColumn ? m_columns.size()-1 : std::numeric_limits<std::size_t>::max();
+        const std::size_t nrColumnsWithSeparator = hasExpandedColumn() ? (m_columns.size() - 1) : m_columns.size();
         float x = m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue();
-        for (std::size_t i = 0; i < m_columns.size(); ++i)
+        for (std::size_t i = 0; i < nrColumnsWithSeparator; ++i)
         {
             x += m_columns[i].width;
             borderArea.left = x + (totalSeparatorWidth - separatorWidth) / 2.f - margin;
 
-            if ((i != expandedColumn) && borderArea.contains(pos))
+            if (borderArea.contains(pos))
             {
                 columnIndex = i + 1;
-                pixelOffset = pos.x - (x + totalSeparatorWidth / 2.f);
                 return true;
             }
 
@@ -2570,6 +2704,8 @@ namespace tgui
 
     void ListView::updateScrollbars()
     {
+        const bool bWasVerticalScrollbarShown = m_verticalScrollbar->isShown();
+
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
         const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
                                     std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - getCurrentHeaderHeight())};
@@ -2611,6 +2747,13 @@ namespace tgui
         if (m_verticalScrollbar->isShown())
             headerWidth -= m_verticalScrollbar->getSize().x;
         m_spriteHeaderBackground.setSize({headerWidth, getCurrentHeaderHeight()});
+
+        // If the vertical scrollbar appeared or disappeared then the width of expanded columns would change
+        if (bWasVerticalScrollbarShown != m_verticalScrollbar->isShown())
+        {
+            if (hasExpandedColumn())
+                updateColumnWidths();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2629,34 +2772,6 @@ namespace tgui
         // If the scrollbar was at the bottom then keep it at the bottom
         if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
             m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListView::updateHorizontalScrollbarMaximum()
-    {
-        float maxWidth = 0;
-
-        if (!m_headerVisible || m_columns.empty())
-            maxWidth = m_maxItemWidth;
-        else
-        {
-            float columnsWidth = 0;
-            for (const auto& column : m_columns)
-                columnsWidth += column.width;
-
-            if (m_expandLastColumn)
-            {
-                maxWidth = columnsWidth - m_columns.back().width + ((m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth()))
-                    + std::max(m_columns.back().maxItemWidth, m_columns.back().width);
-            }
-            else
-                maxWidth = columnsWidth + (m_columns.size() * static_cast<float>(getTotalSeparatorWidth()));
-        }
-
-        m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(maxWidth));
-
-        updateScrollbars();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2904,34 +3019,34 @@ namespace tgui
         if (totalHeaderHeight > 0)
         {
             const Color& separatorColor = Color::applyOpacity(m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached, m_opacityCached);
+            const bool containsExpandedColumn = hasExpandedColumn();
 
             RenderStates headerStates = states;
             float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
-                if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawHeaderText(target, headerStates, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos), headerHeight, col);
-                else
+                drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
+                headerStates.transform.translate({m_columns[col].width, 0});
+
+                // The separator of the last column isn't drawn when at least one column is expanded
+                if ((col + 1 == m_columns.size()) && containsExpandedColumn)
+                    break;
+
+                if (m_separatorWidth)
                 {
-                    drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
-                    headerStates.transform.translate({m_columns[col].width, 0});
-
-                    if (m_separatorWidth)
+                    if (m_separatorWidth == separatorWidth)
+                        target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                    else
                     {
-                        if (m_separatorWidth == separatorWidth)
-                            target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
-                        else
-                        {
-                            const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
-                            headerStates.transform.translate({separatorOffset, 0});
-                            target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
-                            headerStates.transform.translate({-separatorOffset, 0});
-                        }
+                        const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
+                        headerStates.transform.translate({separatorOffset, 0});
+                        target.drawFilledRect(headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                        headerStates.transform.translate({-separatorOffset, 0});
                     }
-
-                    headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
-                    columnLeftPos += m_columns[col].width + separatorWidth;
                 }
+
+                headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
+                columnLeftPos += m_columns[col].width + separatorWidth;
             }
 
             states.transform.translate({0, totalHeaderHeight});
@@ -2939,40 +3054,40 @@ namespace tgui
 
         // Draw the items and the separation lines
         if (m_columns.empty())
-            drawColumn(target, states, firstItem, lastItem, 0, std::max(m_maxItemWidth, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            drawColumn(target, states, firstItem, lastItem, 0, std::max(m_widestItemWidth, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
         else
         {
+            const bool containsExpandedColumn = hasExpandedColumn();
             float columnLeftPos = 0;
             for (std::size_t col = 0; col < m_columns.size(); ++col)
             {
-                if (m_expandLastColumn && (col + 1 == m_columns.size()))
-                    drawColumn(target, states, firstItem, lastItem, col, std::max(std::max(m_columns[col].maxItemWidth, m_columns[col].width), availableWidth - columnLeftPos));
-                else
+                drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
+                states.transform.translate({m_columns[col].width, 0});
+
+                // The separator of the last column isn't drawn when at least one column is expanded
+                if ((col + 1 == m_columns.size()) && containsExpandedColumn)
+                    break;
+
+                if (separatorWidth)
                 {
-                    drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
-                    states.transform.translate({m_columns[col].width, 0});
-
-                    if (separatorWidth)
+                    if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
                     {
-                        if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
+                        const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                        if (m_gridLinesWidth == separatorWidth)
+                            target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
+                        else
                         {
-                            const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
-                            if (m_gridLinesWidth == separatorWidth)
-                                target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
-                            else
-                            {
-                                const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
-                                states.transform.translate({gridLineOffset, 0});
-                                target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
-                                states.transform.translate({-gridLineOffset, 0});
-                            }
+                            const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
+                            states.transform.translate({gridLineOffset, 0});
+                            target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
+                            states.transform.translate({-gridLineOffset, 0});
                         }
-
-                        states.transform.translate({static_cast<float>(separatorWidth), 0});
                     }
 
-                    columnLeftPos += m_columns[col].width + separatorWidth;
+                    states.transform.translate({static_cast<float>(separatorWidth), 0});
                 }
+
+                columnLeftPos += m_columns[col].width + separatorWidth;
             }
         }
 

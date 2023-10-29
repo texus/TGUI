@@ -442,13 +442,87 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->getShowHorizontalGridLines());
     }
 
-    SECTION("Expand last column")
+    SECTION("Expanded columns")
     {
+        listView->addColumn("C1", 10);
+
+        REQUIRE(!listView->getColumnExpanded(0));
+        listView->setColumnExpanded(0, true);
+        REQUIRE(listView->getColumnExpanded(0));
+        listView->setColumnExpanded(0, false);
+        REQUIRE(!listView->getColumnExpanded(0));
+    }
+
+    SECTION("AutoResize columns")
+    {
+        listView->addColumn("C1", 10);
+
+        REQUIRE(!listView->getColumnAutoResize(0));
+        listView->setColumnAutoResize(0, true);
+        REQUIRE(listView->getColumnAutoResize(0));
+        listView->setColumnAutoResize(0, false);
+        REQUIRE(!listView->getColumnAutoResize(0));
+    }
+
+    SECTION("Expanded + AutoResize columns")
+    {
+        listView->getRenderer()->setPadding({0});
+        listView->getRenderer()->setBorders({1});
+        listView->setGridLinesWidth(1);
+        listView->setSize(250 + 2, 200 + 2);
+        listView->addColumn("C1", 0);
+        listView->addColumn("C2", 10);
+        listView->addColumn("C3", 50);
+
+        REQUIRE(listView->getColumnWidth(0) > 0);
+        REQUIRE(listView->getColumnWidth(1) == 10);
+        REQUIRE(listView->getColumnWidth(2) == 50);
+
+        listView->setColumnAutoResize(1, true);
+        REQUIRE(listView->getColumnWidth(1) == 10);
+        listView->addItem({"val1", "val2", "val3"});
+        REQUIRE(listView->getColumnWidth(1) > 10);
+
+        const float autoSizeC1 = listView->getColumnWidth(0);
+        const float autoSizeC2 = listView->getColumnWidth(1);
+
+        listView->setColumnExpanded(2, true);
+        REQUIRE(listView->getColumnWidth(0) == autoSizeC1);
+        REQUIRE(listView->getColumnWidth(1) == autoSizeC2);
+        REQUIRE_THAT(listView->getColumnWidth(2), Catch::WithinRel(250 - autoSizeC1 - autoSizeC2 - 2));
+
+        const float spaceToExpand = 250 - autoSizeC1 - autoSizeC2 - 50 - 2;
+        listView->setColumnExpanded(0, true);
+        listView->setColumnExpanded(1, true);
+        REQUIRE_THAT(listView->getColumnWidth(0), Catch::WithinRel(autoSizeC1 + (spaceToExpand / 3.f)));
+        REQUIRE_THAT(listView->getColumnWidth(1), Catch::WithinRel(autoSizeC2 + (spaceToExpand / 3.f)));
+        REQUIRE_THAT(listView->getColumnWidth(2), Catch::WithinRel(50 + (spaceToExpand / 3.f)));
+    }
+
+    SECTION("Expand last column (deprecated)")
+    {
+        // Works even when no columns exist yet
         REQUIRE(!listView->getExpandLastColumn());
         listView->setExpandLastColumn(true);
         REQUIRE(listView->getExpandLastColumn());
         listView->setExpandLastColumn(false);
         REQUIRE(!listView->getExpandLastColumn());
+
+        listView->addColumn("C1", 0);
+        listView->addColumn("C2", 10);
+        listView->addColumn("C3", 50);
+
+        // Adding columns does not influence the result
+        REQUIRE(!listView->getExpandLastColumn());
+        listView->setExpandLastColumn(true);
+        REQUIRE(listView->getExpandLastColumn());
+        listView->setExpandLastColumn(false);
+        REQUIRE(!listView->getExpandLastColumn());
+
+        // Even though ExpandLastColumn has the same effect as setting both ColumnExpanded and ColumnAutoResize,
+        // it doesn't actually change those properties.
+        REQUIRE(!listView->getColumnExpanded(2));
+        REQUIRE(!listView->getColumnAutoResize(2));
     }
 
     SECTION("AutoScroll")

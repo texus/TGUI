@@ -2,6 +2,7 @@ TGUI 1.1  (TBD)
 ---------------
 
 - Added AutoLayout that lets widget fill entire side of parent
+- Any column in ListView can now be auto-sized and expanded
 - Added methods for arrow key navigation between widgets
 - Added TextOutlineColor and TextOutlineThickness to ProgressBar renderer
 - Hover state is now reset when mouse leaves the window
