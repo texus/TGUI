@@ -48,8 +48,14 @@ struct ListViewProperties : WidgetProperties
                 tgui::String text;
                 float width;
                 tgui::ListView::ColumnAlignment alignment;
-                if (deserializeColumn(serializedColumn, text, width, alignment))
-                    listView->addColumn(text, width, alignment);
+                bool autoResize;
+                bool expanded;
+                if (deserializeColumn(serializedColumn, text, width, alignment, autoResize, expanded))
+                {
+                    const auto columnIndex = listView->addColumn(text, width, alignment);
+                    listView->setColumnAutoResize(columnIndex, autoResize);
+                    listView->setColumnExpanded(columnIndex, expanded);
+                }
             }
         }
         else if (property == "HeaderHeight")
@@ -152,15 +158,25 @@ struct ListViewProperties : WidgetProperties
         for (std::size_t i = 0; i < listView->getColumnCount(); ++i)
         {
             const tgui::String caption = listView->getColumnText(i);
-            const float width = listView->getColumnWidth(i);
+            const float width = listView->getColumnDesignWidth(i);
             const tgui::ListView::ColumnAlignment alignment = listView->getColumnAlignment(i);
-            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ',' + serializeColumnAlignment(alignment) + ')');
+            const bool autoResize = listView->getColumnAutoResize(i);
+            const bool expanded = listView->getColumnExpanded(i);
+            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width)
+                + ',' + serializeColumnAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
+                + ',' + tgui::Serializer::serialize(expanded) + ')');
         }
 
         return serializeList(serializedColumns);
     }
 
-    TGUI_NODISCARD static bool deserializeColumn(tgui::String serializedColumn, tgui::String& text, float& width, tgui::ListView::ColumnAlignment& alignment)
+    TGUI_NODISCARD static bool deserializeColumn(
+        tgui::String serializedColumn,
+        tgui::String& text,
+        float& width,
+        tgui::ListView::ColumnAlignment& alignment,
+        bool& autoResize,
+        bool& expanded)
     {
         if ((serializedColumn.length() < 2) || (serializedColumn.front() != '(') || (serializedColumn.back() != ')'))
         {
@@ -177,9 +193,9 @@ struct ListViewProperties : WidgetProperties
             if (node->propertyValuePairs["l"])
             {
                 const auto& values = node->propertyValuePairs["l"]->valueList;
-                if (values.size() != 3)
+                if (values.size() != 5)
                 {
-                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 3 values between brackets." << std::endl;
+                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 5 values between brackets." << std::endl;
                     return false;
                 }
 
@@ -198,6 +214,8 @@ struct ListViewProperties : WidgetProperties
 
                 text = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, values[0]).getString();
                 width = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, values[1]).getNumber();
+                autoResize = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, values[3]).getBool();
+                expanded = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, values[4]).getBool();
                 return true;
             }
         }

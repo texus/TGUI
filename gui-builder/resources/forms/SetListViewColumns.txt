@@ -72,9 +72,35 @@ Renderer.3 {
     }
 }
 
+Renderer.4 {
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorFocused = #1E1EB4;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    CheckColor = #3C3C3C;
+    CheckColorDisabled = #7D7D7D;
+    CheckColorHover = black;
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    TextColorHover = black;
+    TextDistanceRatio = 0.2;
+    TextureChecked = None;
+    TextureCheckedDisabled = None;
+    TextureCheckedFocused = None;
+    TextureCheckedHover = None;
+    TextureUnchecked = None;
+    TextureUncheckedDisabled = None;
+    TextureUncheckedFocused = None;
+    TextureUncheckedHover = None;
+}
+
 Button.BtnRemove {
     Enabled = false;
-    Position = (390, 130);
+    Position = (457, 130);
     Renderer = &1;
     Size = (23, 22);
     Text = "-";
@@ -83,7 +109,7 @@ Button.BtnRemove {
 
 Button.BtnReplace {
     Enabled = false;
-    Position = (10, 280);
+    Position = (10, 340);
     Renderer = &1;
     Size = (83, 22);
     Text = Replace;
@@ -93,7 +119,7 @@ Button.BtnReplace {
 BitmapButton.BtnArrowUp {
     Image = "../ArrowUp.png" Smooth;
     ImageScaling = 0;
-    Position = (390, 30);
+    Position = (457, 30);
     Renderer = &2;
     Size = (23, 36);
     TextSize = 13;
@@ -102,7 +128,7 @@ BitmapButton.BtnArrowUp {
 BitmapButton.BtnArrowDown {
     Image = "../ArrowDown.png" Smooth;
     ImageScaling = 0;
-    Position = (390, 71);
+    Position = (457, 71);
     Renderer = &2;
     Size = (23, 36);
     TextSize = 13;
@@ -118,7 +144,7 @@ ListView.ListView {
     ResizableColumns = false;
     SeparatorWidth = 1;
     ShowVerticalGridLines = 1;
-    Size = (370, 162);
+    Size = (438, 162);
     TextSize = 13;
 
     Renderer {
@@ -158,18 +184,26 @@ ListView.ListView {
     }
 
     Column {
+        Expanded = true;
         Text = Caption;
-        Width = 180;
+        Width = 140;
     }
 
     Column {
         Text = Width;
-        Width = 80;
+        Width = 50;
     }
 
     Column {
         Text = Alignment;
-        Width = 80;
+    }
+
+    Column {
+        Text = AutoResize;
+    }
+
+    Column {
+        Text = Expanded;
     }
 }
 
@@ -360,9 +394,41 @@ EditBox.EditCaption {
 }
 
 Button.BtnAdd {
-    Position = (100, 280);
+    Position = (100, 340);
     Renderer = &1;
     Size = (83, 22);
     Text = Add;
+    TextSize = 13;
+}
+
+CheckBox.CheckBoxAutoResize {
+    Position = (120, 280);
+    Renderer = &4;
+    Size = (17, 17);
+    TextSize = 13;
+}
+
+CheckBox.CheckBoxExpanded {
+    Position = (120, 310);
+    Renderer = &4;
+    Size = (17, 17);
+    TextSize = 13;
+}
+
+Label.Label4 {
+    AutoSize = true;
+    Position = (10, 280);
+    Renderer = &3;
+    Size = (80, 17);
+    Text = "AutoResize:";
+    TextSize = 13;
+}
+
+Label.Label5 {
+    AutoSize = true;
+    Position = (10, 310);
+    Renderer = &3;
+    Size = (74, 17);
+    Text = "Expanded:";
     TextSize = 13;
 }

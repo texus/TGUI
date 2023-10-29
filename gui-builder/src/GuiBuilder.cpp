@@ -2190,13 +2190,15 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
     buttonMore->onPress([this,value,onChange,setArrowColor]{
         auto stringListWindow = openWindowWithFocus();
         stringListWindow->setTitle("Set columns");
-        stringListWindow->setClientSize({423, 312});
+        stringListWindow->setClientSize({490, 372});
         stringListWindow->loadWidgetsFromFile("resources/forms/SetListViewColumns.txt");
 
         auto listView = stringListWindow->get<tgui::ListView>("ListView");
         auto editCaption = stringListWindow->get<tgui::EditBox>("EditCaption");
         auto spinWidth = stringListWindow->get<tgui::SpinControl>("SpinWidth");
         auto comboBoxAlignment = stringListWindow->get<tgui::ComboBox>("ComboBoxAlignment");
+        auto checkBoxAutoResize = stringListWindow->get<tgui::CheckBox>("CheckBoxAutoResize");
+        auto checkBoxExpanded = stringListWindow->get<tgui::CheckBox>("CheckBoxExpanded");
         auto buttonAdd = stringListWindow->get<tgui::Button>("BtnAdd");
         auto buttonReplace = stringListWindow->get<tgui::Button>("BtnReplace");
         auto buttonRemove = stringListWindow->get<tgui::Button>("BtnRemove");
@@ -2209,8 +2211,16 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
             tgui::String text;
             float width;
             tgui::ListView::ColumnAlignment alignment;
-            if (ListViewProperties::deserializeColumn(serializedColumn, text, width, alignment))
-                listView->addItem({text, tgui::Serializer::serialize(width), ListViewProperties::serializeColumnAlignment(alignment)});
+            bool autoResize;
+            bool expanded;
+            if (ListViewProperties::deserializeColumn(serializedColumn, text, width, alignment, autoResize, expanded))
+            {
+                listView->addItem({text,
+                                   tgui::Serializer::serialize(width),
+                                   ListViewProperties::serializeColumnAlignment(alignment),
+                                   tgui::Serializer::serialize(autoResize),
+                                   tgui::Serializer::serialize(expanded)});
+            }
         }
 
         setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
@@ -2219,7 +2229,19 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         buttonArrowUp->setEnabled(false);
         buttonArrowDown->setEnabled(false);
 
-        listView->onItemSelect([setArrowColor,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get(),btnReplace=buttonReplace.get(),btnRemove=buttonRemove.get(),btnUp=buttonArrowUp.get(),btnDown=buttonArrowDown.get()]{
+        listView->onItemSelect([setArrowColor,
+                                lv=listView.get(),
+                                ebCaption=editCaption.get(),
+                                scWidth=spinWidth.get(),
+                                cbAlign=comboBoxAlignment.get(),
+                                cbxAutoResize=checkBoxAutoResize.get(),
+                                cbxExpanded=checkBoxExpanded.get(),
+                                btnReplace=buttonReplace.get(),
+                                btnRemove=buttonRemove.get(),
+                                btnUp=buttonArrowUp.get(),
+                                btnDown=buttonArrowDown.get()
+                               ]
+        {
             const int index = lv->getSelectedItemIndex();
             if (index >= 0)
             {
@@ -2230,6 +2252,8 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
                 ebCaption->setText(selectedItem[0]);
                 scWidth->setValue(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, selectedItem[1]).getNumber());
                 cbAlign->setSelectedItem(selectedItem[2]);
+                cbxAutoResize->setChecked(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, selectedItem[3]).getBool());
+                cbxExpanded->setChecked(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, selectedItem[4]).getBool());
             }
             else
             {
@@ -2265,7 +2289,8 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
             for (std::size_t i = 0; i < lv->getItemCount(); ++i)
             {
                 const std::vector<tgui::String> item = lv->getItemRow(i);
-                newSerializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2] + ')');
+                newSerializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0])
+                    + ',' + item[1] + ',' + item[2] + ',' + item[3] + ',' + item[4] + ')');
             }
             onChange(WidgetProperties::serializeList(newSerializedColumns));
         };
@@ -2304,14 +2329,36 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
             updateValue();
         });
 
-        buttonReplace->onPress([updateValue,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get()]{
+        buttonReplace->onPress([updateValue,
+                                lv=listView.get(),
+                                ebCaption=editCaption.get(),
+                                scWidth=spinWidth.get(),
+                                cbAlign=comboBoxAlignment.get(),
+                                cbxAutoResize=checkBoxAutoResize.get(),
+                                cbxExpanded=checkBoxExpanded.get()]
+        {
             const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
-            lv->changeItem(index, {ebCaption->getText(), tgui::Serializer::serialize(scWidth->getValue()), cbAlign->getSelectedItem()});
+            lv->changeItem(index, {ebCaption->getText(),
+                                   tgui::Serializer::serialize(scWidth->getValue()),
+                                   cbAlign->getSelectedItem(),
+                                   tgui::Serializer::serialize(cbxAutoResize->isChecked()),
+                                   tgui::Serializer::serialize(cbxExpanded->isChecked())});
             updateValue();
         });
 
-        auto addItem = [updateValue,lv=listView.get(),ebCaption=editCaption.get(),scWidth=spinWidth.get(),cbAlign=comboBoxAlignment.get()]{
-            lv->addItem({ebCaption->getText(), tgui::Serializer::serialize(scWidth->getValue()), cbAlign->getSelectedItem()});
+        auto addItem = [updateValue,
+                        lv=listView.get(),
+                        ebCaption=editCaption.get(),
+                        scWidth=spinWidth.get(),
+                        cbAlign=comboBoxAlignment.get(),
+                        cbxAutoResize=checkBoxAutoResize.get(),
+                        cbxExpanded=checkBoxExpanded.get()]
+        {
+            lv->addItem({ebCaption->getText(),
+                         tgui::Serializer::serialize(scWidth->getValue()),
+                         cbAlign->getSelectedItem(),
+                         tgui::Serializer::serialize(cbxAutoResize->isChecked()),
+                         tgui::Serializer::serialize(cbxExpanded->isChecked())});
             lv->setSelectedItem(lv->getItemCount() - 1);
             updateValue();
         };
