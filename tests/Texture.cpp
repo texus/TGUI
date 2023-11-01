@@ -221,6 +221,9 @@ TEST_CASE("[Texture]")
 
         texture.load("resources/image.png");
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 50, 50));
+
+        texture.setMiddleRect({10, 15, 30, 25});
+        REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 15, 30, 25));
     }
 
     SECTION("Smooth")

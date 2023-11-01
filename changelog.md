@@ -6,6 +6,7 @@ TGUI 1.1  (TBD)
 - Added methods for arrow key navigation between widgets
 - Added getColumnDesignWidth function to ListView
 - Added TextOutlineColor and TextOutlineThickness to ProgressBar renderer
+- MiddleRect of Texture can now be changed after loading
 - Hover state is now reset when mouse leaves the window
 
 
