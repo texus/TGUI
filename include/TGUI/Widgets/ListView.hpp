@@ -186,6 +186,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Width of the column prior to expanding the column and prior to the user resizing it
         ///
         /// @see getColumnWidth
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getColumnDesignWidth(std::size_t index) const;
 
