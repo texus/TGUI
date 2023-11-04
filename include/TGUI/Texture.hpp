@@ -298,6 +298,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Sets the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
         /// @param middleRect  Middle rect of the texture
+        ///
+        /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMiddleRect(const UIntRect& middleRect);
 
