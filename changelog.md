@@ -1,5 +1,5 @@
-TGUI 1.1  (TBD)
----------------
+TGUI 1.1  (4 November 2023)
+---------------------------
 
 - Added AutoLayout that lets widget fill entire side of parent
 - Any column in ListView can now be auto-sized and expanded
