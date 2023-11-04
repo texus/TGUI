@@ -543,7 +543,7 @@ jobs:
   windows-clang:
     runs-on: windows-2022
     env:
-      SFML_VERSION: 2.6.0
+      SFML_VERSION: 2.6.1
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v3
@@ -947,7 +947,7 @@ jobs:
     needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows-sfml-sdl, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2019
     env:
-      SFML_VERSION: 2.6.0
+      SFML_VERSION: 2.6.1
       MSVC_TOOLSET_VERSION: 141  # VS2017
     steps:
       - name: Checkout TGUI
