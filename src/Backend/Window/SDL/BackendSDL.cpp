@@ -31,9 +31,7 @@
 #endif
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#if SDL_MAJOR_VERSION >= 3
-    #include <SDL3/SDL_syswm.h>
-#else
+#if SDL_MAJOR_VERSION < 3
     #include <SDL_syswm.h>
 #endif
 
@@ -45,7 +43,7 @@
     #pragma warning(pop)
 #endif
 
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && defined(SDL_ENABLE_SYSWM_X11)
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((SDL_MAJOR_VERSION >= 3) || defined(SDL_VIDEO_DRIVER_X11))
     #include <X11/Xlib.h>
     #include <X11/cursorfont.h>
 #endif
@@ -391,7 +389,7 @@ namespace tgui
         // As of SDL 2.24, it uses an arrow pointing NW or NE. This is already much better, even though the arrow points on the wrong direction
         // for bottom corners. Having two-sided arrows for horizontal/vertical, but having a direction arrow for diagonal looks out of place though.
         // So we will continue to bypass SDL and use directional arrows in all directions.
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && defined(SDL_ENABLE_SYSWM_X11)
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((SDL_MAJOR_VERSION >= 3) || defined(SDL_VIDEO_DRIVER_X11))
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
@@ -399,16 +397,23 @@ namespace tgui
         {
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
-                SDL_SysWMinfo sysInfo;
 #if SDL_MAJOR_VERSION >= 3
-                if (SDL_GetWindowWMInfo(window, &sysInfo, SDL_SYSWM_CURRENT_VERSION) && (sysInfo.subsystem == SDL_SYSWM_X11) && sysInfo.info.x11.display)
+                Display* displayX11 = reinterpret_cast<Display*>(SDL_GetProperty(SDL_GetWindowProperties(window), "SDL.window.x11.display"));
+                Window windowX11 = reinterpret_cast<Window>(SDL_GetProperty(SDL_GetWindowProperties(window), "SDL.window.x11.window"));
 #else
-                SDL_VERSION(&sysInfo.version); // We must fill in the version before calling SDL_GetWindowWMInfo
-                if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11) && sysInfo.info.x11.display)
-#endif
-                {
-                    auto* displayX11 = sysInfo.info.x11.display;
+                Display* displayX11 = nullptr;
+                Window windowX11 = 0;
 
+                SDL_SysWMinfo sysInfo;
+                SDL_VERSION(&sysInfo.version); // We must fill in the version before calling SDL_GetWindowWMInfo
+                if (SDL_GetWindowWMInfo(window, &sysInfo) && (sysInfo.subsystem == SDL_SYSWM_X11))
+                {
+                    displayX11 = sysInfo.info.x11.display;
+                    windowX11 = sysInfo.info.x11.window;
+                }
+#endif
+                if (displayX11)
+                {
                     unsigned int shapeX11;
                     if (type == Cursor::Type::SizeLeft)
                         shapeX11 = XC_left_side;
@@ -430,7 +435,7 @@ namespace tgui
                     auto cursorX11 = XCreateFontCursor(displayX11, shapeX11);
                     if (cursorX11 != None)
                     {
-                        XDefineCursor(displayX11, sysInfo.info.x11.window, cursorX11);
+                        XDefineCursor(displayX11, windowX11, cursorX11);
                         XFreeCursor(displayX11, cursorX11);
                     }
 
