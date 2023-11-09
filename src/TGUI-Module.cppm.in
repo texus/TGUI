@@ -45,6 +45,7 @@ module;
     #include <chrono>
     #include <string>
     #include <vector>
+    #include <thread>
     #include <memory>
     #include <locale>
     #include <limits>
@@ -120,6 +121,10 @@ module;
         #include <SDL_touch.h>
     #endif
 #endif
+#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
+    struct SDL_Texture;
+    struct SDL_Renderer;
+#endif
 
 #if TGUI_HAS_FONT_BACKEND_SDL_TTF
     #if SDL_MAJOR_VERSION >= 3
@@ -129,9 +134,34 @@ module;
     #endif
 #endif
 
+#if TGUI_HAS_FONT_BACKEND_FREETYPE
+    #if defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wold-style-cast"
+    #endif
+
+    #include <ft2build.h>
+    #include FT_FREETYPE_H
+    #include FT_GLYPH_H
+    #include FT_OUTLINE_H
+    #include FT_BITMAP_H
+    #include FT_STROKER_H
+
+    #if defined(__GNUC__)
+        #pragma GCC diagnostic pop
+    #endif
+
+    using FT_Library = struct FT_LibraryRec_*;
+    using FT_Face = struct FT_FaceRec_*;
+    using FT_Stroker = struct FT_StrokerRec_*;
+#endif
+
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
     #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
     #include <GLFW/glfw3.h>
+
+    using GLFWwindow = struct GLFWwindow;
+    using GLFWcursor = struct GLFWcursor;
 #endif
 
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((TGUI_HAS_WINDOW_BACKEND_SFML && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) || TGUI_HAS_WINDOW_BACKEND_SDL)
@@ -155,6 +185,9 @@ module;
     #endif
 #endif
 
-#ifdef _MSC_VER
-	#pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
+// Ignore warnings about '#include' still being used below
+#if defined(__clang__)
+    #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#elif defined(_MSC_VER)
+	#pragma warning(disable: 5244)
 #endif

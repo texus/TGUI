@@ -27,9 +27,7 @@
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Loading/WidgetFactory.hpp>
 #endif
 

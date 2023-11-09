@@ -29,9 +29,7 @@
 #include <SFML/Graphics/Font.hpp>
 
 #include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Font/BackendFont.hpp>
 #endif
 

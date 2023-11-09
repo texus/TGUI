@@ -22,14 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/Backend.hpp>
 #endif
 

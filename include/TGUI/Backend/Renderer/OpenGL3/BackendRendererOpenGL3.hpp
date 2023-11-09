@@ -30,9 +30,7 @@
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #endif
 

@@ -28,10 +28,6 @@
 
 #include <TGUI/Config.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE && !defined(TGUI_BUILDING_OPENGL_MODULE)
-    import tgui.opengl;
-#endif
-
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wold-style-cast"

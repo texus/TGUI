@@ -22,9 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-#include <TGUI/DefaultBackendWindow.hpp>
-
+// Imports need to be first when building as a module.
+// Config.hpp will already be included in the global section that is placed before this file.
 #if TGUI_BUILD_AS_CXX_MODULE
     #if TGUI_HAS_BACKEND_SFML_GRAPHICS
         import tgui.backend.sfml_graphics;
@@ -54,7 +53,11 @@
             import tgui.backend.glfw_gles2;
         #endif
     #endif
-#else
+#endif
+
+#include <TGUI/DefaultBackendWindow.hpp>
+
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Loading/ImageLoader.hpp>
     #include <TGUI/Backend/Window/BackendGui.hpp>
     #include <TGUI/Event.hpp>

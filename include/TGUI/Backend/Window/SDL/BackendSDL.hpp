@@ -29,9 +29,7 @@
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/Backend.hpp>
 #endif
 

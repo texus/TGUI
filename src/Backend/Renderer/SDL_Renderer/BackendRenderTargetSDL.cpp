@@ -26,9 +26,7 @@
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendText.hpp>
     #include <TGUI/Backend/Window/Backend.hpp>
     #include <TGUI/Container.hpp>

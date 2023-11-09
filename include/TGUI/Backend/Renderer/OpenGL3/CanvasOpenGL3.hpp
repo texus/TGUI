@@ -28,9 +28,7 @@
 
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
     #include <TGUI/Widgets/ClickableWidget.hpp>
 #endif

@@ -30,9 +30,7 @@
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #endif
 
@@ -42,7 +40,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if !TGUI_BUILD_AS_CXX_MODULE
 struct SDL_Renderer;
+#endif
 
 TGUI_MODULE_EXPORT namespace tgui
 {

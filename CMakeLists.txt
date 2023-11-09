@@ -22,7 +22,7 @@
 
 # If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
 # When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
-cmake_minimum_required(VERSION 3.16...3.27)
+cmake_minimum_required(VERSION 3.16...3.28)
 
 # Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -157,7 +157,8 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
             message(FATAL_ERROR "TGUI_BUILD_AS_CXX_MODULE can only be turned on if TGUI_CXX_STANDARD is set to at least 20")
         endif()
 
-        if (NOT CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
+        # TODO: Remove support for CMake < 3.28 as the lines below don't work properly anyway when placed here
+        if(CMAKE_VERSION VERSION_LESS 3.28 AND NOT CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
             if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
                 set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7") # CMake 3.27
             else()

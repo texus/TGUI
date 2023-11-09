@@ -25,9 +25,7 @@
 
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/Backend.hpp>
 #endif
 

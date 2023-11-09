@@ -26,9 +26,7 @@
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
 #include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Timer.hpp>
 
     #ifdef TGUI_SYSTEM_WINDOWS

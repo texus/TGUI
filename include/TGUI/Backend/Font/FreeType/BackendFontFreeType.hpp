@@ -27,9 +27,7 @@
 #define TGUI_BACKEND_FONT_FREETYPE_HPP
 
 #include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Font/BackendFont.hpp>
 #endif
 
@@ -39,9 +37,11 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using FT_Library = struct FT_LibraryRec_*;
-using FT_Face = struct FT_FaceRec_*;
-using FT_Stroker = struct FT_StrokerRec_*;
+#if !TGUI_BUILD_AS_CXX_MODULE
+    using FT_Library = struct FT_LibraryRec_*;
+    using FT_Face = struct FT_FaceRec_*;
+    using FT_Stroker = struct FT_StrokerRec_*;
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

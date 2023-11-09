@@ -28,9 +28,7 @@
 
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/Backend.hpp>
 #endif
 
@@ -41,8 +39,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GLFWwindow = struct GLFWwindow;
-using GLFWcursor = struct GLFWcursor;
+#if !TGUI_BUILD_AS_CXX_MODULE
+    using GLFWwindow = struct GLFWwindow;
+    using GLFWcursor = struct GLFWcursor;
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -27,16 +27,16 @@
 #define TGUI_BACKEND_TEXTURE_SDL_HPP
 
 #include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if !TGUI_BUILD_AS_CXX_MODULE
 struct SDL_Texture;
 struct SDL_Renderer;
+#endif
 
 TGUI_MODULE_EXPORT namespace tgui
 {

@@ -27,16 +27,16 @@
 #define TGUI_BACKEND_GUI_GLFW_HPP
 
 #include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/BackendGui.hpp>
     #include <TGUI/Optional.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GLFWwindow = struct GLFWwindow;
+#if !TGUI_BUILD_AS_CXX_MODULE
+    using GLFWwindow = struct GLFWwindow;
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

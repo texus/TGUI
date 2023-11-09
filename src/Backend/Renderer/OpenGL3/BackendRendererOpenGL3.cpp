@@ -22,15 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-    import tgui.opengl;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Exception.hpp>
     #include <TGUI/Loading/WidgetFactory.hpp>
 #endif

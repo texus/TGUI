@@ -27,9 +27,7 @@
 #define TGUI_BACKEND_TEXTURE_GLES2_HPP
 
 #include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #endif
 

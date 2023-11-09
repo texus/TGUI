@@ -120,8 +120,11 @@ module;
 #include <TGUI/extlibs/IncludeStbImage.hpp> // Only needed by ImageLoader.cpp
 #include <TGUI/extlibs/IncludeNanoSVG.hpp> // Only needed by SvgImage.cpp
 
-#ifdef _MSC_VER
-	#pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
+// Ignore warnings about '#include' still being used below
+#if defined(__clang__)
+    #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#elif defined(_MSC_VER)
+	#pragma warning(disable: 5244)
 #endif
 
 export module tgui;

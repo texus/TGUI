@@ -31,8 +31,11 @@ module;
     #include <string>
 #endif
 
-#ifdef _MSC_VER
-    #pragma warning(disable: 5244) // Ignore warnings about '#include' still being used below
+// Ignore warnings about '#include' still being used below
+#if defined(__clang__)
+    #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#elif defined(_MSC_VER)
+	#pragma warning(disable: 5244)
 #endif
 
 #if !TGUI_USE_SYSTEM_GLAD

@@ -30,11 +30,7 @@
     #error "TGUI wasn't build with the SDL_GLES2 backend"
 #endif
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.window.sdl;
-    import tgui.backend.renderer.gles2;
-    import tgui.backend.font.freetype;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
     #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
     #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>

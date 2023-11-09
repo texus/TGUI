@@ -28,9 +28,7 @@
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Timer.hpp>
 #endif
 
