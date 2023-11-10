@@ -772,12 +772,16 @@ TEST_CASE("[Backend events]")
 
             SECTION("TextEntered")
             {
+                char textInput[4] = {
+                    static_cast<char>(static_cast<unsigned char>(0xE2)),
+                    static_cast<char>(static_cast<unsigned char>(0x9C)),
+                    static_cast<char>(static_cast<unsigned char>(0x85)),
+                    '\0'
+                };
+
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_TEXT_INPUT;
-                eventSDL.text.text[0] = static_cast<char>(static_cast<unsigned char>(0xE2));
-                eventSDL.text.text[1] = static_cast<char>(static_cast<unsigned char>(0x9C));
-                eventSDL.text.text[2] = static_cast<char>(static_cast<unsigned char>(0x85));
-                eventSDL.text.text[3] = '\0';
+                eventSDL.text.text = textInput;
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -996,14 +1000,14 @@ TEST_CASE("[Backend events]")
                 editBox->setFocused(true);
 
                 // Type 3 characters in the edit box
+                char textInput[2] = "A";
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_TEXT_INPUT;
-                eventSDL.text.text[0] = 'A';
-                eventSDL.text.text[1] = 0;
+                eventSDL.text.text = textInput;
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.text.text[0] = 'B';
+                textInput[0] = 'B';
                 backendGuiSDL->handleEvent(eventSDL);
-                eventSDL.text.text[0] = 'C';
+                textInput[0] = 'C';
                 backendGuiSDL->handleEvent(eventSDL);
 
                 // Erase the second character from the edit box

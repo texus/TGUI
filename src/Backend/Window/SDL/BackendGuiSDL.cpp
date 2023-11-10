@@ -430,7 +430,7 @@ namespace tgui
 
         // If a text event consists of multiple unicode characters (which can happen when an IME is used) then our
         // converted event only contains the last character. We will send all other unicode characters here.
-        if ((event.type == Event::Type::TextEntered) && (sdlEvent.type == SDL_EVENT_TEXT_INPUT) && (sdlEvent.text.text[1] != '\0'))
+        if ((event.type == Event::Type::TextEntered) && (sdlEvent.type == SDL_EVENT_TEXT_INPUT) && (sdlEvent.text.text[0] != '\0') && (sdlEvent.text.text[1] != '\0'))
         {
             // Note that we also pass here if sdlEvent.text.text consists of multiple UTF-8 characters that still fit
             // within a single UTF-32 codepoint. So we still need to check that there are multiple UTF-32 codepoints below.
