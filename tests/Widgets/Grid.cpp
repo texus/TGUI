@@ -61,11 +61,17 @@ TEST_CASE("[Grid]")
     SECTION("Removing widgets")
     {
         auto widget = tgui::ClickableWidget::create();
+        auto widget2 = tgui::ClickableWidget::create();
+        auto widget3 = tgui::ClickableWidget::create();
         grid->addWidget(widget, 3, 2);
+        grid->addWidget(widget2, 3, 3);
+        grid->addWidget(widget3, 2, 2);
 
+        grid->remove(widget3);
         REQUIRE(grid->getWidget(3, 2) == widget);
         grid->remove(widget);
         REQUIRE(grid->getWidget(3, 2) == nullptr);
+        grid->remove(widget2);
 
         grid->addWidget(widget, 1, 5);
 

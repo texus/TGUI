@@ -209,37 +209,71 @@ namespace tgui
             const std::size_t col = it->second.second;
 
             // Remove the widget from the grid
-            m_gridWidgets[row].erase(m_gridWidgets[row].begin() + static_cast<std::ptrdiff_t>(col));
-            m_objPadding[row].erase(m_objPadding[row].begin() + static_cast<std::ptrdiff_t>(col));
-            m_objAlignment[row].erase(m_objAlignment[row].begin() + static_cast<std::ptrdiff_t>(col));
             m_widgetCells.erase(widget);
-
-            // Check if this is the last column
-            if (m_columnWidth.size() == m_gridWidgets[row].size() + 1)
+            if (col + 1 < m_gridWidgets[row].size())
             {
-                // Check if there is another row with this many columns
-                bool rowFound = false;
-                for (const auto& gridWidgetsRow : m_gridWidgets)
-                {
-                    if (gridWidgetsRow.size() >= m_columnWidth.size())
-                    {
-                        rowFound = true;
-                        break;
-                    }
-                }
+                m_gridWidgets[row][col] = nullptr;
+                m_objPadding[row][col] = {};
+                m_objAlignment[row][col] = {};
+            }
+            else
+            {
+                m_gridWidgets[row].pop_back();
+                m_objPadding[row].pop_back();
+                m_objAlignment[row].pop_back();
 
-                // Erase the last column if no other row is using it
-                if (!rowFound)
-                    m_columnWidth.erase(m_columnWidth.end() - 1);
+                // If the cells on the same row as the removed widget are empty then remove them
+                while (!m_gridWidgets[row].empty() && !m_gridWidgets[row].back())
+                {
+                    m_gridWidgets[row].pop_back();
+                    m_objPadding[row].pop_back();
+                    m_objAlignment[row].pop_back();
+                }
             }
 
-            // If the row is empty then remove it as well
-            if (m_gridWidgets[row].empty())
+            // Update the width of the column that used to contain the widget
+            m_columnWidth[col] = 0;
+            for (std::size_t r = 0; r < m_gridWidgets.size(); ++r)
             {
-                m_gridWidgets.erase(m_gridWidgets.begin() + static_cast<std::ptrdiff_t>(row));
-                m_objPadding.erase(m_objPadding.begin() + static_cast<std::ptrdiff_t>(row));
-                m_objAlignment.erase(m_objAlignment.begin() + static_cast<std::ptrdiff_t>(row));
-                m_rowHeight.erase(m_rowHeight.begin() + static_cast<std::ptrdiff_t>(row));
+                if ((m_gridWidgets[r].size() <= col) || !m_gridWidgets[r][col])
+                    continue;
+
+                if (m_columnWidth[col] < m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight())
+                    m_columnWidth[col] = m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight();
+            }
+
+            // Update the height of the row that used to contain the widget
+            m_rowHeight[row] = 0;
+            for (std::size_t c = 0; c < m_gridWidgets[row].size(); ++c)
+            {
+                if (!m_gridWidgets[row][c])
+                    continue;
+
+                if (m_rowHeight[row] < m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom())
+                    m_rowHeight[row] = m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom();
+            }
+
+            // If this was the last column and it is now empty then remove the empty columns at the end
+            if (col + 1 == m_columnWidth.size())
+            {
+                std::size_t nrUsedColumns = 0;
+                for (std::size_t r = 0; r < m_gridWidgets.size(); ++r)
+                    nrUsedColumns = std::max(nrUsedColumns, m_gridWidgets[r].size());
+
+                if (m_columnWidth.size() > nrUsedColumns)
+                    m_columnWidth.resize(nrUsedColumns);
+            }
+
+            // If this was the last row and it is now empty then remove the empty rows at the end
+            if (row + 1 == m_gridWidgets.size())
+            {
+                while (!m_gridWidgets.empty() && m_gridWidgets.back().empty())
+                {
+                    m_gridWidgets.pop_back();
+                    m_objPadding.pop_back();
+                    m_objAlignment.pop_back();
+                    m_rowHeight.pop_back();
+                }
             }
 
             // Update the positions of all remaining widgets
