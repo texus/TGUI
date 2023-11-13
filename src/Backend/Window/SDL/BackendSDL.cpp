@@ -398,8 +398,9 @@ namespace tgui
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
 #if SDL_MAJOR_VERSION >= 3
-                Display* displayX11 = reinterpret_cast<Display*>(SDL_GetProperty(SDL_GetWindowProperties(window), "SDL.window.x11.display"));
-                Window windowX11 = reinterpret_cast<Window>(SDL_GetProperty(SDL_GetWindowProperties(window), "SDL.window.x11.window"));
+                const SDL_PropertiesID windowProps = SDL_GetWindowProperties(window);
+                const Window windowX11 = static_cast<Window>(SDL_GetNumberProperty(windowProps, "SDL.window.x11.window", 0));
+                Display* displayX11 = reinterpret_cast<Display*>(SDL_GetProperty(windowProps, "SDL.window.x11.display", nullptr));
 #else
                 Display* displayX11 = nullptr;
                 Window windowX11 = 0;
