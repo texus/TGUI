@@ -303,6 +303,7 @@ namespace tgui
 
     void ChildWindow::setPosition(const Layout2d& position)
     {
+        bool positionMovedToKeepInParent = false;
         if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0))
         {
             const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
@@ -321,10 +322,12 @@ namespace tgui
                 else if (x > m_parent->getSize().x - getSize().x)
                     x = std::max(0.f, m_parent->getSize().x - getSize().x);
 
+                positionMovedToKeepInParent = true;
                 Container::setPosition({x + origin.x, y + origin.y});
             }
         }
-        else
+
+        if (!positionMovedToKeepInParent)
             Container::setPosition(position);
 
         // Calculate the distance from the right side that the buttons will need

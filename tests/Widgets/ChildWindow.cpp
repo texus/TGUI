@@ -522,4 +522,21 @@ TEST_CASE("[ChildWindow]")
             TEST_DRAW("ChildWindow_Textured.png")
         }
     }
+
+    SECTION("Bug Fixes")
+    {
+        SECTION("setPosition doesn't work with KeepInParent (https://forum.tgui.eu/index.php?topic=1082.0)")
+        {
+            auto parent = tgui::Panel::create({300, 200});
+            parent->setPosition({30, 25});
+            parent->add(childWindow);
+
+            childWindow->setSize({100, 80});
+            childWindow->setPosition({10, 5});
+            childWindow->setKeepInParent(true);
+
+            childWindow->setPosition({15, 20});
+            REQUIRE(childWindow->getPosition() == tgui::Vector2f{15, 20});
+        }
+    }
 }
