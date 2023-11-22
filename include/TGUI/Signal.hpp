@@ -154,7 +154,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
+        template <typename Func, typename... BoundArgs, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>>::value>* = nullptr>
         unsigned int connectEx(const Func& func, const BoundArgs&... args)
         {
             // The name is copied so that the lambda does not depend on the 'this' pointer
@@ -696,7 +696,7 @@ TGUI_MODULE_EXPORT namespace tgui
             return connect(func, args...);
         }
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -726,7 +726,7 @@ TGUI_MODULE_EXPORT namespace tgui
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1)); });
         }
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -741,7 +741,7 @@ TGUI_MODULE_EXPORT namespace tgui
             return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel()); });
         }
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -771,7 +771,7 @@ TGUI_MODULE_EXPORT namespace tgui
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel()); });
         }
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -801,7 +801,7 @@ TGUI_MODULE_EXPORT namespace tgui
             return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel(), dereferenceParam<String>(3)); });
         }
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Call all connected signal handlers
         ///
@@ -817,7 +817,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Turns the void* parameter back into the std::shared_ptr<Panel> right before calling the callback function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
