@@ -51,6 +51,8 @@ TEST_CASE("[Duration]")
     {
         REQUIRE(std::chrono::duration<int>(tgui::Duration(10000)).count() == 10);
         REQUIRE(std::chrono::nanoseconds(tgui::Duration(std::chrono::microseconds(3))).count() == 3000);
+        REQUIRE(std::chrono::microseconds(tgui::Duration(5)).count() == 5000);
+        REQUIRE(std::chrono::milliseconds(tgui::Duration(10)).count() == 10);
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
         REQUIRE(sf::Time(tgui::Duration(std::chrono::milliseconds(50))).asMilliseconds() == 50);
