@@ -41,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSDL::CanvasSDL(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, initRenderer}
+        CanvasBase{typeName, initRenderer}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
                     "CanvasSDL can only be created when using the SDL_Renderer backend renderer");
@@ -53,7 +53,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSDL::CanvasSDL(const CanvasSDL& other) :
-        ClickableWidget{other}
+        CanvasBase{other}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
                     "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
@@ -150,13 +150,6 @@ namespace tgui
             1, 2, 3
         }};
         target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool CanvasSDL::canGainFocus() const
-    {
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

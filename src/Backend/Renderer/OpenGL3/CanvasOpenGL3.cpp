@@ -41,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasOpenGL3::CanvasOpenGL3(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, initRenderer}
+        CanvasBase{typeName, initRenderer}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be created when using the OpenGL3 backend renderer");
@@ -52,7 +52,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasOpenGL3::CanvasOpenGL3(const CanvasOpenGL3& other) :
-        ClickableWidget{other}
+        CanvasBase{other}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be used when using the OpenGL3 backend renderer");
@@ -156,13 +156,6 @@ namespace tgui
         glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_backendTexture->getInternalTexture(), 0);
         return m_frameBuffer;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool CanvasOpenGL3::canGainFocus() const
-    {
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

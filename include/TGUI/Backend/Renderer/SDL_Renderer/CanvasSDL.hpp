@@ -30,7 +30,7 @@
 
 #if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-    #include <TGUI/Widgets/ClickableWidget.hpp>
+    #include <TGUI/Widgets/CanvasBase.hpp>
 #endif
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
@@ -65,7 +65,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /// SDL_SetRenderTarget(renderer, nullptr);                     // Let further drawing happen on the window again
     /// @endcode
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API CanvasSDL : public ClickableWidget
+    class TGUI_API CanvasSDL : public CanvasBase
     {
     public:
 
@@ -149,15 +149,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the widget can gain focus
-        /// @return Can the widget be focused?
-        ///
-        /// This function returns false for Canvas widgets.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool canGainFocus() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasGLES2::CanvasGLES2(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, initRenderer}
+        CanvasBase{typeName, initRenderer}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererGLES2>(getBackend()->getRenderer()),
                     "CanvasGLES2 can only be created when using the GLES2 backend renderer");
@@ -52,7 +52,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasGLES2::CanvasGLES2(const CanvasGLES2& other) :
-        ClickableWidget{other}
+        CanvasBase{other}
     {
         TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererGLES2>(getBackend()->getRenderer()),
                     "CanvasGLES2 can only be used when using the GLES2 backend renderer");
@@ -156,13 +156,6 @@ namespace tgui
         glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_backendTexture->getInternalTexture(), 0);
         return m_frameBuffer;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool CanvasGLES2::canGainFocus() const
-    {
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

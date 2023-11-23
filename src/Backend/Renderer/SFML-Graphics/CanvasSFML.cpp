@@ -42,14 +42,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
-        ClickableWidget{typeName, initRenderer}
+        CanvasBase{typeName, initRenderer}
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-        ClickableWidget  {other},
+        CanvasBase{other},
         m_usedTextureSize{other.m_usedTextureSize}
     {
         setSize(other.getSize());
@@ -58,7 +58,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
-        ClickableWidget  {std::move(other)},
+        CanvasBase{std::move(other)},
         m_usedTextureSize{std::move(other.m_usedTextureSize)}
     {
         // sf::RenderTexture does not support move yet
@@ -279,13 +279,6 @@ namespace tgui
 
         TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
         static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool CanvasSFML::canGainFocus() const
-    {
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -50,6 +50,23 @@ namespace sf  // Anonymous namespace didn't work for Clang on macOS
     }
 }
 
+void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
+{
+    SECTION("Ignore mouse events")
+    {
+        REQUIRE(!canvas->isIgnoringMouseEvents());
+        canvas->ignoreMouseEvents(true);
+        REQUIRE(canvas->isIgnoringMouseEvents());
+        canvas->ignoreMouseEvents(false);
+        REQUIRE(!canvas->isIgnoringMouseEvents());
+    }
+
+    SECTION("canGainFocus")
+    {
+        REQUIRE(!canvas->canGainFocus());
+    }
+}
+
 TEST_CASE("[CanvasSFML]")
 {
     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()))
@@ -99,6 +116,8 @@ TEST_CASE("[CanvasSFML]")
             // The address of the internal render texture never changes
             REQUIRE(internalRenderTexture == &canvas->getRenderTexture());
         }
+
+        testCanvasCommon(canvas);
 
         testWidgetRenderer(canvas->getRenderer());
 
@@ -193,6 +212,8 @@ TEST_CASE("[CanvasSDL]")
             REQUIRE(internalTextureTarget == canvas->getTextureTarget());
         }
 
+        testCanvasCommon(canvas);
+
         testWidgetRenderer(canvas->getRenderer());
 
         SECTION("Saving and loading from file")
@@ -232,6 +253,8 @@ TEST_CASE("[CanvasOpenGL3]")
             REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
         }
 
+        testCanvasCommon(canvas);
+
         testWidgetRenderer(canvas->getRenderer());
 
         SECTION("Saving and loading from file")
@@ -270,6 +293,8 @@ TEST_CASE("[CanvasGLES2]")
             canvas = tgui::CanvasGLES2::create({200, 100});
             REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
         }
+
+        testCanvasCommon(canvas);
 
         testWidgetRenderer(canvas->getRenderer());
 
