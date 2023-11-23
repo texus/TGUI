@@ -22,7 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Config.hpp>
+#include <TGUI/Widgets/CanvasBase.hpp>
+
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/View.hpp>
     #include <SFML/Graphics/Sprite.hpp>
