@@ -30,6 +30,23 @@
 
 #include "Tests.hpp"
 
+static void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
+{
+    SECTION("Ignore mouse events")
+    {
+        REQUIRE(!canvas->isIgnoringMouseEvents());
+        canvas->ignoreMouseEvents(true);
+        REQUIRE(canvas->isIgnoringMouseEvents());
+        canvas->ignoreMouseEvents(false);
+        REQUIRE(!canvas->isIgnoringMouseEvents());
+    }
+
+    SECTION("canGainFocus")
+    {
+        REQUIRE(!canvas->canGainFocus());
+    }
+}
+
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 
 #if TGUI_BUILD_AS_CXX_MODULE
@@ -47,23 +64,6 @@ namespace sf  // Anonymous namespace didn't work for Clang on macOS
             && left.getSize() == right.getSize()
             && left.getRotation() == right.getRotation()
             && left.getViewport() == right.getViewport();
-    }
-}
-
-void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
-{
-    SECTION("Ignore mouse events")
-    {
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(true);
-        REQUIRE(canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(false);
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-    }
-
-    SECTION("canGainFocus")
-    {
-        REQUIRE(!canvas->canGainFocus());
     }
 }
 
