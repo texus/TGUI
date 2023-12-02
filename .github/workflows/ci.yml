@@ -957,7 +957,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          Choco-Install -PackageName doxygen.install
+          Install-ChocoPackage doxygen.install
           mkdir x86
           C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip -o"x86"
