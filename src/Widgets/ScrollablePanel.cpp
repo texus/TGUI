@@ -212,7 +212,10 @@ namespace tgui
 
         if (m_contentSize == Vector2f{0, 0})
         {
-            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+            const Vector2f bottomRight{
+                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
+            };
             if (bottomRight.x > m_mostBottomRightPosition.x)
                 m_mostBottomRightPosition.x = bottomRight.x;
             if (bottomRight.y > m_mostBottomRightPosition.y)
@@ -246,7 +249,10 @@ namespace tgui
 
         if (m_contentSize == Vector2f{0, 0})
         {
-            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+            const Vector2f bottomRight{
+                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
+            };
             if ((bottomRight.x == m_mostBottomRightPosition.x) || (bottomRight.y == m_mostBottomRightPosition.y))
             {
                 recalculateMostBottomRightPosition();
@@ -859,7 +865,10 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
         {
-            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+            const Vector2f bottomRight{
+                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
+            };
             if (bottomRight.x > m_mostBottomRightPosition.x)
                 m_mostBottomRightPosition.x = bottomRight.x;
             if (bottomRight.y > m_mostBottomRightPosition.y)
