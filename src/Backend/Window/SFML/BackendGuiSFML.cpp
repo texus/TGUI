@@ -352,8 +352,13 @@ namespace tgui
             }
             case sf::Event::MouseWheelScrolled:
             {
+#if SFML_VERSION_MAJOR >= 3
+                if (eventSFML.mouseWheelScroll.wheel != sf::Mouse::Wheel::Vertical)
+                    return false; // TGUI only handles the vertical mouse wheel
+#else
                 if (eventSFML.mouseWheelScroll.wheel != sf::Mouse::Wheel::VerticalWheel)
                     return false; // TGUI only handles the vertical mouse wheel
+#endif
 
                 eventTGUI.type = Event::Type::MouseWheelScrolled;
                 eventTGUI.mouseWheel.delta = eventSFML.mouseWheelScroll.delta;

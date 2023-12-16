@@ -291,7 +291,11 @@ TEST_CASE("[Backend events]")
             {
                 sf::Event eventSFML;
                 eventSFML.type = sf::Event::MouseWheelScrolled;
+#if SFML_VERSION_MAJOR >= 3
+                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Vertical;
+#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
+#endif
                 eventSFML.mouseWheelScroll.delta = 2;
                 eventSFML.mouseWheelScroll.x = 200;
                 eventSFML.mouseWheelScroll.y = 150;
@@ -304,7 +308,11 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseWheel.y == 150);
 
                 // We only handle vertical scrolling
+#if SFML_VERSION_MAJOR >= 3
+                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Horizontal;
+#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::HorizontalWheel;
+#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
@@ -481,7 +489,11 @@ TEST_CASE("[Backend events]")
 
                 // Scroll the mouse wheel on top of the slider and verify that its value changes
                 eventSFML.type = sf::Event::MouseWheelScrolled;
+#if SFML_VERSION_MAJOR >= 3
+                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Vertical;
+#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
+#endif
                 eventSFML.mouseWheelScroll.delta = 4;
                 eventSFML.mouseWheelScroll.x = 260;
                 eventSFML.mouseWheelScroll.y = 80;
