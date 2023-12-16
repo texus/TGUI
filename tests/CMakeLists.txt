@@ -202,18 +202,20 @@ if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
                           INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
 endif()
 
-# Add the install rule for the executable
-install(TARGETS tests
-        RUNTIME DESTINATION ${target_install_dir} COMPONENT tests
-        BUNDLE DESTINATION ${target_install_dir} COMPONENT tests)
+if (TGUI_INSTALL)
+    # Add the install rule for the executable
+    install(TARGETS tests
+            RUNTIME DESTINATION ${target_install_dir} COMPONENT tests
+            BUNDLE DESTINATION ${target_install_dir} COMPONENT tests)
 
-# Install the resources next to the test executable
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/resources"
-        DESTINATION "${target_install_dir}"
-        COMPONENT tests)
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/expected"
-        DESTINATION "${target_install_dir}"
-        COMPONENT tests)
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes/"
-        DESTINATION "${target_install_dir}/resources"
-        COMPONENT tests)
+    # Install the resources next to the test executable
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/resources"
+            DESTINATION "${target_install_dir}"
+            COMPONENT tests)
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/expected"
+            DESTINATION "${target_install_dir}"
+            COMPONENT tests)
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes/"
+            DESTINATION "${target_install_dir}/resources"
+            COMPONENT tests)
+endif()

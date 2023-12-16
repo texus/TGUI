@@ -93,7 +93,7 @@ macro(tgui_add_dependency_sfml component)
     tgui_find_dependency_sfml(${component} "")
 
     # Link to SFML and set include and library search directories
-    if (SFML_VERSION VERSION_GREATER_EQUAL 3)
+    if (SFML_VERSION VERSION_GREATER_EQUAL 3 OR TARGET SFML::${component}) # SFML_VERSION can be undefined if target already existed and wasn't searched by TGUI
         target_link_libraries(tgui PUBLIC SFML::${component})
     else()
         string(TOLOWER ${component} lowercase_component)

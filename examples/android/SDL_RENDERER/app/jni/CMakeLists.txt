@@ -17,7 +17,6 @@ add_subdirectory("${TGUI_ROOT_DIR}/../SDL2" ${SDL2_BUILD_DIR})
 add_subdirectory("${TGUI_ROOT_DIR}/../SDL2_ttf" ${SDL2_TTF_BUILD_DIR})
 
 # Build TGUI
-set(TGUI_SKIP_EXPORT ON) # Workaround for issue when building SDL and TGUI together as subdirectories
 add_subdirectory("${TGUI_ROOT_DIR}" TGUI-build)
 
 # Create the libmain.so library that contains the application's c++ code.

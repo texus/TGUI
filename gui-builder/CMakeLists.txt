@@ -68,27 +68,29 @@ if (TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
                           INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
 endif()
 
-# Install a .desktop file on Linux (and its icon)
-if (TGUI_OS_LINUX)
-    set(TGUI_GUI_BUILDER_INSTALL_EXE_PATH "${CMAKE_INSTALL_PREFIX}/${target_install_dir}/gui-builder")
-    configure_file("${PROJECT_SOURCE_DIR}/cmake/gui-builder/tgui-gui-builder.desktop.in" "tgui-gui-builder.desktop" @ONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tgui-gui-builder.desktop"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
+if (TGUI_INSTALL)
+    # Install a .desktop file on Linux (and its icon)
+    if (TGUI_OS_LINUX)
+        set(TGUI_GUI_BUILDER_INSTALL_EXE_PATH "${CMAKE_INSTALL_PREFIX}/${target_install_dir}/gui-builder")
+        configure_file("${PROJECT_SOURCE_DIR}/cmake/gui-builder/tgui-gui-builder.desktop.in" "tgui-gui-builder.desktop" @ONLY)
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tgui-gui-builder.desktop"
+                DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
+                COMPONENT gui-builder)
+        install(FILES "${PROJECT_SOURCE_DIR}/cmake/gui-builder/TexusGUI.png"
+                DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps"
+                COMPONENT gui-builder)
+    endif()
+
+    # Add the install rule for the executable
+    install(TARGETS gui-builder
+            RUNTIME DESTINATION ${target_install_dir} COMPONENT gui-builder
+            BUNDLE DESTINATION ${target_install_dir} COMPONENT gui-builder)
+
+    # Install the resources next to the gui-builder executable
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/gui-builder/resources"
+            DESTINATION "${target_install_dir}"
             COMPONENT gui-builder)
-    install(FILES "${PROJECT_SOURCE_DIR}/cmake/gui-builder/TexusGUI.png"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps"
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes"
+            DESTINATION "${target_install_dir}"
             COMPONENT gui-builder)
 endif()
-
-# Add the install rule for the executable
-install(TARGETS gui-builder
-        RUNTIME DESTINATION ${target_install_dir} COMPONENT gui-builder
-        BUNDLE DESTINATION ${target_install_dir} COMPONENT gui-builder)
-
-# Install the resources next to the gui-builder executable
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/gui-builder/resources"
-        DESTINATION "${target_install_dir}"
-        COMPONENT gui-builder)
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes"
-        DESTINATION "${target_install_dir}"
-        COMPONENT gui-builder)

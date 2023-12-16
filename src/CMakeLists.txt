@@ -412,18 +412,74 @@ if(NOT TGUI_BUILD_AS_CXX_MODULE AND NOT TGUI_DISABLE_PRECOMPILED_HEADER)
     target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
 endif()
 
-# Install library
-install(TARGETS tgui EXPORT TGUIConfigExport
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
-        FRAMEWORK DESTINATION "." COMPONENT bin
-)
+if (TGUI_BUILD_FRAMEWORK)
+    set(config_package_location "TGUI.framework/Resources/CMake")
+else()
+    set(config_package_location ${CMAKE_INSTALL_LIBDIR}/cmake/TGUI)
+endif()
 
 # Generate the TGUIConfig.cmake file
 # This had to happen here instead of in the root CMakeLists.txt because otherwise it might try to write to the macOS framework before the framework is installed.
-# TODO: CMake 3.13 fixed order of installation, so check if the issue still exists.
-# Since the config files relies on variables that are only defined in this scope (via the backend include), caution is required when moving this.
-if (NOT TGUI_SKIP_EXPORT)
-  tgui_export_target(TGUIConfigExport)
+# TODO: CMake 3.13 fixed order of installation, so check if the issue still exists. Since the config files relies on variables that are only defined in this scope (via the backend include), caution is required when moving this.
+include(CMakePackageConfigHelpers)
+configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in"
+                              "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
+                              INSTALL_DESTINATION "${config_package_location}")
+
+write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
+                                 VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
+                                 COMPATIBILITY SameMajorVersion)
+
+if (TGUI_SHARED_LIBS)
+    set(targets_config_filename TGUISharedTargets.cmake)
+else()
+    set(targets_config_filename TGUIStaticTargets.cmake)
+endif()
+
+if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    # When building TGUI alongside its dependencies, the export is only possible when all dependencies also do the export.
+    # To keep the code simple, we will never create the config file in our build folder when TGUI is build as a subdirectory.
+    # At the time of writing, the following dependencies have or lack the export call:
+    # - Have: SFML 2, SDL 3
+    # - Lack: SDL_ttf, FreeType, GLFW, SFML 3 (https://github.com/SFML/SFML/pull/2619)
+    export(TARGETS tgui
+           NAMESPACE TGUI::
+           FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
+endif()
+
+if (TGUI_INSTALL)
+    # Install library
+    install(TARGETS tgui EXPORT TGUIConfigExport
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+            FRAMEWORK DESTINATION "." COMPONENT bin)
+
+    install(EXPORT TGUIConfigExport
+            NAMESPACE TGUI::
+            FILE ${targets_config_filename}
+            DESTINATION ${config_package_location})
+
+    install(FILES "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
+                  "${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
+            DESTINATION ${config_package_location}
+            COMPONENT devel)
+
+    # Install the find modules when they are needed to find our dependencies
+    if(TGUI_HAS_WINDOW_BACKEND_GLFW AND NOT TGUI_FOUND_GLFW_CONFIG)
+        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
+    endif()
+    if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG)
+        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
+    endif()
+    if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG)
+        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" DESTINATION ${config_package_location} COMPONENT devel)
+        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
+    endif()
+
+    if (TGUI_INSTALL_PKGCONFIG_FILES)
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
+    endif()
 endif()

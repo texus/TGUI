@@ -114,58 +114,6 @@ function(tgui_set_stdlib target)
     endif()
 endfunction()
 
-# Generate a TGUIConfig.cmake file (and associated files)
-function(tgui_export_target export_name)
-    include(CMakePackageConfigHelpers)
-        write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
-                                         VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
-                                         COMPATIBILITY SameMajorVersion)
-
-    if (TGUI_SHARED_LIBS)
-        set(targets_config_filename TGUISharedTargets.cmake)
-    else()
-        set(targets_config_filename TGUIStaticTargets.cmake)
-    endif()
-
-    export(EXPORT ${export_name}
-           NAMESPACE TGUI::
-           FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
-
-    if (TGUI_BUILD_FRAMEWORK)
-        set(config_package_location "TGUI.framework/Resources/CMake")
-    else()
-        set(config_package_location ${CMAKE_INSTALL_LIBDIR}/cmake/TGUI)
-    endif()
-
-    configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
-        INSTALL_DESTINATION "${config_package_location}")
-
-    install(EXPORT ${export_name}
-            NAMESPACE TGUI::
-            FILE ${targets_config_filename}
-            DESTINATION ${config_package_location})
-
-    install(FILES "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
-                  "${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
-            DESTINATION ${config_package_location}
-            COMPONENT devel)
-
-    # Install the find modules when they are needed to find our dependencies
-    if(TGUI_HAS_WINDOW_BACKEND_GLFW AND NOT TGUI_FOUND_GLFW_CONFIG)
-        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
-    endif()
-    if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG)
-        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
-    endif()
-    if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG)
-        install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" DESTINATION ${config_package_location} COMPONENT devel)
-        add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
-    endif()
-endfunction()
-
-
 # Install the dlls next to the executables (both immediately after building and when installing them somewhere)
 function(copy_dlls_to_exe post_build_destination install_destination target)
     if(TGUI_OS_WINDOWS)
@@ -207,9 +155,11 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
                                COMMAND ${CMAKE_COMMAND} -E copy "${file_to_copy}" "${post_build_destination}"
                                VERBATIM)
 
-            install(FILES "${file_to_copy}"
-                    DESTINATION "${install_destination}"
-                    COMPONENT ${target})
+            if (TGUI_INSTALL)
+                install(FILES "${file_to_copy}"
+                        DESTINATION "${install_destination}"
+                        COMPONENT ${target})
+            endif()
         endforeach()
     endif()
 endfunction()
