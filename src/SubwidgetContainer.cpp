@@ -48,8 +48,8 @@ namespace tgui
 
     void SubwidgetContainer::setFocused(bool focused)
     {
-        m_container->setFocused(focused);
         Widget::setFocused(focused);
+        m_container->setFocused(m_focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

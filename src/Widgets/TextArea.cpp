@@ -399,6 +399,12 @@ namespace tgui
 
     void TextArea::setFocused(bool focused)
     {
+        Widget::setFocused(focused);
+
+        // Focusing the widget may fail if its parent is disabled
+        if (focused && !m_focused)
+            return;
+
         const Vector2f caretPosition = {m_caretPosition.x + m_bordersCached.getLeft() + m_paddingCached.getLeft() - static_cast<float>(m_horizontalScrollbar->getValue()),
                                         m_caretPosition.y + m_bordersCached.getTop() + m_paddingCached.getTop() - static_cast<float>(m_verticalScrollbar->getValue())};
 
@@ -438,8 +444,6 @@ namespace tgui
                 updateSelectionTexts();
             }
         }
-
-        Widget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

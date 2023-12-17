@@ -98,7 +98,7 @@ namespace tgui
     void CustomWidgetForBindings::setFocused(bool focused)
     {
         Widget::setFocused(focused);
-        implFocusChanged(focused);
+        implFocusChanged(m_focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -393,6 +393,13 @@ namespace tgui
 
     void EditBox::setFocused(bool focused)
     {
+        const bool wasFocused = m_focused;
+        ClickableWidget::setFocused(focused);
+
+        // Focusing the widget may fail if its parent is disabled
+        if (focused && !m_focused)
+            return;
+
         if (m_parentGui)
         {
             if (focused)
@@ -416,11 +423,9 @@ namespace tgui
             if (m_selChars)
                 setCaretPosition(m_selEnd);
 
-            if (m_focused)
+            if (wasFocused)
                 onReturnOrUnfocus.emit(this, m_text);
         }
-
-        ClickableWidget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

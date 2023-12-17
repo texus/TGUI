@@ -647,5 +647,28 @@ TEST_CASE("[Widget]")
             editBox->setFocused(true);
             REQUIRE(!editBox->isFocused());
         }
+
+        SECTION("Widgets should not be focusable if their parent is disabled (https://github.com/texus/TGUI/issues/226)")
+        {
+            tgui::Panel::Ptr panel = tgui::Panel::create();
+            tgui::EditBox::Ptr editBox = tgui::EditBox::create();
+            panel->add(editBox);
+
+            editBox->setFocused(true);
+            REQUIRE(editBox->isFocused());
+
+            // No widget can be focused while the container is disabled
+            panel->setEnabled(false);
+            REQUIRE(!editBox->isFocused());
+            editBox->setFocused(true);
+            REQUIRE(!editBox->isFocused());
+
+            // If the container is enabled again, it still has no focused widgets
+            panel->setEnabled(true);
+            REQUIRE(!panel->isFocused());
+            REQUIRE(!editBox->isFocused());
+            editBox->setFocused(true);
+            REQUIRE(editBox->isFocused());
+        }
     }
 }

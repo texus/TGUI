@@ -1054,7 +1054,8 @@ namespace tgui
                 if (m_parent)
                     m_parent->childWidgetFocused(shared_from_this());
 
-                onFocus.emit(this);
+                if (m_focused) // Might be altered by childWidgetFocused if the parent is disabled
+                    onFocus.emit(this);
             }
         }
         else // Unfocusing widget
