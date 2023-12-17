@@ -340,7 +340,11 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
 
                 // Only left, middle and right mouse buttons are handled
+#if SFML_VERSION_MAJOR >= 3
+                eventSFML.mouseButton.button = sf::Mouse::Button::Extra1;
+#else
                 eventSFML.mouseButton.button = sf::Mouse::Button::XButton1;
+#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
@@ -368,7 +372,11 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
 
                 // Only left, middle and right mouse buttons are handled
+#if SFML_VERSION_MAJOR >= 3
+                eventSFML.mouseButton.button = sf::Mouse::Button::Extra1;
+#else
                 eventSFML.mouseButton.button = sf::Mouse::Button::XButton1;
+#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
