@@ -424,7 +424,7 @@ namespace tgui
                 setCaretPosition(m_selEnd);
 
             if (wasFocused)
-                onReturnOrUnfocus.emit(this, m_text);
+                emitReturnOrUnfocus(m_text);
         }
     }
 
@@ -574,7 +574,7 @@ namespace tgui
         if (event.code == Event::KeyboardKey::Enter)
         {
             onReturnKeyPress.emit(this, m_text);
-            onReturnOrUnfocus.emit(this, m_text);
+            emitReturnOrUnfocus(m_text);
         }
         else if (event.code == Event::KeyboardKey::Backspace)
             backspaceKeyPressed();
@@ -1561,6 +1561,17 @@ namespace tgui
         m_selEnd = newValue;
         if (emit)
             onCaretPositionChange.emit(this, m_selEnd);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::emitReturnOrUnfocus(const String& text)
+    {
+        if (m_onReturnOrUnfocusEmitted)
+            return;
+        m_onReturnOrUnfocusEmitted = true;
+        onReturnOrUnfocus.emit(this, text);
+        m_onReturnOrUnfocusEmitted = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
