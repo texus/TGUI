@@ -2742,7 +2742,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown())
         {
             m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y) - m_horizontalScrollbar->getSize().y});
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y - m_horizontalScrollbar->getSize().y));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(std::max(0.f, innerSize.y - m_horizontalScrollbar->getSize().y)));
         }
         else
         {
@@ -2753,7 +2753,7 @@ namespace tgui
         if (m_verticalScrollbar->isShown())
         {
             m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x - m_verticalScrollbar->getSize().x));
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(std::max(0.f, innerSize.x - m_verticalScrollbar->getSize().x)));
         }
         else
         {
