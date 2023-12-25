@@ -159,6 +159,22 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text of a leaf item
+        ///
+        /// @param hierarchy  Hierarchy of items, with the last item being the leaf item that should be renamed
+        /// @param leafText   New text to put in the leaf item
+        ///
+        /// @return True when the item was renamed, false if no item matched with the given hierarchy
+        ///
+        /// Example code:
+        /// @code
+        /// treeView->changeItem({"Vehicles", "Whole", "Car"}, "Train");  // Changes the item to {"Vehicles", "Whole", "Train"}
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItem(const std::vector<String>& hierarchy, const String& leafText);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Expands the given item
         ///
         /// @param hierarchy  Hierarchy of items, identifying the node that has to be expanded
@@ -351,7 +367,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
-
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

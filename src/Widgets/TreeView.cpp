@@ -425,6 +425,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TreeView::changeItem(const std::vector<String>& hierarchy, const String& leafText)
+    {
+        if (hierarchy.empty())
+            return false;
+
+        auto* node = findNode(m_nodes, hierarchy, 0);
+        if (!node)
+            return false;
+
+        node->text.setString(leafText);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TreeView::expand(const std::vector<String>& hierarchy)
     {
         expandOrCollapse(hierarchy, true);

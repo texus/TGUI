@@ -5,7 +5,9 @@ TGUI 1.1  (4 November 2023)
 - Any column in ListView can now be auto-sized and expanded
 - Added methods for arrow key navigation between widgets
 - Added getColumnDesignWidth function to ListView
+- Added changeItem function to TreeView
 - Added TextOutlineColor and TextOutlineThickness to ProgressBar renderer
+- Added ignoreMouseEvents function to canvas widgets
 - MiddleRect of Texture can now be changed after loading
 - Hover state is now reset when mouse leaves the window
 

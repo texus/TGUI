@@ -87,6 +87,13 @@ TEST_CASE("[TreeView]")
 
             REQUIRE(treeView->addItem({"Two"}, false));
             REQUIRE(treeView->getNodes().size() == 2);
+
+            REQUIRE(treeView->changeItem({"Two"}, "_2_"));
+            REQUIRE(treeView->getNodes().size() == 2);
+            REQUIRE(treeView->getNodes()[1].text == "_2_");
+
+            treeView->removeItem({"One"});
+            REQUIRE(treeView->getNodes().size() == 1);
         }
 
         SECTION("Multiple items")
@@ -115,6 +122,27 @@ TEST_CASE("[TreeView]")
                 REQUIRE(treeView->getNodes()[1].nodes[1].nodes.size() == 2);
                 REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Truck");
                 REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Car");
+            }
+
+            SECTION("Changing items")
+            {
+                REQUIRE(!treeView->changeItem({}, "test"));
+                REQUIRE(!treeView->changeItem({"Does", "not", "exist"}, "test"));
+                REQUIRE(!treeView->changeItem({"Vehicles", "Whole", "something else"}, "test"));
+
+                REQUIRE(treeView->changeItem({"Vehicles", "Whole", "Car"}, "Train"));
+                REQUIRE(treeView->getNodes().size() == 2);
+                REQUIRE(treeView->getNodes()[1].nodes[1].nodes.size() == 2);
+                REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Truck");
+                REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Train");
+
+                // Once changed, the old item won't be found anymore
+                REQUIRE(!treeView->changeItem({"Vehicles", "Whole", "Car"}, "Airplane"));
+                REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Train");
+
+                // The renamed item can be found now
+                REQUIRE(treeView->changeItem({"Vehicles", "Whole", "Train"}, "Airplane"));
+                REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Airplane");
             }
 
             SECTION("Removing items")
