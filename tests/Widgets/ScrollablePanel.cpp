@@ -155,6 +155,28 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(panel->getScrollbarWidth() == 15);
     }
 
+    SECTION("getWidgetAtPos")
+    {
+        panel->setPosition(200, 150);
+        panel->setSize(320, 240);
+        panel->setContentSize({4000, 3000});
+
+        auto child = tgui::ClickableWidget::create();
+        child->setPosition({50, 100});
+        child->setSize({40, 80});
+        panel->add(child);
+
+        REQUIRE(panel->getWidgetAtPos({70, 99}, false) == nullptr);
+        REQUIRE(panel->getWidgetAtPos({70, 100}, false) == child);
+
+        panel->setVerticalScrollbarValue(90);
+        panel->setHorizontalScrollbarValue(70);
+
+        REQUIRE(panel->getWidgetAtPos({20, 89}, false) == nullptr);
+        REQUIRE(panel->getWidgetAtPos({19, 89}, false) == child);
+        REQUIRE(panel->getWidgetAtPos({19, 90}, false) == nullptr);
+    }
+
     SECTION("Content size")
     {
         panel->setSize(200, 100);

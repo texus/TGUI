@@ -323,13 +323,18 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the leaf child widget that is located at the given position
+        /// @brief Returns the widget that is located at the given position
         ///
-        /// @param pos  The location where the widget will be searched, relative to the container
+        /// @param pos        The location where the widget will be searched, relative to the container
+        /// @param recursive  If the widget at the position is a container, should the search continue inside it instead of just
+        ///                   returning the container? The child container may still be returned when recursive is true, but only
+        ///                   if none of its children are located at the searched position.
         ///
         /// @return Widget at the queried position, or nullptr when there is no widget at that location
+        ///
+        /// @since TGUI 1.2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetAtPosition(Vector2f pos) const override;
+        TGUI_NODISCARD Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -783,10 +783,21 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     Widget::Ptr Container::getWidgetAtPosition(Vector2f pos) const
     {
-        pos -= getPosition() + getChildWidgetsOffset();
+        return getWidgetAtPos(pos - getPosition(), true);
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Container::getWidgetAtPos(Vector2f pos, bool recursive) const
+    {
+        const Vector2f widgetsOffset = getChildWidgetsOffset();
+        if ((pos.x < widgetsOffset.x) || (pos.y < widgetsOffset.y))
+            return nullptr;
+
+        pos -= widgetsOffset;
 
         for (auto it = m_widgets.crbegin(); it != m_widgets.crend(); ++it)
         {
@@ -798,11 +809,11 @@ namespace tgui
             if (!widget->isMouseOnWidget(transformMousePos(widget, pos)))
                 continue;
 
-            // If the widget is a container then look inside it
-            if (widget->isContainer())
+            // If the widget is a container then look inside it if we are looking for the leaf widget
+            if (recursive && widget->isContainer())
             {
                 Container::Ptr container = std::static_pointer_cast<Container>(widget);
-                auto childWidget = container->getWidgetAtPosition(transformMousePos(widget, pos));
+                auto childWidget = container->getWidgetAtPos(transformMousePos(widget, pos) - container->getPosition(), true);
                 if (childWidget)
                     return childWidget;
             }

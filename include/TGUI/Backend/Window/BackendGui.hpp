@@ -312,7 +312,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr getFocusedLeaf() const;
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the leaf child widget that is located at the given position
         ///
@@ -320,11 +320,28 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Widget at the queried position, or nullptr when there is no widget at that location
         ///
-        /// @see getWidgetBelowMouseCursor
+        /// @deprecated Replaced by getWidgetAtPos in TGUI 1.2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
+        TGUI_DEPRECATED("Use getWidgetAtPos(pos, true) instead") TGUI_NODISCARD Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
+#endif
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the widget that is located at the given position
+        ///
+        /// @param pos        The location where the widget will be searched, relative to the gui view
+        /// @param recursive  If the widget at the position is a container, should the search continue inside it instead of just
+        ///                   returning the container? The child container may still be returned when recursive is true, but only
+        ///                   if none of its children are located at the searched position.
+        ///
+        /// @return Widget at the queried position, or nullptr when there is no widget at that location
+        ///
+        /// @see getWidgetBelowMouseCursor
+        ///
+        /// @since TGUI 1.2
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const;
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the leaf child widget below the mouse
         ///
@@ -332,9 +349,26 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Widget below the mouse, or nullptr when the mouse isn't on top of any widgets
         ///
-        /// @see getWidgetAtPosition
+        /// @deprecated Replaced by getWidgetBelowMouseCursor overload with additional recursive parameter in TGUI 1.2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
+        TGUI_DEPRECATED("Use getWidgetBelowMouseCursor(mousePos, true) instead") TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the widget below the mouse
+        ///
+        /// @param mousePos   Position of the mouse, in pixel coordinates, relative the the window
+        /// @param recursive  If the widget below the mouse is a container, should the search continue inside it instead of just
+        ///                   returning the container? The child container may still be returned when recursive is true, but only
+        ///                   if none of its children are located at the mouse position.
+        ///
+        /// @return Widget below the mouse, or nullptr when the mouse isn't on top of any widgets
+        ///
+        /// @see getWidgetAtPos
+        ///
+        /// @since TGUI 1.2
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos, bool recursive) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

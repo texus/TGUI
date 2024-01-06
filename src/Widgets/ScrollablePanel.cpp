@@ -483,11 +483,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr ScrollablePanel::getWidgetAtPosition(Vector2f pos) const
+    Widget::Ptr ScrollablePanel::getWidgetAtPos(Vector2f pos, bool recursive) const
     {
+        const Vector2f widgetsOffset = getChildWidgetsOffset();
+        if ((pos.x < widgetsOffset.x) || (pos.y < widgetsOffset.y))
+            return nullptr;
+
         pos.x += static_cast<float>(m_horizontalScrollbar->getValue());
         pos.y += static_cast<float>(m_verticalScrollbar->getValue());
-        return Panel::getWidgetAtPosition(pos);
+        return Panel::getWidgetAtPos(pos, recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

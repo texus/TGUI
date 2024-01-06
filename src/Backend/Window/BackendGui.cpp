@@ -152,7 +152,7 @@ namespace tgui
                         return true;
 
                     // Even if no scrollbar moved, we will still absorb the scroll event when the mouse is on top of a widget
-                    return m_container->getWidgetAtPosition(mouseCoords) != nullptr;
+                    return m_container->getWidgetAtPos(mouseCoords, false) != nullptr;
                 }
                 else if (event.type == Event::Type::MouseButtonPressed)
                     return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
@@ -322,17 +322,31 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     Widget::Ptr BackendGui::getWidgetAtPosition(Vector2f pos) const
     {
-        return m_container->getWidgetAtPosition(pos);
+        return getWidgetAtPos(pos, true);
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr BackendGui::getWidgetAtPos(Vector2f pos, bool recursive) const
+    {
+        return m_container->getWidgetAtPos(pos, recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     Widget::Ptr BackendGui::getWidgetBelowMouseCursor(Vector2i mousePos) const
     {
-        return getWidgetAtPosition(mapPixelToCoords(mousePos));
+        return getWidgetBelowMouseCursor(mousePos, true);
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr BackendGui::getWidgetBelowMouseCursor(Vector2i mousePos, bool recursive) const
+    {
+        return getWidgetAtPos(mapPixelToCoords(mousePos), recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -607,7 +621,7 @@ namespace tgui
             return true;
 
         // Even if no widget was scrolled, we will still absorb the event when the scrolling bagan on top of a widget
-        return m_container->getWidgetAtPosition(touchPos) != nullptr;
+        return m_container->getWidgetAtPos(touchPos, false) != nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -404,7 +404,7 @@ TEST_CASE("[Container]")
         REQUIRE(widget5->getInheritedOpacity() == 0.7f);
     }
 
-    SECTION("getWidgetAtPosition / getWidgetBelowMouseCursor")
+    SECTION("getWidgetAtPos / getWidgetBelowMouseCursor")
     {
         container->setAbsoluteView({-5, 40, 100, 400});
 
@@ -424,17 +424,23 @@ TEST_CASE("[Container]")
         w3->setSize({20, 40});
         w2->add(w3);
 
-        REQUIRE(container->getWidgetAtPosition({70, 99}) == nullptr);
-        REQUIRE(container->getWidgetAtPosition({70, 100}) == w1);
-        REQUIRE(container->getWidgetAtPosition({69, 99}) == w2);
-        REQUIRE(container->getWidgetAtPosition({41, 120}) == w2);
-        REQUIRE(container->getWidgetAtPosition({41, 119}) == w3);
+        REQUIRE(container->getWidgetAtPos({70, 99}, false) == nullptr);
+        REQUIRE(container->getWidgetAtPos({70, 99}, true) == nullptr);
+        REQUIRE(container->getWidgetAtPos({70, 100}, true) == w1);
+        REQUIRE(container->getWidgetAtPos({69, 99}, true) == w2);
+        REQUIRE(container->getWidgetAtPos({41, 120}, true) == w2);
+        REQUIRE(container->getWidgetAtPos({41, 120}, false) == w2);
+        REQUIRE(container->getWidgetAtPos({41, 119}, true) == w3);
+        REQUIRE(container->getWidgetAtPos({41, 119}, false) == w2);
 
-        REQUIRE(container->getWidgetBelowMouseCursor({150, 29}) == nullptr);
-        REQUIRE(container->getWidgetBelowMouseCursor({150, 30}) == w1);
-        REQUIRE(container->getWidgetBelowMouseCursor({149, 29}) == w2);
-        REQUIRE(container->getWidgetBelowMouseCursor({93, 40}) == w2);
-        REQUIRE(container->getWidgetBelowMouseCursor({93, 39}) == w3);
+        REQUIRE(container->getWidgetBelowMouseCursor({150, 29}, false) == nullptr);
+        REQUIRE(container->getWidgetBelowMouseCursor({150, 29}, true) == nullptr);
+        REQUIRE(container->getWidgetBelowMouseCursor({150, 30}, true) == w1);
+        REQUIRE(container->getWidgetBelowMouseCursor({149, 29}, true) == w2);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 40}, true) == w2);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 40}, false) == w2);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 39}, true) == w3);
+        REQUIRE(container->getWidgetBelowMouseCursor({93, 39}, false) == w2);
     }
 
     // TODO: Events
