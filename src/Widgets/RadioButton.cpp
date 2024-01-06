@@ -169,7 +169,11 @@ namespace tgui
 
     void RadioButton::setText(const String& text)
     {
+        if (m_text.getString() == text)
+            return;
+
         m_text.setString(text);
+        onSizeChange.emit(this, getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
