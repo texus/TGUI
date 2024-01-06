@@ -240,8 +240,8 @@ namespace tgui
     {
         if (m_selectedTab >= 0)
         {
-            updateTextColors();
             m_selectedTab = -1;
+            updateTextColors();
         }
     }
 
