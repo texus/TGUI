@@ -223,6 +223,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param inputRect Part of the screen where the text input is located
         ///
         /// If this function isn't overriden then calling it does nothing.
+        ///
+        /// @deprecated Replaced by BackendGui::startTextInput in TGUI 1.0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use BackendGui::startTextInput instead") virtual void openVirtualKeyboard(const FloatRect& inputRect);
 
@@ -231,6 +233,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Closes the virtual keyboard on Android and iOS
         ///
         /// If this function isn't overriden then calling it does nothing.
+        ///
+        /// @deprecated Replaced by BackendGui::stopTextInput in TGUI 1.0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use BackendGui::stopTextInput instead") virtual void closeVirtualKeyboard();
 #endif

@@ -684,6 +684,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes whether the last column is expanded to fill the list view (if all columns fit inside the list view)
         ///
         /// @param expand  Make the last column larger to make it fill the list view when it isn't full yet?
+        ///
+        /// @deprecated Replaced by setColumnAutoExpanded and setColumnAutoResize in TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use setColumnAutoExpanded and setColumnAutoResize instead") void setExpandLastColumn(bool expand);
 
@@ -691,6 +693,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns whether the last column is expanded to fill the list view (if all columns fit inside the list view)
         ///
         /// @return Is the last column larger to make it fill the list view when the list view isn't full yet?
+        ///
+        /// @deprecated Replaced by ColumnAutoExpanded and ColumnAutoResize setters and getters in TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use ColumnAutoExpanded and ColumnAutoResize setters and getters instead") TGUI_NODISCARD bool getExpandLastColumn() const;
 

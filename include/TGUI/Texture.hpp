@@ -113,6 +113,9 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
         ///
         /// This constructor just calls the corresponding load function.
+        ///
+        /// @deprecated Replaced by using Texture() and loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr())
+        ///             in TGUI 1.1 to make it more clear that this is a memory-intensive constructor that should be avoided.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use Texture() and loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) instead")
         Texture(const sf::Texture& texture,
@@ -170,6 +173,9 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
         ///
         /// @throw Exception when loading failed
+        ///
+        /// @deprecated Replaced by loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) in TGUI 1.1 to
+        ///             make it more clear that this is a memory-intensive function that should be avoided.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) instead")
         void load(const sf::Texture& texture,

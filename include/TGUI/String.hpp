@@ -236,6 +236,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param substring  Characters to compare against the first part of the string
         ///
         /// @return Does the first part of the string match the given substring?
+        ///
+        /// @deprecated Replaced by starts_with in TGUI 1.0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use starts_with instead") TGUI_NODISCARD bool startsWith(const String& substring) const;
 #endif
@@ -256,6 +258,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param substring  Characters to compare against the final part of the string
         ///
         /// @return Does the back of the string match the given substring?
+        ///
+        /// @deprecated Replaced by ends_with in TGUI 1.0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use ends_with instead") TGUI_NODISCARD bool endsWith(const String& substring) const;
 #endif

@@ -170,6 +170,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @code
         /// treeView->changeItem({"Vehicles", "Whole", "Car"}, "Train");  // Changes the item to {"Vehicles", "Whole", "Train"}
         /// @endcode
+        ///
+        /// @since TGUI 1.2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool changeItem(const std::vector<String>& hierarchy, const String& leafText);
 
