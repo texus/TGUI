@@ -104,6 +104,19 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Replaced this theme with another one, while updating all connected widgets to the new renderers
+        ///
+        /// @param otherTheme  The theme to copy
+        ///
+        /// The renderers are copied, meaning that all widgets connected to the other theme will remain connected to it.
+        /// Any widgets connected to this theme will however be updated with new renderers when the same name is encountered.
+        ///
+        /// @since TGUI 1.2
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void replace(const Theme& otherTheme);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets data for the renderers
         ///
         /// @param id  The secondary parameter for the theme loader (name of section in theme file in DefaultThemeLoader).

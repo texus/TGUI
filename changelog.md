@@ -1,7 +1,8 @@
 TGUI 1.2  (TBD)
 ---------------
 
-- Added changeItem function to TreeView
+- Added Theme::replace function
+- Added TreeView::changeItem function
 - Added ignoreMouseEvents function to canvas widgets
 - Replaced getWidgetAtPosition with getWidgetAtPos
 - getWidgetBelowMouseCursor was given a parameter for recursive search

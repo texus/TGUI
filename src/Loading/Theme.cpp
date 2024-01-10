@@ -661,6 +661,71 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Theme::replace(const Theme& otherTheme)
+    {
+        m_primary = otherTheme.m_primary;
+        m_globalProperties = otherTheme.m_globalProperties;
+
+        // Replace the existing renderers
+        auto existingRendererIt = m_renderers.begin();
+        while (existingRendererIt != m_renderers.end())
+        {
+            const auto& id = existingRendererIt->first;
+            auto& existingRenderer = existingRendererIt->second;
+
+            // If the renderer doesn't exist in the other theme then disconnect the old renderer from this theme.
+            // Widgets using those old renderers will remain unmodified, but they will no longer be connected to this theme.
+            auto rendererToCopyIt = otherTheme.m_renderers.find(id);
+            if ((rendererToCopyIt == otherTheme.m_renderers.end()) && !m_themeLoader->canLoad(m_primary, id))
+            {
+                if (existingRenderer->connectedTheme == this)
+                    existingRenderer->connectedTheme = nullptr;
+
+                existingRendererIt = m_renderers.erase(existingRendererIt);
+                continue;
+            }
+
+            auto newRenderer = RendererData::create();
+            newRenderer->connectedTheme = this;
+            newRenderer->observers = std::move(existingRenderer->observers);
+
+            if (rendererToCopyIt != otherTheme.m_renderers.end())
+                newRenderer->propertyValuePairs = rendererToCopyIt->second->propertyValuePairs;
+            else
+            {
+                const auto& properties = m_themeLoader->load(m_primary, id);
+                for (const auto& property : properties)
+                    newRenderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
+            }
+
+            existingRenderer = newRenderer;
+
+            // Update the existing widgets that were using the previous renderer from this theme
+            for (auto& observer : newRenderer->observers)
+                observer->setRenderer(newRenderer);
+
+            ++existingRendererIt;
+        }
+
+        // Add the renderers that only existed in the other renderers (e.g. added via the addRenderer function)
+        for (const auto& otherRendererPair : otherTheme.m_renderers)
+        {
+            const auto& id = otherRendererPair.first;
+            const auto& otherRenderer = otherRendererPair.second;
+
+            auto rendererIt = m_renderers.find(id);
+            if (rendererIt != m_renderers.end())
+                continue; // We already have the renderer, it would have been handled by the earlier loop
+
+            auto newRenderer = RendererData::create();
+            newRenderer->connectedTheme = this;
+            newRenderer->propertyValuePairs = otherRenderer->propertyValuePairs;
+            m_renderers[id] = newRenderer;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::shared_ptr<RendererData> Theme::getRenderer(const String& id)
     {
         // If we already have this renderer in cache then just return it
@@ -717,6 +782,8 @@ namespace tgui
         if (!renderer)
             renderer = RendererData::create();
 
+        // If a renderer with the same id already existed then disconnect the old renderer from this theme.
+        // Widgets using the old renderer would thus remain unmodified.
         auto existingRendererIt = m_renderers.find(id);
         if (existingRendererIt != m_renderers.end())
         {
