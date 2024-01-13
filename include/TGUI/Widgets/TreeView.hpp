@@ -48,10 +48,10 @@ TGUI_MODULE_EXPORT namespace tgui
         static constexpr const char StaticWidgetType[] = "TreeView"; //!< Type name of the widget
 
 
-        /// @brief Read-only node representation used by getNodes
+        /// @brief Read-only node representation used by getNode and getNodes
         struct ConstNode
         {
-            bool expanded;
+            bool expanded = true;
             String text;
             std::vector<ConstNode> nodes;
         };
@@ -242,6 +242,21 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Hierarchy of items, identifying the selected node, or an empty list when no item was selected
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::vector<String> getSelectedItem() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the node in the tree view at a given hierarchy
+        ///
+        /// @param hierarchy  Hierarchy of items, identifying the node to retrieve
+        ///
+        /// @return Node that was identified by the hierarchy
+        ///
+        /// If no node exists at the given hierarchy, the returned node will have an empty text and no children.
+        /// If the node was found, its text property will always match with the last element of the hierarchy.
+        ///
+        /// @since TGUI 1.2
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD ConstNode getNode(const std::vector<String>& hierarchy) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

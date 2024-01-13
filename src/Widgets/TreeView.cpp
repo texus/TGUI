@@ -598,6 +598,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TreeView::ConstNode TreeView::getNode(const std::vector<String>& hierarchy) const
+    {
+        TreeView::ConstNode constNode;
+
+        if (hierarchy.empty())
+            return constNode;
+
+        auto* node = findNode(m_nodes, hierarchy, 0);
+        if (!node)
+            return constNode;
+
+        constNode.expanded = node->expanded;
+        constNode.text = node->text.getString();
+        constNode.nodes = convertNodesToConstNodes(node->nodes);
+        return constNode;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::vector<TreeView::ConstNode> TreeView::getNodes() const
     {
         return convertNodesToConstNodes(m_nodes);
