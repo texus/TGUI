@@ -359,8 +359,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
         /// and scale then you can use the setScale(Vector2f,Vector2f) function to pass a scaling origin.
-        ///
-        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(Vector2f scaleFactors);
 
@@ -374,8 +372,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
         ///
         /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
-        ///
-        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(Vector2f scaleFactors, Vector2f origin);
 
@@ -389,8 +385,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
         /// and scale then you can use the setScale(float,Vector2f) function to pass a scaling origin.
-        ///
-        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(float scaleFactor)
         {
@@ -407,8 +401,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// of 2 will appear on the screen as a (100, 40) widget with its entire contents stretched.
         ///
         /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
-        ///
-        /// @warning This functionality is still experimental, it will not work perfectly for all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(float scaleFactor, Vector2f origin)
         {
