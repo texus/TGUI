@@ -111,7 +111,7 @@ namespace tgui
 #endif
 
 #if SFML_VERSION_MAJOR >= 3
-            m_window.create(sf::VideoMode{{width, height}}, title.toStdString(), sf::Style::Default, settings);
+            m_window.create(sf::VideoMode{{width, height}}, title.toStdString(), sf::Style::Default, sf::State::Windowed, settings);
 #else
             m_window.create(sf::VideoMode{width, height}, title.toStdString(), sf::Style::Default, settings);
 #endif
