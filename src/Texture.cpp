@@ -403,6 +403,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         return (m_id == right.m_id)
             && (!m_id.empty() || (m_data == right.m_data))
+            && (m_partRect == right.m_partRect)
             && (m_middleRect == right.m_middleRect)
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
             && (m_shader == right.m_shader)

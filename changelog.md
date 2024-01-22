@@ -7,6 +7,7 @@ TGUI 1.2  (TBD)
 - Added ignoreMouseEvents function to canvas widgets
 - Replaced getWidgetAtPosition with getWidgetAtPos
 - getWidgetBelowMouseCursor was given a parameter for recursive search
+- Textures with different part rects were incorrectly considered equal
 
 
 TGUI 1.1  (4 November 2023)
