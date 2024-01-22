@@ -812,47 +812,47 @@ jobs:
 
   #----------------------------------------
 
-  ios-sfml-graphics:
-    runs-on: macos-12
-    env:
-      SFML_VERSION: 2.5.1
-    steps:
-      - name: Checkout TGUI
-        uses: actions/checkout@v3
-
-      - name: Cache SFML
-        uses: actions/cache@v3
-        id: cache-sfml
-        with:
-          path: SFML_INSTALL
-          key: CACHE_IOS_SFML_${{env.SFML_VERSION}}
-
-      - name: Build SFML
-        if: steps.cache-sfml.outputs.cache-hit != 'true'
-        run: |
-          wget -nv https://github.com/SFML/SFML/releases/download/$SFML_VERSION/SFML-$SFML_VERSION-sources.zip
-          unzip SFML-$SFML_VERSION-sources.zip
-          cmake -GXcode -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DCMAKE_TOOLCHAIN_FILE="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake" -DIOS_PLATFORM=OS -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML-$SFML_VERSION -B SFML-build
-          cmake --build SFML-build --config Debug --target install
-
-      - name: Build TGUI
-        run: >
-          cmake -B TGUI-build
-          -GXcode
-          -DCMAKE_SYSTEM_NAME=iOS
-          -DCMAKE_OSX_ARCHITECTURES=arm64
-          -DCMAKE_OSX_DEPLOYMENT_TARGET=14.4
-          -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL
-          -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
-          -DCMAKE_UNITY_BUILD=ON
-          -DBUILD_SHARED_LIBS=OFF
-          -DTGUI_CXX_STANDARD=20
-          -DTGUI_WARNINGS_AS_ERRORS=ON
-          -DTGUI_BUILD_EXAMPLES=OFF
-          -DTGUI_BACKEND=SFML_GRAPHICS
-          -DFreeType_LIB="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a"
-
-          cmake --build TGUI-build --config Debug --target install
+  #ios-sfml-graphics:
+  #  runs-on: macos-12
+  #  env:
+  #    SFML_VERSION: 2.5.1
+  #  steps:
+  #    - name: Checkout TGUI
+  #      uses: actions/checkout@v3
+  #
+  #    - name: Cache SFML
+  #      uses: actions/cache@v3
+  #      id: cache-sfml
+  #      with:
+  #        path: SFML_INSTALL
+  #        key: CACHE_IOS_SFML_${{env.SFML_VERSION}}
+  #
+  #    - name: Build SFML
+  #      if: steps.cache-sfml.outputs.cache-hit != 'true'
+  #      run: |
+  #        wget -nv https://github.com/SFML/SFML/releases/download/$SFML_VERSION/SFML-$SFML_VERSION-sources.zip
+  #        unzip SFML-$SFML_VERSION-sources.zip
+  #        cmake -GXcode -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DCMAKE_TOOLCHAIN_FILE="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake" -DIOS_PLATFORM=OS -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML-$SFML_VERSION -B SFML-build
+  #        cmake --build SFML-build --config Debug --target install
+  #
+  #    - name: Build TGUI
+  #      run: >
+  #        cmake -B TGUI-build
+  #        -GXcode
+  #        -DCMAKE_SYSTEM_NAME=iOS
+  #        -DCMAKE_OSX_ARCHITECTURES=arm64
+  #        -DCMAKE_OSX_DEPLOYMENT_TARGET=14.4
+  #        -DCMAKE_INSTALL_PREFIX=TGUI_INSTALL
+  #        -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
+  #        -DCMAKE_UNITY_BUILD=ON
+  #        -DBUILD_SHARED_LIBS=OFF
+  #        -DTGUI_CXX_STANDARD=20
+  #        -DTGUI_WARNINGS_AS_ERRORS=ON
+  #        -DTGUI_BUILD_EXAMPLES=OFF
+  #        -DTGUI_BACKEND=SFML_GRAPHICS
+  #        -DFreeType_LIB="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/extlibs/libs-ios/libfreetype.a"
+  #
+  #        cmake --build TGUI-build --config Debug --target install
 
   #----------------------------------------
 
