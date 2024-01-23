@@ -507,7 +507,7 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
           C:\msys64\usr\bin\wget.exe -nv https://www.sfml-dev.org/files/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
-          C:\msys64\usr\bin\wget.exe -nv https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
           7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
