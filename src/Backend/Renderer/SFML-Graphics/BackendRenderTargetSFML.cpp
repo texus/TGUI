@@ -122,12 +122,17 @@ namespace tgui
         sfStates.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
         sfStates.shader = sprite.getTexture().getShader();
 
+#if SFML_VERSION_MAJOR < 3
         const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
+#endif
         const std::vector<Vertex>& vertices = sprite.getVertices();
         const std::vector<unsigned int>& indices = sprite.getIndices();
-        std::vector<Vertex> triangleVertices(indices.size());
+        auto triangleVertices = MakeUniqueForOverwrite<Vertex[]>(indices.size());
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
+#if SFML_VERSION_MAJOR >= 3
+            triangleVertices[i] = vertices[indices[i]];
+#else
             triangleVertices[i].position.x = vertices[indices[i]].position.x;
             triangleVertices[i].position.y = vertices[indices[i]].position.y;
             triangleVertices[i].color.red = vertices[indices[i]].color.red;
@@ -136,10 +141,11 @@ namespace tgui
             triangleVertices[i].color.alpha = vertices[indices[i]].color.alpha;
             triangleVertices[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
             triangleVertices[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+#endif
         }
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
-        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
+        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
         m_target->draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, sfStates);
 
         if (clippingRequired)
@@ -155,13 +161,18 @@ namespace tgui
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
+#if SFML_VERSION_MAJOR < 3
         const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
+#endif
 
         if (indices)
         {
             auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indexCount);
             for (std::size_t i = 0; i < indexCount; ++i)
             {
+#if SFML_VERSION_MAJOR >= 3
+                verticesSFML[i] = vertices[indices[i]];
+#else
                 verticesSFML[i].position.x = vertices[indices[i]].position.x;
                 verticesSFML[i].position.y = vertices[indices[i]].position.y;
                 verticesSFML[i].color.red = vertices[indices[i]].color.red;
@@ -170,12 +181,16 @@ namespace tgui
                 verticesSFML[i].color.alpha = vertices[indices[i]].color.alpha;
                 verticesSFML[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
                 verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+#endif
             }
 
             m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
         }
         else // There are no indices
         {
+#if SFML_VERSION_MAJOR >= 3
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(vertices), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+#else
             auto verticesSFML = std::vector<Vertex>(vertices, vertices + vertexCount);
             for (std::size_t i = 0; i < vertexCount; ++i)
             {
@@ -184,6 +199,7 @@ namespace tgui
             }
 
             m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.data()), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+#endif
         }
     }
 
@@ -223,6 +239,10 @@ namespace tgui
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+
+#if SFML_VERSION_MAJOR >= 3
+        statesSFML.coordinateType = sf::CoordinateType::Normalized;
+#endif
 
         if (texture)
         {

@@ -205,19 +205,26 @@ namespace tgui
                     "CanvasSFML::draw requires sprite to have a backend texture of type BackendTextureSFML");
         statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
 
+#if SFML_VERSION_MAJOR >= 3
+        statesSFML.coordinateType = sf::CoordinateType::Normalized;
+#else
         const sf::Vector2u textureSize{statesSFML.texture->getSize()};
+#endif
+
         const std::vector<Vertex>& vertices = sprite.getVertices();
         const std::vector<unsigned int>& indices = sprite.getIndices();
-        std::vector<Vertex> triangleVertices(indices.size());
+        auto triangleVertices = MakeUniqueForOverwrite<Vertex[]>(indices.size());
         for (std::size_t i = 0; i < indices.size(); ++i)
         {
             triangleVertices[i] = vertices[indices[i]];
+#if SFML_VERSION_MAJOR < 3
             triangleVertices[i].texCoords.x *= textureSize.x;
             triangleVertices[i].texCoords.y *= textureSize.y;
+#endif
         }
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
-        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.data());
+        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
         m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, statesSFML);
     }
 
@@ -255,10 +262,15 @@ namespace tgui
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
         const sf::Texture& texture = m_renderTexture.getTexture();
+#if SFML_VERSION_MAJOR < 3
         const Vector2f textureSize = Vector2f{static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)};
+#endif
         auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indices.size());
         for (std::size_t i = 0; i < indices.size(); ++i)
         {
+#if SFML_VERSION_MAJOR >= 3
+            verticesSFML[i] = vertices[indices[i]];
+#else
             verticesSFML[i].position.x = vertices[indices[i]].position.x;
             verticesSFML[i].position.y = vertices[indices[i]].position.y;
             verticesSFML[i].color.red = vertices[indices[i]].color.red;
@@ -267,6 +279,7 @@ namespace tgui
             verticesSFML[i].color.alpha = vertices[indices[i]].color.alpha;
             verticesSFML[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
             verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
+#endif
         }
 
         sf::RenderStates statesSFML;
@@ -276,6 +289,9 @@ namespace tgui
             transformMatrix[0], transformMatrix[4], transformMatrix[12],
             transformMatrix[1], transformMatrix[5], transformMatrix[13],
             transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+#if SFML_VERSION_MAJOR >= 3
+        statesSFML.coordinateType = sf::CoordinateType::Normalized;
+#endif
 
         TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
         static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
