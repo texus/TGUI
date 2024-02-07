@@ -743,8 +743,6 @@ namespace tgui
 
     void Widget::showWithEffect(ShowEffectType type, Duration duration)
     {
-        setVisible(true);
-
         // We store the state the widget is currently in. In the event another animation was already playing, we should try to
         // use the current state to start our animation at, but this is not the state that the widget should end at. We must
         // get this state BEFORE finishing the previous animation which is done by finishExistingConflictingAnimations.
@@ -753,6 +751,9 @@ namespace tgui
         //const Vector2f startSize = getSize();
 
         finishExistingConflictingAnimations(m_showAnimations, type);
+
+        // Show the widget AFTER finishing existing animations, as finishing a hide animation would leave the widget invisible
+        setVisible(true);
 
         switch (type)
         {
