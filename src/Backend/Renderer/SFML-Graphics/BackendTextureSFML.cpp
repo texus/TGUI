@@ -33,7 +33,7 @@ namespace tgui
 
     BackendTextureSFML::BackendTextureSFML()
     {
-        m_isSmooth = false; // Smooth filter is disabled by default in SFML textures
+        m_isSmooth = m_texture.isSmooth(); // Smooth filter is disabled by default in SFML textures
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
