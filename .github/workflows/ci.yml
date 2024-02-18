@@ -133,7 +133,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev ninja-build libwayland-dev
+          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev ninja-build libwayland-dev libxkbcommon-dev
           sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
       - name: Build SFML
