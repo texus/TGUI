@@ -10,7 +10,7 @@ jobs:
       CLANG_VERSION: 14
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -90,7 +90,7 @@ jobs:
       CMAKE_VERSION_PATCH: 4
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: TGUI
 
@@ -103,28 +103,28 @@ jobs:
           echo "glfw-revision=$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: SFML_INSTALL
           key: CACHE_LINUX_SFML_LATEST_${{ steps.find-dependencies.outputs.sfml-revision }}
 
       - name: Cache SDL
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sdl
         with:
           path: SDL_INSTALL
           key: CACHE_LINUX_SDL_LATEST_${{ steps.find-dependencies.outputs.sdl-revision }}
 
       - name: Cache SDL_ttf
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sdl-ttf
         with:
           path: SDL_TTF_INSTALL
           key: CACHE_LINUX_SDL_TTF_LATEST_${{ steps.find-dependencies.outputs.sdl-ttf-revision }}
 
       - name: Cache GLFW
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-glfw
         with:
           path: GLFW_INSTALL
@@ -238,31 +238,31 @@ jobs:
       CLANG_VERSION: '6.0'
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: SFML_INSTALL
           key: CACHE_LINUX_OLDEST_SFML_${{env.SFML_VERSION}}
 
       - name: Cache SDL
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sdl
         with:
           path: SDL_INSTALL
           key: CACHE_LINUX_OLDEST_SDL_${{env.SDL_VERSION}}
 
       - name: Cache SDL_ttf
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sdl-ttf
         with:
           path: SDL_TTF_INSTALL
           key: CACHE_LINUX_OLDEST_SDL_TTF_${{env.SDL_TTF_VERSION}}
 
       - name: Cache GLFW
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-glfw
         with:
           path: GLFW_INSTALL
@@ -367,7 +367,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -456,7 +456,7 @@ jobs:
       MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -500,7 +500,7 @@ jobs:
       MSVC_TOOLSET_VERSION: 141  # VS2017
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -546,10 +546,10 @@ jobs:
       SFML_VERSION: 2.6.1
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: |
@@ -615,10 +615,10 @@ jobs:
       MSVC_TOOLSET_VERSION: 142  # VS2019
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: SFML_INSTALL
@@ -669,7 +669,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -726,7 +726,7 @@ jobs:
       SDL_TTF_VERSION: 2.20.2
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: TGUI
 
@@ -764,10 +764,10 @@ jobs:
       ARCH_ABI: arm64-v8a
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: |
@@ -818,10 +818,10 @@ jobs:
       SFML_VERSION: 2.6.x  # At least 2.6.2 is required
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache SFML
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-sfml
         with:
           path: SFML_INSTALL
@@ -863,7 +863,7 @@ jobs:
       SDL_TTF_VERSION: 2.0.18
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build SDL
         run: |
@@ -951,7 +951,7 @@ jobs:
       MSVC_TOOLSET_VERSION: 141  # VS2017
     steps:
       - name: Checkout TGUI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: TGUI
 
