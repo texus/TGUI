@@ -350,21 +350,8 @@ namespace tgui
 
     void BackendSDL::updateMouseCursorStyle(Cursor::Type type, SDL_Cursor* cursor)
     {
-#ifdef TGUI_SYSTEM_WINDOWS
-        // Make sure the old cursor isn't still being used before we destroy it
-        bool cursorInUse = false;
-        for (auto& pair : m_guiResources)
-        {
-            if (pair.second.mouseCursor == type)
-                cursorInUse = true;
-        }
-        if (cursorInUse)
-            SetCursor(static_cast<HCURSOR>(LoadImage(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
-#endif
-
-        if (m_mouseCursors[type])
-            SDL_DestroyCursor(m_mouseCursors[type]);
-
+        // If a cursor already existed, then wait before destroying it until it is no longer in use
+        SDL_Cursor* oldCursor = m_mouseCursors[type];
         m_mouseCursors[type] = cursor;
 
         // Update the cursor on the screen if the cursor was in use
@@ -376,6 +363,9 @@ namespace tgui
                     updateShownMouseCursor(pair.second.window, type);
             }
         }
+
+        if (oldCursor)
+            SDL_DestroyCursor(oldCursor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

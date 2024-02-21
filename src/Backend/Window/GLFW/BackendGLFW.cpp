@@ -251,9 +251,8 @@ namespace tgui
 
     void BackendGLFW::updateMouseCursorStyle(Cursor::Type type, GLFWcursor* cursor)
     {
-        if (m_mouseCursors[type])
-            glfwDestroyCursor(m_mouseCursors[type]);
-
+        // If a cursor already existed, then wait before destroying it until it is no longer in use
+        GLFWcursor* oldCursor = m_mouseCursors[type];
         m_mouseCursors[type] = cursor;
 
         // Update the cursor on the screen if the cursor was in use
@@ -265,6 +264,9 @@ namespace tgui
                     updateShownMouseCursor(pair.second.window, type);
             }
         }
+
+        if (oldCursor)
+            glfwDestroyCursor(oldCursor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,10 +34,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Clipboard.hpp>
 
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/extlibs/IncludeWindows.hpp>
-#endif
-
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)
     #include <X11/Xlib.h>
     #include <X11/cursorfont.h>
@@ -309,18 +305,9 @@ namespace tgui
 
     void BackendSFML::updateMouseCursor(Cursor::Type type, std::unique_ptr<sf::Cursor> cursor)
     {
-#ifdef TGUI_SYSTEM_WINDOWS
-        // Make sure the old cursor isn't still being used before we destroy it
-        bool cursorInUse = false;
-        for (auto& pair : m_guiResources)
-        {
-            if (pair.second.mouseCursor == type)
-                cursorInUse = true;
-        }
-        if (cursorInUse)
-            SetCursor(static_cast<HCURSOR>(LoadImage(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)));
-#endif
-
+        // We shouldn't destroy the existing cursor while it is still in use,
+        // so we move it to a temporary variable to delay its destruction until the end of the function.
+        auto oldCursor = std::move(m_mouseCursors[type]);
         m_mouseCursors[type] = std::move(cursor);
 
         // Update the cursor on the screen if the cursor was in use
