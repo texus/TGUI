@@ -48,8 +48,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Transform::Transform(float a00, float a01, float a02,
-              float a10, float a11, float a12,
-              float a20, float a21, float a22)
+                         float a10, float a11, float a12,
+                         float a20, float a21, float a22)
     {
         m_matrix[0] = a00; m_matrix[4] = a01; m_matrix[8]  = 0.f; m_matrix[12] = a02;
         m_matrix[1] = a10; m_matrix[5] = a11; m_matrix[9]  = 0.f; m_matrix[13] = a12;
