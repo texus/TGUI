@@ -131,6 +131,9 @@ namespace tgui
     void BackendRenderTargetSDL::drawVertexArray(const RenderStates& states, const Vertex* vertices,
         std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
     {
+        if (vertexCount == 0)
+            return;
+
         SDL_Texture* textureSDL = nullptr;
         if (texture)
         {
@@ -147,6 +150,14 @@ namespace tgui
             verticesSDL[i].position.y = transformedPosition.y;
         }
 
+#if SDL_MAJOR_VERSION >= 3
+        static_assert(sizeof(Vertex::Color) == sizeof(SDL_Color), "SDL_Color requires same memory layout as tgui::Color for cast to work");
+        SDL_RenderGeometryRaw(m_renderer, textureSDL,
+                              &vertices->position.x, sizeof(Vertex),
+                              reinterpret_cast<const SDL_Color*>(&vertices->color), sizeof(Vertex),
+                              &vertices->texCoords.x, sizeof(Vertex),
+                              static_cast<int>(vertexCount), indices, static_cast<int>(indexCount), sizeof(unsigned int));
+#else
         // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
         // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
         static_assert(sizeof(int) == sizeof(unsigned int), "Size of 'int' and 'unsigned int' must be identical for cast to work");
@@ -154,6 +165,7 @@ namespace tgui
         SDL_RenderGeometry(m_renderer, textureSDL,
                            reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()), static_cast<int>(vertexCount),
                            reinterpret_cast<const int*>(indices), static_cast<int>(indexCount));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

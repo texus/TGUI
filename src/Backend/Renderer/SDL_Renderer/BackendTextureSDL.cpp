@@ -34,6 +34,7 @@
 
 namespace tgui
 {
+#if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL < 12))
     static SDL_ScaleMode GetCurrentSDLScaleMode()
     {
         const char *hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
@@ -48,6 +49,7 @@ namespace tgui
             return static_cast<SDL_ScaleMode>(SDL_atoi(hint));
         }
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,6 +78,20 @@ namespace tgui
         {
             if (m_texture)
                 SDL_DestroyTexture(m_texture);
+
+#if (SDL_MAJOR_VERSION > 2) \
+ || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+ || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+            m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, static_cast<int>(size.x), static_cast<int>(size.y));
+
+            if (m_texture)
+            {
+                SDL_SetTextureScaleMode(m_texture, smooth ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
+
+                // We need to set the blendmode if we want SDL to render our alpha channel correctly (otherwise all letters will be colored rectangles)
+                SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+            }
+#else
 
             // Change the scale mode if it doesn't match our smoothing parameter
             const SDL_ScaleMode oldScaleMode = GetCurrentSDLScaleMode();
@@ -110,6 +126,7 @@ namespace tgui
             // We need to set the blendmode if we want SDL to render our alpha channel correctly (otherwise all letters will be colored rectangles)
             if (m_texture)
                 SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+#endif
         }
 
         // Copy the pixels to the texture
