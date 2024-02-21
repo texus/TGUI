@@ -857,7 +857,7 @@ jobs:
   #----------------------------------------
 
   ios-sdl:
-    runs-on: macos-12
+    runs-on: macos-14
     env:
       SDL_VERSION: 2.26.5
       SDL_TTF_VERSION: 2.0.18
