@@ -447,12 +447,13 @@ jobs:
 
   #----------------------------------------
 
-  windows-sfml-sdl:  # Setup technically not allowed, SFML_GRAPHICS and SDL_RENDERER have conflicting FreeType dependencies
+  windows:  # Setup technically not allowed, backends have conflicting FreeType dependencies
     runs-on: windows-2022
     env:
       SFML_VERSION: 2.6.0
       SDL_VERSION: 2.28.3
       SDL_TTF_VERSION: 2.20.2
+      GLFW_VERSION: 3.4
       MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
       - name: Checkout TGUI
@@ -463,9 +464,11 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc17-32-bit.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL/releases/download/release-${env:SDL_VERSION}/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL_ttf/releases/download/release-${env:SDL_TTF_VERSION}/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN32.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc17-32-bit.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
+          7z x glfw-${env:GLFW_VERSION}.bin.WIN32.zip
 
       - name: Build TGUI
         run: >
@@ -473,6 +476,8 @@ jobs:
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
+          -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
+          -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
           -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=23
@@ -483,6 +488,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
+          -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
 
           cmake --build TGUI-build --config Debug
 
@@ -608,7 +614,7 @@ jobs:
     runs-on: windows-2019
     env:
       SFML_VERSION: 2.5.1
-      GLFW_VERSION: 3.3.3
+      GLFW_VERSION: 3.3.10
       FREETYPE_VERSION: 2.11.1
       CMAKE_VERSION: 3.19
       CMAKE_VERSION_PATCH: 8
@@ -944,7 +950,7 @@ jobs:
   #       I've decided to just put the nightly build code in this file as well.
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/1.x'
-    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows-sfml-sdl, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
+    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2019
     env:
       SFML_VERSION: 2.6.1
