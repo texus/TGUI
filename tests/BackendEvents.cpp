@@ -818,16 +818,19 @@ TEST_CASE("[Backend events]")
             {
                 SDL_Event eventSDL;
 
-#if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION < 26))
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.wheel.mouse_x = 200;
+                eventSDL.wheel.mouse_y = 150;
+#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+                eventSDL.wheel.mouseX = 200;
+                eventSDL.wheel.mouseY = 150;
+#else
                 // SDL < 2.26 had no mouse position in its mouse scroll event, so first simulate a mouse move
                 eventSDL.type = SDL_MOUSEMOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 200;
                 eventSDL.motion.y = 150;
                 backendGuiSDL->handleEvent(eventSDL);
-#else
-                eventSDL.wheel.mouseX = 200;
-                eventSDL.wheel.mouseY = 150;
 #endif
 
                 eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
@@ -943,8 +946,13 @@ TEST_CASE("[Backend events]")
 
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.tfinger.touchID = 1;
+                eventSDL.tfinger.fingerID = 1;
+#else
                 eventSDL.tfinger.touchId = 1;
                 eventSDL.tfinger.fingerId = 1;
+#endif
                 eventSDL.tfinger.x = 200.f / windowSize.x;
                 eventSDL.tfinger.y = 150.f / windowSize.y;
 
@@ -1060,15 +1068,18 @@ TEST_CASE("[Backend events]")
                 REQUIRE(editBox->getText() == "AC");
 
                 // Scroll the mouse wheel on top of the slider and verify that its value changes
-#if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION < 26))
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.wheel.mouse_x = 260;
+                eventSDL.wheel.mouse_y = 80;
+#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+                eventSDL.wheel.mouseX = 260;
+                eventSDL.wheel.mouseY = 80;
+#else
                 eventSDL.type = SDL_MOUSEMOTION;
                 eventSDL.motion.which = 1;
                 eventSDL.motion.x = 260;
                 eventSDL.motion.y = 80;
                 backendGuiSDL->handleEvent(eventSDL);
-#else
-                eventSDL.wheel.mouseX = 260;
-                eventSDL.wheel.mouseY = 80;
 #endif
                 eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
@@ -1129,7 +1140,11 @@ TEST_CASE("[Backend events]")
                 // Note that the resizing ignores the position of the touch ended event
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.tfinger.touchID = 1;
+#else
                 eventSDL.tfinger.touchId = 1;
+#endif
                 eventSDL.tfinger.x = 100.f / windowSize.x;
                 eventSDL.tfinger.y = 260.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);
