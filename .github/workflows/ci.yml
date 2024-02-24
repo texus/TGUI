@@ -454,6 +454,7 @@ jobs:
       SDL_VERSION: 2.28.3
       SDL_TTF_VERSION: 2.20.2
       GLFW_VERSION: 3.4
+      FREETYPE_VERSION: 2.13.2
       MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
       - name: Checkout TGUI
@@ -465,10 +466,12 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL/releases/download/release-${env:SDL_VERSION}/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL_ttf/releases/download/release-${env:SDL_TTF_VERSION}/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN32.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc17-32-bit.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           7z x glfw-${env:GLFW_VERSION}.bin.WIN32.zip
+          7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Build TGUI
         run: >
@@ -478,6 +481,7 @@ jobs:
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
+          -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=23
