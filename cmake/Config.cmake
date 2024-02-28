@@ -56,10 +56,3 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
 else()
     message(WARNING "Unrecognized compiler: ${CMAKE_CXX_COMPILER_ID}. Use at your own risk.")
 endif()
-
-# Set pkgconfig install directory
-if (TGUI_OS_BSD)
-    set(TGUI_PKGCONFIG_DIR "/libdata/pkgconfig")
-else()
-    set(TGUI_PKGCONFIG_DIR "/${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-endif()

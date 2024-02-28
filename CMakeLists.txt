@@ -374,10 +374,21 @@ if (TGUI_INSTALL)
     option(TGUI_INSTALL_PKGCONFIG_FILES "TRUE to automatically install pkg-config files so other projects can find TGUI" ${TGUI_INSTALL_PKGCONFIG_DEFAULT})
 
     if (TGUI_INSTALL_PKGCONFIG_FILES)
-        tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
+        if (TGUI_OS_BSD)
+            set(default_pkgconfig_dir "libdata/pkgconfig")
+        else()
+            set(default_pkgconfig_dir "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+        endif()
+        tgui_set_option(TGUI_PKGCONFIG_INSTALL_DIR "${default_pkgconfig_dir}" PATH "Install directory for TGUI's pkg-config .pc file")
 
         configure_file("cmake/pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
+
+        if (TGUI_PKGCONFIG_INSTALL_PREFIX)
+            message(WARNING "TGUI_PKGCONFIG_INSTALL_PREFIX is deprecated, use TGUI_PKGCONFIG_INSTALL_DIR instead (which is a relative instead of an absolute path by default)")
+            install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
+        else()
+            install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_DIR}")
+        endif()
     endif()
 
     # Install include files
