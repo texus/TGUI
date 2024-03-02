@@ -194,12 +194,25 @@ copy_dlls_to_exe("$<TARGET_FILE_DIR:tests>" "${target_install_dir}" tests)
 
 # Set the RPATH of the executable on Linux (and BSD)
 if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
-    file(RELATIVE_PATH rel_lib_dir
-         ${CMAKE_INSTALL_PREFIX}/${target_install_dir}
-         ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
+        cmake_path(SET lib_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
+        cmake_path(APPEND lib_dir "${CMAKE_INSTALL_LIBDIR}")
+
+        cmake_path(SET exe_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
+        cmake_path(APPEND exe_dir "${target_install_dir}")
+
+        set(rel_lib_dir "${lib_dir}")
+        cmake_path(RELATIVE_PATH rel_lib_dir BASE_DIRECTORY "${exe_dir}")
+    else()
+        # This code for CMake < 3.20 only works if CMAKE_INSTALL_PREFIX is an absolute path
+        file(RELATIVE_PATH rel_lib_dir
+             "${CMAKE_INSTALL_PREFIX}/${target_install_dir}"
+             "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+    endif()
 
     set_target_properties(tests PROPERTIES
-                          INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
+                          INSTALL_RPATH "$ORIGIN/${rel_lib_dir}"  # RPATH will contain relative path to where we installed our own library
+                          INSTALL_RPATH_USE_LINK_PATH TRUE)       # RPATH will contain paths to our dependencies
 endif()
 
 if (TGUI_INSTALL)
