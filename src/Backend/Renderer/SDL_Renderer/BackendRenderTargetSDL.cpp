@@ -151,7 +151,7 @@ namespace tgui
         }
 
 #if SDL_MAJOR_VERSION >= 3
-        static_assert(sizeof(Vertex::Color) == sizeof(SDL_Color), "SDL_Color requires same memory layout as tgui::Color for cast to work");
+        static_assert(sizeof(Vertex::Color) == sizeof(SDL_Color), "SDL_Color requires same memory layout as tgui::Vertex::Color for cast to work");
         SDL_RenderGeometryRaw(m_renderer, textureSDL,
                               &vertices->position.x, sizeof(Vertex),
                               reinterpret_cast<const SDL_Color*>(&vertices->color), sizeof(Vertex),
