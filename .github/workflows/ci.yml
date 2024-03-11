@@ -1088,7 +1088,7 @@ jobs:
           Remove-Item TGUI-1.x-nightly -Recurse -Force -Confirm:$false
 
       - name: Publish
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: "crowbarmaster/GH-Automatic-Releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "nightly_build"
