@@ -35,6 +35,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Panel::m_eventBubbling = false; // TGUI_NEXT: true by default + remove this flag
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Panel::Panel(const char* typeName, bool initRenderer) :
         Group{typeName, false}
     {
@@ -126,9 +130,15 @@ namespace tgui
 
     bool Panel::leftMousePressed(Vector2f pos)
     {
-        onMousePress.emit(this, pos - getPosition());
+        if (!m_eventBubbling)
+            onMousePress.emit(this, pos - getPosition());
 
-        return Container::leftMousePressed(pos);
+        const bool draggingWidget = Container::leftMousePressed(pos);
+
+        if (m_eventBubbling && !draggingWidget && !m_widgetBelowMouse)
+            onMousePress.emit(this, pos - getPosition());
+
+        return draggingWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,14 +147,28 @@ namespace tgui
     {
         const bool mouseDown = m_mouseDown;
 
-        onMouseRelease.emit(this, pos - getPosition());
-
-        if (m_mouseDown)
-            onClick.emit(this, pos - getPosition());
+        if (!m_eventBubbling)
+        {
+            onMouseRelease.emit(this, pos - getPosition());
+            if (mouseDown)
+                onClick.emit(this, pos - getPosition());
+        }
 
         Container::leftMouseReleased(pos);
 
-        if (mouseDown)
+        if (m_eventBubbling)
+        {
+            if (m_widgetBelowMouse)
+                m_possibleDoubleClick = false;
+            else
+            {
+                onMouseRelease.emit(this, pos - getPosition());
+                if (mouseDown)
+                    onClick.emit(this, pos - getPosition());
+            }
+        }
+
+        if (mouseDown && (!m_eventBubbling || !m_widgetBelowMouse))
         {
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -164,24 +188,44 @@ namespace tgui
 
     void Panel::rightMousePressed(Vector2f pos)
     {
-        m_rightMouseDown = true;
-        onRightMousePress.emit(this, pos - getPosition());
+        if (!m_eventBubbling)
+        {
+            m_rightMouseDown = true;
+            onRightMousePress.emit(this, pos - getPosition());
+        }
 
         Container::rightMousePressed(pos);
+
+        if (m_eventBubbling && !m_widgetBelowMouse)
+        {
+            m_rightMouseDown = true;
+            onRightMousePress.emit(this, pos - getPosition());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Panel::rightMouseReleased(Vector2f pos)
     {
-        onRightMouseRelease.emit(this, pos - getPosition());
+        const bool rightMouseDown = m_rightMouseDown;
 
-        if (m_rightMouseDown)
-            onRightClick.emit(this, pos - getPosition());
+        if (!m_eventBubbling)
+        {
+            onRightMouseRelease.emit(this, pos - getPosition());
+            if (rightMouseDown)
+                onRightClick.emit(this, pos - getPosition());
+        }
 
         m_rightMouseDown = false;
 
         Container::rightMouseReleased(pos);
+
+        if (m_eventBubbling && !m_widgetBelowMouse)
+        {
+            onRightMouseRelease.emit(this, pos - getPosition());
+            if (rightMouseDown)
+                onRightClick.emit(this, pos - getPosition());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +234,20 @@ namespace tgui
     {
         m_rightMouseDown = false;
         Container::rightMouseButtonNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::setEventBubbling(bool useEventBubbling)
+    {
+        m_eventBubbling = useEventBubbling;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Panel::getEventBubbling()
+    {
+        return m_eventBubbling;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@ TGUI 1.2  (TBD)
 - Added TreeView::changeItem function
 - Added TreeView::getNode function
 - Added ignoreMouseEvents function to canvas widgets
+- Added Panel::setEventBubbling to enable more intuitive event propagation
 - Replaced getWidgetAtPosition with getWidgetAtPos
 - getWidgetBelowMouseCursor was given a parameter for recursive search
 - Textures with different part rects were incorrectly considered equal
