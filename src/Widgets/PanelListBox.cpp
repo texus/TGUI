@@ -145,7 +145,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void PanelListBox::setItemsHeight(const Layout& height) const
+    void PanelListBox::setItemsHeight(const Layout& height)
     {
         m_panelTemplate->setSize(m_panelTemplate->getSize().x, height);
 

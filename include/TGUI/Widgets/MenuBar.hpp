@@ -286,8 +286,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of an existing menu item
         ///
-        /// @param menu  Hierarchy of the menu items, starting with the menu and ending with menu item that is to be renamed
-        /// @param text  The new text written on this menu item
+        /// @param hierarchy Hierarchy of the menu items, starting with the menu and ending with menu item that is to be renamed
+        /// @param text      The new text written on this menu item
         ///
         /// @return True when the menu item was renamed, false when the menu item was not found
         ///
@@ -469,7 +469,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Returns the menus and their menu items, including submenus
         /// @return List of menus
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

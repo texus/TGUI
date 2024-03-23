@@ -106,7 +106,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Helper function that converts an SDL event to a TGUI event
-        /// @param eventSFML  The input SDL event
+        /// @param eventSDL   The input SDL event
         /// @param eventTGUI  The output TGUI event
         /// @return Did the SDL event match on a TGUI event and has the output event been written to?
         ///

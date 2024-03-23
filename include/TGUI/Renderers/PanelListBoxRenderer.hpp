@@ -78,7 +78,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color of the selected item
         ///
-        /// @param backgroundColor  The new selected item background color
+        /// @param itemsBackgroundColor  The new selected item background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedItemsBackgroundColor(Color itemsBackgroundColor);

@@ -211,8 +211,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the column width depends on the widest item added to that column
         ///
-        /// @param index  Index of the column to change
-        /// @param expand Should the column's width expand to make it fill the list view when the list view isn't full yet?
+        /// @param index      Index of the column to change
+        /// @param autoResize Should the column's width expand and shrink when the widest item in the column changes?
         ///
         /// If auto-resize is true then the width specified in addColumn and setColumnWidth will act as the minimum width.
         /// If the width was set to 0 then the minimum width is the width of the header caption.
@@ -225,11 +225,11 @@ TGUI_MODULE_EXPORT namespace tgui
         void setColumnAutoResize(std::size_t index, bool autoResize);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the column is expanded to fill the list view (if all columns fit inside the list view)
+        /// @brief Returns whether the column width depends on the widest item added to that column
         ///
         /// @param index  Index of the column
         ///
-        /// @return Is the column is expanded to make it fill the list view when the list view isn't full yet?
+        /// @return Does the column's width expand and shrink when the widest item in the column changes?
         ///
         /// @since TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

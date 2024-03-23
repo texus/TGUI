@@ -58,8 +58,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TabAlign
         {
-            Top    = 0,      //!< Tabs are above panes
-            Bottom = 1 << 0  //!< Tabs are below panes
+            Top    = 0,      //!< Tabs are above panels
+            Bottom = 1 << 0  //!< Tabs are below panels
         };
 
 
@@ -213,10 +213,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns index of the specified panel
         ///
-        /// @param ptr Panel to find
+        /// @param panel  Panel to find
+        ///
         /// @return Index of the specified panel or -1 if not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD int getIndex(const Panel::Ptr& ptr);
+        TGUI_NODISCARD int getIndex(const Panel::Ptr& panel);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +299,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// A value less than or equal to 0.0f sets the width of the tabs to the automatic width (tabs fill the TabContainer).
         /// A value greater than zero sets the width of the tabs to the specified value.
         ///
-        /// @param align  New tab fixed size
+        /// @param fixedSize  New tab fixed size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTabFixedSize(float fixedSize);
 

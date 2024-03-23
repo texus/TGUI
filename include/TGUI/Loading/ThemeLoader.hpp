@@ -68,7 +68,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param primary  Primary parameter of the loader
         ///
-        /// For the default loader, the primary parameter is the filename while the secondary parameter is the section name.
+        /// For the default loader, the primary parameter is the filename.
         ///
         /// @return Map of property-value pairs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

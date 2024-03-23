@@ -297,7 +297,7 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD virtual Vector2f getWidgetOffset() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Sets how the position is determined compared to the other widgets in the parent
+        /// @brief Sets how the position is determined compared to the other widgets in the parent
         ///
         /// @param layout  Alignment for how to position the widget in its parent
         ///
@@ -306,7 +306,7 @@ TGUI_MODULE_EXPORT namespace tgui
         void setAutoLayout(AutoLayout layout);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Returns how the position is determined compared to the other widgets in the parent
+        /// @brief Returns how the position is determined compared to the other widgets in the parent
         ///
         /// @return Alignment for how to position the widget in its parent
         ///

@@ -96,10 +96,9 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another color picker
         ///
-        /// @param messageBox  The other color picker
+        /// @param colorPicker  The other color picker
         ///
         /// @return The new color picker
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static ColorPicker::Ptr copy(const ColorPicker::ConstPtr& colorPicker);
 

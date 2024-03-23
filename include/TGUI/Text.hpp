@@ -131,8 +131,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param maxWidth         Maximum width of the text
         /// @param lines            Existing lines that need to be split if they are too long
         /// @param font             Font of the text
-        /// @param textSize         The text size
-        /// @param bold             Should the text be bold?
         ///
         /// @return Lines of text pieces (either the same as the input or more lines when some were split)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
