@@ -288,7 +288,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
+    std::unordered_map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
         {
             {ObjectConverter::Type::None, serializeEmptyObject},
             {ObjectConverter::Type::Bool, serializeBool},

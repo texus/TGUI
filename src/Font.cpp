@@ -63,7 +63,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Font::Font(const String& id) :
-        Font(Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()) // Did not compile with clang 3.6 when using braces
+        Font{Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()}
     {
     }
 

@@ -30,7 +30,7 @@
 #include <TGUI/ObjectConverter.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <map>
+    #include <unordered_map>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD static const SerializeFunc& getFunction(ObjectConverter::Type type);
 
     private:
-        static std::map<ObjectConverter::Type, SerializeFunc> m_serializers;  /// We can't use unordered_map with enum class in GCC < 6
+        static std::unordered_map<ObjectConverter::Type, SerializeFunc> m_serializers;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -460,7 +460,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
+    std::unordered_map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
         {
             {ObjectConverter::Type::Bool, deserializeBool},
             {ObjectConverter::Type::Font, deserializeFont},

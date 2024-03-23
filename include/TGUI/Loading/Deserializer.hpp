@@ -30,7 +30,7 @@
 #include <TGUI/ObjectConverter.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <map>
+    #include <unordered_map>
     #include <vector>
 #endif
 
@@ -56,7 +56,7 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD static std::vector<String> split(const String& str, char delim);
 
     private:
-        static std::map<ObjectConverter::Type, DeserializeFunc> m_deserializers;  /// We can't use unordered_map with enum class in GCC < 6
+        static std::unordered_map<ObjectConverter::Type, DeserializeFunc> m_deserializers;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
