@@ -54,6 +54,13 @@ add_custom_command(TARGET gui-builder POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/themes" "${PROJECT_SOURCE_DIR}/gui-builder/themes"
                    VERBATIM)
 
+# Copy the resources folder to the build directory to execute the gui-folder from there
+add_custom_command(TARGET gui-builder
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/gui-builder/resources" "$<TARGET_FILE_DIR:gui-builder>/resources"
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/gui-builder/themes" "$<TARGET_FILE_DIR:gui-builder>/themes"
+                   VERBATIM)
+
 set(target_install_dir "${TGUI_MISC_INSTALL_PREFIX}/gui-builder")
 
 copy_dlls_to_exe("${PROJECT_SOURCE_DIR}/gui-builder/" "${target_install_dir}" gui-builder)
