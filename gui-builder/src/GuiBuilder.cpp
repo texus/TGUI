@@ -27,10 +27,14 @@
 #include "WidgetProperties/BitmapButtonProperties.hpp"
 #include "WidgetProperties/ButtonProperties.hpp"
 #include "WidgetProperties/ChatBoxProperties.hpp"
+#include "WidgetProperties/CheckBoxProperties.hpp"
 #include "WidgetProperties/ChildWindowProperties.hpp"
+#include "WidgetProperties/ClickableWidgetProperties.hpp"
 #include "WidgetProperties/ComboBoxProperties.hpp"
 #include "WidgetProperties/EditBoxProperties.hpp"
 #include "WidgetProperties/GroupProperties.hpp"
+#include "WidgetProperties/HorizontalLayoutProperties.hpp"
+#include "WidgetProperties/HorizontalWrapProperties.hpp"
 #include "WidgetProperties/KnobProperties.hpp"
 #include "WidgetProperties/LabelProperties.hpp"
 #include "WidgetProperties/ListBoxProperties.hpp"
@@ -43,6 +47,7 @@
 #include "WidgetProperties/RichTextLabelProperties.hpp"
 #include "WidgetProperties/ScrollablePanelProperties.hpp"
 #include "WidgetProperties/ScrollbarProperties.hpp"
+#include "WidgetProperties/SeparatorLineProperties.hpp"
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
 #include "WidgetProperties/SpinControlProperties.hpp"
@@ -50,6 +55,7 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/ToggleButtonProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
+#include "WidgetProperties/VerticalLayoutProperties.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -260,11 +266,14 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
     m_widgetProperties["ChatBox"] = std::make_unique<ChatBoxProperties>();
-    m_widgetProperties["CheckBox"] = std::make_unique<RadioButtonProperties>();
+    m_widgetProperties["CheckBox"] = std::make_unique<CheckBoxProperties>();
     m_widgetProperties["ChildWindow"] = std::make_unique<ChildWindowProperties>();
+    m_widgetProperties["ClickableWidget"] = std::make_unique<ClickableWidgetProperties>();
     m_widgetProperties["ComboBox"] = std::make_unique<ComboBoxProperties>();
     m_widgetProperties["EditBox"] = std::make_unique<EditBoxProperties>();
     m_widgetProperties["Group"] = std::make_unique<GroupProperties>();
+    m_widgetProperties["HorizontalLayout"] = std::make_unique<HorizontalLayoutProperties>();
+    m_widgetProperties["HorizontalWrap"] = std::make_unique<HorizontalWrapProperties>();
     m_widgetProperties["Knob"] = std::make_unique<KnobProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
@@ -277,6 +286,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["RichTextLabel"] = std::make_unique<RichTextLabelProperties>();
     m_widgetProperties["ScrollablePanel"] = std::make_unique<ScrollablePanelProperties>();
     m_widgetProperties["Scrollbar"] = std::make_unique<ScrollbarProperties>();
+    m_widgetProperties["SeparatorLine"] = std::make_unique<SeparatorLineProperties>();
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
     m_widgetProperties["SpinControl"] = std::make_unique<SpinControlProperties>();
@@ -284,6 +294,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["ToggleButton"] = std::make_unique<ToggleButtonProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
+    m_widgetProperties["VerticalLayout"] = std::make_unique<VerticalLayoutProperties>();
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
 
@@ -969,9 +980,12 @@ void GuiBuilder::loadToolbox()
         {"ChatBox", []{ return tgui::ChatBox::create(); }},
         {"CheckBox", []{ return tgui::CheckBox::create(); }},
         {"ChildWindow", []{ return tgui::ChildWindow::create(); }},
+        {"ClickableWidget", []{ return tgui::ClickableWidget::create({150, 150}); }},
         {"ComboBox", []{ return tgui::ComboBox::create(); }},
         {"EditBox", []{ return tgui::EditBox::create(); }},
         {"Group", []{ return tgui::Group::create({150, 150}); }},
+        {"HorizontalLayout", []{ return tgui::HorizontalLayout::create({150, 150}); }},
+        {"HorizontalWrap", []{ return tgui::HorizontalWrap::create({150, 150}); }},
         {"Knob", []{ return tgui::Knob::create(); }},
         {"Label", []{ return tgui::Label::create("Label"); }},
         {"ListBox", []{ return tgui::ListBox::create(); }},
@@ -984,6 +998,7 @@ void GuiBuilder::loadToolbox()
         {"RichTextLabel", []{ return tgui::RichTextLabel::create("RichTextLabel"); }},
         {"ScrollablePanel", []{ return tgui::ScrollablePanel::create({150, 150}); }},
         {"Scrollbar", []{ return tgui::Scrollbar::create(); }},
+        {"SeparatorLine", []{ return tgui::SeparatorLine::create({"100%", 3}); }},
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
         {"SpinControl", []{ return tgui::SpinControl::create(); }},
@@ -991,6 +1006,7 @@ void GuiBuilder::loadToolbox()
         {"TextArea", []{ return tgui::TextArea::create(); }},
         {"ToggleButton", []{ return tgui::ToggleButton::create(); }},
         {"TreeView", []{ return tgui::TreeView::create(); }},
+        {"VerticalLayout", []{ return tgui::VerticalLayout::create({150, 150}); }},
     };
 
     float topPosition = 0;
