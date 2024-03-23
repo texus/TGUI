@@ -11,6 +11,7 @@ TGUI 1.2  (TBD)
 - Textures with different part rects were incorrectly considered equal
 - showWithEffect didn't show widget if a hide animation was still playing
 - Setting opacity of a SubWidgetContainer didn't work
+- SubWidgetContainer didn't support show/hide animations
 
 
 TGUI 1.1  (4 November 2023)

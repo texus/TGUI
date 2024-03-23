@@ -329,6 +329,7 @@ namespace tgui
 
     bool SubwidgetContainer::updateTime(Duration elapsedTime)
     {
+        Widget::updateTime(elapsedTime);
         return m_container->updateTime(elapsedTime);
     }
 
