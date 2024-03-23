@@ -1,5 +1,5 @@
-TGUI 1.2  (TBD)
----------------
+TGUI 1.2  (23 March 2024)
+-------------------------
 
 - Added Theme::replace function
 - Added TreeView::changeItem function
