@@ -10,6 +10,7 @@ TGUI 1.2  (TBD)
 - getWidgetBelowMouseCursor was given a parameter for recursive search
 - Textures with different part rects were incorrectly considered equal
 - showWithEffect didn't show widget if a hide animation was still playing
+- Setting opacity of a SubWidgetContainer didn't work
 
 
 TGUI 1.1  (4 November 2023)
