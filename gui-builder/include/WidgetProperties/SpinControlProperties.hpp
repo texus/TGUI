@@ -102,22 +102,6 @@ struct SpinControlProperties : WidgetProperties
         pair.second["SpinText.DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(textRenderer->getDefaultTextStyle())};
         return pair;
     }
-
-private:
-
-    const std::set<tgui::String> m_buttonProperties = {
-        "ButtonsBorders", "BorderBetweenArrows", "ButtonsBackgroundColor", "ButtonsBackgroundColorHover", "ArrowColor",
-        "ArrowColorHover", "ButtonsBorderColor", "TextureArrowUp", "TextureArrowUpHover", "TextureArrowDown",
-        "TextureArrowDownHover"
-    };
-
-    const std::set<tgui::String> m_textProperties = {
-        "Padding", "CaretWidth", "TextColor", "TextColorDisabled", "TextColorFocused", "SelectedTextColor",
-        "SelectedTextBackgroundColor", "DefaultTextColor", "BackgroundColor", "BackgroundColorHover",
-        "BackgroundColorDisabled", "BackgroundColorFocused", "CaretColor", "CaretColorHover", "CaretColorFocused",
-        "BorderColor", "BorderColorHover", "BorderColorDisabled", "BorderColorFocused", "Texture", "TextureHover",
-        "TextureDisabled", "TextureFocused", "TextStyle", "DefaultTextStyle", "Borders"
-    };
 };
 
 #endif // TGUI_GUI_BUILDER_SPIN_CONTROL_PROPERTIES_HPP

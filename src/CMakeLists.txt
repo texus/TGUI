@@ -106,6 +106,7 @@ set(TGUI_SRC
     Widgets/ColorPicker.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/EditBoxSlider.cpp
     Widgets/FileDialog.cpp
     Widgets/Group.cpp
     Widgets/Grid.cpp
