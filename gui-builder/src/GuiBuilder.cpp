@@ -32,6 +32,7 @@
 #include "WidgetProperties/ClickableWidgetProperties.hpp"
 #include "WidgetProperties/ComboBoxProperties.hpp"
 #include "WidgetProperties/EditBoxProperties.hpp"
+#include "WidgetProperties/EditBoxSliderProperties.hpp"
 #include "WidgetProperties/GroupProperties.hpp"
 #include "WidgetProperties/HorizontalLayoutProperties.hpp"
 #include "WidgetProperties/HorizontalWrapProperties.hpp"
@@ -271,6 +272,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["ClickableWidget"] = std::make_unique<ClickableWidgetProperties>();
     m_widgetProperties["ComboBox"] = std::make_unique<ComboBoxProperties>();
     m_widgetProperties["EditBox"] = std::make_unique<EditBoxProperties>();
+    m_widgetProperties["EditBoxSlider"] = std::make_unique<EditBoxSliderProperties>();
     m_widgetProperties["Group"] = std::make_unique<GroupProperties>();
     m_widgetProperties["HorizontalLayout"] = std::make_unique<HorizontalLayoutProperties>();
     m_widgetProperties["HorizontalWrap"] = std::make_unique<HorizontalWrapProperties>();
@@ -983,6 +985,7 @@ void GuiBuilder::loadToolbox()
         {"ClickableWidget", []{ return tgui::ClickableWidget::create({150, 150}); }},
         {"ComboBox", []{ return tgui::ComboBox::create(); }},
         {"EditBox", []{ return tgui::EditBox::create(); }},
+        {"EditBoxSlider", []{ return tgui::EditBoxSlider::create(); }},
         {"Group", []{ return tgui::Group::create({150, 150}); }},
         {"HorizontalLayout", []{ return tgui::HorizontalLayout::create({150, 150}); }},
         {"HorizontalWrap", []{ return tgui::HorizontalWrap::create({150, 150}); }},
