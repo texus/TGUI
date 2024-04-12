@@ -222,7 +222,7 @@ namespace tgui
 
 #if TGUI_HAS_BACKEND_SDL_RENDERER
     #if SDL_MAJOR_VERSION >= 3
-            m_renderer = SDL_CreateRenderer(m_window, nullptr, SDL_RENDERER_ACCELERATED);
+            m_renderer = SDL_CreateRenderer(m_window, nullptr, 0);
     #else
             m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
     #endif

@@ -30,6 +30,7 @@
     #include <SDL3/SDL_main.h>
     #define DEFAULT_RENDERING_DRIVER nullptr
     #define SDL_WINDOW_SHOWN 0
+    #define SDL_RENDERER_ACCELERATED 0
     #define SDL_CreateWindow SDL_CreateWindowWithPosition
 #else
     #define DEFAULT_RENDERING_DRIVER -1
