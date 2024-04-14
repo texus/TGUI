@@ -146,7 +146,7 @@ namespace tgui
         if (!m_face)
             return glyph;
 
-        const Glyph internalGlyph = getInternalGlyph(codePoint, characterSize, bold, outlineThickness);
+        const Glyph& internalGlyph = getInternalGlyph(codePoint, characterSize, bold, outlineThickness);
         glyph.advance = internalGlyph.advance / m_fontScale;
         glyph.bounds.setPosition(internalGlyph.bounds.getPosition() / m_fontScale);
         glyph.bounds.setSize(internalGlyph.bounds.getSize() / m_fontScale);
@@ -411,7 +411,7 @@ namespace tgui
         FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyphDesc);
         FT_Bitmap& bitmap = bitmapGlyph->bitmap;
 
-        // If bold was requested but the font didn't support outlines then apply bold here using a different (lower quality) method
+        // If bold was requested but the font didn't support outlines then apply bold here using a different (lower quality) method.
         // We have to cache the outline support bool because FT_Glyph_To_Bitmap changes format to FT_GLYPH_FORMAT_BITMAP.
         if (bold && !outlineSupport)
             FT_Bitmap_Embolden(static_cast<FT_Library>(m_library), &bitmap, boldWeight, boldWeight);
@@ -493,7 +493,7 @@ namespace tgui
         if (it != m_glyphs.end())
             return it->second;
 
-        const Glyph glyph = loadGlyph(codePoint, characterSize, bold, outlineThickness);
+        const Glyph& glyph = loadGlyph(codePoint, characterSize, bold, outlineThickness);
         return m_glyphs.insert({glyphKey, glyph}).first->second;
     }
 

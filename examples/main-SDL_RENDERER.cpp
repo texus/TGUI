@@ -45,7 +45,7 @@ void run_application(SDL_Window* window, SDL_Renderer* renderer)
     if (!runExample(gui))
         return;
 
-    gui.mainLoop();
+    gui.mainLoop(); // To use your own main loop, see https://tgui.eu/tutorials/latest-stable/backend-sdl-renderer/#main-loop
 }
 
 // Note that no error checking is performed on SDL initialization in this example code

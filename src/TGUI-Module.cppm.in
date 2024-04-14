@@ -164,6 +164,10 @@ module;
     using GLFWcursor = struct GLFWcursor;
 #endif
 
+#if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB
+    #include <raylib.h>
+#endif
+
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((TGUI_HAS_WINDOW_BACKEND_SFML && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) || TGUI_HAS_WINDOW_BACKEND_SDL)
     #include <X11/Xlib.h>
     #include <X11/cursorfont.h>

@@ -40,7 +40,7 @@
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// CanvasSDL provides a way to directly render SDL contents on a widget
+    /// @brief CanvasSDL provides a way to directly render SDL contents on a widget
     ///
     /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom SDL rendering inbetween
     /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasSDL widget.

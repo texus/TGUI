@@ -1,6 +1,12 @@
 
 #include <TGUI/Config.hpp>
 
+#if defined(TGUI_SYSTEM_WINDOWS) && defined(TGUI_HAS_BACKEND_RAYLIB)
+  // raylib.h and windows.h don't mix well
+  #define NOGDI
+  #define NOUSER
+#endif
+
 #define CATCH_CONFIG_RUNNER
 #include "Tests.hpp"
 
@@ -30,6 +36,9 @@
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
     #define GLFW_INCLUDE_NONE
     #include <GLFW/glfw3.h>
+#endif
+#if TGUI_HAS_BACKEND_RAYLIB
+    #include <raylib.h>
 #endif
 
 #if TGUI_BUILD_AS_CXX_MODULE
@@ -436,6 +445,33 @@ struct TestsWindowDefault : public TestsWindowBase
         GLFWwindow* window = nullptr;
     };
 #endif
+#if TGUI_HAS_BACKEND_RAYLIB
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.raylib;
+    #else
+        #include <TGUI/Backend/raylib.hpp>
+    #endif
+    struct TestsWindowRaylib : public TestsWindowBase
+    {
+        TestsWindowRaylib()
+        {
+            SetTraceLogLevel(LOG_WARNING);
+            InitWindow(windowWidth, windowHeight, windowTitle);
+            gui = std::make_unique<tgui::RAYLIB::Gui>();
+        }
+
+        ~TestsWindowRaylib() override
+        {
+            gui = nullptr;
+            CloseWindow();
+        }
+
+        void close() override
+        {
+            static_cast<tgui::RAYLIB::Gui*>(gui.get())->endMainLoop();
+        }
+    };
+#endif
 
 int main(int argc, char * argv[])
 {
@@ -488,6 +524,10 @@ int main(int argc, char * argv[])
 #if TGUI_HAS_BACKEND_GLFW_GLES2
         if (selectedBackend == "GLFW_GLES2")
             window = std::make_unique<TestsWindowGlfwGLES2>();
+#endif
+#if TGUI_HAS_BACKEND_RAYLIB
+        if (selectedBackend == "RAYLIB")
+            window = std::make_unique<TestsWindowRaylib>();
 #endif
 
         if (!window)

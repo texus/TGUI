@@ -28,6 +28,7 @@ OS support for each backend:
 | **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
 | **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
 | **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+| **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  |                     | N/A                 |
 
 
 Dependencies for each backend:
@@ -36,13 +37,14 @@ Dependencies for each backend:
 |:------------------------|:----------------------|:------------------------|:------------------------|
 | **SFML\_GRAPHICS**      | sfml-window  (>= 2.5) | sfml-graphics  (>= 2.5) | sfml-graphics  (>= 2.5) |
 | **SFML\_OPENGL3**       | sfml-window  (>= 2.5) | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
-| **SDL\_RENDERER**       | SDL2  (>= 2.0.18)     | SDL2_ttf  (>= 2.0.14)   | SDL2  (>= 2.0.18)       |
-| **SDL\_TTF\_OPENGL3**   | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL  (>= 3.3)        |
-| **SDL\_TTF\_GLES2**     | SDL2  (>= 2.0.6)      | SDL2_ttf  (>= 2.0.14)   | OpenGL ES  (>= 2.0)     |
-| **SDL\_OPENGL3**        | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
-| **SDL\_GLES2**          | SDL2  (>= 2.0.6)      | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+| **SDL\_RENDERER**       | SDL  (>= 2.0.18)      | SDL_ttf  (>= 2.0.14)    | SDL  (>= 2.0.18)        |
+| **SDL\_TTF\_OPENGL3**   | SDL  (>= 2.0.6)       | SDL_ttf  (>= 2.0.14)    | OpenGL  (>= 3.3)        |
+| **SDL\_TTF\_GLES2**     | SDL  (>= 2.0.6)       | SDL_ttf  (>= 2.0.14)    | OpenGL ES  (>= 2.0)     |
+| **SDL\_OPENGL3**        | SDL  (>= 2.0.6)       | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
+| **SDL\_GLES2**          | SDL  (>= 2.0.6)       | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
 | **GLFW\_OPENGL3**       | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
 | **GLFW\_GLES2**         | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+| **RAYLIB**              | raylib  (>= 4.2)      | raylib  (>= 4.2)        | raylib  (>= 4.2)        |
 
 
 

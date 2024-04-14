@@ -595,6 +595,20 @@ endmacro()
 
 
 # Find OpenGL and add it as a dependency
+macro(tgui_add_dependency_raylib)
+    if(NOT TARGET raylib)
+        find_package(raylib CONFIG REQUIRED)
+
+        if (raylib_VERSION VERSION_LESS "4")
+            message(FATAL_ERROR "raylib 4 or higher is required")
+        endif()
+    endif()
+
+    target_link_libraries(tgui PUBLIC raylib)
+endmacro()
+
+
+# Find OpenGL and add it as a dependency
 macro(tgui_add_dependency_opengl)
     find_package(OpenGL REQUIRED)
     target_link_libraries(tgui PRIVATE OpenGL::GL)

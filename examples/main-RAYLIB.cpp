@@ -23,28 +23,26 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/SFML-OpenGL3.hpp>
+#include <TGUI/Backend/raylib.hpp>
 
 bool runExample(tgui::BackendGui& gui);
 
+// We don't put this code in main() to make sure that all TGUI resources are destroyed before destroying raylib
+void run_application()
+{
+    tgui::Gui gui;
+    runExample(gui);
+    gui.mainLoop(); // To use your own main loop, see https://tgui.eu/tutorials/latest-stable/backend-raylib/#main-loop
+}
+
 int main()
 {
-    // The OpenGL renderer backend in TGUI requires at least OpenGL 3.3
-    sf::ContextSettings settings;
-    settings.attributeFlags = sf::ContextSettings::Attribute::Core;
-    settings.majorVersion = 3;
-    settings.minorVersion = 3;
+    SetTraceLogLevel(LOG_WARNING);
 
-#if SFML_VERSION_MAJOR >= 3
-    sf::Window window(sf::VideoMode{{800, 600}}, "TGUI example (SFML-OpenGL3)", sf::Style::Default, sf::State::Windowed, settings);
-#else
-    sf::Window window({800, 600}, "TGUI example (SFML-OpenGL3)", sf::Style::Default, settings);
-#endif
+    InitWindow(800, 600, "TGUI example (RAYLIB)");
+    SetTargetFPS(30);
 
-    tgui::Gui gui(window);
-    if (!runExample(gui))
-        return EXIT_FAILURE;
+    run_application();
 
-    gui.mainLoop(); // To use your own main loop, see https://tgui.eu/tutorials/latest-stable/backend-sfml-opengl3/#main-loop
-    return EXIT_SUCCESS;
+    CloseWindow();
 }

@@ -308,3 +308,44 @@ TEST_CASE("[CanvasGLES2]")
     }
 }
 #endif
+
+#if TGUI_HAS_RENDERER_BACKEND_RAYLIB
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui.backend.renderer.raylib;
+#else
+    #include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
+    #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+#endif
+
+TEST_CASE("[CanvasRaylib]")
+{
+    if (std::dynamic_pointer_cast<tgui::BackendRendererRaylib>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasRaylib::Ptr canvas = tgui::CanvasRaylib::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasRaylib");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasRaylib::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
+
+        testCanvasCommon(canvas);
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasRaylib::create({60, 40}));
+
+            testSavingWidget("CanvasRaylib", canvas, false);
+        }
+    }
+}
+#endif

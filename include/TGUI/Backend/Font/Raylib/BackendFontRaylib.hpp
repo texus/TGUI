@@ -22,75 +22,31 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_BACKEND_FONT_RAYLIB_HPP
+#define TGUI_BACKEND_FONT_RAYLIB_HPP
 
-#ifndef TGUI_BACKEND_FONT_HPP
-#define TGUI_BACKEND_FONT_HPP
-
-#include <TGUI/Font.hpp>
-#include <TGUI/String.hpp>
-#include <TGUI/Global.hpp>
-#include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Config.hpp>
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Backend/Font/BackendFont.hpp>
+#endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
+    #include <unordered_map>
 #endif
+
+struct GlyphInfo;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for font implementations that depend on the backend
+    /// @brief Font implementations that uses Raylib to load glyphs
+    /// @since TGUI 1.3
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BackendFont
+    class BackendFontRaylib : public BackendFont
     {
     public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendFont();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Copy constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendFont(const BackendFont&);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Move constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendFont(BackendFont&& other) noexcept;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual destructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~BackendFont();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Copy assignment operator
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendFont& operator=(const BackendFont& other);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Move assignment operator
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendFont& operator=(BackendFont&& other) noexcept;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads a font from a file
-        ///
-        /// @param filename  Filename of the font to load
-        ///
-        /// @return True if the font was loaded successfully, false otherwise
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromFile(const String& filename);
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
@@ -100,21 +56,8 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads a font from memory
-        ///
-        /// @param data         Pointer to the file data in memory
-        /// @param sizeInBytes  Size of the data to load, in bytes
-        ///
-        /// @return True if the font was loaded successfully, false otherwise
-        ///
-        /// This function makes a copy of the data. Use the overload with a unique_ptr when possible to move instead of copy.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadFromMemory(const void* data, std::size_t sizeInBytes);
-
+        bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) override;
+        using BackendFont::loadFromMemory;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether a font contains a certain glyph
@@ -123,8 +66,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Does the font contain this character?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool hasGlyph(char32_t codePoint) const = 0;
-
+        TGUI_NODISCARD bool hasGlyph(char32_t codePoint) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieve a glyph of the font
@@ -139,8 +81,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return The glyph corresponding to codePoint and characterSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) = 0;
-
+        TGUI_NODISCARD FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the kerning offset of two glyphs
@@ -156,8 +97,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Kerning value for first and second, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) = 0;
-
+        TGUI_NODISCARD float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the line spacing
@@ -168,8 +108,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Line spacing, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getLineSpacing(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getLineSpacing(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the height required to render a line of text
@@ -178,8 +117,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Sum of font ascent and descent
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getFontHeight(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getFontHeight(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum height of a glyph above the baseline
@@ -188,8 +126,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Ascent of the font
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getAscent(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getAscent(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum height of a glyph below the baseline
@@ -198,8 +135,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Descent of the font
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getDescent(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getDescent(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the position of the underline
@@ -210,8 +146,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Underline position, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getUnderlinePosition(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getUnderlinePosition(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the thickness of the underline
@@ -222,8 +157,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Underline thickness, in pixels
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getUnderlineThickness(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD float getUnderlineThickness(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the texture that is used to store glyphs of the given character size
@@ -233,8 +167,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Texture to render text glyphs with
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize, unsigned int& textureVersion) = 0;
-
+        TGUI_NODISCARD std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize, unsigned int& textureVersion) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the size of the texture that is used to store glyphs of the given character size
@@ -243,8 +176,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Size of the texture that holds the glyphs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2u getTextureSize(unsigned int characterSize) = 0;
-
+        TGUI_NODISCARD Vector2u getTextureSize(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable the smooth filter
@@ -255,18 +187,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param smooth  True to enable smoothing, false to disable it
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSmooth(bool smooth);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Tell whether the smooth filter is enabled or not
-        ///
-        /// @return True if smoothing is enabled, false if it is disabled
-        ///
-        /// @see setSmooth
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isSmooth() const;
-
+        void setSmooth(bool smooth) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -275,43 +196,59 @@ TGUI_MODULE_EXPORT namespace tgui
         /// Text may be rendered blurry if the font scale doesn't match the ratio between the window size and gui view.
         /// Default scaling is 1. If the scale is set to 1.5 then a font with text size 20 would be internally rendered at 30px.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setFontScale(float scale);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the scale at which glyphs are rendered
-        ///
-        /// Text may be rendered blurry if the font scale doesn't match the ratio between the window size and gui view.
-        /// Default scaling is 1. If the scale is set to 1.5 then a font with text size 20 would be internally rendered at 30px.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getFontScale() const;
-
+        void setFontScale(float scale) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates a key for each unique character to render
-        ///
-        /// @param codePoint        Unicode code of the character
-        /// @param characterSize    Reference character size
-        /// @param bold             Whether the character has to be rendered with a bold font
-        /// @param outlineThickness Thickness of the outline to draw around the character (0 means no outline)
-        ///
-        /// @return Id that is specific to the provided parameters
-        ///
-        /// Calling this function with the same parameters results in the same id, while other parameters result in another id.
+        // Converts and caches the loaded glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::uint64_t constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const;
+        FontGlyph loadGlyph(const GlyphInfo& glyphInfo, char32_t codePoint, unsigned int scaledTextSize, bool bold, float scaledOutlineThickness);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Reserves space in the texture to place the glyph
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD UIntRect findAvailableGlyphRect(unsigned int width, unsigned int height);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Text size in TGUI and FreeType are based on the ascent of the text. Raylib uses stb_truetype and specifically the
+        // stbtt_ScaleForPixelHeight function, which considers the font size to be ascent + descent.
+        // This function estimates which font size we need to give to raylib to get the expected result for our text size.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int estimateFontSize(unsigned int scaledTextSize);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        bool m_isSmooth = true;
-        float m_fontScale = 1;
+        struct Row
+        {
+            Row(unsigned int rowTop, unsigned int rowHeight) : width(0), top(rowTop), height(rowHeight) {}
+
+            unsigned int width;  //!< Current width of the row
+            unsigned int top;    //!< Y position of the row into the texture
+            unsigned int height; //!< Height of the row
+        };
+
+        std::unordered_map<std::uint64_t, FontGlyph> m_glyphs;
+        unsigned int     m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
+        std::vector<Row> m_rows;
+
+        std::unique_ptr<std::uint8_t[]> m_fileContents;
+        std::size_t m_fileSize = 0;
+
+        std::unique_ptr<std::uint8_t[]> m_pixels;
+        std::shared_ptr<BackendTexture> m_texture;
+        unsigned int m_textureSize = 0;
+        unsigned int m_textureVersion = 0;
+
+        std::unordered_map<unsigned int, int> m_cachedAscents;      // text size -> font ascent
+        std::unordered_map<unsigned int, int> m_correctedTextSizes; // text size (ascent) -> raylib text size (ascent + descent)
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_BACKEND_FONT_HPP
+#endif // TGUI_BACKEND_FONT_RAYLIB_HPP

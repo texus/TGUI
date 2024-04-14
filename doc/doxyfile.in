@@ -23,15 +23,18 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/FreeType" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SDL_ttf" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SFML-Graphics" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/Raylib" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/GLES2" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/Raylib" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/GLFW" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SDL" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SFML" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/Raylib" \
                          "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
 EXCLUDE                = "@DOXYGEN_INPUT_DIR@/include/TGUI/DefaultFont.hpp"
@@ -61,16 +64,20 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_COMPILED_WITH_CPP_VER=23 \
+                         TGUI_BUILD_AS_CXX_MODULE=0 \
                          TGUI_HAS_WINDOW_BACKEND_SFML=1 \
                          TGUI_HAS_WINDOW_BACKEND_SDL=1 \
                          TGUI_HAS_WINDOW_BACKEND_GLFW=1 \
+                         TGUI_HAS_WINDOW_BACKEND_RAYLIB=1 \
                          TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER=1 \
                          TGUI_HAS_RENDERER_BACKEND_OPENGL3=1 \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
+                         TGUI_HAS_RENDERER_BACKEND_RAYLIB=1 \
                          TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_FONT_BACKEND_SDL_TTF=1 \
                          TGUI_HAS_FONT_BACKEND_FREETYPE=1 \
+                         TGUI_HAS_FONT_BACKEND_RAYLIB=1 \
                          TGUI_HAS_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_BACKEND_SFML_OPENGL3=1 \
                          TGUI_HAS_BACKEND_SDL_RENDERER=1 \
@@ -79,7 +86,8 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_BACKEND_SDL_TTF_OPENGL3=1 \
                          TGUI_HAS_BACKEND_SDL_TTF_GLES2=1 \
                          TGUI_HAS_BACKEND_GLFW_OPENGL3=1 \
-                         TGUI_HAS_BACKEND_GLFW_GLES2=1
+                         TGUI_HAS_BACKEND_GLFW_GLES2=1 \
+                         TGUI_HAS_BACKEND_RAYLIB=1
 
 SHOW_NAMESPACES        = NO
 HIDE_UNDOC_RELATIONS   = NO

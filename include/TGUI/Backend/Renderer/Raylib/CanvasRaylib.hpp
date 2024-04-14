@@ -22,54 +22,61 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_CANVAS_RAYLIB_HPP
+#define TGUI_CANVAS_RAYLIB_HPP
 
-#ifndef TGUI_CANVAS_OPENGL3_HPP
-#define TGUI_CANVAS_OPENGL3_HPP
-
-#include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 
 #if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
     #include <TGUI/Widgets/CanvasBase.hpp>
 #endif
 
+#include <raylib.h>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief CanvasOpenGL3 provides a way to directly render OpenGL contents on a widget
+    /// @brief CanvasRaylib provides a way to directly render raylib contents on a widget
     ///
-    /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom OpenGL rendering inbetween
-    /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasOpenGL3 widget.
+    /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom raylib rendering inbetween
+    /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasRaylib widget.
     ///
-    /// The canvas widget is essentially just a wrapper around a framebuffer and its texture. You draw your OpenGL contents on
-    /// top of the canvas instead of on the window. The canvas is then added to the gui between the widgets where you want the
-    /// rendering to appear.
+    /// The canvas widget is essentially just a wrapper around raylib's RenderTexture. You draw your raylib contents on top of
+    /// the canvas instead of on the window. The canvas is then added to the gui between the widgets where you want the rendering
+    /// to appear.
     ///
-    /// You can redraw the contents of the canvas at any time, but make sure to always start by calling bindFramebuffer and
-    /// end the rendering by calling glBindFramebuffer again.
+    /// You can redraw the contents of the canvas at any time, but make sure to always start by calling BeginTextureMode
+    /// with the texture of the canvas and end the rendering by calling EndTextureMode.
     ///
     /// Example:
     /// @code
-    /// auto canvas = tgui::CanvasOpenGL3::create({400, 300});
+    /// auto canvas = tgui::CanvasRaylib::create({400, 300});
     /// gui.add(canvas);
     ///
-    /// canvas->bindFramebuffer();              // Let drawing happen on the canvas instead of the window
-    /// glClear(GL_COLOR_BUFFER_BIT);           // Clear the contents of the canvas (with color set with glClearColor)
-    /// // Draw whatever you want to draw on the canvas here
-    /// glBindFramebuffer(GL_FRAMEBUFFER, 0);   // Let further drawing happen on the window again
+    /// BeginTextureMode(canvas->getTextureTarget());  // Begin drawing to the canvas
+    ///   ClearBackground(RAYWHITE);                   // Clear the contents of the canvas with a background color
+    ///   DrawRectangle(0, 0, 200, 100, YELLOW);       // Draw a rectangle to the canvas
+    /// EndTextureMode();                              // End drawing to the canvas
     /// @endcode
+    ///
+    /// @since TGUI 1.3
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API CanvasOpenGL3 : public CanvasBase
+    class TGUI_API CanvasRaylib : public CanvasBase
     {
     public:
 
-        using Ptr = std::shared_ptr<CanvasOpenGL3>; //!< Shared widget pointer
-        using ConstPtr = std::shared_ptr<const CanvasOpenGL3>; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<CanvasRaylib>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const CanvasRaylib>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "CanvasOpenGL3"; //!< Type name of the widget
+        static constexpr const char StaticWidgetType[] = "CanvasRaylib"; //!< Type name of the widget
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ~CanvasRaylib() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -78,38 +85,27 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasOpenGL3(const char* typeName = StaticWidgetType, bool initRenderer = true);
-
+        CanvasRaylib(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasOpenGL3(const CanvasOpenGL3& copy);
-
+        CanvasRaylib(const CanvasRaylib& copy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default move constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasOpenGL3(CanvasOpenGL3&& copy) = default;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Destructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~CanvasOpenGL3() override;
-
+        CanvasRaylib(CanvasRaylib&& copy) = default;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Overload of copy assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasOpenGL3& operator= (const CanvasOpenGL3& right);
-
+        CanvasRaylib& operator= (const CanvasRaylib& right);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default move assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CanvasOpenGL3& operator= (CanvasOpenGL3&& right) = default;
-
+        CanvasRaylib& operator= (CanvasRaylib&& right) = default;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new canvas widget
@@ -119,8 +115,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return The new canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static CanvasOpenGL3::Ptr create(const Layout2d& size = {"100%", "100%"});
-
+        TGUI_NODISCARD static CanvasRaylib::Ptr create(const Layout2d& size = {"100%", "100%"});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another canvas
@@ -130,8 +125,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return The new canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static CanvasOpenGL3::Ptr copy(const CanvasOpenGL3::ConstPtr& canvas);
-
+        TGUI_NODISCARD static CanvasRaylib::Ptr copy(const CanvasRaylib::ConstPtr& canvas);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the widget
@@ -142,7 +136,6 @@ TGUI_MODULE_EXPORT namespace tgui
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
         ///
@@ -152,16 +145,17 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Binds the framebuffer of the canvas
+        /// @brief Access the internal render texture to which you can render
         ///
-        /// @return id of internal framebuffer that was just bound by this function
+        /// @return Reference to the internal render texture
         ///
-        /// This will call glBindFramebuffer and glFramebufferTexture2D on the internal texture.
+        /// The texture has a size that is equal or larger than the size of the canvas widget.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int bindFramebuffer() const;
-
+        TGUI_NODISCARD RenderTexture2D& getTextureTarget()
+        {
+            return m_textureTarget;
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
@@ -171,18 +165,16 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        unsigned int m_textureId = 0;
-        unsigned int m_frameBuffer = 0;
+        RenderTexture2D m_textureTarget;
         Vector2u m_textureSize;
         Vector2u m_usedTextureSize;
-        std::shared_ptr<BackendTextureOpenGL3> m_backendTexture = std::make_shared<BackendTextureOpenGL3>();
+        std::shared_ptr<BackendTextureRaylib> m_backendTexture;
     };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_CANVAS_OPENGL3_HPP
+#endif // TGUI_CANVAS_RAYLIB_HPP

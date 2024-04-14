@@ -116,6 +116,11 @@ if(NOT TARGET glfw AND @TGUI_HAS_WINDOW_BACKEND_GLFW@)
     endif()
 endif()
 
+# Search for raylib when a backend requires it
+if(NOT TARGET raylib AND (@TGUI_HAS_WINDOW_BACKEND_RAYLIB@ OR @TGUI_HAS_FONT_BACKEND_RAYLIB@ OR @TGUI_HAS_RENDERER_BACKEND_RAYLIB@))
+    find_dependency(raylib CONFIG)
+endif()
+
 # Search for SDL when a backend requires it
 if(@TGUI_HAS_WINDOW_BACKEND_SDL@ OR @TGUI_HAS_FONT_BACKEND_SDL_TTF@ OR @TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER@)
     if(@TGUI_USE_SDL3@)

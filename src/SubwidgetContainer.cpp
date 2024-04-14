@@ -226,7 +226,7 @@ namespace tgui
 
         Widget::rendererChanged(property);
 
-        // Make sure to pass on the SubwidgetContainer's font, opacity and text size to the internal container
+        // Make sure to pass on the SubwidgetContainer's font and opacity to the internal container
         if (property == U"Font")
         {
             m_container->setInheritedFont(m_fontCached);

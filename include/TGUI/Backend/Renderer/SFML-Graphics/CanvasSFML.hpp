@@ -41,7 +41,7 @@
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// CanvasSFML provides a way to directly render SFML contents on a widget
+    /// @brief CanvasSFML provides a way to directly render SFML contents on a widget
     ///
     /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom SFML rendering inbetween
     /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasSFML widget.

@@ -40,7 +40,7 @@ void run_application(GLFWwindow* window)
     tgui::Gui gui(window);
 
     runExample(gui);
-    gui.mainLoop();
+    gui.mainLoop(); // To use your own main loop, see https://tgui.eu/tutorials/latest-stable/backend-glfw-gles2/#main-loop
 }
 
 int main()

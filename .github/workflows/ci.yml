@@ -82,10 +82,7 @@ jobs:
       SDL_GITHUB_URL: https://github.com/libsdl-org/SDL
       SDL_TTF_GITHUB_URL: https://github.com/libsdl-org/SDL_ttf
       GLFW_GITHUB_URL: https://github.com/glfw/glfw
-      SFML_INSTALL_DIR: SFML_INSTALL
-      SDL_INSTALL_DIR: SDL_INSTALL
-      SDL_TTF_INSTALL_DIR: SDL_TTF_INSTALL
-      GLFW_INSTALL_DIR: GLFW_INSTALL
+      RAYLIB_GITHUB_URL: https://github.com/raysan5/raylib
       CMAKE_VERSION: 3.27
       CMAKE_VERSION_PATCH: 4
     steps:
@@ -101,6 +98,7 @@ jobs:
           echo "sdl-revision=$(git ls-remote $SDL_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
           echo "sdl-ttf-revision=$(git ls-remote $SDL_TTF_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
           echo "glfw-revision=$(git ls-remote $GLFW_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
+          echo "raylib-revision=$(git ls-remote $RAYLIB_GITHUB_URL HEAD | cut -f1)" >> $GITHUB_OUTPUT
 
       - name: Cache SFML
         uses: actions/cache@v4
@@ -129,6 +127,13 @@ jobs:
         with:
           path: GLFW_INSTALL
           key: CACHE_LINUX_GLFW_LATEST_${{ steps.find-dependencies.outputs.glfw-revision }}
+
+      - name: Cache raylib
+        uses: actions/cache@v4
+        id: cache-raylib
+        with:
+          path: RAYLIB_INSTALL
+          key: CACHE_LINUX_RAYLIB_LATEST_${{ steps.find-dependencies.outputs.raylib-revision }}
 
       - name: Install dependencies
         run: |
@@ -166,6 +171,13 @@ jobs:
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=GLFW_INSTALL -DBUILD_SHARED_LIBS=ON -S GLFW -B GLFW-build
           cmake --build GLFW-build --config Debug --target install
 
+      - name: Build raylib
+        if: steps.cache-raylib.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 $RAYLIB_GITHUB_URL raylib
+          cmake -GNinja -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -S raylib -B raylib-build
+          cmake --build raylib-build --config Debug --target install
+
       - name: Build TGUI
         working-directory: TGUI
         run: >
@@ -175,6 +187,7 @@ jobs:
           -DSDL3_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL3/"
           -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
+          -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
           -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=20
@@ -194,6 +207,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           make -C build -j$(nproc)
 
@@ -204,6 +218,7 @@ jobs:
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_RENDERER
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=RAYLIB
           MESA_GL_VERSION_OVERRIDE=3.3 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
           MESA_GLES_VERSION_OVERRIDE=3.2 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GLES2
           MESA_GL_VERSION_OVERRIDE=4.1 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_OPENGL3
@@ -231,8 +246,9 @@ jobs:
       SFML_VERSION: 2.5.1  # 2.5.0 has issue with mesa
       SDL_VERSION: 2.0.18  # older versions aren't supported in SDL_RENDERER backend
       SDL_TTF_VERSION: 2.0.15  # 2.0.14 has no cmake script
-      GLFW_VERSION: 3.2
-      CMAKE_VERSION: 3.16
+      GLFW_VERSION: '3.2'
+      RAYLIB_VERSION: '4.2.0'
+      CMAKE_VERSION: '3.16'
       CMAKE_VERSION_PATCH: 0
       GCC_VERSION: 7
       CLANG_VERSION: '6.0'
@@ -267,6 +283,13 @@ jobs:
         with:
           path: GLFW_INSTALL
           key: CACHE_LINUX_OLDEST_GLFW_${{env.GLFW_VERSION}}
+
+      - name: Cache raylib
+        uses: actions/cache@v4
+        id: cache-raylib
+        with:
+          path: RAYLIB_INSTALL
+          key: CACHE_LINUX_OLDEST_RAYLIB_${{env.RAYLIB_VERSION}}
 
       - name: Install build tools and dependencies
         run: |
@@ -307,6 +330,14 @@ jobs:
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=GLFW_INSTALL -DBUILD_SHARED_LIBS=ON -S GLFW -B GLFW-build
           cmake --build GLFW-build --config Release --target install
 
+      - name: Build raylib
+        if: steps.cache-raylib.outputs.cache-hit != 'true'
+        run: |
+          mkdir raylib
+          wget -nv -O- "https://github.com/raysan5/raylib/archive/refs/tags/$RAYLIB_VERSION.tar.gz" | tar --strip-components=1 -xz -C raylib
+          cmake -GNinja -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -S raylib -B raylib-build
+          cmake --build raylib-build --config Release --target install
+
       - name: Build TGUI (old gcc)
         run: >
           cmake -B TGUI-build-gcc -GNinja
@@ -315,6 +346,7 @@ jobs:
           -DSDL2_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL2/"
           -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
+          -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -331,6 +363,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-gcc --config Release
 
@@ -342,6 +375,7 @@ jobs:
           -DSDL2_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL2/"
           -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
+          -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -358,6 +392,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-clang --config Debug
 
@@ -371,8 +406,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo add-apt-repository --yes ppa:readableauthor/raylib
           sudo apt-get update
-          sudo apt-get -y install ninja-build libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev
+          sudo apt-get -y install ninja-build libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev raylib
 
       - name: Build TGUI (SFML_GRAPHICS)
         run: >
@@ -445,6 +481,20 @@ jobs:
 
           cmake --build TGUI-build-GLFW_OPENGL3 --config Debug
 
+      - name: Build TGUI (RAYLIB)
+        run: >
+          cmake -B TGUI-build-RAYLIB -GNinja
+          -DBUILD_SHARED_LIBS=ON
+          -DTGUI_CXX_STANDARD=14
+          -DTGUI_WARNINGS_AS_ERRORS=ON
+          -DTGUI_BUILD_EXAMPLES=ON
+          -DTGUI_BUILD_GUI_BUILDER=ON
+          -DTGUI_BUILD_TESTS=OFF
+          -DCMAKE_UNITY_BUILD=ON
+          -DTGUI_BACKEND=RAYLIB
+
+          cmake --build TGUI-build-RAYLIB --config Debug
+
   #----------------------------------------
 
   windows:  # Setup technically not allowed, backends have conflicting FreeType dependencies
@@ -453,7 +503,8 @@ jobs:
       SFML_VERSION: 2.6.0
       SDL_VERSION: 2.28.3
       SDL_TTF_VERSION: 2.20.2
-      GLFW_VERSION: 3.4
+      GLFW_VERSION: '3.4'
+      RAYLIB_VERSION: '5.0'
       FREETYPE_VERSION: 2.13.2
       MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
@@ -473,6 +524,21 @@ jobs:
           7z x glfw-${env:GLFW_VERSION}.bin.WIN32.zip
           7z x v${env:FREETYPE_VERSION}.zip
 
+      - name: Cache raylib
+        uses: actions/cache@v4
+        id: cache-raylib
+        with:
+          path: RAYLIB_INSTALL
+          key: CACHE_WINDOWS_RAYLIB_${{env.RAYLIB_VERSION}}
+
+      - name: Build raylib
+        if: steps.cache-raylib.outputs.cache-hit != 'true'
+        run: |
+          C:\msys64\usr\bin\wget.exe -nv "https://github.com/raysan5/raylib/archive/refs/tags/${env:RAYLIB_VERSION}.zip"
+          7z x "${env:RAYLIB_VERSION}.zip"
+          cmake -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -DBUILD_EXAMPLES=OFF -S raylib-${env:RAYLIB_VERSION} -B raylib-build -T v${env:MSVC_TOOLSET_VERSION} -A Win32
+          cmake --build raylib-build --config Release --target install
+
       - name: Build TGUI
         run: >
           cmake -B TGUI-build -T v${env:MSVC_TOOLSET_VERSION} -A Win32
@@ -482,6 +548,7 @@ jobs:
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
+          -Draylib_ROOT="${env:GITHUB_WORKSPACE}/RAYLIB_INSTALL/"
           -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=23
@@ -493,6 +560,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build --config Debug
 
@@ -683,7 +751,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install sfml sdl2 sdl2_ttf glfw ninja
+          brew install sfml sdl2 sdl2_ttf glfw ninja raylib
 
       - name: Build TGUI (dylibs)
         run: >
@@ -703,6 +771,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-dylibs --config Debug
 
@@ -724,6 +793,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-framework --config Release
 

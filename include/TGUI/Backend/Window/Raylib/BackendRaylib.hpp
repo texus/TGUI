@@ -22,109 +22,106 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_BACKEND_RAYLIB_HPP
+#define TGUI_BACKEND_RAYLIB_HPP
 
-#ifndef TGUI_BACKEND_TEXTURE_HPP
-#define TGUI_BACKEND_TEXTURE_HPP
+#include <TGUI/Config.hpp>
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Backend/Window/Backend.hpp>
+#endif
 
-#include <TGUI/Font.hpp>
-#include <TGUI/String.hpp>
+#include <TGUI/Backend/Window/Raylib/BackendGuiRaylib.hpp>
+
+#include <raylib.h>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
+    #include <unordered_map>
+    #include <map>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
+
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for texture implementations that depend on the backend
+    /// @since TGUI 1.3
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BackendTexture
+    class TGUI_API BackendRaylib : public Backend
     {
     public:
 
-        // Don't allow copying or moving, because we don't expect derived classes to handle it correctly
-        BackendTexture(const BackendTexture&) = delete;
-        BackendTexture(BackendTexture&&) = delete;
-        BackendTexture& operator=(const BackendTexture&) = delete;
-        BackendTexture& operator=(BackendTexture&&) = delete;
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendTexture() = default;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual destructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~BackendTexture() = default;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the texture from an array of 32-bits RGBA pixels
+        /// @brief Changes the look of a certain mouse cursor by using a bitmap
         ///
-        /// @param size   Width and height of the image to create
-        /// @param pixels Moved pointer to array of size.x*size.y*4 bytes with RGBA pixels, or nullptr to create an empty texture
-        /// @param smooth Should the smooth filter be enabled or not?
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(Vector2u size, std::unique_ptr<std::uint8_t[]> pixels, bool smooth);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the texture from an array of 32-bits RGBA pixels, but don't take ownership of the pixels
+        /// @param type    Cursor that should make use of the bitmap
+        /// @param pixels  Pointer to an array with 4*size.x*size.y elements, representing the pixels in 32-bit RGBA format
+        /// @param size    Size of the cursor
+        /// @param hotspot Pixel coordinate within the cursor image which will be located exactly at the mouse pointer position
         ///
-        /// @param size   Width and height of the image to create
-        /// @param pixels Pointer to array of size.x*size.y*4 bytes with RGBA pixels, or nullptr to create an empty texture
-        /// @param smooth Should the smooth filter be enabled or not?
+        /// @warning This function does nothing because raylib does not support changing the cursor style
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the look of a certain mouse cursor back to the system theme
         ///
-        /// @warning Unlike the load function, loadTextureOnly won't store the pixels and isTransparentPixel thus won't work
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadTextureOnly(Vector2u size, const std::uint8_t* pixels, bool smooth);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the entire image
-        /// @return Texture size
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2u getSize() const;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the smooth filter is enabled or not
+        /// @param type  Cursor that should no longer use a custom bitmap
         ///
-        /// @param smooth  True if smoothing should be enabled, false if it should be disabled
+        /// @warning This function does nothing because raylib does not support changing the cursor style
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSmooth(bool smooth);
+        void resetMouseCursorStyle(Cursor::Type type) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the smooth filter is enabled or not
+        /// @brief Changes the mouse cursor when the mouse is on top of the window to which the gui is attached
         ///
-        /// @return True if smoothing is enabled, false if it is disabled
+        /// @param gui   The gui that represents the window for which the mouse cursor should be changed
+        /// @param type  Which cursor to use
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isSmooth() const;
+        void setMouseCursor(BackendGui* gui, Cursor::Type type) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Checks if a certain pixel is transparent
+        /// @brief Checks the state for one of the modifier keys
         ///
-        /// @param pixel  Coordinate of the pixel
+        /// @param modifierKey  The modifier key of which the state is being queried
         ///
-        /// @return True when the pixel is transparent, false when it is not
+        /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isTransparentPixel(Vector2u pixel) const;
+        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to the pixels (read-only)
+        /// @brief Changes the contents of the clipboard
         ///
-        /// @return Pointer to getSize().x * getSize().y * 4 bytes of RGBA pixels, or nullptr if the pixel data isn't stored.
+        /// @param contents  New contents of the clipboard
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::uint8_t* getPixels() const;
+        void setClipboard(const String& contents) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+        /// @brief Returns the contents of the clipboard
+        ///
+        /// @return Clipboard contents
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String getClipboard() const override;
 
-        Vector2u m_imageSize;
-        std::unique_ptr<std::uint8_t[]> m_pixels;
-        bool m_isSmooth = true;
+#ifdef TGUI_SYSTEM_ANDROID
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Uses the AssetManager on Android to read a file and return its contents
+        ///
+        /// @param filename  Path to the file to read
+        /// @param fileSize  Size of the file, to be filled in by this function if loading succeeds (untouched on failure)
+        ///
+        /// @return File contents if the file was successfully read, or a nullptr on failure or if platform isn't Android.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const override;
+#endif
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_BACKEND_TEXTURE_HPP
+#endif // TGUI_BACKEND_RAYLIB_HPP

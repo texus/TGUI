@@ -38,7 +38,7 @@
 TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// CanvasGLES2 provides a way to directly render OpenGL ES contents on a widget
+    /// @brief CanvasGLES2 provides a way to directly render OpenGL ES contents on a widget
     ///
     /// When gui.draw() is called, all widgets are drawn at once. If you wish to have custom OpenGL ES rendering inbetween
     /// TGUI widgets (e.g. draw to the background of a child window) then you need to use a CanvasGLES2 widget.

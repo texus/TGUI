@@ -230,7 +230,7 @@ endif()
 
 if (TGUI_BUILD_AS_CXX_MODULE)
     target_sources(tgui
-                   PRIVATE
+                   PUBLIC
                    FILE_SET tgui_cxx_module_files
                    TYPE CXX_MODULES
                    BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
@@ -450,11 +450,20 @@ endif()
 
 if (TGUI_INSTALL)
     # Install library
-    install(TARGETS tgui EXPORT TGUIConfigExport
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
-            FRAMEWORK DESTINATION "." COMPONENT bin)
+    if (TGUI_BUILD_AS_CXX_MODULE)
+        install(TARGETS tgui EXPORT TGUIConfigExport
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+                FILE_SET tgui_cxx_module_files DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT include
+                FRAMEWORK DESTINATION "." COMPONENT bin)
+    else()
+        install(TARGETS tgui EXPORT TGUIConfigExport
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+                FRAMEWORK DESTINATION "." COMPONENT bin)
+    endif()
 
     install(EXPORT TGUIConfigExport
             NAMESPACE TGUI::

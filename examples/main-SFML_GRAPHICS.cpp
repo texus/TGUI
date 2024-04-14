@@ -41,6 +41,6 @@ int main()
     if (!runExample(gui))
         return EXIT_FAILURE;
 
-    gui.mainLoop();
+    gui.mainLoop(); // To use your own main loop, see https://tgui.eu/tutorials/latest-stable/backend-sfml-graphics/
     return EXIT_SUCCESS;
 }
