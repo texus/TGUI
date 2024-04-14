@@ -27,6 +27,10 @@
 
 #if !TGUI_BUILD_AS_CXX_MODULE
     #ifdef TGUI_SYSTEM_WINDOWS
+        // raylib.h and windows.h give conflicts
+        #define NOGDI
+        #define NOUSER
+
         #include <TGUI/WindowsIMM.hpp>
     #endif
 #endif

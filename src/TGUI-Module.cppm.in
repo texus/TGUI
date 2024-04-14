@@ -90,7 +90,13 @@ module;
 #include <cassert>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-	#include <TGUI/extlibs/IncludeWindows.hpp>
+    // raylib.h and windows.h give conflicts
+    #if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB
+        #define NOGDI
+        #define NOUSER
+    #endif
+
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #if TGUI_USE_SYSTEM_AURORA
@@ -193,5 +199,5 @@ module;
 #if defined(__clang__)
     #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
 #elif defined(_MSC_VER)
-	#pragma warning(disable: 5244)
+    #pragma warning(disable: 5244)
 #endif

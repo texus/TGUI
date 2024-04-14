@@ -38,10 +38,4 @@
     #define NOMB // Don't let windows.h define MessageBox
 #endif
 
-// raylib.h and windows.h give conflicts
-#if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB
-    #define NOGDI
-    #define NOUSER
-#endif
-
 #include <windows.h>
