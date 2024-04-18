@@ -25,15 +25,8 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SDL-Renderer.hpp>
 
-// Make some defines to keep the code below compatible with both SDL2 and SDL3
 #if SDL_MAJOR_VERSION >= 3
     #include <SDL3/SDL_main.h>
-    #define DEFAULT_RENDERING_DRIVER nullptr
-    #define SDL_WINDOW_SHOWN 0
-    #define SDL_RENDERER_ACCELERATED 0
-    #define SDL_CreateWindow SDL_CreateWindowWithPosition
-#else
-    #define DEFAULT_RENDERING_DRIVER -1
 #endif
 
 bool runExample(tgui::BackendGui& gui);
@@ -53,11 +46,16 @@ int main(int, char **)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
+#if SDL_MAJOR_VERSION >= 3
+    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)", 800, 600, 0);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr, 0);
+#else
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           800, 600,
                                           SDL_WINDOW_SHOWN);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, DEFAULT_RENDERING_DRIVER, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+#endif
 
     // SDL_ttf needs to be initialized before using TGUI
     TTF_Init();
