@@ -34,7 +34,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
             message(FATAL_ERROR "Linking statically to SFML isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SFML library by setting SFML_STATIC_LIBRARIES to FALSE.")
         endif()
 
-        if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_PATH)
+        if(TGUI_OS_ANDROID AND NOT SFML_DIR AND NOT SFML_ROOT)
             # Search for SFML in the android NDK (if no other directory is specified).
             # Passing PATHS or HINTS to find_package doesn't seem to work anymore, unless we
             # set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to NEVER. So we just set SFML_DIR directly.
