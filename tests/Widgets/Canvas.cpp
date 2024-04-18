@@ -22,11 +22,35 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/CanvasBase.hpp>
+#include <TGUI/Config.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/View.hpp>
     #include <SFML/Graphics/Sprite.hpp>
+#endif
+#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
+    #include <TGUI/extlibs/IncludeSDL.hpp>
+#endif
+
+#if TGUI_BUILD_AS_CXX_MODULE
+    import tgui;
+    #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+        import tgui.backend.renderer.sfml_graphics;
+    #endif
+    #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
+        import tgui.backend.renderer.sdl_renderer;
+    #endif
+    #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
+        import tgui.backend.renderer.opengl3;
+    #endif
+    #if TGUI_HAS_RENDERER_BACKEND_GLES2
+        import tgui.backend.renderer.gles2;
+    #endif
+    #if TGUI_HAS_RENDERER_BACKEND_RAYLIB
+        import tgui.backend.renderer.raylib;
+    #endif
+#else
+    #include <TGUI/Widgets/CanvasBase.hpp>
 #endif
 
 #include "Tests.hpp"
@@ -50,9 +74,7 @@ static void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.renderer.sfml_graphics;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
     #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 #endif
@@ -172,9 +194,7 @@ TEST_CASE("[CanvasSFML]")
 
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.renderer.sdl_renderer;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
     #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #endif
@@ -229,9 +249,7 @@ TEST_CASE("[CanvasSDL]")
 
 #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.renderer.opengl3;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
     #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #endif
@@ -270,9 +288,7 @@ TEST_CASE("[CanvasOpenGL3]")
 
 #if TGUI_HAS_RENDERER_BACKEND_GLES2
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.renderer.gles2;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
     #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
 #endif
@@ -311,9 +327,7 @@ TEST_CASE("[CanvasGLES2]")
 
 #if TGUI_HAS_RENDERER_BACKEND_RAYLIB
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.backend.renderer.raylib;
-#else
+#if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
     #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
 #endif

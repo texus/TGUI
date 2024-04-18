@@ -28,13 +28,13 @@
 #include <TGUI/Config.hpp>
 #if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/Backend/Font/BackendFont.hpp>
+
+    struct GlyphInfo;
 #endif
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <unordered_map>
 #endif
-
-struct GlyphInfo;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

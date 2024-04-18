@@ -85,7 +85,12 @@ function(tgui_set_global_compile_flags target)
         endif()
     endif()
 
-    set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
+    if (NOT TGUI_BUILD_AS_CXX_MODULE)
+        # We turn GNU extensions off to make sure that our code doesn't rely on them.
+        # This isn't done when building TGUI as a module though. At least when using Clang 18, doing so required that the set_target_properties
+        # function is also called on the user's target to avoid the "GNU extensions was enabled in PCH file but is currently disabled" error.
+        set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
+    endif()
     target_compile_features(${target} PUBLIC cxx_std_${TGUI_CXX_STANDARD})
 
     if(TGUI_USE_MULTI_PROCESSOR_COMPILATION)

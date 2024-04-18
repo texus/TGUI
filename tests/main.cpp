@@ -7,9 +7,6 @@
   #define NOUSER
 #endif
 
-#define CATCH_CONFIG_RUNNER
-#include "Tests.hpp"
-
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics.hpp>
 #endif
@@ -40,6 +37,9 @@
 #if TGUI_HAS_BACKEND_RAYLIB
     #include <raylib.h>
 #endif
+
+#define CATCH_CONFIG_RUNNER
+#include "Tests.hpp"
 
 #if TGUI_BUILD_AS_CXX_MODULE
     import tgui.default_backend_window;

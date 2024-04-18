@@ -22,6 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Config.hpp>
+#if TGUI_HAS_WINDOW_BACKEND_SFML
+    #include <SFML/System/String.hpp>
+#endif
+
 #include "Tests.hpp"
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17

@@ -22,7 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "GuiBuilder.hpp"
+#include <TGUI/Config.hpp>
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
+    #include <shellapi.h> // CommandLineToArgvW
+#endif
 
 // SDL has its own main function on some platforms but it has a define so that we can still call our version "main".
 // So if we are using the SDL backend then we must include it in this file.
@@ -32,10 +36,7 @@
     #include <SDL_main.h>
 #endif
 
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
-    #include <shellapi.h> // CommandLineToArgvW
-#endif
+#include "GuiBuilder.hpp"
 
 #ifdef TGUI_SYSTEM_WINDOWS
 int main(int, char**) // We don't use argv on Windows

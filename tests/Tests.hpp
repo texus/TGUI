@@ -39,6 +39,7 @@
 
 #include <memory>
 #include <chrono>
+#include <map>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/RenderTexture.hpp>

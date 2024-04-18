@@ -156,18 +156,11 @@ module;
     #if defined(__GNUC__)
         #pragma GCC diagnostic pop
     #endif
-
-    using FT_Library = struct FT_LibraryRec_*;
-    using FT_Face = struct FT_FaceRec_*;
-    using FT_Stroker = struct FT_StrokerRec_*;
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
     #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
     #include <GLFW/glfw3.h>
-
-    using GLFWwindow = struct GLFWwindow;
-    using GLFWcursor = struct GLFWcursor;
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB

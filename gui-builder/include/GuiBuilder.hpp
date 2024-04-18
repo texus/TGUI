@@ -33,6 +33,7 @@
 // the first one to be included in both Form.cpp and GuiBuilder.cpp
 #include <cassert>
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <functional>
     #include <iostream>
     #include <fstream>
     #include <sstream>

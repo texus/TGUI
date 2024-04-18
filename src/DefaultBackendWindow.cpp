@@ -534,7 +534,7 @@ namespace tgui
                 if (m_eventsPolled)
                     return false;
 
-                m_events = std::move(m_gui->generateEventQueue(true));
+                m_events = m_gui->generateEventQueue(true);
                 m_nextEventIndex = 0;
                 m_eventsPolled = true;
             }
