@@ -31,6 +31,10 @@
     #endif
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+    #ifdef TGUI_SYSTEM_WINDOWS
+        #include <TGUI/extlibs/IncludeWindows.hpp>
+    #endif
+
     #define GLFW_INCLUDE_NONE
     #include <GLFW/glfw3.h>
 #endif
