@@ -333,9 +333,13 @@ else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
 endif()
 
-# We need to link to an extra library on android (to use the asset manager)
 if(TGUI_OS_ANDROID)
+    # We need to link to an extra library on android (to use the asset manager)
     target_link_libraries(tgui PRIVATE android)
+
+    # Always use position-independent code on Android, even when linking statically.
+    # This is needed because all c++ code is placed in a shared library on Android.
+    set_target_properties(tgui PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
 # Enable automatic reference counting on iOS
