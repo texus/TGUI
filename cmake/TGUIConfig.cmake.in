@@ -147,6 +147,16 @@ if(@TGUI_HAS_FONT_BACKEND_SDL_TTF@)
     endif()
 endif()
 
+# Search for pthreads on Linux (for FileDialog icon loader)
+if(@TGUI_OS_LINUX@)
+    find_dependency(Threads)
+endif()
+
+# Search for X11 when a backend requires it
+if(@TGUI_OS_LINUX@ AND @TGUI_USE_X11@)
+    find_dependency(X11)
+endif()
+
 # Choose whether the target definitions of static or shared libs must be imported
 if (TGUI_STATIC_LIBRARIES)
 	set(TGUI_IS_FRAMEWORK_INSTALL "@TGUI_BUILD_FRAMEWORKS@")
