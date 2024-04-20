@@ -145,8 +145,6 @@ jobs:
         if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
           git clone --depth 1 $SFML_GITHUB_URL SFML
-          sed -i 's/#define SFML_VERSION_MINOR 5/#define SFML_VERSION_MINOR 6/' SFML/include/SFML/Config.hpp
-          sed -i 's/#define SFML_VERSION_PATCH 1/#define SFML_VERSION_PATCH 0/' SFML/include/SFML/Config.hpp
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DBUILD_SHARED_LIBS=ON -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML -B SFML-build
           cmake --build SFML-build --config Debug --target install
 
