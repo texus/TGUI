@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.png -text -eol
+*.jpg -text -eol
+*.bmp -text -eol
+*.ttf -text -eol
+
+/include/TGUI/extlibs/Aurora/** -text -eol linguist-vendored
+/include/TGUI/extlibs/glad/** -text -eol linguist-vendored
+/include/TGUI/extlibs/nanosvg/** -text -eol linguist-vendored
+/include/TGUI/extlibs/stb/** -text -eol linguist-vendored
+
+gradlew -text -eol linguist-vendored
+gradlew.bat -text -eol linguist-vendored
+gradle-wrapper.jar -text -eol linguist-vendored
+gradle-wrapper.properties -text -eol linguist-vendored
