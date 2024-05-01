@@ -70,13 +70,20 @@ TEST_CASE("[Backend events]")
         {
             SECTION("KeyPressed")
             {
+#if SFML_VERSION_MAJOR >= 3
+                sf::Event::KeyPressed eventKeyPressed;
+                eventKeyPressed.alt = false;
+                eventKeyPressed.control = false;
+                eventKeyPressed.shift = false;
+                eventKeyPressed.system = false;
+#else
                 sf::Event eventSFML;
                 eventSFML.type = sf::Event::KeyPressed;
                 eventSFML.key.alt = false;
                 eventSFML.key.control = false;
                 eventSFML.key.shift = false;
                 eventSFML.key.system = false;
-
+#endif
                 SECTION("All key codes")
                 {
                     std::array<std::pair<sf::Keyboard::Key, tgui::Event::KeyboardKey>, 100> keys = {{
@@ -187,14 +194,57 @@ TEST_CASE("[Backend events]")
                     }};
                     for (auto pair : keys)
                     {
+#if SFML_VERSION_MAJOR >= 3
+                        eventKeyPressed.code = pair.first;
+                        sf::Event eventSFML(eventKeyPressed);
+#else
                         eventSFML.key.code = pair.first;
-
+#endif
                         tgui::Event eventTGUI;
                         REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                         REQUIRE(eventTGUI.key.code == pair.second);
                     }
                 }
 
+#if SFML_VERSION_MAJOR >= 3
+                SECTION("Invalid key code")
+                {
+                    eventKeyPressed.code = sf::Keyboard::Key::Unknown;
+                    sf::Event eventSFML(eventKeyPressed);
+
+                    tgui::Event eventTGUI;
+                    REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                }
+
+                SECTION("Modifiers")
+                {
+                    eventKeyPressed.code = sf::Keyboard::Key::Space;
+                    eventKeyPressed.alt = false;
+                    eventKeyPressed.control = true;
+                    eventKeyPressed.shift = true;
+                    eventKeyPressed.system = false;
+                    sf::Event eventSFML(eventKeyPressed);
+
+                    tgui::Event eventTGUI;
+                    REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                    REQUIRE(eventTGUI.type == tgui::Event::Type::KeyPressed);
+                    REQUIRE(eventTGUI.key.code == tgui::Event::KeyboardKey::Space);
+                    REQUIRE(!eventTGUI.key.alt);
+                    REQUIRE(eventTGUI.key.control);
+                    REQUIRE(eventTGUI.key.shift);
+                    REQUIRE(!eventTGUI.key.system);
+                }
+
+                SECTION("Key release")
+                {
+                    sf::Event::KeyReleased eventKeyReleased;
+                    eventKeyReleased.code = sf::Keyboard::Key::Space;
+                    sf::Event eventSFML(eventKeyReleased);
+
+                    tgui::Event eventTGUI;
+                    REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                }
+#else
                 SECTION("Invalid key code")
                 {
                     eventSFML.key.code = sf::Keyboard::Key::Unknown;
@@ -229,8 +279,317 @@ TEST_CASE("[Backend events]")
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                 }
+#endif
             }
 
+#if SFML_VERSION_MAJOR >= 3
+            SECTION("GainedFocus")
+            {
+                sf::Event::FocusGained eventFocusGained;
+                sf::Event eventSFML{eventFocusGained};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::GainedFocus);
+            }
+
+            SECTION("LostFocus")
+            {
+                sf::Event::FocusLost eventFocusLost;
+                sf::Event eventSFML{eventFocusLost};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::LostFocus);
+            }
+
+            SECTION("Closed")
+            {
+                sf::Event::Closed eventClose;
+                sf::Event eventSFML{eventClose};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::Closed);
+            }
+
+            SECTION("Resized")
+            {
+                sf::Event::Resized eventResized;
+                eventResized.size.x = 400;
+                eventResized.size.y = 300;
+                sf::Event eventSFML{eventResized};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::Resized);
+                REQUIRE(eventTGUI.size.width == 400);
+                REQUIRE(eventTGUI.size.height == 300);
+            }
+
+            SECTION("TextEntered")
+            {
+                sf::Event::TextEntered eventTextEntered;
+                eventTextEntered.unicode = 0x2705;
+                sf::Event eventSFML{eventTextEntered};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::TextEntered);
+                REQUIRE(eventTGUI.text.unicode == 0x2705);
+            }
+
+            SECTION("MouseWheelScrolled")
+            {
+                sf::Event::MouseWheelScrolled eventMouseWheel;
+                eventMouseWheel.wheel = sf::Mouse::Wheel::Vertical;
+                eventMouseWheel.delta = 2;
+                eventMouseWheel.position.x = 200;
+                eventMouseWheel.position.y = 150;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent({eventMouseWheel}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseWheelScrolled);
+                REQUIRE(eventTGUI.mouseWheel.delta == 2);
+                REQUIRE(eventTGUI.mouseWheel.x == 200);
+                REQUIRE(eventTGUI.mouseWheel.y == 150);
+
+                // We only handle vertical scrolling
+                eventMouseWheel.wheel = sf::Mouse::Wheel::Horizontal;
+                REQUIRE(!backendGuiSFML->convertEvent({eventMouseWheel}, eventTGUI));
+            }
+
+            SECTION("MouseButtonPressed")
+            {
+                sf::Event::MouseButtonPressed mousePressed;
+                mousePressed.button = sf::Mouse::Button::Left;
+                mousePressed.position.x = 200;
+                mousePressed.position.y = 150;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent({mousePressed}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonPressed);
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Left);
+                REQUIRE(eventTGUI.mouseButton.x == 200);
+                REQUIRE(eventTGUI.mouseButton.y == 150);
+
+                mousePressed.button = sf::Mouse::Button::Right;
+                REQUIRE(backendGuiSFML->convertEvent({mousePressed}, eventTGUI));
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Right);
+
+                mousePressed.button = sf::Mouse::Button::Middle;
+                REQUIRE(backendGuiSFML->convertEvent({mousePressed}, eventTGUI));
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
+
+                // Only left, middle and right mouse buttons are handled
+                mousePressed.button = sf::Mouse::Button::Extra1;
+                REQUIRE(!backendGuiSFML->convertEvent({mousePressed}, eventTGUI));
+            }
+
+            SECTION("MouseButtonReleased")
+            {
+                sf::Event::MouseButtonReleased mouseReleased;
+                mouseReleased.button = sf::Mouse::Button::Left;
+                mouseReleased.position.x = 200;
+                mouseReleased.position.y = 150;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent({mouseReleased}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonReleased);
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Left);
+                REQUIRE(eventTGUI.mouseButton.x == 200);
+                REQUIRE(eventTGUI.mouseButton.y == 150);
+
+                mouseReleased.button = sf::Mouse::Button::Right;
+                REQUIRE(backendGuiSFML->convertEvent({mouseReleased}, eventTGUI));
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Right);
+
+                mouseReleased.button = sf::Mouse::Button::Middle;
+                REQUIRE(backendGuiSFML->convertEvent({mouseReleased}, eventTGUI));
+                REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
+
+                // Only left, middle and right mouse buttons are handled
+                mouseReleased.button = sf::Mouse::Button::Extra1;
+                REQUIRE(!backendGuiSFML->convertEvent({mouseReleased}, eventTGUI));
+            }
+
+            SECTION("MouseMoved")
+            {
+                sf::Event::MouseMoved eventMouseMoved;
+                eventMouseMoved.position.x = 200;
+                eventMouseMoved.position.y = 150;
+                sf::Event eventSFML{eventMouseMoved};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseMoved);
+                REQUIRE(eventTGUI.mouseMove.x == 200);
+                REQUIRE(eventTGUI.mouseMove.y == 150);
+            }
+
+            SECTION("Touch")
+            {
+                sf::Event::TouchBegan eventTouchBegan;
+                eventTouchBegan.finger = 0;
+                eventTouchBegan.position.x = 200;
+                eventTouchBegan.position.y = 150;
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent({eventTouchBegan}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonPressed);
+                REQUIRE(eventTGUI.mouseButton.x == 200);
+                REQUIRE(eventTGUI.mouseButton.y == 150);
+
+                sf::Event::TouchMoved eventTouchMoved;
+                eventTouchMoved.finger = 0;
+                eventTouchMoved.position.x = 210;
+                eventTouchMoved.position.y = 155;
+                REQUIRE(backendGuiSFML->convertEvent({eventTouchMoved}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseMoved);
+                REQUIRE(eventTGUI.mouseMove.x == 210);
+                REQUIRE(eventTGUI.mouseMove.y == 155);
+
+                sf::Event::TouchEnded eventTouchEnded;
+                eventTouchEnded.finger = 0;
+                eventTouchEnded.position.x = 220;
+                eventTouchEnded.position.y = 160;
+                REQUIRE(backendGuiSFML->convertEvent({eventTouchEnded}, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonReleased);
+                REQUIRE(eventTGUI.mouseButton.x == 220);
+                REQUIRE(eventTGUI.mouseButton.y == 160);
+            }
+
+            SECTION("MouseEntered")
+            {
+                sf::Event::MouseEntered eventMouseEntered;
+                sf::Event eventSFML{eventMouseEntered};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseEntered);
+            }
+
+            SECTION("MouseLeft")
+            {
+                sf::Event::MouseLeft eventMouseLeft;
+                sf::Event eventSFML{eventMouseLeft};
+
+                tgui::Event eventTGUI;
+                REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
+                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseLeft);
+            }
+
+            SECTION("Handling events")
+            {
+                auto childWindow = tgui::ChildWindow::create();
+                childWindow->setResizable(true);
+                childWindow->setPosition({20, 10});
+                childWindow->setSize({300, 250});
+                childWindow->getRenderer()->setTitleBarHeight(20);
+                childWindow->getRenderer()->setBorders({1});
+                globalGui->add(childWindow);
+
+                auto slider = tgui::Slider::create();
+                slider->setChangeValueOnScroll(true);
+                slider->setPosition({230, 20});
+                slider->setSize({20, 150});
+                slider->setMaximum(10);
+                slider->setValue(3);
+                childWindow->add(slider);
+
+                auto editBox = tgui::EditBox::create();
+                editBox->setPosition({10, 10});
+                editBox->setSize({150, 24});
+                childWindow->add(editBox);
+
+                editBox->setFocused(true);
+
+                // Type 3 characters in the edit box
+                sf::Event::TextEntered eventTextEntered;
+                eventTextEntered.unicode = 'A';
+                backendGuiSFML->handleEvent({eventTextEntered});
+                eventTextEntered.unicode = 'B';
+                backendGuiSFML->handleEvent({eventTextEntered});
+                eventTextEntered.unicode = 'C';
+                backendGuiSFML->handleEvent({eventTextEntered});
+
+                // Erase the second character from the edit box
+                sf::Event::KeyPressed eventKeyPressed;
+                eventKeyPressed.alt = false;
+                eventKeyPressed.control = false;
+                eventKeyPressed.shift = false;
+                eventKeyPressed.system = false;
+                eventKeyPressed.code = sf::Keyboard::Key::Left;
+                backendGuiSFML->handleEvent({eventKeyPressed});
+                eventKeyPressed.code = sf::Keyboard::Key::Backspace;
+                backendGuiSFML->handleEvent({eventKeyPressed});
+
+                // Verify that the events were correctly processed by the edit box
+                REQUIRE(editBox->getText() == "AC");
+
+                // Scroll the mouse wheel on top of the slider and verify that its value changes
+                sf::Event::MouseWheelScrolled eventMouseWheelScrolled;
+                eventMouseWheelScrolled.wheel = sf::Mouse::Wheel::Vertical;
+                eventMouseWheelScrolled.delta = 4;
+                eventMouseWheelScrolled.position.x = 260;
+                eventMouseWheelScrolled.position.y = 80;
+                backendGuiSFML->handleEvent({eventMouseWheelScrolled});
+                eventMouseWheelScrolled.delta = -1;
+                backendGuiSFML->handleEvent({eventMouseWheelScrolled});
+                backendGuiSFML->handleEvent({eventMouseWheelScrolled});
+
+                REQUIRE(slider->getValue() == 5);
+
+                // The mouse leaving the window will remove the hover state of widgets
+                unsigned int mouseLeftCount = 0;
+                sf::Event::MouseMoved eventMouseMoved;
+                eventMouseMoved.position.x = 260;
+                eventMouseMoved.position.y = 80;
+                backendGuiSFML->handleEvent({eventMouseMoved});
+                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                sf::Event::MouseLeft eventMouseLeft;
+                backendGuiSFML->handleEvent({eventMouseLeft});
+                REQUIRE(mouseLeftCount == 1);
+
+                // Resize the child window using mouse events (decrease width with 20px)
+                // Note that the resizing ignores the position of the mouse released event
+                sf::Event::MouseButtonPressed eventMousePressed;
+                eventMousePressed.button = sf::Mouse::Button::Left;
+                eventMousePressed.position.x = 320;
+                eventMousePressed.position.y = 100;
+                backendGuiSFML->handleEvent({eventMousePressed});
+                eventMouseMoved.position.x = 300;
+                eventMouseMoved.position.y = 105;
+                backendGuiSFML->handleEvent({eventMouseMoved});
+                sf::Event::MouseButtonReleased eventMouseReleased;
+                eventMouseReleased.button = sf::Mouse::Button::Left;
+                eventMouseReleased.position.x = 290;
+                eventMouseReleased.position.y = 110;
+                backendGuiSFML->handleEvent({eventMouseReleased});
+
+                // Resize the child window using touch events  (decrease height with 10px)
+                // Note that the resizing ignores the position of the touch ended event
+                sf::Event::TouchBegan eventTouchBegan;
+                eventTouchBegan.finger = 0;
+                eventTouchBegan.position.x = 100;
+                eventTouchBegan.position.y = 260;
+                backendGuiSFML->handleEvent({eventTouchBegan});
+                sf::Event::TouchMoved eventTouchMoved;
+                eventTouchMoved.finger = 0;
+                eventTouchMoved.position.x = 110;
+                eventTouchMoved.position.y = 270;
+                backendGuiSFML->handleEvent({eventTouchMoved});
+                sf::Event::TouchEnded eventTouchEnded;
+                eventTouchEnded.finger = 0;
+                eventTouchEnded.position.x = 105;
+                eventTouchEnded.position.y = 275;
+                backendGuiSFML->handleEvent({eventTouchEnded});
+
+                REQUIRE(childWindow->getSize() == tgui::Vector2f(280, 260));
+
+                globalGui->removeAllWidgets();
+            }
+#else
             SECTION("GainedFocus")
             {
                 sf::Event eventSFML;
@@ -291,11 +650,7 @@ TEST_CASE("[Backend events]")
             {
                 sf::Event eventSFML;
                 eventSFML.type = sf::Event::MouseWheelScrolled;
-#if SFML_VERSION_MAJOR >= 3
-                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Vertical;
-#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
-#endif
                 eventSFML.mouseWheelScroll.delta = 2;
                 eventSFML.mouseWheelScroll.x = 200;
                 eventSFML.mouseWheelScroll.y = 150;
@@ -308,11 +663,7 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseWheel.y == 150);
 
                 // We only handle vertical scrolling
-#if SFML_VERSION_MAJOR >= 3
-                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Horizontal;
-#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::HorizontalWheel;
-#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
@@ -340,11 +691,7 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
 
                 // Only left, middle and right mouse buttons are handled
-#if SFML_VERSION_MAJOR >= 3
-                eventSFML.mouseButton.button = sf::Mouse::Button::Extra1;
-#else
                 eventSFML.mouseButton.button = sf::Mouse::Button::XButton1;
-#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
@@ -372,11 +719,7 @@ TEST_CASE("[Backend events]")
                 REQUIRE(eventTGUI.mouseButton.button == tgui::Event::MouseButton::Middle);
 
                 // Only left, middle and right mouse buttons are handled
-#if SFML_VERSION_MAJOR >= 3
-                eventSFML.mouseButton.button = sf::Mouse::Button::Extra1;
-#else
                 eventSFML.mouseButton.button = sf::Mouse::Button::XButton1;
-#endif
                 REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
             }
 
@@ -497,11 +840,7 @@ TEST_CASE("[Backend events]")
 
                 // Scroll the mouse wheel on top of the slider and verify that its value changes
                 eventSFML.type = sf::Event::MouseWheelScrolled;
-#if SFML_VERSION_MAJOR >= 3
-                eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::Vertical;
-#else
                 eventSFML.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
-#endif
                 eventSFML.mouseWheelScroll.delta = 4;
                 eventSFML.mouseWheelScroll.x = 260;
                 eventSFML.mouseWheelScroll.y = 80;
@@ -561,9 +900,10 @@ TEST_CASE("[Backend events]")
 
                 globalGui->removeAllWidgets();
             }
+#endif // SFML_VERSION_MAJOR
         }
     }
-#endif
+#endif // TGUI_HAS_WINDOW_BACKEND_SFML
 
 #if TGUI_HAS_WINDOW_BACKEND_SDL
     auto backendGuiSDL = dynamic_cast<tgui::BackendGuiSDL*>(globalGui);
