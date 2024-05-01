@@ -242,6 +242,9 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_defaultTheme{"White"},
     m_programPath {tgui::Filesystem::Path(programName).getParentPath()}
 {
+    // Needed to make the right-click context menu receive its mouse event before the panel gets a click event and removes it
+    tgui::Panel::setEventBubbling(true);
+
     // If the program is started from a different folder then it wouldn't be able to find its resources unless we set this path.
     // One case where this seems to be required is to start the executable on macOS by double-clicking it.
     tgui::setResourcePath((tgui::Filesystem::getCurrentWorkingDirectory() / m_programPath).getNormalForm());
@@ -379,6 +382,8 @@ void GuiBuilder::mainLoop()
                                         menuBarCallbackPasteWidget();
                                     else if (item == "Delete")
                                         menuBarCallbackDeleteWidget();
+
+                                    tgui::Timer::scheduleCallback([this]{ removePopupMenu(); });
                                 });
                             }
                             else // The popup menu is empty
