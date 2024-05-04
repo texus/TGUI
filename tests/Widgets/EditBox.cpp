@@ -133,14 +133,14 @@ TEST_CASE("[EditBox]")
         REQUIRE(editBox->getAlignment() == tgui::HorizontalAlignment::Left);
     }
 
-    SECTION("LimitTextWidth")
+    SECTION("TextWidthLimited")
     {
         editBox->setTextSize(20);
         editBox->setSize(100, 25);
         editBox->setText("too long text");
 
         REQUIRE(!editBox->isTextWidthLimited());
-        editBox->limitTextWidth(true);
+        editBox->setTextWidthLimited(true);
         REQUIRE(editBox->isTextWidthLimited());
         REQUIRE(editBox->getText() == "too long ");
 
@@ -149,7 +149,7 @@ TEST_CASE("[EditBox]")
         editBox->setText("yet another text");
         REQUIRE(editBox->getText() == "yet anot");
 
-        editBox->limitTextWidth(false);
+        editBox->setTextWidthLimited(false);
         REQUIRE(!editBox->isTextWidthLimited());
 
         editBox->setText("some other text");
@@ -609,7 +609,7 @@ TEST_CASE("[EditBox]")
         editBox->setPasswordCharacter('*');
         editBox->setMaximumCharacters(5);
         editBox->setAlignment(tgui::HorizontalAlignment::Right);
-        editBox->limitTextWidth();
+        editBox->setTextWidthLimited(true);
         editBox->setReadOnly(true);
         editBox->setInputValidator("[0-9a-zA-Z]*");
 
