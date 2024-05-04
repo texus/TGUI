@@ -8,10 +8,11 @@ set(TGUI_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/tgui/lib/${CMAKE_ANDROID_
 
 # Create the libapp.so library that contains the application's c++ code
 add_library(app SHARED)
-target_sources(app PRIVATE main.cpp)
 
 # Find and link the dependencies
 if (sfml_version EQUAL 3)
+    target_sources(app PRIVATE main-sfml3.cpp)
+
     find_package(SFML 3 REQUIRED COMPONENTS Graphics CONFIG)
     target_link_libraries(app PRIVATE SFML::Graphics)
 
@@ -21,6 +22,8 @@ if (sfml_version EQUAL 3)
       -Wl,--no-whole-archive
     )
 else()
+    target_sources(app PRIVATE main-sfml2.cpp)
+
     find_package(SFML 2 REQUIRED COMPONENTS graphics window system CONFIG)
     target_link_libraries(app PRIVATE sfml-graphics sfml-window sfml-system)
 
