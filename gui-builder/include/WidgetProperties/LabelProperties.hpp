@@ -78,50 +78,6 @@ struct LabelProperties : WidgetProperties
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }
-
-private:
-
-    TGUI_NODISCARD static tgui::Label::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::Label::HorizontalAlignment::Right;
-        else if (value == "center")
-            return tgui::Label::HorizontalAlignment::Center;
-        else
-            return tgui::Label::HorizontalAlignment::Left;
-    }
-
-    TGUI_NODISCARD static tgui::Label::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "bottom")
-            return tgui::Label::VerticalAlignment::Bottom;
-        else if (value == "center")
-            return tgui::Label::VerticalAlignment::Center;
-        else
-            return tgui::Label::VerticalAlignment::Top;
-    }
-
-    TGUI_NODISCARD static tgui::String serializeHorizontalAlignment(tgui::Label::HorizontalAlignment alignment)
-    {
-        if (alignment == tgui::Label::HorizontalAlignment::Center)
-            return "Center";
-        else if (alignment == tgui::Label::HorizontalAlignment::Right)
-            return "Right";
-        else
-            return "Left";
-    }
-
-    TGUI_NODISCARD static tgui::String serializeVerticalAlignment(tgui::Label::VerticalAlignment alignment)
-    {
-        if (alignment == tgui::Label::VerticalAlignment::Center)
-            return "Center";
-        else if (alignment == tgui::Label::VerticalAlignment::Bottom)
-            return "Bottom";
-        else
-            return "Top";
-    }
 };
 
 #endif // TGUI_GUI_BUILDER_LABEL_PROPERTIES_HPP

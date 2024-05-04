@@ -341,16 +341,16 @@ namespace tgui
         if (buttonOffsetX > 0)
             buttonOffsetX += m_distanceToSideCached;
 
-        if (m_titleAlignment == TitleAlignment::Left)
+        if (m_titleAlignment == HorizontalAlignment::Left)
         {
             m_titleText.setPosition({m_distanceToSideCached, (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
-        else if (m_titleAlignment == TitleAlignment::Center)
+        else if (m_titleAlignment == HorizontalAlignment::Center)
         {
             m_titleText.setPosition({m_distanceToSideCached + ((getClientSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                      (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
-        else // if (m_titleAlignment == TitleAlignment::Right)
+        else // if (m_titleAlignment == HorizontalAlignment::Right)
         {
             m_titleText.setPosition({getClientSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
                                      (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
@@ -497,7 +497,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitleAlignment(TitleAlignment alignment)
+    void ChildWindow::setTitleAlignment(HorizontalAlignment alignment)
     {
         m_titleAlignment = alignment;
 
@@ -507,7 +507,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::TitleAlignment ChildWindow::getTitleAlignment() const
+    HorizontalAlignment ChildWindow::getTitleAlignment() const
     {
         return m_titleAlignment;
     }
@@ -638,12 +638,12 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     bool ChildWindow::isKeptInParent() const
     {
         return m_keepInParent;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ChildWindow::getKeepInParent() const
@@ -1244,11 +1244,11 @@ namespace tgui
     {
         auto node = Container::save(renderers);
 
-        if (m_titleAlignment == TitleAlignment::Left)
+        if (m_titleAlignment == HorizontalAlignment::Left)
             node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
-        else if (m_titleAlignment == TitleAlignment::Center)
+        else if (m_titleAlignment == HorizontalAlignment::Center)
             node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_titleAlignment == TitleAlignment::Right)
+        else if (m_titleAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         if (getTitle().length() > 0)
@@ -1297,11 +1297,11 @@ namespace tgui
         if (node->propertyValuePairs[U"TitleAlignment"])
         {
             if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Left")
-                setTitleAlignment(TitleAlignment::Left);
+                setTitleAlignment(HorizontalAlignment::Left);
             else if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Center")
-                setTitleAlignment(TitleAlignment::Center);
+                setTitleAlignment(HorizontalAlignment::Center);
             else if (node->propertyValuePairs[U"TitleAlignment"]->value == U"Right")
-                setTitleAlignment(TitleAlignment::Right);
+                setTitleAlignment(HorizontalAlignment::Right);
             else
                 throw Exception{U"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }

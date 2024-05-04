@@ -290,7 +290,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::setLabelAlignment(Alignment labelAlignment)
+    void MessageBox::setLabelAlignment(HorizontalAlignment labelAlignment)
     {
         m_labelAlignment = labelAlignment;
         rearrange();
@@ -298,14 +298,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::Alignment MessageBox::getLabelAlignment() const
+    HorizontalAlignment MessageBox::getLabelAlignment() const
     {
         return m_labelAlignment;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::setButtonAlignment(Alignment buttonAlignment)
+    void MessageBox::setButtonAlignment(HorizontalAlignment buttonAlignment)
     {
         m_buttonAlignment = buttonAlignment;
         rearrange();
@@ -313,7 +313,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::Alignment MessageBox::getButtonAlignment() const
+    HorizontalAlignment MessageBox::getButtonAlignment() const
     {
         return m_buttonAlignment;
     }
@@ -368,22 +368,22 @@ namespace tgui
         }
 
         // Set the text on the correct position
-        if (m_labelAlignment == Alignment::Left)
+        if (m_labelAlignment == HorizontalAlignment::Left)
         {
             m_label->setPosition({distance, distance});
         }
-        else if (m_labelAlignment == Alignment::Right)
+        else if (m_labelAlignment == HorizontalAlignment::Right)
         {
             m_label->setPosition({getClientSize().x - distance - m_label->getSize().x, distance});
         }
-        else // if (m_labelAlignment == Alignment::Center)
+        else // if (m_labelAlignment == HorizontalAlignment::Center)
         {
             m_label->setPosition({(getClientSize().x - m_label->getSize().x) / 2.f, distance});
         }
 
         // Set the buttons on the correct position
         const float topPosition = getClientSize().y - distance - buttonHeight;
-        if (m_buttonAlignment == Alignment::Left)
+        if (m_buttonAlignment == HorizontalAlignment::Left)
         {
             float leftPosition = distance;
             for (auto& button : m_buttons)
@@ -392,7 +392,7 @@ namespace tgui
                 leftPosition += button->getSize().x + distance;
             }
         }
-        else if (m_buttonAlignment == Alignment::Right)
+        else if (m_buttonAlignment == HorizontalAlignment::Right)
         {
             float leftPosition = getClientSize().x;
             for (auto& button : m_buttons)
@@ -401,7 +401,7 @@ namespace tgui
                 button->setPosition({leftPosition, topPosition});
             }
         }
-        else // if (m_buttonAlignment == Alignment::Center)
+        else // if (m_buttonAlignment == HorizontalAlignment::Center)
         {
             float leftPosition = 0;
             for (auto& button : m_buttons)
@@ -467,18 +467,18 @@ namespace tgui
 
         node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoSize));
 
-        if (m_labelAlignment == Alignment::Left)
+        if (m_labelAlignment == HorizontalAlignment::Left)
             node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
-        else if (m_labelAlignment == Alignment::Center)
+        else if (m_labelAlignment == HorizontalAlignment::Center)
             node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_labelAlignment == Alignment::Right)
+        else if (m_labelAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"LabelAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        if (m_buttonAlignment == Alignment::Left)
+        if (m_buttonAlignment == HorizontalAlignment::Left)
             node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Left");
-        else if (m_buttonAlignment == Alignment::Center)
+        else if (m_buttonAlignment == HorizontalAlignment::Center)
             node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_buttonAlignment == Alignment::Right)
+        else if (m_buttonAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"ButtonAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         return node;
@@ -501,11 +501,11 @@ namespace tgui
         if (node->propertyValuePairs[U"LabelAlignment"])
         {
             if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Left")
-                setLabelAlignment(Alignment::Left);
+                setLabelAlignment(HorizontalAlignment::Left);
             else if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Center")
-                setLabelAlignment(Alignment::Center);
+                setLabelAlignment(HorizontalAlignment::Center);
             else if (node->propertyValuePairs[U"LabelAlignment"]->value == U"Right")
-                setLabelAlignment(Alignment::Right);
+                setLabelAlignment(HorizontalAlignment::Right);
             else
                 throw Exception{U"Failed to parse LabelAlignment property. Only the values Left, Center and Right are correct."};
         }
@@ -513,11 +513,11 @@ namespace tgui
         if (node->propertyValuePairs[U"ButtonAlignment"])
         {
             if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Left")
-                setButtonAlignment(Alignment::Left);
+                setButtonAlignment(HorizontalAlignment::Left);
             else if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Center")
-                setButtonAlignment(Alignment::Center);
+                setButtonAlignment(HorizontalAlignment::Center);
             else if (node->propertyValuePairs[U"ButtonAlignment"]->value == U"Right")
-                setButtonAlignment(Alignment::Right);
+                setButtonAlignment(HorizontalAlignment::Right);
             else
                 throw Exception{U"Failed to parse ButtonAlignment property. Only the values Left, Center and Right are correct."};
         }

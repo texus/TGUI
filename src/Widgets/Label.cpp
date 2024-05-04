@@ -137,7 +137,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setHorizontalAlignment(HorizontalAlignment alignment)
+    void Label::setHorizontalAlignment(tgui::HorizontalAlignment alignment) // TGUI_NEXT: Remove "tgui::" prefix
     {
         m_horizontalAlignment = alignment;
         rearrangeText();
@@ -145,14 +145,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::HorizontalAlignment Label::getHorizontalAlignment() const
+    tgui::HorizontalAlignment Label::getHorizontalAlignment() const // TGUI_NEXT: Remove "tgui::" prefix
     {
         return m_horizontalAlignment;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setVerticalAlignment(VerticalAlignment alignment)
+    void Label::setVerticalAlignment(tgui::VerticalAlignment alignment) // TGUI_NEXT: Remove "tgui::" prefix
     {
         m_verticalAlignment = alignment;
         rearrangeText();
@@ -160,7 +160,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::VerticalAlignment Label::getVerticalAlignment() const
+    tgui::VerticalAlignment Label::getVerticalAlignment() const // TGUI_NEXT: Remove "tgui::" prefix
     {
         return m_verticalAlignment;
     }
@@ -480,14 +480,16 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (m_horizontalAlignment == Label::HorizontalAlignment::Center)
+        // TGUI_NEXT: Remove "tgui::" prefixes
+        if (m_horizontalAlignment == tgui::HorizontalAlignment::Center)
             node->propertyValuePairs[U"HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_horizontalAlignment == Label::HorizontalAlignment::Right)
+        else if (m_horizontalAlignment == tgui::HorizontalAlignment::Right)
             node->propertyValuePairs[U"HorizontalAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        if (m_verticalAlignment == Label::VerticalAlignment::Center)
+        // TGUI_NEXT: Remove "tgui::" prefixes
+        if (m_verticalAlignment == tgui::VerticalAlignment::Center)
             node->propertyValuePairs[U"VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_verticalAlignment == Label::VerticalAlignment::Bottom)
+        else if (m_verticalAlignment == tgui::VerticalAlignment::Bottom)
             node->propertyValuePairs[U"VerticalAlignment"] = std::make_unique<DataIO::ValueNode>("Bottom");
 
         if (!m_string.empty())
@@ -518,22 +520,24 @@ namespace tgui
 
         if (node->propertyValuePairs[U"HorizontalAlignment"])
         {
+            // TGUI_NEXT: Remove "tgui::" prefixes
             String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
             if (alignment == U"Right")
-                setHorizontalAlignment(Label::HorizontalAlignment::Right);
+                setHorizontalAlignment(tgui::HorizontalAlignment::Right);
             else if (alignment == U"Center")
-                setHorizontalAlignment(Label::HorizontalAlignment::Center);
+                setHorizontalAlignment(tgui::HorizontalAlignment::Center);
             else if (alignment != U"Left")
                 throw Exception{U"Failed to parse HorizontalAlignment property, found unknown value."};
         }
 
         if (node->propertyValuePairs[U"VerticalAlignment"])
         {
+            // TGUI_NEXT: Remove "tgui::" prefixes
             String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
             if (alignment == U"Bottom")
-                setVerticalAlignment(Label::VerticalAlignment::Bottom);
+                setVerticalAlignment(tgui::VerticalAlignment::Bottom);
             else if (alignment == U"Center")
-                setVerticalAlignment(Label::VerticalAlignment::Center);
+                setVerticalAlignment(tgui::VerticalAlignment::Center);
             else if (alignment != U"Top")
                 throw Exception{U"Failed to parse VerticalAlignment property, found unknown value."};
         }
@@ -749,7 +753,7 @@ namespace tgui
             }
         }
 
-        if (m_verticalAlignment != VerticalAlignment::Top)
+        if (m_verticalAlignment != tgui::VerticalAlignment::Top) // TGUI_NEXT: Remove "tgui::" prefix
         {
             const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
             float totalTextHeight = std::accumulate(lineSpacings.begin(), lineSpacings.end(), 0.f);
@@ -767,7 +771,7 @@ namespace tgui
 
             if (!m_scrollbar->isShown() || (totalTextHeight < totalHeight))
             {
-                if (m_verticalAlignment == VerticalAlignment::Bottom)
+                if (m_verticalAlignment == tgui::VerticalAlignment::Bottom) // TGUI_NEXT: Remove "tgui::" prefix
                     pos.y += totalHeight - totalTextHeight;
                 else // if (m_verticalAlignment == VerticalAlignment::Center)
                     pos.y += (totalHeight - totalTextHeight) / 2.f;
@@ -783,7 +787,7 @@ namespace tgui
                 maxHeight = std::max(maxHeight, line[j].getSize().y);
 
             Vector2f piecePos = pos;
-            if ((m_horizontalAlignment != HorizontalAlignment::Left) && !line.empty())
+            if ((m_horizontalAlignment != tgui::HorizontalAlignment::Left) && !line.empty()) // TGUI_NEXT: Remove "tgui::" prefix
             {
                 // If the line ends with whitespace then remove them from the line width for aligning horizontally
                 const auto& lastTextPiece = line.back();
@@ -809,7 +813,7 @@ namespace tgui
                     }
                 }
 
-                if (m_horizontalAlignment == HorizontalAlignment::Right)
+                if (m_horizontalAlignment == tgui::HorizontalAlignment::Right) // TGUI_NEXT: Remove "tgui::" prefix
                     piecePos.x = pos.x + maxWidth - textWidth;
                 else // if (m_horizontalAlignment == HorizontalAlignment::Center)
                     piecePos.x = pos.x + ((maxWidth - textWidth) / 2.f);

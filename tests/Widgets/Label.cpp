@@ -69,28 +69,28 @@ TEST_CASE("[Label]")
 
     SECTION("Alignment")
     {
-        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
-        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+        REQUIRE(label->getHorizontalAlignment() == tgui::HorizontalAlignment::Left);
+        REQUIRE(label->getVerticalAlignment() == tgui::VerticalAlignment::Top);
 
-        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
-        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Center);
-        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+        label->setHorizontalAlignment(tgui::HorizontalAlignment::Center);
+        REQUIRE(label->getHorizontalAlignment() == tgui::HorizontalAlignment::Center);
+        REQUIRE(label->getVerticalAlignment() == tgui::VerticalAlignment::Top);
 
-        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Right);
-        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Right);
+        label->setHorizontalAlignment(tgui::HorizontalAlignment::Right);
+        REQUIRE(label->getHorizontalAlignment() == tgui::HorizontalAlignment::Right);
 
-        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Left);
-        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
+        label->setHorizontalAlignment(tgui::HorizontalAlignment::Left);
+        REQUIRE(label->getHorizontalAlignment() == tgui::HorizontalAlignment::Left);
 
-        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Center);
-        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
-        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Center);
+        label->setVerticalAlignment(tgui::VerticalAlignment::Center);
+        REQUIRE(label->getHorizontalAlignment() == tgui::HorizontalAlignment::Left);
+        REQUIRE(label->getVerticalAlignment() == tgui::VerticalAlignment::Center);
 
-        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
-        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Bottom);
+        label->setVerticalAlignment(tgui::VerticalAlignment::Bottom);
+        REQUIRE(label->getVerticalAlignment() == tgui::VerticalAlignment::Bottom);
 
-        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Top);
-        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+        label->setVerticalAlignment(tgui::VerticalAlignment::Top);
+        REQUIRE(label->getVerticalAlignment() == tgui::VerticalAlignment::Top);
     }
 
     SECTION("AutoSize")
@@ -298,8 +298,8 @@ TEST_CASE("[Label]")
     {
         label->setText("SomeText");
         label->setTextSize(25);
-        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
-        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
+        label->setHorizontalAlignment(tgui::HorizontalAlignment::Center);
+        label->setVerticalAlignment(tgui::VerticalAlignment::Bottom);
         label->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         label->setMaximumTextWidth(300);
         label->ignoreMouseEvents(true);

@@ -123,7 +123,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::size_t ListView::addColumn(const String& text, float width, ColumnAlignment alignment)
+    std::size_t ListView::addColumn(const String& text, float width, HorizontalAlignment alignment)
     {
         Column column;
         column.text = createHeaderText(text);
@@ -270,7 +270,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::setColumnAlignment(std::size_t columnIndex, ColumnAlignment alignment)
+    void ListView::setColumnAlignment(std::size_t columnIndex, HorizontalAlignment alignment)
     {
         if (columnIndex < m_columns.size())
             m_columns[columnIndex].alignment = alignment;
@@ -282,14 +282,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListView::ColumnAlignment ListView::getColumnAlignment(std::size_t columnIndex) const
+    HorizontalAlignment ListView::getColumnAlignment(std::size_t columnIndex) const
     {
         if (columnIndex < m_columns.size())
             return m_columns[columnIndex].alignment;
         else
         {
             TGUI_PRINT_WARNING("getColumnAlignment called with invalid columnIndex.");
-            return ColumnAlignment::Left;
+            return HorizontalAlignment::Left;
         }
     }
 
@@ -1903,9 +1903,9 @@ namespace tgui
             if (column.designWidth > 0)
                 columnNode->propertyValuePairs[U"Width"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(column.designWidth));
 
-            if (column.alignment == ColumnAlignment::Center)
+            if (column.alignment == HorizontalAlignment::Center)
                 columnNode->propertyValuePairs[U"Alignment"] = std::make_unique<DataIO::ValueNode>("Center");
-            else if (column.alignment == ColumnAlignment::Right)
+            else if (column.alignment == HorizontalAlignment::Right)
                 columnNode->propertyValuePairs[U"Alignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
             if (column.autoResize)
@@ -2010,7 +2010,7 @@ namespace tgui
 
             String text;
             float width = 0;
-            ColumnAlignment alignment = ColumnAlignment::Left;
+            HorizontalAlignment alignment = HorizontalAlignment::Left;
 
             if (childNode->propertyValuePairs[U"Text"])
                 text = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString();
@@ -2021,9 +2021,9 @@ namespace tgui
             {
                 String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
                 if (alignmentString == U"Right")
-                    alignment = ColumnAlignment::Right;
+                    alignment = HorizontalAlignment::Right;
                 else if (alignmentString == U"Center")
-                    alignment = ColumnAlignment::Center;
+                    alignment = HorizontalAlignment::Center;
                 else if (alignmentString != U"Left")
                     throw Exception{U"Failed to parse Alignment property, found unknown value '" + alignmentString + U"'."};
             }
@@ -2816,11 +2816,11 @@ namespace tgui
         target.addClippingLayer(states, {{textPadding, 0}, {columnWidth - (2 * textPadding), headerHeight}});
 
         float translateX;
-        if (m_columns[column].alignment == ColumnAlignment::Left)
+        if (m_columns[column].alignment == HorizontalAlignment::Left)
             translateX = textPadding;
-        else if (m_columns[column].alignment == ColumnAlignment::Center)
+        else if (m_columns[column].alignment == HorizontalAlignment::Center)
             translateX = (columnWidth - m_columns[column].text.getSize().x) / 2.f;
-        else // if (m_columns[column].alignment == ColumnAlignment::Right)
+        else // if (m_columns[column].alignment == HorizontalAlignment::Right)
             translateX = columnWidth - textPadding - m_columns[column].text.getSize().x;
 
         states.transform.translate({translateX, (headerHeight - Text::getLineHeight(m_fontCached, headerTextSize)) / 2.0f});
@@ -2886,11 +2886,11 @@ namespace tgui
             }
 
             float translateX;
-            if ((column >= m_columns.size()) || (m_columns[column].alignment == ColumnAlignment::Left))
+            if ((column >= m_columns.size()) || (m_columns[column].alignment == HorizontalAlignment::Left))
                 translateX = textPadding;
-            else if (m_columns[column].alignment == ColumnAlignment::Center)
+            else if (m_columns[column].alignment == HorizontalAlignment::Center)
                 translateX = (columnWidth - m_items[i].texts[column].getSize().x) / 2.f;
-            else // if (m_columns[column].alignment == ColumnAlignment::Right)
+            else // if (m_columns[column].alignment == HorizontalAlignment::Right)
                 translateX = columnWidth - textPadding - m_items[i].texts[column].getSize().x;
 
             states.transform.translate({translateX, verticalTextOffset});

@@ -44,7 +44,7 @@ struct EditBoxSliderProperties : WidgetProperties
         else if (property == "DecimalPlaces")
             editBoxSlider->setDecimalPlaces(value.toUInt());
         else if (property == "TextAlignment")
-            editBoxSlider->setTextAlignment(deserializeTextAlignment(value));
+            editBoxSlider->setTextAlignment(deserializeHorizontalAlignment(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -59,7 +59,7 @@ struct EditBoxSliderProperties : WidgetProperties
         pair.first["Step"] = {"Float", tgui::String::fromNumber(editBoxSlider->getStep())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(editBoxSlider->getStep())};
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(editBoxSlider->getDecimalPlaces())};
-        pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeTextAlignment(editBoxSlider->getTextAlignment())};
+        pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBoxSlider->getTextAlignment())};
         
         const auto editBoxRenderer = editBoxSlider->getEditBoxSharedRenderer();
         pair.second["EditBox.Padding"] = {"Outline", editBoxRenderer->getPadding().toString()};
@@ -101,29 +101,6 @@ struct EditBoxSliderProperties : WidgetProperties
         pair.second["Slider.TextureThumb"] = {"Texture", tgui::Serializer::serialize(sliderRenderer->getTextureThumb())};
         pair.second["Slider.TextureThumbHover"] = {"Texture", tgui::Serializer::serialize(sliderRenderer->getTextureThumbHover())};
         return pair;
-    }
-
-private:
-
-    TGUI_NODISCARD static tgui::EditBox::Alignment deserializeTextAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::EditBox::Alignment::Right;
-        else if (value == "center")
-            return tgui::EditBox::Alignment::Center;
-        else
-            return tgui::EditBox::Alignment::Left;
-    }
-
-    TGUI_NODISCARD static tgui::String serializeTextAlignment(tgui::EditBox::Alignment alignment)
-    {
-        if (alignment == tgui::EditBox::Alignment::Center)
-            return "Center";
-        else if (alignment == tgui::EditBox::Alignment::Right)
-            return "Right";
-        else
-            return "Left";
     }
 };
 

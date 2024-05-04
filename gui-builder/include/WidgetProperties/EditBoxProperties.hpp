@@ -44,7 +44,7 @@ struct EditBoxProperties : WidgetProperties
         else if (property == "MaximumCharacters")
             editBox->setMaximumCharacters(value.toUInt());
         else if (property == "Alignment")
-            editBox->setAlignment(deserializeAlignment(value));
+            editBox->setAlignment(deserializeHorizontalAlignment(value));
         else if (property == "LimitTextWidth")
             editBox->limitTextWidth(parseBoolean(value, false));
         else if (property == "ReadOnly")
@@ -66,7 +66,7 @@ struct EditBoxProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(editBox->getTextSize())};
         pair.first["PasswordCharacter"] = {"Char", editBox->getPasswordCharacter() ? tgui::String(1, editBox->getPasswordCharacter()) : tgui::String("")};
         pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(editBox->getMaximumCharacters())};
-        pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeAlignment(editBox->getAlignment())};
+        pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBox->getAlignment())};
         pair.first["LimitTextWidth"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
         pair.first["InputValidator"] = {"EditBoxInputValidator", editBox->getInputValidator()};
@@ -100,29 +100,6 @@ struct EditBoxProperties : WidgetProperties
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
         pair.second["DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getDefaultTextStyle())};
         return pair;
-    }
-
-private:
-
-    TGUI_NODISCARD static tgui::EditBox::Alignment deserializeAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::EditBox::Alignment::Right;
-        else if (value == "center")
-            return tgui::EditBox::Alignment::Center;
-        else
-            return tgui::EditBox::Alignment::Left;
-    }
-
-    TGUI_NODISCARD static tgui::String serializeAlignment(tgui::EditBox::Alignment alignment)
-    {
-        if (alignment == tgui::EditBox::Alignment::Center)
-            return "Center";
-        else if (alignment == tgui::EditBox::Alignment::Right)
-            return "Right";
-        else
-            return "Left";
     }
 };
 

@@ -54,7 +54,7 @@ struct ListBoxProperties : WidgetProperties
         else if (property == "AutoScroll")
             listBox->setAutoScroll(parseBoolean(value, true));
         else if (property == "TextAlignment")
-            listBox->setTextAlignment(deserializeAlignment(value));
+            listBox->setTextAlignment(deserializeHorizontalAlignment(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -69,7 +69,7 @@ struct ListBoxProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(listBox->getTextSize())};
         pair.first["MaximumItems"] = {"UInt", tgui::String::fromNumber(listBox->getMaximumItems())};
         pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
-        pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeAlignment(listBox->getTextAlignment())};
+        pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(listBox->getTextAlignment())};
 
         const auto renderer = listBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -88,29 +88,6 @@ struct ListBoxProperties : WidgetProperties
         pair.second["SelectedTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getSelectedTextStyle())};
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
-    }
-
-private:
-
-    TGUI_NODISCARD static tgui::ListBox::TextAlignment deserializeAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::ListBox::TextAlignment::Right;
-        else if (value == "center")
-            return tgui::ListBox::TextAlignment::Center;
-        else
-            return tgui::ListBox::TextAlignment::Left;
-    }
-
-    TGUI_NODISCARD static tgui::String serializeAlignment(tgui::ListBox::TextAlignment alignment)
-    {
-        if (alignment == tgui::ListBox::TextAlignment::Center)
-            return "Center";
-        else if (alignment == tgui::ListBox::TextAlignment::Right)
-            return "Right";
-        else
-            return "Left";
     }
 };
 

@@ -50,22 +50,12 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The horizontal text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class HorizontalAlignment
-        {
-            Left,   //!< Put the text on the left side (default)
-            Center, //!< Center the text horizontally
-            Right   //!< Put the text on the right side (e.g. for numbers)
-        };
+        using HorizontalAlignment TGUI_DEPRECATED("Use tgui::HorizontalAlignment instead") = tgui::HorizontalAlignment;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The vertical text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class VerticalAlignment
-        {
-            Top ,   //!< Put the text at the top (default)
-            Center, //!< Center the text vertically
-            Bottom  //!< Put the text at the bottom
-        };
+        using VerticalAlignment TGUI_DEPRECATED("Use tgui::VerticalAlignment instead") = tgui::VerticalAlignment;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -156,7 +146,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// By default the text is aligned to the left.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalAlignment(HorizontalAlignment alignment);
+        void setHorizontalAlignment(tgui::HorizontalAlignment alignment); // TGUI_NEXT: Remove "tgui::" prefix
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets the current horizontal text alignment
@@ -164,7 +154,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Horizontal text alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD HorizontalAlignment getHorizontalAlignment() const;
+        TGUI_NODISCARD tgui::HorizontalAlignment getHorizontalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the vertical text alignment
@@ -174,7 +164,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// By default the text is aligned to the top.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalAlignment(VerticalAlignment alignment);
+        void setVerticalAlignment(tgui::VerticalAlignment alignment); // TGUI_NEXT: Remove "tgui::" prefix
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets the current vertical text alignment
@@ -182,7 +172,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Vertical text alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD VerticalAlignment getVerticalAlignment() const;
+        TGUI_NODISCARD tgui::VerticalAlignment getVerticalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
@@ -388,8 +378,9 @@ TGUI_MODULE_EXPORT namespace tgui
         String m_string;
         std::vector<std::vector<Text>> m_lines;
 
-        HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Left;
-        VerticalAlignment m_verticalAlignment = VerticalAlignment::Top;
+        // TGUI_NEXT: Remove "tgui::" prefixes
+        tgui::HorizontalAlignment m_horizontalAlignment = tgui::HorizontalAlignment::Left;
+        tgui::VerticalAlignment m_verticalAlignment = tgui::VerticalAlignment::Top;
 
         bool m_autoSize = true;
 

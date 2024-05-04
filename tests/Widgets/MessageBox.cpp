@@ -132,24 +132,24 @@ TEST_CASE("[MessageBox]")
 
     SECTION("LabelAlignment")
     {
-        REQUIRE(messageBox->getLabelAlignment() == tgui::MessageBox::Alignment::Left);
-        messageBox->setLabelAlignment(tgui::MessageBox::Alignment::Right);
-        REQUIRE(messageBox->getLabelAlignment() == tgui::MessageBox::Alignment::Right);
-        messageBox->setLabelAlignment(tgui::MessageBox::Alignment::Center);
-        REQUIRE(messageBox->getLabelAlignment() == tgui::MessageBox::Alignment::Center);
-        messageBox->setLabelAlignment(tgui::MessageBox::Alignment::Left);
-        REQUIRE(messageBox->getLabelAlignment() == tgui::MessageBox::Alignment::Left);
+        REQUIRE(messageBox->getLabelAlignment() == tgui::HorizontalAlignment::Left);
+        messageBox->setLabelAlignment(tgui::HorizontalAlignment::Right);
+        REQUIRE(messageBox->getLabelAlignment() == tgui::HorizontalAlignment::Right);
+        messageBox->setLabelAlignment(tgui::HorizontalAlignment::Center);
+        REQUIRE(messageBox->getLabelAlignment() == tgui::HorizontalAlignment::Center);
+        messageBox->setLabelAlignment(tgui::HorizontalAlignment::Left);
+        REQUIRE(messageBox->getLabelAlignment() == tgui::HorizontalAlignment::Left);
     }
 
     SECTION("ButtonAlignment")
     {
-        REQUIRE(messageBox->getButtonAlignment() == tgui::MessageBox::Alignment::Center);
-        messageBox->setButtonAlignment(tgui::MessageBox::Alignment::Left);
-        REQUIRE(messageBox->getButtonAlignment() == tgui::MessageBox::Alignment::Left);
-        messageBox->setButtonAlignment(tgui::MessageBox::Alignment::Right);
-        REQUIRE(messageBox->getButtonAlignment() == tgui::MessageBox::Alignment::Right);
-        messageBox->setButtonAlignment(tgui::MessageBox::Alignment::Center);
-        REQUIRE(messageBox->getButtonAlignment() == tgui::MessageBox::Alignment::Center);
+        REQUIRE(messageBox->getButtonAlignment() == tgui::HorizontalAlignment::Center);
+        messageBox->setButtonAlignment(tgui::HorizontalAlignment::Left);
+        REQUIRE(messageBox->getButtonAlignment() == tgui::HorizontalAlignment::Left);
+        messageBox->setButtonAlignment(tgui::HorizontalAlignment::Right);
+        REQUIRE(messageBox->getButtonAlignment() == tgui::HorizontalAlignment::Right);
+        messageBox->setButtonAlignment(tgui::HorizontalAlignment::Center);
+        REQUIRE(messageBox->getButtonAlignment() == tgui::HorizontalAlignment::Center);
     }
 
     testWidgetRenderer(messageBox->getRenderer());

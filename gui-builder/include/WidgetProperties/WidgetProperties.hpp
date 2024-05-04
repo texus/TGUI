@@ -229,6 +229,48 @@ struct WidgetProperties
             default:                                  return "Arrow";
         }
     }
+
+    TGUI_NODISCARD static tgui::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
+    {
+        value = value.trim().toLower();
+        if (value == "right")
+            return tgui::HorizontalAlignment::Right;
+        else if (value == "center")
+            return tgui::HorizontalAlignment::Center;
+        else
+            return tgui::HorizontalAlignment::Left;
+    }
+
+    TGUI_NODISCARD static tgui::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
+    {
+        value = value.trim().toLower();
+        if (value == "bottom")
+            return tgui::VerticalAlignment::Bottom;
+        else if (value == "center")
+            return tgui::VerticalAlignment::Center;
+        else
+            return tgui::VerticalAlignment::Top;
+    }
+
+    TGUI_NODISCARD static tgui::String serializeHorizontalAlignment(tgui::HorizontalAlignment alignment)
+    {
+        if (alignment == tgui::HorizontalAlignment::Center)
+            return "Center";
+        else if (alignment == tgui::HorizontalAlignment::Right)
+            return "Right";
+        else
+            return "Left";
+    }
+
+    TGUI_NODISCARD static tgui::String serializeVerticalAlignment(tgui::VerticalAlignment alignment)
+    {
+        if (alignment == tgui::VerticalAlignment::Center)
+            return "Center";
+        else if (alignment == tgui::VerticalAlignment::Bottom)
+            return "Bottom";
+        else
+            return "Top";
+    }
 };
 
 #endif // TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP

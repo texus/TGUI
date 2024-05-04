@@ -73,8 +73,8 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getColumnCount() == 0);
         listView->addColumn("Col 1");
         REQUIRE(listView->getColumnCount() == 1);
-        listView->addColumn("Col 2", 60, tgui::ListView::ColumnAlignment::Right);
-        listView->addColumn("Col 3", 100, tgui::ListView::ColumnAlignment::Center);
+        listView->addColumn("Col 2", 60, tgui::HorizontalAlignment::Right);
+        listView->addColumn("Col 3", 100, tgui::HorizontalAlignment::Center);
         REQUIRE(listView->getColumnCount() == 3);
 
         REQUIRE(listView->getColumnText(0) == "Col 1");
@@ -88,17 +88,17 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getColumnDesignWidth(0) == 0);
         REQUIRE(listView->getColumnDesignWidth(1) == 60);
 
-        REQUIRE(listView->getColumnAlignment(0) == tgui::ListView::ColumnAlignment::Left);
-        REQUIRE(listView->getColumnAlignment(1) == tgui::ListView::ColumnAlignment::Right);
-        REQUIRE(listView->getColumnAlignment(2) == tgui::ListView::ColumnAlignment::Center);
+        REQUIRE(listView->getColumnAlignment(0) == tgui::HorizontalAlignment::Left);
+        REQUIRE(listView->getColumnAlignment(1) == tgui::HorizontalAlignment::Right);
+        REQUIRE(listView->getColumnAlignment(2) == tgui::HorizontalAlignment::Center);
     }
 
     SECTION("Changing columns")
     {
         listView->addColumn("Col 1");
-        listView->addColumn("Col 2", 60, tgui::ListView::ColumnAlignment::Right);
-        listView->addColumn("Col 3", 0, tgui::ListView::ColumnAlignment::Center);
-        listView->addColumn("Col 4", 100, tgui::ListView::ColumnAlignment::Left);
+        listView->addColumn("Col 2", 60, tgui::HorizontalAlignment::Right);
+        listView->addColumn("Col 3", 0, tgui::HorizontalAlignment::Center);
+        listView->addColumn("Col 4", 100, tgui::HorizontalAlignment::Left);
 
         SECTION("Text")
         {
@@ -130,8 +130,8 @@ TEST_CASE("[ListView]")
 
         SECTION("Alignment")
         {
-            listView->setColumnAlignment(0, tgui::ListView::ColumnAlignment::Right);
-            REQUIRE(listView->getColumnAlignment(0) == tgui::ListView::ColumnAlignment::Right);
+            listView->setColumnAlignment(0, tgui::HorizontalAlignment::Right);
+            REQUIRE(listView->getColumnAlignment(0) == tgui::HorizontalAlignment::Right);
         }
 
         SECTION("Removing")
@@ -1080,8 +1080,8 @@ TEST_CASE("[ListView]")
     {
         listView->addColumn("Col 1");
         listView->addColumn("Col 2", 100);
-        listView->addColumn("Col 3", 75, tgui::ListView::ColumnAlignment::Right);
-        listView->addColumn("Col 4", 0, tgui::ListView::ColumnAlignment::Center);
+        listView->addColumn("Col 3", 75, tgui::HorizontalAlignment::Right);
+        listView->addColumn("Col 4", 0, tgui::HorizontalAlignment::Center);
         listView->addItem("1,1");
         listView->addItem({"2,1", "2,2", "2,3"});
         listView->addItem({"3,1", "3,2"});

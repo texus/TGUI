@@ -510,14 +510,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setTextAlignment(TextAlignment alignment)
+    void ListBox::setTextAlignment(HorizontalAlignment alignment)
     {
         m_textAlignment = alignment;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox::TextAlignment ListBox::getTextAlignment() const
+    HorizontalAlignment ListBox::getTextAlignment() const
     {
         return m_textAlignment;
     }
@@ -940,9 +940,9 @@ namespace tgui
         if (m_selectedItem >= 0)
             node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedItem));
 
-        if (m_textAlignment == TextAlignment::Center)
+        if (m_textAlignment == HorizontalAlignment::Center)
             node->propertyValuePairs[U"TextAlignment"] = std::make_unique<DataIO::ValueNode>("Center");
-        else if (m_textAlignment == TextAlignment::Right)
+        else if (m_textAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"TextAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
         node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
@@ -992,9 +992,9 @@ namespace tgui
         {
             String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
             if (alignment == U"Right")
-                setTextAlignment(TextAlignment::Right);
+                setTextAlignment(HorizontalAlignment::Right);
             else if (alignment == U"Center")
-                setTextAlignment(TextAlignment::Center);
+                setTextAlignment(HorizontalAlignment::Center);
             else if (alignment != U"Left")
                 throw Exception{U"Failed to parse TextAlignment property, found unknown value."};
         }
@@ -1205,7 +1205,7 @@ namespace tgui
             }
 
             // Draw the items
-            if (m_textAlignment == ListBox::TextAlignment::Right)
+            if (m_textAlignment == HorizontalAlignment::Right)
             {
                 const float textPadding = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
                 for (std::size_t i = firstItem; i < lastItem; ++i)
@@ -1216,7 +1216,7 @@ namespace tgui
                     states.transform.translate({-maxItemWidth + textPadding + textWidth, 0});
                 }
             }
-            else if (m_textAlignment == ListBox::TextAlignment::Center)
+            else if (m_textAlignment == HorizontalAlignment::Center)
             {
                 for (std::size_t i = firstItem; i < lastItem; ++i)
                 {

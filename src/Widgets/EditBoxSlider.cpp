@@ -32,7 +32,7 @@ namespace tgui
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     EditBoxSlider::EditBoxSlider(const char* typeName, bool initRenderer) :
         SubwidgetContainer{typeName, initRenderer}
     {
@@ -259,14 +259,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxSlider::setTextAlignment(EditBox::Alignment alignment)
+    void EditBoxSlider::setTextAlignment(HorizontalAlignment alignment)
     {
         m_editBox->setAlignment(alignment);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::Alignment EditBoxSlider::getTextAlignment() const
+    HorizontalAlignment EditBoxSlider::getTextAlignment() const
     {
         return m_editBox->getAlignment();;
     }
@@ -314,7 +314,7 @@ namespace tgui
         m_editBox->onTextChange.disconnectAll();
         m_editBox->onTextChange([this](const String &text) {
             float value = text.toFloat();
-            
+
             if (inRange(value))
                 m_slider->setValue(value);
         });

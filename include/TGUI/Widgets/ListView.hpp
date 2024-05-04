@@ -56,12 +56,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment for all texts within a column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class ColumnAlignment
-        {
-            Left,   //!< Place the text on the left side (default)
-            Center, //!< Center the text inside the column
-            Right   //!< Place the text on the right side (e.g. for numbers)
-        };
+        using ColumnAlignment TGUI_DEPRECATED("Use tgui::HorizontalAlignment instead") = HorizontalAlignment;
 
         struct Item
         {
@@ -77,7 +72,7 @@ TGUI_MODULE_EXPORT namespace tgui
             float widestItemWidth = 0;
             std::size_t widestItemIndex = std::numeric_limits<std::size_t>::max();
             Text text;
-            ColumnAlignment alignment = ColumnAlignment::Left;
+            HorizontalAlignment alignment = HorizontalAlignment::Left;
             bool autoResize = false;
             bool expanded = false;
         };
@@ -137,7 +132,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Index of the added column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::size_t addColumn(const String& text, float width = 0, ColumnAlignment alignment = ColumnAlignment::Left);
+        std::size_t addColumn(const String& text, float width = 0, HorizontalAlignment alignment = HorizontalAlignment::Left);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of a column
@@ -197,7 +192,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param columnIndex Index of the column to change
         /// @param alignment   The text alignment for all texts in the column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setColumnAlignment(std::size_t columnIndex, ColumnAlignment alignment);
+        void setColumnAlignment(std::size_t columnIndex, HorizontalAlignment alignment);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the current text alignment within a column
@@ -206,7 +201,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Text alignment for all texts in the column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ColumnAlignment getColumnAlignment(std::size_t columnIndex) const;
+        TGUI_NODISCARD HorizontalAlignment getColumnAlignment(std::size_t columnIndex) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the column width depends on the widest item added to that column

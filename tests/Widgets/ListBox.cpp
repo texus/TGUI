@@ -313,13 +313,13 @@ TEST_CASE("[ListBox]")
 
     SECTION("TextAlignment")
     {
-        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Left);
-        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Center);
-        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Center);
-        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Right);
-        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Right);
-        listBox->setTextAlignment(tgui::ListBox::TextAlignment::Left);
-        REQUIRE(listBox->getTextAlignment() == tgui::ListBox::TextAlignment::Left);
+        REQUIRE(listBox->getTextAlignment() == tgui::HorizontalAlignment::Left);
+        listBox->setTextAlignment(tgui::HorizontalAlignment::Center);
+        REQUIRE(listBox->getTextAlignment() == tgui::HorizontalAlignment::Center);
+        listBox->setTextAlignment(tgui::HorizontalAlignment::Right);
+        REQUIRE(listBox->getTextAlignment() == tgui::HorizontalAlignment::Right);
+        listBox->setTextAlignment(tgui::HorizontalAlignment::Left);
+        REQUIRE(listBox->getTextAlignment() == tgui::HorizontalAlignment::Left);
     }
 
     SECTION("ScrollbarValue")
@@ -802,13 +802,13 @@ TEST_CASE("[ListBox]")
 
         SECTION("TextAlignment::Right")
         {
-            listBox->setTextAlignment(tgui::ListBox::TextAlignment::Right);
+            listBox->setTextAlignment(tgui::HorizontalAlignment::Right);
             TEST_DRAW("ListBox_TextAlignmentRight.png")
         }
 
         SECTION("TextAlignment::Center")
         {
-            listBox->setTextAlignment(tgui::ListBox::TextAlignment::Center);
+            listBox->setTextAlignment(tgui::HorizontalAlignment::Center);
             TEST_DRAW("ListBox_TextAlignmentCenter.png")
         }
     }

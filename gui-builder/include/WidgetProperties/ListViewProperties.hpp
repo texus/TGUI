@@ -47,7 +47,7 @@ struct ListViewProperties : WidgetProperties
             {
                 tgui::String text;
                 float width;
-                tgui::ListView::ColumnAlignment alignment;
+                tgui::HorizontalAlignment alignment;
                 bool autoResize;
                 bool expanded;
                 if (deserializeColumn(serializedColumn, text, width, alignment, autoResize, expanded))
@@ -139,19 +139,6 @@ struct ListViewProperties : WidgetProperties
         return pair;
     }
 
-    TGUI_NODISCARD static tgui::String serializeColumnAlignment(tgui::ListView::ColumnAlignment alignment)
-    {
-        switch (alignment)
-        {
-            case tgui::ListView::ColumnAlignment::Center:
-                return "Center";
-            case tgui::ListView::ColumnAlignment::Right:
-                return "Right";
-            default: // tgui::ListView::ColumnAlignment::Left
-                return "Left";
-        }
-    }
-
     TGUI_NODISCARD static tgui::String serializeColumns(const tgui::ListView::Ptr& listView)
     {
         std::vector<tgui::String> serializedColumns;
@@ -159,11 +146,11 @@ struct ListViewProperties : WidgetProperties
         {
             const tgui::String caption = listView->getColumnText(i);
             const float width = listView->getColumnDesignWidth(i);
-            const tgui::ListView::ColumnAlignment alignment = listView->getColumnAlignment(i);
+            const tgui::HorizontalAlignment alignment = listView->getColumnAlignment(i);
             const bool autoResize = listView->getColumnAutoResize(i);
             const bool expanded = listView->getColumnExpanded(i);
             serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width)
-                + ',' + serializeColumnAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
+                + ',' + serializeHorizontalAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
                 + ',' + tgui::Serializer::serialize(expanded) + ')');
         }
 
@@ -174,7 +161,7 @@ struct ListViewProperties : WidgetProperties
         tgui::String serializedColumn,
         tgui::String& text,
         float& width,
-        tgui::ListView::ColumnAlignment& alignment,
+        tgui::HorizontalAlignment& alignment,
         bool& autoResize,
         bool& expanded)
     {
@@ -201,11 +188,11 @@ struct ListViewProperties : WidgetProperties
 
                 const tgui::String& alignmentStr = values[2];
                 if (alignmentStr == "Left")
-                    alignment = tgui::ListView::ColumnAlignment::Left;
+                    alignment = tgui::HorizontalAlignment::Left;
                 else if (alignmentStr == "Center")
-                    alignment = tgui::ListView::ColumnAlignment::Center;
+                    alignment = tgui::HorizontalAlignment::Center;
                 else if (alignmentStr == "Right")
-                    alignment = tgui::ListView::ColumnAlignment::Right;
+                    alignment = tgui::HorizontalAlignment::Right;
                 else
                 {
                     std::cout << "Failed to deserialize column '" + serializedColumn + "'. Alignment has to be either 'Left', 'Center' or 'Right'." << std::endl;

@@ -2234,14 +2234,14 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         {
             tgui::String text;
             float width;
-            tgui::ListView::ColumnAlignment alignment;
+            tgui::HorizontalAlignment alignment;
             bool autoResize;
             bool expanded;
             if (ListViewProperties::deserializeColumn(serializedColumn, text, width, alignment, autoResize, expanded))
             {
                 listView->addItem({text,
                                    tgui::Serializer::serialize(width),
-                                   ListViewProperties::serializeColumnAlignment(alignment),
+                                   WidgetProperties::serializeHorizontalAlignment(alignment),
                                    tgui::Serializer::serialize(autoResize),
                                    tgui::Serializer::serialize(expanded)});
             }

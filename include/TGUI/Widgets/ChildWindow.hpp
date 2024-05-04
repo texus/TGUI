@@ -51,12 +51,7 @@ TGUI_MODULE_EXPORT namespace tgui
         static constexpr const char StaticWidgetType[] = "ChildWindow"; //!< Type name of the widget
 
         /// Title alignments, possible options for the setTitleAlignment function
-        enum class TitleAlignment
-        {
-            Left,   //!< Places the title on the left side of the title bar
-            Center, //!< Places the title in the middle of the title bar
-            Right   //!< Places the title on the right side of the title bar
-        };
+        using TitleAlignment TGUI_DEPRECATED("Use tgui::HorizontalAlignment instead") = HorizontalAlignment;
 
         /// Title buttons (use bitwise OR to combine)
         enum TitleButton : unsigned int
@@ -253,7 +248,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param alignment  How should the title be aligned in the title bar?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitleAlignment(TitleAlignment alignment);
+        void setTitleAlignment(HorizontalAlignment alignment);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the title alignment
@@ -261,7 +256,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return How the title is aligned in the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD TitleAlignment getTitleAlignment() const;
+        TGUI_NODISCARD HorizontalAlignment getTitleAlignment() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the title buttons
@@ -341,6 +336,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setKeepInParent(bool enabled = true);
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Tells whether the child window is kept inside its parent
         ///
@@ -348,6 +344,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///         It's set to false by default.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getKeepInParent instead") TGUI_NODISCARD bool isKeptInParent() const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the child window is kept inside its parent
@@ -544,7 +541,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Vector2f       m_minimumSize    = {0, 0};
         Layout*        m_decorationLayoutX = nullptr;
         Layout*        m_decorationLayoutY = nullptr;
-        TitleAlignment m_titleAlignment = TitleAlignment::Center;
+        HorizontalAlignment m_titleAlignment = HorizontalAlignment::Center;
         unsigned int   m_titleButtons   = TitleButton::Close;
         unsigned int   m_titleTextSize  = 0;
         Cursor::Type   m_currentChildWindowMouseCursor = Cursor::Type::Arrow;

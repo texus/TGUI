@@ -34,7 +34,7 @@ struct ChildWindowProperties : WidgetProperties
     {
         auto childWindow = widget->cast<tgui::ChildWindow>();
         if (property == "TitleAlignment")
-            childWindow->setTitleAlignment(deserializeTitleAlignment(value));
+            childWindow->setTitleAlignment(deserializeHorizontalAlignment(value));
         else if (property == "TitleButtons")
             childWindow->setTitleButtons(deserializeTitleButtons(value));
         else if (property == "Title")
@@ -61,7 +61,7 @@ struct ChildWindowProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto childWindow = widget->cast<tgui::ChildWindow>();
-        pair.first["TitleAlignment"] = {"Enum{Left,Center,Right}", serializeTitleAlignment(childWindow->getTitleAlignment())};
+        pair.first["TitleAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(childWindow->getTitleAlignment())};
         pair.first["TitleButtons"] = {"ChildWindowTitleButtons", serializeTitleButtons(childWindow->getTitleButtons())};
         pair.first["Title"] = {"String", childWindow->getTitle()};
         pair.first["KeepInParent"] = {"Bool", tgui::Serializer::serialize(childWindow->getKeepInParent())};
@@ -93,17 +93,6 @@ struct ChildWindowProperties : WidgetProperties
 
 private:
 
-    TGUI_NODISCARD static tgui::ChildWindow::TitleAlignment deserializeTitleAlignment(tgui::String value)
-    {
-        value = value.trim().toLower();
-        if (value == "right")
-            return tgui::ChildWindow::TitleAlignment::Right;
-        else if (value == "center")
-            return tgui::ChildWindow::TitleAlignment::Center;
-        else
-            return tgui::ChildWindow::TitleAlignment::Left;
-    }
-
     TGUI_NODISCARD static unsigned int deserializeTitleButtons(const tgui::String& value)
     {
         unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
@@ -120,16 +109,6 @@ private:
         }
 
         return decodedTitleButtons;
-    }
-
-    TGUI_NODISCARD static tgui::String serializeTitleAlignment(tgui::ChildWindow::TitleAlignment alignment)
-    {
-        if (alignment == tgui::ChildWindow::TitleAlignment::Center)
-            return "Center";
-        else if (alignment == tgui::ChildWindow::TitleAlignment::Right)
-            return "Right";
-        else
-            return "Left";
     }
 
     TGUI_NODISCARD static tgui::String serializeTitleButtons(unsigned int titleButtons)
