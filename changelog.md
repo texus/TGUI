@@ -6,6 +6,7 @@ TGUI 1.3  (TBD)
 - All widgets can now be configured to ignore mouse events
 - Added HorizontalLayout and VerticalLayout to replace widget-specific enums
 - Renamed isKeptInParent to getKeepInParent in ChildWindow
+- Renamed limitTextWidth to setTextWidthLimited in EditBox
 
 
 TGUI 1.2  (23 March 2024)

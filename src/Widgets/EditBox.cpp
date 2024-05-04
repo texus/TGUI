@@ -276,8 +276,15 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void EditBox::limitTextWidth(bool limitWidth)
+    {
+        setTextWidthLimited(limitWidth);
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::setTextWidthLimited(bool limitWidth)
     {
         m_limitTextWidth = limitWidth;
 
@@ -938,7 +945,7 @@ namespace tgui
         if (node->propertyValuePairs[U"MaximumCharacters"])
             setMaximumCharacters(node->propertyValuePairs[U"MaximumCharacters"]->value.toUInt());
         if (node->propertyValuePairs[U"TextWidthLimited"])
-            limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextWidthLimited"]->value).getBool());
+            setTextWidthLimited(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextWidthLimited"]->value).getBool());
         if (node->propertyValuePairs[U"ReadOnly"])
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ReadOnly"]->value).getBool());
         if (node->propertyValuePairs[U"Suffix"])

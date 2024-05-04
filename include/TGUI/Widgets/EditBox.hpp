@@ -138,8 +138,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// - You have limited the text width and the text does not fit inside the EditBox.
         ///
         /// @see setMaximumCharacters
-        /// @see limitTextWidth
-        ///
+        /// @see setTextWidthLimited
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const String& text);
 
@@ -197,10 +196,9 @@ TGUI_MODULE_EXPORT namespace tgui
         ///                      If set to 0 then there is no password character
         ///
         /// When the text width is limited then this function might remove the last characters in the text if they no
-        /// longer fit in the EditBox. You can avoid this by setting LimitTextWidth to false (which is the default).
+        /// longer fit in the EditBox. You can avoid this by setting TextWidthLimited to false (which is the default).
         ///
-        /// @see limitTextWidth
-        ///
+        /// @see setTextWidthLimited
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPasswordCharacter(char32_t passwordChar);
 
@@ -250,6 +248,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD HorizontalAlignment getAlignment() const;
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Should the text width be limited or should you be able to type even if the edit box is full?
         ///
@@ -259,7 +258,20 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The default value is false.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void limitTextWidth(bool limitWidth = true);
+        TGUI_DEPRECATED("Use setTextWidthLimited instead") void limitTextWidth(bool limitWidth = true);
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Should the text width be limited or should you be able to type even if the edit box is full?
+        ///
+        /// @param limitWidth  Should there be a text width limit or not
+        ///
+        /// When set to true, you will no longer be able to add text when the edit box is full.
+        /// The default value is false.
+        ///
+        /// @since TGUI 1.3
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextWidthLimited(bool limitWidth);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks if the text width is limited to the size of the edit box
@@ -570,7 +582,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
-        // You can change the boolean with the limitTextWidth(bool) function.
+        // You can change the boolean with the setTextWidthLimited(bool) function.
         bool          m_limitTextWidth = false;
 
         bool          m_readOnly = false;

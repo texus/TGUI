@@ -45,8 +45,8 @@ struct EditBoxProperties : WidgetProperties
             editBox->setMaximumCharacters(value.toUInt());
         else if (property == "Alignment")
             editBox->setAlignment(deserializeHorizontalAlignment(value));
-        else if (property == "LimitTextWidth")
-            editBox->limitTextWidth(parseBoolean(value, false));
+        else if (property == "TextWidthLimited")
+            editBox->setTextWidthLimited(parseBoolean(value, false));
         else if (property == "ReadOnly")
             editBox->setReadOnly(parseBoolean(value, false));
         else if (property == "InputValidator")
@@ -67,7 +67,7 @@ struct EditBoxProperties : WidgetProperties
         pair.first["PasswordCharacter"] = {"Char", editBox->getPasswordCharacter() ? tgui::String(1, editBox->getPasswordCharacter()) : tgui::String("")};
         pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(editBox->getMaximumCharacters())};
         pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBox->getAlignment())};
-        pair.first["LimitTextWidth"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
+        pair.first["TextWidthLimited"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
         pair.first["InputValidator"] = {"EditBoxInputValidator", editBox->getInputValidator()};
         pair.first["Suffix"] = {"String", editBox->getSuffix()};
