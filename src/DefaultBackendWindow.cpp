@@ -150,11 +150,18 @@ namespace tgui
 
         bool pollEvent(Event& event) override
         {
+#if SFML_VERSION_MAJOR >= 3
+            if (const auto eventSFML = m_window.pollEvent())
+                return m_gui->convertEvent(eventSFML, event);
+            else // No new events
+                return false;
+#else
             sf::Event eventSFML;
             if (m_window.pollEvent(eventSFML))
                 return m_gui->convertEvent(eventSFML, event);
             else // No new events
                 return false;
+#endif
         }
 
         void draw() override

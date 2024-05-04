@@ -179,8 +179,7 @@ namespace tgui
     {
         // Detect scrolling with two fingers by examining touch events
 #if SFML_VERSION_MAJOR >= 3
-        const auto* sfmlTouchBegan = sfmlEvent.getIf<sf::Event::TouchBegan>();
-        if (sfmlTouchBegan)
+        if (const auto* sfmlTouchBegan = sfmlEvent.getIf<sf::Event::TouchBegan>())
         {
             const auto fingerId = static_cast<std::intptr_t>(sfmlTouchBegan->finger);
             const float x = static_cast<float>(sfmlTouchBegan->position.x);
@@ -188,15 +187,13 @@ namespace tgui
             m_twoFingerScroll.reportFingerDown(fingerId, x, y);
         }
 
-        const auto* sfmlTouchEnded = sfmlEvent.getIf<sf::Event::TouchEnded>();
-        if (sfmlTouchEnded)
+        if (const auto* sfmlTouchEnded = sfmlEvent.getIf<sf::Event::TouchEnded>())
         {
             const auto fingerId = static_cast<std::intptr_t>(sfmlTouchEnded->finger);
             m_twoFingerScroll.reportFingerUp(fingerId);
         }
 
-        const auto* sfmlTouchMoved = sfmlEvent.getIf<sf::Event::TouchMoved>();
-        if (sfmlTouchMoved)
+        if (const auto* sfmlTouchMoved = sfmlEvent.getIf<sf::Event::TouchMoved>())
         {
             const auto fingerId = static_cast<std::intptr_t>(sfmlTouchMoved->finger);
             const float x = static_cast<float>(sfmlTouchMoved->position.x);
@@ -271,7 +268,6 @@ namespace tgui
 
         setDrawingUpdatesTime(false);
 
-        sf::Event event;
         bool refreshRequired = true;
         std::chrono::steady_clock::time_point lastRenderTime;
         bool windowOpen = m_window->isOpen();
@@ -280,7 +276,12 @@ namespace tgui
             bool eventProcessed = false;
             while (true)
             {
+#if SFML_VERSION_MAJOR >= 3
+                while (const auto event = m_window->pollEvent())
+#else
+                sf::Event event;
                 while (m_window->pollEvent(event))
+#endif
                 {
                     if (handleEvent(event))
                         eventProcessed = true;
@@ -361,8 +362,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventResized = eventSFML.getIf<sf::Event::Resized>();
-        if (eventResized)
+        if (const auto* eventResized = eventSFML.getIf<sf::Event::Resized>())
         {
             eventTGUI.type = Event::Type::Resized;
             eventTGUI.size.width = eventResized->size.x;
@@ -376,16 +376,14 @@ namespace tgui
             return true;
         }
 
-        const auto* eventTextEntered = eventSFML.getIf<sf::Event::TextEntered>();
-        if (eventTextEntered)
+        if (const auto* eventTextEntered = eventSFML.getIf<sf::Event::TextEntered>())
         {
             eventTGUI.type = Event::Type::TextEntered;
             eventTGUI.text.unicode = eventTextEntered->unicode;
             return true;
         }
 
-        const auto* eventKeyPressed = eventSFML.getIf<sf::Event::KeyPressed>();
-        if (eventKeyPressed)
+        if (const auto* eventKeyPressed = eventSFML.getIf<sf::Event::KeyPressed>())
         {
             const Event::KeyboardKey code = convertKeyCode(eventKeyPressed->code);
             if (code == Event::KeyboardKey::Unknown)
@@ -400,8 +398,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventMouseWheelScrolled = eventSFML.getIf<sf::Event::MouseWheelScrolled>();
-        if (eventMouseWheelScrolled)
+        if (const auto* eventMouseWheelScrolled = eventSFML.getIf<sf::Event::MouseWheelScrolled>())
         {
             if (eventMouseWheelScrolled->wheel != sf::Mouse::Wheel::Vertical)
                 return false; // TGUI only handles the vertical mouse wheel
@@ -413,8 +410,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventMousePressed = eventSFML.getIf<sf::Event::MouseButtonPressed>();
-        if (eventMousePressed)
+        if (const auto* eventMousePressed = eventSFML.getIf<sf::Event::MouseButtonPressed>())
         {
             if (eventMousePressed->button == sf::Mouse::Button::Left)
                 eventTGUI.mouseButton.button = Event::MouseButton::Left;
@@ -431,8 +427,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventMouseReleased = eventSFML.getIf<sf::Event::MouseButtonReleased>();
-        if (eventMouseReleased)
+        if (const auto* eventMouseReleased = eventSFML.getIf<sf::Event::MouseButtonReleased>())
         {
             if (eventMouseReleased->button == sf::Mouse::Button::Left)
                 eventTGUI.mouseButton.button = Event::MouseButton::Left;
@@ -449,8 +444,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventMouseMoved = eventSFML.getIf<sf::Event::MouseMoved>();
-        if (eventMouseMoved)
+        if (const auto* eventMouseMoved = eventSFML.getIf<sf::Event::MouseMoved>())
         {
             eventTGUI.type = Event::Type::MouseMoved;
             eventTGUI.mouseMove.x = eventMouseMoved->position.x;
@@ -470,8 +464,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventTouchMoved = eventSFML.getIf<sf::Event::TouchMoved>();
-        if (eventTouchMoved)
+        if (const auto* eventTouchMoved = eventSFML.getIf<sf::Event::TouchMoved>())
         {
             if (eventTouchMoved->finger != 0)
                 return false; // Only the first finger is handled
@@ -483,8 +476,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventTouchBegan = eventSFML.getIf<sf::Event::TouchBegan>();
-        if (eventTouchBegan)
+        if (const auto* eventTouchBegan = eventSFML.getIf<sf::Event::TouchBegan>())
         {
             if (eventTouchBegan->finger != 0)
                 return false; // Only the first finger is handled
@@ -497,8 +489,7 @@ namespace tgui
             return true;
         }
 
-        const auto* eventTouchEnded = eventSFML.getIf<sf::Event::TouchEnded>();
-        if (eventTouchEnded)
+        if (const auto* eventTouchEnded = eventSFML.getIf<sf::Event::TouchEnded>())
         {
             if (eventTouchEnded->finger != 0)
                 return false; // Only the first finger is handled
