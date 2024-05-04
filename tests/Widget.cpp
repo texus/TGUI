@@ -424,6 +424,15 @@ TEST_CASE("[Widget]")
         REQUIRE(buttonRight->isFocused());
     }
 
+    SECTION("IgnoreMouseEvents")
+    {
+        REQUIRE(!widget->getIgnoreMouseEvents());
+        widget->setIgnoreMouseEvents(true);
+        REQUIRE(widget->getIgnoreMouseEvents());
+        widget->setIgnoreMouseEvents(false);
+        REQUIRE(!widget->getIgnoreMouseEvents());
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();

@@ -49,8 +49,6 @@ struct LabelProperties : WidgetProperties
             label->setAutoSize(parseBoolean(value, true));
         else if (property == "MaximumTextWidth")
             label->setMaximumTextWidth(value.toFloat());
-        else if (property == "IgnoreMouseEvents")
-            label->ignoreMouseEvents(parseBoolean(value, false));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -66,7 +64,6 @@ struct LabelProperties : WidgetProperties
         pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(label->getScrollbarPolicy())};
         pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
         pair.first["MaximumTextWidth"] = {"Float", tgui::String::fromNumber(label->getMaximumTextWidth())};
-        pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};
 
         const auto renderer = label->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

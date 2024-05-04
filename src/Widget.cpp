@@ -1272,6 +1272,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setIgnoreMouseEvents(bool ignore)
+    {
+        m_ignoreMouseEvents = ignore;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::getIgnoreMouseEvents() const
+    {
+        return m_ignoreMouseEvents;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::finishAllAnimations()
     {
         for (auto& animation : m_showAnimations)
@@ -1628,6 +1642,8 @@ namespace tgui
 #endif
         if (m_textSize != 0)
             node->propertyValuePairs[U"TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
+        if (m_ignoreMouseEvents)
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoreMouseEvents));
 
         const auto navWidgetUp = m_navWidgetUp.lock();
         const auto navWidgetDown = m_navWidgetDown.lock();
@@ -1726,6 +1742,8 @@ namespace tgui
         }
         if (node->propertyValuePairs[U"TextSize"])
             setTextSize(node->propertyValuePairs[U"TextSize"]->value.toUInt());
+        if (node->propertyValuePairs[U"IgnoreMouseEvents"])
+            setIgnoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
 
         if (m_parentGui)
         {

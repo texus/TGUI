@@ -66,6 +66,8 @@ struct WidgetProperties
             widget->setUserData(value);
         else if (property == "MouseCursor")
             widget->setMouseCursor(deserializeMouseCursor(value));
+        else if (property == "IgnoreMouseEvents")
+            widget->setIgnoreMouseEvents(parseBoolean(value, false));
         else // Renderer property
             widget->getRenderer()->setProperty(property, value);
     }
@@ -84,6 +86,7 @@ struct WidgetProperties
         pairs["NavigationLeft"] = {"String", widget->getNavigationLeft() ? widget->getNavigationLeft()->getWidgetName() : U""};
         pairs["NavigationRight"] = {"String", widget->getNavigationRight() ? widget->getNavigationRight()->getWidgetName() : U""};
         pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed}", serializeMouseCursor(widget->getMouseCursor())};
+        pairs["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(widget->getIgnoreMouseEvents())};
         try
         {
             pairs["UserData"] = {"String", widget->getUserData<tgui::String>()};

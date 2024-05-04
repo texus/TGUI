@@ -871,6 +871,29 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD Widget::Ptr getNavigationRight() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the widget should completely ignore mouse events and let them pass to the widgets behind it
+        ///
+        /// @param ignore  Should mouse events be ignored by this widget?
+        ///
+        /// By default, mouse events are NOT ignored.
+        ///
+        /// If you want the widget to ignore the events without the events being passed to the widgets behind this one,
+        /// then you need to call setEnabled(false) instead of setIgnoreMouseEvents(true).
+        ///
+        /// @since TGUI 1.3
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setIgnoreMouseEvents(bool ignore);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the widget is ignoring mouse events and letting them pass to the widgets behind it
+        ///
+        /// @return Are mouse events ignored by this widget?
+        ///
+        /// @since TGUI 1.3
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD bool getIgnoreMouseEvents() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes all animations of the widget finish immediately
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void finishAllAnimations();
@@ -1263,6 +1286,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Cursor::Type m_mouseCursor = Cursor::Type::Arrow;
         AutoLayout m_autoLayout = AutoLayout::Manual;
         bool m_autoLayoutUpdateEnabled = true;
+        bool m_ignoreMouseEvents = false;
 
         // Cached renderer properties
         Font  m_fontCached = Font::getGlobalFont();

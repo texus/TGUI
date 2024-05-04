@@ -804,7 +804,7 @@ namespace tgui
             const auto& widget = *it;
 
             // Look for a visible widget below the mouse
-            if (!widget->isVisible())
+            if (!widget->isVisible() || widget->getIgnoreMouseEvents())
                 continue;
             if (!widget->isMouseOnWidget(transformMousePos(widget, pos)))
                 continue;
@@ -1487,7 +1487,7 @@ namespace tgui
         for (auto it = m_widgets.crbegin(); it != m_widgets.crend(); ++it)
         {
             const auto& widget = *it;
-            if (!widget->isVisible())
+            if (!widget->isVisible() || widget->getIgnoreMouseEvents())
                 continue;
 
             if (!widget->isMouseOnWidget(transformMousePos(widget, mousePos)))

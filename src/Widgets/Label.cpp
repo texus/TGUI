@@ -559,7 +559,7 @@ namespace tgui
             setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool());
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
+            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

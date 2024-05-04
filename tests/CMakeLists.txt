@@ -159,6 +159,13 @@ endif()
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)
 
+# Disable warnings about deprecated code, so that we can keep our tests for deprecated functionality
+if (TGUI_COMPILER_MSVC)
+    target_compile_options(tests PRIVATE /wd4996)
+else()
+    target_compile_options(tests PRIVATE -Wno-deprecated-declarations)
+endif()
+
 if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
     # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
     # because the new batching doesn't result in such huge object files.

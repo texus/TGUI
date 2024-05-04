@@ -33,9 +33,7 @@ struct PictureProperties : WidgetProperties
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
         auto picture = widget->cast<tgui::Picture>();
-        if (property == "IgnoreMouseEvents")
-            picture->ignoreMouseEvents(parseBoolean(value, false));
-        else if (property == "Texture")
+        if (property == "Texture")
         {
             const tgui::Texture& oldTexture = picture->getSharedRenderer()->getTexture();
             const tgui::String oldFilename = oldTexture.getId();
@@ -58,7 +56,6 @@ struct PictureProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto picture = widget->cast<tgui::Picture>();
-        pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(picture->isIgnoringMouseEvents())};
 
         const auto renderer = picture->getSharedRenderer();
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};

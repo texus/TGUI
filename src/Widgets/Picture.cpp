@@ -214,7 +214,7 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
+            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
