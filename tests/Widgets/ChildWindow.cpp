@@ -211,13 +211,16 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("KeepInParent")
     {
-        REQUIRE(childWindow->isKeptInParent() == false);
+        REQUIRE(childWindow->getKeepInParent() == false);
+        REQUIRE(childWindow->isKeptInParent() == false); // Deprecated
 
         childWindow->setKeepInParent(true);
-        REQUIRE(childWindow->isKeptInParent() == true);
+        REQUIRE(childWindow->getKeepInParent() == true);
+        REQUIRE(childWindow->isKeptInParent() == true); // Deprecated
 
         childWindow->setKeepInParent(false);
-        REQUIRE(childWindow->isKeptInParent() == false);
+        REQUIRE(childWindow->getKeepInParent() == false);
+        REQUIRE(childWindow->isKeptInParent() == false); // Deprecated
     }
 
     SECTION("Events / Signals")

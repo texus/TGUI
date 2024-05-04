@@ -4,6 +4,7 @@ TGUI 1.3  (TBD)
 - New backend: raylib
 - New widget: EditBoxSlider ([PR #238](https://github.com/texus/TGUI/pull/238))
 - All widgets can now be configured to ignore mouse events
+- Renamed isKeptInParent to getKeepInParent in ChildWindow
 
 
 TGUI 1.2  (23 March 2024)

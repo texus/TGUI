@@ -64,7 +64,7 @@ struct ChildWindowProperties : WidgetProperties
         pair.first["TitleAlignment"] = {"Enum{Left,Center,Right}", serializeTitleAlignment(childWindow->getTitleAlignment())};
         pair.first["TitleButtons"] = {"ChildWindowTitleButtons", serializeTitleButtons(childWindow->getTitleButtons())};
         pair.first["Title"] = {"String", childWindow->getTitle()};
-        pair.first["KeepInParent"] = {"Bool", tgui::Serializer::serialize(childWindow->isKeptInParent())};
+        pair.first["KeepInParent"] = {"Bool", tgui::Serializer::serialize(childWindow->getKeepInParent())};
         pair.first["Resizable"] = {"Bool", tgui::Serializer::serialize(childWindow->isResizable())};
         pair.first["PositionLocked"] = {"Bool", tgui::Serializer::serialize(childWindow->isPositionLocked())};
         pair.first["MinimumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMinimumSize().x)};
