@@ -321,7 +321,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr TabContainer::getSelected()
+    Panel::Ptr TabContainer::getSelected() const
     {
         return m_selectedPanel;
     }
@@ -335,7 +335,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr TabContainer::getPanel(int index)
+    Panel::Ptr TabContainer::getPanel(int index) const
     {
         if (index < 0 || index >= static_cast<int>(m_panels.size()))
             return nullptr;
@@ -345,7 +345,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Ptr TabContainer::getTabs()
+    Tabs::Ptr TabContainer::getTabs() const
     {
         return m_tabs;
     }

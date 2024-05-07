@@ -223,7 +223,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Scrollbar::getDefaultWidth()
+    float Scrollbar::getDefaultWidth() const
     {
         if (m_spriteTrack.isSet())
             return static_cast<float>(m_spriteTrack.getTexture().getImageSize().x);

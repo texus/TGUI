@@ -88,7 +88,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the radio button that is currently checked
         /// @return Checked radio button or nullptr if none of the radio buttons are checked
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        RadioButton::Ptr getCheckedRadioButton() const;
+        TGUI_NODISCARD RadioButton::Ptr getCheckedRadioButton() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

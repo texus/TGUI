@@ -131,7 +131,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr PanelListBox::getPanelTemplate()
+    Panel::Ptr PanelListBox::getPanelTemplate() const
     {
         return m_panelTemplate;
     }
