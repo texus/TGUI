@@ -57,6 +57,13 @@ const static float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget)
+{
+    return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 static void importOldFormFileExtractValidProperties(std::set<tgui::String>& possibleProperties, const PropertyValueMap& propertyMap)
 {
     for (const auto& pair : propertyMap)
@@ -421,7 +428,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::Chi
 
 tgui::String Form::addWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget)
 {
-    const tgui::String id = tgui::String::fromNumber(widget.get());
+    const tgui::String id = widgetPtrToStrId(widget);
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
 
     const tgui::String widgetType = widget->getWidgetType();
@@ -480,7 +487,7 @@ void Form::removeWidget(const tgui::String& id)
             parentsToSearch.pop();
             for (const auto& childWidget : parent->getWidgets())
             {
-                childIds.push_back(tgui::String::fromNumber(childWidget.get()));
+                childIds.push_back(widgetPtrToStrId(childWidget));
                 if (childWidget->isContainer())
                     parentsToSearch.push(childWidget->cast<tgui::Container>());
             }
@@ -646,7 +653,7 @@ void Form::selectParent()
         return;
     }
 
-    selectWidget(m_widgets[tgui::String::fromNumber(m_selectedWidget->ptr->getParent())]);
+    selectWidget(m_widgets[widgetPtrToStrId(m_selectedWidget->ptr->getParent()->shared_from_this())]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -825,7 +832,7 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
         }
 
         if (closestWidget)
-            selectWidget(m_widgets[tgui::String::fromNumber(closestWidget.get())]);
+            selectWidget(m_widgets[widgetPtrToStrId(closestWidget)]);
     }
 }
 
@@ -1023,7 +1030,7 @@ void Form::importLoadedWidgets(const tgui::Container::Ptr& parent)
     const auto& widgets = parent->getWidgets();
     for (const auto& widget : widgets)
     {
-        const tgui::String id = tgui::String::fromNumber(widget.get());
+        const tgui::String id = widgetPtrToStrId(widget);
         m_widgets[id] = std::make_shared<WidgetInfo>(widget);
         m_widgets[id]->name = widget->getWidgetName();
         m_widgets[id]->theme = "Custom";
@@ -1079,7 +1086,7 @@ void Form::onFormMousePress(tgui::Vector2f pos)
     auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
     if (widget)
     {
-        selectWidget(m_widgets[tgui::String::fromNumber(widget.get())]);
+        selectWidget(m_widgets[widgetPtrToStrId(widget)]);
         m_draggingWidget = true;
         m_draggingPos = pos;
     }

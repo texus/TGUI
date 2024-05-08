@@ -231,6 +231,13 @@ namespace
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget)
+    {
+        return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -771,7 +778,7 @@ void GuiBuilder::widgetSelected(const tgui::Widget::Ptr& widget)
     initProperties();
 
     if (widget)
-        m_selectedWidgetComboBox->setSelectedItemById(tgui::String::fromNumber(widget.get()));
+        m_selectedWidgetComboBox->setSelectedItemById(widgetPtrToStrId(widget));
     else
         m_selectedWidgetComboBox->setSelectedItemById("form");
 
@@ -1081,7 +1088,7 @@ void GuiBuilder::createNewWidget(const tgui::Widget::Ptr& widget, tgui::Containe
             parent = selectedWidget->getParent();
     }
 
-    const tgui::String id = tgui::String::fromNumber(widget.get());
+    const tgui::String id = widgetPtrToStrId(widget);
     const tgui::String name = m_selectedForm->addWidget(widget, parent, selectNewWidget);
     m_selectedWidgetComboBox->addItem(name, id);
 
@@ -1262,7 +1269,7 @@ void GuiBuilder::changeWidgetName(const tgui::String& name)
         return;
     }
 
-    m_selectedWidgetComboBox->changeItemById(tgui::String::fromNumber(m_selectedForm->getSelectedWidget()->ptr.get()), name);
+    m_selectedWidgetComboBox->changeItemById(widgetPtrToStrId(m_selectedForm->getSelectedWidget()->ptr), name);
 
     widgetHierarchyChanged();
     m_selectedForm->setChanged(true);
@@ -1275,7 +1282,7 @@ void GuiBuilder::initSelectedWidgetComboBoxAfterLoad()
     const auto& widgets = m_selectedForm->getWidgets();
     for (const auto& widget : widgets)
     {
-        const tgui::String id = tgui::String::fromNumber(widget->ptr.get());
+        const tgui::String id = widgetPtrToStrId(widget->ptr);
         m_selectedWidgetComboBox->addItem(widget->name, id);
     }
 }
@@ -1300,7 +1307,7 @@ void GuiBuilder::removeSelectedWidget()
             parentsToSearch.pop();
             for (const auto& widget : parent->getWidgets())
             {
-                childIds.push_back(tgui::String::fromNumber(widget.get()));
+                childIds.push_back(widgetPtrToStrId(widget));
                 if (widget->isContainer())
                     parentsToSearch.push(widget->cast<tgui::Container>());
             }
@@ -1311,7 +1318,7 @@ void GuiBuilder::removeSelectedWidget()
     }
 
     // Now remove the widget itself
-    const tgui::String id = tgui::String::fromNumber(selectedWidget->ptr.get());
+    const tgui::String id = widgetPtrToStrId(selectedWidget->ptr);
     m_selectedForm->removeWidget(id);
     m_selectedWidgetComboBox->removeItemById(id);
     m_selectedWidgetComboBox->setSelectedItemById("form");
@@ -1511,7 +1518,7 @@ void GuiBuilder::copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList
         {
             for (const auto& childWidget : container->getWidgets())
             {
-                const auto& childWidgetInfo = m_selectedForm->getWidget(tgui::String::fromNumber(childWidget.get()));
+                const auto& childWidgetInfo = m_selectedForm->getWidget(widgetPtrToStrId(childWidget));
                 copyWidgetRecursive(copiedWidget.childWidgets, childWidgetInfo);
             }
 
@@ -1530,7 +1537,7 @@ void GuiBuilder::pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Co
     auto widget = copiedWidget.widget->clone(); // Clone again, as we may be pasting same widget multiple times
     createNewWidget(widget, parent, false);
 
-    m_selectedForm->getWidget(tgui::String::fromNumber(widget.get()))->theme = copiedWidget.theme;
+    m_selectedForm->getWidget(widgetPtrToStrId(widget))->theme = copiedWidget.theme;
 
     for (const auto& copiedChild : copiedWidget.childWidgets)
         pasteWidgetRecursive(copiedChild, widget->cast<tgui::Container>().get());
@@ -1560,7 +1567,7 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
 
     auto widget = m_copiedWidgets[0].widget->clone(); // Clone again, as we may be pasting same widget multiple times
     createNewWidget(widget);
-    m_selectedForm->getWidget(tgui::String::fromNumber(widget.get()))->theme = m_copiedWidgets[0].theme;
+    m_selectedForm->getWidget(widgetPtrToStrId(widget))->theme = m_copiedWidgets[0].theme;
 
     // Copy child widgets
     if (!m_copiedWidgets[0].childWidgets.empty())
