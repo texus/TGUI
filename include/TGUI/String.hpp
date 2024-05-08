@@ -321,10 +321,20 @@ TGUI_MODULE_EXPORT namespace tgui
         template <typename T>
         TGUI_NODISCARD static String fromNumber(T value)
         {
-            std::ostringstream oss;
-            oss.imbue(std::locale::classic());
-            oss << value;
-            return {oss.str()};
+            // If the value is a floating point then we can't use std::to_string because its result depends on the locale.
+            // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
+            // as it will be interpreted as a character instead of a number.
+            TGUI_IF_CONSTEXPR (std::is_integral<T>::value)
+            {
+                return {std::to_string(value)};
+            }
+            else
+            {
+                std::ostringstream oss;
+                oss.imbue(std::locale::classic());
+                oss << value;
+                return {oss.str()};
+            }
         }
 
 
@@ -339,6 +349,12 @@ TGUI_MODULE_EXPORT namespace tgui
         template <typename T>
         TGUI_NODISCARD static String fromNumberRounded(T value, unsigned int decimals)
         {
+            // Precision is ignored by std::ostringstream for integers, so we use std::to_string for integers instead.
+            // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
+            // as it will be interpreted as a character instead of a number. Which is why this separate branch for integers exists.
+            TGUI_IF_CONSTEXPR (std::is_integral<T>::value)
+                return {std::to_string(value)};
+
             std::ostringstream oss;
             oss.imbue(std::locale::classic());
             oss << std::fixed << std::setprecision(static_cast<int>(decimals));

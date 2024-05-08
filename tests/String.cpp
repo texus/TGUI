@@ -1474,6 +1474,7 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String::fromNumber(15) == "15");
         REQUIRE(tgui::String::fromNumber(-3) == "-3");
         REQUIRE(tgui::String::fromNumber(0.5) == "0.5");
+        REQUIRE(tgui::String::fromNumber(uint8_t(5)) == "5");
     }
 
     SECTION("fromNumberRounded")
@@ -1481,6 +1482,8 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String::fromNumberRounded(15.001f, 0) == "15");
         REQUIRE(tgui::String::fromNumberRounded(-3.0015f, 3) == "-3.001");
         REQUIRE(tgui::String::fromNumberRounded(0.5f, 2) == "0.50");
+        REQUIRE(tgui::String::fromNumberRounded(15, 2) == "15");
+        REQUIRE(tgui::String::fromNumberRounded(uint8_t(5), 2) == "5");
     }
 
     SECTION("trim")
