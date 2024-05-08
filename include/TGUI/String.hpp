@@ -354,12 +354,14 @@ TGUI_MODULE_EXPORT namespace tgui
             // as it will be interpreted as a character instead of a number. Which is why this separate branch for integers exists.
             TGUI_IF_CONSTEXPR (std::is_integral<T>::value)
                 return {std::to_string(value)};
-
-            std::ostringstream oss;
-            oss.imbue(std::locale::classic());
-            oss << std::fixed << std::setprecision(static_cast<int>(decimals));
-            oss << value;
-            return {oss.str()};
+            else
+            {
+                std::ostringstream oss;
+                oss.imbue(std::locale::classic());
+                oss << std::fixed << std::setprecision(static_cast<int>(decimals));
+                oss << value;
+                return {oss.str()};
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
