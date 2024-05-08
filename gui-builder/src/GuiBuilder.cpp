@@ -41,6 +41,7 @@
 #include "WidgetProperties/ListBoxProperties.hpp"
 #include "WidgetProperties/ListViewProperties.hpp"
 #include "WidgetProperties/PanelProperties.hpp"
+#include "WidgetProperties/PanelListBoxProperties.hpp"
 #include "WidgetProperties/PictureProperties.hpp"
 #include "WidgetProperties/ProgressBarProperties.hpp"
 #include "WidgetProperties/RadioButtonProperties.hpp"
@@ -284,6 +285,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
     m_widgetProperties["ListView"] = std::make_unique<ListViewProperties>();
     m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
+    m_widgetProperties["PanelListBox"] = std::make_unique<PanelListBoxProperties>();
     m_widgetProperties["Picture"] = std::make_unique<PictureProperties>();
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
     m_widgetProperties["RadioButton"] = std::make_unique<RadioButtonProperties>();
@@ -999,6 +1001,7 @@ void GuiBuilder::loadToolbox()
         {"ListBox", []{ return tgui::ListBox::create(); }},
         {"ListView", []{ return tgui::ListView::create(); }},
         {"Panel", []{ return tgui::Panel::create({150, 150}); }},
+        {"PanelListBox", []{ return tgui::PanelListBox::create(); }},
         {"Picture", []{ return tgui::Picture::create((tgui::getResourcePath() / "resources/DefaultPicture.png").asString()); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
