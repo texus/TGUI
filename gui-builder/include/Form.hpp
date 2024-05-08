@@ -80,6 +80,7 @@ private:
     void onDrag(tgui::Vector2i mousePos);
     void selectWidget(const std::shared_ptr<WidgetInfo>& widget);
     TGUI_NODISCARD std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
+    tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget) const;
 
 private:
 

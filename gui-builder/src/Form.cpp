@@ -57,13 +57,6 @@ const static float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget)
-{
-    return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 static void importOldFormFileExtractValidProperties(std::set<tgui::String>& possibleProperties, const PropertyValueMap& propertyMap)
 {
     for (const auto& pair : propertyMap)
@@ -1398,4 +1391,11 @@ std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines()
     }
 
     return lines;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+tgui::String Form::widgetPtrToStrId(const tgui::Widget::Ptr& widget) const
+{
+    return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
 }

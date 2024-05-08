@@ -109,7 +109,6 @@ private:
         std::vector<CopiedWidget> childWidgets;
     };
 
-
     TGUI_NODISCARD bool loadGuiBuilderState();
     void saveGuiBuilderState();
     void loadStartScreen();
@@ -129,6 +128,7 @@ private:
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
     TGUI_NODISCARD tgui::String getDefaultFilename() const;
+    tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget) const;
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
@@ -189,7 +189,6 @@ private:
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
     tgui::Panel::Ptr m_foregroundPanel = nullptr;
-
 
     std::map<tgui::String, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
