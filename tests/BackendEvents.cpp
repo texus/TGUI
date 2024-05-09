@@ -924,7 +924,11 @@ TEST_CASE("[Backend events]")
 
                 SECTION("All key codes")
                 {
+#if SDL_MAJOR_VERSION >= 3
+                    std::array<std::pair<uint32_t, tgui::Event::KeyboardKey>, 101> keys = {{
+#else
                     std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 101> keys = {{
+#endif
                         {SDLK_a,            tgui::Event::KeyboardKey::A},
                         {SDLK_b,            tgui::Event::KeyboardKey::B},
                         {SDLK_c,            tgui::Event::KeyboardKey::C},
