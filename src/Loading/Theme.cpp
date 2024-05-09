@@ -444,6 +444,10 @@ namespace tgui
         }},
         {"PanelListBox", {
             {"BackgroundColor", ""},
+            {"ItemsBackgroundColor", "BackgroundColor"},
+            {"ItemsBackgroundColorHover", "BackgroundColorHover"},
+            {"SelectedItemsBackgroundColor", "SelectedBackgroundColor"},
+            {"SelectedItemsBackgroundColorHover", "SelectedBackgroundColorHover"},
             {"BorderColor", ""},
             {"Borders", ""}
         }},

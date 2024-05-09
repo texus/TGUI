@@ -7,6 +7,7 @@ TGUI 1.3  (TBD)
 - Added HorizontalLayout and VerticalLayout to replace widget-specific enums
 - Renamed isKeptInParent to getKeepInParent in ChildWindow
 - Renamed limitTextWidth to setTextWidthLimited in EditBox
+- String::fromNumber now supports int8_t (but no longer accepts pointers)
 
 
 TGUI 1.2  (23 March 2024)
