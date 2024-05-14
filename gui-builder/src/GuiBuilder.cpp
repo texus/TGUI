@@ -1024,9 +1024,12 @@ void GuiBuilder::loadToolbox()
     for (auto& widget : widgets)
     {
         auto icon = tgui::Picture::create("resources/widget-icons/" + widget.first + ".png");
+        icon->setIgnoreMouseEvents(true);
+
         auto name = tgui::Label::create(widget.first);
         name->setPosition({icon->getSize().x * 1.1f, "50% - 10"});
         name->setTextSize(14);
+        name->setIgnoreMouseEvents(true);
 
         auto verticalLayout = tgui::VerticalLayout::create();
         verticalLayout->setPosition(0, topPosition);
