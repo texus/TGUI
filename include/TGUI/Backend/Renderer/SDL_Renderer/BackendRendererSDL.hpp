@@ -90,7 +90,7 @@ TGUI_MODULE_EXPORT namespace tgui
     private:
 
         SDL_Renderer* m_renderer = nullptr;
-        int m_maxTextureSize = 0;
+        unsigned int m_maxTextureSize = 0;
     };
 }
 
