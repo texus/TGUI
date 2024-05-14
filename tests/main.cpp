@@ -157,7 +157,7 @@ struct TestsWindowDefault : public TestsWindowBase
             window = SDL_CreateWindow(windowTitle,
                                       windowWidth, windowHeight,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-            renderer = SDL_CreateRenderer(window, nullptr, 0);
+            renderer = SDL_CreateRenderer(window, nullptr);
 #else
             window = SDL_CreateWindow(windowTitle,
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,

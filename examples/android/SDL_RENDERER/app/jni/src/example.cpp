@@ -25,15 +25,8 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SDL-Renderer.hpp>
 
-// Make some defines to keep the code below compatible with both SDL2 and SDL3
 #if SDL_MAJOR_VERSION >= 3
     #include <SDL3/SDL_main.h>
-    #define DEFAULT_RENDERING_DRIVER nullptr
-    #define SDL_WINDOW_SHOWN 0
-    #define SDL_RENDERER_ACCELERATED 0
-    #define SDL_CreateWindow SDL_CreateWindowWithPosition
-#else
-    #define DEFAULT_RENDERING_DRIVER -1
 #endif
 
 // The background image will rotate with the screen
@@ -105,11 +98,18 @@ int main(int, char**)
 
     // TGUI requires a window created with the SDL_WINDOW_OPENGL flag and an OpenGL context.
     // SDL_WINDOW_RESIZABLE is needed to support screen rotations.
+#if SDL_MAJOR_VERSION >= 3
+    SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
+                                          800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
+                                          SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
+#else
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
                                           SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, DEFAULT_RENDERING_DRIVER, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+#endif
 
     SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
 
