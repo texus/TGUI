@@ -980,7 +980,11 @@ TEST_CASE("[Backend events]")
                         {SDLK_SEMICOLON,    tgui::Event::KeyboardKey::Semicolon},
                         {SDLK_COMMA,        tgui::Event::KeyboardKey::Comma},
                         {SDLK_PERIOD,       tgui::Event::KeyboardKey::Period},
+#if SDL_MAJOR_VERSION >= 3
+                        {SDLK_APOSTROPHE,   tgui::Event::KeyboardKey::Quote},
+#else
                         {SDLK_QUOTE,        tgui::Event::KeyboardKey::Quote},
+#endif
                         {SDLK_SLASH,        tgui::Event::KeyboardKey::Slash},
                         {SDLK_BACKSLASH,    tgui::Event::KeyboardKey::Backslash},
                         {SDLK_EQUALS,       tgui::Event::KeyboardKey::Equal},

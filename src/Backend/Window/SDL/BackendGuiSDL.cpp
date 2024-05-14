@@ -96,7 +96,11 @@ namespace tgui
         case SDLK_SEMICOLON:    return Event::KeyboardKey::Semicolon;
         case SDLK_COMMA:        return Event::KeyboardKey::Comma;
         case SDLK_PERIOD:       return Event::KeyboardKey::Period;
+#if SDL_MAJOR_VERSION >= 3
+        case SDLK_APOSTROPHE:   return Event::KeyboardKey::Quote;
+#else
         case SDLK_QUOTE:        return Event::KeyboardKey::Quote;
+#endif
         case SDLK_SLASH:        return Event::KeyboardKey::Slash;
         case SDLK_BACKSLASH:    return Event::KeyboardKey::Backslash;
         case SDLK_EQUALS:       return Event::KeyboardKey::Equal;
