@@ -207,6 +207,31 @@ TEST_CASE("[ComboBox]")
         REQUIRE(!comboBox->contains("Item 1"));
         REQUIRE(!comboBox->containsId("1"));
     }
+
+    SECTION("Data")
+    {
+        comboBox->addItem("Item 1", "1");
+        comboBox->addItem("Item 2", "2");
+        comboBox->addItem("Item 3", "3");
+
+        comboBox->setItemData(0, "Test");
+        comboBox->setItemData(1, 5);
+        comboBox->setItemData(2, tgui::String("x"));
+
+        REQUIRE(tgui::String(comboBox->getItemData<const char*>(0)) == "Test");
+        REQUIRE(comboBox->getItemData<int>(1) == 5);
+        REQUIRE(comboBox->getItemData<tgui::String>(2) == "x");
+
+        // Wrong type results in std::bad_cast
+        REQUIRE_THROWS_AS(comboBox->getItemData<int>(2), std::bad_cast);
+
+        // Using an index beyond the added items also results in std::bad_cast
+        REQUIRE_THROWS_AS(comboBox->getItemData<tgui::String>(3), std::bad_cast);
+
+        // Re-assigning data is allowed to change the type
+        comboBox->setItemData(0, 3);
+        REQUIRE(comboBox->getItemData<int>(0) == 3);
+    }
     
     SECTION("ItemsToDisplay")
     {
