@@ -186,12 +186,12 @@ namespace tgui
             }
             case Event::Type::LostFocus:
             {
-                m_windowFocused = false;
+                updateWindowFocusState(false);
                 break;
             }
             case Event::Type::GainedFocus:
             {
-                m_windowFocused = true;
+                updateWindowFocusState(true);
                 break;
             }
             case Event::Type::Resized:
@@ -622,6 +622,20 @@ namespace tgui
 
         // Even if no widget was scrolled, we will still absorb the event when the scrolling bagan on top of a widget
         return m_container->getWidgetAtPos(touchPos, false) != nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGui::updateWindowFocusState(bool windowFocused)
+    {
+        if(m_windowFocused != windowFocused) {
+            m_windowFocused = windowFocused;
+            if(windowFocused) {
+                onWindowFocus.emit(m_container.get());
+            } else {
+                onWindowUnfocus.emit(m_container.get());
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
