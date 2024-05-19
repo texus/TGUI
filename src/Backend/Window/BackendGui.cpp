@@ -187,12 +187,12 @@ namespace tgui
             case Event::Type::LostFocus:
             {
                 updateWindowFocusState(false);
-                break;
+                return true;
             }
             case Event::Type::GainedFocus:
             {
                 updateWindowFocusState(true);
-                break;
+                return true;
             }
             case Event::Type::Resized:
             {
