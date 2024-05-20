@@ -219,13 +219,13 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns a reference to the internal SFML font
         /// @return Reference to internal font
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD sf::Font& getInternalFont();
+        TGUI_NODISCARD sf::Font* getInternalFont();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::Font m_font;
+        std::unique_ptr<sf::Font> m_font;
         std::unique_ptr<std::uint8_t[]> m_fileContents;
 
         std::unordered_set<std::uint64_t> m_loadedGlyphKeys;
