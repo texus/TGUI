@@ -518,9 +518,14 @@ namespace tgui
                         eventProcessed = true;
                     }
 #if SDL_MAJOR_VERSION >= 3
-                    else if ((event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) || (event.type == SDL_EVENT_WINDOW_MOUSE_LEAVE))
+                    else if ((event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) || (event.type == SDL_EVENT_WINDOW_EXPOSED)
+                          || (event.type == SDL_EVENT_WINDOW_MOUSE_ENTER) || (event.type == SDL_EVENT_WINDOW_MOUSE_LEAVE)
+                          || (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED) || (event.type == SDL_EVENT_WINDOW_FOCUS_LOST))
 #else
-                    else if ((event.type == SDL_WINDOWEVENT) && ((event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) || (event.window.event == SDL_WINDOWEVENT_LEAVE)))
+                    else if ((event.type == SDL_WINDOWEVENT)
+                          && ((event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) || (event.window.event == SDL_WINDOWEVENT_EXPOSED)
+                           || (event.window.event == SDL_WINDOWEVENT_ENTER) || (event.window.event == SDL_WINDOWEVENT_LEAVE)
+                           || (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) || (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)))
 #endif
                     {
                         eventProcessed = true;

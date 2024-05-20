@@ -187,11 +187,13 @@ namespace tgui
             case Event::Type::LostFocus:
             {
                 m_windowFocused = false;
+                onWindowFocus.emit(m_container.get());
                 break;
             }
             case Event::Type::GainedFocus:
             {
                 m_windowFocused = true;
+                onWindowUnfocus.emit(m_container.get());
                 break;
             }
             case Event::Type::Resized:

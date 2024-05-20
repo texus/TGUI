@@ -299,9 +299,13 @@ namespace tgui
                         eventProcessed = true;
                     }
 #if SFML_VERSION_MAJOR >= 3
-                    else if (event.is<sf::Event::Resized>() || event.is<sf::Event::MouseLeft>())
+                    else if (event.is<sf::Event::Resized>()
+                          || event.is<sf::Event::MouseEntered>() || event.is<sf::Event::MouseLeft>()
+                          || event.is<sf::Event::FocusGained>() || event.is<sf::Event::FocusLost>())
 #else
-                    else if ((event.type == sf::Event::Resized) || (event.type == sf::Event::MouseLeft))
+                    else if ((event.type == sf::Event::Resized)
+                          || (event.type == sf::Event::MouseEntered) || (event.type == sf::Event::MouseLeft)
+                          || (event.type == sf::Event::GainedFocus) || (event.type == sf::Event::LostFocus))
 #endif
                     {
                         eventProcessed = true;

@@ -6,6 +6,7 @@ TGUI 1.3  (TBD)
 - All widgets can now be configured to ignore mouse events
 - Added HorizontalLayout and VerticalLayout to replace widget-specific enums
 - Added method to associate user data to combo box items
+- Added onWindowFocus and onWindowUnfocus signals
 - Renamed isKeptInParent to getKeepInParent in ChildWindow
 - Renamed limitTextWidth to setTextWidthLimited in EditBox
 - String::fromNumber now supports int8_t (but no longer accepts pointers)
