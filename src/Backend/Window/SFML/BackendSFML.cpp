@@ -74,13 +74,24 @@ namespace tgui
         // We are creating a memory leak here to allow cursors to exist long enough.
         if (m_guiResources[gui].window && m_mouseCursors[m_guiResources[gui].mouseCursor])
         {
+#if SFML_VERSION_MAJOR >= 3
+            auto cursor = sf::Cursor::loadFromSystem(sf::Cursor::Type::Arrow);
+            if (cursor)
+            {
+                m_guiResources[gui].window->setMouseCursor(*cursor);
+                m_leakedCursors.emplace_back(std::make_unique<sf::Cursor>(std::move(*cursor)));
+            }
+#else
             auto cursor = std::make_unique<sf::Cursor>();
-            (void)cursor->loadFromSystem(sf::Cursor::Type::Arrow);
-            m_guiResources[gui].window->setMouseCursor(*cursor);
-            m_leakedCursors.push_back(std::move(cursor));
+            if (cursor->loadFromSystem(sf::Cursor::Type::Arrow))
+            {
+                m_guiResources[gui].window->setMouseCursor(*cursor);
+                m_leakedCursors.emplace_back(std::move(cursor));
+            }
+#endif
         }
 
-        // Don't check if it existed, detach is called for every gui while attached is only called for properly initialized guis
+        // Don't check if it existed, detatchGui is called for every gui while setGuiWindow is only called for properly initialized guis
         m_guiResources.erase(gui);
 
         Backend::detatchGui(gui);
@@ -91,9 +102,15 @@ namespace tgui
     void BackendSFML::setMouseCursorStyle(Cursor::Type type, const std::uint8_t* pixels, Vector2u size, Vector2u hotspot)
     {
         // Replace the cursor resource
+#if SFML_VERSION_MAJOR >= 3
+        auto newCursor = sf::Cursor::loadFromPixels(pixels, size, hotspot);
+        if (newCursor)
+            updateMouseCursor(type, std::make_unique<sf::Cursor>(std::move(*newCursor)));
+#else
         auto newCursor = std::make_unique<sf::Cursor>();
         if (newCursor->loadFromPixels(pixels, size, hotspot))
             updateMouseCursor(type, std::move(newCursor));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,9 +313,19 @@ namespace tgui
             break;
         }
 
+#if SFML_VERSION_MAJOR >= 3
+        auto cursor = sf::Cursor::loadFromSystem(typeSFML);
+        if (cursor)
+            return std::make_unique<sf::Cursor>(std::move(*cursor));
+        else
+            return nullptr;
+#else
         auto cursor = std::make_unique<sf::Cursor>();
-        (void)cursor->loadFromSystem(typeSFML);
-        return cursor;
+        if (cursor->loadFromSystem(typeSFML))
+            return cursor;
+        else
+            return nullptr;
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +401,8 @@ namespace tgui
             m_mouseCursors[type] = createSystemCursor(type);
 
         // Pass the cursor to SFML to set it while the mouse is on top of the window
-        window->setMouseCursor(*m_mouseCursors[type]);
+        if (m_mouseCursors[type])
+            window->setMouseCursor(*m_mouseCursors[type]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
