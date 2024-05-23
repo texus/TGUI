@@ -42,15 +42,26 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
+#if SFML_VERSION_MAJOR >= 3
+        CanvasBase{typeName, initRenderer},
+        m_renderTexture{sf::RenderTexture::create({1, 1}).value()}, // TGUI_NEXT: Properly handle canvas that has no render texture yet
+        m_usedTextureSize{1, 1}
+#else
         CanvasBase{typeName, initRenderer}
+#endif
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
+#if SFML_VERSION_MAJOR >= 3
         CanvasBase{other},
-        m_usedTextureSize{other.m_usedTextureSize}
+        m_renderTexture{sf::RenderTexture::create({1, 1}).value()}, // TGUI_NEXT: Properly handle canvas that has no render texture yet
+        m_usedTextureSize{1, 1}
+#else
+        CanvasBase{other}
+#endif
     {
         setSize(other.getSize());
     }
@@ -59,10 +70,14 @@ namespace tgui
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
         CanvasBase{std::move(other)},
+#if SFML_VERSION_MAJOR >= 3
+        m_renderTexture{std::move(other.m_renderTexture)},
+#endif
         m_usedTextureSize{std::move(other.m_usedTextureSize)}
     {
-        // sf::RenderTexture does not support move yet
-        setSize(getSize());
+#if SFML_VERSION_MAJOR < 3
+        setSize(getSize()); // sf::RenderTexture does not support move yet
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,11 +140,15 @@ namespace tgui
         {
             const Vector2u newTextureSize{newSize};
             if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
+            {
 #if SFML_VERSION_MAJOR >= 3
-                (void)m_renderTexture.create({newTextureSize.x, newTextureSize.y});
+                auto optionalRenderTexture = sf::RenderTexture::create({newTextureSize.x, newTextureSize.y});
+                if (optionalRenderTexture)
+                    m_renderTexture = std::move(*optionalRenderTexture);
 #else
                 m_renderTexture.create(newTextureSize.x, newTextureSize.y);
 #endif
+            }
 
             m_usedTextureSize = newTextureSize;
         }
