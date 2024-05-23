@@ -29,7 +29,9 @@
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_SDL
     #include <TGUI/extlibs/IncludeSDL.hpp>
-    #include <SDL_touch.h>
+    #if SDL_MAJOR_VERSION < 3
+        #include <SDL_touch.h>
+    #endif
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
     #define GLFW_INCLUDE_NONE
