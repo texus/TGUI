@@ -302,6 +302,60 @@ namespace tgui
 
     SDL_Cursor* BackendSDL::createSystemCursor(Cursor::Type type)
     {
+#if SDL_MAJOR_VERSION >= 3
+        SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_DEFAULT;
+        switch (type)
+        {
+        case Cursor::Type::Arrow:
+            typeSDL = SDL_SYSTEM_CURSOR_DEFAULT;
+            break;
+        case Cursor::Type::Text:
+            typeSDL = SDL_SYSTEM_CURSOR_TEXT;
+            break;
+        case Cursor::Type::Hand:
+            typeSDL = SDL_SYSTEM_CURSOR_POINTER;
+            break;
+        case Cursor::Type::SizeLeft:
+            typeSDL = SDL_SYSTEM_CURSOR_W_RESIZE;
+            break;
+        case Cursor::Type::SizeRight:
+            typeSDL = SDL_SYSTEM_CURSOR_E_RESIZE;
+            break;
+        case Cursor::Type::SizeHorizontal:
+            typeSDL = SDL_SYSTEM_CURSOR_EW_RESIZE;
+            break;
+        case Cursor::Type::SizeTop:
+            typeSDL = SDL_SYSTEM_CURSOR_N_RESIZE;
+            break;
+        case Cursor::Type::SizeBottom:
+            typeSDL = SDL_SYSTEM_CURSOR_S_RESIZE;
+            break;
+        case Cursor::Type::SizeVertical:
+            typeSDL = SDL_SYSTEM_CURSOR_NS_RESIZE;
+            break;
+        case Cursor::Type::SizeBottomRight:
+            typeSDL = SDL_SYSTEM_CURSOR_SE_RESIZE;
+            break;
+        case Cursor::Type::SizeTopLeft:
+            typeSDL = SDL_SYSTEM_CURSOR_NW_RESIZE;
+            break;
+        case Cursor::Type::SizeBottomLeft:
+            typeSDL = SDL_SYSTEM_CURSOR_SW_RESIZE;
+            break;
+        case Cursor::Type::SizeTopRight:
+            typeSDL = SDL_SYSTEM_CURSOR_NE_RESIZE;
+            break;
+        case Cursor::Type::Crosshair:
+            typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
+            break;
+        case Cursor::Type::Help:
+            TGUI_PRINT_WARNING("BackendSDL doesn't support Cursor::Type::Help");
+            break;
+        case Cursor::Type::NotAllowed:
+            typeSDL = SDL_SYSTEM_CURSOR_NOT_ALLOWED;
+            break;
+        }
+#else
         SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_ARROW;
         switch (type)
         {
@@ -342,7 +396,7 @@ namespace tgui
             typeSDL = SDL_SYSTEM_CURSOR_NO;
             break;
         }
-
+#endif
         return SDL_CreateSystemCursor(typeSDL);
     }
 
