@@ -119,7 +119,7 @@ namespace tgui
 
         sf::RenderStates sfStates = convertRenderStates(transformedStates, texture);
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture), "BackendRenderTargetSFML::drawSprite requires backend texture of type BackendTextureSFML");
-        sfStates.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
+        sfStates.texture = std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
         sfStates.shader = sprite.getTexture().getShader();
 
 #if SFML_VERSION_MAJOR < 3
@@ -247,7 +247,7 @@ namespace tgui
         if (texture)
         {
             TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(texture), "BackendRenderTargetSFML requires textures of type BackendTextureSFML");
-            statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(texture)->getInternalTexture();
+            statesSFML.texture = std::static_pointer_cast<BackendTextureSFML>(texture)->getInternalTexture();
         }
 
         return statesSFML;

@@ -33,7 +33,7 @@ namespace tgui
 
     BackendTextureSFML::BackendTextureSFML()
     {
-        m_isSmooth = m_texture.isSmooth(); // Smooth filter is disabled by default in SFML textures
+        m_isSmooth = false; // TGUI_NEXT: This is only for backwards compatibility, this line can be removed in the future
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,20 +42,28 @@ namespace tgui
     {
         BackendTexture::loadTextureOnly(size, pixels, smooth);
 
-        m_texture.setSmooth(smooth);
-
-        if (Vector2u{m_texture.getSize()} != size)
+        if (!m_texture || (Vector2u{m_texture->getSize()} != size))
         {
 #if SFML_VERSION_MAJOR >= 3
-            if (!m_texture.create({size.x, size.y}))
-#else
-            if (!m_texture.create(size.x, size.y))
-#endif
+            auto optionalTexture = sf::Texture::create({size.x, size.y});
+            if (!optionalTexture)
                 return false;
+
+            m_texture = std::make_unique<sf::Texture>(std::move(*optionalTexture));
+#else
+            if (!m_texture)
+                m_texture = std::make_unique<sf::Texture>();
+            if (!m_texture->create(size.x, size.y))
+                return false;
+#endif
         }
 
-        if (pixels)
-            m_texture.update(pixels);
+        if (m_texture)
+        {
+            m_texture->setSmooth(smooth);
+            if (pixels)
+                m_texture->update(pixels);
+        }
 
         return true;
     }
@@ -65,28 +73,29 @@ namespace tgui
     void BackendTextureSFML::setSmooth(bool smooth)
     {
         BackendTexture::setSmooth(smooth);
-        m_texture.setSmooth(smooth);
+        if (m_texture)
+            m_texture->setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Texture& BackendTextureSFML::getInternalTexture()
+    sf::Texture* BackendTextureSFML::getInternalTexture()
     {
-        return m_texture;
+        return m_texture.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Texture& BackendTextureSFML::getInternalTexture() const
+    const sf::Texture* BackendTextureSFML::getInternalTexture() const
     {
-        return m_texture;
+        return m_texture.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendTextureSFML::replaceInternalTexture(const sf::Texture& texture)
     {
-        m_texture = texture;
+        m_texture = std::make_unique<sf::Texture>(texture);
 
         m_pixels = nullptr;
         m_imageSize = {texture.getSize().x, texture.getSize().y};

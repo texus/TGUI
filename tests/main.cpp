@@ -134,9 +134,9 @@ struct TestsWindowDefault : public TestsWindowBase
         }
 
     #if SFML_VERSION_MAJOR >= 3
-        sf::Window window{sf::VideoMode{{windowWidth, windowHeight}}, windowTitle, sf::Style::Default, sf::State::Windowed, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
+        sf::Window window{sf::VideoMode{{windowWidth, windowHeight}}, windowTitle, sf::Style::Default, sf::State::Windowed, sf::ContextSettings{0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core}};
     #else
-        sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)};
+        sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings{0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core}};
     #endif
     };
 #endif

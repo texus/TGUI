@@ -222,7 +222,7 @@ namespace tgui
 
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
                     "CanvasSFML::draw requires sprite to have a backend texture of type BackendTextureSFML");
-        statesSFML.texture = &std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
+        statesSFML.texture = std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
 
 #if SFML_VERSION_MAJOR >= 3
         statesSFML.coordinateType = sf::CoordinateType::Normalized;
