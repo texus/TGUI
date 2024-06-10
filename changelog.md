@@ -1,5 +1,5 @@
-TGUI 1.3  (TBD)
----------------
+TGUI 1.3  (10 June 2024)
+------------------------
 
 - New backend: raylib
 - New widget: EditBoxSlider ([PR #238](https://github.com/texus/TGUI/pull/238))
@@ -10,6 +10,8 @@ TGUI 1.3  (TBD)
 - Renamed isKeptInParent to getKeepInParent in ChildWindow
 - Renamed limitTextWidth to setTextWidthLimited in EditBox
 - String::fromNumber now supports int8_t (but no longer accepts pointers)
+- BackendTextureSFML::getInternalTexture() now returns a pointer
+- BackendFontSFML::getInternalFont() now return a pointer
 
 
 TGUI 1.2  (23 March 2024)
