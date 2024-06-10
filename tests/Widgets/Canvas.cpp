@@ -27,6 +27,10 @@
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/View.hpp>
     #include <SFML/Graphics/Sprite.hpp>
+
+    #if TGUI_BUILD_AS_CXX_MODULE
+        #include <SFML/Graphics/RenderTexture.hpp>
+    #endif
 #endif
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
     #include <TGUI/extlibs/IncludeSDL.hpp>

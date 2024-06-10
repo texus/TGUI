@@ -116,20 +116,26 @@ module;
   #include <SFML/Main.hpp>
 #endif
 
+#if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB
+    #include <raylib.h>
+
+    #if defined(TGUI_SYSTEM_LINUX)
+        // Both raylib and X11 define a global Font type. We need to temporarily rename it inside the header to avoid a conflict. This works because we don't use the X11 Font in our code.
+        // This needs to be done before including SDL, because otherwise the SDL headers will include the X11 files.
+        #define Font TGUI_X11_Font_redefinition
+        #include <X11/Xlib.h>
+        #undef Font
+    #endif
+#endif
+
 #if TGUI_HAS_WINDOW_BACKEND_SDL || TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
     #include <TGUI/extlibs/IncludeSDL.hpp>
 #endif
 #if TGUI_HAS_WINDOW_BACKEND_SDL
-    #if SDL_MAJOR_VERSION >= 3
-        #include <SDL3/SDL_syswm.h>
-    #else
+    #if SDL_MAJOR_VERSION < 3
         #include <SDL_syswm.h>
         #include <SDL_touch.h>
     #endif
-#endif
-#if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
-    struct SDL_Texture;
-    struct SDL_Renderer;
 #endif
 
 #if TGUI_HAS_FONT_BACKEND_SDL_TTF
@@ -161,10 +167,6 @@ module;
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
     #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
     #include <GLFW/glfw3.h>
-#endif
-
-#if TGUI_HAS_WINDOW_BACKEND_RAYLIB || TGUI_HAS_FONT_BACKEND_RAYLIB || TGUI_HAS_RENDERER_BACKEND_RAYLIB
-    #include <raylib.h>
 #endif
 
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((TGUI_HAS_WINDOW_BACKEND_SFML && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) || TGUI_HAS_WINDOW_BACKEND_SDL)

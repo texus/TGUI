@@ -64,7 +64,9 @@ TGUI_MODULE_EXPORT namespace tgui
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
+#if defined(TGUI_SYSTEM_WINDOWS) && TGUI_COMPILED_WITH_CPP_VER >= 17
+    // dllimport doesn't work for the static members when they are defined as inline constexpr outside the class,
+    // so we aren't allowed to put TGUI_API here on Windows.
     class Color
 #else
     class TGUI_API Color

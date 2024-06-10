@@ -44,7 +44,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /// @brief Font implementations that uses Raylib to load glyphs
     /// @since TGUI 1.3
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class BackendFontRaylib : public BackendFont
+    class TGUI_API BackendFontRaylib : public BackendFont
     {
     public:
 

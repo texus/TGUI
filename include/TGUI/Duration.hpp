@@ -52,7 +52,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /// - std::chrono::milliseconds(10) / 2.0f
     /// - 200  // unit is milliseconds
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class Duration
+    class TGUI_API Duration
     {
     public:
 

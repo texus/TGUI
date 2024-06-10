@@ -29,6 +29,11 @@ module;
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <string>
+
+    // Included by glad/gl.h
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
 #endif
 
 // Ignore warnings about '#include' still being used below
