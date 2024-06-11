@@ -1,5 +1,11 @@
-TGUI 1.3  (10 June 2024)
-------------------------
+TGUI 1.4  (TBD)
+---------------
+
+- Multiple fixes to EditBoxSlider widget
+
+
+TGUI 1.3.0  (10 June 2024)
+--------------------------
 
 - New backend: raylib
 - New widget: EditBoxSlider ([PR #238](https://github.com/texus/TGUI/pull/238))

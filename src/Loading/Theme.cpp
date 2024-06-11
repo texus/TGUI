@@ -338,6 +338,7 @@ namespace tgui
         {"ChildWindow", {{"CloseButton", "Button"}}},
         {"ColorPicker", {{"Button", ""}, {"Label", ""}, {"Slider", ""}}},
         {"ComboBox", {{"ListBox", ""}}},
+        {"EditBoxSlider", {{"EditBox", ""}, {"Slider", ""}}},
         {"FileDialog", {{"Button", ""}, {"EditBox", ""}, {"ListView", ""}, {"FilenameLabel", "Label"}, {"FileTypeComboBox", "ComboBox"}}},
         {"Label", {{"Scrollbar", ""}}},
         {"ListBox", {{"Scrollbar", ""}}},

@@ -344,7 +344,38 @@ namespace tgui
 
     void SubwidgetContainer::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        m_container->draw(target, states);
+        const Outline padding = m_container->getSharedRenderer()->getPadding();
+        states.transform.translate({padding.getLeft(), padding.getTop()});
+
+        const Vector2f innerSize = {getFullSize().x - padding.getLeft() - padding.getRight(),
+                                    getFullSize().y - padding.getTop() - padding.getBottom()};
+
+        target.addClippingLayer(states, {getWidgetOffset(), innerSize});
+
+        for (const auto& widget : m_container->getWidgets())
+        {
+            if (!widget->isVisible())
+                continue;
+
+            const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+
+            RenderStates widgetStates = states;
+            widgetStates.transform.translate(widget->getPosition() - origin);
+            if (widget->getRotation() != 0)
+            {
+                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+                widgetStates.transform.rotate(widget->getRotation(), rotOrigin);
+            }
+            if ((widget->getScale().x != 1) || (widget->getScale().y != 1))
+            {
+                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+                widgetStates.transform.scale(widget->getScale(), scaleOrigin);
+            }
+
+            target.drawWidget(widgetStates, widget);
+        }
+
+        target.removeClippingLayer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

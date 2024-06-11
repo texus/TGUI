@@ -41,6 +41,7 @@ namespace tgui
         m_container->add(m_editBox, "EditBox");
         m_container->add(m_slider, "Slider");
 
+        m_slider->setSize(m_editBox->getSize().x, m_editBox->getSize().y / 3.f);
         init();
     }
 
@@ -176,8 +177,22 @@ namespace tgui
     void EditBoxSlider::setSize(const Layout2d& size)
     {
         SubwidgetContainer::setSize(size);
-        m_editBox->setSize({getSize().x, getSize().y * 0.8f});
-        m_slider->setSize({getSize().x, getSize().y * 0.2f});
+        m_editBox->setSize({getSize().x, getSize().y * 0.75f});
+        m_slider->setSize({getSize().x, getSize().y * 0.25f});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f EditBoxSlider::getFullSize() const
+    {
+        return {m_slider->getFullSize().x, m_editBox->getSize().y + m_slider->getSize().y + ((m_slider->getFullSize().y - m_slider->getSize().y) / 2.f)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f EditBoxSlider::getWidgetOffset() const
+    {
+        return {m_slider->getWidgetOffset().x, 0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

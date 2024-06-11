@@ -135,6 +135,25 @@ TGUI_MODULE_EXPORT namespace tgui
         using SubwidgetContainer::setSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the full size of the combined edit box and slider
+        ///
+        /// This size also takes the thumb of the slider into account as opposed to getSize which only includes the track size.
+        ///
+        /// @return Full size of the combined edit box and slider
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Vector2f getFullSize() const override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
+        ///
+        /// This is a negative offset indicating the difference between the track and thumb position of the slider when the
+        /// value equals the minimum.
+        ///
+        /// @return Offset of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Vector2f getWidgetOffset() const override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a minimum value
         ///
         /// @param minimum  The new minimum value

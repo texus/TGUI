@@ -48,8 +48,10 @@ TEST_CASE("[editBoxSlider]")
 
         REQUIRE(editBoxSlider->getPosition() == tgui::Vector2f(40, 30));
         REQUIRE(editBoxSlider->getSize() == tgui::Vector2f(25, 60));
-        REQUIRE(editBoxSlider->getFullSize() == editBoxSlider->getSize());
-        REQUIRE(editBoxSlider->getWidgetOffset() == tgui::Vector2f(0, 0));
+        REQUIRE(editBoxSlider->getFullSize().x >= editBoxSlider->getSize().x);
+        REQUIRE(editBoxSlider->getFullSize().y >= editBoxSlider->getSize().y);
+        REQUIRE(editBoxSlider->getWidgetOffset().x <= 0);
+        REQUIRE(editBoxSlider->getWidgetOffset().y == 0);
     }
 
     SECTION("Minimum")
