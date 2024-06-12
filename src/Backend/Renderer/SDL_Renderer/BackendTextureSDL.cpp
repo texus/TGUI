@@ -166,10 +166,17 @@ namespace tgui
         m_texture = texture;
         m_pixels = nullptr;
 
+#if SDL_MAJOR_VERSION >= 3
+        float width;
+        float height;
+        if (SDL_GetTextureSize(texture, &width, &height) == 0)
+            m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
+#else
         int width;
         int height;
         if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) == 0)
             m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
+#endif
 
 #if (SDL_MAJOR_VERSION > 2) \
  || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \

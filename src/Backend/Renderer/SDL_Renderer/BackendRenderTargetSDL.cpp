@@ -77,6 +77,23 @@ namespace tgui
         if (!m_renderer || (m_targetSize.x == 0) || (m_targetSize.y == 0) || (m_viewRect.width <= 0) || (m_viewRect.height <= 0))
             return;
 
+        // Store the current blend mode, in case we need to change it
+        SDL_BlendMode oldBlendMode = SDL_BLENDMODE_BLEND;
+        SDL_GetRenderDrawBlendMode(m_renderer, &oldBlendMode);
+
+#if SDL_MAJOR_VERSION >= 3
+        // Store the current clipping settings, in case we need to change it
+        SDL_FRect oldClipRect;
+        const SDL_bool oldClipEnabled = SDL_RenderClipEnabled(m_renderer);
+        if (oldClipEnabled)
+            SDL_GetRenderClipRect(m_renderer, &oldClipRect);
+
+        // Store the current viewport, in case we need to change it
+        SDL_FRect oldViewport;
+        SDL_GetRenderViewport(m_renderer, &oldViewport);
+
+        const SDL_FRect newViewport = {m_viewport.left, m_viewport.top, m_viewport.width, m_viewport.height};
+#else
         // Store the current clipping settings, in case we need to change it
         SDL_Rect oldClipRect;
         const SDL_bool oldClipEnabled = SDL_RenderClipEnabled(m_renderer);
@@ -87,16 +104,13 @@ namespace tgui
         SDL_Rect oldViewport;
         SDL_GetRenderViewport(m_renderer, &oldViewport);
 
-        // Store the current blend mode, in case we need to change it
-        SDL_BlendMode oldBlendMode = SDL_BLENDMODE_BLEND;
-        SDL_GetRenderDrawBlendMode(m_renderer, &oldBlendMode);
-
-        // Change the viewport if needed
         SDL_Rect newViewport;
         newViewport.x = static_cast<int>(m_viewport.left);
         newViewport.y = static_cast<int>(m_viewport.top);
         newViewport.w = static_cast<int>(m_viewport.width);
         newViewport.h = static_cast<int>(m_viewport.height);
+#endif
+        // Change the viewport if needed
         const bool viewportNeedsUpdate = (oldViewport.x != newViewport.x) || (oldViewport.y != newViewport.y)
                                       || (oldViewport.w != newViewport.w) || (oldViewport.h != newViewport.h);
         if (viewportNeedsUpdate)
@@ -153,9 +167,9 @@ namespace tgui
 #if SDL_MAJOR_VERSION >= 3
         static_assert(sizeof(Vertex::Color) == sizeof(SDL_Color), "SDL_Color requires same memory layout as tgui::Vertex::Color for cast to work");
         SDL_RenderGeometryRaw(m_renderer, textureSDL,
-                              &vertices->position.x, sizeof(Vertex),
-                              reinterpret_cast<const SDL_Color*>(&vertices->color), sizeof(Vertex),
-                              &vertices->texCoords.x, sizeof(Vertex),
+                              &verticesSDL[0].position.x, sizeof(Vertex),
+                              reinterpret_cast<const SDL_Color*>(&verticesSDL[0].color), sizeof(Vertex),
+                              &verticesSDL[0].texCoords.x, sizeof(Vertex),
                               static_cast<int>(vertexCount), indices, static_cast<int>(indexCount), sizeof(unsigned int));
 #else
         // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
@@ -176,11 +190,20 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
+#if SDL_MAJOR_VERSION >= 3
+            const SDL_FRect clipRectSDL = {
+                clipViewport.left - m_viewport.left,
+                clipViewport.top - m_viewport.top,
+                clipViewport.width,
+                clipViewport.height
+            };
+#else
             SDL_Rect clipRectSDL;
             clipRectSDL.x = static_cast<int>(clipViewport.left - m_viewport.left);
             clipRectSDL.y = static_cast<int>(clipViewport.top - m_viewport.top);
             clipRectSDL.w = static_cast<int>(clipViewport.width);
             clipRectSDL.h = static_cast<int>(clipViewport.height);
+#endif
             SDL_SetRenderClipRect(m_renderer, &clipRectSDL);
         }
         else // Clip the entire window
