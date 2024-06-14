@@ -72,7 +72,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param text  The text to display
         ///
         /// @return The new label
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static Label::Ptr create(const String& text = "");
 
@@ -82,7 +81,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param label  The other label
         ///
         /// @return The new label
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static Label::Ptr copy(const Label::ConstPtr& label);
 
@@ -113,7 +111,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// When this function is called, the label will no longer be auto-sizing.
         ///
         /// @see setAutoSize
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -126,7 +123,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// When the text is auto-sized (default), then the size of the label will be changed to fit the whole text.
         ///
         /// @see setAutoSize
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const String& text);
 
@@ -134,7 +130,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the text
         ///
         /// @return Text that is currently used
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getText() const;
 
@@ -144,7 +139,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param alignment  The new horizontal text alignment
         ///
         /// By default the text is aligned to the left.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setHorizontalAlignment(tgui::HorizontalAlignment alignment); // TGUI_NEXT: Remove "tgui::" prefix
 
@@ -152,7 +146,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Gets the current horizontal text alignment
         ///
         /// @return Horizontal text alignment
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD tgui::HorizontalAlignment getHorizontalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
@@ -162,7 +155,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param alignment  The new vertical text alignment
         ///
         /// By default the text is aligned to the top.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setVerticalAlignment(tgui::VerticalAlignment alignment); // TGUI_NEXT: Remove "tgui::" prefix
 
@@ -170,7 +162,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Gets the current vertical text alignment
         ///
         /// @return Vertical text alignment
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD tgui::VerticalAlignment getVerticalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
@@ -201,6 +192,15 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD unsigned int getScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum thumb position of the scrollbar
+        ///
+        /// @return Maximum value of the scrollbar
+        ///
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the label is auto-sized or not
         ///
         /// @param autoSize  Should the size of the label be changed when the text changes?
@@ -209,7 +209,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// Otherwise, only the part defined by the size will be visible.
         ///
         /// The label is auto-sized by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setAutoSize(bool autoSize);
 
@@ -217,7 +216,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns whether the label is auto-sized or not
         ///
         /// @return Is the size of the label changed when the text changes?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool getAutoSize() const;
 
@@ -231,7 +229,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// When the text is auto-sizing then the text will be split over several lines when its width would exceed the
         /// value passed to this function.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumTextWidth(float maximumWidth);
 
@@ -242,7 +239,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///        - The width of the label minus the padding when a specific size was set.
         ///        - The maximum text width when auto-sizing and a maximum was set.
         ///        - 0 when auto-sizing but there is no maximum width.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getMaximumTextWidth() const;
 
@@ -328,7 +324,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

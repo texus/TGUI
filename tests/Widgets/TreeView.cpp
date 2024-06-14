@@ -281,7 +281,7 @@ TEST_CASE("[TreeView]")
         REQUIRE(treeView->getTextSize() == 25);
     }
 
-    SECTION("VerticalScrollbarValue + HorizontalScrollbarValue")
+    SECTION("ScrollbarValue + ScrollbarMaxValue")
     {
         REQUIRE(treeView->getVerticalScrollbarValue() == 0);
         treeView->setVerticalScrollbarValue(100);
@@ -291,11 +291,17 @@ TEST_CASE("[TreeView]")
         treeView->setHorizontalScrollbarValue(100);
         REQUIRE(treeView->getHorizontalScrollbarValue() == 0);
 
+        REQUIRE(treeView->getVerticalScrollbarMaxValue() == 0);
+        REQUIRE(treeView->getHorizontalScrollbarMaxValue() == 0);
+
         treeView->setSize(70, 45);
         treeView->setItemHeight(20);
         treeView->addItem({"Smilies", "Happy"});
         treeView->addItem({"Smilies", "Sad"});
         treeView->addItem({"Smilies", "Neither"});
+
+        REQUIRE(treeView->getVerticalScrollbarMaxValue() > 37);
+        REQUIRE(treeView->getHorizontalScrollbarMaxValue() > 0);
 
         treeView->setVerticalScrollbarValue(10);
         REQUIRE(treeView->getVerticalScrollbarValue() == 10);

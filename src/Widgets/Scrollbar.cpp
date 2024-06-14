@@ -177,6 +177,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int Scrollbar::getMaxValue() const
+    {
+        if (m_maximum >= m_viewportSize)
+            return m_maximum - m_viewportSize;
+        else
+            return 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::setScrollAmount(unsigned int scrollAmount)
     {
         m_scrollAmount = std::max(1u, scrollAmount);

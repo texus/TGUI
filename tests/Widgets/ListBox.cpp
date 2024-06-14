@@ -338,6 +338,18 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getScrollbarValue() == 10);
     }
 
+    SECTION("ScrollbarMaxValue")
+    {
+        REQUIRE(listBox->getScrollbarMaxValue() == 0);
+
+        listBox->setSize(120, 45);
+        listBox->setItemHeight(20);
+        listBox->addItem("Item 1");
+        listBox->addItem("Item 2");
+        listBox->addItem("Item 3");
+        REQUIRE(listBox->getScrollbarMaxValue() == 17);
+    }
+
     testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {

@@ -64,7 +64,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Creates a new list box widget
         ///
         /// @return The new list box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static ListBox::Ptr create();
 
@@ -74,7 +73,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param listBox  The other list box
         ///
         /// @return The new list box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static ListBox::Ptr copy(const ListBox::ConstPtr& listBox);
 
@@ -96,7 +94,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the size of the list box
         ///
         /// @param size  The new size of the list box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -125,7 +122,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///         - false when none of the items matches the name
         ///
         /// @see setSelectedItemById
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItem(const String& itemName);
 
@@ -141,7 +137,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///         - false when none of the items has the given id
         ///
         /// @see setSelectedItem
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItemById(const String& id);
 
@@ -156,13 +151,11 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @see setSelectedItem
         /// @see setSelectedItemById
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItemByIndex(std::size_t index);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Deselects the selected item
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void deselectItem();
 
@@ -176,7 +169,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return
         ///        - true when the item was removed
         ///        - false when the name did not match any item
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItem(const String& itemName);
 
@@ -190,7 +182,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return
         ///        - true when the item was removed
         ///        - false when there was no item with the given id
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItemById(const String& id);
 
@@ -205,13 +196,11 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @see removeItem
         /// @see removeItemById
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItemByIndex(std::size_t index);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all items from the list
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllItems();
 
@@ -223,7 +212,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// In case the id is not unique, the first item with that id will be returned.
         ///
         /// @return The requested item, or an empty string when no item matches the id
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getItemById(const String& id) const;
 
@@ -261,7 +249,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return The selected item
         ///         When no item was selected then this function will return an empty string.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getSelectedItem() const;
 
@@ -270,7 +257,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return The id of the selected item, which was the optional id passed to the addItem function.
         ///         When no item was selected then this function returns an empty string
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getSelectedItemId() const;
 
@@ -278,7 +264,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Gets the index of the selected item
         ///
         /// @return The index of the selected item, or -1 when no item was selected
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD int getSelectedItemIndex() const;
 
@@ -293,7 +278,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return
         ///        - true when the item was changed
         ///        - false when none of the items had the given name
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool changeItem(const String& originalValue, const String& newValue);
 
@@ -308,7 +292,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return
         ///        - true when the item was changed
         ///        - false when none of the items had the given id
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool changeItemById(const String& id, const String& newValue);
 
@@ -321,7 +304,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return
         ///        - true when the item was changed
         ///        - false when the index was too high
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool changeItemByIndex(std::size_t index, const String& newValue);
 
@@ -329,7 +311,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the amount of items in the list box
         ///
         /// @return Number of items inside the list box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::size_t getItemCount() const;
 
@@ -337,7 +318,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns a copy of the items in the list box
         ///
         /// @return items
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::vector<String> getItems() const;
 
@@ -347,7 +327,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return item ids
         ///
         /// Items that were not given an id simply have an empty string as id.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::vector<String> getItemIds() const;
 
@@ -386,7 +365,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param itemHeight  The size of a single item in the list
         ///
         /// @warning When there is no scrollbar then the items will be removed when they no longer fit inside the list box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setItemHeight(unsigned int itemHeight);
 
@@ -394,7 +372,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the height of the items in the list box
         ///
         /// @return The item height
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD unsigned int getItemHeight() const;
 
@@ -405,7 +382,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///                      When the maximum is set to 0 then the limit will be disabled
         ///
         /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumItems(std::size_t maximumItems = 0);
 
@@ -414,7 +390,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return The maximum items inside the list box.
         ///         If the function returns 0 then there is no limit
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::size_t getMaximumItems() const;
 
@@ -424,7 +399,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param autoScroll  Should list box scroll to the bottom when new items are added?
         ///
         /// Auto scrolling is enabled by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setAutoScroll(bool autoScroll);
 
@@ -483,10 +457,18 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD unsigned int getScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum thumb position of the scrollbar
+        ///
+        /// @return Maximum value of the scrollbar
+        ///
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 
@@ -541,7 +523,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
@@ -563,7 +544,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

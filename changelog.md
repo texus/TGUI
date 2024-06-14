@@ -1,6 +1,8 @@
 TGUI 1.4  (TBD)
 ---------------
 
+- Added MaxValue getter to Scrollbar
+- Added ScrollbarMaxValue getters to widgets with a scrollbar
 - Multiple fixes to EditBoxSlider widget
 
 

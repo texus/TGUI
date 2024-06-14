@@ -96,6 +96,23 @@ TEST_CASE("[Scrollbar]")
         REQUIRE(scrollbar->getMaximum() == 4);
     }
 
+    SECTION("MaxValue")
+    {
+        REQUIRE(scrollbar->getMaxValue() == 15);
+
+        scrollbar->setViewportSize(8);
+        scrollbar->setMaximum(10);
+        REQUIRE(scrollbar->getMaxValue() == 2);
+
+        scrollbar->setViewportSize(5);
+        scrollbar->setMaximum(5);
+        REQUIRE(scrollbar->getMaxValue() == 0);
+
+        scrollbar->setViewportSize(10);
+        scrollbar->setMaximum(7);
+        REQUIRE(scrollbar->getMaxValue() == 0);
+    }
+
     SECTION("Value")
     {
         REQUIRE(scrollbar->getValue() == 10);

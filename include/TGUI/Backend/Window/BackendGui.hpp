@@ -654,8 +654,8 @@ TGUI_MODULE_EXPORT namespace tgui
     public:
 
         SignalFloatRect onViewChange = {"ViewChanged"}; //!< The view was changed. Optional parameter: new view rectangle
-        Signal onWindowFocus = {"WindowFocused"}; //!< The window sent a GainedFocus event
-        Signal onWindowUnfocus = {"WindowUnfocused"}; //!< The window sent a LostFocus event
+        Signal onWindowFocus = {"WindowFocused"}; //!< The window sent a GainedFocus event. @since TGUI 1.3
+        Signal onWindowUnfocus = {"WindowUnfocused"}; //!< The window sent a LostFocus event. @since TGUI 1.3
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

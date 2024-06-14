@@ -592,6 +592,20 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getHorizontalScrollbarValue() == 10);
     }
 
+    SECTION("VerticalScrollbarMaxValue + HorizontalScrollbarMaxValue")
+    {
+        REQUIRE(listView->getVerticalScrollbarMaxValue() == 0);
+        REQUIRE(listView->getHorizontalScrollbarMaxValue() == 0);
+
+        listView->setSize(120, 45);
+        listView->setItemHeight(20);
+        listView->addColumn("Col 1", 70);
+        listView->addColumn("Col 2", 80);
+        listView->addMultipleItems({{"Item 1", "1,2"}, {"Item 2", "2,2"}, {"Item 3", "3,2"}});
+        REQUIRE(listView->getVerticalScrollbarMaxValue() > 17);
+        REQUIRE(listView->getHorizontalScrollbarMaxValue() > 0);
+    }
+
     SECTION("FixedIconSize")
     {
         REQUIRE(listView->getFixedIconSize() == tgui::Vector2f{0, 0});
