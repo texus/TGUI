@@ -351,6 +351,7 @@ TEST_CASE("[Tabs]")
             tgui::Texture textureHover{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
             tgui::Texture textureSelected{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
             tgui::Texture textureSelectedHover{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
+            tgui::Texture textureDisabled{"resources/Texture1.png"};
 
             SECTION("set serialized property")
             {
@@ -358,6 +359,7 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTabHover", tgui::Serializer::serialize(textureHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTab", tgui::Serializer::serialize(textureSelected)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTabHover", tgui::Serializer::serialize(textureSelectedHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureDisabledTab", tgui::Serializer::serialize(textureDisabled)));
             }
 
             SECTION("set object property")
@@ -366,6 +368,7 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTabHover", textureHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTab", textureSelected));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTabHover", textureSelectedHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureDisabledTab", textureDisabled));
             }
 
             SECTION("functions")
@@ -374,17 +377,20 @@ TEST_CASE("[Tabs]")
                 renderer->setTextureTabHover(textureHover);
                 renderer->setTextureSelectedTab(textureSelected);
                 renderer->setTextureSelectedTabHover(textureSelectedHover);
+                renderer->setTextureDisabledTab(textureDisabled);
             }
 
             REQUIRE(renderer->getProperty("TextureTab").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureTabHover").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureSelectedTab").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureSelectedTabHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureDisabledTab").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTab().getData() == textureNormal.getData());
             REQUIRE(renderer->getTextureTabHover().getData() == textureHover.getData());
             REQUIRE(renderer->getTextureSelectedTab().getData() == textureSelected.getData());
             REQUIRE(renderer->getTextureSelectedTabHover().getData() == textureSelectedHover.getData());
+            REQUIRE(renderer->getTextureDisabledTab().getData() == textureDisabled.getData());
         }
     }
 

@@ -139,7 +139,7 @@ namespace tgui
             case KEY_KP_DECIMAL:     return Event::KeyboardKey::Period;
             case KEY_KP_DIVIDE:      return Event::KeyboardKey::Divide;
             case KEY_KP_MULTIPLY:    return Event::KeyboardKey::Multiply;
-            case KEY_KP_SUBTRACT:    return Event::KeyboardKey::Minus;
+            case KEY_KP_SUBTRACT:    return Event::KeyboardKey::Subtract;
             case KEY_KP_ADD:         return Event::KeyboardKey::Add;
             case KEY_KP_ENTER:       return Event::KeyboardKey::Enter;
             case KEY_KP_EQUAL:       return Event::KeyboardKey::Equal;

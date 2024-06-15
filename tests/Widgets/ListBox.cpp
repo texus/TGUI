@@ -353,8 +353,11 @@ TEST_CASE("[ListBox]")
     testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {
+        GuiNull gui;
+
         auto container = tgui::Group::create({400.f, 300.f});
         container->add(listBox);
+        gui.add(container);
 
         auto mouseMoved = [container](tgui::Vector2f pos){
             container->processMouseMoveEvent(pos);
@@ -364,6 +367,18 @@ TEST_CASE("[ListBox]")
         };
         auto mouseReleased = [container](tgui::Vector2f pos){
             container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos);
+        };
+        auto touchBegin = [&gui](std::intptr_t fingerId, tgui::Vector2f pos){
+            gui.twoFingerScroll.reportFingerDown(fingerId, pos.x, pos.y);
+        };
+        auto touchEnd = [&gui](std::intptr_t fingerId){
+            gui.twoFingerScroll.reportFingerUp(fingerId);
+        };
+        auto touchMove = [&gui](std::intptr_t fingerId, tgui::Vector2f pos){
+            const bool wasScrolling = gui.twoFingerScroll.isScrolling();
+            gui.twoFingerScroll.reportFingerMotion(fingerId, pos.x, pos.y);
+            if (gui.twoFingerScroll.isScrolling())
+                gui.handleTwoFingerScroll(wasScrolling);
         };
 
         listBox->setPosition(10, 20);
@@ -470,6 +485,20 @@ TEST_CASE("[ListBox]")
 
             mousePressed({40, 52});
             REQUIRE(listBox->getSelectedItemIndex() == 4);
+
+            mouseReleased({40, 52});
+
+            // Two-finger scrolling
+            touchBegin(1, {40, 30});
+            touchBegin(2, {60, 30});
+            touchMove(1, {40, 70});
+            touchMove(2, {60, 70});
+            touchEnd(1);
+            touchEnd(2);
+            mouseMoved({40, 31});
+            mousePressed({40, 31});
+            mouseReleased({40, 31});
+            REQUIRE(listBox->getSelectedItemIndex() == 0);
         }
 
         SECTION("Arrow keys")

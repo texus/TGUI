@@ -236,6 +236,10 @@ public:
 
     void draw() override {}
     void mainLoop(tgui::Color = {240, 240, 240}) override {}
+
+    void handleTwoFingerScroll(bool wasAlreadyScrolling) { BackendGui::handleTwoFingerScroll(wasAlreadyScrolling); }
+
+    tgui::TwoFingerScrollDetect& twoFingerScroll = m_twoFingerScroll;
 };
 
 extern tgui::BackendGui* globalGui;

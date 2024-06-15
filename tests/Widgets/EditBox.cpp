@@ -457,6 +457,7 @@ TEST_CASE("[EditBox]")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(20, 30, 40)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", "rgb(120, 130, 140)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorFocused", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", "rgb(50, 60, 70)"));
@@ -465,9 +466,11 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", "rgb(140, 150, 160)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorFocused", "rgb(170, 180, 190)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(90, 100, 110)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", "rgb(150, 160, 170)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", "rgb(180, 190, 200)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Italic"));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Bold | Underlined"));
@@ -479,6 +482,7 @@ TEST_CASE("[EditBox]")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", tgui::Color{20, 30, 40}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", tgui::Color{120, 130, 140}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorFocused", tgui::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", tgui::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", tgui::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", tgui::Color{50, 60, 70}));
@@ -487,9 +491,11 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", tgui::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", tgui::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", tgui::Color{140, 150, 160}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorFocused", tgui::Color{170, 180, 190}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{90, 100, 110}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{150, 160, 170}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{180, 190, 200}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
@@ -501,6 +507,7 @@ TEST_CASE("[EditBox]")
             {
                 renderer->setTextColor({20, 30, 40});
                 renderer->setTextColorDisabled({120, 130, 140});
+                renderer->setTextColorFocused({160, 170, 180});
                 renderer->setSelectedTextColor({30, 40, 50});
                 renderer->setSelectedTextBackgroundColor({40, 50, 60});
                 renderer->setDefaultTextColor({50, 60, 70});
@@ -509,9 +516,11 @@ TEST_CASE("[EditBox]")
                 renderer->setBackgroundColor({70, 80, 90});
                 renderer->setBackgroundColorHover({80, 90, 100});
                 renderer->setBackgroundColorDisabled({140, 150, 160});
+                renderer->setBackgroundColorFocused({170, 180, 190});
                 renderer->setBorderColor({90, 100, 110});
                 renderer->setBorderColorHover({100, 110, 120});
                 renderer->setBorderColorDisabled({150, 160, 170});
+                renderer->setBorderColorFocused({180, 190, 200});
                 renderer->setCaretWidth(2);
                 renderer->setTextStyle(tgui::TextStyle::Italic);
                 renderer->setDefaultTextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined);
@@ -521,6 +530,7 @@ TEST_CASE("[EditBox]")
 
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(20, 30, 40));
             REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("TextColorFocused").getColor() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == tgui::Color(50, 60, 70));
@@ -529,9 +539,11 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getProperty("BackgroundColorFocused").getColor() == tgui::Color(170, 180, 190));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(90, 100, 110));
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == tgui::Color(180, 190, 200));
             REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
@@ -540,6 +552,7 @@ TEST_CASE("[EditBox]")
 
             REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
             REQUIRE(renderer->getTextColorDisabled() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getTextColorFocused() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getSelectedTextColor() == tgui::Color(30, 40, 50));
             REQUIRE(renderer->getSelectedTextBackgroundColor() == tgui::Color(40, 50, 60));
             REQUIRE(renderer->getDefaultTextColor() == tgui::Color(50, 60, 70));
@@ -548,9 +561,11 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getBackgroundColor() == tgui::Color(70, 80, 90));
             REQUIRE(renderer->getBackgroundColorHover() == tgui::Color(80, 90, 100));
             REQUIRE(renderer->getBackgroundColorDisabled() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getBackgroundColorFocused() == tgui::Color(170, 180, 190));
             REQUIRE(renderer->getBorderColor() == tgui::Color(90, 100, 110));
             REQUIRE(renderer->getBorderColorHover() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getBorderColorDisabled() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getBorderColorFocused() == tgui::Color(180, 190, 200));
             REQUIRE(renderer->getCaretWidth() == 2);
             REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getDefaultTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));

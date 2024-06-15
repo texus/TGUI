@@ -85,6 +85,16 @@ TEST_CASE("[Serializer]")
 
         texture.load("resources/image.png", {0, 0, 40, 40}, {10, 10, 20, 20});
         REQUIRE(tgui::Serializer::serialize(texture) == "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20) Smooth");
+
+        std::size_t bytesCount;
+        auto bytes = tgui::readFileToMemory("resources/image.png", bytesCount);
+        REQUIRE(bytes);
+        REQUIRE(bytesCount > 0);
+
+        tgui::Texture textureInMemory;
+        textureInMemory.loadFromMemory(bytes.get(), bytesCount);
+        REQUIRE(tgui::Serializer::serialize(textureInMemory).starts_with("\"data:image/png;base64,"));
+        REQUIRE(tgui::Serializer::serialize(textureInMemory).ends_with("\" Smooth"));
     }
 
     SECTION("serialize string")

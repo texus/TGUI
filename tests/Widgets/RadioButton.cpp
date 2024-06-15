@@ -245,9 +245,11 @@ TEST_CASE("[RadioButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(90, 100, 110)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", "rgb(210, 220, 230)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", "rgb(230, 220, 210)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorChecked", "rgb(220, 230, 240)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedHover", "rgb(230, 240, 250)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedDisabled", "rgb(250, 240, 230)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedFocused", "rgb(220, 210, 200)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColor", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorHover", "rgb(120, 130, 140)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorDisabled", "rgb(240, 230, 220)"));
@@ -274,9 +276,11 @@ TEST_CASE("[RadioButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{90, 100, 110}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", tgui::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", tgui::Color{210, 220, 230}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{230, 220, 210}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorChecked", tgui::Color{220, 230, 240}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedHover", tgui::Color{230, 240, 250}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedDisabled", tgui::Color{250, 240, 230}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorCheckedFocused", tgui::Color{220, 210, 200}));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColor", tgui::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorHover", tgui::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("CheckColorDisabled", tgui::Color{240, 230, 220}));
@@ -303,9 +307,11 @@ TEST_CASE("[RadioButton]")
                 renderer->setBorderColor({90, 100, 110});
                 renderer->setBorderColorHover({100, 110, 120});
                 renderer->setBorderColorDisabled({210, 220, 230});
+                renderer->setBorderColorFocused({230, 220, 210});
                 renderer->setBorderColorChecked({220, 230, 240});
                 renderer->setBorderColorCheckedHover({230, 240, 250});
                 renderer->setBorderColorCheckedDisabled({250, 240, 230});
+                renderer->setBorderColorCheckedFocused({220, 210, 200});
                 renderer->setCheckColor({110, 120, 130});
                 renderer->setCheckColorHover({120, 130, 140});
                 renderer->setCheckColorDisabled({240, 230, 220});
@@ -330,9 +336,11 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(90, 100, 110));
             REQUIRE(renderer->getProperty("BorderColorHover").getColor() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == tgui::Color(210, 220, 230));
+            REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == tgui::Color(230, 220, 210));
             REQUIRE(renderer->getProperty("BorderColorChecked").getColor() == tgui::Color(220, 230, 240));
             REQUIRE(renderer->getProperty("BorderColorCheckedHover").getColor() == tgui::Color(230, 240, 250));
             REQUIRE(renderer->getProperty("BorderColorCheckedDisabled").getColor() == tgui::Color(250, 240, 230));
+            REQUIRE(renderer->getProperty("BorderColorCheckedFocused").getColor() == tgui::Color(220, 210, 200));
             REQUIRE(renderer->getProperty("CheckColor").getColor() == tgui::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("CheckColorHover").getColor() == tgui::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("CheckColorDisabled").getColor() == tgui::Color(240, 230, 220));
@@ -356,9 +364,11 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getBorderColor() == tgui::Color(90, 100, 110));
             REQUIRE(renderer->getBorderColorHover() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getBorderColorDisabled() == tgui::Color(210, 220, 230));
+            REQUIRE(renderer->getBorderColorFocused() == tgui::Color(230, 220, 210));
             REQUIRE(renderer->getBorderColorChecked() == tgui::Color(220, 230, 240));
             REQUIRE(renderer->getBorderColorCheckedHover() == tgui::Color(230, 240, 250));
             REQUIRE(renderer->getBorderColorCheckedDisabled() == tgui::Color(250, 240, 230));
+            REQUIRE(renderer->getBorderColorCheckedFocused() == tgui::Color(220, 210, 200));
             REQUIRE(renderer->getCheckColor() == tgui::Color(110, 120, 130));
             REQUIRE(renderer->getCheckColorHover() == tgui::Color(120, 130, 140));
             REQUIRE(renderer->getCheckColorDisabled() == tgui::Color(240, 230, 220));
@@ -373,18 +383,22 @@ TEST_CASE("[RadioButton]")
             tgui::Texture textureUncheckedNormal("resources/Black.png", {124, 32, 32, 32});
             tgui::Texture textureUncheckedHover("resources/Black.png", {188, 32, 32, 32});
             tgui::Texture textureUncheckedDisabled("resources/Black.png", {124, 32, 32, 32});
+            tgui::Texture textureUncheckedFocused("resources/Texture1.png");
             tgui::Texture textureCheckedNormal("resources/Black.png", {156, 32, 32, 32});
             tgui::Texture textureCheckedHover("resources/Black.png", {220, 32, 32, 32});
             tgui::Texture textureCheckedDisabled("resources/Black.png", {156, 32, 32, 32});
+            tgui::Texture textureCheckedFocused("resources/Texture2.png");
 
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUnchecked", tgui::Serializer::serialize(textureUncheckedNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedHover", tgui::Serializer::serialize(textureUncheckedHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedDisabled", tgui::Serializer::serialize(textureUncheckedDisabled)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedFocused", tgui::Serializer::serialize(textureUncheckedFocused)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureChecked", tgui::Serializer::serialize(textureCheckedNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedHover", tgui::Serializer::serialize(textureCheckedHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedDisabled", tgui::Serializer::serialize(textureCheckedDisabled)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedFocused", tgui::Serializer::serialize(textureCheckedFocused)));
             }
 
             SECTION("set object property")
@@ -392,9 +406,11 @@ TEST_CASE("[RadioButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUnchecked", textureUncheckedNormal));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedHover", textureUncheckedHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedDisabled", textureUncheckedDisabled));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedFocused", textureUncheckedFocused));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureChecked", textureCheckedNormal));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedHover", textureCheckedHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedDisabled", textureCheckedDisabled));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedFocused", textureCheckedFocused));
             }
 
             SECTION("functions")
@@ -402,24 +418,30 @@ TEST_CASE("[RadioButton]")
                 renderer->setTextureUnchecked(textureUncheckedNormal);
                 renderer->setTextureUncheckedHover(textureUncheckedHover);
                 renderer->setTextureUncheckedDisabled(textureUncheckedDisabled);
+                renderer->setTextureUncheckedFocused(textureUncheckedFocused);
                 renderer->setTextureChecked(textureCheckedNormal);
                 renderer->setTextureCheckedHover(textureCheckedHover);
                 renderer->setTextureCheckedDisabled(textureCheckedDisabled);
+                renderer->setTextureCheckedFocused(textureCheckedFocused);
             }
 
             REQUIRE(renderer->getProperty("TextureUnchecked").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureUncheckedHover").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureUncheckedDisabled").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureUncheckedFocused").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureChecked").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureCheckedHover").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureCheckedDisabled").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureCheckedFocused").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureUnchecked().getData() == textureUncheckedNormal.getData());
             REQUIRE(renderer->getTextureUncheckedHover().getData() == textureUncheckedHover.getData());
             REQUIRE(renderer->getTextureUncheckedDisabled().getData() == textureUncheckedDisabled.getData());
+            REQUIRE(renderer->getTextureUncheckedFocused().getData() == textureUncheckedFocused.getData());
             REQUIRE(renderer->getTextureChecked().getData() == textureCheckedNormal.getData());
             REQUIRE(renderer->getTextureCheckedHover().getData() == textureCheckedHover.getData());
             REQUIRE(renderer->getTextureCheckedDisabled().getData() == textureCheckedDisabled.getData());
+            REQUIRE(renderer->getTextureCheckedFocused().getData() == textureCheckedFocused.getData());
         }
     }
 
