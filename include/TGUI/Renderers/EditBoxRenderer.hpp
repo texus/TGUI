@@ -359,14 +359,14 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Sets the color that will be used for the blinking caret when the edit box is focused
         /// @param caretColor  The color of the blinking caret
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretColorFocused(Color caretColor);
+        TGUI_DEPRECATED("Use setCaretColor instead, caret is never shown in unfocused state") void setCaretColorFocused(Color caretColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the color that will be used for the blinking caret when the edit box is focused
         /// @return The color of the blinking caret
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getCaretColorFocused() const;
+        TGUI_DEPRECATED("Use getCaretColor instead, caret is never shown in unfocused state") TGUI_NODISCARD Color getCaretColorFocused() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

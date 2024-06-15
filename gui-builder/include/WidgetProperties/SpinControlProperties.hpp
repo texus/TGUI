@@ -89,7 +89,9 @@ struct SpinControlProperties : WidgetProperties
         pair.second["SpinText.BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorFocused())};
         pair.second["SpinText.CaretColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColor())};
         pair.second["SpinText.CaretColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorHover())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.second["SpinText.CaretColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getCaretColorFocused())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
         pair.second["SpinText.BorderColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColor())};
         pair.second["SpinText.BorderColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorHover())};
         pair.second["SpinText.BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getBorderColorDisabled())};

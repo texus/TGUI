@@ -851,7 +851,9 @@ namespace tgui
         }
         else if (property == U"CaretColorFocused")
         {
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
             m_caretColorFocusedCached = getSharedRenderer()->getCaretColorFocused();
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
         }
         else if (property == U"SelectedTextBackgroundColor")
         {

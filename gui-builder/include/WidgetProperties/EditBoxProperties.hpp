@@ -88,7 +88,9 @@ struct EditBoxProperties : WidgetProperties
         pair.second["BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorFocused())};
         pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
         pair.second["CaretColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColorHover())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.second["CaretColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColorFocused())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
         pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};

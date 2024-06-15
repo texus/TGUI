@@ -76,7 +76,9 @@ struct EditBoxSliderProperties : WidgetProperties
         pair.second["EditBox.BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorFocused())};
         pair.second["EditBox.CaretColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getCaretColor())};
         pair.second["EditBox.CaretColorHover"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getCaretColorHover())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.second["EditBox.CaretColorFocused"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getCaretColorFocused())};
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
         pair.second["EditBox.BorderColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBorderColor())};
         pair.second["EditBox.BorderColorHover"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBorderColorHover())};
         pair.second["EditBox.BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBorderColorDisabled())};
