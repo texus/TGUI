@@ -172,7 +172,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///          inherit from Container), so calling some functions (e.g. setSize) on the container will have no effect.
         ///
         /// @return Reference to the internal Container class
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD RootContainer::Ptr getContainer() const;
 
@@ -187,7 +186,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the global font
         ///
         /// @param font  Font to use
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setFont(const Font& font);
 
@@ -202,7 +200,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns a list of all the widgets
         ///
         /// @return Vector of all widget pointers
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const std::vector<Widget::Ptr>& getWidgets() const;
 
@@ -216,7 +213,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///          symbols (e.g.: +, -, *, /, ., &), and should not start with a number. If you do not follow these rules,
         ///          layout expressions may give unexpected results. Alphanumeric characters and underscores are safe to use,
         ///          and widgets are permitted to have no name.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void add(const Widget::Ptr& widgetPtr, const String& widgetName = "");
 
@@ -231,7 +227,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// the given name, a recursive search will be performed.
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr get(const String& widgetName) const;
 
@@ -247,7 +242,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// the given name, a recursive search will be performed.
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class WidgetType>
         TGUI_NODISCARD typename WidgetType::Ptr get(const String& widgetName) const
@@ -259,13 +253,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool remove(const Widget::Ptr& widget);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all widgets that were added to the container
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllWidgets();
 
@@ -433,7 +425,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the opacity of all widgets
         ///
         /// @param opacity  The opacity of the widgets. 0 means completely transparent, while 1 (default) means fully opaque
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setOpacity(float opacity);
 
@@ -441,7 +432,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the opacity of all the widgets
         ///
         /// @return The opacity of the widgets. 0 means completely transparent, while 1 (default) means fully opaque
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getOpacity() const;
 
@@ -499,7 +489,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Saves this the child widgets to a text file
         ///
         /// @param stream  stringstream to which the widget file will be added
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void saveWidgetsToStream(std::stringstream& stream) const;
 

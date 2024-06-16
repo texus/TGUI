@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
 
@@ -1541,7 +1540,6 @@ namespace tgui
                     nodeChanged = true;
                 }
             }
-
 
             if (nodeChanged)
                 markNodesDirty();

@@ -552,7 +552,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 

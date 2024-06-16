@@ -373,7 +373,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

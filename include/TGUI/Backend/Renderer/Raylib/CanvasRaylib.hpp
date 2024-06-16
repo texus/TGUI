@@ -113,7 +113,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param size  Size of the canvas
         ///
         /// @return The new canvas
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static CanvasRaylib::Ptr create(const Layout2d& size = {"100%", "100%"});
 
@@ -123,7 +122,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param canvas  The other canvas
         ///
         /// @return The new canvas
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static CanvasRaylib::Ptr copy(const CanvasRaylib::ConstPtr& canvas);
 
@@ -131,7 +129,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the size of the widget
         ///
         /// @param size  The new size of the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -141,7 +138,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 

@@ -82,7 +82,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Creates a new edit box widget
         ///
         /// @return The new edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static EditBox::Ptr create();
 
@@ -92,7 +91,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param editBox  The other edit box
         ///
         /// @return The new edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static EditBox::Ptr copy(const EditBox::ConstPtr& editBox);
 
@@ -114,7 +112,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the size of the edit box
         ///
         /// @param size  The new size of the edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -146,7 +143,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the text inside the edit box. This text is not affected by the password character
         ///
         /// @return The text of the edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getText() const;
 
@@ -156,7 +152,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This text is not affected by the password character.
         ///
         /// @param text  The new default text
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDefaultText(const String& text);
 
@@ -166,7 +161,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This text is not affected by the password character.
         ///
         /// @return The default text of the edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getDefaultText() const;
 
@@ -177,7 +171,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param length Amount of character to select
         ///
         /// When no parameters are provided, the entire text is selected.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void selectText(std::size_t start = 0, std::size_t length = String::npos);
 
@@ -185,7 +178,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the text that you currently have selected. This text is not affected by the password character
         ///
         /// @return The selected text of the edit box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getSelectedText() const;
 
@@ -207,7 +199,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return  The password character that is currently being used.
         ///          When no password character is used then this function returns 0
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD char32_t getPasswordCharacter() const;
 
@@ -217,7 +208,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param maxChars  The new character limit. Set it to 0 to disable the limit
         ///
         /// This character limit is disabled by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumCharacters(unsigned int maxChars);
 
@@ -228,7 +218,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///         The function will return 0 when there is no limit
         ///
         /// There is no character limit by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD unsigned int getMaximumCharacters() const;
 
@@ -236,7 +225,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the text alignment
         ///
         /// @param alignment  The new text alignment
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setAlignment(HorizontalAlignment alignment);
 
@@ -244,7 +232,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Gets the current text alignment
         ///
         /// @return Text alignment
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD HorizontalAlignment getAlignment() const;
 
@@ -256,7 +243,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// When set to true, you will no longer be able to add text when the edit box is full.
         /// The default value is false.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use setTextWidthLimited instead") void limitTextWidth(bool limitWidth = true);
 #endif
@@ -277,7 +263,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Checks if the text width is limited to the size of the edit box
         ///
         /// @return Is the text width limit or not
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isTextWidthLimited() const;
 
@@ -288,7 +273,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// When the edit box is read-only, you can no longer delete characters and type text.
         /// Selecting text, copying text and even calling the setText function will still work.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setReadOnly(bool readOnly = true);
 
@@ -299,7 +283,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// When the edit box is read-only, you can no longer delete characters and type text.
         /// Selecting text, copying text and even calling the setText function will still work.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isReadOnly() const;
 
@@ -307,7 +290,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Sets the blinking caret to after a specific character
         ///
         /// @param charactersBeforeCaret  The new position
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCaretPosition(std::size_t charactersBeforeCaret);
 
@@ -315,7 +297,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns after which character the blinking cursor is currently located
         ///
         /// @return Characters before the caret
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::size_t getCaretPosition() const;
 
@@ -341,7 +322,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the regex to which the text is matched
         ///
         /// @return Regex to match the text with on every text change
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getInputValidator() const;
 
@@ -413,7 +393,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
@@ -435,7 +414,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

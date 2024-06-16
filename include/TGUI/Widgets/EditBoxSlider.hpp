@@ -94,7 +94,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param editBox  The other edit box slider
         ///
         /// @return The new edit box slider
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static EditBoxSlider::Ptr copy(const EditBoxSlider::ConstPtr& editBoxSlider);
 

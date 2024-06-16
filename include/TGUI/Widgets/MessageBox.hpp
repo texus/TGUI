@@ -99,7 +99,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param messageBox  The other message box
         ///
         /// @return The new message box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static MessageBox::Ptr copy(const MessageBox::ConstPtr& messageBox);
 
@@ -150,7 +149,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The text will be placed as one long string and the message box will get the size needed to display the whole string.
         /// So if you need to display multiple lines of text then add '\n' inside the text yourself.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const String& text);
 
@@ -158,7 +156,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the text of the message box
         ///
         /// @return Text that is being displayed inside the message box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getText() const;
 
@@ -169,7 +166,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// When receiving a callback with the ButtonClicked trigger then callback.text will contain this caption to identify
         /// the clicked button.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addButton(const String& buttonCaption);
 
@@ -188,7 +184,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// <li>If the number of given captions is smaller than the number of buttons added, any existing buttons will be renamed
         ///     as described above, and buttons after the last renamed button will be removed.</li>
         /// </ul>
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeButtons(const std::vector<String>& buttonCaptions);
 
@@ -196,7 +191,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the caption of the buttons
         ///
         /// @return Button texts
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::vector<String> getButtons() const;
 
@@ -259,7 +253,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

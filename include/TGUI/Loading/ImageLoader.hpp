@@ -22,10 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_IMAGE_LOADER_HPP
 #define TGUI_IMAGE_LOADER_HPP
-
 
 #include <TGUI/Vector2.hpp>
 #include <TGUI/String.hpp>
@@ -55,7 +53,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return RGBA array of pixels of loaded image (4 * imageSize.x * imageSize.y bytes), or nullptr if loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static std::unique_ptr<std::uint8_t[]> loadFromFile(const String& filename, Vector2u& imageSize);
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads an image from memory (data in memory should contain the entire file, not just the pixels)

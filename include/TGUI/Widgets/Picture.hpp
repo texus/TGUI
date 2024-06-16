@@ -87,7 +87,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param picture  The other picture
         ///
         /// @return The new picture
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static Picture::Ptr copy(const Picture::ConstPtr& picture);
 
@@ -111,7 +110,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param size  The new size of the picture
         ///
         /// The image will be scaled to fit this size.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -144,7 +142,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 
@@ -158,7 +155,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
@@ -188,7 +184,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 

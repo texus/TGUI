@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_UTF_HPP
 #define TGUI_UTF_HPP
 
@@ -88,7 +87,6 @@ TGUI_MODULE_EXPORT namespace tgui
             outStrUtf8.append(bytes.begin(), bytes.begin() + static_cast<std::ptrdiff_t>(bytestoWrite));
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Helper function that decodes one or more UTF-8 characters into a single UTF-32 character
         /// @param inputCharIt  Iterator to the UTF-8 character that should be decoded
@@ -138,7 +136,6 @@ TGUI_MODULE_EXPORT namespace tgui
             return inputCharIt;
         }
 
-
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an UTF-32 string to UTF-8
@@ -175,7 +172,6 @@ TGUI_MODULE_EXPORT namespace tgui
             return outStrUtf32;
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an UTF-16 string to UTF-32
         /// @param inputBegin Begin iterator to input UTF-16 string
@@ -209,10 +205,8 @@ TGUI_MODULE_EXPORT namespace tgui
                     outStrUtf32.push_back(((static_cast<char32_t>(first) - 0xD800) << 10) + (static_cast<char32_t>(second) - 0xDC00) + 0x0010000);
             }
 
-
             return outStrUtf32;
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an std::wstring string to UTF-32
@@ -229,10 +223,8 @@ TGUI_MODULE_EXPORT namespace tgui
             for (auto it = inputBegin; it != inputEnd; ++it)
                 outStrUtf32.push_back(static_cast<char32_t>(*it));
 
-
             return outStrUtf32;
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an UTF-32 string to UTF-8
@@ -248,7 +240,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
             return outStrUtf8;
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an UTF-32 string to std::wstring
@@ -278,7 +269,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
             return outStr;
         }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Convert an UTF-32 string to UTF-16

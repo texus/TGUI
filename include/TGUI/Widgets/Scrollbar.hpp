@@ -48,7 +48,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         static constexpr const char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
 
-
         /// @brief Defines when the scrollbar shows up
         enum class Policy
         {

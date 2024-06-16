@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>

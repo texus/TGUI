@@ -63,7 +63,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture() = default;
 
@@ -228,7 +227,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the id that was used to load the texture (for the default loader, the id is the filename)
         ///
         /// @return Id of the texture
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getId() const;
 
@@ -236,7 +234,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the texture data
         ///
         /// @return Data of the texture
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::shared_ptr<TextureData> getData() const;
 
@@ -282,7 +279,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// By default, the texture's color is opaque white.
         ///
         /// @return Current color of the texture
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const Color& getColor() const;
 
@@ -292,7 +288,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param shader  New shader to use
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setShader(sf::Shader* shader);
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the shader used to draw the texture
@@ -322,7 +317,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param pos  Coordinate of the pixel
         ///
         /// @return True when the pixel is transparent, false when it is not
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isTransparentPixel(Vector2u pos) const;
 
@@ -332,7 +326,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param func  Function that will be called when this texture is copied
         ///
         /// This function can be useful when implementing a resource manager.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCopyCallback(const CallbackFunc& func);
 
@@ -342,7 +335,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param func  Function that will be called when this texture is destroyed
         ///
         /// This function can be useful when implementing a resource manager.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDestructCallback(const CallbackFunc& func);
 
@@ -406,7 +398,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The texture loader will initialize this Texture object.
         ///
         /// The default loader will use an internal texture manager to prevent the same thing from being loaded twice.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void setTextureLoader(const TextureLoaderFunc& func);
 
@@ -416,7 +407,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Texture loader that is currently being used
         ///
         /// @see setTextureLoader
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static const TextureLoaderFunc& getTextureLoader();
 
@@ -429,7 +419,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param data       New texture data
         /// @param partRect   Load only part of the image
         /// @param middleRect Choose the middle part of the image part to determine scaling (e.g. 9-slice scaling)
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextureData(std::shared_ptr<TextureData> data, const UIntRect& partRect, const UIntRect& middleRect);
 

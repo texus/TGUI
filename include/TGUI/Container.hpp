@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_CONTAINER_HPP
 #define TGUI_CONTAINER_HPP
 
@@ -97,7 +96,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns a list of all the widgets in this container
         ///
         /// @return Vector of all widget pointers
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const std::vector<Widget::Ptr>& getWidgets() const
         {
@@ -109,7 +107,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param function Comparison function object (i.e. an object that satisfies the requirements of Compare) which
         ///                 returns true if the first argument is less than (i.e. is ordered before) the second.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template<typename Function>
         void sortWidgets(Function&& function)
@@ -127,7 +124,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///          symbols (e.g.: +, -, *, /, ., &), and should not start with a number. If you do not follow these rules,
         ///          layout expressions may give unexpected results. Alphanumeric characters and underscores are safe to use,
         ///          and widgets are permitted to have no name.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void add(const Widget::Ptr& widgetPtr, const String& widgetName = "");
 
@@ -142,7 +138,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Pointer to the earlier added widget
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr get(const String& widgetName) const;
 
@@ -158,7 +153,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// the given name, a recursive search will be performed.
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class WidgetType>
         TGUI_NODISCARD typename WidgetType::Ptr get(const String& widgetName) const
@@ -172,13 +166,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param widget  Pointer to the widget to remove
         ///
         /// @return True when widget is removed, false when widget was not found
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool remove(const Widget::Ptr& widget);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all widgets that were added to the container
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllWidgets();
 
@@ -193,7 +185,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///        this container on relative position (0,0)
         ///
         /// @return Offset of the widgets in the container
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD virtual Vector2f getChildWidgetsOffset() const
         {
@@ -563,7 +554,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 
@@ -648,12 +638,10 @@ TGUI_MODULE_EXPORT namespace tgui
         // Does focusing the next widget always keep a widget from this container focused (e.g. in a ChildWindow)?
         bool m_isolatedFocus = false;
 
-
         friend class SubwidgetContainer; // Needs access to save and load functions
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @internal
@@ -690,7 +678,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Is the mouse on top of the widget?
         ///
         /// This function always returns true.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 

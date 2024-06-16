@@ -95,7 +95,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Creates a new child window widget
         ///
         /// @return The new child window
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static ChildWindow::Ptr create(const String& title = "", unsigned int titleButtons = TitleButton::Close);
 
@@ -105,7 +104,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param childWindow  The other child window
         ///
         /// @return The new child window
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static ChildWindow::Ptr copy(const ChildWindow::ConstPtr& childWindow);
 
@@ -133,7 +131,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param position New position
         ///
         /// @see move, getPosition
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPosition(const Layout2d& position) override;
         using Widget::setPosition;
@@ -217,7 +214,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the title that is displayed in the title bar of the child window
         ///
         /// @param title  New title for the child window
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitle(const String& title);
 
@@ -225,7 +221,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the title that is displayed in the title bar of the child window
         ///
         /// @return Title of the child window
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const String& getTitle() const;
 
@@ -246,7 +241,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the title alignment
         ///
         /// @param alignment  How should the title be aligned in the title bar?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleAlignment(HorizontalAlignment alignment);
 
@@ -254,7 +248,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the title alignment
         ///
         /// @return How the title is aligned in the title bar
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD HorizontalAlignment getTitleAlignment() const;
 
@@ -268,7 +261,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @code
         /// childWindow->setTitleButtons(ChildWindow::TitleButton::Minimize | ChildWindow::TitleButton::Close);
         /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleButtons(unsigned int buttons);
 
@@ -276,7 +268,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the title bar buttons
         ///
         /// @return Which buttons are available in the title bar
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD unsigned int getTitleButtons() const;
 
@@ -302,7 +293,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes whether the child window can be resized by dragging its borders or not
         ///
         /// @param resizable  Can the user change the size of the window by dragging one of the borders?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setResizable(bool resizable = true);
 
@@ -310,7 +300,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Checks whether the child window can be resized by dragging its borders or not
         ///
         /// @return Can the user change the size of the window by dragging one of the borders?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isResizable() const;
 
@@ -361,7 +350,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///        this container on relative position (0,0).
         ///
         /// @return Offset of the widgets in the container
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f getChildWidgetsOffset() const override;
 
@@ -376,7 +364,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 
@@ -436,7 +423,6 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
@@ -468,7 +454,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChanged(const String& property) override;
 
