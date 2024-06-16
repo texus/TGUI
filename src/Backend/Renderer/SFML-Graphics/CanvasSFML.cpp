@@ -180,7 +180,11 @@ namespace tgui
     IntRect CanvasSFML::getViewport() const
     {
         const sf::IntRect rect = m_renderTexture.getViewport(m_renderTexture.getView());
+#if SFML_VERSION_MAJOR >= 3
+        return {rect.position.x, rect.position.y, rect.size.x, rect.size.y};
+#else
         return {rect.left, rect.top, rect.width, rect.height};
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

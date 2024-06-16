@@ -99,13 +99,26 @@ namespace tgui
 
         FontGlyph glyph;
         glyph.advance = glyphSFML.advance / m_fontScale;
-#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // outline is not corrected in bounds in SFML < 2.6
+#if SFML_VERSION_MAJOR >= 3
+        glyph.bounds = {glyphSFML.bounds.position.x / m_fontScale, glyphSFML.bounds.position.y / m_fontScale, glyphSFML.bounds.size.x / m_fontScale, glyphSFML.bounds.size.y / m_fontScale};
+#elif (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // outline is not corrected in bounds in SFML < 2.6
         glyph.bounds = {glyphSFML.bounds.left / m_fontScale, glyphSFML.bounds.top / m_fontScale, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
 #else
         glyph.bounds = {glyphSFML.bounds.left / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.top / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
 #endif
 
         // SFML uses an IntRect, but all values are unsigned
+#if SFML_VERSION_MAJOR >= 3
+        assert(glyphSFML.textureRect.position.x >= 0);
+        assert(glyphSFML.textureRect.position.y >= 0);
+        assert(glyphSFML.textureRect.size.x >= 0);
+        assert(glyphSFML.textureRect.size.y >= 0);
+        glyph.textureRect = {
+            static_cast<unsigned int>(glyphSFML.textureRect.position.x),
+            static_cast<unsigned int>(glyphSFML.textureRect.position.y),
+            static_cast<unsigned int>(glyphSFML.textureRect.size.x),
+            static_cast<unsigned int>(glyphSFML.textureRect.size.y)};
+#else
         assert(glyphSFML.textureRect.left >= 0);
         assert(glyphSFML.textureRect.top >= 0);
         assert(glyphSFML.textureRect.width >= 0);
@@ -115,7 +128,7 @@ namespace tgui
             static_cast<unsigned int>(glyphSFML.textureRect.top),
             static_cast<unsigned int>(glyphSFML.textureRect.width),
             static_cast<unsigned int>(glyphSFML.textureRect.height)};
-
+#endif
         return glyph;
     }
 
