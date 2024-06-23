@@ -63,10 +63,19 @@ TGUI_MODULE_EXPORT namespace tgui
         ///         When this function returns false, then the event was ignored by all widgets.
         ///
         /// You should call this function in your event loop.
+        ///
+        /// SFML 2:
         /// @code
         /// sf::Event event;
         /// while (window.pollEvent(event) {
         ///     gui.handleEvent(event);
+        /// }
+        /// @endcode
+        ///
+        /// SFML 3:
+        /// @code
+        /// while (const std::optional event = window.pollEvent()) {
+        ///     gui.handleEvent(*event);
         /// }
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +91,9 @@ TGUI_MODULE_EXPORT namespace tgui
         /// For multimedia applications, games, or other programs where you want a high framerate or do a lot of processing
         /// in the main loop, you should use your own main loop.
         ///
-        /// You can consider this function to execute something similar (but not identical) to the following code:
+        /// You can consider this function to execute something similar (but not identical) to the code below.
+        ///
+        /// SFML 2:
         /// @code
         /// while (window.isOpen())
         /// {
@@ -90,6 +101,23 @@ TGUI_MODULE_EXPORT namespace tgui
         ///     {
         ///         gui.handleEvent(event);
         ///         if (event.type == sf::Event::Closed)
+        ///             window.close();
+        ///     }
+        ///
+        ///     window.clear({240, 240, 240});
+        ///     gui.draw();
+        ///     window.display();
+        /// }
+        /// @endcode
+        ///
+        /// SFML 3:
+        /// @code
+        /// while (window.isOpen())
+        /// {
+        ///     while (const std::optional event = window.waitEvent())
+        ///     {
+        ///         gui.handleEvent(*event);
+        ///         if (event->is<sf::Event::Closed>())
         ///             window.close();
         ///     }
         ///

@@ -278,19 +278,11 @@ namespace tgui
             {
 #if SFML_VERSION_MAJOR >= 3
                 while (const auto event = m_window->pollEvent())
-#else
-                sf::Event event;
-                while (m_window->pollEvent(event))
-#endif
                 {
-                    if (handleEvent(event))
+                    if (handleEvent(*event))
                         eventProcessed = true;
 
-#if SFML_VERSION_MAJOR >= 3
-                    if (event.is<sf::Event::Closed>())
-#else
-                    if (event.type == sf::Event::Closed)
-#endif
+                    if (event->is<sf::Event::Closed>())
                     {
                         // We don't call m_window->close() as it would destroy the OpenGL context, which will cause messages to be
                         // printed in the terminal later when we try to destroy our backend renderer (which tries to clean up OpenGL resources).
@@ -298,20 +290,36 @@ namespace tgui
                         windowOpen = false;
                         eventProcessed = true;
                     }
-#if SFML_VERSION_MAJOR >= 3
-                    else if (event.is<sf::Event::Resized>()
-                          || event.is<sf::Event::MouseEntered>() || event.is<sf::Event::MouseLeft>()
-                          || event.is<sf::Event::FocusGained>() || event.is<sf::Event::FocusLost>())
-#else
-                    else if ((event.type == sf::Event::Resized)
-                          || (event.type == sf::Event::MouseEntered) || (event.type == sf::Event::MouseLeft)
-                          || (event.type == sf::Event::GainedFocus) || (event.type == sf::Event::LostFocus))
-#endif
+                    else if (event->is<sf::Event::Resized>()
+                          || event->is<sf::Event::MouseEntered>() || event->is<sf::Event::MouseLeft>()
+                          || event->is<sf::Event::FocusGained>() || event->is<sf::Event::FocusLost>())
                     {
                         eventProcessed = true;
                     }
                 }
+#else
+                sf::Event event;
+                while (m_window->pollEvent(event))
+                {
+                    if (handleEvent(event))
+                        eventProcessed = true;
 
+                    if (event.type == sf::Event::Closed)
+                    {
+                        // We don't call m_window->close() as it would destroy the OpenGL context, which will cause messages to be
+                        // printed in the terminal later when we try to destroy our backend renderer (which tries to clean up OpenGL resources).
+                        // The close function will be called by the window destructor.
+                        windowOpen = false;
+                        eventProcessed = true;
+                    }
+                    else if ((event.type == sf::Event::Resized)
+                          || (event.type == sf::Event::MouseEntered) || (event.type == sf::Event::MouseLeft)
+                          || (event.type == sf::Event::GainedFocus) || (event.type == sf::Event::LostFocus))
+                    {
+                        eventProcessed = true;
+                    }
+                }
+#endif
                 if (updateTime())
                     break;
 

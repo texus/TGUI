@@ -152,7 +152,7 @@ namespace tgui
         {
 #if SFML_VERSION_MAJOR >= 3
             if (const auto eventSFML = m_window.pollEvent())
-                return m_gui->convertEvent(eventSFML, event);
+                return m_gui->convertEvent(*eventSFML, event);
             else // No new events
                 return false;
 #else
