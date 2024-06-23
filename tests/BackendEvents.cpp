@@ -926,10 +926,15 @@ TEST_CASE("[Backend events]")
                 eventSDL.key.windowID = 0;
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
+                eventSDL.key.key = SDLK_UNKNOWN;
+                eventSDL.key.mod = SDL_KMOD_NONE;
+#else
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.sym = SDLK_UNKNOWN;
                 eventSDL.key.keysym.mod = SDL_KMOD_NONE;
-
+#endif
                 SECTION("All key codes")
                 {
 #if SDL_MAJOR_VERSION >= 3
@@ -1045,8 +1050,11 @@ TEST_CASE("[Backend events]")
                     }};
                     for (auto pair : keys)
                     {
+#if SDL_MAJOR_VERSION >= 3
+                        eventSDL.key.key = pair.first;
+#else
                         eventSDL.key.keysym.sym = pair.first;
-
+#endif
                         tgui::Event eventTGUI;
                         REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                         REQUIRE(eventTGUI.key.code == pair.second);
@@ -1055,17 +1063,24 @@ TEST_CASE("[Backend events]")
 
                 SECTION("Invalid key code")
                 {
+#if SDL_MAJOR_VERSION >= 3
+                    eventSDL.key.key = SDLK_UNKNOWN;
+#else
                     eventSDL.key.keysym.sym = SDLK_UNKNOWN;
-
+#endif
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 }
 
                 SECTION("Modifiers")
                 {
+#if SDL_MAJOR_VERSION >= 3
+                    eventSDL.key.key = SDLK_SPACE;
+                    eventSDL.key.mod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
+#else
                     eventSDL.key.keysym.sym = SDLK_SPACE;
                     eventSDL.key.keysym.mod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
-
+#endif
                     tgui::Event eventTGUI;
                     REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                     REQUIRE(eventTGUI.type == tgui::Event::Type::KeyPressed);
@@ -1080,8 +1095,11 @@ TEST_CASE("[Backend events]")
                 {
                     eventSDL.type = SDL_EVENT_KEY_UP;
                     eventSDL.key.state = SDL_RELEASED;
+#if SDL_MAJOR_VERSION >= 3
+                    eventSDL.key.key = SDLK_SPACE;
+#else
                     eventSDL.key.keysym.sym = SDLK_SPACE;
-
+#endif
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 }
@@ -1413,12 +1431,21 @@ TEST_CASE("[Backend events]")
                 eventSDL.key.windowID = 0;
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
+#if SDL_MAJOR_VERSION >= 3
+                eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
+                eventSDL.key.mod = SDL_KMOD_NONE;
+                eventSDL.key.key = SDLK_LEFT;
+                backendGuiSDL->handleEvent(eventSDL);
+                eventSDL.key.key = SDLK_BACKSPACE;
+                backendGuiSDL->handleEvent(eventSDL);
+#else
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.mod = SDL_KMOD_NONE;
                 eventSDL.key.keysym.sym = SDLK_LEFT;
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.key.keysym.sym = SDLK_BACKSPACE;
                 backendGuiSDL->handleEvent(eventSDL);
+#endif
 
                 // Verify that the events were correctly processed by the edit box
                 REQUIRE(editBox->getText() == "AC");

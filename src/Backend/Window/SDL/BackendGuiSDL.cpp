@@ -242,6 +242,18 @@ namespace tgui
             }
             case SDL_EVENT_KEY_DOWN:
             {
+#if SDL_MAJOR_VERSION >= 3
+                const Event::KeyboardKey code = convertKeyCode(eventSDL.key.key);
+                if (code == Event::KeyboardKey::Unknown)
+                    return false; // This key isn't handled by TGUI
+
+                eventTGUI.type = Event::Type::KeyPressed;
+                eventTGUI.key.code = code;
+                eventTGUI.key.alt = ((eventSDL.key.mod & SDL_KMOD_ALT) != 0);
+                eventTGUI.key.control = ((eventSDL.key.mod & SDL_KMOD_CTRL) != 0);
+                eventTGUI.key.shift = ((eventSDL.key.mod & SDL_KMOD_SHIFT) != 0);
+                eventTGUI.key.system = ((eventSDL.key.mod & SDL_KMOD_GUI) != 0);
+#else
                 const Event::KeyboardKey code = convertKeyCode(eventSDL.key.keysym.sym);
                 if (code == Event::KeyboardKey::Unknown)
                     return false; // This key isn't handled by TGUI
@@ -252,6 +264,7 @@ namespace tgui
                 eventTGUI.key.control = ((eventSDL.key.keysym.mod & SDL_KMOD_CTRL) != 0);
                 eventTGUI.key.shift = ((eventSDL.key.keysym.mod & SDL_KMOD_SHIFT) != 0);
                 eventTGUI.key.system = ((eventSDL.key.keysym.mod & SDL_KMOD_GUI) != 0);
+#endif
                 return true;
             }
             case SDL_EVENT_MOUSE_WHEEL:
