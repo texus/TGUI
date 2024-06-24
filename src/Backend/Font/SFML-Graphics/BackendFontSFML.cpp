@@ -83,8 +83,9 @@ namespace tgui
 
     FontGlyph BackendFontSFML::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
+        FontGlyph glyph;
         if (!m_font)
-            return {};
+            return glyph;
 
         const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
         const float scaledOutlineThickness = outlineThickness * m_fontScale;
@@ -96,7 +97,6 @@ namespace tgui
 
         const sf::Glyph& glyphSFML = m_font->getGlyph(codePoint, scaledTextSize, bold, scaledOutlineThickness);
 
-        FontGlyph glyph;
         glyph.advance = glyphSFML.advance / m_fontScale;
 #if SFML_VERSION_MAJOR >= 3
         glyph.bounds = {glyphSFML.bounds.position.x / m_fontScale, glyphSFML.bounds.position.y / m_fontScale, glyphSFML.bounds.size.x / m_fontScale, glyphSFML.bounds.size.y / m_fontScale};

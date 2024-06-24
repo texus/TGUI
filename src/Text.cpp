@@ -352,10 +352,10 @@ namespace tgui
 
     String Text::wordWrap(float maxWidth, const String& text, const Font& font, unsigned int textSize, bool bold)
     {
-        if (font == nullptr)
-            return U"";
-
         String result;
+        if (font == nullptr)
+            return result;
+
         std::size_t index = 0;
         while (index < text.length())
         {
@@ -431,10 +431,9 @@ namespace tgui
 
     std::vector<std::vector<Text::Blueprint>> Text::wordWrap(float maxWidth, const std::vector<std::vector<Blueprint>>& lines, const Font& font)
     {
-        if (font == nullptr)
-            return {};
-
         std::vector<std::vector<Blueprint>> result;
+        if (font == nullptr)
+            return result;
 
         // Input lines can never be combined (they were split by a manual newline character),
         // so we can apply word wrapping on each line separately.
