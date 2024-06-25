@@ -46,7 +46,7 @@ namespace tgui
 
         m_fileContents = std::move(data);
 #if SFML_VERSION_MAJOR >= 3
-        auto font = sf::Font::loadFromMemory(m_fileContents.get(), sizeInBytes);
+        auto font = sf::Font::openFromMemory(m_fileContents.get(), sizeInBytes);
         if (!font)
             return false;
 
