@@ -201,15 +201,35 @@ namespace tgui
         inputRect.w = static_cast<int>(std::round(rect.width / dpiScale));
         inputRect.h = static_cast<int>(std::round(rect.height / dpiScale));
 
+#if SDL_MAJOR_VERSION >= 3
+        SDL_SetTextInputRect(window, &inputRect);
+        SDL_StartTextInput(window);
+#else
         SDL_SetTextInputRect(&inputRect);
         SDL_StartTextInput();
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendSDL::closeVirtualKeyboard()
     {
+#if SDL_MAJOR_VERSION >= 3
+        // If there is more than one window then we arbitrarily select one. This function is deprecated and should never be used anyway.
+        SDL_Window* window = nullptr;
+        for (const auto& pair : m_guiResources)
+        {
+            if (pair.second.window)
+            {
+                window = pair.second.window;
+                break;
+            }
+        }
+
+        SDL_StopTextInput(window);
+#else
         SDL_StopTextInput();
+#endif
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -594,7 +594,11 @@ namespace tgui
             // We need to call SDL_StartTextInput here, but we reuse the updateTextCursorPosition code as it needs the same calculations
             updateTextCursorPosition(inputRect, {});
 
+#if SDL_MAJOR_VERSION >= 3
+            SDL_StartTextInput(m_window);
+#else
             SDL_StartTextInput();
+#endif
             m_textInputStarted = true;
 
             // For some weird reason the IME candidates window might remain on the old location when we move focus from
@@ -611,7 +615,11 @@ namespace tgui
     {
         if (m_textInputStarted)
         {
+#if SDL_MAJOR_VERSION >= 3
+            SDL_StopTextInput(m_window);
+#else
             SDL_StopTextInput();
+#endif
             m_textInputStarted = false;
         }
     }
@@ -656,7 +664,11 @@ namespace tgui
         sdlRect.y = static_cast<int>(std::round(topLeft.y / dpiScale));
         sdlRect.w = static_cast<int>(std::round(std::max(caretPosPixels.x, (bottomRight - topLeft).x) / dpiScale));
         sdlRect.h = static_cast<int>(std::round((bottomRight - topLeft).y / dpiScale));
+#if SDL_MAJOR_VERSION >= 3
+        SDL_SetTextInputRect(m_window, &sdlRect);
+#else
         SDL_SetTextInputRect(&sdlRect);
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
