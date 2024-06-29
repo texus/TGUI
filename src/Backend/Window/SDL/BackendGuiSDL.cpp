@@ -656,17 +656,20 @@ namespace tgui
         const Vector2f topLeft = mapCoordsToPixel(inputRect.getPosition());
         const Vector2f bottomRight = mapCoordsToPixel(inputRect.getPosition() + inputRect.getSize());
         const Vector2f caretPosPixels = mapCoordsToPixel(caretPos);
-
+        SDL_Rect sdlRect;
+#if SDL_MAJOR_VERSION >= 3
+        sdlRect.x = static_cast<int>(std::round(topLeft.x / dpiScale));
+        sdlRect.y = static_cast<int>(std::round(topLeft.y / dpiScale));
+        sdlRect.w = static_cast<int>(std::round((bottomRight - topLeft).x / dpiScale));
+        sdlRect.h = static_cast<int>(std::round((bottomRight - topLeft).y / dpiScale));
+        SDL_SetTextInputArea(m_window, &sdlRect, static_cast<int>(std::round(caretPosPixels.x)));
+#else
         // SDL positions the IME window at the left side of the input rect, but we want the window to follow the caret.
         // So we set the left side of the rectangle to the current location of the caret.
-        SDL_Rect sdlRect;
         sdlRect.x = static_cast<int>(std::round(std::max(caretPosPixels.x, topLeft.x) / dpiScale));
         sdlRect.y = static_cast<int>(std::round(topLeft.y / dpiScale));
         sdlRect.w = static_cast<int>(std::round(std::max(caretPosPixels.x, (bottomRight - topLeft).x) / dpiScale));
         sdlRect.h = static_cast<int>(std::round((bottomRight - topLeft).y / dpiScale));
-#if SDL_MAJOR_VERSION >= 3
-        SDL_SetTextInputRect(m_window, &sdlRect);
-#else
         SDL_SetTextInputRect(&sdlRect);
 #endif
     }

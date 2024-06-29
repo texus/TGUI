@@ -143,6 +143,24 @@ namespace tgui
         }
 
         const Transform finalTransform = m_projectionTransform * states.transform;
+#if SDL_MAJOR_VERSION >= 3
+        std::vector<SDL_Vertex> verticesSDL;
+        verticesSDL.reserve(vertexCount);
+        for (std::size_t i = 0; i < vertexCount; ++i)
+        {
+            const Vertex& vertex = vertices[i];
+            const Vector2f transformedPosition = finalTransform.transformPoint(vertex.position);
+            verticesSDL.push_back({SDL_FPoint{transformedPosition.x, transformedPosition.y},
+                                   SDL_FColor{vertex.color.red / 255.f, vertex.color.green / 255.f, vertex.color.blue / 255.f, vertex.color.alpha / 255.f},
+                                   SDL_FPoint{vertex.texCoords.x, vertex.texCoords.y}});
+        }
+
+        SDL_RenderGeometryRaw(m_renderer, textureSDL,
+                              &verticesSDL.data()->position.x, sizeof(SDL_Vertex),
+                              &verticesSDL.data()->color, sizeof(SDL_Vertex),
+                              &verticesSDL.data()->tex_coord.x, sizeof(SDL_Vertex),
+                              static_cast<int>(vertexCount), indices, static_cast<int>(indexCount), sizeof(unsigned int));
+#else
         std::vector<Vertex> verticesSDL(vertices, vertices + vertexCount);
         for (std::size_t i = 0; i < vertexCount; ++i)
         {
@@ -151,14 +169,6 @@ namespace tgui
             verticesSDL[i].position.y = transformedPosition.y;
         }
 
-#if SDL_MAJOR_VERSION >= 3
-        static_assert(sizeof(Vertex::Color) == sizeof(SDL_Color), "SDL_Color requires same memory layout as tgui::Vertex::Color for cast to work");
-        SDL_RenderGeometryRaw(m_renderer, textureSDL,
-                              &verticesSDL[0].position.x, sizeof(Vertex),
-                              reinterpret_cast<const SDL_Color*>(&verticesSDL[0].color), sizeof(Vertex),
-                              &verticesSDL[0].texCoords.x, sizeof(Vertex),
-                              static_cast<int>(vertexCount), indices, static_cast<int>(indexCount), sizeof(unsigned int));
-#else
         // We use SDL_RenderGeometry instead of SDL_RenderGeometryRaw because it's easier and because the signature of
         // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
         static_assert(sizeof(int) == sizeof(unsigned int), "Size of 'int' and 'unsigned int' must be identical for cast to work");

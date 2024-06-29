@@ -202,7 +202,7 @@ namespace tgui
         inputRect.h = static_cast<int>(std::round(rect.height / dpiScale));
 
 #if SDL_MAJOR_VERSION >= 3
-        SDL_SetTextInputRect(window, &inputRect);
+        SDL_SetTextInputArea(window, &inputRect, 0);
         SDL_StartTextInput(window);
 #else
         SDL_SetTextInputRect(&inputRect);
