@@ -1714,7 +1714,7 @@ namespace tgui
 
     void RootContainer::mouseNoLongerOnWidget()
     {
-        if (m_widgetBelowMouse)
+        if (m_widgetBelowMouse && !m_draggingWidget)
         {
             m_widgetBelowMouse->mouseNoLongerOnWidget();
             m_widgetBelowMouse = nullptr;
