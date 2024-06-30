@@ -280,7 +280,6 @@ namespace tgui
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-
         else if (property == U"RoundedBorderRadius")
         {
             m_roundedBorderRadius = getSharedRenderer()->getRoundedBorderRadius();

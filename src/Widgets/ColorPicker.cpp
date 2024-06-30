@@ -53,9 +53,6 @@ namespace tgui
         **/
         const auto fract = [](float x) { return x - std::floor(x); };
         const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
-        const auto clamp = [](float x, float minVal, float maxVal) {
-            return std::min(std::max(x, minVal), maxVal);
-        };
 
         h = clamp(h, 0.f, 1.f);
         s = clamp(s, 0.f, 1.f);
@@ -71,9 +68,9 @@ namespace tgui
                            v * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), s),
                            v * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), s)};
 
-        return {static_cast<std::uint8_t>(clamp(255 * C[0], 0, 255)),
-                static_cast<std::uint8_t>(clamp(255 * C[1], 0, 255)),
-                static_cast<std::uint8_t>(clamp(255 * C[2], 0, 255))};
+        return {static_cast<std::uint8_t>(clamp(255.f * C[0], 0.f, 255.f)),
+                static_cast<std::uint8_t>(clamp(255.f * C[1], 0.f, 255.f)),
+                static_cast<std::uint8_t>(clamp(255.f * C[2], 0.f, 255.f))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
