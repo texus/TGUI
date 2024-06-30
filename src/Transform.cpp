@@ -205,8 +205,15 @@ namespace tgui
 
     void Transform::roundPosition(float pixelScaleX, float pixelScaleY)
     {
-        m_matrix[12] = std::round(m_matrix[12] * pixelScaleX) / pixelScaleX;
-        m_matrix[13] = std::round(m_matrix[13] * pixelScaleY) / pixelScaleY;
+        roundPosition({pixelScaleX, pixelScaleY});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Transform::roundPosition(Vector2f pixelScale)
+    {
+        m_matrix[12] = std::round(m_matrix[12] * pixelScale.x) / pixelScale.x;
+        m_matrix[13] = std::round(m_matrix[13] * pixelScale.y) / pixelScale.y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

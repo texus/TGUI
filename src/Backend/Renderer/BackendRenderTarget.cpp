@@ -196,7 +196,7 @@ namespace tgui
 
         // Round widget positions to the nearest pixel
         RenderStates statesWithRoundedPos = states;
-        statesWithRoundedPos.transform.roundPosition(m_pixelsPerPoint.x, m_pixelsPerPoint.y);
+        statesWithRoundedPos.transform.roundPosition(m_pixelsPerPoint);
 
         widget->draw(*this, statesWithRoundedPos);
     }
@@ -360,7 +360,7 @@ namespace tgui
         transformedStates.transform.translate(text.getPosition());
 
         // Round the text to the nearest pixel to try to avoid blurry text
-        transformedStates.transform.roundPosition(m_pixelsPerPoint.x, m_pixelsPerPoint.y);
+        transformedStates.transform.roundPosition(m_pixelsPerPoint);
 
         auto vertexData = text.getBackendText()->getVertexData();
 
@@ -440,6 +440,13 @@ namespace tgui
         }
         else // There are no borders
             drawInnerShape(this, states, outerPoints, size/2.f, backgroundColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f BackendRenderTarget::getPixelsPerPoint() const
+    {
+        return m_pixelsPerPoint;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
