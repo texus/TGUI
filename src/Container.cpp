@@ -991,13 +991,13 @@ namespace tgui
         if (!m_mouseHover)
             return;
 
-        mouseLeftWidget();
-
         if (m_widgetBelowMouse)
         {
             m_widgetBelowMouse->mouseNoLongerOnWidget();
             m_widgetBelowMouse = nullptr;
         }
+
+        mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
