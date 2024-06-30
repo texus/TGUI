@@ -102,13 +102,13 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
 
         if (getSize().x < getSize().y)
-            m_verticalScroll = true;
+            m_orientation = Orientation::Vertical;
         else
-            m_verticalScroll = false;
+            m_orientation = Orientation::Horizontal;
 
         if (m_spriteTrack.isSet())
         {
-            if (m_verticalImage == m_verticalScroll)
+            if (m_imageOrientation == m_orientation)
             {
                 m_spriteTrack.setSize(getInnerSize());
                 m_spriteTrackHover.setSize(getInnerSize());
@@ -126,7 +126,7 @@ namespace tgui
 
         if (m_spriteSelectedTrack.isSet())
         {
-            if (m_verticalImage == m_verticalScroll)
+            if (m_imageOrientation == m_orientation)
             {
                 m_spriteSelectedTrack.setSize(getInnerSize());
                 m_spriteSelectedTrackHover.setSize(getInnerSize());
@@ -147,16 +147,16 @@ namespace tgui
             float scaleFactor = 1;
             if (m_spriteTrack.isSet())
             {
-                if (m_verticalImage == m_verticalScroll)
+                if (m_imageOrientation == m_orientation)
                 {
-                    if (m_verticalScroll)
+                    if (m_orientation == Orientation::Vertical)
                         scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().x;
                     else
                         scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().y;
                 }
                 else // The image is rotated
                 {
-                    if (m_verticalScroll)
+                    if (m_orientation == Orientation::Vertical)
                         scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().y;
                     else
                         scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().x;
@@ -170,7 +170,7 @@ namespace tgui
             m_spriteThumbHover.setSize({m_thumbs.first.width, m_thumbs.first.height});
 
             // Apply the rotation now that the size has been set
-            if (m_verticalScroll != m_verticalImage)
+            if (m_imageOrientation != m_orientation)
             {
                 m_spriteThumb.setRotation(-90);
                 m_spriteThumbHover.setRotation(-90);
@@ -183,7 +183,7 @@ namespace tgui
         }
         else // There is no thumb texture
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 m_thumbs.first.width = getSize().x * 1.6f;
                 m_thumbs.first.height = m_thumbs.first.width / 2.0f;
@@ -205,7 +205,7 @@ namespace tgui
 
     Vector2f RangeSlider::getFullSize() const
     {
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
             return {std::max(getSize().x, m_thumbs.first.width), getSize().y + m_thumbs.first.height};
         else
             return {getSize().x + m_thumbs.first.width, std::max(getSize().y, m_thumbs.first.height)};
@@ -215,7 +215,7 @@ namespace tgui
 
     Vector2f RangeSlider::getWidgetOffset() const
     {
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
             return {std::min(0.f, getSize().x - m_thumbs.first.width), -m_thumbs.first.height / 2.f};
         else
             return {-m_thumbs.first.width / 2.f, std::min(0.f, getSize().y - m_thumbs.first.height)};
@@ -428,7 +428,7 @@ namespace tgui
         if (m_mouseDown && (m_mouseDownOnThumb != 0))
         {
             // Check in which direction the slider goes
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 if (m_mouseDownOnThumb == 1)
                 {
@@ -534,9 +534,9 @@ namespace tgui
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
 
             if (m_spriteTrack.getTexture().getImageSize().x < m_spriteTrack.getTexture().getImageSize().y)
-                m_verticalImage = true;
+                m_imageOrientation = Orientation::Vertical;
             else
-                m_verticalImage = false;
+                m_imageOrientation = Orientation::Horizontal;
 
             setSize(m_size);
         }
@@ -658,7 +658,7 @@ namespace tgui
     {
         const Vector2f innerSize = getInnerSize();
 
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_thumbs.first.left = m_bordersCached.getLeft() + (innerSize.x - m_thumbs.first.width) / 2.0f;
             m_thumbs.first.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart)) - (m_thumbs.first.height / 2.0f);
@@ -677,16 +677,16 @@ namespace tgui
 
         if (m_spriteSelectedTrack.isSet())
         {
-            if (m_verticalImage == m_verticalScroll)
+            if (m_imageOrientation == m_orientation)
             {
-                if (m_verticalScroll)
+                if (m_orientation == Orientation::Vertical)
                     m_spriteSelectedTrack.setVisibleRect({0, m_thumbs.second.top + (m_thumbs.first.height / 2.0f), innerSize.x, m_thumbs.first.top - m_thumbs.second.top});
                 else
                     m_spriteSelectedTrack.setVisibleRect({m_thumbs.first.left + (m_thumbs.first.width / 2.0f), 0, m_thumbs.second.left - m_thumbs.first.left, innerSize.y});
             }
             else // Image is rotated
             {
-                if (m_verticalScroll)
+                if (m_orientation == Orientation::Vertical)
                     m_spriteSelectedTrack.setVisibleRect({innerSize.y - m_thumbs.second.top - (m_thumbs.second.height / 2.0f), 0, m_thumbs.second.top - m_thumbs.first.top, innerSize.x});
                 else
                     m_spriteSelectedTrack.setVisibleRect({innerSize.y, m_thumbs.first.left + (m_thumbs.first.width / 2.0f), -innerSize.y, m_thumbs.second.left - m_thumbs.first.left});
@@ -741,7 +741,7 @@ namespace tgui
             RenderStates selectedTrackStates = states;
             Vector2f size;
 
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 selectedTrackStates.transform.translate({0, m_thumbs.first.top + m_thumbs.first.height / 2.f});
                 size = {getInnerSize().x, m_thumbs.second.top - m_thumbs.first.top};

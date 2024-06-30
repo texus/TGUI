@@ -102,11 +102,11 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
 
         if (getSize().x < getSize().y)
-            m_verticalScroll = true;
+            m_orientation = Orientation::Vertical;
         else if (getSize().x > getSize().y)
-            m_verticalScroll = false;
+            m_orientation = Orientation::Horizontal;
 
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_spriteArrowUp.setRotation(0);
             m_spriteArrowUpHover.setRotation(0);
@@ -219,18 +219,32 @@ namespace tgui
 
     void SpinButton::setVerticalScroll(bool vertical)
     {
-        if (m_verticalScroll == vertical)
-            return;
-
-        m_verticalScroll = vertical;
-        setSize(getSize().y, getSize().x);
+        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SpinButton::getVerticalScroll() const
     {
-        return m_verticalScroll;
+        return m_orientation == Orientation::Vertical;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::setOrientation(Orientation orientation)
+    {
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Orientation SpinButton::getOrientation() const
+    {
+        return m_orientation;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +258,7 @@ namespace tgui
         if (m_mouseDown)
         {
             // Check if the mouse is on top of the upper/right arrow
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 if (FloatRect{ getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f }.contains(pos))
                     m_mouseDownOnTopArrow = true;
@@ -286,7 +300,7 @@ namespace tgui
     void SpinButton::mouseMoved(Vector2f pos)
     {
         // Check if the mouse is on top of the upper/right arrow
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
                 m_mouseHoverOnTopArrow = true;
@@ -410,7 +424,7 @@ namespace tgui
 
     Vector2f SpinButton::getArrowSize() const
     {
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
             return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                     (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_borderBetweenArrowsCached) / 2.0f};
         else
@@ -453,7 +467,7 @@ namespace tgui
             else
                 arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 
@@ -476,7 +490,7 @@ namespace tgui
         }
 
         // Draw the space between the arrows (if there is space)
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             states.transform.translate({0, arrowSize.y});
 
@@ -519,7 +533,7 @@ namespace tgui
             else
                 arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 

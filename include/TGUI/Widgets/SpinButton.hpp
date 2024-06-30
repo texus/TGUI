@@ -92,7 +92,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the spin button
         ///
-        /// Note that the VerticalScroll property is changed by this function based on the given width and height.
+        /// Note that the Orientation property is changed by this function based on the given width and height.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -168,19 +168,38 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getStep() const;
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the spin button lies horizontally or vertically
         /// @param vertical  Should the spin button lie vertically?
         ///
         /// This function will swap the width and height of the spin button if it didn't lie in the wanted direction.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool vertical);
+        TGUI_DEPRECATED("Use setOrientation instead")void setVerticalScroll(bool vertical);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the spin button lies horizontally or vertically
         /// @return Does the spin button lie vertically?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getVerticalScroll() const;
+        TGUI_DEPRECATED("Use getOrientation instead")TGUI_NODISCARD bool getVerticalScroll() const;
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the spin button lies horizontally or vertically
+        /// @param orientation  Orientation of the spin button
+        ///
+        /// This function will swap the width and height of the spin button if it didn't lie in the wanted direction.
+        ///
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOrientation(Orientation orientation);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the spin button lies horizontally or vertically
+        /// @return Orientation of the spin button
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Orientation getOrientation() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -262,8 +281,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        // Is the spin button draw vertically (arrows on top of each other)?
-        bool m_verticalScroll = true;
+        Orientation m_orientation = Orientation::Vertical; // Is the spin button draw horizontally (arrows next to each other) or vertically (arrows on top of each other)?
         std::chrono::time_point<std::chrono::steady_clock> m_PressedAt;
 
         float m_minimum = 0;

@@ -305,11 +305,8 @@ TGUI_MODULE_EXPORT namespace tgui
         float m_selectionEnd = 0;
         float m_step = 1;
 
-        // Is the slider drawn vertically?
-        bool m_verticalScroll = false;
-
-        // Does the image lie vertically?
-        bool m_verticalImage = false;
+        Orientation m_orientation = Orientation::Horizontal; // Is the slider drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Horizontal;  // Does the loaded image lie horizontally or vertically?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;

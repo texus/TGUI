@@ -216,18 +216,32 @@ namespace tgui
 
     void Scrollbar::setVerticalScroll(bool vertical)
     {
-        if (m_verticalScroll == vertical)
-            return;
-
-        m_verticalScroll = vertical;
-        setSize(getSize().y, getSize().x);
+        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Scrollbar::getVerticalScroll() const
     {
-        return m_verticalScroll;
+        return m_orientation == Orientation::Vertical;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::setOrientation(Orientation orientation)
+    {
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Orientation Scrollbar::getOrientation() const
+    {
+        return m_orientation;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,7 +286,7 @@ namespace tgui
         m_mouseDown = true;
         m_mouseDownOnArrow = false;
 
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             // Check if the arrows are drawn at full size
             if (getSize().y > m_arrowUp.height + m_arrowDown.height)
@@ -331,7 +345,7 @@ namespace tgui
                 pos -= getPosition();
 
                 // Check in which direction the scrollbar lies
-                if (m_verticalScroll)
+                if (m_orientation == Orientation::Vertical)
                 {
                     // Check if the arrows are drawn at full size
                     if (getSize().y > m_arrowUp.height + m_arrowDown.height)
@@ -434,7 +448,7 @@ namespace tgui
                 return;
 
             // Check in which direction the scrollbar lies
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 // Check if the thumb is being dragged
                 if (m_mouseDownOnThumb)
@@ -645,11 +659,11 @@ namespace tgui
     void Scrollbar::updateSize()
     {
         if (getSize().x < getSize().y)
-            m_verticalScroll = true;
+            m_orientation = Orientation::Vertical;
         else if (getSize().x > getSize().y)
-            m_verticalScroll = false;
+            m_orientation = Orientation::Horizontal;
 
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_arrowUp.width = getSize().x;
             m_arrowDown.width = getSize().x;
@@ -721,10 +735,10 @@ namespace tgui
         }
 
         // Set the texture sizes and rotation
-        const float trackRotation = (m_verticalScroll == m_verticalImage) ? 0.f : -90.f;
+        const float trackRotation = (m_orientation == m_imageOrientation) ? 0.f : -90.f;
         if (m_spriteTrack.isSet())
         {
-            if (m_verticalScroll == m_verticalImage)
+            if (m_orientation == m_imageOrientation)
             {
                 m_spriteTrack.setSize({m_track.width, m_track.height});
                 m_spriteTrackHover.setSize({m_track.width, m_track.height});
@@ -740,7 +754,7 @@ namespace tgui
         }
         if (m_spriteThumb.isSet())
         {
-            if (m_verticalScroll == m_verticalImage)
+            if (m_orientation == m_imageOrientation)
             {
                 m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
                 m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
@@ -755,7 +769,7 @@ namespace tgui
             m_spriteThumbHover.setRotation(trackRotation);
         }
 
-        const float arrowRotation = m_verticalScroll ? 0.f : -90.f;
+        const float arrowRotation = (m_orientation == Orientation::Vertical) ? 0.f : -90.f;
         if (m_spriteArrowUp.isSet())
         {
             m_spriteArrowUp.setSize({m_arrowUp.width, m_arrowUp.height});
@@ -772,7 +786,7 @@ namespace tgui
         }
 
         // Recalculate the position of the track, thumb and arrows
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_arrowDown.left = 0;
             m_arrowDown.top = getSize().y - m_arrowDown.height;
@@ -813,7 +827,7 @@ namespace tgui
                 updateSize();
             else
             {
-                if (m_verticalScroll)
+                if (m_orientation == Orientation::Vertical)
                     setSize({getDefaultWidth(), getSize().y});
                 else
                     setSize({getSize().x, getDefaultWidth()});
@@ -938,7 +952,7 @@ namespace tgui
 
     void Scrollbar::updateThumbPosition()
     {
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_thumb.left = 0;
             if (m_maximum != m_viewportSize)
@@ -985,7 +999,7 @@ namespace tgui
             else
                 arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 target.drawTriangle(states,
                     {{m_arrowUp.width / 5, m_arrowUp.height * 4/5}, arrowVertexColor},
@@ -1061,7 +1075,7 @@ namespace tgui
             else
                 arrowVertexColor = Vertex::Color(Color::applyOpacity(m_arrowColorCached, m_opacityCached));
 
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 target.drawTriangle(states,
                     {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},

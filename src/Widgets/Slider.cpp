@@ -102,13 +102,13 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
 
         if (getSize().x < getSize().y)
-            m_verticalScroll = true;
+            m_orientation = Orientation::Vertical;
         else if (getSize().x > getSize().y)
-            m_verticalScroll = false;
+            m_orientation = Orientation::Horizontal;
 
         if (m_spriteTrack.isSet())
         {
-            if (m_verticalImage == m_verticalScroll)
+            if (m_imageOrientation == m_orientation)
             {
                 m_spriteTrack.setSize(getInnerSize());
                 m_spriteTrackHover.setSize(getInnerSize());
@@ -129,16 +129,16 @@ namespace tgui
             float scaleFactor = 1;
             if (m_spriteTrack.isSet())
             {
-                if (m_verticalImage == m_verticalScroll)
+                if (m_imageOrientation == m_orientation)
                 {
-                    if (m_verticalScroll)
+                    if (m_orientation == Orientation::Vertical)
                         scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().x;
                     else
                         scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().y;
                 }
                 else // The image is rotated
                 {
-                    if (m_verticalScroll)
+                    if (m_orientation == Orientation::Vertical)
                         scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().y;
                     else
                         scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().x;
@@ -152,7 +152,7 @@ namespace tgui
             m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
 
             // Apply the rotation now that the size has been set
-            if (m_verticalScroll != m_verticalImage)
+            if (m_orientation != m_imageOrientation)
             {
                 m_spriteThumb.setRotation(-90);
                 m_spriteThumbHover.setRotation(-90);
@@ -166,7 +166,7 @@ namespace tgui
         }
         else // There is no thumb texture
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
             {
                 m_thumb.width = getSize().x * 1.6f;
                 m_thumb.height = m_thumb.width / 2.0f;
@@ -187,14 +187,14 @@ namespace tgui
     {
         if (m_thumbWithinTrackCached)
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
                 return {std::max(getSize().x, m_thumb.width), getSize().y};
             else
                 return {getSize().x, std::max(getSize().y, m_thumb.height)};
         }
         else
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
                 return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
             else
                 return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
@@ -207,14 +207,14 @@ namespace tgui
     {
         if (m_thumbWithinTrackCached)
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
                 return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), 0};
             else
                 return {0, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
         }
         else
         {
-            if (m_verticalScroll)
+            if (m_orientation == Orientation::Vertical)
                 return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
             else
                 return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
@@ -323,18 +323,32 @@ namespace tgui
 
     void Slider::setVerticalScroll(bool vertical)
     {
-        if (m_verticalScroll == vertical)
-            return;
-
-        m_verticalScroll = vertical;
-        setSize(getSize().y, getSize().x);
+        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Slider::getVerticalScroll() const
     {
-        return m_verticalScroll;
+        return m_orientation == Orientation::Vertical;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::setOrientation(Orientation orientation)
+    {
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Orientation Slider::getOrientation() const
+    {
+        return m_orientation;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +440,7 @@ namespace tgui
             return;
 
         // Check in which direction the slider goes
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             // Check if the click occurred on the track
             if (!m_mouseDownOnThumb)
@@ -550,9 +564,9 @@ namespace tgui
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
 
             if (m_spriteTrack.getTexture().getImageSize().x < m_spriteTrack.getTexture().getImageSize().y)
-                m_verticalImage = true;
+                m_imageOrientation = Orientation::Vertical;
             else
-                m_verticalImage = false;
+                m_imageOrientation = Orientation::Horizontal;
 
             setSize(m_size);
         }
@@ -657,7 +671,7 @@ namespace tgui
 
     void Slider::updateThumbPosition()
     {
-        if (m_verticalScroll)
+        if (m_orientation == Orientation::Vertical)
         {
             m_thumb.left = m_bordersCached.getLeft() + (getInnerSize().x - m_thumb.width) / 2.0f;
 

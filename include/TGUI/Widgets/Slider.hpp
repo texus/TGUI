@@ -91,7 +91,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the slider
         ///
-        /// Note that the VerticalScroll propery is changed by this function based on the given width and height.
+        /// Note that the Orientation propery is changed by this function based on the given width and height.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -191,19 +191,38 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getStep() const;
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the slider lies horizontally or vertically
         /// @param vertical  Should the slider lie vertically?
         ///
         /// This function will swap the width and height of the slider if it didn't lie in the wanted direction.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool vertical);
+        TGUI_DEPRECATED("Use setOrientation instead") void setVerticalScroll(bool vertical);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the slider lies horizontally or vertically
         /// @return Does the slider lie vertically?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getVerticalScroll() const;
+        TGUI_DEPRECATED("Use getOrientation instead") TGUI_NODISCARD bool getVerticalScroll() const;
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the slider lies horizontally or vertically
+        /// @param orientation  Orientation of the slider
+        ///
+        /// This function will swap the width and height of the slider if it didn't lie in the wanted direction.
+        ///
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOrientation(Orientation orientation);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the slider lies horizontally or vertically
+        /// @return Orientation of the slider
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Orientation getOrientation() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the side of the slider that is the minimum and maximum should be inverted
@@ -339,9 +358,10 @@ TGUI_MODULE_EXPORT namespace tgui
         float m_step = 1;
 
         bool m_invertedDirection = false; // Are min and max swapped?
-        bool m_verticalScroll = false; // Is the slider drawn vertically?
-        bool m_verticalImage = false; // Does the image lie vertically?
         bool m_changeValueOnScroll = true; // Does mouseScroll event change slider value?
+
+        Orientation m_orientation = Orientation::Horizontal; // Is the slider drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Horizontal;  // Does the loaded image lie horizontally or vertically?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;

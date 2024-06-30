@@ -43,8 +43,8 @@ struct SliderProperties : WidgetProperties
             slider->setStep(value.toFloat());
         else if (property == "InvertedDirection")
             slider->setInvertedDirection(parseBoolean(value, false));
-        else if (property == "VerticalScroll")
-            slider->setVerticalScroll(parseBoolean(value, true));
+        else if (property == "Orientation")
+            slider->setOrientation(deserializeOrientation(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -58,7 +58,7 @@ struct SliderProperties : WidgetProperties
         pair.first["Value"] = {"Float", tgui::String::fromNumber(slider->getValue())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(slider->getStep())};
         pair.first["InvertedDirection"] = {"Bool", tgui::Serializer::serialize(slider->getInvertedDirection())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(slider->getVerticalScroll())};
+        pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(slider->getOrientation())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

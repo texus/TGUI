@@ -129,20 +129,20 @@ TEST_CASE("[SpinButton]")
         REQUIRE(((spinButton->getValue() > 23.4f) && (spinButton->getValue() < 23.6f)));
     }
 
-    SECTION("VerticalScroll")
+    SECTION("Orientation")
     {
         spinButton->setSize(100, 20);
-        REQUIRE(!spinButton->getVerticalScroll());
+        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
 
         spinButton->setSize(20, 100);
-        REQUIRE(spinButton->getVerticalScroll());
+        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
 
         spinButton->setSize(10, 40);
-        spinButton->setVerticalScroll(false);
-        REQUIRE(!spinButton->getVerticalScroll());
+        spinButton->setOrientation(tgui::Orientation::Horizontal);
+        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
         REQUIRE(spinButton->getSize() == tgui::Vector2f(40, 10));
-        spinButton->setVerticalScroll(true);
-        REQUIRE(spinButton->getVerticalScroll());
+        spinButton->setOrientation(tgui::Orientation::Vertical);
+        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
         REQUIRE(spinButton->getSize() == tgui::Vector2f(10, 40));
     }
 

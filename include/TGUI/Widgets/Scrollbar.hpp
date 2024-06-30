@@ -100,7 +100,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the scrollbar
         ///
-        /// Note that the VerticalScroll propery is changed by this function based on the given width and height.
+        /// Note that the Orientation propery is changed by this function based on the given width and height.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -202,19 +202,38 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool getAutoHide() const;
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the scrollbar lies horizontally or vertically
         /// @param vertical  Should the scrollbar lie vertically?
         ///
         /// This function will swap the width and height of the scrollbar if it didn't lie in the wanted direction.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool vertical);
+        TGUI_DEPRECATED("Use setOrientation instead") void setVerticalScroll(bool vertical);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the scrollbar lies horizontally or vertically
         /// @return Does the scrollbar lie vertically?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getVerticalScroll() const;
+        TGUI_DEPRECATED("Use getOrientation instead") TGUI_NODISCARD bool getVerticalScroll() const;
+#endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the scrollbar lies horizontally or vertically
+        /// @param orientation  Orientation of the scrollbar
+        ///
+        /// This function will swap the width and height of the scrollbar if it didn't lie in the wanted direction.
+        ///
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setOrientation(Orientation orientation);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the scrollbar lies horizontally or vertically
+        /// @return Orientation of the scrollbar
+        /// @since TGUI 1.4
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Orientation getOrientation() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the default width of the scrollbar
@@ -339,11 +358,8 @@ TGUI_MODULE_EXPORT namespace tgui
         // Maximum should be above this value before the scrollbar is needed
         unsigned int m_viewportSize = 1;
 
-        // Is the scrollbar draw vertically?
-        bool m_verticalScroll = true;
-
-        // Does the image lie vertically?
-        bool m_verticalImage = true;
+        Orientation m_orientation = Orientation::Vertical; // Is the scrollbar drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Vertical;  // Does the loaded image lie horizontally or vertically?
 
         // How far should the value change when pressing one of the arrows?
         unsigned int m_scrollAmount = 1;

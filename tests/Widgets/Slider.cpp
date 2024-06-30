@@ -156,20 +156,20 @@ TEST_CASE("[Slider]")
         REQUIRE(((slider->getValue() > 23.4f) && (slider->getValue() < 23.6f)));
     }
 
-    SECTION("VerticalScroll")
+    SECTION("Orientation")
     {
         slider->setSize(100, 20);
-        REQUIRE(!slider->getVerticalScroll());
+        REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
 
         slider->setSize(20, 100);
-        REQUIRE(slider->getVerticalScroll());
+        REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
 
         slider->setSize(10, 40);
-        slider->setVerticalScroll(false);
-        REQUIRE(!slider->getVerticalScroll());
+        slider->setOrientation(tgui::Orientation::Horizontal);
+        REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
         REQUIRE(slider->getSize() == tgui::Vector2f(40, 10));
-        slider->setVerticalScroll(true);
-        REQUIRE(slider->getVerticalScroll());
+        slider->setOrientation(tgui::Orientation::Vertical);
+        REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
         REQUIRE(slider->getSize() == tgui::Vector2f(10, 40));
     }
 

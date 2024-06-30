@@ -41,8 +41,8 @@ struct SpinButtonProperties : WidgetProperties
             spinButton->setValue(value.toFloat());
         else if (property == "Step")
             spinButton->setStep(value.toFloat());
-        else if (property == "VerticalScroll")
-            spinButton->setVerticalScroll(parseBoolean(value, true));
+        else if (property == "Orientation")
+            spinButton->setOrientation(deserializeOrientation(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -55,7 +55,7 @@ struct SpinButtonProperties : WidgetProperties
         pair.first["Maximum"] = {"Float", tgui::String::fromNumber(spinButton->getMaximum())};
         pair.first["Value"] = {"Float", tgui::String::fromNumber(spinButton->getValue())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(spinButton->getStep())};
-        pair.first["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(spinButton->getVerticalScroll())};
+        pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(spinButton->getOrientation())};
 
         const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

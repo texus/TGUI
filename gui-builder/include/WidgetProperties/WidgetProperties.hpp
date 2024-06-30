@@ -271,6 +271,23 @@ struct WidgetProperties
         else
             return "Top";
     }
+
+    TGUI_NODISCARD static tgui::String serializeOrientation(tgui::Orientation orientation)
+    {
+        if (orientation == tgui::Orientation::Horizontal)
+            return "Horizontal";
+        else
+            return "Vertical";
+    }
+
+    TGUI_NODISCARD static tgui::Orientation deserializeOrientation(tgui::String value)
+    {
+        value = value.trim().toLower();
+        if (value == "horizontal")
+            return tgui::Orientation::Horizontal;
+        else
+            return tgui::Orientation::Vertical;
+    }
 };
 
 #endif // TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP

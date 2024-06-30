@@ -179,10 +179,10 @@ namespace tgui
         m_colorWheelSprite.setTexture(m_colorWheelTexture);
         pixels = nullptr;
 
-        m_red->setVerticalScroll(false);
-        m_green->setVerticalScroll(false);
-        m_blue->setVerticalScroll(false);
-        m_alpha->setVerticalScroll(false);
+        m_red->setOrientation(Orientation::Horizontal);
+        m_green->setOrientation(Orientation::Horizontal);
+        m_blue->setOrientation(Orientation::Horizontal);
+        m_alpha->setOrientation(Orientation::Horizontal);
         m_red->setWidth(200);
         m_green->setWidth(200);
         m_blue->setWidth(200);
@@ -218,7 +218,7 @@ namespace tgui
 
         add(m_value, "#TGUI_INTERNAL$ColorPickerValue#");
         m_value->setValue(m_value->getMaximum());
-        m_value->setVerticalScroll(true);
+        m_value->setOrientation(Orientation::Vertical);
         m_value->setHeight(200);
 
         add(Label::create("Last:"), "#TGUI_INTERNAL$ColorPickerLabelLast#");
