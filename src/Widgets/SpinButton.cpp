@@ -216,7 +216,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void SpinButton::setVerticalScroll(bool vertical)
     {
         setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
@@ -228,7 +228,7 @@ namespace tgui
     {
         return m_orientation == Orientation::Vertical;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::setOrientation(Orientation orientation)

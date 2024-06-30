@@ -320,7 +320,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void Slider::setVerticalScroll(bool vertical)
     {
         setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
@@ -332,7 +332,7 @@ namespace tgui
     {
         return m_orientation == Orientation::Vertical;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Slider::setOrientation(Orientation orientation)
