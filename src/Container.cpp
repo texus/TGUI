@@ -619,47 +619,15 @@ namespace tgui
 
     void Container::moveWidgetToFront(const Widget::Ptr& widget)
     {
-        // Loop through all widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] != widget)
-                continue;
-
-            // Copy the widget
-            m_widgets.push_back(m_widgets[i]);
-
-            // Remove the old widget
-            m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i));
-
-            if (widget->getAutoLayout() != AutoLayout::Manual)
-                updateChildrenWithAutoLayout();
-
-            break;
-        }
+        if (!m_widgets.empty())
+            setWidgetIndex(widget, m_widgets.size() - 1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::moveWidgetToBack(const Widget::Ptr& widget)
     {
-        // Loop through all widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] != widget)
-                continue;
-
-            // Copy the widget
-            const Widget::Ptr obj = m_widgets[i];
-            m_widgets.insert(m_widgets.begin(), obj);
-
-            // Remove the old widget
-            m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(i + 1));
-
-            if (widget->getAutoLayout() != AutoLayout::Manual)
-                updateChildrenWithAutoLayout();
-
-            break;
-        }
+        setWidgetIndex(widget, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -675,11 +643,7 @@ namespace tgui
             if (i == m_widgets.size() - 1)
                 return m_widgets.size() - 1;
 
-            std::swap(m_widgets[i], m_widgets[i+1]);
-
-            if (widget->getAutoLayout() != AutoLayout::Manual)
-                updateChildrenWithAutoLayout();
-
+            setWidgetIndex(widget, i + 1);
             return i + 1;
         }
 
@@ -700,11 +664,7 @@ namespace tgui
             if (i-1 == 0)
                 return 0;
 
-            std::swap(m_widgets[i-2], m_widgets[i-1]);
-
-            if (widget->getAutoLayout() != AutoLayout::Manual)
-                updateChildrenWithAutoLayout();
-
+            setWidgetIndex(widget, i - 2);
             return i-2;
         }
 
@@ -735,11 +695,19 @@ namespace tgui
         if (index == currentWidgetIndex)
             return true;
 
+        // TGUI_NEXT: setWidgetIndex should take widget parameter by value instead of by reference.
+        // When the parameter to this function is a reference to an element of m_widgets, the erase
+        // call will cause the reference to suddenly point to a different widget. We could do the
+        // insert first to avoid the widget being destroyed before it is copied, but that could lead
+        // to an unnecessary reallocation and we would still need to be careful with using the widget
+        // reference in the lines below the erase. So we make a copy of the shared_ptr to avoid issues.
+        Widget::Ptr widgetToMove = widget;
+
         // Move the widget to the new index
         m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(currentWidgetIndex));
-        m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widget);
+        m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widgetToMove);
 
-        if (widget->getAutoLayout() != AutoLayout::Manual)
+        if (widgetToMove->getAutoLayout() != AutoLayout::Manual)
             updateChildrenWithAutoLayout();
 
         return true;
