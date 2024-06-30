@@ -151,16 +151,22 @@ namespace tgui
         bool pollEvent(Event& event) override
         {
 #if SFML_VERSION_MAJOR >= 3
-            if (const auto eventSFML = m_window.pollEvent())
-                return m_gui->convertEvent(*eventSFML, event);
-            else // No new events
-                return false;
+            while (const auto eventSFML = m_window.pollEvent())
+            {
+                if (m_gui->convertEvent(*eventSFML, event))
+                    return true;
+            }
+
+            return false; // No new events
 #else
             sf::Event eventSFML;
-            if (m_window.pollEvent(eventSFML))
-                return m_gui->convertEvent(eventSFML, event);
-            else // No new events
-                return false;
+            while (m_window.pollEvent(eventSFML))
+            {
+                if (m_gui->convertEvent(eventSFML, event))
+                    return true;
+            }
+
+            return false; // No new events
 #endif
         }
 
@@ -290,10 +296,13 @@ namespace tgui
         bool pollEvent(Event& event) override
         {
             SDL_Event eventSDL;
-            if (SDL_PollEvent(&eventSDL) != 0)
-                return m_gui->convertEvent(eventSDL, event);
-            else // No new events
-                return false;
+            while (SDL_PollEvent(&eventSDL) != 0)
+            {
+                if (m_gui->convertEvent(eventSDL, event))
+                    return true;
+            }
+
+            return false; // No new events
         }
 
         void draw() override
