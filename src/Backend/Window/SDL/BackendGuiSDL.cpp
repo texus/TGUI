@@ -44,6 +44,34 @@ namespace tgui
     {
         switch (key)
         {
+#if SDL_MAJOR_VERSION >= 3
+        case SDLK_A:            return Event::KeyboardKey::A;
+        case SDLK_B:            return Event::KeyboardKey::B;
+        case SDLK_C:            return Event::KeyboardKey::C;
+        case SDLK_D:            return Event::KeyboardKey::D;
+        case SDLK_E:            return Event::KeyboardKey::E;
+        case SDLK_F:            return Event::KeyboardKey::F;
+        case SDLK_G:            return Event::KeyboardKey::G;
+        case SDLK_H:            return Event::KeyboardKey::H;
+        case SDLK_I:            return Event::KeyboardKey::I;
+        case SDLK_J:            return Event::KeyboardKey::J;
+        case SDLK_K:            return Event::KeyboardKey::K;
+        case SDLK_L:            return Event::KeyboardKey::L;
+        case SDLK_M:            return Event::KeyboardKey::M;
+        case SDLK_N:            return Event::KeyboardKey::N;
+        case SDLK_O:            return Event::KeyboardKey::O;
+        case SDLK_P:            return Event::KeyboardKey::P;
+        case SDLK_Q:            return Event::KeyboardKey::Q;
+        case SDLK_R:            return Event::KeyboardKey::R;
+        case SDLK_S:            return Event::KeyboardKey::S;
+        case SDLK_T:            return Event::KeyboardKey::T;
+        case SDLK_U:            return Event::KeyboardKey::U;
+        case SDLK_V:            return Event::KeyboardKey::V;
+        case SDLK_W:            return Event::KeyboardKey::W;
+        case SDLK_X:            return Event::KeyboardKey::X;
+        case SDLK_Y:            return Event::KeyboardKey::Y;
+        case SDLK_Z:            return Event::KeyboardKey::Z;
+#else
         case SDLK_a:            return Event::KeyboardKey::A;
         case SDLK_b:            return Event::KeyboardKey::B;
         case SDLK_c:            return Event::KeyboardKey::C;
@@ -70,6 +98,7 @@ namespace tgui
         case SDLK_x:            return Event::KeyboardKey::X;
         case SDLK_y:            return Event::KeyboardKey::Y;
         case SDLK_z:            return Event::KeyboardKey::Z;
+#endif
         case SDLK_0:            return Event::KeyboardKey::Num0;
         case SDLK_1:            return Event::KeyboardKey::Num1;
         case SDLK_2:            return Event::KeyboardKey::Num2;

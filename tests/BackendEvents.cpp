@@ -939,9 +939,34 @@ TEST_CASE("[Backend events]")
                 {
 #if SDL_MAJOR_VERSION >= 3
                     std::array<std::pair<uint32_t, tgui::Event::KeyboardKey>, 101> keys = {{
+                        {SDLK_A,            tgui::Event::KeyboardKey::A},
+                        {SDLK_B,            tgui::Event::KeyboardKey::B},
+                        {SDLK_C,            tgui::Event::KeyboardKey::C},
+                        {SDLK_D,            tgui::Event::KeyboardKey::D},
+                        {SDLK_E,            tgui::Event::KeyboardKey::E},
+                        {SDLK_F,            tgui::Event::KeyboardKey::F},
+                        {SDLK_G,            tgui::Event::KeyboardKey::G},
+                        {SDLK_H,            tgui::Event::KeyboardKey::H},
+                        {SDLK_I,            tgui::Event::KeyboardKey::I},
+                        {SDLK_J,            tgui::Event::KeyboardKey::J},
+                        {SDLK_K,            tgui::Event::KeyboardKey::K},
+                        {SDLK_L,            tgui::Event::KeyboardKey::L},
+                        {SDLK_M,            tgui::Event::KeyboardKey::M},
+                        {SDLK_N,            tgui::Event::KeyboardKey::N},
+                        {SDLK_O,            tgui::Event::KeyboardKey::O},
+                        {SDLK_P,            tgui::Event::KeyboardKey::P},
+                        {SDLK_Q,            tgui::Event::KeyboardKey::Q},
+                        {SDLK_R,            tgui::Event::KeyboardKey::R},
+                        {SDLK_S,            tgui::Event::KeyboardKey::S},
+                        {SDLK_T,            tgui::Event::KeyboardKey::T},
+                        {SDLK_U,            tgui::Event::KeyboardKey::U},
+                        {SDLK_V,            tgui::Event::KeyboardKey::V},
+                        {SDLK_W,            tgui::Event::KeyboardKey::W},
+                        {SDLK_X,            tgui::Event::KeyboardKey::X},
+                        {SDLK_Y,            tgui::Event::KeyboardKey::Y},
+                        {SDLK_Z,            tgui::Event::KeyboardKey::Z},
 #else
                     std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 101> keys = {{
-#endif
                         {SDLK_a,            tgui::Event::KeyboardKey::A},
                         {SDLK_b,            tgui::Event::KeyboardKey::B},
                         {SDLK_c,            tgui::Event::KeyboardKey::C},
@@ -968,6 +993,7 @@ TEST_CASE("[Backend events]")
                         {SDLK_x,            tgui::Event::KeyboardKey::X},
                         {SDLK_y,            tgui::Event::KeyboardKey::Y},
                         {SDLK_z,            tgui::Event::KeyboardKey::Z},
+#endif
                         {SDLK_0,            tgui::Event::KeyboardKey::Num0},
                         {SDLK_1,            tgui::Event::KeyboardKey::Num1},
                         {SDLK_2,            tgui::Event::KeyboardKey::Num2},
