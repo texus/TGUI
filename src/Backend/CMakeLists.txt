@@ -204,8 +204,8 @@ if(TGUI_HAS_WINDOW_BACKEND_RAYLIB OR TGUI_HAS_RENDERER_BACKEND_RAYLIB OR TGUI_HA
     tgui_add_dependency_raylib()
 endif()
 if(TGUI_OS_LINUX OR TGUI_OS_BSD)
-    # We need X11 to display diagonal arrow mouse cursors if we use a window from SFML < 2.6 or SDL
-    if((TGUI_HAS_WINDOW_BACKEND_SFML AND SFML_VERSION VERSION_LESS "2.6") OR TGUI_HAS_WINDOW_BACKEND_SDL)
+    # We need X11 to display diagonal arrow mouse cursors if we use a window from SFML < 2.6 or SDL < 3
+    if((TGUI_HAS_WINDOW_BACKEND_SFML AND SFML_VERSION VERSION_LESS "2.6") OR (TGUI_HAS_WINDOW_BACKEND_SDL AND NOT TGUI_USE_SDL3))
         tgui_add_dependency_x11()
     endif()
 endif()

@@ -108,7 +108,7 @@
 
 #cmakedefine01 TGUI_USE_SDL3
 
-// Some window backends (SFML < 2.6 and SDL) don't support diagonal mouse cursors on Linux in which case TGUI loads them directly with X11.
+// Some window backends (SFML < 2.6 and SDL < 3) don't support diagonal mouse cursors on Linux in which case TGUI loads them directly with X11.
 // Settig this option to FALSE in CMake will remove the X11 dependency but will cause those cursors to not show up when using them.
 #cmakedefine01 TGUI_USE_X11
 

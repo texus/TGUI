@@ -42,7 +42,7 @@
     #pragma warning(pop)
 #endif
 
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((SDL_MAJOR_VERSION >= 3) || defined(SDL_VIDEO_DRIVER_X11))
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)
     #include <X11/Xlib.h>
     #include <X11/cursorfont.h>
 #endif
@@ -447,12 +447,13 @@ namespace tgui
     {
         TGUI_ASSERT(window != nullptr, "BackendSDL::updateShownMouseCursor requires a valid window");
 
-        // On Linux we use directional resize arrows, because SDL has poor support for diagonal resize arrows on Linux.
+        // On Linux we use directional resize arrows, because SDL2 has poor support for diagonal resize arrows on Linux.
         // Prior to SDL 2.24, an icon with 4 arrows (typically used e.g. when moving a window while pressing alt) was displayed for diagonal resizing.
         // As of SDL 2.24, it uses an arrow pointing NW or NE. This is already much better, even though the arrow points on the wrong direction
         // for bottom corners. Having two-sided arrows for horizontal/vertical, but having a direction arrow for diagonal looks out of place though.
-        // So we will continue to bypass SDL and use directional arrows in all directions.
-#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && ((SDL_MAJOR_VERSION >= 3) || defined(SDL_VIDEO_DRIVER_X11))
+        // So we will continue to bypass SDL and use directional arrows in all directions when using SDL2.
+        // In SDL3 we can directly request the diagonal arrows from SDL so this code is no longer needed.
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)
         if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
             || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
             || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
@@ -460,11 +461,6 @@ namespace tgui
         {
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
             {
-#if SDL_MAJOR_VERSION >= 3
-                const SDL_PropertiesID windowProps = SDL_GetWindowProperties(window);
-                const Window windowX11 = static_cast<Window>(SDL_GetNumberProperty(windowProps, "SDL.window.x11.window", 0));
-                Display* displayX11 = reinterpret_cast<Display*>(SDL_GetProperty(windowProps, "SDL.window.x11.display", nullptr));
-#else
                 Display* displayX11 = nullptr;
                 Window windowX11 = 0;
 
@@ -475,7 +471,7 @@ namespace tgui
                     displayX11 = sysInfo.info.x11.display;
                     windowX11 = sysInfo.info.x11.window;
                 }
-#endif
+
                 if (displayX11)
                 {
                     unsigned int shapeX11;
@@ -504,9 +500,18 @@ namespace tgui
                     }
 
                     XFlush(displayX11);
+                    m_customCursorX11 = true;
                     return;
                 }
             }
+        }
+
+        // If we manually set a cursor with X11 before then the cursor might not change
+        // back to the SDL cursor if we don't force a refresh.
+        if (m_customCursorX11)
+        {
+            SDL_SetCursor(NULL);
+            m_customCursorX11 = false;
         }
 #else
         (void)window;
