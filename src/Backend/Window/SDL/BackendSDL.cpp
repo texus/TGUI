@@ -96,8 +96,8 @@ namespace tgui
     {
 #if SDL_MAJOR_VERSION >= 3
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        SDL_Surface* surface = SDL_CreateSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
-                                                     4 * static_cast<int>(size.x), SDL_PIXELFORMAT_RGBA32);
+        SDL_Surface* surface = SDL_CreateSurfaceFrom(static_cast<int>(size.x), static_cast<int>(size.y), SDL_PIXELFORMAT_RGBA32,
+                                                     const_cast<std::uint8_t*>(pixels), 4 * static_cast<int>(size.x));
 #else
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),

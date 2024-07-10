@@ -329,8 +329,8 @@ namespace tgui
                 return;
 
 #if SDL_MAJOR_VERSION >= 3
-            SDL_Surface* icon = SDL_CreateSurfaceFrom(pixelPtr.get(), static_cast<int>(iconSize.x), static_cast<int>(iconSize.y),
-                                                      4 * static_cast<int>(iconSize.x), SDL_PIXELFORMAT_RGBA32);
+            SDL_Surface* icon = SDL_CreateSurfaceFrom(static_cast<int>(iconSize.x), static_cast<int>(iconSize.y), SDL_PIXELFORMAT_RGBA32,
+                                                      pixelPtr.get(), 4 * static_cast<int>(iconSize.x));
 #else
             SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(), static_cast<int>(iconSize.x), static_cast<int>(iconSize.y),
                                                                    32, 4 * static_cast<int>(iconSize.x), SDL_PIXELFORMAT_RGBA32);
