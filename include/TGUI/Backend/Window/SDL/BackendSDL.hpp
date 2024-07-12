@@ -174,7 +174,10 @@ TGUI_MODULE_EXPORT namespace tgui
 
         std::unordered_map<BackendGui*, GuiResources> m_guiResources;
         std::unordered_map<Cursor::Type, SDL_Cursor*> m_mouseCursors;
-        bool m_customCursorX11 = false; // Only used on Linux with SDL2 (no longer needed with SDL3)
+
+#if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)
+        bool m_customCursorX11 = false;
+#endif
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
