@@ -220,7 +220,11 @@ struct TestsWindowDefault : public TestsWindowBase
         ~TestsWindowSdlTtfOpenGL3() override
         {
             gui = nullptr;
+#if SDL_MAJOR_VERSION >= 3
+            SDL_GL_DestroyContext(glContext);
+#else
             SDL_GL_DeleteContext(glContext);
+#endif
             SDL_DestroyWindow(window);
             TTF_Quit();
             SDL_Quit();
@@ -269,7 +273,11 @@ struct TestsWindowDefault : public TestsWindowBase
         ~TestsWindowSdlTtfGLES2() override
         {
             gui = nullptr;
+#if SDL_MAJOR_VERSION >= 3
+            SDL_GL_DestroyContext(glContext);
+#else
             SDL_GL_DeleteContext(glContext);
+#endif
             SDL_DestroyWindow(window);
             TTF_Quit();
             SDL_Quit();
@@ -317,7 +325,11 @@ struct TestsWindowDefault : public TestsWindowBase
         ~TestsWindowSdlOpenGL3() override
         {
             gui = nullptr;
+#if SDL_MAJOR_VERSION >= 3
+            SDL_GL_DestroyContext(glContext);
+#else
             SDL_GL_DeleteContext(glContext);
+#endif
             SDL_DestroyWindow(window);
             SDL_Quit();
         }
@@ -364,7 +376,11 @@ struct TestsWindowDefault : public TestsWindowBase
         ~TestsWindowSdlGLES2() override
         {
             gui = nullptr;
+#if SDL_MAJOR_VERSION >= 3
+            SDL_GL_DestroyContext(glContext);
+#else
             SDL_GL_DeleteContext(glContext);
+#endif
             SDL_DestroyWindow(window);
             SDL_Quit();
         }
