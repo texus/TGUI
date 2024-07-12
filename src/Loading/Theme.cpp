@@ -703,12 +703,18 @@ namespace tgui
             }
 
             existingRenderer = newRenderer;
-
-            // Update the existing widgets that were using the previous renderer from this theme
-            for (auto& observer : newRenderer->observers)
-                observer->setRenderer(newRenderer);
-
             ++existingRendererIt;
+        }
+
+        // Update the existing widgets that were using the previous renderer from this theme.
+        // We do this in a separate loop because all renderers need to be replaced before
+        // we tell the observers (because e.g. an observer of the BitmapButton renderer might
+        // want to access the Button renderer of the theme to inherit properties).
+        for (auto pair : m_renderers)
+        {
+            const auto& renderer = pair.second;
+            for (auto& observer : renderer->observers)
+                observer->setRenderer(renderer);
         }
 
         // Add the renderers that only existed in the other renderers (e.g. added via the addRenderer function)
