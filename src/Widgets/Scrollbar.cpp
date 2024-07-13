@@ -616,7 +616,7 @@ namespace tgui
         if (static_cast<int>(m_value) - static_cast<int>(amountToScroll) < 0)
             setValue(0);
         else
-            setValue(static_cast<unsigned int>(m_value - (amountToScroll)));
+            setValue(m_value - static_cast<unsigned int>(amountToScroll));
 
         // Update over which part the mouse is hovering
         if (isMouseOnWidget(pos - getPosition()))

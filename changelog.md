@@ -1,6 +1,7 @@
 TGUI 1.4  (TBD)
 ---------------
 
+- New widget: SplitContainer
 - Added MaxValue getter to Scrollbar
 - Added ScrollbarMaxValue getters to widgets with a scrollbar
 - Added getPixelsPerPoint() to BackendRenderTarget
@@ -8,8 +9,8 @@ TGUI 1.4  (TBD)
 - Multiple fixes to EditBoxSlider widget
 
 
-TGUI 1.3.0  (10 June 2024)
---------------------------
+TGUI 1.3  (10 June 2024)
+------------------------
 
 - New backend: raylib
 - New widget: EditBoxSlider ([PR #238](https://github.com/texus/TGUI/pull/238))

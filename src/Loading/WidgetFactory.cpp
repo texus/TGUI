@@ -66,6 +66,7 @@ namespace tgui
         {"Slider", std::make_shared<Slider>},
         {"SpinButton", std::make_shared<SpinButton>},
         {"SpinControl", std::make_shared<SpinControl>},
+        {"SplitContainer", std::make_shared<SplitContainer>},
         {"Tabs", std::make_shared<Tabs>},
         {"TabContainer", std::make_shared<TabContainer>},
         {"TextArea", std::make_shared<TextArea>},

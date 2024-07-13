@@ -259,6 +259,8 @@ namespace tgui
                                                          {"ArrowColorHover", Color::Black},
                                                          {"BorderBetweenArrows", 2.f}})},
                     {"SpinControl", RendererData::create({})},
+                    {"SplitContainer", RendererData::create({{"SplitterColor", Color{60, 60, 60}},
+                                                             {"SplitterColorHover", Color::Black}})},
                     {"TabContainer", RendererData::create({})},
                     {"Tabs", RendererData::create({{"Borders", Borders{1}},
                                                    {"BorderColor", Color::Black},
@@ -503,6 +505,9 @@ namespace tgui
             {"ArrowColorHover", ""},
             {"BorderColor", ""},
             {"Borders", ""},
+        }},
+        {"SplitContainer", {
+            {"SplitterColor", "BorderColor"},
         }},
         {"Tabs", {
             {"BackgroundColor", ""},

@@ -1353,7 +1353,7 @@ namespace tgui
         {
             // Container::mouseEnteredWidget() can't be called from here because of a bug in SFML < 2.6.
             // Calling the function from the base class would set the mouse cursor that was requested. If the mouse is on top
-            // of the borders then we need to replace it with a resize cursor afterwards. These cursor changes would occus out
+            // of the borders then we need to replace it with a resize cursor afterwards. These cursor changes would occur out
             // of order though, causing the wrong cursor to show up when the mouse enters a border from the outside.
             m_mouseHover = true;
             onMouseEnter.emit(this);
@@ -1382,7 +1382,7 @@ namespace tgui
                 m_parentGui->requestMouseCursor(Cursor::Type::Arrow);
         }
 
-        Widget::mouseLeftWidget();
+        Container::mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

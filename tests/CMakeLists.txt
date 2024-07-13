@@ -93,6 +93,7 @@ set(TEST_SOURCES
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp
+    Widgets/SplitContainer.cpp
     Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
     Widgets/TextArea.cpp

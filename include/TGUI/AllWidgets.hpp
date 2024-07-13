@@ -62,6 +62,7 @@
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/SpinControl.hpp>
+#include <TGUI/Widgets/SplitContainer.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TabContainer.hpp>
 #include <TGUI/Widgets/TextArea.hpp>

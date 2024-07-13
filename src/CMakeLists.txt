@@ -89,6 +89,7 @@ set(TGUI_SRC
     Renderers/SeparatorLineRenderer.cpp
     Renderers/SliderRenderer.cpp
     Renderers/SpinButtonRenderer.cpp
+    Renderers/SplitContainerRenderer.cpp
     Renderers/TabsRenderer.cpp
     Renderers/TextAreaRenderer.cpp
     Renderers/TreeViewRenderer.cpp
@@ -132,6 +133,7 @@ set(TGUI_SRC
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp
+    Widgets/SplitContainer.cpp
     Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
     Widgets/TextArea.cpp

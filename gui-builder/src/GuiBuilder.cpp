@@ -53,6 +53,7 @@
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
 #include "WidgetProperties/SpinControlProperties.hpp"
+#include "WidgetProperties/SplitContainerProperties.hpp"
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/ToggleButtonProperties.hpp"
@@ -297,6 +298,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
     m_widgetProperties["SpinControl"] = std::make_unique<SpinControlProperties>();
+    m_widgetProperties["SplitContainer"] = std::make_unique<SplitContainerProperties>();
     m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextArea"] = std::make_unique<TextAreaProperties>();
     m_widgetProperties["ToggleButton"] = std::make_unique<ToggleButtonProperties>();
@@ -1013,6 +1015,7 @@ void GuiBuilder::loadToolbox()
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
         {"SpinControl", []{ return tgui::SpinControl::create(); }},
+        {"SplitContainer", []{ return tgui::SplitContainer::create({150, 150}); }},
         {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
         {"TextArea", []{ return tgui::TextArea::create(); }},
         {"ToggleButton", []{ return tgui::ToggleButton::create(); }},
