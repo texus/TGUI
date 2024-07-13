@@ -910,8 +910,8 @@ jobs:
         run: |
           wget -nv https://github.com/SFML/SFML/archive/refs/heads/${SFML_VERSION}.zip
           unzip ${SFML_VERSION}.zip
-          cmake -GXcode -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DCMAKE_TOOLCHAIN_FILE="$GITHUB_WORKSPACE/SFML-$SFML_VERSION/cmake/toolchains/iOS.toolchain.cmake" -DIOS_PLATFORM=OS -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML-$SFML_VERSION -B SFML-build
-          cmake --build SFML-build --config Debug --target install
+          cmake -GXcode -DCMAKE_INSTALL_PREFIX=SFML_INSTALL -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_ARCHITECTURES=arm64 -DBUILD_SHARED_LIBS=OFF -DSFML_BUILD_AUDIO=OFF -DSFML_BUILD_NETWORK=OFF -S SFML-$SFML_VERSION -B SFML-build
+          cmake --build SFML-build --config Debug --target install -- CODE_SIGNING_ALLOWED=NO
 
       - name: Build TGUI
         run: >
