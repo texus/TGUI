@@ -63,6 +63,10 @@ namespace tgui
         m_horizontalScrollbar       {other.m_horizontalScrollbar},
         m_verticalScrollbarPolicy   {other.m_verticalScrollbarPolicy},
         m_horizontalScrollbarPolicy {other.m_horizontalScrollbarPolicy},
+        m_verticalScrollAmount      {other.m_verticalScrollAmount},
+        m_horizontalScrollAmount    {other.m_horizontalScrollAmount},
+        m_verticalScrollbarWasVisibleOnSizeUpdate{other.m_verticalScrollbarWasVisibleOnSizeUpdate},
+        m_horizontalScrollbarWasVisibleOnSizeUpdate{other.m_horizontalScrollbarWasVisibleOnSizeUpdate},
         m_connectedPositionCallbacks{},
         m_connectedSizeCallbacks    {}
     {
@@ -83,6 +87,10 @@ namespace tgui
         m_horizontalScrollbar       {std::move(other.m_horizontalScrollbar)},
         m_verticalScrollbarPolicy   {std::move(other.m_verticalScrollbarPolicy)},
         m_horizontalScrollbarPolicy {std::move(other.m_horizontalScrollbarPolicy)},
+        m_verticalScrollAmount      {std::move(other.m_verticalScrollAmount)},
+        m_horizontalScrollAmount    {std::move(other.m_horizontalScrollAmount)},
+        m_verticalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate)},
+        m_horizontalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate)},
         m_connectedPositionCallbacks{std::move(other.m_connectedPositionCallbacks)},
         m_connectedSizeCallbacks    {std::move(other.m_connectedSizeCallbacks)}
     {
@@ -108,6 +116,10 @@ namespace tgui
             m_horizontalScrollbar       = other.m_horizontalScrollbar;
             m_verticalScrollbarPolicy   = other.m_verticalScrollbarPolicy;
             m_horizontalScrollbarPolicy = other.m_horizontalScrollbarPolicy;
+            m_verticalScrollAmount      = other.m_verticalScrollAmount;
+            m_horizontalScrollAmount    = other.m_horizontalScrollAmount;
+            m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
+            m_horizontalScrollbarWasVisibleOnSizeUpdate = other.m_horizontalScrollbarWasVisibleOnSizeUpdate;
 
             disconnectAllChildWidgets();
 
@@ -133,6 +145,10 @@ namespace tgui
             m_horizontalScrollbar       = std::move(other.m_horizontalScrollbar);
             m_verticalScrollbarPolicy   = std::move(other.m_verticalScrollbarPolicy);
             m_horizontalScrollbarPolicy = std::move(other.m_horizontalScrollbarPolicy);
+            m_verticalScrollAmount      = std::move(other.m_verticalScrollAmount);
+            m_horizontalScrollAmount    = std::move(other.m_horizontalScrollAmount);
+            m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
+            m_horizontalScrollbarWasVisibleOnSizeUpdate = other.m_horizontalScrollbarWasVisibleOnSizeUpdate;
             Panel::operator=(std::move(other));
 
             disconnectAllChildWidgets();
@@ -192,6 +208,9 @@ namespace tgui
 
     void ScrollablePanel::setSize(const Layout2d& size)
     {
+        m_horizontalScrollbarWasVisibleOnSizeUpdate = m_horizontalScrollbar->isShown();
+        m_verticalScrollbarWasVisibleOnSizeUpdate = m_verticalScrollbar->isShown();
+
         Panel::setSize(size);
         updateScrollbars();
     }
@@ -302,9 +321,9 @@ namespace tgui
     Vector2f ScrollablePanel::getInnerSize() const
     {
         Vector2f size = Panel::getInnerSize();
-        if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
+        if (m_verticalScrollbar->isShown())
             size.x -= std::min(size.x, getScrollbarWidth());
-        if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
+        if (m_horizontalScrollbar->isShown())
             size.y -= std::min(size.y, getScrollbarWidth());
         return size;
     }
@@ -872,6 +891,13 @@ namespace tgui
 
         if (m_horizontalScrollAmount == 0)
             setHorizontalScrollAmount(0);
+
+        if ((m_horizontalScrollbarWasVisibleOnSizeUpdate != m_horizontalScrollbar->isShown()) || (m_verticalScrollbarWasVisibleOnSizeUpdate != m_verticalScrollbar->isShown()))
+        {
+            m_horizontalScrollbarWasVisibleOnSizeUpdate = m_horizontalScrollbar->isShown();
+            m_verticalScrollbarWasVisibleOnSizeUpdate = m_verticalScrollbar->isShown();
+            recalculateBoundSizeLayouts();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

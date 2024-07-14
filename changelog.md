@@ -5,7 +5,8 @@ TGUI 1.4  (TBD)
 - Added MaxValue getter to Scrollbar
 - Added ScrollbarMaxValue getters to widgets with a scrollbar
 - Added getPixelsPerPoint() to BackendRenderTarget
-- Replace VerticalScroll with Orientation in Slider, Scrollbar and SpinButton
+- Inner size of ScrollablePanel now depends on shown scrollbars
+- Replaced VerticalScroll with Orientation in Slider, Scrollbar and SpinButton
 - Multiple fixes to EditBoxSlider widget
 
 

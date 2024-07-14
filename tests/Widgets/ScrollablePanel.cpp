@@ -201,6 +201,36 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(panel->getContentSize() == tgui::Vector2f{200, 100});
     }
 
+    SECTION("Inner size")
+    {
+        panel->setSize(202, 102);
+        panel->getRenderer()->setBorders({1});
+
+        auto widget1 = tgui::Button::create();
+        widget1->setPosition({0, 0});
+        widget1->setSize({"100%", "100%"});
+        panel->add(widget1);
+
+        auto widget2 = tgui::Button::create();
+        widget2->setPosition({20, 30});
+        widget2->setSize({50, 50});
+        panel->add(widget2);
+
+        REQUIRE(widget1->getSize() == tgui::Vector2f{200, 100});
+
+        widget2->setPosition({180, 50 - panel->getScrollbarWidth()});
+        REQUIRE(widget1->getSize() == tgui::Vector2f{200, 100 - panel->getScrollbarWidth()});
+
+        widget2->setPosition({40, 90});
+        REQUIRE(widget1->getSize() == tgui::Vector2f{200 - panel->getScrollbarWidth(), 100});
+
+        widget2->setPosition({250, 120});
+        REQUIRE(widget1->getSize() == tgui::Vector2f{200 - panel->getScrollbarWidth(), 100 - panel->getScrollbarWidth()});
+
+        panel->remove(widget2);
+        REQUIRE(widget1->getSize() == tgui::Vector2f{200, 100});
+    }
+
     SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;
