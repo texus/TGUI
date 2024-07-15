@@ -1,5 +1,5 @@
-TGUI 1.4  (TBD)
----------------
+TGUI 1.4  (15 July 2024)
+------------------------
 
 - New widget: SplitContainer
 - Added MaxValue getter to Scrollbar
