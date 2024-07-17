@@ -46,7 +46,7 @@ struct PanelListBoxProperties : ScrollablePanelProperties
         auto pair = ScrollablePanelProperties::initProperties(widget);
         auto panel = widget->cast<tgui::PanelListBox>();
 
-        pair.first["ItemsHeight"] = {"Layout", panel->getItemsHeight().toString()};
+        pair.first["ItemsHeight"] = {"Float", tgui::String::fromNumber(panel->getItemsHeight().getValue())};
         pair.first["MaximumItems"] = {"size_t", tgui::String::fromNumber(panel->getMaximumItems())};
         return pair;
     }

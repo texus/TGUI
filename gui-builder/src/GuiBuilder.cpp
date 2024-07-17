@@ -1763,8 +1763,8 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
 {
     const tgui::Layout layout(value);
 
-    assert(property == U"Left" || property == U"Top" || property == U"Width" || property == U"Height");
-    const bool isHorizontal = (property == U"Left") || (property == U"Width");
+    assert(property == U"Left" || property == U"Top" || property.ends_with(U"Width") || property.ends_with(U"Height"));
+    const bool isHorizontal = (property == U"Left") || (property.ends_with(U"Width"));
 
     const bool layoutIsConstant = layout.isConstant();
     const bool layoutIsPercentage = !layoutIsConstant
