@@ -581,6 +581,11 @@ namespace tgui
                 Panel::mouseMoved({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                    pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
             }
+            else // Mouse on top of the borders
+            {
+                if (!m_mouseHover)
+                    mouseEnteredWidget();
+            }
 
             m_verticalScrollbar->mouseNoLongerOnWidget();
             m_horizontalScrollbar->mouseNoLongerOnWidget();
