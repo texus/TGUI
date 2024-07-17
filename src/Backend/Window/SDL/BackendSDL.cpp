@@ -273,15 +273,7 @@ namespace tgui
 
     String BackendSDL::getClipboard() const
     {
-        String contents;
-        char* text = SDL_GetClipboardText();
-        if (text)
-        {
-            contents = text;
-            SDL_free(text);
-        }
-
-        return contents;
+        return {SDL_GetClipboardText()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

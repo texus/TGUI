@@ -87,7 +87,8 @@ namespace tgui
             {
                 SDL_SetTextureScaleMode(m_texture, smooth ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
 
-                // We need to set the blendmode if we want SDL to render our alpha channel correctly (otherwise all letters will be colored rectangles)
+                // We need to set the blendmode if we want SDL to render our alpha channel correctly (otherwise all letters will be colored rectangles).
+                // This might no longer be needed with SDL3.
                 SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
             }
 #else
@@ -170,20 +171,24 @@ namespace tgui
         float height;
         if (SDL_GetTextureSize(texture, &width, &height) == 0)
             m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
+
+        m_isSmooth = (SDL_GetTextureScaleMode(m_texture) != SDL_SCALEMODE_NEAREST);
+#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+   || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+        int width;
+        int height;
+        if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) == 0)
+            m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
+
+        SDL_ScaleMode scaleMode;
+        if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
+            m_isSmooth = (scaleMode != SDL_SCALEMODE_NEAREST);
 #else
         int width;
         int height;
         if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) == 0)
             m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
-#endif
 
-#if (SDL_MAJOR_VERSION > 2) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
-        SDL_ScaleMode scaleMode;
-        if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
-            m_isSmooth = (scaleMode != SDL_SCALEMODE_NEAREST);
-#else
         // We have no way of knowing whether the texture was created with smoothing enabled or not.
         // Except for some unrealistic edge cases it doesn't matter what we set the value to though.
         m_isSmooth = (GetCurrentSDLScaleMode() != SDL_SCALEMODE_NEAREST);
