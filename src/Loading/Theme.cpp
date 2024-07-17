@@ -721,7 +721,10 @@ namespace tgui
         for (auto pair : m_renderers)
         {
             const auto& renderer = pair.second;
-            for (auto& observer : renderer->observers)
+
+            // Make a copy of the observers because setRenderer alters the observers
+            auto observers = renderer->observers;
+            for (auto* observer : observers)
                 observer->setRenderer(renderer);
         }
 
