@@ -78,7 +78,12 @@ namespace tgui
             return;
 
         // Store the current blend mode, in case we need to change it
+#if SDL_MAJOR_VERSION >= 3
         SDL_BlendMode oldBlendMode = SDL_GetRenderDrawBlendMode(m_renderer);
+#else
+        SDL_BlendMode oldBlendMode = SDL_BLENDMODE_BLEND;
+        SDL_GetRenderDrawBlendMode(m_renderer, &oldBlendMode);
+#endif
 
         // Store the current clipping settings, in case we need to change it
         SDL_Rect oldClipRect;
