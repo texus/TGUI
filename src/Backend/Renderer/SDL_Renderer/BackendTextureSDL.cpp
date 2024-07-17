@@ -172,7 +172,9 @@ namespace tgui
         if (SDL_GetTextureSize(texture, &width, &height) == 0)
             m_imageSize = {static_cast<unsigned int>(width), static_cast<unsigned int>(height)};
 
-        m_isSmooth = (SDL_GetTextureScaleMode(m_texture) != SDL_SCALEMODE_NEAREST);
+        SDL_ScaleMode scaleMode;
+        if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
+            m_isSmooth = (scaleMode != SDL_SCALEMODE_NEAREST);
 #elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
    || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
         int width;
