@@ -1,5 +1,11 @@
-TGUI 1.4  (15 July 2024)
-------------------------
+TGUI 1.4.1  (TBD)
+-----------------
+
+- PanelListBox now has proper background color and borders in White theme
+
+
+TGUI 1.4.0  (15 July 2024)
+--------------------------
 
 - New widget: SplitContainer
 - Added MaxValue getter to Scrollbar
