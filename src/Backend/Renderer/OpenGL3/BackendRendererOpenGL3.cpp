@@ -39,7 +39,7 @@ namespace tgui
 
     BackendRendererOpenGL3::BackendRendererOpenGL3(ContextLoadFuncType contextLoadFunction)
     {
-        const int version = tgui_gladLoadGL(reinterpret_cast<GLADloadfunc>(contextLoadFunction));
+        const int version = tgui_gladLoadGL(contextLoadFunction);
         if ((GLAD_VERSION_MAJOR(version) < 3) || ((GLAD_VERSION_MAJOR(version) == 3) && GLAD_VERSION_MINOR(version) < 3))
         {
             if (version == 0)
