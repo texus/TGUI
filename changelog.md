@@ -1,5 +1,5 @@
-TGUI 1.4.1  (TBD)
------------------
+TGUI 1.4.1  (20 July 2024)
+--------------------------
 
 - Fixed infinite loop in Theme::replace (introduced in TGUI 1.4.0)
 - PanelListBox now has proper background color and borders in White theme
