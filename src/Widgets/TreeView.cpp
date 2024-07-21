@@ -540,6 +540,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::vector<String> TreeView::getHoveredItem() const
+    {
+        std::vector<String> hierarchy;
+
+        if (m_hoveredItem < 0)
+            return hierarchy;
+
+        const auto* node = m_visibleNodes[static_cast<std::size_t>(m_hoveredItem)].get();
+        assert(node != nullptr);
+        while (node)
+        {
+            hierarchy.insert(hierarchy.begin(), node->text.getString());
+            node = node->parent;
+        }
+
+        return hierarchy;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TreeView::toggleNodeInternal(std::size_t index)
     {
         if (index >= m_visibleNodes.size())

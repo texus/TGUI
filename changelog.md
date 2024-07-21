@@ -1,3 +1,9 @@
+TGUI 1.5 (TBD)
+--------------
+
+- Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
+
+
 TGUI 1.4.1  (20 July 2024)
 --------------------------
 

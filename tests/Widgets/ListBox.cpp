@@ -400,6 +400,7 @@ TEST_CASE("[ListBox]")
         {
             // Clicking the border does nothing
             mouseMoved({11, 21});
+            REQUIRE(listBox->getHoveredItemIndex() == -1);
             mousePressed({11, 21});
             mouseReleased({11, 21});
             REQUIRE(itemSelectedCount == 0);
@@ -407,6 +408,7 @@ TEST_CASE("[ListBox]")
 
             // Select the first item
             mouseMoved({12, 22});
+            REQUIRE(listBox->getHoveredItemIndex() == 0);
             mousePressed({12, 22});
             mouseReleased({12, 22});
             REQUIRE(itemSelectedCount == 1);

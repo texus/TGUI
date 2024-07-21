@@ -290,6 +290,13 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD int getSelectedItemIndex() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets the index of the item below the mouse cursor
+        ///
+        /// @return The index of the item below the mouse, or -1 when the mouse isn't on top of any item
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD int getHoveredItemIndex() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the amount of items in the panel list box
         ///
         /// @return Number of items inside the list box
@@ -458,11 +465,11 @@ TGUI_MODULE_EXPORT namespace tgui
         };
 
         std::vector<Item> m_items;
-        std::size_t m_maxItems;
-        Panel::Ptr m_panelTemplate;
+        std::size_t m_maxItems = 0;
+        Panel::Ptr m_panelTemplate = Panel::create();
 
-        int m_selectedItem;
-        int m_hoveringItem;
+        int m_selectedItem = -1;
+        int m_hoveringItem = -1;
 
         // Cached renderer properties
         Color m_itemsBackgroundColorCached;

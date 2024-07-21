@@ -224,6 +224,12 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD std::vector<String> getSelectedItem() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the item currently below the mouse cursor
+        /// @return Hierarchy of items, identifying the node below the mouse, or an empty list when the mouse isn't on any item
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD std::vector<String> getHoveredItem() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the node in the tree view at a given hierarchy
         ///
         /// @param hierarchy  Hierarchy of items, identifying the node to retrieve

@@ -279,6 +279,7 @@ TEST_CASE("[PanelListBox]")
         {
             // Clicking the border does nothing
             mouseMoved({11, 21});
+            REQUIRE(panelListBox->getHoveredItemIndex() == -1);
             mousePressed({11, 21});
             mouseReleased({11, 21});
             REQUIRE(itemSelectedCount == 0);
@@ -286,6 +287,7 @@ TEST_CASE("[PanelListBox]")
 
             // Select the first item
             mouseMoved({12, 22});
+            REQUIRE(panelListBox->getHoveredItemIndex() == 0);
             mousePressed({12, 22});
             mouseReleased({12, 22});
             REQUIRE(itemSelectedCount == 1);

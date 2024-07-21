@@ -345,6 +345,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int ListBox::getHoveredItemIndex() const
+    {
+        return m_hoveringItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::changeItem(const String& originalValue, const String& newValue)
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
@@ -662,11 +669,10 @@ namespace tgui
         if (!m_mouseHover)
             mouseEnteredWidget();
 
-        updateHoveringItem(-1);
-
         // Check if the mouse event should go to the scrollbar
         if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->isMouseOnWidget(pos))
         {
+            updateHoveringItem(-1);
             m_scroll->mouseMoved(pos);
             triggerOnScroll();
         }
@@ -698,6 +704,8 @@ namespace tgui
                     }
                 }
             }
+            else // The mouse is on the borders or padding
+                updateHoveringItem(-1);
         }
     }
 

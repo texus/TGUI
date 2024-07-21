@@ -354,6 +354,7 @@ TEST_CASE("[TreeView]")
         {
             // Clicking the border does nothing
             mouseMoved({11, 21});
+            REQUIRE(treeView->getHoveredItem().empty());
             mousePressed({11, 21});
             mouseReleased({11, 21});
             REQUIRE(itemSelectedCount == 0);
@@ -361,6 +362,7 @@ TEST_CASE("[TreeView]")
 
             // Select the first row
             mouseMoved({12, 22});
+            REQUIRE(treeView->getHoveredItem() == std::vector<tgui::String>{"Smilies"});
             mousePressed({12, 22});
             mouseReleased({12, 22});
             REQUIRE(itemSelectedCount == 1);

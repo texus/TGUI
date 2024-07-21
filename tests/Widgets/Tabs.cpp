@@ -266,13 +266,19 @@ TEST_CASE("[Tabs]")
             tabs->select(0);
             REQUIRE(tabSelectedCount == 4);
 
+            REQUIRE(tabs->getHoveredIndex() == -1);
+
             const tgui::Vector2f mousePos1{200, 10};
+            tabs->mouseMoved(mousePos1);
+            REQUIRE(tabs->getHoveredIndex() == 0);
             tabs->leftMousePressed(mousePos1);
             tabs->leftMouseReleased(mousePos1);
             REQUIRE(tabs->getSelected() == "3");
             REQUIRE(tabSelectedCount == 5);
 
             const tgui::Vector2f mousePos2{199, 10};
+            tabs->mouseMoved(mousePos2);
+            REQUIRE(tabs->getHoveredIndex() == 1);
             tabs->leftMousePressed(mousePos2);
             tabs->leftMouseReleased(mousePos2);
             REQUIRE(tabs->getSelected() == "2");

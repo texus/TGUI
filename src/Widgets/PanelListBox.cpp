@@ -42,11 +42,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PanelListBox::PanelListBox(const char* typeName, const bool initRenderer) :
-        ScrollablePanel(typeName, false),
-        m_maxItems(0),
-        m_panelTemplate(Panel::create()),
-        m_selectedItem(-1),
-        m_hoveringItem(-1)
+        ScrollablePanel(typeName, false)
     {
         setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
 
@@ -353,6 +349,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int PanelListBox::getHoveredItemIndex() const
+    {
+        return m_hoveringItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::size_t PanelListBox::getItemCount() const
     {
         return m_items.size();
@@ -433,8 +436,6 @@ namespace tgui
     {
         ScrollablePanel::mouseMoved(pos);
 
-        updateHoveringItem(-1);
-
         if (m_widgetBelowMouse)
         {
             const auto widgetBelowMouseIndex = getIndexByItem(std::dynamic_pointer_cast<Panel>(m_widgetBelowMouse));
@@ -444,6 +445,8 @@ namespace tgui
             if (m_mouseDown && m_selectedItem != m_hoveringItem)
                 updateSelectedItem(m_hoveringItem);
         }
+        else // No widget below the mouse
+            updateHoveringItem(-1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
