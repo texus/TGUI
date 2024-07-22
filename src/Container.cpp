@@ -411,6 +411,12 @@ namespace tgui
         if (m_mouseHover && m_parentGui && (m_mouseCursor != Cursor::Type::Arrow))
             m_parentGui->requestMouseCursor(m_mouseCursor);
 
+        // If a widget still has focus then we will trigger it's unfocus event now.
+        // If we don't do this then the unfocus will occur in the setParent(nullptr) call, which can lead to issues if the
+        // onUnfocus callback tries to alter widgets in the container (due to it being called while looping over the widgets).
+        if (m_focusedWidget)
+            m_focusedWidget->setFocused(false);
+
         for (const auto& widget : m_widgets)
             widget->setParent(nullptr);
 
