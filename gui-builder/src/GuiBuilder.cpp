@@ -334,12 +334,73 @@ void GuiBuilder::mainLoop()
 
                 m_window->close();
             }
+            else if (event.type == tgui::Event::Type::MouseButtonPressed)
+            {
+                if (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree)
+                {
+                    m_gui->handleEvent(event);
+                    passEventToGui = false;
+
+                    m_draggedHierarchyTreeItem = m_widgetHierarchyTree->getHoveredItem();
+
+                    // The form itself cannot be dragged, only widgets inside it
+                    if (m_draggedHierarchyTreeItem.size() == 1)
+                        m_draggedHierarchyTreeItem.clear();
+                }
+                else
+                    m_draggedHierarchyTreeItem.clear();
+            }
             else if (event.type == tgui::Event::Type::MouseButtonReleased)
             {
                 if (m_selectedForm && !m_foregroundPanel)
                 {
-                    if (event.mouseButton.button == tgui::Event::MouseButton::Left)
+                    if (!m_draggedHierarchyTreeItem.empty() && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
+                    {
+                        m_gui->handleEvent(event);
+                        passEventToGui = false;
+
+                        auto hoveredItem = m_widgetHierarchyTree->getHoveredItem();
+                        if (!hoveredItem.empty())
+                        {
+                            tgui::Widget::Ptr widgetToMove = m_selectedForm->getWidgetByName(m_draggedHierarchyTreeItem.back())->ptr;
+                            tgui::Widget::Ptr widgetAtDropLocation = hoveredItem.size() >= 2 ? m_selectedForm->getWidgetByName(hoveredItem.back())->ptr : m_selectedForm->getRootWidgetsGroup();
+
+                            if (widgetToMove != widgetAtDropLocation)
+                            {
+                                saveUndoState(GuiBuilder::UndoType::HierarchyChange);
+
+                                widgetToMove->getParent()->remove(widgetToMove);
+                                if (widgetAtDropLocation->isContainer())
+                                {
+                                    auto parent = widgetAtDropLocation->cast<tgui::Container>();
+                                    parent->add(widgetToMove);
+
+                                    // We want the widget to appear directly below the parent in the tree view,
+                                    // otherwise the move might not be clear if the container has many widget.
+                                    parent->moveWidgetToBack(widgetToMove);
+                                }
+                                else // Make the widget a sibling of the one where it was dropped on
+                                {
+                                    auto parent = widgetAtDropLocation->getParent();
+                                    parent->add(widgetToMove);
+
+                                    assert(parent->getWidgetIndex(widgetAtDropLocation) >= 0);
+                                    parent->setWidgetIndex(widgetToMove, static_cast<std::size_t>(parent->getWidgetIndex(widgetAtDropLocation)) + 1);
+                                }
+
+                                m_selectedWidgetComboBox->setSelectedItemById(widgetPtrToStrId(widgetToMove));
+                                widgetHierarchyChanged();
+                                m_selectedForm->updateSelectionSquarePositions(); // Absolute widget position moved if it's parent changed
+                                m_selectedForm->setChanged(true);
+                            }
+                        }
+
+                        m_draggedHierarchyTreeItem.clear();
+                    }
+                    else if (event.mouseButton.button == tgui::Event::MouseButton::Left)
+                    {
                         m_selectedForm->mouseReleased();
+                    }
                     else if (event.mouseButton.button == tgui::Event::MouseButton::Right)
                     {
                         if (m_popupMenu)
@@ -2791,6 +2852,7 @@ void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& h
 
 void GuiBuilder::widgetHierarchyChanged()
 {
+    const auto oldScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbarValue();
     m_widgetHierarchyTree->removeAllItems();
 
     if (m_selectedForm == nullptr)
@@ -2800,6 +2862,7 @@ void GuiBuilder::widgetHierarchyChanged()
     fillWidgetHierarchyTreeRecursively(widgetHiearchy, m_selectedForm->getRootWidgetsGroup());
 
     updateSelectedWidgetHierarchy();
+    m_widgetHierarchyTree->setVerticalScrollbarValue(oldScrollbarValue);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2905,6 +2968,9 @@ void GuiBuilder::saveUndoState(GuiBuilder::UndoType type)
     case GuiBuilder::UndoType::PropertyEdit:
         descString = "Property Edit";
         break;
+    case GuiBuilder::UndoType::HierarchyChange:
+        descString = "Hierarchy Change";
+        break;
     }
 
     // Starts deleting beginning history of saved states if > max ammount set to prevent overflow or excess memory usage
@@ -2933,6 +2999,8 @@ void GuiBuilder::loadUndoState()
     if (selectedWidget)
         selectedWidgetName = selectedWidget->name;
 
+    const auto oldHierarchyScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbarValue();
+
     const tgui::String filename = m_selectedForm->getFilename();
     m_selectedForm = nullptr;
     m_forms.clear();
@@ -2955,6 +3023,8 @@ void GuiBuilder::loadUndoState()
     m_selectedForm->focus();
     m_selectedForm->setSize(formSize);
     m_selectedForm->setChanged(true);
+
+    m_widgetHierarchyTree->setVerticalScrollbarValue(oldHierarchyScrollbarValue);
 
     if (!selectedWidgetName.empty())
         m_selectedForm->selectWidgetByName(selectedWidgetName);

@@ -83,7 +83,8 @@ public:
         SendtoFront,
         SendtoBack,
         CreateNew,
-        PropertyEdit
+        PropertyEdit,
+        HierarchyChange,
     };
 
     GuiBuilder(const tgui::String& programName);
@@ -194,6 +195,7 @@ private:
     PropertyValueMapPair m_propertyValuePairs;
 
     std::vector<CopiedWidget> m_copiedWidgets;
+    std::vector<tgui::String> m_draggedHierarchyTreeItem;
 
     std::map<tgui::String, tgui::Theme> m_themes;
     tgui::String m_defaultTheme;
