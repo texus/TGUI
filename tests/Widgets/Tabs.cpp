@@ -270,7 +270,7 @@ TEST_CASE("[Tabs]")
 
             const tgui::Vector2f mousePos1{200, 10};
             tabs->mouseMoved(mousePos1);
-            REQUIRE(tabs->getHoveredIndex() == 0);
+            REQUIRE(tabs->getHoveredIndex() == 2);
             tabs->leftMousePressed(mousePos1);
             tabs->leftMouseReleased(mousePos1);
             REQUIRE(tabs->getSelected() == "3");
