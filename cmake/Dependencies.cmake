@@ -636,6 +636,7 @@ macro(tgui_add_dependency_x11)
         message(FATAL_ERROR "X11 isn't supported on this platform")
     endif()
 
+    unset(TGUI_USE_X11) # We had it set to FALSE in case we never add X11 as a dependency and don't get here
     tgui_set_option(TGUI_USE_X11 TRUE BOOL "Set to FALSE if you don't want to link to X11. Note that doing so will prevent some mouse cursors from showing correctly.")
     mark_as_advanced(TGUI_USE_X11)
 
