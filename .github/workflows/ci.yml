@@ -181,7 +181,7 @@ jobs:
         run: >
           CXXFLAGS="-fprofile-arcs -ftest-coverage -DTGUI_REMOVE_DEPRECATED_CODE"
           cmake -B build
-          -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
+          -DSFML_ROOT="$GITHUB_WORKSPACE/SFML_INSTALL"
           -DSDL3_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL3/"
           -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
@@ -207,7 +207,7 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
-          make -C build -j$(nproc)
+          sudo make -C build -j$(nproc) install
 
       - name: Run tests
         working-directory: TGUI/build/tests
@@ -223,6 +223,20 @@ jobs:
           MESA_GLES_VERSION_OVERRIDE=3.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_GLES2
           MESA_GL_VERSION_OVERRIDE=4.5 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_OPENGL3
           MESA_GLES_VERSION_OVERRIDE=2.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
+
+      - name: Test TGUIConfig.cmake
+        working-directory: TGUI
+        run: >
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+          -DSFML_ROOT="$GITHUB_WORKSPACE/SFML_INSTALL/"
+          -DSDL3_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL3/"
+          -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
+          -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
+          -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+
+          cmake --build tests/cmake/build --config Release
+
+          test -e tests/cmake/build/TguiTest
 
       - name: Upload coverage reports to Codecov
         working-directory: TGUI
@@ -392,7 +406,20 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
-          cmake --build TGUI-build-clang --config Debug
+          sudo cmake --build TGUI-build-clang --config Debug --target install
+
+      - name: Test TGUIConfig.cmake
+        run: >
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+          -DSFML_DIR="$GITHUB_WORKSPACE/SFML_INSTALL/lib/cmake/SFML/"
+          -DSDL2_DIR="$GITHUB_WORKSPACE/SDL_INSTALL/lib/cmake/SDL2/"
+          -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
+          -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
+          -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+
+          cmake --build tests/cmake/build --config Debug
+
+          test -e tests/cmake/build/TguiTest
 
   #----------------------------------------
 
@@ -421,7 +448,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=SFML_GRAPHICS
 
-          cmake --build TGUI-build-SFML_GRAPHICS --config Release
+          sudo cmake --build TGUI-build-SFML_GRAPHICS --config Release --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Release
 
       - name: Build TGUI (SDL_RENDERER)
         run: >
@@ -435,7 +466,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=SDL_RENDERER
 
-          cmake --build TGUI-build-SDL_RENDERER --config Debug
+          sudo cmake --build TGUI-build-SDL_RENDERER --config Debug --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Debug
 
       - name: Build TGUI (SDL_TTF_GLES2)
         run: >
@@ -449,7 +484,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=SDL_TTF_GLES2
 
-          cmake --build TGUI-build-SDL_TTF_GLES2 --config Release
+          sudo cmake --build TGUI-build-SDL_TTF_GLES2 --config Release --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Debug
 
       - name: Build TGUI (SDL_OPENGL3)
         run: >
@@ -463,7 +502,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=SDL_OPENGL3
 
-          cmake --build TGUI-build-SDL_OPENGL3 --config Release
+          sudo cmake --build TGUI-build-SDL_OPENGL3 --config Debug --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Release
 
       - name: Build TGUI (GLFW_OPENGL3)
         run: >
@@ -477,7 +520,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=GLFW_OPENGL3
 
-          cmake --build TGUI-build-GLFW_OPENGL3 --config Debug
+          sudo cmake --build TGUI-build-GLFW_OPENGL3 --config Release --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Debug
 
       - name: Build TGUI (RAYLIB)
         run: >
@@ -491,7 +538,11 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=RAYLIB
 
-          cmake --build TGUI-build-RAYLIB --config Debug
+          sudo cmake --build TGUI-build-RAYLIB --config Debug --target install
+
+          cmake -GNinja -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Release
 
   #----------------------------------------
 
@@ -540,13 +591,14 @@ jobs:
       - name: Build TGUI
         run: >
           cmake -B TGUI-build -T v${env:MSVC_TOOLSET_VERSION} -A Win32
-          -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DSFML_ROOT="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/"
           -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -Draylib_ROOT="${env:GITHUB_WORKSPACE}/RAYLIB_INSTALL/"
+          -DCMAKE_INSTALL_PREFIX=TGUI-build/install
           -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=23
@@ -560,7 +612,20 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
-          cmake --build TGUI-build --config Debug
+          cmake --build TGUI-build --config Debug --target install
+
+      - name: Test TGUIConfig.cmake
+        run: >
+          cmake -T v${env:MSVC_TOOLSET_VERSION} -A Win32 -S tests/cmake -B tests/cmake/build
+          -DTGUI_ROOT="${env:GITHUB_WORKSPACE}/TGUI-build/install"
+          -DSFML_ROOT="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}"
+          -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
+          -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
+          -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
+          -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
+          -Draylib_ROOT="${env:GITHUB_WORKSPACE}/RAYLIB_INSTALL/"
+
+          cmake --build tests/cmake/build --config Debug
 
   #----------------------------------------
 
@@ -599,6 +664,7 @@ jobs:
           -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
           -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
+          -DCMAKE_INSTALL_PREFIX=TGUI-build/install
           -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
           -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
           -DBUILD_SHARED_LIBS=ON
@@ -612,7 +678,18 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build TGUI-build --config Release
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build TGUI-build --config Release --target install
+
+      - name: Test TGUIConfig.cmake
+        run: >
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe"
+          -T "v${env:MSVC_TOOLSET_VERSION}" -A Win32 -S tests/cmake -B tests/cmake/build
+          -DTGUI_DIR="${env:GITHUB_WORKSPACE}/TGUI-build/install/lib/cmake/TGUI/"
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
+          -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
+          -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
+
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build tests/cmake/build --config Release
 
   #----------------------------------------
 
@@ -725,6 +802,7 @@ jobs:
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/lib-vc2019/glfw3_mt.lib"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
+          -DCMAKE_INSTALL_PREFIX=TGUI-build/install
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=OFF
           -DTGUI_USE_STATIC_STD_LIBS=ON
@@ -737,7 +815,22 @@ jobs:
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe" --build TGUI-build --config Release
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe" --build TGUI-build --config Release --target install
+
+      - name: Test TGUIConfig.cmake
+        run: >
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe"
+          -T "v${env:MSVC_TOOLSET_VERSION}" -A x64 -S tests/cmake -B tests/cmake/build
+          -DTGUI_ROOT="${env:GITHUB_WORKSPACE}/TGUI-build/install"
+          -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML_INSTALL/lib/cmake/SFML/"
+          -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/include"
+          -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/lib-vc2019/glfw3_mt.lib"
+          -DFREETYPE_INCLUDE_DIR_ft2build="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}/include"
+          -DFREETYPE_INCLUDE_DIR_freetype2="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}/include"
+          -DFREETYPE_LIBRARY="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}/release static/vs2015-2022/win64/freetype.lib"
+          -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe" --build tests/cmake/build --config Release
 
   #----------------------------------------
 
@@ -754,6 +847,7 @@ jobs:
       - name: Build TGUI (dylibs)
         run: >
           cmake -B TGUI-build-dylibs -GNinja
+          -DCMAKE_INSTALL_PREFIX=TGUI-build-dylibs/install
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_BUILD_FRAMEWORK=OFF
@@ -771,11 +865,16 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
-          cmake --build TGUI-build-dylibs --config Debug
+          cmake --build TGUI-build-dylibs --config Debug --target install
+
+          cmake -GNinja -DTGUI_ROOT="$GITHUB_WORKSPACE/TGUI-build-dylibs/install/" -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Debug
 
       - name: Build TGUI (frameworks)
         run: >
           cmake -B TGUI-build-framework -GNinja
+          -DCMAKE_INSTALL_PREFIX=TGUI-build-frameworks/install
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_BUILD_FRAMEWORK=ON
@@ -793,7 +892,11 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
-          cmake --build TGUI-build-framework --config Release
+          cmake --build TGUI-build-framework --config Release --target install
+
+          cmake -GNinja -DTGUI_ROOT="$GITHUB_WORKSPACE/TGUI-build-frameworks/install/" -S tests/cmake -B tests/cmake/build
+
+          cmake --build tests/cmake/build --config Debug
 
   #----------------------------------------
 

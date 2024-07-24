@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 project(TGUI-CMake-test)
 
 add_executable(TguiTest main.cpp)
