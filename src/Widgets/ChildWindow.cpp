@@ -520,9 +520,6 @@ namespace tgui
         if (m_titleButtons & TitleButton::Close)
         {
             m_closeButton->setVisible(true);
-            m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
-            m_closeButton->setInheritedOpacity(m_opacityCached);
-
             if (m_showTextOnTitleButtonsCached)
                 m_closeButton->setText(U"\u2715");
             else
@@ -533,14 +530,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Maximize)
         {
-            auto buttonRenderer = getSharedRenderer()->getMaximizeButton();
-            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
-                buttonRenderer = getSharedRenderer()->getCloseButton();
-
             m_maximizeButton->setVisible(true);
-            m_maximizeButton->setRenderer(buttonRenderer);
-            m_maximizeButton->setInheritedOpacity(m_opacityCached);
-
             if (m_showTextOnTitleButtonsCached)
                 m_maximizeButton->setText(U"\u2610");
             else
@@ -551,14 +541,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Minimize)
         {
-            auto buttonRenderer = getSharedRenderer()->getMinimizeButton();
-            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
-                buttonRenderer = getSharedRenderer()->getCloseButton();
-
             m_minimizeButton->setVisible(true);
-            m_minimizeButton->setRenderer(buttonRenderer);
-            m_minimizeButton->setInheritedOpacity(m_opacityCached);
-
             if (m_showTextOnTitleButtonsCached)
                 m_minimizeButton->setText(U"\u2043");
             else
@@ -1151,40 +1134,35 @@ namespace tgui
         }
         else if (property == U"CloseButton")
         {
-            if (m_closeButton->isVisible())
-            {
-                m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
-                m_closeButton->setInheritedOpacity(m_opacityCached);
-            }
+            auto closeButtonRenderer = getSharedRenderer()->getCloseButton();
+            m_closeButton->setRenderer(closeButtonRenderer);
+
+            const auto maximizeButtonRenderer = getSharedRenderer()->getMaximizeButton();
+            if (!maximizeButtonRenderer || (maximizeButtonRenderer->propertyValuePairs.empty() && !maximizeButtonRenderer->connectedTheme))
+                m_maximizeButton->setRenderer(closeButtonRenderer);
+
+            const auto minimizeButtonRenderer = getSharedRenderer()->getMinimizeButton();
+            if (!minimizeButtonRenderer || (minimizeButtonRenderer->propertyValuePairs.empty() && !minimizeButtonRenderer->connectedTheme))
+                m_minimizeButton->setRenderer(closeButtonRenderer);
 
             updateTitleBarHeight();
         }
         else if (property == U"MaximizeButton")
         {
-            if (m_maximizeButton->isVisible())
-            {
-                auto buttonRenderer = getSharedRenderer()->getMaximizeButton();
-                if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
-                    buttonRenderer = getSharedRenderer()->getCloseButton();
+            auto buttonRenderer = getSharedRenderer()->getMaximizeButton();
+            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                buttonRenderer = getSharedRenderer()->getCloseButton();
 
-                m_maximizeButton->setRenderer(buttonRenderer);
-                m_maximizeButton->setInheritedOpacity(m_opacityCached);
-            }
-
+            m_maximizeButton->setRenderer(buttonRenderer);
             updateTitleBarHeight();
         }
         else if (property == U"MinimizeButton")
         {
-            if (m_minimizeButton->isVisible())
-            {
-                auto buttonRenderer = getSharedRenderer()->getMinimizeButton();
-                if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
-                    buttonRenderer = getSharedRenderer()->getCloseButton();
+            auto buttonRenderer = getSharedRenderer()->getMinimizeButton();
+            if (!buttonRenderer || (buttonRenderer->propertyValuePairs.empty() && !buttonRenderer->connectedTheme))
+                buttonRenderer = getSharedRenderer()->getCloseButton();
 
-                m_minimizeButton->setRenderer(buttonRenderer);
-                m_minimizeButton->setInheritedOpacity(m_opacityCached);
-            }
-
+            m_minimizeButton->setRenderer(buttonRenderer);
             updateTitleBarHeight();
         }
         else if (property == U"BackgroundColor")
@@ -1208,10 +1186,7 @@ namespace tgui
             Container::rendererChanged(property);
 
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
-            {
-                if (button->isVisible())
-                    button->setInheritedOpacity(m_opacityCached);
-            }
+                button->setInheritedOpacity(m_opacityCached);
 
             m_titleText.setOpacity(m_opacityCached);
             m_spriteTitleBar.setOpacity(m_opacityCached);
