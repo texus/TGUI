@@ -449,10 +449,7 @@ namespace tgui
         m_horizontalScrollAmount = scrollAmount;
 
         if (scrollAmount == 0)
-        {
-            const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getViewportSize()) / m_horizontalScrollbar->getViewportSize());
-            m_horizontalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
-        }
+            m_horizontalScrollbar->setScrollAmount(getGlobalTextSize() * 5);
         else
             m_horizontalScrollbar->setScrollAmount(scrollAmount);
     }
