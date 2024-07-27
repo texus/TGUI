@@ -456,4 +456,36 @@ TEST_CASE("[ScrollablePanel]")
             TEST_DRAW("ScrollablePanel_SmallContentSize_HorizontalScrollbar.png")
         }
     }
+
+    SECTION("Dynamic resizing issues")
+    {
+        // The scrollable panel shouldn't enter an infinite loop when we resize its children
+        // when scrollbars appear so that the scrollbar isn't needed anymore.
+
+        panel->setSize(140, 115);
+        panel->getRenderer()->setBorders({1});
+
+        auto button = tgui::Button::create();
+        button->setSize("100%", "100%");
+        panel->add(button);
+        REQUIRE(button->getSize() == tgui::Vector2f{138, 113});
+        button->setPosition(1, 0);
+        REQUIRE(button->getSize() == tgui::Vector2f{138 - panel->getScrollbarWidth(), 113 - panel->getScrollbarWidth()});
+
+        button->setSize(20, 10);
+        button->setPosition(0, 1);
+        button->setSize("100%", "100%");
+        REQUIRE(button->getSize() == tgui::Vector2f{138 - panel->getScrollbarWidth(), 113 - panel->getScrollbarWidth()});
+
+        panel->removeAllWidgets();
+
+        for (unsigned i = 1; i <= 2; ++i)
+        {
+            const int btnPerRow = 2;
+            auto btn = tgui::Button::create();
+            btn->setSize(("100%"-(btnPerRow+1)*tgui::Layout("5%"))/btnPerRow, tgui::bindWidth(btn));
+            btn->setPosition("5%"+(i%btnPerRow)*(tgui::bindWidth(btn)+"5%"), "5%"+(i/btnPerRow)*(tgui::bindWidth(btn)+"5%"));
+            panel->add(btn);
+        }
+    }
 }

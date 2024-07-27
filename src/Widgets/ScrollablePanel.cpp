@@ -67,6 +67,8 @@ namespace tgui
         m_horizontalScrollAmount    {other.m_horizontalScrollAmount},
         m_verticalScrollbarWasVisibleOnSizeUpdate{other.m_verticalScrollbarWasVisibleOnSizeUpdate},
         m_horizontalScrollbarWasVisibleOnSizeUpdate{other.m_horizontalScrollbarWasVisibleOnSizeUpdate},
+        m_recalculatingSizeDuringUpdateScrollbars{false},
+        m_stuckInUpdateScrollbars   {false},
         m_connectedPositionCallbacks{},
         m_connectedSizeCallbacks    {}
     {
@@ -91,6 +93,8 @@ namespace tgui
         m_horizontalScrollAmount    {std::move(other.m_horizontalScrollAmount)},
         m_verticalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate)},
         m_horizontalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate)},
+        m_recalculatingSizeDuringUpdateScrollbars{false},
+        m_stuckInUpdateScrollbars   {false},
         m_connectedPositionCallbacks{std::move(other.m_connectedPositionCallbacks)},
         m_connectedSizeCallbacks    {std::move(other.m_connectedSizeCallbacks)}
     {
@@ -120,6 +124,8 @@ namespace tgui
             m_horizontalScrollAmount    = other.m_horizontalScrollAmount;
             m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
             m_horizontalScrollbarWasVisibleOnSizeUpdate = other.m_horizontalScrollbarWasVisibleOnSizeUpdate;
+            m_recalculatingSizeDuringUpdateScrollbars = false;
+            m_stuckInUpdateScrollbars = false;
 
             disconnectAllChildWidgets();
 
@@ -147,8 +153,10 @@ namespace tgui
             m_horizontalScrollbarPolicy = std::move(other.m_horizontalScrollbarPolicy);
             m_verticalScrollAmount      = std::move(other.m_verticalScrollAmount);
             m_horizontalScrollAmount    = std::move(other.m_horizontalScrollAmount);
-            m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
-            m_horizontalScrollbarWasVisibleOnSizeUpdate = other.m_horizontalScrollbarWasVisibleOnSizeUpdate;
+            m_verticalScrollbarWasVisibleOnSizeUpdate = std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate);
+            m_horizontalScrollbarWasVisibleOnSizeUpdate = std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate);
+            m_recalculatingSizeDuringUpdateScrollbars = false;
+            m_stuckInUpdateScrollbars = false;
             Panel::operator=(std::move(other));
 
             disconnectAllChildWidgets();
@@ -239,9 +247,8 @@ namespace tgui
             if (bottomRight.y > m_mostBottomRightPosition.y)
                 m_mostBottomRightPosition.y = bottomRight.y;
 
-            updateScrollbars();
-
             connectPositionAndSize(widget);
+            updateScrollbars();
         }
     }
 
@@ -853,17 +860,28 @@ namespace tgui
         m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.y));
 
         const Vector2f contentSize = getContentSize();
-        m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.x));
-        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.y));
+        if (m_stuckInUpdateScrollbars)
+        {
+            // If the user resizes widgets based on the panel's content size then they will be resized when a scrollbar becomes visible.
+            // It is possible for the widget to change to a size where the scrollbar is no longer needed. If we were to hide the scrollbar
+            // then this would lead to an infinite cycle. So if the scrollbars are updated while an update is already busy, then we will
+            // never shrink the scrollable space.
+            m_horizontalScrollbar->setMaximum(std::max(m_horizontalScrollbar->getMaximum(), static_cast<unsigned int>(contentSize.x)));
+            m_verticalScrollbar->setMaximum(std::max(m_verticalScrollbar->getMaximum(), static_cast<unsigned int>(contentSize.y)));
+        }
+        else
+        {
+            m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.x));
+            m_verticalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.y));
+        }
 
-        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
+        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isShown();
         if (horizontalScrollbarVisible)
         {
             m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
-            if (verticalScrollbarVisible)
+            if (m_verticalScrollbar->isShown())
             {
                 m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
@@ -874,15 +892,16 @@ namespace tgui
         else
         {
             m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y);
-
-            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
-            if (verticalScrollbarVisible)
+            if (m_verticalScrollbar->isShown())
             {
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
                 m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
 
-                if (m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize())))
+                if (m_horizontalScrollbar->isShown())
+                {
                     m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
+                    m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
+                }
             }
             else
                 m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
@@ -897,11 +916,24 @@ namespace tgui
         if (m_horizontalScrollAmount == 0)
             setHorizontalScrollAmount(0);
 
-        if ((m_horizontalScrollbarWasVisibleOnSizeUpdate != m_horizontalScrollbar->isShown()) || (m_verticalScrollbarWasVisibleOnSizeUpdate != m_verticalScrollbar->isShown()))
+        const bool horizontalScrollbarShown = m_horizontalScrollbar->isShown();
+        const bool verticalScrollbarShown = m_verticalScrollbar->isShown();
+        if ((m_horizontalScrollbarWasVisibleOnSizeUpdate != horizontalScrollbarShown) || (m_verticalScrollbarWasVisibleOnSizeUpdate != verticalScrollbarShown))
         {
-            m_horizontalScrollbarWasVisibleOnSizeUpdate = m_horizontalScrollbar->isShown();
-            m_verticalScrollbarWasVisibleOnSizeUpdate = m_verticalScrollbar->isShown();
+            // We will allow widgets to update once when the scrollbars become visible or are hidden.
+            // If we reach this point a second time, then changing the scrollbars affected the widgets
+            // so that the scrollbars would need to be updated again. To break out of the infinite loop
+            // of showing and hiding the scrollbars, we will stop shrinking the content area even if
+            // the widgets shrink during the update.
+            if (m_recalculatingSizeDuringUpdateScrollbars)
+                m_stuckInUpdateScrollbars = true;
+
+            m_recalculatingSizeDuringUpdateScrollbars = true;
+            m_horizontalScrollbarWasVisibleOnSizeUpdate = horizontalScrollbarShown;
+            m_verticalScrollbarWasVisibleOnSizeUpdate = verticalScrollbarShown;
             recalculateBoundSizeLayouts();
+            m_recalculatingSizeDuringUpdateScrollbars = false;
+            m_stuckInUpdateScrollbars = false;
         }
     }
 

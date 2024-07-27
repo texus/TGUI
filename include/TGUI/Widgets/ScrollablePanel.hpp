@@ -433,6 +433,8 @@ TGUI_MODULE_EXPORT namespace tgui
 
         bool m_verticalScrollbarWasVisibleOnSizeUpdate = false;
         bool m_horizontalScrollbarWasVisibleOnSizeUpdate = false;
+        bool m_recalculatingSizeDuringUpdateScrollbars = false;
+        bool m_stuckInUpdateScrollbars = false;
 
         std::unordered_map<Widget::Ptr, unsigned int> m_connectedPositionCallbacks;
         std::unordered_map<Widget::Ptr, unsigned int> m_connectedSizeCallbacks;
