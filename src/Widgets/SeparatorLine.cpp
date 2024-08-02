@@ -90,6 +90,8 @@ namespace tgui
     {
         if (property == U"Color")
             m_colorCached = getSharedRenderer()->getColor();
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
