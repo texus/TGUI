@@ -25,7 +25,6 @@
 #ifndef TGUI_FILE_DIALOG_HPP
 #define TGUI_FILE_DIALOG_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/EditBox.hpp>

@@ -25,7 +25,6 @@
 #ifndef TGUI_TREE_VIEW_HPP
 #define TGUI_TREE_VIEW_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TreeViewRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -37,7 +36,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Tree view widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API TreeView : public Widget
+    class TGUI_API TreeView : public Widget, public DualScrollbarChildInterface
     {
     public:
 
@@ -266,14 +265,14 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param value  New value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setValue(value) instead") void setVerticalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the vertical scrollbar
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -282,21 +281,21 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
         ///
         /// @param value  New value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setValue(value) instead") void setHorizontalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the horizontal scrollbar
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -305,7 +304,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -415,6 +414,14 @@ TGUI_MODULE_EXPORT namespace tgui
         void updateTextSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the policy of one of the scrollbars has been changed calling either
+        ///        getVerticalScrollbar()->setPolicy(...) or getHorizontalScrollbar()->setPolicy(...)
+        ///
+        /// @param orientation  Vertical or Horizontal depending on which scrollbar triggered the callback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollbarPolicyChanged(Orientation orientation) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size without the borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f getInnerSize() const;
@@ -507,9 +514,6 @@ TGUI_MODULE_EXPORT namespace tgui
         float m_maxRight = 0;
 
         Vector2f m_iconBounds;
-
-        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
-        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
 
         bool m_possibleDoubleClick = false;
         int m_doubleClickNodeIndex = -1;

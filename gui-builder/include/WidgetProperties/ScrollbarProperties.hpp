@@ -41,8 +41,8 @@ struct ScrollbarProperties : WidgetProperties
             scrollbar->setViewportSize(value.toUInt());
         else if (property == "ScrollAmount")
             scrollbar->setScrollAmount(value.toUInt());
-        else if (property == "AutoHide")
-            scrollbar->setAutoHide(parseBoolean(value, true));
+        else if (property == "Policy")
+            scrollbar->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "Orientation")
             scrollbar->setOrientation(deserializeOrientation(value));
         else
@@ -57,7 +57,7 @@ struct ScrollbarProperties : WidgetProperties
         pair.first["Value"] = {"UInt", tgui::String::fromNumber(scrollbar->getValue())};
         pair.first["ViewportSize"] = {"UInt", tgui::String::fromNumber(scrollbar->getViewportSize())};
         pair.first["ScrollAmount"] = {"UInt", tgui::String::fromNumber(scrollbar->getScrollAmount())};
-        pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
+        pair.first["Policy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(scrollbar->getPolicy())};
         pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(scrollbar->getOrientation())};
 
         const auto renderer = scrollbar->getSharedRenderer();

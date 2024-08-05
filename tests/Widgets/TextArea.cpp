@@ -295,6 +295,19 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getTabString() == "abc\u20AC");
     }
 
+    SECTION("Scrollbar access")
+    {
+        textArea->setSize(200, 100);
+        textArea->setTextSize(18);
+        textArea->setText("Cupcake ipsum dolor sit amet cotton candy. Ice cream chocolate cake soufflé lollipop marzipan sesame snaps. Marzipan bear claw halvah tiramisu pie.");
+        testScrollbarAccess(textArea->getVerticalScrollbar());
+
+        REQUIRE(textArea->getHorizontalScrollbar()->getPolicy() == tgui::Scrollbar::Policy::Never);
+        textArea->getHorizontalScrollbar()->setPolicy(tgui::Scrollbar::Policy::Automatic);
+        textArea->setText(textArea->getText().replace(".", ".\n"));
+        testScrollbarAccess(textArea->getHorizontalScrollbar());
+    }
+
     SECTION("Events / Signals")
     {
         textArea->setSize(165, 100);

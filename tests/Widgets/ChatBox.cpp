@@ -176,6 +176,16 @@ TEST_CASE("[ChatBox]")
         REQUIRE(!chatBox->getLinesStartFromTop());
     }
 
+    SECTION("Scrollbar access")
+    {
+        chatBox->setSize(200, 100);
+        chatBox->setTextSize(18);
+        chatBox->addLine("Cupcake ipsum dolor sit amet sweet roll danish liquorice biscuit.");
+        chatBox->addLine("Bonbon biscuit pie pie sweet halvah danish dessert wafer.");
+        chatBox->addLine("Donut chocolate bar sesame snaps caramels carrot cake.");
+        testScrollbarAccess(chatBox->getScrollbar());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")

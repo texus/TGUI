@@ -1097,7 +1097,7 @@ void GuiBuilder::loadToolbox()
 
         auto verticalLayout = tgui::VerticalLayout::create();
         verticalLayout->setPosition(0, topPosition);
-        verticalLayout->setSize({bindWidth(toolbox) - toolbox->getScrollbarWidth(), icon->getSize().y + 4});
+        verticalLayout->setSize({bindWidth(toolbox) - toolbox->getVerticalScrollbar()->getWidth(), icon->getSize().y + 4});
         verticalLayout->getRenderer()->setPadding({2});
 
         auto panel = tgui::Panel::create();
@@ -1215,7 +1215,7 @@ void GuiBuilder::initProperties()
 
     if (selectedWidget)
     {
-        const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+        const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
         auto rendererComboBox = tgui::ComboBox::create();
         rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, EDIT_BOX_HEIGHT});
@@ -1256,7 +1256,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
     const auto& property = propertyValuePair.first;
     const auto& type = propertyValuePair.second.first;
     const auto& value = propertyValuePair.second.second;
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto propertyEditBox = m_propertiesContainer->get<tgui::EditBox>("Property" + property);
     if (!propertyEditBox)
@@ -1681,7 +1681,7 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
 
 tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
 
@@ -1706,7 +1706,7 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const tgui::String& prope
 
 tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const tgui::String& property, float topPosition)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto buttonMore = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
     if (!buttonMore)
@@ -1728,7 +1728,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const tgui::String& pro
 
 tgui::Button::Ptr GuiBuilder::addPropertyValueButtonLayoutRelAbs(const tgui::String& property, float topPosition, bool valueIsAbsolute)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto buttonRelAbs = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
     if (!buttonRelAbs)
@@ -1751,7 +1751,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonLayoutRelAbs(const tgui::Str
 
 void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto valueComboBox = m_propertiesContainer->get<tgui::ComboBox>("ValueComboBox" + property);
     if (!valueComboBox)
@@ -1781,7 +1781,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
 
 void GuiBuilder::addPropertyValueColor(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto transparentPicture = m_propertiesContainer->get<tgui::Picture>("ValueTransparentPicture" + property);
     auto colorPreviewPanel = m_propertiesContainer->get<tgui::Panel>("ValueColorPanel" + property);
@@ -2574,7 +2574,7 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
 
 void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<tgui::String>& enumValues)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+    const float scrollbarWidth = m_propertiesContainer->getVerticalScrollbar()->getWidth();
 
     auto valueComboBox = m_propertiesContainer->get<tgui::ComboBox>("ValueComboBox" + property);
     if (!valueComboBox)
@@ -2852,7 +2852,7 @@ void GuiBuilder::fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& h
 
 void GuiBuilder::widgetHierarchyChanged()
 {
-    const auto oldScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbarValue();
+    const auto oldScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbar()->getValue();
     m_widgetHierarchyTree->removeAllItems();
 
     if (m_selectedForm == nullptr)
@@ -2862,7 +2862,7 @@ void GuiBuilder::widgetHierarchyChanged()
     fillWidgetHierarchyTreeRecursively(widgetHiearchy, m_selectedForm->getRootWidgetsGroup());
 
     updateSelectedWidgetHierarchy();
-    m_widgetHierarchyTree->setVerticalScrollbarValue(oldScrollbarValue);
+    m_widgetHierarchyTree->getVerticalScrollbar()->setValue(oldScrollbarValue);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2999,7 +2999,7 @@ void GuiBuilder::loadUndoState()
     if (selectedWidget)
         selectedWidgetName = selectedWidget->name;
 
-    const auto oldHierarchyScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbarValue();
+    const auto oldHierarchyScrollbarValue = m_widgetHierarchyTree->getVerticalScrollbar()->getValue();
 
     const tgui::String filename = m_selectedForm->getFilename();
     m_selectedForm = nullptr;
@@ -3024,7 +3024,7 @@ void GuiBuilder::loadUndoState()
     m_selectedForm->setSize(formSize);
     m_selectedForm->setChanged(true);
 
-    m_widgetHierarchyTree->setVerticalScrollbarValue(oldHierarchyScrollbarValue);
+    m_widgetHierarchyTree->getVerticalScrollbar()->setValue(oldHierarchyScrollbarValue);
 
     if (!selectedWidgetName.empty())
         m_selectedForm->selectWidgetByName(selectedWidgetName);

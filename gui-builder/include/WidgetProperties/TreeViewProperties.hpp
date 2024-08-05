@@ -39,6 +39,10 @@ struct TreeViewProperties : WidgetProperties
             treeView->setTextSize(value.toUInt());
         else if (property == "ItemHeight")
             treeView->setItemHeight(value.toUInt());
+        else if (property == "VerticalScrollbarPolicy")
+            treeView->getVerticalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
+        else if (property == "HorizontalScrollbarPolicy")
+            treeView->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -49,6 +53,8 @@ struct TreeViewProperties : WidgetProperties
         auto treeView = widget->cast<tgui::TreeView>();
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(treeView->getTextSize())};
         pair.first["ItemHeight"] = {"UInt", tgui::String::fromNumber(treeView->getItemHeight())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(treeView->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(treeView->getHorizontalScrollbar()->getPolicy())};
 
         const auto renderer = treeView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

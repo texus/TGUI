@@ -97,28 +97,7 @@ namespace tgui
             return;
         }
 
-        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
-
-        // Show or hide the scrollbar
-        if (m_autoSize)
-            m_scrollbar->setVisible(false);
-        else
-        {
-            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
-            {
-                m_scrollbar->setVisible(true);
-                m_scrollbar->setAutoHide(false);
-            }
-            else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
-            {
-                m_scrollbar->setVisible(false);
-            }
-            else // Scrollbar::Policy::Automatic
-            {
-                m_scrollbar->setVisible(true);
-                m_scrollbar->setAutoHide(true);
-            }
-        }
+        m_scrollbar->setVisible(!m_autoSize);
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
@@ -133,6 +112,7 @@ namespace tgui
         }
 
         // Find the maximum width of one line
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
             maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
@@ -140,8 +120,9 @@ namespace tgui
         {
             maxWidth = getSize().x - outline.getLeft() - outline.getRight() - 2*textOffset;
 
-            // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar
-            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
+            // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
+            // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
+            if (m_scrollbar->getPolicy() == Scrollbar::Policy::Always)
                 maxWidth -= m_scrollbar->getSize().x;
 
             if (maxWidth <= 0)
@@ -174,7 +155,7 @@ namespace tgui
         if (!m_autoSize)
         {
             // If the text doesn't fit in the label then we need to run the word-wrap again, but this time taking the scrollbar into account
-            if ((m_scrollbarPolicy == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
+            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
             {
                 maxWidth -= m_scrollbar->getSize().x;
                 if (maxWidth <= 0)
@@ -186,11 +167,10 @@ namespace tgui
                 requiredTextHeight = calculateTextHeight(*textPiecesLinesPtr, defaultLineSpacing);
             }
 
-            m_scrollbar->setSize(m_scrollbar->getSize().x, static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
+            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
             m_scrollbar->setViewportSize(static_cast<unsigned int>(getSize().y - outline.getTop() - outline.getBottom()));
             m_scrollbar->setMaximum(static_cast<unsigned int>(requiredTextHeight));
             m_scrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop()});
-            m_scrollbar->setScrollAmount(m_textSizeCached);
         }
 
         std::vector<float> lineWidths;

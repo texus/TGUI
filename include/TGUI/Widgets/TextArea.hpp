@@ -25,7 +25,6 @@
 #ifndef TGUI_TEXT_AREA_HPP
 #define TGUI_TEXT_AREA_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TextAreaRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -40,7 +39,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /// A text area is a multi-line input box which supports word-wrap and a vertical scrollbar.
     /// If you are looking for a single line input field then check out the EditBox class.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API TextArea : public Widget
+    class TGUI_API TextArea : public Widget, public DualScrollbarChildInterface
     {
     public:
 
@@ -284,7 +283,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The default policy is Automatic, which means it only shows when the text doesn't fit inside the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getVerticalScrollbar->setPolicy(policy) instead") void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
@@ -292,7 +291,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The default policy is Automatic, which means it only shows when the text doesn't fit inside the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
@@ -300,7 +299,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The default policy is Never, which means word-wrap will be used to keep the text within the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->setPolicy(policy) instead") void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
@@ -308,7 +307,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// The default policy is Never, which means word-wrap will be used to keep the text within the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the amount of lines that the text occupies in the TextArea
@@ -347,14 +346,14 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param value  New value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getVerticalScrollbar->setValue(value) instead") void setVerticalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the vertical scrollbar
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -363,21 +362,21 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
         ///
         /// @param value  New value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->setValue(value) instead") void setHorizontalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the horizontal scrollbar
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -386,7 +385,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -620,6 +619,14 @@ TGUI_MODULE_EXPORT namespace tgui
         void updateTextSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the policy of one of the scrollbars has been changed calling either
+        ///        getVerticalScrollbar()->setPolicy(...) or getHorizontalScrollbar()->setPolicy(...)
+        ///
+        /// @param orientation  Vertical or Horizontal depending on which scrollbar triggered the callback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollbarPolicyChanged(Orientation orientation) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
@@ -675,12 +682,6 @@ TGUI_MODULE_EXPORT namespace tgui
         Text m_defaultText;
 
         std::vector<FloatRect> m_selectionRects;
-
-        // The scrollbars
-        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
-        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
-        Scrollbar::Policy m_verticalScrollbarPolicy = Scrollbar::Policy::Automatic;
-        Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Never;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;

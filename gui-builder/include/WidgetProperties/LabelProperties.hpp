@@ -44,7 +44,7 @@ struct LabelProperties : WidgetProperties
         else if (property == "VerticalAlignment")
             label->setVerticalAlignment(deserializeVerticalAlignment(value));
         else if (property == "ScrollbarPolicy")
-            label->setScrollbarPolicy(deserializeScrollbarPolicy(value));
+            label->getScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "AutoSize")
             label->setAutoSize(parseBoolean(value, true));
         else if (property == "MaximumTextWidth")
@@ -61,7 +61,7 @@ struct LabelProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(label->getTextSize())};
         pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
         pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
-        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(label->getScrollbarPolicy())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(label->getScrollbar()->getPolicy())};
         pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
         pair.first["MaximumTextWidth"] = {"Float", tgui::String::fromNumber(label->getMaximumTextWidth())};
 

@@ -102,8 +102,11 @@ namespace tgui
 
         m_spriteBackground.setSize(getInnerSize());
 
-        m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getInnerSize().y)});
-        m_scroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        const bool scrollbarAtBottom = (m_scrollbar->getValue() == m_scrollbar->getMaxValue());
+        m_scrollbar->setHeight(std::max(0.f, getInnerSize().y));
+        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        if (scrollbarAtBottom && (m_scrollbar->getValue() != m_scrollbar->getMaxValue()))
+            m_scrollbar->setValue(m_scrollbar->getMaxValue());
 
         updateItemPositions();
     }
@@ -116,12 +119,12 @@ namespace tgui
         if ((m_maxItems > 0) && (m_items.size() >= m_maxItems))
             return m_maxItems;
 
-        m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
+        m_scrollbar->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
 
         // Scroll down when auto-scrolling is enabled
-        if (m_autoScroll && (m_scroll->getViewportSize() < m_scroll->getMaximum()))
+        if (m_autoScroll && (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum()))
         {
-            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
+            m_scrollbar->setValue(m_scrollbar->getMaxValue());
             triggerOnScroll();
         }
 
@@ -185,14 +188,14 @@ namespace tgui
         updateSelectedItem(static_cast<int>(index));
 
         // Move the scrollbar
-        if (index * getItemHeight() < m_scroll->getValue())
+        if (index * getItemHeight() < m_scrollbar->getValue())
         {
-            m_scroll->setValue(static_cast<unsigned int>(index) * getItemHeight());
+            m_scrollbar->setValue(static_cast<unsigned int>(index) * getItemHeight());
             triggerOnScroll();
         }
-        else if ((index + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
+        else if ((index + 1) * getItemHeight() > m_scrollbar->getValue() + m_scrollbar->getViewportSize())
         {
-            m_scroll->setValue((static_cast<unsigned int>(index) + 1) * getItemHeight() - m_scroll->getViewportSize());
+            m_scrollbar->setValue((static_cast<unsigned int>(index) + 1) * getItemHeight() - m_scrollbar->getViewportSize());
             triggerOnScroll();
         }
 
@@ -254,7 +257,7 @@ namespace tgui
         // Remove the item
         m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
 
-        m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         updateItemPositions();
         triggerOnScroll();
 
@@ -272,7 +275,7 @@ namespace tgui
         // Clear the list, remove all items
         m_items.clear();
 
-        m_scroll->setMaximum(0);
+        m_scrollbar->setMaximum(0);
         triggerOnScroll();
     }
 
@@ -443,8 +446,12 @@ namespace tgui
                 item.text.setCharacterSize(m_textSizeCached);
         }
 
-        m_scroll->setScrollAmount(m_itemHeight);
-        m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        const bool scrollbarAtBottom = m_scrollbar->getValue() == m_scrollbar->getMaxValue();
+        m_scrollbar->setScrollAmount(m_itemHeight);
+        m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        if (scrollbarAtBottom && (m_scrollbar->getValue() != m_scrollbar->getMaxValue()))
+            m_scrollbar->setValue(m_scrollbar->getMaxValue());
+
         updateItemPositions();
         triggerOnScroll();
     }
@@ -471,6 +478,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::scrollbarValueChanged()
+    {
+        triggerOnScroll();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::setMaximumItems(std::size_t maximumItems)
     {
         // Set the new limit
@@ -487,7 +501,7 @@ namespace tgui
             // Remove the items that passed the limitation
             m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.end());
 
-            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+            m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updateItemPositions();
             triggerOnScroll();
         }
@@ -546,7 +560,7 @@ namespace tgui
 
     void ListBox::setScrollbarValue(unsigned int value)
     {
-        m_scroll->setValue(value);
+        m_scrollbar->setValue(value);
         triggerOnScroll();
     }
 
@@ -554,14 +568,14 @@ namespace tgui
 
     unsigned int ListBox::getScrollbarValue() const
     {
-        return m_scroll->getValue();
+        return m_scrollbar->getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ListBox::getScrollbarMaxValue() const
     {
-        return m_scroll->getMaxValue();
+        return m_scrollbar->getMaxValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -586,9 +600,9 @@ namespace tgui
         Widget::leftMousePressed(pos);
 
         bool isDragging = false;
-        if (m_scroll->isMouseOnWidget(pos))
+        if (m_scrollbar->isMouseOnWidget(pos))
         {
-            isDragging = m_scroll->leftMousePressed(pos);
+            isDragging = m_scrollbar->leftMousePressed(pos);
             triggerOnScroll();
         }
         else
@@ -599,7 +613,7 @@ namespace tgui
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                const int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
+                const int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
@@ -628,7 +642,7 @@ namespace tgui
 
     void ListBox::leftMouseReleased(Vector2f pos)
     {
-        if (m_mouseDown && !m_scroll->isMouseDown())
+        if (m_mouseDown && !m_scrollbar->isMouseDown())
         {
             if (m_selectedItem >= 0)
             {
@@ -654,7 +668,7 @@ namespace tgui
             }
         }
 
-        m_scroll->leftMouseReleased(pos - getPosition());
+        m_scrollbar->leftMouseReleased(pos - getPosition());
         triggerOnScroll();
 
         Widget::leftMouseReleased(pos);
@@ -670,15 +684,15 @@ namespace tgui
             mouseEnteredWidget();
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->isMouseOnWidget(pos))
+        if ((m_scrollbar->isMouseDown() && m_scrollbar->isMouseDownOnThumb()) || m_scrollbar->isMouseOnWidget(pos))
         {
             updateHoveringItem(-1);
-            m_scroll->mouseMoved(pos);
+            m_scrollbar->mouseMoved(pos);
             triggerOnScroll();
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
-            m_scroll->mouseNoLongerOnWidget();
+            m_scrollbar->mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovering
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
@@ -687,14 +701,14 @@ namespace tgui
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
+                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
                     updateHoveringItem(-1);
 
                 // If the mouse is held down then select the item below the mouse
-                if (m_mouseDown && !m_scroll->isMouseDown())
+                if (m_mouseDown && !m_scrollbar->isMouseDown())
                 {
                     if (m_selectedItem != m_hoveringItem)
                     {
@@ -713,10 +727,7 @@ namespace tgui
 
     bool ListBox::scrolled(float delta, Vector2f pos, bool touch)
     {
-        if (!m_scroll->isShown())
-            return false;
-
-        if (!m_scroll->scrolled(delta, pos - getPosition(), touch))
+        if (!m_scrollbar->scrolled(delta, pos - getPosition(), touch))
             return false;
 
         triggerOnScroll();
@@ -731,7 +742,7 @@ namespace tgui
     void ListBox::mouseNoLongerOnWidget()
     {
         Widget::mouseNoLongerOnWidget();
-        m_scroll->mouseNoLongerOnWidget();
+        m_scrollbar->mouseNoLongerOnWidget();
 
         updateHoveringItem(-1);
 
@@ -743,7 +754,7 @@ namespace tgui
     void ListBox::leftMouseButtonNoLongerDown()
     {
         Widget::leftMouseButtonNoLongerDown();
-        m_scroll->leftMouseButtonNoLongerDown();
+        m_scrollbar->leftMouseButtonNoLongerDown();
         triggerOnScroll();
     }
 
@@ -853,19 +864,19 @@ namespace tgui
         }
         else if (property == U"Scrollbar")
         {
-            m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
+            m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
-                m_scroll->setSize({m_scroll->getDefaultWidth(), m_scroll->getSize().y});
+                m_scrollbar->setWidth(m_scrollbar->getDefaultWidth());
                 setSize(m_size);
             }
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
-            m_scroll->setSize({width, m_scroll->getSize().y});
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
+            m_scrollbar->setWidth(width);
             setSize(m_size);
         }
         else if (property == U"BorderColor")
@@ -892,7 +903,7 @@ namespace tgui
         {
             Widget::rendererChanged(property);
 
-            m_scroll->setInheritedOpacity(m_opacityCached);
+            m_scrollbar->setInheritedOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
             for (auto& item : m_items)
                 item.text.setOpacity(m_opacityCached);
@@ -962,6 +973,8 @@ namespace tgui
         node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         node->propertyValuePairs[U"MaximumItems"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxItems));
 
+        saveScrollbarPolicy(node);
+
         return node;
     }
 
@@ -1021,6 +1034,8 @@ namespace tgui
             setMaximumItems(node->propertyValuePairs[U"MaximumItems"]->value.toUInt());
         if (node->propertyValuePairs[U"SelectedItemIndex"])
             setSelectedItemByIndex(node->propertyValuePairs[U"SelectedItemIndex"]->value.toUInt());
+
+        loadScrollbarPolicy(node);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1038,7 +1053,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
             m_items[i].text.setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].text.getSize().y) / 2.0f)});
 
-        m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
+        m_scrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1131,7 +1146,7 @@ namespace tgui
 
     void ListBox::triggerOnScroll()
     {
-        const unsigned int currentScrollbarValue = m_scroll->getValue();
+        const unsigned int currentScrollbarValue = m_scrollbar->getValue();
         if (currentScrollbarValue == m_lastScrollbarValue)
             return;
 
@@ -1176,25 +1191,25 @@ namespace tgui
         // Draw the items and their selected/hover backgrounds
         {
             float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
-            if (m_scroll->isShown())
-                maxItemWidth -= m_scroll->getSize().x;
+            if (m_scrollbar->isShown())
+                maxItemWidth -= m_scrollbar->getSize().x;
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
             // Find out which items are visible
             std::size_t firstItem = 0;
             std::size_t lastItem = m_items.size();
-            if (m_scroll->getViewportSize() < m_scroll->getMaximum())
+            if (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum())
             {
-                firstItem = m_scroll->getValue() / m_itemHeight;
-                lastItem = (m_scroll->getValue() + m_scroll->getViewportSize()) / m_itemHeight;
+                firstItem = m_scrollbar->getValue() / m_itemHeight;
+                lastItem = (m_scrollbar->getValue() + m_scrollbar->getViewportSize()) / m_itemHeight;
 
                 // Show another item when the scrollbar is standing between two items
-                if ((m_scroll->getValue() + m_scroll->getViewportSize()) % m_itemHeight != 0)
+                if ((m_scrollbar->getValue() + m_scrollbar->getViewportSize()) % m_itemHeight != 0)
                     ++lastItem;
             }
 
-            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop() - m_scroll->getValue()});
+            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop() - m_scrollbar->getValue()});
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
@@ -1251,7 +1266,7 @@ namespace tgui
         }
 
         // Draw the scrollbar
-        m_scroll->draw(target, statesForScrollbar);
+        m_scrollbar->draw(target, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

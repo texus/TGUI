@@ -263,6 +263,7 @@ namespace tgui
 
     TreeView::TreeView(const TreeView& other) :
         Widget                              {other},
+        DualScrollbarChildInterface         {other},
         onItemSelect                        {other.onItemSelect},
         onDoubleClick                       {other.onDoubleClick},
         onExpand                            {other.onExpand},
@@ -273,8 +274,6 @@ namespace tgui
         m_itemHeight                        {other.m_itemHeight},
         m_maxRight                          {other.m_maxRight},
         m_iconBounds                        {other.m_iconBounds},
-        m_verticalScrollbar                 {other.m_verticalScrollbar},
-        m_horizontalScrollbar               {other.m_horizontalScrollbar},
         m_possibleDoubleClick               {other.m_possibleDoubleClick},
         m_doubleClickNodeIndex              {other.m_doubleClickNodeIndex},
         m_spriteBranchExpanded              {other.m_spriteBranchExpanded},
@@ -310,6 +309,7 @@ namespace tgui
         {
             TreeView temp(other);
             Widget::operator=(temp);
+            DualScrollbarChildInterface::operator=(temp);
 
             std::swap(onItemSelect,                         temp.onItemSelect);
             std::swap(onDoubleClick,                        temp.onDoubleClick);
@@ -323,8 +323,6 @@ namespace tgui
             std::swap(m_itemHeight,                         temp.m_itemHeight);
             std::swap(m_maxRight,                           temp.m_maxRight);
             std::swap(m_iconBounds,                         temp.m_iconBounds);
-            std::swap(m_verticalScrollbar,                  temp.m_verticalScrollbar);
-            std::swap(m_horizontalScrollbar,                temp.m_horizontalScrollbar);
             std::swap(m_possibleDoubleClick,                temp.m_possibleDoubleClick);
             std::swap(m_doubleClickNodeIndex,               temp.m_doubleClickNodeIndex);
             std::swap(m_spriteBranchExpanded,               temp.m_spriteBranchExpanded);
@@ -674,6 +672,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TreeView::scrollbarPolicyChanged(Orientation)
+    {
+        markNodesDirty();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TreeView::setVerticalScrollbarValue(unsigned int value)
     {
         m_verticalScrollbar->setValue(value);
@@ -918,14 +923,17 @@ namespace tgui
 
     bool TreeView::scrolled(float delta, Vector2f pos, bool touch)
     {
+        const bool horizontalScrollbarCanMove = (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum());
+        const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
+
         bool scrollbarMoved = false;
-        if (m_horizontalScrollbar->isShown()
+        if (horizontalScrollbarCanMove
          && !touch
-         && (!m_verticalScrollbar->isShown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
-        else if (m_verticalScrollbar->isShown())
+        else if (verticalScrollbarCanMove)
         {
             scrollbarMoved = m_verticalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -1158,16 +1166,16 @@ namespace tgui
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
                 const float width = m_verticalScrollbar->getDefaultWidth();
-                m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-                m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+                m_verticalScrollbar->setWidth(width);
+                m_horizontalScrollbar->setHeight(width);
                 markNodesDirty();
             }
         }
         else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
-            m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-            m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+            m_verticalScrollbar->setWidth(width);
+            m_horizontalScrollbar->setHeight(width);
             markNodesDirty();
         }
         else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
@@ -1200,6 +1208,7 @@ namespace tgui
         auto node = Widget::save(renderers);
         node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         saveItems(node, m_nodes);
+        saveScrollbarPolicies(node);
         return node;
     }
 
@@ -1213,6 +1222,7 @@ namespace tgui
             setItemHeight(node->propertyValuePairs[U"ItemHeight"]->value.toUInt());
 
         loadItems(node, m_nodes, nullptr);
+        loadScrollbarPolicies(node);
 
         // Remove the 'Item' nodes as they have been processed
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
@@ -1326,7 +1336,10 @@ namespace tgui
         m_verticalScrollbar->setMaximum(static_cast<unsigned int>(m_itemHeight * m_visibleNodes.size()));
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxRight));
 
-        if ((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
+        const bool horizontalScrollbarShown = (m_horizontalScrollbar->getPolicy() == Scrollbar::Policy::Always)
+            || (((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
+             && (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never));
+        if (horizontalScrollbarShown)
         {
             m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y - m_horizontalScrollbar->getSize().y)});
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));

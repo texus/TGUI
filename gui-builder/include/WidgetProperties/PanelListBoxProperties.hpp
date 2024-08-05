@@ -37,6 +37,8 @@ struct PanelListBoxProperties : ScrollablePanelProperties
             panel->setItemsHeight(value);
         else if (property == "MaximumItems")
             panel->setMaximumItems(value.toUInt()); // conversion to size_t not possible with tgui::String
+        else if (property == "ScrollbarPolicy")
+            panel->getVerticalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -45,9 +47,9 @@ struct PanelListBoxProperties : ScrollablePanelProperties
     {
         auto pair = ScrollablePanelProperties::initProperties(widget);
         auto panel = widget->cast<tgui::PanelListBox>();
-
         pair.first["ItemsHeight"] = {"Float", tgui::String::fromNumber(panel->getItemsHeight().getValue())};
         pair.first["MaximumItems"] = {"size_t", tgui::String::fromNumber(panel->getMaximumItems())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
         return pair;
     }
 };

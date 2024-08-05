@@ -51,20 +51,20 @@ namespace tgui
         m_defaultText.setFont(m_fontCached);
 
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
-        m_horizontalScrollbar->setVisible(false);
+        m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Never);
 
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<TextAreaRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-            setTextSize(getGlobalTextSize());
-            setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
-                     10 * m_fontCached.getLineSpacing(m_textSizeCached)
-                     + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
-                     + Text::getExtraVerticalPadding(m_textSizeCached)
-                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
+
+        setTextSize(getGlobalTextSize());
+        setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
+                 10 * m_fontCached.getLineSpacing(m_textSizeCached)
+                 + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
+                 + Text::getExtraVerticalPadding(m_textSizeCached)
+                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,6 +236,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextArea::scrollbarPolicyChanged(Orientation)
+    {
+        rearrangeText(false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextArea::setMaximumCharacters(std::size_t maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
@@ -276,62 +283,28 @@ namespace tgui
 
     void TextArea::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_verticalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_verticalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(true);
-        }
-
-        rearrangeText(false);
+        getVerticalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy TextArea::getVerticalScrollbarPolicy() const
     {
-        return m_verticalScrollbarPolicy;
+        return m_verticalScrollbar->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_horizontalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_horizontalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(true);
-        }
-
-        rearrangeText(false);
+        getHorizontalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy TextArea::getHorizontalScrollbarPolicy() const
     {
-        return m_horizontalScrollbarPolicy;
+        return m_horizontalScrollbar->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -665,7 +638,7 @@ namespace tgui
             }
 
             // Check if the caret is located above or below the view
-            if (m_verticalScrollbar->isShown())
+            if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
             {
                 if (m_selEnd.y <= m_topLine)
                     m_verticalScrollbar->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
@@ -845,7 +818,7 @@ namespace tgui
         };
 
         // If there is a scrollbar then inserting can't go wrong
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_verticalScrollbar->getPolicy() != Scrollbar::Policy::Never)
         {
             const auto oldSelEnd = m_selEnd;
             insert();
@@ -889,14 +862,17 @@ namespace tgui
 
     bool TextArea::scrolled(float delta, Vector2f pos, bool touch)
     {
+        const bool horizontalScrollbarCanMove = (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum());
+        const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
+
         bool scrollbarMoved = false;
-        if (m_horizontalScrollbar->isShown()
+        if (horizontalScrollbarCanMove
          && !touch
-         && (!m_verticalScrollbar->isShown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
-        else if (m_verticalScrollbar->isShown())
+        else if (verticalScrollbarCanMove)
         {
             scrollbarMoved = m_verticalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -920,7 +896,7 @@ namespace tgui
 
         // Find on which line the mouse is
         std::size_t lineNumber;
-        if (m_verticalScrollbar->isShown())
+        if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
             if (position.y + m_verticalScrollbar->getValue() < 0)
                 return {0, 0};
@@ -1388,7 +1364,7 @@ namespace tgui
             return;
 
         String string;
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never)
             string = m_text;
         else
         {
@@ -1425,7 +1401,7 @@ namespace tgui
             else
                 m_lines.push_back(string.substr(searchPosStart));
 
-            if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
+            if (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never)
             {
                 if (m_monospacedFontOptimizationEnabled)
                 {
@@ -1446,7 +1422,7 @@ namespace tgui
             searchPosStart = newLinePos + 1;
         }
 
-        if ((m_horizontalScrollbarPolicy != Scrollbar::Policy::Never) && m_monospacedFontOptimizationEnabled)
+        if ((m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never) && m_monospacedFontOptimizationEnabled)
             m_maxLineWidth = Text::getLineWidth(m_lines[longestLineIndex], m_fontCached, m_textSizeCached);
 
         // Check if we should try to keep our selection
@@ -1526,7 +1502,7 @@ namespace tgui
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxLineWidth
                                                                     + Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2));
 
-        if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
+        if (m_horizontalScrollbar->getPolicy() == Scrollbar::Policy::Never)
         {
             // Word-wrap will have to be done again if the vertical scrollbar just appeared or disappeared
             if (verticalScrollbarShown != m_verticalScrollbar->isShown())
@@ -1552,23 +1528,23 @@ namespace tgui
     {
         if (m_horizontalScrollbar->isShown())
         {
-            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y - m_horizontalScrollbar->getSize().y});
+            m_verticalScrollbar->setHeight(getInnerSize().y - m_horizontalScrollbar->getSize().y);
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
         }
         else
         {
-            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y});
+            m_verticalScrollbar->setHeight(getInnerSize().y);
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
         }
 
         if (m_verticalScrollbar->isShown())
         {
-            m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setWidth(getInnerSize().x - m_verticalScrollbar->getSize().x);
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
         }
         else
         {
-            m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setWidth(getInnerSize().x);
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
         }
     }
@@ -1643,7 +1619,7 @@ namespace tgui
         }
 
         // Check if the caret is located above or below the view
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_verticalScrollbar->getPolicy() != Scrollbar::Policy::Never)
         {
             if (m_selEnd.y <= m_topLine)
                 m_verticalScrollbar->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
@@ -1672,7 +1648,7 @@ namespace tgui
             m_caretPosition = {caretLeft, caretTop};
         }
 
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never)
         {
             const unsigned int left = m_horizontalScrollbar->getValue();
             if (m_caretPosition.x <= left)
@@ -1854,19 +1830,14 @@ namespace tgui
             return;
 
         float horiScrollOffset = 0.0f;
-        if (m_horizontalScrollbar->isShown())
-        {
+        if (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum())
             horiScrollOffset = m_horizontalScrollbar->getSize().y;
-            m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
-        }
 
         m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
 
         // Store which area is visible
-        if (m_verticalScrollbar->isShown())
+        if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
-            m_verticalScrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x, m_bordersCached.getTop()});
-
             m_topLine = static_cast<std::size_t>(m_verticalScrollbar->getValue() / m_lineHeight);
 
             // The scrollbar may be standing between lines in which case one more line is visible
@@ -1879,6 +1850,12 @@ namespace tgui
             m_topLine = 0;
             m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
         }
+
+        if (m_horizontalScrollbar->isShown())
+            m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
+
+        if (m_verticalScrollbar->isShown())
+            m_verticalScrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x, m_bordersCached.getTop()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2011,20 +1988,7 @@ namespace tgui
         if (m_readOnly)
             node->propertyValuePairs[U"ReadOnly"] = std::make_unique<DataIO::ValueNode>("true");
 
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
+        saveScrollbarPolicies(node);
 
         return node;
     }
@@ -2044,31 +2008,7 @@ namespace tgui
         if (node->propertyValuePairs[U"ReadOnly"])
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ReadOnly"]->value).getBool());
 
-        if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
-
-        if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
+        loadScrollbarPolicies(node);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

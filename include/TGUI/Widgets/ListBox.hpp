@@ -25,7 +25,6 @@
 #ifndef TGUI_LIST_BOX_HPP
 #define TGUI_LIST_BOX_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -37,7 +36,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief List box widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ListBox : public Widget
+    class TGUI_API ListBox : public Widget, public ScrollbarChildInterface
     {
       public:
 
@@ -454,14 +453,14 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param value  New value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getScrollbar()->setValue(value) instead") void setScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the scrollbar
         ///
         /// @return Value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the scrollbar
@@ -470,7 +469,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -570,6 +569,11 @@ TGUI_MODULE_EXPORT namespace tgui
         void updateTextSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the value of the scrollbar has been changed via getScrollbar()->setValue(...)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollbarValueChanged() override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size without the borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f getInnerSize() const;
@@ -647,7 +651,6 @@ TGUI_MODULE_EXPORT namespace tgui
         std::size_t m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
-        CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
         unsigned int m_lastScrollbarValue = 0;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after

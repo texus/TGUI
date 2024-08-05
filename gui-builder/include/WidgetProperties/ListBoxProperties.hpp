@@ -53,6 +53,8 @@ struct ListBoxProperties : WidgetProperties
             listBox->setMaximumItems(value.toUInt());
         else if (property == "AutoScroll")
             listBox->setAutoScroll(parseBoolean(value, true));
+        else if (property == "ScrollbarPolicy")
+            listBox->getScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "TextAlignment")
             listBox->setTextAlignment(deserializeHorizontalAlignment(value));
         else
@@ -69,6 +71,7 @@ struct ListBoxProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(listBox->getTextSize())};
         pair.first["MaximumItems"] = {"UInt", tgui::String::fromNumber(listBox->getMaximumItems())};
         pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listBox->getScrollbar()->getPolicy())};
         pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(listBox->getTextAlignment())};
 
         const auto renderer = listBox->getSharedRenderer();

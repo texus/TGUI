@@ -131,13 +131,38 @@ TEST_CASE("[Scrollbar]")
         REQUIRE(scrollbar->getScrollAmount() == 50);
     }
 
-    SECTION("AutoHide")
+    SECTION("Policy")
     {
-        REQUIRE(scrollbar->getAutoHide());
-        scrollbar->setAutoHide(false);
-        REQUIRE(!scrollbar->getAutoHide());
-        scrollbar->setAutoHide(true);
-        REQUIRE(scrollbar->getAutoHide());
+        REQUIRE(scrollbar->getPolicy() == tgui::Scrollbar::Policy::Automatic);
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(scrollbar->getPolicy() == tgui::Scrollbar::Policy::Always);
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(scrollbar->getPolicy() == tgui::Scrollbar::Policy::Never);
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(scrollbar->getPolicy() == tgui::Scrollbar::Policy::Automatic);
+    }
+
+    SECTION("isShown")
+    {
+        scrollbar->setViewportSize(5);
+        scrollbar->setMaximum(5);
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(scrollbar->isShown());
+
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(!scrollbar->isShown());
+
+        scrollbar->setMaximum(10);
+        REQUIRE(scrollbar->isShown());
+
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(!scrollbar->isShown());
+
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(scrollbar->isShown());
+
+        scrollbar->setVisible(false);
+        REQUIRE(!scrollbar->isShown());
     }
 
     SECTION("Orientation")
@@ -302,7 +327,7 @@ TEST_CASE("[Scrollbar]")
         scrollbar->setViewportSize(10);
         scrollbar->setValue(20);
         scrollbar->setScrollAmount(5);
-        scrollbar->setAutoHide(false);
+        scrollbar->setPolicy(tgui::Scrollbar::Policy::Always);
 
         testSavingWidget("Scrollbar", scrollbar);
     }

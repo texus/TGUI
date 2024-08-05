@@ -100,9 +100,9 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
-        m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
-        m_scroll->setSize({m_scroll->getSize().x, getInnerSize().y});
-        m_scroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop());
+        m_scrollbar->setHeight(getInnerSize().y);
+        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
         recalculateAllLines();
     }
@@ -247,7 +247,7 @@ namespace tgui
 
     void ChatBox::updateTextSize()
     {
-        m_scroll->setScrollAmount(m_textSizeCached);
+        m_scrollbar->setScrollAmount(m_textSizeCached);
 
         for (auto& line : m_lines)
             line.text.setCharacterSize(m_textSizeCached);
@@ -315,21 +315,21 @@ namespace tgui
 
     void ChatBox::setScrollbarValue(unsigned int value)
     {
-        m_scroll->setValue(value);
+        m_scrollbar->setValue(value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ChatBox::getScrollbarValue() const
     {
-        return m_scroll->getValue();
+        return m_scrollbar->getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ChatBox::getScrollbarMaxValue() const
     {
-        return m_scroll->getMaxValue();
+        return m_scrollbar->getMaxValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,8 +353,8 @@ namespace tgui
 
         // Pass the event to the scrollbar
         bool isDragging = false;
-        if (m_scroll->isMouseOnWidget(pos - getPosition()))
-            isDragging = m_scroll->leftMousePressed(pos - getPosition());
+        if (m_scrollbar->isMouseOnWidget(pos - getPosition()))
+            isDragging = m_scrollbar->leftMousePressed(pos - getPosition());
 
         return isDragging;
     }
@@ -363,8 +363,8 @@ namespace tgui
 
     void ChatBox::leftMouseReleased(Vector2f pos)
     {
-        if (m_scroll->isMouseDown())
-            m_scroll->leftMouseReleased(pos - getPosition());
+        if (m_scrollbar->isMouseDown())
+            m_scrollbar->leftMouseReleased(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,10 +375,10 @@ namespace tgui
             mouseEnteredWidget();
 
         // Pass the event to the scrollbar when the mouse is on top of it or when we are dragging its thumb
-        if (((m_scroll->isMouseDown()) && (m_scroll->isMouseDownOnThumb())) || m_scroll->isMouseOnWidget(pos - getPosition()))
-            m_scroll->mouseMoved(pos - getPosition());
+        if (((m_scrollbar->isMouseDown()) && (m_scrollbar->isMouseDownOnThumb())) || m_scrollbar->isMouseOnWidget(pos - getPosition()))
+            m_scrollbar->mouseMoved(pos - getPosition());
         else
-            m_scroll->mouseNoLongerOnWidget();
+            m_scrollbar->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,7 @@ namespace tgui
     void ChatBox::mouseNoLongerOnWidget()
     {
         Widget::mouseNoLongerOnWidget();
-        m_scroll->mouseNoLongerOnWidget();
+        m_scrollbar->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,15 +394,15 @@ namespace tgui
     void ChatBox::leftMouseButtonNoLongerDown()
     {
         Widget::leftMouseButtonNoLongerDown();
-        m_scroll->leftMouseButtonNoLongerDown();
+        m_scrollbar->leftMouseButtonNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ChatBox::scrolled(float delta, Vector2f pos, bool touch)
     {
-        if (m_scroll->getViewportSize() < m_scroll->getMaximum())
-            return m_scroll->scrolled(delta, pos - getPosition(), touch);
+        if (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum())
+            return m_scrollbar->scrolled(delta, pos - getPosition(), touch);
 
         return false;
     }
@@ -414,7 +414,8 @@ namespace tgui
         line.text.setString("");
 
         // Find the maximum width of one line
-        const float maxWidth = getInnerSize().x - m_scroll->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        const float scrollbarWidth = m_scrollbar->isShown() ? m_scrollbar->getSize().x : 0;
+        const float maxWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - scrollbarWidth;
         if (maxWidth < 0)
             return;
 
@@ -440,16 +441,16 @@ namespace tgui
             m_fullTextHeight += line.text.getSize().y;
 
         // Update the maximum of the scrollbar
-        const unsigned int oldMaximum = m_scroll->getMaximum();
-        m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached)));
+        const unsigned int oldMaximum = m_scrollbar->getMaximum();
+        m_scrollbar->setMaximum(static_cast<unsigned int>(m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached)));
 
         // Scroll down to the last item when there is a scrollbar and it is at the bottom
         if (m_newLinesBelowOthers)
         {
-            if (((oldMaximum >= m_scroll->getViewportSize()) && (m_scroll->getValue() == oldMaximum - m_scroll->getViewportSize()))
-             || ((oldMaximum <= m_scroll->getViewportSize()) && (m_scroll->getMaximum() > m_scroll->getViewportSize())))
+            if (((oldMaximum >= m_scrollbar->getViewportSize()) && (m_scrollbar->getValue() == oldMaximum - m_scrollbar->getViewportSize()))
+             || ((oldMaximum <= m_scrollbar->getViewportSize()) && (m_scrollbar->getMaximum() > m_scrollbar->getViewportSize())))
             {
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
+                m_scrollbar->setValue(m_scrollbar->getMaximum() - m_scrollbar->getViewportSize());
             }
         }
     }
@@ -474,19 +475,19 @@ namespace tgui
         }
         else if (property == U"Scrollbar")
         {
-            m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
+            m_scrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
-                m_scroll->setSize({m_scroll->getDefaultWidth(), m_scroll->getSize().y});
+                m_scrollbar->setWidth(m_scrollbar->getDefaultWidth());
                 setSize(m_size);
             }
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
-            m_scroll->setSize({width, m_scroll->getSize().y});
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
+            m_scrollbar->setWidth(width);
             setSize(m_size);
         }
         else if (property == U"BorderColor")
@@ -502,7 +503,7 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_spriteBackground.setOpacity(m_opacityCached);
-            m_scroll->setInheritedOpacity(m_opacityCached);
+            m_scrollbar->setInheritedOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
                 line.text.setOpacity(m_opacityCached);
@@ -562,6 +563,8 @@ namespace tgui
             node->children.push_back(std::move(lineNode));
         }
 
+        saveScrollbarPolicy(node);
+
         return node;
     }
 
@@ -603,6 +606,8 @@ namespace tgui
         // This has to be parsed after the lines have been added
         if (node->propertyValuePairs[U"NewLinesBelowOthers"])
             setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"NewLinesBelowOthers"]->value).getBool());
+
+        loadScrollbarPolicy(node);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -633,13 +638,14 @@ namespace tgui
             target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the scrollbar
-        m_scroll->draw(target, scrollbarStates);
+        m_scrollbar->draw(target, scrollbarStates);
 
+        const float scrollbarWidth = m_scrollbar->isShown() ? m_scrollbar->getSize().x : 0;
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - m_scroll->getSize().x,
+        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - scrollbarWidth,
                                               getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
 
-        states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scroll->getValue())});
+        states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scrollbar->getValue())});
 
         // Put the lines at the bottom of the chat box if needed
         if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()))

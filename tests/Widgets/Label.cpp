@@ -134,6 +134,14 @@ TEST_CASE("[Label]")
         REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
     }
 
+    SECTION("Scrollbar access")
+    {
+        label->setSize(200, 100);
+        label->setTextSize(18);
+        label->setText("Cupcake ipsum dolor sit amet soufflé sugar plum tiramisu dragée. Gummies pie liquorice dragée caramels pastry marshmallow.");
+        testScrollbarAccess(label->getScrollbar());
+    }
+
     SECTION("IgnoreMouseEvents")
     {
         REQUIRE(!label->isIgnoringMouseEvents());

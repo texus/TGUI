@@ -201,6 +201,24 @@ void testClickableWidgetSignals(const tgui::Panel::Ptr& widget)
     testClickableWidgetSignalsImpl(widget);
 }
 
+void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar)
+{
+    scrollbar->setValue(10);
+    REQUIRE(scrollbar->getValue() == 10);
+
+    scrollbar->setScrollAmount(25);
+    REQUIRE(scrollbar->getScrollAmount() == 25);
+
+    scrollbar->setPolicy(tgui::Scrollbar::Policy::Always);
+    REQUIRE(scrollbar->getPolicy() == tgui::Scrollbar::Policy::Always);
+
+    REQUIRE(scrollbar->getMaximum() > scrollbar->getViewportSize());
+    REQUIRE(scrollbar->getMaxValue() == scrollbar->getMaximum() - scrollbar->getViewportSize());
+
+    REQUIRE(scrollbar->isShown());
+    REQUIRE(scrollbar->getWidth() > 0);
+}
+
 void testWidgetRenderer(tgui::WidgetRenderer* renderer)
 {
     SECTION("WidgetRenderer")

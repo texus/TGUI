@@ -660,6 +660,23 @@ TEST_CASE("[ListView]")
         tgui::getBackend()->setClipboard("");
     }
 
+    SECTION("Scrollbar access")
+    {
+        listView->setSize(200, 100);
+        listView->setItemHeight(20);
+        listView->addColumn("Col 1", 50);
+        listView->addColumn("Col 2", 100);
+        listView->addColumn("Col 3", 50);
+        listView->addItem({"1", "1.2"});
+        listView->addItem("2");
+        listView->addItem({"3", "3.2"});
+        listView->addItem("4");
+        listView->addItem({"5", "5.2", "5.3"});
+        listView->addItem("6");
+        testScrollbarAccess(listView->getVerticalScrollbar());
+        testScrollbarAccess(listView->getHorizontalScrollbar());
+    }
+
     testWidgetSignals(listView);
     SECTION("Events / Signals")
     {

@@ -44,7 +44,7 @@ namespace tgui
     PanelListBox::PanelListBox(const char* typeName, const bool initRenderer) :
         ScrollablePanel(typeName, false)
     {
-        setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
+        m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Never);
 
         if (initRenderer)
         {

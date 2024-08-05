@@ -57,12 +57,9 @@ namespace tgui
 
     ScrollablePanel::ScrollablePanel(const ScrollablePanel& other) :
         Panel                       {other},
+        DualScrollbarChildInterface {other},
         m_contentSize               {other.m_contentSize},
         m_mostBottomRightPosition   {other.m_mostBottomRightPosition},
-        m_verticalScrollbar         {other.m_verticalScrollbar},
-        m_horizontalScrollbar       {other.m_horizontalScrollbar},
-        m_verticalScrollbarPolicy   {other.m_verticalScrollbarPolicy},
-        m_horizontalScrollbarPolicy {other.m_horizontalScrollbarPolicy},
         m_verticalScrollAmount      {other.m_verticalScrollAmount},
         m_horizontalScrollAmount    {other.m_horizontalScrollAmount},
         m_verticalScrollbarWasVisibleOnSizeUpdate{other.m_verticalScrollbarWasVisibleOnSizeUpdate},
@@ -83,12 +80,9 @@ namespace tgui
 
     ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) noexcept :
         Panel                       {std::move(other)},
+        DualScrollbarChildInterface {std::move(other)},
         m_contentSize               {std::move(other.m_contentSize)},
         m_mostBottomRightPosition   {std::move(other.m_mostBottomRightPosition)},
-        m_verticalScrollbar         {std::move(other.m_verticalScrollbar)},
-        m_horizontalScrollbar       {std::move(other.m_horizontalScrollbar)},
-        m_verticalScrollbarPolicy   {std::move(other.m_verticalScrollbarPolicy)},
-        m_horizontalScrollbarPolicy {std::move(other.m_horizontalScrollbarPolicy)},
         m_verticalScrollAmount      {std::move(other.m_verticalScrollAmount)},
         m_horizontalScrollAmount    {std::move(other.m_horizontalScrollAmount)},
         m_verticalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate)},
@@ -114,12 +108,9 @@ namespace tgui
         if (this != &other)
         {
             Panel::operator=(other);
+            DualScrollbarChildInterface::operator=(other);
             m_contentSize               = other.m_contentSize;
             m_mostBottomRightPosition   = other.m_mostBottomRightPosition;
-            m_verticalScrollbar         = other.m_verticalScrollbar;
-            m_horizontalScrollbar       = other.m_horizontalScrollbar;
-            m_verticalScrollbarPolicy   = other.m_verticalScrollbarPolicy;
-            m_horizontalScrollbarPolicy = other.m_horizontalScrollbarPolicy;
             m_verticalScrollAmount      = other.m_verticalScrollAmount;
             m_horizontalScrollAmount    = other.m_horizontalScrollAmount;
             m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
@@ -147,10 +138,6 @@ namespace tgui
         {
             m_contentSize               = std::move(other.m_contentSize);
             m_mostBottomRightPosition   = std::move(other.m_mostBottomRightPosition);
-            m_verticalScrollbar         = std::move(other.m_verticalScrollbar);
-            m_horizontalScrollbar       = std::move(other.m_horizontalScrollbar);
-            m_verticalScrollbarPolicy   = std::move(other.m_verticalScrollbarPolicy);
-            m_horizontalScrollbarPolicy = std::move(other.m_horizontalScrollbarPolicy);
             m_verticalScrollAmount      = std::move(other.m_verticalScrollAmount);
             m_horizontalScrollAmount    = std::move(other.m_horizontalScrollAmount);
             m_verticalScrollbarWasVisibleOnSizeUpdate = std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate);
@@ -158,6 +145,7 @@ namespace tgui
             m_recalculatingSizeDuringUpdateScrollbars = false;
             m_stuckInUpdateScrollbars = false;
             Panel::operator=(std::move(other));
+            DualScrollbarChildInterface::operator=(std::move(other));
 
             disconnectAllChildWidgets();
 
@@ -329,9 +317,9 @@ namespace tgui
     {
         Vector2f size = Panel::getInnerSize();
         if (m_verticalScrollbar->isShown())
-            size.x -= std::min(size.x, getScrollbarWidth());
+            size.x -= std::min(size.x, getVerticalScrollbar()->getWidth());
         if (m_horizontalScrollbar->isShown())
-            size.y -= std::min(size.y, getScrollbarWidth());
+            size.y -= std::min(size.y, getHorizontalScrollbar()->getWidth());
         return size;
     }
 
@@ -365,62 +353,28 @@ namespace tgui
 
     void ScrollablePanel::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_verticalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_verticalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(true);
-        }
-
-        updateScrollbars();
+        getVerticalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy ScrollablePanel::getVerticalScrollbarPolicy() const
     {
-        return m_verticalScrollbarPolicy;
+        return m_verticalScrollbar->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ScrollablePanel::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_horizontalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_horizontalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(true);
-        }
-
-        updateScrollbars();
+        getHorizontalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy ScrollablePanel::getHorizontalScrollbarPolicy() const
     {
-        return m_horizontalScrollbarPolicy;
+        return m_horizontalScrollbar->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -600,13 +554,10 @@ namespace tgui
 
     bool ScrollablePanel::scrolled(float delta, Vector2f pos, bool touch)
     {
-        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
-        const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
-
         Vector2f innerSize = getInnerSize();
-        if (verticalScrollbarVisible)
+        if (m_verticalScrollbar->isShown())
             innerSize.x -= m_verticalScrollbar->getSize().x;
-        if (horizontalScrollbarVisible)
+        if (m_horizontalScrollbar->isShown())
             innerSize.y -= m_horizontalScrollbar->getSize().y;
 
         // If we are scrolling through the panel and it causes the mouse to end up on a scrollable child widget,
@@ -626,14 +577,16 @@ namespace tgui
         }
 
         // If the scroll event wasn't handled by a child widget then pass them to the scrollbars in this panel
+        const bool horizontalScrollbarCanMove = (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum());
+        const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
         bool scrollbarMoved = false;
-        if (m_horizontalScrollbar->isShown()
+        if (horizontalScrollbarCanMove
          && !touch
-         && (!m_verticalScrollbar->isShown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
-        else if (m_verticalScrollbar->isShown())
+        else if (verticalScrollbarCanMove)
         {
             scrollbarMoved = m_verticalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -726,9 +679,9 @@ namespace tgui
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                 innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
-        if (m_verticalScrollbar->isVisible() && (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()))
+        if (m_verticalScrollbar->isShown())
             contentSize.x -= m_verticalScrollbar->getSize().x;
-        if (m_horizontalScrollbar->isVisible() && (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()))
+        if (m_horizontalScrollbar->isShown())
             contentSize.y -= m_horizontalScrollbar->getSize().y;
 
         // If the content size is manually specified and smaller than the panel itself, then use it for clipping
@@ -748,11 +701,8 @@ namespace tgui
             target.removeClippingLayer();
         }
 
-        if (m_verticalScrollbar->isVisible())
-            m_verticalScrollbar->draw(target, oldStates);
-
-        if (m_horizontalScrollbar->isVisible())
-            m_horizontalScrollbar->draw(target, oldStates);
+        m_verticalScrollbar->draw(target, oldStates);
+        m_horizontalScrollbar->draw(target, oldStates);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -768,17 +718,24 @@ namespace tgui
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
                 const float width = m_verticalScrollbar->getDefaultWidth();
-                m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-                m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+                m_verticalScrollbar->setWidth(width);
+                m_horizontalScrollbar->setHeight(width);
                 updateScrollbars();
             }
         }
         else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
-            m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-            m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+            m_verticalScrollbar->setWidth(width);
+            m_horizontalScrollbar->setHeight(width);
             updateScrollbars();
+        }
+        else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
+        {
+            Widget::rendererChanged(property);
+
+            m_verticalScrollbar->setInheritedOpacity(m_opacityCached);
+            m_horizontalScrollbar->setInheritedOpacity(m_opacityCached);
         }
         else
             Panel::rendererChanged(property);
@@ -789,23 +746,10 @@ namespace tgui
     std::unique_ptr<DataIO::Node> ScrollablePanel::save(SavingRenderersMap& renderers) const
     {
         auto node = Panel::save(renderers);
-
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
-
         node->propertyValuePairs[U"ContentSize"] = std::make_unique<DataIO::ValueNode>(U"(" + String::fromNumber(m_contentSize.x) + U", " + String::fromNumber(m_contentSize.y) + U")");
+
+        saveScrollbarPolicies(node);
+
         return node;
     }
 
@@ -818,31 +762,24 @@ namespace tgui
         if (node->propertyValuePairs[U"ContentSize"])
             setContentSize(Vector2f{node->propertyValuePairs[U"ContentSize"]->value});
 
-        if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
+        loadScrollbarPolicies(node);
+    }
 
-        if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::scrollbarPolicyChanged(Orientation)
+    {
+        updateScrollbars();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::scrollbarScrollAmountChanged(Orientation orientation)
+    {
+        if (orientation == Orientation::Vertical)
+            m_verticalScrollAmount = m_verticalScrollbar->getScrollAmount();
+        else
+            m_horizontalScrollAmount = m_horizontalScrollbar->getScrollAmount();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -908,10 +845,10 @@ namespace tgui
         m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
 
         if (m_verticalScrollAmount == 0)
-            setVerticalScrollAmount(0);
+            m_verticalScrollbar->setScrollAmount(getGlobalTextSize() * 5);
 
         if (m_horizontalScrollAmount == 0)
-            setHorizontalScrollAmount(0);
+            m_horizontalScrollbar->setScrollAmount(getGlobalTextSize() * 5);
 
         const bool horizontalScrollbarShown = m_horizontalScrollbar->isShown();
         const bool verticalScrollbarShown = m_verticalScrollbar->isShown();

@@ -350,6 +350,19 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getScrollbarMaxValue() == 17);
     }
 
+    SECTION("Scrollbar access")
+    {
+        listBox->setSize(200, 100);
+        listBox->setItemHeight(20);
+        listBox->addItem("1");
+        listBox->addItem("2");
+        listBox->addItem("3");
+        listBox->addItem("4");
+        listBox->addItem("5");
+        listBox->addItem("6");
+        testScrollbarAccess(listBox->getScrollbar());
+    }
+
     testWidgetSignals(listBox);
     SECTION("Events / Signals")
     {

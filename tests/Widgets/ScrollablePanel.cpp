@@ -231,6 +231,14 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(widget1->getSize() == tgui::Vector2f{200, 100});
     }
 
+    SECTION("Scrollbar access")
+    {
+        panel->setSize({400, 300});
+        panel->setContentSize({600, 500});
+        testScrollbarAccess(panel->getVerticalScrollbar());
+        testScrollbarAccess(panel->getHorizontalScrollbar());
+    }
+
     SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;

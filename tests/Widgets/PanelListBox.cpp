@@ -244,6 +244,16 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(panelListBox->getItemByIndex(2) == panel3);
     }
 
+    SECTION("Scrollbar access")
+    {
+        panelListBox->setSize(200, 100);
+        panelListBox->setItemsHeight(25);
+        for (unsigned int i = 0; i < 6; ++i)
+            panelListBox->addItem();
+        testScrollbarAccess(panelListBox->getVerticalScrollbar());
+        REQUIRE(panelListBox->getHorizontalScrollbar()->getPolicy() == tgui::Scrollbar::Policy::Never);
+    }
+
     testWidgetSignals(panelListBox);
     SECTION("Events / Signals")
     {

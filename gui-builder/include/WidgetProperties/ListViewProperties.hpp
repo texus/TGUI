@@ -90,6 +90,10 @@ struct ListViewProperties : WidgetProperties
         }
         else if (property == "ResizableColumns")
             listView->setResizableColumns(parseBoolean(value, false));
+        else if (property == "VerticalScrollbarPolicy")
+            listView->getVerticalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
+        else if (property == "HorizontalScrollbarPolicy")
+            listView->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -112,6 +116,8 @@ struct ListViewProperties : WidgetProperties
         pair.first["ShowVerticalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowVerticalGridLines())};
         pair.first["ShowHorizontalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowHorizontalGridLines())};
         pair.first["ResizableColumns"] = {"Bool", tgui::Serializer::serialize(listView->getResizableColumns())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listView->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listView->getHorizontalScrollbar()->getPolicy())};
 
         TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};

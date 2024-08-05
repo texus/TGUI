@@ -737,7 +737,7 @@ namespace tgui
 
         m_iconLoader->requestFileIcons(m_filesInDirectory);
 
-        m_listView->setVerticalScrollbarValue(0);
+        m_listView->getVerticalScrollbar()->setValue(0);
         sortFilesInListView();
         updateConfirmButtonEnabled();
     }
@@ -754,7 +754,7 @@ namespace tgui
 
     void FileDialog::sortFilesInListView()
     {
-        const auto oldScrollbarValue = m_listView->getVerticalScrollbarValue();
+        const auto oldScrollbarValue = m_listView->getVerticalScrollbar()->getValue();
 
         std::vector<std::pair<Filesystem::FileInfo, Texture>> items;
         items.reserve(m_filesInDirectory.size());
@@ -905,7 +905,7 @@ namespace tgui
                 m_listView->setItemIcon(itemIndex, icon);
         }
 
-        m_listView->setVerticalScrollbarValue(oldScrollbarValue);
+        m_listView->getVerticalScrollbar()->setValue(oldScrollbarValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

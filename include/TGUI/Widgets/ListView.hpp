@@ -25,7 +25,6 @@
 #ifndef TGUI_LIST_VIEW_HPP
 #define TGUI_LIST_VIEW_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListViewRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -44,7 +43,7 @@ TGUI_MODULE_EXPORT namespace tgui
     ///
     /// When no columns are added, the list view acts like a ListBox with a few extra functionalities.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ListView : public Widget
+    class TGUI_API ListView : public Widget, public DualScrollbarChildInterface
     {
       public:
 
@@ -704,39 +703,39 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setPolicy(policy) instead") void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
         /// @param policy  The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setPolicy(policy) instead") void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
         /// @return The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the vertical scrollbar
         ///
         /// @param value  New value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setValue(value) instead") void setVerticalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the vertical scrollbar
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -745,21 +744,21 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
         ///
         /// @param value  New value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setValue(value) instead") void setHorizontalScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the horizontal scrollbar
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -768,7 +767,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a size to which all icons should be scaled
@@ -917,6 +916,14 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Called when the text size is changed (either by setTextSize or via the renderer)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateTextSize() override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the policy of one of the scrollbars has been changed calling either
+        ///        getVerticalScrollbar()->setPolicy(...) or getHorizontalScrollbar()->setPolicy(...)
+        ///
+        /// @param orientation  Vertical or Horizontal depending on which scrollbar triggered the callback
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollbarPolicyChanged(Orientation orientation) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size without the borders
@@ -1123,11 +1130,6 @@ TGUI_MODULE_EXPORT namespace tgui
         Cursor::Type m_currentListViewMouseCursor = Cursor::Type::Arrow;
         std::size_t m_resizingColumn = 0;
         float m_resizingColumnLastMouseX = 0;
-
-        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
-        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
-        Scrollbar::Policy m_verticalScrollbarPolicy = Scrollbar::Policy::Automatic;
-        Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Automatic;
 
         int m_mouseOnHeaderIndex = -1; // If the left mouse is down, this contains the index of the column if the mouse went down on the header
         int m_possibleDoubleClick = false; // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after

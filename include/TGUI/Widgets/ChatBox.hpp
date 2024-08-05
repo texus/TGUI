@@ -25,7 +25,6 @@
 #ifndef TGUI_CHAT_BOX_HPP
 #define TGUI_CHAT_BOX_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ChatBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -40,7 +39,7 @@ TGUI_MODULE_EXPORT namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API ChatBox : public Widget
+    class TGUI_API ChatBox : public Widget, public ScrollbarChildInterface
     {
     public:
 
@@ -277,14 +276,14 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param value  New value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getScrollbar()->setValue(value) instead") void setScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the scrollbar
         ///
         /// @return Value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the scrollbar
@@ -293,7 +292,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -415,8 +414,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         bool m_linesStartFromTop = false;
         bool m_newLinesBelowOthers = true;
-
-        CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
 
         std::deque<Line> m_lines;
 

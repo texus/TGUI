@@ -143,6 +143,7 @@ void testWidgetSignals(const tgui::Widget::Ptr& widget);
 void testClickableWidgetSignals(const tgui::ClickableWidget::Ptr& widget);
 void testClickableWidgetSignals(const tgui::Panel::Ptr& widget);
 
+void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar);
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 
 template <typename WidgetType>

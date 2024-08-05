@@ -27,7 +27,6 @@
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/LabelRenderer.hpp>
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Text.hpp>
 
@@ -38,7 +37,7 @@ TGUI_MODULE_EXPORT namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Label widget
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Label : public ClickableWidget
+    class TGUI_API Label : public ClickableWidget, public ScrollbarChildInterface
     {
     public:
 
@@ -169,27 +168,27 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getScrollbar()->setPolicy(policy) instead") void setScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Scrollbar::Policy getScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the scrollbar
         ///
         /// @param value  New value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarValue(unsigned int value);
+        TGUI_DEPRECATED("Use getScrollbar()->setValue(value) instead") void setScrollbarValue(unsigned int value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the thumb position of the scrollbar
         ///
         /// @return Value of the scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the scrollbar
@@ -198,7 +197,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the label is auto-sized or not
@@ -347,6 +346,11 @@ TGUI_MODULE_EXPORT namespace tgui
         bool updateTime(Duration elapsedTime) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Called when the policy of the scrollbar has been changed via getScrollbar()->setPolicy(...)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scrollbarPolicyChanged() override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Rearrange the text (recreates m_textPieces), making use of the given size of maximum text width.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void rearrangeText();
@@ -384,9 +388,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
-
-        CopiedSharedPtr<ScrollbarChildWidget> m_scrollbar;
-        Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Automatic;
 
         Sprite    m_spriteBackground;
 

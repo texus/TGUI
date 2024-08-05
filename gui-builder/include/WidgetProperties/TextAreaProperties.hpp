@@ -46,9 +46,9 @@ struct TextAreaProperties : WidgetProperties
         else if (property == "ReadOnly")
             textArea->setReadOnly(parseBoolean(value, false));
         else if (property == "VerticalScrollbarPolicy")
-            textArea->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
+            textArea->getVerticalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "HorizontalScrollbarPolicy")
-            textArea->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
+            textArea->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -62,8 +62,8 @@ struct TextAreaProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(textArea->getTextSize())};
         pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(textArea->getMaximumCharacters())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textArea->isReadOnly())};
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getVerticalScrollbarPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getHorizontalScrollbarPolicy())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getHorizontalScrollbar()->getPolicy())};
 
         const auto renderer = textArea->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

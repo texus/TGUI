@@ -36,13 +36,9 @@ struct ScrollablePanelProperties : PanelProperties
     {
         auto panel = widget->cast<tgui::ScrollablePanel>();
         if (property == "VerticalScrollbarPolicy")
-            panel->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
+            panel->getVerticalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "HorizontalScrollbarPolicy")
-            panel->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
-        else if (property == "VerticalScrollAmount")
-            panel->setVerticalScrollAmount(value.toUInt());
-        else if (property == "HorizontalScrollAmount")
-            panel->setHorizontalScrollAmount(value.toUInt());
+            panel->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "ContentWidth")
             panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")
@@ -55,10 +51,8 @@ struct ScrollablePanelProperties : PanelProperties
     {
         auto pair = PanelProperties::initProperties(widget);
         auto panel = widget->cast<tgui::ScrollablePanel>();
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbarPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getHorizontalScrollbarPolicy())};
-        pair.first["VerticalScrollAmount"] = {"UInt", tgui::String::fromNumber(panel->getVerticalScrollAmount())};
-        pair.first["HorizontalScrollAmount"] = {"UInt", tgui::String::fromNumber(panel->getHorizontalScrollAmount())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getHorizontalScrollbar()->getPolicy())};
         pair.first["ContentWidth"] = {"Float", tgui::String::fromNumber(panel->getContentSize().x)};
         pair.first["ContentHeight"] = {"Float", tgui::String::fromNumber(panel->getContentSize().y)};
 

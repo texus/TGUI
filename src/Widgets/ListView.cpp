@@ -54,13 +54,13 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<ListViewRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
-            setTextSize(getGlobalTextSize());
-            setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
-            setSize({m_itemHeight * 12,
-                     getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
-                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
         }
+
+        setTextSize(getGlobalTextSize());
+        setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
+        setSize({m_itemHeight * 12,
+                 getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
+                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1028,6 +1028,11 @@ namespace tgui
             updateTextSize();
 
         updateVerticalScrollbarMaximum();
+
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
+            m_verticalScrollbar->setScrollAmount(m_itemHeight + m_gridLinesWidth);
+        else
+            m_verticalScrollbar->setScrollAmount(m_itemHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,6 +1071,13 @@ namespace tgui
         updateColumnWidths();
 
         m_horizontalScrollbar->setScrollAmount(m_textSizeCached);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::scrollbarPolicyChanged(Orientation)
+    {
+        updateScrollbars();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1133,6 +1145,11 @@ namespace tgui
         m_gridLinesWidth = width;
         updateColumnWidths();
         updateVerticalScrollbarMaximum();
+
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
+            m_verticalScrollbar->setScrollAmount(m_itemHeight + m_gridLinesWidth);
+        else
+            m_verticalScrollbar->setScrollAmount(m_itemHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1177,6 +1194,11 @@ namespace tgui
     {
         m_showHorizontalGridLines = showGridLines;
         updateVerticalScrollbarMaximum();
+
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
+            m_verticalScrollbar->setScrollAmount(m_itemHeight + m_gridLinesWidth);
+        else
+            m_verticalScrollbar->setScrollAmount(m_itemHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1219,62 +1241,28 @@ namespace tgui
 
     void ListView::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_verticalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_verticalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_verticalScrollbar->setVisible(true);
-            m_verticalScrollbar->setAutoHide(true);
-        }
-
-        updateScrollbars();
+        getVerticalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy ListView::getVerticalScrollbarPolicy() const
     {
-        return m_verticalScrollbarPolicy;
+        return getVerticalScrollbar()->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListView::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_horizontalScrollbarPolicy = policy;
-
-        if (policy == Scrollbar::Policy::Always)
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(false);
-        }
-        else if (policy == Scrollbar::Policy::Never)
-        {
-            m_horizontalScrollbar->setVisible(false);
-        }
-        else // Scrollbar::Policy::Automatic
-        {
-            m_horizontalScrollbar->setVisible(true);
-            m_horizontalScrollbar->setAutoHide(true);
-        }
-
-        updateScrollbars();
+        getHorizontalScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy ListView::getHorizontalScrollbarPolicy() const
     {
-        return m_horizontalScrollbarPolicy;
+        return getHorizontalScrollbar()->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1626,14 +1614,17 @@ namespace tgui
 
     bool ListView::scrolled(float delta, Vector2f pos, bool touch)
     {
+        const bool horizontalScrollbarCanMove = (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum());
+        const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
+
         bool scrollbarMoved = false;
-        if (m_horizontalScrollbar->isShown()
+        if (horizontalScrollbarCanMove
          && !touch
-         && (!m_verticalScrollbar->isShown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
-        else if (m_verticalScrollbar->isShown())
+        else if (verticalScrollbarCanMove)
         {
             scrollbarMoved = m_verticalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -1805,16 +1796,16 @@ namespace tgui
             // If no scrollbar width was set then we may need to use the one from the texture
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
-                m_verticalScrollbar->setSize({m_verticalScrollbar->getDefaultWidth(), m_verticalScrollbar->getSize().y});
-                m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, m_horizontalScrollbar->getDefaultWidth()});
+                m_verticalScrollbar->setWidth(m_verticalScrollbar->getDefaultWidth());
+                m_horizontalScrollbar->setHeight(m_horizontalScrollbar->getDefaultWidth());
                 setSize(m_size);
             }
         }
         else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
-            m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
-            m_horizontalScrollbar->setSize({m_verticalScrollbar->getSize().x, width});
+            m_verticalScrollbar->setWidth(width);
+            m_horizontalScrollbar->setHeight(width);
             setSize(m_size);
         }
         else if (property == U"BorderColor")
@@ -1991,21 +1982,6 @@ namespace tgui
         if (m_showHorizontalGridLines)
             node->propertyValuePairs[U"ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showHorizontalGridLines));
 
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
-
         node->propertyValuePairs[U"ResizableColumns"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_resizableColumns));
         node->propertyValuePairs[U"HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
         node->propertyValuePairs[U"HeaderHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_requestedHeaderHeight));
@@ -2014,6 +1990,8 @@ namespace tgui
         node->propertyValuePairs[U"ItemHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_itemHeight));
         node->propertyValuePairs[U"ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_showVerticalGridLines));
         node->propertyValuePairs[U"ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_expandLastColumn));
+
+        saveScrollbarPolicies(node);
 
         return node;
     }
@@ -2120,31 +2098,7 @@ namespace tgui
             setExpandLastColumn(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ExpandLastColumn"]->value).getBool());
         TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
-        if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
-
-        if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
+        loadScrollbarPolicies(node);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2762,30 +2716,25 @@ namespace tgui
 
         if (m_horizontalScrollbar->isShown())
         {
-            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y) - m_horizontalScrollbar->getSize().y});
+            m_verticalScrollbar->setHeight(std::max(0.f, getInnerSize().y) - m_horizontalScrollbar->getSize().y);
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(std::max(0.f, innerSize.y - m_horizontalScrollbar->getSize().y)));
         }
         else
         {
-            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y)});
+            m_verticalScrollbar->setHeight(std::max(0.f, getInnerSize().y));
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y));
         }
 
         if (m_verticalScrollbar->isShown())
         {
-            m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setWidth(getInnerSize().x - m_verticalScrollbar->getSize().x);
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(std::max(0.f, innerSize.x - m_verticalScrollbar->getSize().x)));
         }
         else
         {
-            m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setWidth(getInnerSize().x);
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x));
         }
-
-        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
-            m_verticalScrollbar->setScrollAmount(m_itemHeight + m_gridLinesWidth);
-        else
-            m_verticalScrollbar->setScrollAmount(m_itemHeight);
 
         // If the scrollbar was at the bottom then keep it at the bottom if it changes due to a different viewport size
         if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
@@ -2972,10 +2921,8 @@ namespace tgui
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
         // Draw the scrollbars
-        if (m_verticalScrollbar->isVisible())
-            m_verticalScrollbar->draw(target, statesForScrollbar);
-        if (m_horizontalScrollbar->isVisible())
-            m_horizontalScrollbar->draw(target, statesForScrollbar);
+        m_verticalScrollbar->draw(target, statesForScrollbar);
+        m_horizontalScrollbar->draw(target, statesForScrollbar);
 
         const float headerHeight = getHeaderHeight();
         const float totalHeaderHeight = getCurrentHeaderHeight();
@@ -3060,8 +3007,7 @@ namespace tgui
         }
 
         target.addClippingLayer(states, {{}, {availableWidth, innerHeight}});
-        if (m_horizontalScrollbar->isShown())
-            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), 0});
+        states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), 0});
 
         const unsigned int separatorWidth = getTotalSeparatorWidth();
 

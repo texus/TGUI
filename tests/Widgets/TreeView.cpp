@@ -310,6 +310,17 @@ TEST_CASE("[TreeView]")
         REQUIRE(treeView->getHorizontalScrollbarValue() == 15);
     }
 
+    SECTION("Scrollbar access")
+    {
+        treeView->setSize(70, 70);
+        treeView->setItemHeight(20);
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+        testScrollbarAccess(treeView->getVerticalScrollbar());
+        testScrollbarAccess(treeView->getHorizontalScrollbar());
+    }
+
     testWidgetSignals(treeView);
     SECTION("Events / Signals")
     {

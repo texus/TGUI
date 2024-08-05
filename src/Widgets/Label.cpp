@@ -48,7 +48,8 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
-        m_scrollbar->setVisible(false);
+        m_scrollbar->setVisible(false); // Never shown when AutoSize is true
+        m_scrollbar->setScrollAmount(m_textSizeCached);
         setTextSize(getGlobalTextSize());
     }
 
@@ -131,6 +132,7 @@ namespace tgui
 
     void Label::updateTextSize()
     {
+        m_scrollbar->setScrollAmount(m_textSizeCached);
         rearrangeText();
     }
 
@@ -168,18 +170,14 @@ namespace tgui
 
     void Label::setScrollbarPolicy(Scrollbar::Policy policy)
     {
-        m_scrollbarPolicy = policy;
-
-        // The policy only has an effect when not auto-sizing
-        if (!m_autoSize)
-            rearrangeText();
+        getScrollbar()->setPolicy(policy);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Policy Label::getScrollbarPolicy() const
     {
-        return m_scrollbarPolicy;
+        return getScrollbar()->getPolicy();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,7 +348,7 @@ namespace tgui
 
     bool Label::scrolled(float delta, Vector2f pos, bool touch)
     {
-        if (!m_autoSize && m_scrollbar->isShown())
+        if (!m_autoSize && (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum()))
             return m_scrollbar->scrolled(delta, pos - getPosition(), touch);
 
         return false;
@@ -448,14 +446,14 @@ namespace tgui
             // If no scrollbar width was set then we may need to use the one from the texture
             if (getSharedRenderer()->getScrollbarWidth() == 0)
             {
-                m_scrollbar->setSize({m_scrollbar->getDefaultWidth(), m_scrollbar->getSize().y});
+                m_scrollbar->setWidth(m_scrollbar->getDefaultWidth());
                 rearrangeText();
             }
         }
         else if (property == U"ScrollbarWidth")
         {
             const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
-            m_scrollbar->setSize({width, m_scrollbar->getSize().y});
+            m_scrollbar->setWidth(width);
             rearrangeText();
         }
         else if (property == U"Font")
@@ -507,13 +505,8 @@ namespace tgui
         if (m_ignoringMouseEvents)
             node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
 
-        if (m_scrollbarPolicy != Scrollbar::Policy::Automatic)
-        {
-            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
-                node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
-                node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
-        }
+        if (!m_autoSize)
+            saveScrollbarPolicy(node);
 
         return node;
     }
@@ -548,19 +541,6 @@ namespace tgui
                 throw Exception{U"Failed to parse VerticalAlignment property, found unknown value."};
         }
 
-        if (node->propertyValuePairs[U"ScrollbarPolicy"])
-        {
-            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
-            if (policy == U"Automatic")
-                setScrollbarPolicy(Scrollbar::Policy::Automatic);
-            else if (policy == U"Always")
-                setScrollbarPolicy(Scrollbar::Policy::Always);
-            else if (policy == U"Never")
-                setScrollbarPolicy(Scrollbar::Policy::Never);
-            else
-                throw Exception{U"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + U"'."};
-        }
-
         if (node->propertyValuePairs[U"Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
         if (node->propertyValuePairs[U"MaximumTextWidth"])
@@ -570,6 +550,8 @@ namespace tgui
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
             m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
+
+        loadScrollbarPolicy(node);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -589,6 +571,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::scrollbarPolicyChanged()
+    {
+        // The scrollbar policy only has an effect when not auto-sizing
+        if (!m_autoSize)
+            rearrangeText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::rearrangeText()
     {
         m_lines.clear();
@@ -596,30 +587,10 @@ namespace tgui
         if (m_fontCached == nullptr)
             return;
 
-        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
-
-        // Show or hide the scrollbar
-        if (m_autoSize)
-            m_scrollbar->setVisible(false);
-        else
-        {
-            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
-            {
-                m_scrollbar->setVisible(true);
-                m_scrollbar->setAutoHide(false);
-            }
-            else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
-            {
-                m_scrollbar->setVisible(false);
-            }
-            else // Scrollbar::Policy::Automatic
-            {
-                m_scrollbar->setVisible(true);
-                m_scrollbar->setAutoHide(true);
-            }
-        }
+        m_scrollbar->setVisible(!m_autoSize);
 
         // Find the maximum width of one line
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
             maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
@@ -627,8 +598,9 @@ namespace tgui
         {
             maxWidth = getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2*textOffset;
 
-            // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar
-            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
+            // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
+            // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
+            if (m_scrollbar->getPolicy() == Scrollbar::Policy::Always)
                 maxWidth -= m_scrollbar->getSize().x;
 
             if (maxWidth <= 0)
@@ -655,7 +627,7 @@ namespace tgui
         if (!m_autoSize)
         {
             // If the text doesn't fit in the label then we need to run the word-wrap again, but this time taking the scrollbar into account
-            if ((m_scrollbarPolicy == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
+            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
             {
                 maxWidth -= m_scrollbar->getSize().x;
                 if (maxWidth <= 0)
@@ -670,11 +642,10 @@ namespace tgui
                                    + Text::getExtraVerticalPadding(m_textSizeCached);
             }
 
-            m_scrollbar->setSize(m_scrollbar->getSize().x, static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
+            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
             m_scrollbar->setViewportSize(static_cast<unsigned int>(getSize().y - outline.getTop() - outline.getBottom()));
             m_scrollbar->setMaximum(static_cast<unsigned int>(requiredTextHeight));
             m_scrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop()});
-            m_scrollbar->setScrollAmount(m_textSizeCached);
         }
 
         // Split the string in multiple lines
@@ -889,7 +860,7 @@ namespace tgui
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});
 
-            if (m_scrollbar->isShown())
+            if (m_scrollbar->isVisible())
                 states.transform.translate({0, -static_cast<float>(m_scrollbar->getValue())});
 
             for (const auto& line : m_lines)

@@ -199,17 +199,63 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void Scrollbar::setAutoHide(bool autoHide)
     {
-        m_autoHide = autoHide;
+        setPolicy(autoHide ? Policy::Automatic : Policy::Always);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Scrollbar::getAutoHide() const
     {
-        return m_autoHide;
+        return m_policy == Policy::Automatic;
+    }
+#endif
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::setPolicy(Policy policy)
+    {
+        const bool wasShown = isShown();
+
+        m_policy = policy;
+
+        if (wasShown && !isShown())
+        {
+            // If the widget is hiden while still focused then it must be unfocused
+            setFocused(false);
+
+            // If we were still interacting with the widget then stop doing so
+            if (m_mouseHover)
+                mouseNoLongerOnWidget();
+
+            if (m_mouseDown)
+                leftMouseButtonNoLongerDown();
+
+            rightMouseButtonNoLongerDown();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Scrollbar::Policy Scrollbar::getPolicy() const
+    {
+        return m_policy;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::isShown() const
+    {
+        if (!m_visible)
+            return false;
+
+        if (m_policy == Policy::Never)
+            return false;
+        else if (m_policy == Policy::Always)
+            return true;
+        else
+            return m_maximum > m_viewportSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,10 +304,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Scrollbar::canGainFocus() const
+    {
+        return isShown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Scrollbar::isMouseOnWidget(Vector2f pos) const
     {
-        // Don't make any calculations when no scrollbar is needed
-        if (m_autoHide && (m_maximum <= m_viewportSize))
+        if (!isShown())
             return false;
 
         pos -= getPosition();
@@ -444,7 +496,7 @@ namespace tgui
         if (m_mouseDown && !m_mouseDownOnArrow)
         {
             // Don't continue if the calculations can't be made
-            if (!m_autoHide && (m_maximum <= m_viewportSize))
+            if (m_maximum <= m_viewportSize)
                 return;
 
             // Check in which direction the scrollbar lies
@@ -616,7 +668,7 @@ namespace tgui
         if (static_cast<int>(m_value) - static_cast<int>(amountToScroll) < 0)
             setValue(0);
         else
-            setValue(m_value - static_cast<unsigned int>(amountToScroll));
+            setValue(static_cast<unsigned int>(m_value - amountToScroll));
 
         // Update over which part the mouse is hovering
         if (isMouseOnWidget(pos - getPosition()))
@@ -921,11 +973,17 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs[U"AutoHide"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
         node->propertyValuePairs[U"ViewportSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_viewportSize));
         node->propertyValuePairs[U"Maximum"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximum));
         node->propertyValuePairs[U"Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
         node->propertyValuePairs[U"ScrollAmount"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_scrollAmount));
+
+        if (m_policy == Policy::Always)
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+        else if (m_policy == Policy::Never)
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        else
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Automatic");
 
         return node;
     }
@@ -944,8 +1002,26 @@ namespace tgui
             setValue(node->propertyValuePairs[U"Value"]->value.toUInt());
         if (node->propertyValuePairs[U"ScrollAmount"])
             setScrollAmount(node->propertyValuePairs[U"ScrollAmount"]->value.toUInt());
+
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         if (node->propertyValuePairs[U"AutoHide"])
-            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoHide"]->value).getBool());
+        {
+            const bool autoHide = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoHide"]->value).getBool();
+            setPolicy(autoHide ? Policy::Automatic : Policy::Always);
+        }
+#endif
+        if (node->propertyValuePairs[U"ScrollbarPolicy"])
+        {
+            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
+                setPolicy(Policy::Automatic);
+            else if (policy == U"Always")
+                setPolicy(Policy::Always);
+            else if (policy == U"Never")
+                setPolicy(Policy::Never);
+            else
+                throw Exception{U"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + U"'."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -974,8 +1050,7 @@ namespace tgui
 
     void Scrollbar::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        // Don't draw the scrollbar when it is not needed
-        if (m_autoHide && (m_maximum <= m_viewportSize))
+        if (!isShown())
             return;
 
         // Draw arrow up/left
@@ -1111,17 +1186,377 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ScrollbarChildWidget::isShown() const
-    {
-        return m_visible && (!m_autoHide || (m_maximum > m_viewportSize));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ScrollbarChildWidget::draw(BackendRenderTarget& target, RenderStates states) const
     {
         states.transform.translate(getPosition());
         Scrollbar::draw(target, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarAccessor::ScrollbarAccessor(ScrollbarChildWidget& scrollbar, std::function<void()> valueChangedCallback, std::function<void()> policyChangedCallback, std::function<void()> scrollAmountChangedCallback) :
+        m_scrollbar(&scrollbar),
+        m_valueChangedCallback(valueChangedCallback),
+        m_policyChangedCallback(policyChangedCallback),
+        m_scrollAmountChangedCallback(scrollAmountChangedCallback)
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarAccessor::setValue(unsigned int value)
+    {
+        m_scrollbar->setValue(value);
+        m_valueChangedCallback();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD unsigned int ScrollbarAccessor::getValue() const
+    {
+        return m_scrollbar->getValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarAccessor::setScrollAmount(unsigned int scrollAmount)
+    {
+        if (scrollAmount == 0)
+            scrollAmount = 5 * getGlobalTextSize();
+
+        m_scrollbar->setScrollAmount(scrollAmount);
+        m_scrollAmountChangedCallback();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD unsigned int ScrollbarAccessor::getScrollAmount() const
+    {
+        return m_scrollbar->getScrollAmount();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarAccessor::setPolicy(Scrollbar::Policy policy)
+    {
+        m_scrollbar->setPolicy(policy);
+        m_policyChangedCallback();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD Scrollbar::Policy ScrollbarAccessor::getPolicy() const
+    {
+        return m_scrollbar->getPolicy();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD unsigned int ScrollbarAccessor::getMaximum() const
+    {
+        return m_scrollbar->getMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD unsigned int ScrollbarAccessor::getViewportSize() const
+    {
+        return m_scrollbar->getViewportSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD unsigned int ScrollbarAccessor::getMaxValue() const
+    {
+        return m_scrollbar->getMaxValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD bool ScrollbarAccessor::isShown() const
+    {
+        return m_scrollbar->isShown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float ScrollbarAccessor::getWidth() const
+    {
+        if (m_scrollbar->getOrientation() == Orientation::Vertical)
+            return m_scrollbar->getSize().x;
+        else
+            return m_scrollbar->getSize().y;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarChildInterface::ScrollbarChildInterface() :
+        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarChildInterface::ScrollbarChildInterface(const ScrollbarChildInterface& other) :
+        m_scrollbar(other.m_scrollbar),
+        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarChildInterface::ScrollbarChildInterface(ScrollbarChildInterface&& other) noexcept :
+        m_scrollbar(std::move(other.m_scrollbar)),
+        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarChildInterface& ScrollbarChildInterface::operator=(const ScrollbarChildInterface& other)
+    {
+        if (this != &other)
+        {
+            m_scrollbar = other.m_scrollbar;
+            m_scrollbarAccessor = {*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }};
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarChildInterface& ScrollbarChildInterface::operator=(ScrollbarChildInterface&& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_scrollbar = std::move(other.m_scrollbar);
+            m_scrollbarAccessor = {*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }};
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarAccessor* ScrollbarChildInterface::getScrollbar()
+    {
+        return &m_scrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollbarAccessor* ScrollbarChildInterface::getScrollbar() const
+    {
+        return &m_scrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildInterface::scrollbarValueChanged()
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildInterface::scrollbarPolicyChanged()
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildInterface::scrollbarScrollAmountChanged()
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildInterface::saveScrollbarPolicy(std::unique_ptr<DataIO::Node>& node) const
+    {
+        const auto policy = m_scrollbar->getPolicy();
+        if (policy == Scrollbar::Policy::Always)
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+        else if (policy == Scrollbar::Policy::Never)
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        else
+            node->propertyValuePairs[U"ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Automatic");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarChildInterface::loadScrollbarPolicy(const std::unique_ptr<DataIO::Node>& node)
+    {
+        if (node->propertyValuePairs[U"ScrollbarPolicy"])
+        {
+            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
+                m_scrollbar->setPolicy(Scrollbar::Policy::Automatic);
+            else if (policy == U"Always")
+                m_scrollbar->setPolicy(Scrollbar::Policy::Always);
+            else if (policy == U"Never")
+                m_scrollbar->setPolicy(Scrollbar::Policy::Never);
+            else
+                throw Exception{U"Failed to parse ScrollbarPolicy property, found unknown value '" + policy + U"'."};
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    DualScrollbarChildInterface::DualScrollbarChildInterface() :
+        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    DualScrollbarChildInterface::DualScrollbarChildInterface(const DualScrollbarChildInterface& other) :
+        m_verticalScrollbar(other.m_verticalScrollbar),
+        m_horizontalScrollbar(other.m_horizontalScrollbar),
+        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    DualScrollbarChildInterface::DualScrollbarChildInterface(DualScrollbarChildInterface&& other) noexcept :
+        m_verticalScrollbar(std::move(other.m_verticalScrollbar)),
+        m_horizontalScrollbar(std::move(other.m_horizontalScrollbar)),
+        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    DualScrollbarChildInterface& DualScrollbarChildInterface::operator=(const DualScrollbarChildInterface& other)
+    {
+        if (this != &other)
+        {
+            m_verticalScrollbar = other.m_verticalScrollbar;
+            m_horizontalScrollbar = other.m_horizontalScrollbar;
+            m_verticalScrollbarAccessor = {*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }};
+            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }};
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    DualScrollbarChildInterface& DualScrollbarChildInterface::operator=(DualScrollbarChildInterface&& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_verticalScrollbar = std::move(other.m_verticalScrollbar);
+            m_horizontalScrollbar = std::move(other.m_horizontalScrollbar);
+            m_verticalScrollbarAccessor = {*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }};
+            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }};
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarAccessor* DualScrollbarChildInterface::getVerticalScrollbar()
+    {
+        return &m_verticalScrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollbarAccessor* DualScrollbarChildInterface::getVerticalScrollbar() const
+    {
+        return &m_verticalScrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarAccessor* DualScrollbarChildInterface::getHorizontalScrollbar()
+    {
+        return &m_horizontalScrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollbarAccessor* DualScrollbarChildInterface::getHorizontalScrollbar() const
+    {
+        return &m_horizontalScrollbarAccessor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void DualScrollbarChildInterface::scrollbarValueChanged(Orientation)
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void DualScrollbarChildInterface::scrollbarPolicyChanged(Orientation)
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void DualScrollbarChildInterface::scrollbarScrollAmountChanged(Orientation)
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void DualScrollbarChildInterface::saveScrollbarPolicies(std::unique_ptr<DataIO::Node>& node) const
+    {
+        const auto veticalPolicy = m_verticalScrollbar->getPolicy();
+        if (veticalPolicy == Scrollbar::Policy::Always)
+            node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+        else if (veticalPolicy == Scrollbar::Policy::Never)
+            node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        else
+            node->propertyValuePairs[U"VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Automatic");
+
+        const auto horizontalPolicy = m_horizontalScrollbar->getPolicy();
+        if (horizontalPolicy == Scrollbar::Policy::Always)
+            node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+        else if (horizontalPolicy == Scrollbar::Policy::Never)
+            node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        else
+            node->propertyValuePairs[U"HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Automatic");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void DualScrollbarChildInterface::loadScrollbarPolicies(const std::unique_ptr<DataIO::Node>& node)
+    {
+        if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
+        {
+            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
+                m_verticalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
+            else if (policy == U"Always")
+                m_verticalScrollbar->setPolicy(Scrollbar::Policy::Always);
+            else if (policy == U"Never")
+                m_verticalScrollbar->setPolicy(Scrollbar::Policy::Never);
+            else
+                throw Exception{U"Failed to parse VerticalScrollbarPolicy property, found unknown value '" + policy + U"'."};
+        }
+
+        if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
+        {
+            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
+            if (policy == U"Automatic")
+                m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
+            else if (policy == U"Always")
+                m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Always);
+            else if (policy == U"Never")
+                m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Never);
+            else
+                throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
