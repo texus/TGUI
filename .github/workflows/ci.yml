@@ -961,7 +961,7 @@ jobs:
         run: |
           mkdir SFML
           wget -nv -O- "https://github.com/SFML/SFML/archive/refs/tags/${SFML_VERSION}.tar.gz" | tar --strip-components=1 -xz -C SFML
-          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=23 -DCMAKE_ANDROID_NDK=${ANDROID_NDK_ROOT} -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_shared -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Debug -S SFML -B SFML-build
+          cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=23 -DCMAKE_ANDROID_NDK=${ANDROID_NDK_ROOT} -DCMAKE_ANDROID_ARCH_ABI=$ARCH_ABI -DCMAKE_ANDROID_STL_TYPE=c++_shared -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Debug -DWARNINGS_AS_ERRORS=OFF -S SFML -B SFML-build
           make -C SFML-build -j$(nproc)
 
       - name: Install SFML into NDK
