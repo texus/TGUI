@@ -142,6 +142,30 @@ TGUI_MODULE_EXPORT namespace tgui
         void setTextPosition(Vector2<AbsoluteOrRelativeValue> position, Vector2f origin);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the button should ignore space and return key pressed and only react to mouse clicks
+        ///
+        /// @param ignore  Should space and return key press events be ignored by this button?
+        ///
+        /// By default, key events are NOT ignored. This means that when the button is focused, pressing the space or return key
+        /// has the same effect as clicking the button.
+        ///
+        /// @since TGUI 1.5
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setIgnoreKeyEvents(bool ignore);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the button ignores space and return key presses and only react to mouse clicks
+        ///
+        /// @return Are space and return key press events ignored by this button?
+        ///
+        /// By default, key events are NOT ignored. This means that when the button is focused, pressing the space or return key
+        /// has the same effect as clicking the button.
+        ///
+        /// @since TGUI 1.5
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD bool getIgnoreKeyEvents() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focus or unfocus the widget
         /// @param focused  Is the widget focused?
         ///
@@ -255,6 +279,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         bool   m_autoSize = true;
         bool   m_updatingTextSize = false; // Internal variable so that updateSize knows that it is called from updateTextSize
+        bool   m_ignoreKeyEvents = false; // Whether we ignore space and return key presses or not when the button is focused
 
         Vector2<AbsoluteOrRelativeValue> m_textPosition;
         Vector2f m_textOrigin;

@@ -100,6 +100,9 @@ namespace tgui
 
     void ToggleButton::keyPressed(const Event::KeyEvent& event)
     {
+        if (m_ignoreKeyEvents)
+            return;
+
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
         {
             m_down = !m_down;
@@ -113,7 +116,9 @@ namespace tgui
 
     bool ToggleButton::canHandleKeyPress(const Event::KeyEvent& event)
     {
-        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+        if (m_ignoreKeyEvents)
+            return false;
+        else if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
         else
             return ClickableWidget::canHandleKeyPress(event);

@@ -112,6 +112,9 @@ namespace tgui
 
     void Button::keyPressed(const Event::KeyEvent& event)
     {
+        if (m_ignoreKeyEvents)
+            return;
+
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             onPress.emit(this, m_string);
     }
@@ -120,7 +123,9 @@ namespace tgui
 
     bool Button::canHandleKeyPress(const Event::KeyEvent& event)
     {
-        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+        if (m_ignoreKeyEvents)
+            return false;
+        else if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
         else
             return ButtonBase::canHandleKeyPress(event);

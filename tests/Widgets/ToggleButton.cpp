@@ -76,6 +76,15 @@ TEST_CASE("[ToggleButton]")
         REQUIRE(button->getTextSize() == 25);
     }
 
+    SECTION("IgnoreKeyEvents")
+    {
+        REQUIRE(!button->getIgnoreKeyEvents());
+        button->setIgnoreKeyEvents(true);
+        REQUIRE(button->getIgnoreKeyEvents());
+        button->setIgnoreKeyEvents(false);
+        REQUIRE(!button->getIgnoreKeyEvents());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -118,6 +127,19 @@ TEST_CASE("[ToggleButton]")
                 keyEvent.code = tgui::Event::KeyboardKey::Enter;
                 button->keyPressed(keyEvent);
                 REQUIRE(toggleCount == 2);
+
+                SECTION("ignored")
+                {
+                    button->setIgnoreKeyEvents(true);
+
+                    keyEvent.code = tgui::Event::KeyboardKey::Space;
+                    button->keyPressed(keyEvent);
+                    REQUIRE(toggleCount == 2);
+
+                    keyEvent.code = tgui::Event::KeyboardKey::Enter;
+                    button->keyPressed(keyEvent);
+                    REQUIRE(toggleCount == 2);
+                }
             }
         }
     }

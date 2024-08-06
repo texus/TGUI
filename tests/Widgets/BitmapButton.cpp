@@ -81,6 +81,15 @@ TEST_CASE("[BitmapButton]")
         REQUIRE(button->getImageScaling() == 0.5f);
     }
 
+    SECTION("IgnoreKeyEvents")
+    {
+        REQUIRE(!button->getIgnoreKeyEvents());
+        button->setIgnoreKeyEvents(true);
+        REQUIRE(button->getIgnoreKeyEvents());
+        button->setIgnoreKeyEvents(false);
+        REQUIRE(!button->getIgnoreKeyEvents());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -101,11 +110,8 @@ TEST_CASE("[BitmapButton]")
                 button->leftMouseReleased({115, 80});
                 REQUIRE(pressedCount == 0);
 
-                SECTION("mouse press")
-                {
-                    button->leftMousePressed({115, 80});
-                    REQUIRE(pressedCount == 0);
-                }
+                button->leftMousePressed({115, 80});
+                REQUIRE(pressedCount == 0);
 
                 button->leftMouseReleased({115, 80});
                 REQUIRE(pressedCount == 1);
@@ -126,6 +132,19 @@ TEST_CASE("[BitmapButton]")
                 keyEvent.code = tgui::Event::KeyboardKey::Enter;
                 button->keyPressed(keyEvent);
                 REQUIRE(pressedCount == 2);
+
+                SECTION("ignored")
+                {
+                    button->setIgnoreKeyEvents(true);
+
+                    keyEvent.code = tgui::Event::KeyboardKey::Space;
+                    button->keyPressed(keyEvent);
+                    REQUIRE(pressedCount == 2);
+
+                    keyEvent.code = tgui::Event::KeyboardKey::Enter;
+                    button->keyPressed(keyEvent);
+                    REQUIRE(pressedCount == 2);
+                }
             }
         }
     }

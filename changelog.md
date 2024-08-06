@@ -3,6 +3,7 @@ TGUI 1.5 (TBD)
 
 - Added uniform scrollbar access to all widgets with a scrollbar
 - Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
+- Added option to buttons to only repond to clicks and ignore space/return key presses
 - Opacity of ScrollablePanel wasn't applied to its scrollbars
 - Setting opacity of SeparatorLine had no effect
 
