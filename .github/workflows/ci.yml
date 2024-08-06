@@ -957,6 +957,14 @@ jobs:
             SFML-build
           key: CACHE_ANDROID_SFML_${{env.SFML_VERSION}}_ARCH_${{env.ARCH_ABI}}
 
+      - name: Install Android NDK
+        if: matrix.platform.name == 'Android'
+        run: |
+          echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "build-tools;33.0.2"
+          echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.1.10909125"
+          ANDROID_NDK_ROOT=$(echo $ANDROID_SDK_ROOT/ndk/26.1.10909125
+          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT" >> $GITHUB_ENV
+
       - name: Build SFML
         if: steps.cache-sfml.outputs.cache-hit != 'true'
         run: |
