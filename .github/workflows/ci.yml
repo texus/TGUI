@@ -903,7 +903,7 @@ jobs:
   android-sdl:
     runs-on: ubuntu-latest
     env:
-      SDL_VERSION: 2.30.6
+      SDL_VERSION: 2.30.7  # Not released yet, so code below downloads latest version and ignores this for now
       SDL_TTF_VERSION: 2.22.0
     steps:
       - name: Checkout TGUI
@@ -911,11 +911,12 @@ jobs:
         with:
           path: TGUI
 
+      # TODO (once SDL 2.30.7 is released: wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/tags/release-$SDL_VERSION.tar.gz" | tar --strip-components=1 -xz -C SDL2
       - name: Download SDL
         run: |
           mkdir SDL2
           mkdir SDL2_ttf
-          wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/tags/release-$SDL_VERSION.tar.gz" | tar --strip-components=1 -xz -C SDL2
+          wget -nv -O- "https://github.com/libsdl-org/SDL/archive/refs/heads/release-2.30.x.tar.gz" | tar --strip-components=1 -xz -C SDL2
           wget -nv -O- "https://github.com/libsdl-org/SDL_ttf/releases/download/release-$SDL_TTF_VERSION/SDL2_ttf-$SDL_TTF_VERSION.tar.gz" | tar --strip-components=1 -xz -C SDL2_ttf
 
       - name: Build SDL_RENDERER project
