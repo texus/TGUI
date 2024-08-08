@@ -258,14 +258,12 @@ TEST_CASE("[Texture]")
             tgui::Texture texture{"resources/Texture6.png"};
             REQUIRE(!texture.getShader());
 
-#if SFML_VERSION_MAJOR < 3
             sf::Shader shader;
             texture.setShader(&shader);
             REQUIRE(texture.getShader() == &shader);
 
             texture.setShader(nullptr);
             REQUIRE(!texture.getShader());
-#endif
 
             SECTION("Draw")
             {
@@ -281,15 +279,8 @@ TEST_CASE("[Texture]")
                         gl_FragColor = gl_Color * texture2D(texture, gl_TexCoord[0].xy) * vec4(0.7, 1.0, 0.0, 1.0);
                     })";
 
-#if SFML_VERSION_MAJOR >= 3
-                auto shader = sf::Shader::loadFromMemory(vertexShaderStr, fragmentShaderStr);
-                REQUIRE(shader);
-                texture.setShader(&shader.value());
-                REQUIRE(texture.getShader() == &shader.value());
-#else
                 (void)shader.loadFromMemory(vertexShaderStr, fragmentShaderStr);
                 texture.setShader(&shader);
-#endif
 
                 auto widget = CustomWidgetWithSFMLShader::create();
                 widget->sprite.setTexture(texture);

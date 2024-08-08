@@ -45,15 +45,10 @@ namespace tgui
         m_textureVersions.clear();
 
         m_fileContents = std::move(data);
-#if SFML_VERSION_MAJOR >= 3
-        auto font = sf::Font::openFromMemory(m_fileContents.get(), sizeInBytes);
-        if (!font)
-            return false;
-
-        m_font = std::make_unique<sf::Font>(std::move(*font));
-        return true;
-#else
         m_font = std::make_unique<sf::Font>();
+#if SFML_VERSION_MAJOR >= 3
+        return m_font->openFromMemory(m_fileContents.get(), sizeInBytes);
+#else
         return m_font->loadFromMemory(m_fileContents.get(), sizeInBytes);
 #endif
     }

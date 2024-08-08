@@ -41,26 +41,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
-#if SFML_VERSION_MAJOR >= 3
-        CanvasBase{typeName, initRenderer},
-        m_renderTexture{sf::RenderTexture::create({1, 1}).value()}, // TGUI_NEXT: Properly handle canvas that has no render texture yet
-        m_usedTextureSize{1, 1}
-#else
         CanvasBase{typeName, initRenderer}
-#endif
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-#if SFML_VERSION_MAJOR >= 3
-        CanvasBase{other},
-        m_renderTexture{sf::RenderTexture::create({1, 1}).value()}, // TGUI_NEXT: Properly handle canvas that has no render texture yet
-        m_usedTextureSize{1, 1}
-#else
         CanvasBase{other}
-#endif
     {
         setSize(other.getSize());
     }
@@ -141,9 +129,7 @@ namespace tgui
             if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
             {
 #if SFML_VERSION_MAJOR >= 3
-                auto optionalRenderTexture = sf::RenderTexture::create({newTextureSize.x, newTextureSize.y});
-                if (optionalRenderTexture)
-                    m_renderTexture = std::move(*optionalRenderTexture);
+                (void)m_renderTexture.resize({newTextureSize.x, newTextureSize.y});
 #else
                 m_renderTexture.create(newTextureSize.x, newTextureSize.y);
 #endif

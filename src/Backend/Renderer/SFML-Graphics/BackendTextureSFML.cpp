@@ -43,15 +43,12 @@ namespace tgui
 
         if (!m_texture || (Vector2u{m_texture->getSize()} != size))
         {
-#if SFML_VERSION_MAJOR >= 3
-            auto optionalTexture = sf::Texture::create({size.x, size.y});
-            if (!optionalTexture)
-                return false;
-
-            m_texture = std::make_unique<sf::Texture>(std::move(*optionalTexture));
-#else
             if (!m_texture)
                 m_texture = std::make_unique<sf::Texture>();
+#if SFML_VERSION_MAJOR >= 3
+            if (!m_texture->resize({size.x, size.y}))
+                return false;
+#else
             if (!m_texture->create(size.x, size.y))
                 return false;
 #endif

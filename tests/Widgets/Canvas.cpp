@@ -166,14 +166,9 @@ TEST_CASE("[CanvasSFML]")
             canvas->setSize({180, 140});
             canvas->setPosition({10, 5});
 
-#if SFML_VERSION_MAJOR >= 3
-            auto optionalTexture = sf::Texture::loadFromFile("resources/image.png");
-            REQUIRE(optionalTexture);
-            sf::Texture texture = std::move(*optionalTexture);
-#else
             sf::Texture texture;
             REQUIRE(texture.loadFromFile("resources/image.png"));
-#endif
+
             sf::Sprite sprite(texture);
             sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
             sprite.setPosition({15, 20});

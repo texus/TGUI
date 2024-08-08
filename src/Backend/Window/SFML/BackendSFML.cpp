@@ -74,7 +74,7 @@ namespace tgui
         if (m_guiResources[gui].window && m_mouseCursors[m_guiResources[gui].mouseCursor])
         {
 #if SFML_VERSION_MAJOR >= 3
-            auto cursor = sf::Cursor::loadFromSystem(sf::Cursor::Type::Arrow);
+            auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow);
             if (cursor)
             {
                 m_guiResources[gui].window->setMouseCursor(*cursor);
@@ -102,7 +102,7 @@ namespace tgui
     {
         // Replace the cursor resource
 #if SFML_VERSION_MAJOR >= 3
-        auto newCursor = sf::Cursor::loadFromPixels(pixels, size, hotspot);
+        auto newCursor = sf::Cursor::createFromPixels(pixels, size, hotspot);
         if (newCursor)
             updateMouseCursor(type, std::make_unique<sf::Cursor>(std::move(*newCursor)));
 #else
@@ -313,7 +313,7 @@ namespace tgui
         }
 
 #if SFML_VERSION_MAJOR >= 3
-        auto cursor = sf::Cursor::loadFromSystem(typeSFML);
+        auto cursor = sf::Cursor::createFromSystem(typeSFML);
         if (cursor)
             return std::make_unique<sf::Cursor>(std::move(*cursor));
         else

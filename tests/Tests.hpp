@@ -57,13 +57,10 @@
                     std::unique_ptr<sf::RenderTexture> target; \
                     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
                     { \
-                        auto optionalTarget = sf::RenderTexture::create({width, height}); \
-                        if (optionalTarget) \
-                        { \
-                            target = std::make_unique<sf::RenderTexture>(std::move(*optionalTarget)); \
-                            guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
-                            guiPtr = guiUniquePtr.get(); \
-                        } \
+                        target = std::make_unique<sf::RenderTexture>(); \
+                        (void)target->resize({width, height}); \
+                        guiUniquePtr = std::make_unique<tgui::SFML_GRAPHICS::Gui>(*target); \
+                        guiPtr = guiUniquePtr.get(); \
                     } \
                     tgui::BackendGui& gui{*guiPtr}; \
                     gui.removeAllWidgets(); \

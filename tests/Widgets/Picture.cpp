@@ -74,14 +74,9 @@ TEST_CASE("[Picture]")
         {
             SECTION("from sf::Texture")
             {
-#if SFML_VERSION_MAJOR >= 3
-                auto optionalSfTexture = sf::Texture::loadFromFile("resources/image.png");
-                REQUIRE(optionalSfTexture);
-                sf::Texture sfTexture = std::move(*optionalSfTexture);
-#else
                 sf::Texture sfTexture;
                 REQUIRE(sfTexture.loadFromFile("resources/image.png"));
-#endif
+
                 tgui::Texture tguiTexture;
                 tguiTexture.loadFromPixelData(sfTexture.getSize(), sfTexture.copyToImage().getPixelsPtr());
 
