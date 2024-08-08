@@ -558,6 +558,83 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TreeView::setItemIndexInParent(const std::vector<String>& hierarchy, std::size_t index)
+    {
+        if (hierarchy.empty())
+            return false;
+
+        std::vector<std::shared_ptr<Node>>* parentNodes;
+        if (hierarchy.size() == 1)
+            parentNodes = &m_nodes;
+        else
+        {
+            std::vector<String> parentHierarchy = hierarchy;
+            parentHierarchy.pop_back();
+            auto* node = findNode(m_nodes, parentHierarchy, 0);
+            if (!node)
+                return false;
+
+            parentNodes = &node->nodes;
+        }
+
+        std::size_t currentIndex = 0;
+        std::shared_ptr<Node> node;
+        for (std::size_t i = 0; i < parentNodes->size(); ++i)
+        {
+            if ((*parentNodes)[i]->text.getString() == hierarchy.back())
+            {
+                node = (*parentNodes)[i];
+                currentIndex = i;
+                break;
+            }
+        }
+
+        if (!node)
+            return false;
+
+        if (currentIndex == index)
+            return true;
+
+        if (index >= parentNodes->size())
+            index = parentNodes->size() - 1;
+
+        parentNodes->erase(parentNodes->begin() + static_cast<std::ptrdiff_t>(currentIndex));
+        parentNodes->insert(parentNodes->begin() + static_cast<std::ptrdiff_t>(index), node);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int TreeView::getItemIndexInParent(const std::vector<String>& hierarchy)
+    {
+        if (hierarchy.empty())
+            return -1;
+
+        const std::vector<std::shared_ptr<Node>>* parentNodes;
+        if (hierarchy.size() == 1)
+            parentNodes = &m_nodes;
+        else
+        {
+            std::vector<String> parentHierarchy = hierarchy;
+            parentHierarchy.pop_back();
+            auto* node = findNode(m_nodes, parentHierarchy, 0);
+            if (!node)
+                return -1;
+
+            parentNodes = &node->nodes;
+        }
+
+        for (std::size_t i = 0; i < parentNodes->size(); ++i)
+        {
+            if ((*parentNodes)[i]->text.getString() == hierarchy.back())
+                return static_cast<int>(i);
+        }
+
+        return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TreeView::toggleNodeInternal(std::size_t index)
     {
         if (index >= m_visibleNodes.size())

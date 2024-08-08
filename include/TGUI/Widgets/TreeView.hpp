@@ -229,6 +229,43 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD std::vector<String> getHoveredItem() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the index of an item, based on the items that share the same parent
+        ///
+        /// @param hierarchy  Hierarchy of items, with the last element being the leaf item
+        /// @param index      The index that the item should have, when only looking at items where only the last element of the
+        ///                   hierarchy is different. Passing a number that is too high will just move the item to the back,
+        ///                   as if you passed to maximum valid number. Passing 0 moves the item to the front.
+        ///
+        /// @return True if the hierarchy matched an item in the tree view, false otherwise.
+        ///
+        /// @see getItemIndexInParent
+        ///
+        /// @since TGUI 1.5
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setItemIndexInParent(const std::vector<String>& hierarchy, std::size_t index);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index of an item, based on the items that share the same parent
+        ///
+        /// @param hierarchy  Hierarchy of items, with the last element being the leaf item
+        ///
+        /// @return The index of the item identified by the hierarchy, when only looking at items where only the last element
+        ///         of the hierarchy is different. Returns -1 if the hierarchy parameter didn't match an item in the tree view.
+        ///
+        /// In the following example, both A, A1 and B1 would have index 0, while B and A2 would have index 1.
+        /// @code
+        /// A
+        ///   A1
+        ///   A2
+        /// B
+        ///   B1
+        /// @endcode
+        ///
+        /// @since TGUI 1.5
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int getItemIndexInParent(const std::vector<String>& hierarchy);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the node in the tree view at a given hierarchy
         ///
         /// @param hierarchy  Hierarchy of items, identifying the node to retrieve

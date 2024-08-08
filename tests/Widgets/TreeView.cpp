@@ -321,6 +321,73 @@ TEST_CASE("[TreeView]")
         testScrollbarAccess(treeView->getHorizontalScrollbar());
     }
 
+    SECTION("ItemIndexInParent")
+    {
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+        treeView->addItem({"Vehicles", "Parts", "Wheel"});
+        treeView->addItem({"Vehicles", "Whole", "Truck"});
+        treeView->addItem({"Vehicles", "Whole", "Car"});
+        treeView->addItem({"Vehicles", "Whole", "Train"});
+        treeView->collapseAll();
+
+        REQUIRE(treeView->getItemIndexInParent({"Smilies"}) == 0);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles"}) == 1);
+
+        REQUIRE(treeView->getItemIndexInParent({"Smilies", "Happy"}) == 0);
+        REQUIRE(treeView->getItemIndexInParent({"Smilies", "Sad"}) == 1);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Parts"}) == 0);
+
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Parts", "Wheel"}) == 0);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Whole", "Truck"}) == 0);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Whole", "Train"}) == 2);
+
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Parts", "Wheel", "NonExistent"}) == -1);
+        REQUIRE(treeView->getItemIndexInParent({"NonExistent", "Happy"}) == -1);
+        REQUIRE(treeView->getItemIndexInParent({"NonExistent"}) == -1);
+        REQUIRE(treeView->getItemIndexInParent({}) == -1);
+
+        REQUIRE(!treeView->setItemIndexInParent({}, 0));
+        REQUIRE(!treeView->setItemIndexInParent({"NonExistent"}, 0));
+        REQUIRE(!treeView->setItemIndexInParent({"NonExistent", "Happy"}, 0));
+        REQUIRE(!treeView->setItemIndexInParent({"Vehicles", "Parts", "Wheel", "NonExistent"}, 0));
+
+        REQUIRE(treeView->getNodes()[0].text == "Smilies");
+        REQUIRE(treeView->getNodes()[1].text == "Vehicles");
+        REQUIRE(treeView->getNodes()[0].nodes[1].text == "Sad");
+        REQUIRE(treeView->getNodes()[1].nodes[1].text == "Whole");
+
+        REQUIRE(treeView->setItemIndexInParent({"Smilies"}, 1));
+        REQUIRE(treeView->getNodes()[0].text == "Vehicles");
+        REQUIRE(treeView->getNodes()[1].text == "Smilies");
+        REQUIRE(treeView->getNodes()[1].nodes[1].text == "Sad");
+
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Truck");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Car");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Train");
+
+        REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Car"}, 0));
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Truck");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Train");
+
+        REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Truck"}, 2));
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Train");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Truck");
+
+        REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Train"}, 1));
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Train");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Truck");
+
+        REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Car"}, 25));
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Train");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Truck");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Car");
+    }
+
     testWidgetSignals(treeView);
     SECTION("Events / Signals")
     {
