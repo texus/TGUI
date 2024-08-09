@@ -810,35 +810,37 @@ namespace tgui
         }
 
         const bool horizontalScrollbarVisible = m_horizontalScrollbar->isShown();
+        const float minVerticalScrollbarHeight = m_verticalScrollbar->getSize().x;
+        const float minHorizontalScrollbarWidth = m_horizontalScrollbar->getSize().y;
         if (horizontalScrollbarVisible)
         {
-            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
+            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, std::max(minVerticalScrollbarHeight, scrollbarSpace.y - m_horizontalScrollbar->getSize().y));
             m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
 
             if (m_verticalScrollbar->isShown())
             {
                 m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
-                m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
+                m_horizontalScrollbar->setSize(std::max(minHorizontalScrollbarWidth, scrollbarSpace.x - m_verticalScrollbar->getSize().x), m_horizontalScrollbar->getSize().y);
             }
             else
-                m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
+                m_horizontalScrollbar->setSize(std::max(minHorizontalScrollbarWidth, scrollbarSpace.x), m_horizontalScrollbar->getSize().y);
         }
         else
         {
-            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y);
+            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, std::max(minVerticalScrollbarHeight, scrollbarSpace.y));
             if (m_verticalScrollbar->isShown())
             {
-                m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
+                m_horizontalScrollbar->setSize(std::max(minHorizontalScrollbarWidth, scrollbarSpace.x - m_verticalScrollbar->getSize().x), m_horizontalScrollbar->getSize().y);
                 m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
 
                 if (m_horizontalScrollbar->isShown())
                 {
-                    m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
+                    m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, std::max(minVerticalScrollbarHeight, scrollbarSpace.y - m_horizontalScrollbar->getSize().y));
                     m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
                 }
             }
             else
-                m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
+                m_horizontalScrollbar->setSize(std::max(minHorizontalScrollbarWidth, scrollbarSpace.x), m_horizontalScrollbar->getSize().y);
         }
 
         m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
