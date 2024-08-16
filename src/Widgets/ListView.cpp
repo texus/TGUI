@@ -48,8 +48,6 @@ namespace tgui
     ListView::ListView(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<ListViewRenderer>();

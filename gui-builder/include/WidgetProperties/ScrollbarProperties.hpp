@@ -44,7 +44,13 @@ struct ScrollbarProperties : WidgetProperties
         else if (property == "Policy")
             scrollbar->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "Orientation")
-            scrollbar->setOrientation(deserializeOrientation(value));
+        {
+            const tgui::Orientation oldOrientation = scrollbar->getOrientation();
+            const tgui::Orientation newOrientation = deserializeOrientation(value);
+            scrollbar->setOrientation(newOrientation);
+            if (oldOrientation != newOrientation)
+                scrollbar->setSize({scrollbar->getSize().y, scrollbar->getSize().x});
+        }
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

@@ -49,9 +49,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Ptr Scrollbar::create()
+    Scrollbar::Ptr Scrollbar::create(Orientation orientation)
     {
-        return std::make_shared<Scrollbar>();
+        auto scrollbar = std::make_shared<Scrollbar>();
+        if (orientation == Orientation::Horizontal)
+        {
+            scrollbar->setOrientation(orientation);
+            scrollbar->setSize({scrollbar->getSize().y, scrollbar->getSize().x});
+        }
+        return scrollbar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,10 +265,16 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
+
     void Scrollbar::setVerticalScroll(bool vertical)
     {
-        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
+        m_orientationLocked = false;
+        const Orientation orientation = vertical ? Orientation::Vertical : Orientation::Horizontal;
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,16 +283,16 @@ namespace tgui
     {
         return m_orientation == Orientation::Vertical;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Scrollbar::setOrientation(Orientation orientation)
     {
+        m_orientationLocked = true;
         if (m_orientation == orientation)
             return;
 
         m_orientation = orientation;
-        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -710,10 +722,13 @@ namespace tgui
 
     void Scrollbar::updateSize()
     {
-        if (getSize().x < getSize().y)
-            m_orientation = Orientation::Vertical;
-        else if (getSize().x > getSize().y)
-            m_orientation = Orientation::Horizontal;
+        if (!m_orientationLocked)
+        {
+            if (getSize().x < getSize().y)
+                m_orientation = Orientation::Vertical;
+            else if (getSize().x > getSize().y)
+                m_orientation = Orientation::Horizontal;
+        }
 
         if (m_orientation == Orientation::Vertical)
         {
@@ -1179,6 +1194,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ScrollbarChildWidget::ScrollbarChildWidget(Orientation orientation)
+    {
+        if (orientation == Orientation::Horizontal)
+        {
+            setOrientation(orientation);
+            setSize({getSize().y, getSize().x});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ScrollbarChildWidget::isMouseDownOnThumb() const
     {
         return m_mouseDownOnThumb;
@@ -1293,6 +1319,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollbarChildInterface::ScrollbarChildInterface() :
+        m_scrollbar(Orientation::Vertical),
         m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
     {
     }
@@ -1406,6 +1433,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     DualScrollbarChildInterface::DualScrollbarChildInterface() :
+        m_verticalScrollbar(Orientation::Vertical),
+        m_horizontalScrollbar(Orientation::Horizontal),
         m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
         m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
     {

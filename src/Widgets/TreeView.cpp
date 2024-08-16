@@ -244,9 +244,6 @@ namespace tgui
     TreeView::TreeView(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
-        // Rotate the horizontal scrollbar
-        m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
-
         if (initRenderer)
         {
             m_renderer = aurora::makeCopied<TreeViewRenderer>();

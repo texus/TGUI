@@ -167,19 +167,59 @@ TEST_CASE("[Scrollbar]")
 
     SECTION("Orientation")
     {
-        scrollbar->setSize(100, 20);
-        REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
-
-        scrollbar->setSize(20, 100);
         REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
 
-        scrollbar->setSize(10, 40);
-        scrollbar->setOrientation(tgui::Orientation::Horizontal);
-        REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
-        REQUIRE(scrollbar->getSize() == tgui::Vector2f(40, 10));
-        scrollbar->setOrientation(tgui::Orientation::Vertical);
-        REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
-        REQUIRE(scrollbar->getSize() == tgui::Vector2f(10, 40));
+        SECTION("Deprecated setVerticalScroll method")
+        {
+            REQUIRE(scrollbar->getVerticalScroll());
+
+            scrollbar->setSize(100, 20);
+            REQUIRE(!scrollbar->getVerticalScroll());
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+
+            scrollbar->setSize(20, 100);
+            REQUIRE(scrollbar->getVerticalScroll());
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
+
+            scrollbar->setSize(10, 40);
+            scrollbar->setVerticalScroll(false);
+            REQUIRE(!scrollbar->getVerticalScroll());
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(scrollbar->getSize() == tgui::Vector2f(40, 10)); // setVerticalScroll flips size
+            scrollbar->setVerticalScroll(true);
+            REQUIRE(scrollbar->getVerticalScroll());
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(scrollbar->getSize() == tgui::Vector2f(10, 40)); // setVerticalScroll flips size
+
+            // Orientation isn't locked, calling setSize can still alter the orientation
+            scrollbar->setSize(100, 20);
+            REQUIRE(!scrollbar->getVerticalScroll());
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+        }
+
+        SECTION("New setOrientation method")
+        {
+            scrollbar->setSize(100, 20);
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+
+            scrollbar->setSize(20, 100);
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
+
+            scrollbar->setSize(10, 40);
+            scrollbar->setOrientation(tgui::Orientation::Horizontal);
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(scrollbar->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+            scrollbar->setOrientation(tgui::Orientation::Vertical);
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(scrollbar->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+
+            scrollbar->setSize(100, 20);
+            scrollbar->setOrientation(tgui::Orientation::Horizontal);
+
+            // Orientation is locked, setSize no longer alters the orientation
+            scrollbar->setSize(20, 100);
+            REQUIRE(scrollbar->getOrientation() == tgui::Orientation::Horizontal);
+        }
     }
 
     SECTION("Events / Signals")

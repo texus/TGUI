@@ -50,7 +50,6 @@ namespace tgui
         m_textAfterSelection2.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
-        m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
         m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Never);
 
         if (initRenderer)

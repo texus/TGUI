@@ -68,10 +68,10 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new scrollbar widget
-        ///
+        /// @param orientation  Whether the scrollbar lies horizontally or vertically
         /// @return The new scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Scrollbar::Ptr create();
+        TGUI_NODISCARD static Scrollbar::Ptr create(Orientation orientation = Orientation::Vertical);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another scrollbar
@@ -235,7 +235,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isShown() const;
 
-#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the scrollbar lies horizontally or vertically
         /// @param vertical  Should the scrollbar lie vertically?
@@ -249,7 +248,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return Does the scrollbar lie vertically?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getOrientation instead") TGUI_NODISCARD bool getVerticalScroll() const;
-#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the scrollbar lies horizontally or vertically
@@ -401,6 +399,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         Orientation m_orientation = Orientation::Vertical; // Is the scrollbar drawn horizontally or vertically?
         Orientation m_imageOrientation = Orientation::Vertical;  // Does the loaded image lie horizontally or vertically?
+        bool m_orientationLocked = false; // TGUI_NEXT: Remove property and make locked the default
 
         // How far should the value change when pressing one of the arrows?
         unsigned int m_scrollAmount = 1;
@@ -450,6 +449,12 @@ TGUI_MODULE_EXPORT namespace tgui
     class TGUI_API ScrollbarChildWidget : public Scrollbar
     {
     public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor
+        /// @param orientation  Whether the scrollbar lies horizontally or vertically
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ScrollbarChildWidget(Orientation orientation = Orientation::Vertical); // TGUI_NEXT: No more default option
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the left mouse button has been pressed on top of the thumb of the scrollbar
