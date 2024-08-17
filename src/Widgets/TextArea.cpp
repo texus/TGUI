@@ -553,7 +553,7 @@ namespace tgui
             }
             else // No double clicking
             {
-                if (!keyboard::isShiftPressed())
+                if (!keyboard::isShiftPressed(m_parentGui))
                     m_selStart = caretPosition;
 
                 m_selEnd = caretPosition;
@@ -867,7 +867,7 @@ namespace tgui
         bool scrollbarMoved = false;
         if (horizontalScrollbarCanMove
          && !touch
-         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed(m_parentGui)))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }

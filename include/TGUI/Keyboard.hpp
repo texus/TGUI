@@ -103,10 +103,19 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        TGUI_NODISCARD inline bool isShiftPressed()
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+        TGUI_DEPRECATED("Use isShiftPressed(gui) instead") TGUI_NODISCARD inline bool isShiftPressed()
         {
+            TGUI_IGNORE_DEPRECATED_WARNINGS_START
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Shift);
+            TGUI_IGNORE_DEPRECATED_WARNINGS_END
+        }
+#endif
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TGUI_NODISCARD inline bool isShiftPressed(const BackendGui* gui)
+        {
+            return gui->isKeyboardModifierPressed(Event::KeyModifier::Shift);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,13 +139,26 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        TGUI_NODISCARD inline bool isMultiselectModifierPressed()
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
+        TGUI_DEPRECATED("Use isMultiselectModifierPressed(gui) instead") TGUI_NODISCARD inline bool isMultiselectModifierPressed()
         {
+            TGUI_IGNORE_DEPRECATED_WARNINGS_START
 #ifdef TGUI_SYSTEM_MACOS
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::System);
 #else
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Control);
+#endif
+            TGUI_IGNORE_DEPRECATED_WARNINGS_END
+        }
+#endif
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TGUI_NODISCARD inline bool isMultiselectModifierPressed(const BackendGui* gui)
+        {
+#ifdef TGUI_SYSTEM_MACOS
+            return gui->isKeyboardModifierPressed(Event::KeyModifier::System);
+#else
+            return gui->isKeyboardModifierPressed(Event::KeyModifier::Control);
 #endif
         }
 

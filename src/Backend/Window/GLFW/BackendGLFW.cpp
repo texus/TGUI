@@ -104,7 +104,8 @@ namespace tgui
 
     bool BackendGLFW::isKeyboardModifierPressed(Event::KeyModifier modifierKey)
     {
-        /// TODO: If there are multiple windows then we need to do this on the focused window
+        // This code may be wrong when there are multiple windows. This function has been deprecated in favor of the
+        // function in the gui object, which calls glfwGetKey on the attached window instead of an arbitrarily one.
         GLFWwindow* window = getAnyWindow();
         if (!window)
             return false;

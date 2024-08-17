@@ -9,6 +9,7 @@ TGUI 1.5 (TBD)
 - Scrollbar::setSize no longer affects orientation once setOrientation is called
 - Opacity of ScrollablePanel wasn't applied to its scrollbars
 - Setting opacity of SeparatorLine had no effect
+- SFML backend no longer uses sf::Keyboard::isKeyPressed to check modifier keys
 
 
 TGUI 1.4.1  (20 July 2024)

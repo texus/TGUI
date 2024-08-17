@@ -276,6 +276,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BackendGuiRaylib::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
+    {
+        switch (modifierKey)
+        {
+        case Event::KeyModifier::System:
+            return IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
+        case Event::KeyModifier::Control:
+            return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
+        case Event::KeyModifier::Shift:
+            return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+        case Event::KeyModifier::Alt:
+            return IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
+        }
+
+        TGUI_ASSERT(false, "BackendGuiRaylib::isKeyboardModifierPressed called with an invalid value");
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendGuiRaylib::endMainLoop()
     {
         m_endMainLoop = true;

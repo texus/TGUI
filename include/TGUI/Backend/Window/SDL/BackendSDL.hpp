@@ -117,7 +117,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
+        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead") TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard
@@ -172,7 +172,7 @@ TGUI_MODULE_EXPORT namespace tgui
             Cursor::Type mouseCursor = Cursor::Type::Arrow;
         };
 
-        std::unordered_map<BackendGui*, GuiResources> m_guiResources;
+        std::unordered_map<const BackendGui*, GuiResources> m_guiResources;
         std::unordered_map<Cursor::Type, SDL_Cursor*> m_mouseCursors;
 
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)

@@ -668,6 +668,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BackendGui::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
+    {
+TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        return getBackend()->isKeyboardModifierPressed(modifierKey);
+TGUI_IGNORE_DEPRECATED_WARNINGS_END
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendGui::setKeyboardNavigationEnabled(bool enabled)
     {
         m_keyboardNavigationEnabled = enabled;

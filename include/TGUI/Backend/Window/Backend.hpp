@@ -226,7 +226,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) = 0;
+        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead") TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard

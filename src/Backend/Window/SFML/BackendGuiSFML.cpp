@@ -401,6 +401,21 @@ namespace tgui
             if (code == Event::KeyboardKey::Unknown)
                 return false; // This key isn't handled by TGUI
 
+            m_modifierKeySystemPressed = eventKeyPressed->system;
+            m_modifierKeyControlPressed = eventKeyPressed->control;
+            m_modifierKeyShiftPressed = eventKeyPressed->shift;
+            m_modifierKeyAltPressed = eventKeyPressed->alt;
+
+            // When pressing a modifier key, the modifier state in the KeyEvent is still false
+            if ((eventKeyPressed->code == sf::Keyboard::Key::LSystem) || (eventKeyPressed->code == sf::Keyboard::Key::RSystem))
+                m_modifierKeySystemPressed = true;
+            else if ((eventKeyPressed->code == sf::Keyboard::Key::LControl) || (eventKeyPressed->code == sf::Keyboard::Key::RControl))
+                m_modifierKeyControlPressed = true;
+            else if ((eventKeyPressed->code == sf::Keyboard::Key::LShift) || (eventKeyPressed->code == sf::Keyboard::Key::RShift))
+                m_modifierKeyShiftPressed = true;
+            else if ((eventKeyPressed->code == sf::Keyboard::Key::LAlt) || (eventKeyPressed->code == sf::Keyboard::Key::RAlt))
+                m_modifierKeyAltPressed = true;
+
             eventTGUI.type = Event::Type::KeyPressed;
             eventTGUI.key.code = code;
             eventTGUI.key.alt = eventKeyPressed->alt;
@@ -408,6 +423,26 @@ namespace tgui
             eventTGUI.key.shift = eventKeyPressed->shift;
             eventTGUI.key.system = eventKeyPressed->system;
             return true;
+        }
+
+        if (const auto* eventKeyReleased = eventSFML.getIf<sf::Event::KeyReleased>())
+        {
+            m_modifierKeySystemPressed = eventKeyReleased->system;
+            m_modifierKeyControlPressed = eventKeyReleased->control;
+            m_modifierKeyShiftPressed = eventKeyReleased->shift;
+            m_modifierKeyAltPressed = eventKeyReleased->alt;
+
+            // When releasing a modifier key, the modifier state in the KeyEvent is still true
+            if ((eventKeyReleased->code == sf::Keyboard::Key::LSystem) || (eventKeyReleased->code == sf::Keyboard::Key::RSystem))
+                m_modifierKeySystemPressed = false;
+            else if ((eventKeyReleased->code == sf::Keyboard::Key::LControl) || (eventKeyReleased->code == sf::Keyboard::Key::RControl))
+                m_modifierKeyControlPressed = false;
+            else if ((eventKeyReleased->code == sf::Keyboard::Key::LShift) || (eventKeyReleased->code == sf::Keyboard::Key::RShift))
+                m_modifierKeyShiftPressed = false;
+            else if ((eventKeyReleased->code == sf::Keyboard::Key::LAlt) || (eventKeyReleased->code == sf::Keyboard::Key::RAlt))
+                m_modifierKeyAltPressed = false;
+
+            return false;
         }
 
         if (const auto* eventMouseWheelScrolled = eventSFML.getIf<sf::Event::MouseWheelScrolled>())
@@ -552,6 +587,21 @@ namespace tgui
                 if (code == Event::KeyboardKey::Unknown)
                     return false; // This key isn't handled by TGUI
 
+                m_modifierKeySystemPressed = eventSFML.key.system;
+                m_modifierKeyControlPressed = eventSFML.key.control;
+                m_modifierKeyShiftPressed = eventSFML.key.shift;
+                m_modifierKeyAltPressed = eventSFML.key.alt;
+
+                // When pressing a modifier key, the modifier state in the KeyEvent is still false
+                if ((eventSFML.key.code == sf::Keyboard::Key::LSystem) || (eventSFML.key.code == sf::Keyboard::Key::RSystem))
+                    m_modifierKeySystemPressed = true;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LControl) || (eventSFML.key.code == sf::Keyboard::Key::RControl))
+                    m_modifierKeyControlPressed = true;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LShift) || (eventSFML.key.code == sf::Keyboard::Key::RShift))
+                    m_modifierKeyShiftPressed = true;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LAlt) || (eventSFML.key.code == sf::Keyboard::Key::RAlt))
+                    m_modifierKeyAltPressed = true;
+
                 eventTGUI.type = Event::Type::KeyPressed;
                 eventTGUI.key.code = code;
                 eventTGUI.key.alt = eventSFML.key.alt;
@@ -559,6 +609,25 @@ namespace tgui
                 eventTGUI.key.shift = eventSFML.key.shift;
                 eventTGUI.key.system = eventSFML.key.system;
                 return true;
+            }
+            case sf::Event::KeyReleased:
+            {
+                m_modifierKeySystemPressed = eventSFML.key.system;
+                m_modifierKeyControlPressed = eventSFML.key.control;
+                m_modifierKeyShiftPressed = eventSFML.key.shift;
+                m_modifierKeyAltPressed = eventSFML.key.alt;
+
+                // When releasing a modifier key, the modifier state in the KeyEvent is still true
+                if ((eventSFML.key.code == sf::Keyboard::Key::LSystem) || (eventSFML.key.code == sf::Keyboard::Key::RSystem))
+                    m_modifierKeySystemPressed = false;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LControl) || (eventSFML.key.code == sf::Keyboard::Key::RControl))
+                    m_modifierKeyControlPressed = false;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LShift) || (eventSFML.key.code == sf::Keyboard::Key::RShift))
+                    m_modifierKeyShiftPressed = false;
+                else if ((eventSFML.key.code == sf::Keyboard::Key::LAlt) || (eventSFML.key.code == sf::Keyboard::Key::RAlt))
+                    m_modifierKeyAltPressed = false;
+
+                return false;
             }
             case sf::Event::MouseWheelScrolled:
             {
@@ -692,6 +761,26 @@ namespace tgui
         BackendGui::updateTextCursorPosition(inputRect, caretPos);
     }
 #endif
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BackendGuiSFML::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
+    {
+        switch (modifierKey)
+        {
+        case Event::KeyModifier::System:
+            return m_modifierKeySystemPressed;
+        case Event::KeyModifier::Control:
+            return m_modifierKeyControlPressed;
+        case Event::KeyModifier::Shift:
+            return m_modifierKeyShiftPressed;
+        case Event::KeyModifier::Alt:
+            return m_modifierKeyAltPressed;
+        }
+
+        TGUI_ASSERT(false, "BackendGuiSFML::isKeyboardModifierPressed called with an invalid value");
+        return false;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

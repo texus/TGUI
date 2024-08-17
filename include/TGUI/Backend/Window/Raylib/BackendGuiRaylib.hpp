@@ -154,6 +154,15 @@ TGUI_MODULE_EXPORT namespace tgui
         void updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Checks the state for one of the modifier keys
+        ///
+        /// @param modifierKey  The modifier key of which the state is being queried
+        ///
+        /// @return Whether queries modifier key is being pressed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Breaks out of the main loop that is implemented inside the mainLoop function
         ///
         /// After calling gui.mainLoop(), this function can be called from an event handler to stop the program. It will set a

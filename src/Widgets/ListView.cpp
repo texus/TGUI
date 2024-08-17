@@ -1406,7 +1406,7 @@ namespace tgui
             if (!mouseOnSelectedItem)
                 m_possibleDoubleClick = false;
 
-            if (m_multiSelect && keyboard::isMultiselectModifierPressed())
+            if (m_multiSelect && keyboard::isMultiselectModifierPressed(m_parentGui))
             {
                 if (mouseOnSelectedItem)
                 {
@@ -1416,7 +1416,7 @@ namespace tgui
                 else
                     addSelectedItem(m_hoveredItem);
             }
-            else if (m_multiSelect && (m_hoveredItem >= 0) && keyboard::isShiftPressed())
+            else if (m_multiSelect && (m_hoveredItem >= 0) && keyboard::isShiftPressed(m_parentGui))
             {
                 selectRangeFromEvent(static_cast<std::size_t>(m_hoveredItem));
             }
@@ -1575,7 +1575,7 @@ namespace tgui
                     const bool mouseOnSelectedItem = (m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) != m_selectedItems.end());
                     if (m_multiSelect)
                     {
-                        if (keyboard::isMultiselectModifierPressed())
+                        if (keyboard::isMultiselectModifierPressed(m_parentGui))
                         {
                             // If the control/command key is pressed then toggle the selection of the item below the mouse
                             if (mouseOnSelectedItem)
@@ -1618,7 +1618,7 @@ namespace tgui
         bool scrollbarMoved = false;
         if (horizontalScrollbarCanMove
          && !touch
-         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed()))
+         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed(m_parentGui)))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }

@@ -1350,12 +1350,13 @@ std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines()
     const auto controlModifier = tgui::Event::KeyModifier::Control;
 #endif
 
+    const auto selectedWidget = m_selectedWidget->ptr;
+    const auto* gui = selectedWidget->getParentGui();
     if (!m_draggingWidget && !m_draggingSelectionSquare
-     && !tgui::getBackend()->isKeyboardModifierPressed(controlModifier)
-     && !tgui::getBackend()->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
+     && !gui->isKeyboardModifierPressed(controlModifier)
+     && !gui->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
         return lines;
 
-    const auto selectedWidget = m_selectedWidget->ptr;
     const tgui::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
     const tgui::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
     const auto widgets = selectedWidget->getParent()->getWidgets();

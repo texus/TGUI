@@ -599,6 +599,15 @@ TGUI_MODULE_EXPORT namespace tgui
         virtual void updateTextCursorPosition(FloatRect inputRect, Vector2f caretPos);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Checks the state for one of the modifier keys
+        ///
+        /// @param modifierKey  The modifier key of which the state is being queried
+        ///
+        /// @return Whether queries modifier key is being pressed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const; // TGUI_NEXT: Pure virtual
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether using the arrow keys can be used to navigate between widgets
         ///
         /// @param enabled  Should keyboard navigation be enabled?

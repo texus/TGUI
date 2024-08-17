@@ -705,6 +705,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BackendGuiSDL::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
+    {
+        const SDL_Keymod pressedModifiers = SDL_GetModState();
+        switch (modifierKey)
+        {
+        case Event::KeyModifier::System:
+            return (pressedModifiers & SDL_KMOD_GUI) != 0;
+        case Event::KeyModifier::Control:
+            return (pressedModifiers & SDL_KMOD_CTRL) != 0;
+        case Event::KeyModifier::Shift:
+            return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
+        case Event::KeyModifier::Alt:
+            return (pressedModifiers & SDL_KMOD_ALT) != 0;
+        }
+
+        TGUI_ASSERT(false, "BackendGuiSDL::isKeyboardModifierPressed called with an invalid value");
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendGuiSDL::setGuiWindow(SDL_Window* window)
     {
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendSDL>(getBackend()), "BackendGuiSDL requires system backend of type BackendSDL");

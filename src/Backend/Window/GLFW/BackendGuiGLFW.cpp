@@ -474,6 +474,26 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool BackendGuiGLFW::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
+    {
+        switch (modifierKey)
+        {
+        case Event::KeyModifier::System:
+            return (glfwGetKey(m_window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
+        case Event::KeyModifier::Control:
+            return (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
+        case Event::KeyModifier::Shift:
+            return (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+        case Event::KeyModifier::Alt:
+            return (glfwGetKey(m_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
+        }
+
+        TGUI_ASSERT(false, "BackendGuiGLFW::isKeyboardModifierPressed called with an invalid value");
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendGuiGLFW::setGuiWindow(GLFWwindow* window)
     {
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendGLFW>(getBackend()), "BackendGuiGLFW requires system backend of type BackendGLFW");
