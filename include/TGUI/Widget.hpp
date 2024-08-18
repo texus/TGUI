@@ -467,13 +467,22 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Shows the widget by introducing it with an animation
         ///
+        /// @param type     Type of the animation
+        /// @param duration Duration of the animation
+        ///
         /// The animation will also be played if the widget was already visible.
         ///
         /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
         /// be back in the state in which it was when this function was called.
         ///
-        /// @param type     Type of the animation
-        /// @param duration Duration of the animation
+        /// If incompatible existing animations were still playing then they are finished immediately prior to starting this
+        /// new animation. Some animations are compatible, such a show with Fade effect and a show with Slide effect, in which
+        /// case both animations are played simultaneously.
+        ///
+        /// When using the Fade effect while a previous hideWithEffect with Fade effect was not yet finished, the animation is
+        /// automatically shortened. When the opacity is still 40% when showWithEffect is called (when changing from 100% to 0%),
+        /// then the show animation will change the opacity from 40% to 100% instead of going from 0% to 100%.
+        /// The duration of the animation is also shortened to only 60% of the provided value, to maintain the expected speed.
         ///
         /// @see hideWithEffect
         ///
@@ -487,13 +496,22 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Hides the widget by making it leave with an animation
         ///
+        /// @param type     Type of the animation
+        /// @param duration Duration of the animation
+        ///
         /// If the widget is already hidden then the animation will still play but you will not see it.
         ///
         /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
         /// be back in the state in which it was when this function was called, except that it will no longer be visible.
         ///
-        /// @param type     Type of the animation
-        /// @param duration Duration of the animation
+        /// If incompatible existing animations were still playing then they are finished immediately prior to starting this
+        /// new animation. Some animations are compatible, such a hide with Fade effect and a hide with Slide effect, in which
+        /// case both animations are played simultaneously.
+        ///
+        /// When using the Fade effect while a previous showWithEffect with Fade effect was not yet finished, the animation is
+        /// automatically shortened. When the opacity is only 40% when hideWithEffect is called (when changing from 0% to 100%),
+        /// then the hide animation will change the opacity from 40% to 0% instead of going from 100% to 0%.
+        /// The duration of the animation is also shortened to only 40% of the provided value, to maintain the expected speed.
         ///
         /// @see showWithEffect
         ///
