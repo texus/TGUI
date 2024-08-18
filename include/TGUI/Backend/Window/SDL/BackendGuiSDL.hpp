@@ -88,13 +88,13 @@ TGUI_MODULE_EXPORT namespace tgui
         ///     while (SDL_PollEvent(&event) != 0)
         ///     {
         ///         gui.handleEvent(event);
-        ///         if (e.type == SDL_EVENT_QUIT)  // SDL_QUIT in SDL2, SDL_EVENT_QUIT in SDL3
+        ///         if (event.type == SDL_EVENT_QUIT)  // SDL_QUIT in SDL2, SDL_EVENT_QUIT in SDL3
         ///             quit = true;
         ///     }
         ///
-        ///     glClear(GL_COLOR_BUFFER_BIT);
+        ///     SDL_RenderClear(renderer);  // glClear(GL_COLOR_BUFFER_BIT) when using OpenGL instead of SDL_Renderer
         ///     gui.draw();
-        ///     SDL_GL_SwapWindow(window);
+        ///     SDL_RenderPresent(renderer);  // SDL_GL_SwapWindow(window) when using OpenGL instead of SDL_Renderer
         /// }
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
