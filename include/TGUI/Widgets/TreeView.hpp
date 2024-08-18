@@ -266,6 +266,39 @@ TGUI_MODULE_EXPORT namespace tgui
         int getItemIndexInParent(const std::vector<String>& hierarchy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Moves one item and its children from one location in the hierarchy to a completely different location
+        ///
+        /// @param oldHierarchy  The item that needs to be moved
+        /// @param newHierarchy  The new location of the item
+        ///
+        /// @return True if the node was moved, false if oldHierarchy wasn't found or newHierarchy without the last element wasn't found
+        ///
+        /// Example. Suppose you have the following tree:
+        /// @code
+        /// A
+        ///   A1
+        ///     A1_1
+        ///     A1_2
+        ///   A2
+        /// B
+        ///   B1
+        /// @endcode
+        /// Calling changeItemHierarchy({"A", "A1"}, {"B", "X"}) will result in the following tree:
+        /// @code
+        /// A
+        ///   A2
+        /// B
+        ///   B1
+        ///   X
+        ///     A1_1
+        ///     A1_2
+        /// @endcode
+        ///
+        /// @since TGUI 1.5
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItemHierarchy(const std::vector<String>& oldHierarchy, const std::vector<String>& newHierarchy);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the node in the tree view at a given hierarchy
         ///
         /// @param hierarchy  Hierarchy of items, identifying the node to retrieve

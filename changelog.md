@@ -5,6 +5,7 @@ TGUI 1.5 (TBD)
 - Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
 - Added option to buttons to only repond to clicks and ignore space/return key presses
 - Added setItemIndexInParent and getItemIndexInParent functions to TreeView
+- Added changeItemHierarchy to TreeView
 - Scrollbar::setOrientation will no longer flip width and height
 - Scrollbar::setSize no longer affects orientation once setOrientation is called
 - Opacity of ScrollablePanel wasn't applied to its scrollbars

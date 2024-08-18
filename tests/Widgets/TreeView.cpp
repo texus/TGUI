@@ -267,6 +267,11 @@ TEST_CASE("[TreeView]")
 
         treeView->deselectItem();
         REQUIRE(treeView->getSelectedItem().empty());
+
+        REQUIRE(!treeView->selectItem({"Smilies", "NonExistent"}));
+        REQUIRE(!treeView->selectItem({"NonExistent"}));
+        REQUIRE(!treeView->selectItem({}));
+        REQUIRE(treeView->getSelectedItem().empty());
     }
 
     SECTION("ItemHeight")
@@ -382,10 +387,80 @@ TEST_CASE("[TreeView]")
         REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Train");
         REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Truck");
 
+        REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Truck"}, 25));
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Train");
+        REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Truck");
+
         REQUIRE(treeView->setItemIndexInParent({"Vehicles", "Whole", "Car"}, 25));
         REQUIRE(treeView->getNodes()[0].nodes[1].nodes[0].text == "Train");
         REQUIRE(treeView->getNodes()[0].nodes[1].nodes[1].text == "Truck");
         REQUIRE(treeView->getNodes()[0].nodes[1].nodes[2].text == "Car");
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Whole", "Train"}) == 0);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Whole", "Truck"}) == 1);
+        REQUIRE(treeView->getItemIndexInParent({"Vehicles", "Whole", "Car"}) == 2);
+    }
+
+    SECTION("changeItemHierarchy")
+    {
+        treeView->addItem({"Smilies", "Happy"});
+        treeView->addItem({"Smilies", "Sad"});
+        treeView->addItem({"Smilies", "Neither"});
+        treeView->addItem({"Vehicles", "Parts", "Wheel"});
+        treeView->addItem({"Vehicles", "Whole", "Truck"});
+        treeView->addItem({"Vehicles", "Whole", "Car"});
+        treeView->addItem({"Vehicles", "Whole", "Train"});
+
+        REQUIRE(!treeView->changeItemHierarchy({"Smilies", "Sad"}, {}));
+        REQUIRE(!treeView->changeItemHierarchy({"Smilies", "Sad"}, {"NonExistent", "New"}));
+        REQUIRE(!treeView->changeItemHierarchy({"Smilies", "Sad"}, {"Vehicles", "NonExistent", "New"}));
+        REQUIRE(!treeView->changeItemHierarchy({"Smilies", "NonExistent"}, {"New"}));
+        REQUIRE(!treeView->changeItemHierarchy({"NonExistent"}, {"New"}));
+        REQUIRE(!treeView->changeItemHierarchy({}, {"New"}));
+
+        treeView->changeItemHierarchy({"Vehicles", "Whole", "Train"}, {"Vehicles", "Whole", "Train"});
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Truck");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Car");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[2].text == "Train");
+
+        treeView->changeItemHierarchy({"Vehicles", "Whole", "Truck"}, {"Vehicles", "Whole", "Truck"});
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Train");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[2].text == "Truck");
+
+        treeView->changeItemHierarchy({"Vehicles", "Whole", "Train"}, {"Vehicles", "Whole", "Bike"});
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Car");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Truck");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[2].text == "Bike");
+
+        treeView->changeItemHierarchy({"Vehicles", "Whole", "Car"}, {"Smilies", "MovedCar"});
+        REQUIRE(treeView->getNodes()[0].nodes[2].text == "Neither");
+        REQUIRE(treeView->getNodes()[0].nodes[3].text == "MovedCar");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[0].text == "Truck");
+        REQUIRE(treeView->getNodes()[1].nodes[1].nodes[1].text == "Bike");
+
+        treeView->changeItemHierarchy({"Vehicles", "Whole"}, {"MovedWhole"});
+        REQUIRE(treeView->getNodes()[1].text == "Vehicles");
+        REQUIRE(treeView->getNodes()[2].text == "MovedWhole");
+        REQUIRE(treeView->getNodes()[2].nodes[0].text == "Truck");
+        REQUIRE(treeView->getNodes()[2].nodes[1].text == "Bike");
+        REQUIRE(treeView->getNodes()[1].nodes[0].text == "Parts");
+        REQUIRE(treeView->getNodes()[1].nodes.size() == 1);
+
+        treeView->changeItemHierarchy({"Smilies"}, {"Vehicles", "Parts", "MovedSmilies"});
+        REQUIRE(treeView->getNodes().size() == 2);
+        REQUIRE(treeView->getNodes()[0].text == "Vehicles");
+        REQUIRE(treeView->getNodes()[1].text == "MovedWhole");
+        REQUIRE(treeView->getNodes()[0].nodes.size() == 1);
+        REQUIRE(treeView->getNodes()[0].nodes[0].text == "Parts");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes.size() == 2);
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[0].text == "Wheel");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].text == "MovedSmilies");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].nodes.size() == 4);
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].nodes[0].text == "Happy");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].nodes[1].text == "Sad");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].nodes[2].text == "Neither");
+        REQUIRE(treeView->getNodes()[0].nodes[0].nodes[1].nodes[3].text == "MovedCar");
     }
 
     testWidgetSignals(treeView);

@@ -178,6 +178,7 @@ namespace tgui
 
         TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const std::vector<String>& hierarchy, unsigned int parentIndex)
         {
+            assert(parentIndex < hierarchy.size());
             for (auto& node : nodes)
             {
                 if (node->text.getString() != hierarchy[parentIndex])
@@ -473,6 +474,9 @@ namespace tgui
                 return false;
         }
 
+        if (hierarchy.empty())
+            return false;
+
         auto* node = findNode(m_nodes, hierarchy, 0);
         if (!node)
             return false;
@@ -628,6 +632,44 @@ namespace tgui
         }
 
         return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TreeView::changeItemHierarchy(const std::vector<String>& oldHierarchy, const std::vector<String>& newHierarchy)
+    {
+        if (oldHierarchy.empty() || newHierarchy.empty())
+            return false;
+
+        auto* node = findNode(m_nodes, oldHierarchy, 0);
+        if (!node)
+            return false;
+
+        Node* newParentNode = nullptr;
+        if (newHierarchy.size() > 1)
+        {
+            std::vector<String> parentHierarchy = newHierarchy;
+            parentHierarchy.pop_back();
+            newParentNode = findNode(m_nodes, parentHierarchy, 0);
+            if (!newParentNode)
+                return false;
+        }
+
+        // Remove the node from its old parent
+        auto& oldParentNodes = node->parent ? node->parent->nodes : m_nodes;
+        auto it = std::find_if(oldParentNodes.begin(), oldParentNodes.end(), [node](const std::shared_ptr<Node>& child){ return child.get() == node; });
+        assert(it != oldParentNodes.end());
+        auto nodeSharedPtr = *it;
+        oldParentNodes.erase(it);
+
+        // Add the node to the new parent
+        auto& newParentNodes = newParentNode ? newParentNode->nodes : m_nodes;
+        newParentNodes.push_back(nodeSharedPtr);
+
+        // Update the moved node
+        node->text.setString(newHierarchy.back());
+        node->parent = newParentNode;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
