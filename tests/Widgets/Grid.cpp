@@ -56,6 +56,18 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidget(0, 0) == widget2);
         REQUIRE(grid->getWidgetPadding(0, 0) ==  tgui::Padding(1, 2, 3, 4));
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::UpperLeft);
+
+        // Moving a widget to a different cell
+        REQUIRE(grid->setWidgetCell(widget2, 2, 1, tgui::Grid::Alignment::UpperLeft, {1, 2, 3, 4}));
+        REQUIRE(grid->getWidget(0, 0) == nullptr);
+        REQUIRE(grid->getWidget(2, 1) == widget2);
+
+        const std::vector<std::vector<tgui::Widget::Ptr>>& widgets = grid->getGridWidgets();
+        REQUIRE(widgets.size() == 4);
+        REQUIRE(widgets[3].size() == 3);
+        REQUIRE(widgets[2].size() >= 2);
+        REQUIRE(widgets[3][2] == widget1);
+        REQUIRE(widgets[2][1] == widget2);
     }
 
     SECTION("Removing widgets")
@@ -78,6 +90,7 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidget(1, 5) == widget);
         grid->removeAllWidgets();
         REQUIRE(grid->getWidget(1, 5) == nullptr);
+        REQUIRE(!grid->setWidgetCell(widget, 0, 0));
     }
 
     SECTION("Size")
@@ -90,6 +103,7 @@ TEST_CASE("[Grid]")
 
         SECTION("Auto-size")
         {
+            REQUIRE(grid->getAutoSize());
             REQUIRE(grid->getSize() == tgui::Vector2f(0, 0));
 
             grid->addWidget(widget, 0, 0);
@@ -104,6 +118,12 @@ TEST_CASE("[Grid]")
             grid->addWidget(widget, 1, 1, tgui::Grid::Alignment::Center, {20, 15});
             REQUIRE(grid->getSize() == tgui::Vector2f(80, 105));
 
+            grid->remove(widget2);
+            REQUIRE(grid->getSize() == tgui::Vector2f(80, 60));
+
+            grid->addWidget(widget2, 0, 0);
+            REQUIRE(grid->getSize() == tgui::Vector2f(115, 105));
+
             grid->removeAllWidgets();
             REQUIRE(grid->getSize() == tgui::Vector2f(0, 0));
 
@@ -115,6 +135,7 @@ TEST_CASE("[Grid]")
         SECTION("Custom size")
         {
             grid->setSize({120, 100});
+            REQUIRE(!grid->getAutoSize());
             REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
 
             grid->addWidget(widget, 0, 0);
@@ -137,28 +158,33 @@ TEST_CASE("[Grid]")
         SECTION("Explicitly switching mode")
         {
             grid->addWidget(widget, 0, 0);
+            REQUIRE(grid->getAutoSize());
             REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
 
             grid->setAutoSize(false);
+            REQUIRE(!grid->getAutoSize());
             REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
 
             grid->setSize({120, 100});
             REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
 
             grid->setAutoSize(true);
+            REQUIRE(grid->getAutoSize());
             REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
         }
     }
 
-    SECTION("Borders")
+    SECTION("Padding")
     {
         auto widget = tgui::ClickableWidget::create({40, 30});
+        REQUIRE(grid->getWidgetPadding(widget) ==  tgui::Padding(0, 0, 0, 0));
         grid->addWidget(widget, 3, 2, tgui::Grid::Alignment::Center, {1, 2, 3, 4});
-
+        REQUIRE(grid->getWidgetPadding(widget) ==  tgui::Padding(1, 2, 3, 4));
         REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(1, 2, 3, 4));
         grid->setWidgetPadding(widget, {});
         REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(0, 0, 0, 0));
         grid->setWidgetPadding(3, 2, {5, 6, 7, 8});
+        REQUIRE(grid->getWidgetPadding(widget) ==  tgui::Padding(5, 6, 7, 8));
         REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(5, 6, 7, 8));
 
         // You can't change the borders of an empty cell
@@ -169,12 +195,15 @@ TEST_CASE("[Grid]")
     SECTION("Alignment")
     {
         auto widget = tgui::ClickableWidget::create();
-        grid->addWidget(widget, 3, 2, tgui::Grid::Alignment::BottomRight);
 
+        REQUIRE(grid->getWidgetAlignment(widget) == tgui::Grid::Alignment::Center);
+        grid->addWidget(widget, 3, 2, tgui::Grid::Alignment::BottomRight);
+        REQUIRE(grid->getWidgetAlignment(widget) == tgui::Grid::Alignment::BottomRight);
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::BottomRight);
         grid->setWidgetAlignment(widget, tgui::Grid::Alignment::Center);
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Center);
         grid->setWidgetAlignment(3, 2, tgui::Grid::Alignment::Up);
+        REQUIRE(grid->getWidgetAlignment(widget) == tgui::Grid::Alignment::Up);
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Up);
 
         // You can't change the alignment of an empty cell
