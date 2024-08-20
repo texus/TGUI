@@ -8,6 +8,7 @@ TGUI 1.5 (TBD)
 - Added changeItemHierarchy to TreeView
 - Scrollbar::setOrientation will no longer flip width and height
 - Scrollbar::setSize no longer affects orientation once setOrientation is called
+- Grid didn't update its size in remove and setAutoSize functions while auto-sizing
 - Opacity of ScrollablePanel wasn't applied to its scrollbars
 - Setting opacity of SeparatorLine had no effect
 - SFML backend no longer uses sf::Keyboard::isKeyPressed to check modifier keys

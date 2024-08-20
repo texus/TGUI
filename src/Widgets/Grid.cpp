@@ -175,11 +175,14 @@ namespace tgui
 
     void Grid::setAutoSize(bool autoSize)
     {
-        if (m_autoSize != autoSize)
-        {
-            m_autoSize = autoSize;
+        if (m_autoSize == autoSize)
+            return;
+
+        m_autoSize = autoSize;
+        if (autoSize)
+            updateWidgets();
+        else // We don't need to change the size
             updatePositionsOfAllWidgets();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,6 +277,9 @@ namespace tgui
                     m_rowHeight.pop_back();
                 }
             }
+
+            if (m_autoSize)
+                recalculateAutoSize();
 
             // Update the positions of all remaining widgets
             updatePositionsOfAllWidgets();
@@ -819,22 +825,27 @@ namespace tgui
         }
 
         if (m_autoSize)
-        {
-            Vector2f size;
-            for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
-            {
-                float rowWidth = 0;
-                for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
-                    rowWidth += m_columnWidth[col];
-
-                size.x = std::max(size.x, rowWidth);
-                size.y += m_rowHeight[row];
-            }
-
-            Container::setSize(size);
-        }
+            recalculateAutoSize();
 
         updatePositionsOfAllWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Grid::recalculateAutoSize()
+    {
+        Vector2f size;
+        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        {
+            float rowWidth = 0;
+            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+                rowWidth += m_columnWidth[col];
+
+            size.x = std::max(size.x, rowWidth);
+            size.y += m_rowHeight[row];
+        }
+
+        Container::setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

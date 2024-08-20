@@ -271,7 +271,7 @@ TGUI_MODULE_EXPORT namespace tgui
     public:
 
         SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the progress bar changed. Optional parameter: new value
-        Signal     onFull        = {"Full"};         //!< Value of the progress bar changed and he progress bar became full
+        Signal     onFull        = {"Full"};         //!< Value of the progress bar changed and the progress bar became full
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

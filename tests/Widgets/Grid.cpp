@@ -80,6 +80,76 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidget(1, 5) == nullptr);
     }
 
+    SECTION("Size")
+    {
+        auto widget = tgui::ClickableWidget::create();
+        widget->setSize(40, 30);
+
+        auto widget2 = tgui::ClickableWidget::create();
+        widget2->setSize(35, 45);
+
+        SECTION("Auto-size")
+        {
+            REQUIRE(grid->getSize() == tgui::Vector2f(0, 0));
+
+            grid->addWidget(widget, 0, 0);
+            REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
+
+            grid->addWidget(widget2, 0, 1);
+            REQUIRE(grid->getSize() == tgui::Vector2f(75, 45));
+
+            grid->remove(widget);
+            REQUIRE(grid->getSize() == tgui::Vector2f(35, 45));
+
+            grid->addWidget(widget, 1, 1, tgui::Grid::Alignment::Center, {20, 15});
+            REQUIRE(grid->getSize() == tgui::Vector2f(80, 105));
+
+            grid->removeAllWidgets();
+            REQUIRE(grid->getSize() == tgui::Vector2f(0, 0));
+
+            grid->addWidget(widget, 0, 0, tgui::Grid::Alignment::Center, {25, 25});
+            grid->addWidget(widget2, 1, 1, tgui::Grid::Alignment::Center, {20, 15});
+            REQUIRE(grid->getSize() == tgui::Vector2f(165, 155));
+        }
+
+        SECTION("Custom size")
+        {
+            grid->setSize({120, 100});
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->addWidget(widget, 0, 0);
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->remove(widget);
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->addWidget(widget, 1, 1, tgui::Grid::Alignment::Center, {20, 15});
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->removeAllWidgets();
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->addWidget(widget, 0, 0, tgui::Grid::Alignment::Center, {25, 25});
+            grid->addWidget(widget2, 1, 1, tgui::Grid::Alignment::Center, {20, 15});
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+        }
+
+        SECTION("Explicitly switching mode")
+        {
+            grid->addWidget(widget, 0, 0);
+            REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
+
+            grid->setAutoSize(false);
+            REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
+
+            grid->setSize({120, 100});
+            REQUIRE(grid->getSize() == tgui::Vector2f(120, 100));
+
+            grid->setAutoSize(true);
+            REQUIRE(grid->getSize() == tgui::Vector2f(40, 30));
+        }
+    }
+
     SECTION("Borders")
     {
         auto widget = tgui::ClickableWidget::create({40, 30});
