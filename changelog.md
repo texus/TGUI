@@ -1,5 +1,5 @@
-TGUI 1.5 (TBD)
---------------
+TGUI 1.5 (25 August 2024)
+-------------------------
 
 - Added uniform scrollbar access to all widgets with a scrollbar
 - Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
