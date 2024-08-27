@@ -184,7 +184,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Sprite::setSize(const Vector2f& size)
+    void Sprite::setSize(Vector2f size)
     {
         m_size.x = std::max(size.x, 0.f);
         m_size.y = std::max(size.y, 0.f);

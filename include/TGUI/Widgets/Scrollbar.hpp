@@ -619,13 +619,13 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns an object that provides access to the widget's scrollbar
         /// @return Pointer to object that allows reading scrollbar properties and allows setting some of them
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarAccessor* getScrollbar();
+        TGUI_NODISCARD ScrollbarAccessor* getScrollbar();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns an object that provides access to the widget's scrollbar
         /// @return Pointer to object that allows reading scrollbar properties (there is also a non-const function for setting)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const ScrollbarAccessor* getScrollbar() const;
+        TGUI_NODISCARD const ScrollbarAccessor* getScrollbar() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
@@ -706,25 +706,25 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns an object that provides access to the widget's vertical scrollbar
         /// @return Pointer to object that allows reading scrollbar properties and allows setting some of them
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarAccessor* getVerticalScrollbar();
+        TGUI_NODISCARD ScrollbarAccessor* getVerticalScrollbar();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns an object that provides access to the widget's vertical scrollbar
         /// @return Pointer to object that allows reading scrollbar properties (there is also a non-const function for setting)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const ScrollbarAccessor* getVerticalScrollbar() const;
+        TGUI_NODISCARD const ScrollbarAccessor* getVerticalScrollbar() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns an object that provides access to the widget's horizontal scrollbar
         /// @return Pointer to object that allows reading scrollbar properties and allows setting some of them
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarAccessor* getHorizontalScrollbar();
+        TGUI_NODISCARD ScrollbarAccessor* getHorizontalScrollbar();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns an object that provides access to the widget's horizontal scrollbar
         /// @return Pointer to object that allows reading scrollbar properties (there is also a non-const function for setting)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const ScrollbarAccessor* getHorizontalScrollbar() const;
+        TGUI_NODISCARD const ScrollbarAccessor* getHorizontalScrollbar() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

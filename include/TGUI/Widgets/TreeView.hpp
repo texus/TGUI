@@ -225,6 +225,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the item currently below the mouse cursor
         /// @return Hierarchy of items, identifying the node below the mouse, or an empty list when the mouse isn't on any item
+        /// @since TGUI 1.5
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::vector<String> getHoveredItem() const;
 
@@ -263,7 +264,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @since TGUI 1.5
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getItemIndexInParent(const std::vector<String>& hierarchy);
+        int getItemIndexInParent(const std::vector<String>& hierarchy) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Moves one item and its children from one location in the hierarchy to a completely different location

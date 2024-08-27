@@ -606,7 +606,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int TreeView::getItemIndexInParent(const std::vector<String>& hierarchy)
+    int TreeView::getItemIndexInParent(const std::vector<String>& hierarchy) const
     {
         if (hierarchy.empty())
             return -1;
