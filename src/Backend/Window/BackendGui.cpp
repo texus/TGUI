@@ -50,6 +50,7 @@ namespace tgui
         // We first explictly destroy the widgets before destroying the container, to handle the case where an onUnfocus signal
         // is still being triggered that attempts to access the gui (and it's container).
         m_container->removeAllWidgets();
+        m_visibleToolTip = nullptr;
         m_container = nullptr;
 
         if (isBackendSet())
