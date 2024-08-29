@@ -98,7 +98,9 @@ namespace tgui
         TGUI_ASSERT(m_fonts.begin()->second != nullptr, "BackendFontSDLttf::m_fonts shouldn't contain any nullptr fonts");
 
         // All fonts are the same, except for the character size, so we can use any of them to query for the character
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+#if SDL_TTF_MAJOR_VERSION >= 3
+        return TTF_GlyphIsProvided32(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint));
+#elif SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         return (TTF_GlyphIsProvided32(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint)) != 0);
 #else
         return (TTF_GlyphIsProvided(m_fonts.begin()->second, static_cast<std::uint16_t>(codePoint)) != 0);
@@ -139,7 +141,9 @@ namespace tgui
         int minY;
         int maxY;
         int advance;
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+#if SDL_TTF_MAJOR_VERSION >= 3
+        if (!TTF_GlyphMetrics32(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance))
+#elif SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         if (TTF_GlyphMetrics32(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
 #else
         if (TTF_GlyphMetrics(font, static_cast<std::uint16_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
