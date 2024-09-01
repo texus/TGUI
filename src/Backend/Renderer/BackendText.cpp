@@ -233,7 +233,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendText::TextVertexData BackendText::getVertexData()
+    BackendText::TextVertexData BackendText::getVertexData(bool includeOutline, bool includeText)
     {
         BackendText::TextVertexData data;
 
@@ -257,10 +257,10 @@ namespace tgui
             texture = m_font->getTexture(m_characterSize, m_lastFontTextureVersion);
         }
 
-        if (m_outlineVertices && !m_outlineVertices->empty())
+        if (includeOutline && m_outlineVertices && !m_outlineVertices->empty())
             data.emplace_back(texture, m_outlineVertices);
 
-        if (m_vertices && !m_vertices->empty())
+        if (includeText && m_vertices && !m_vertices->empty())
             data.emplace_back(texture, m_vertices);
 
         return data;
@@ -416,7 +416,7 @@ namespace tgui
         const float fontHeight = m_font->getFontHeight(m_characterSize);
         const float height = std::max(fontHeight, lineSpacing) + (nrLines - 1) * lineSpacing;
 
-        m_size = {maxX + 2 * m_outlineThickness, height + 2 * m_outlineThickness};
+        m_size = {maxX + m_outlineThickness, height + 2 * m_outlineThickness};
 
         // Normalize the texture coordinates
         const Vector2u textureSize = m_font->getTextureSize(m_characterSize);

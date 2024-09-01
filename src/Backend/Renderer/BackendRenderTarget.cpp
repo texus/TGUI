@@ -374,6 +374,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BackendRenderTarget::drawTextOutline(const RenderStates& states, const Text& text)
+    {
+        RenderStates transformedStates = states;
+        transformedStates.transform.translate(text.getPosition());
+
+        // Round the text to the nearest pixel to try to avoid blurry text
+        transformedStates.transform.roundPosition(m_pixelsPerPoint);
+
+        auto vertexData = text.getBackendText()->getVertexData(true, false);
+
+        for (const auto& data : vertexData)
+        {
+            const std::shared_ptr<BackendTexture>& texture = data.first;
+            const std::shared_ptr<std::vector<Vertex>>& vertices = data.second;
+            drawVertexArray(transformedStates, vertices->data(), vertices->size(), nullptr, 0, texture);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendRenderTarget::drawTextWithoutOutline(const RenderStates& states, const Text& text)
+    {
+        RenderStates transformedStates = states;
+        transformedStates.transform.translate(text.getPosition());
+
+        // Round the text to the nearest pixel to try to avoid blurry text
+        transformedStates.transform.roundPosition(m_pixelsPerPoint);
+
+        auto vertexData = text.getBackendText()->getVertexData(false, true);
+
+        for (const auto& data : vertexData)
+        {
+            const std::shared_ptr<BackendTexture>& texture = data.first;
+            const std::shared_ptr<std::vector<Vertex>>& vertices = data.second;
+            drawVertexArray(transformedStates, vertices->data(), vertices->size(), nullptr, 0, texture);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BackendRenderTarget::drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3)
     {
         const std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};

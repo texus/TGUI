@@ -148,8 +148,34 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param states  Render states to use for drawing
         /// @param text    Text to draw
+        ///
+        /// This function does the same as calling both drawTextOutline and drawTextWithoutOutline.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void drawText(const RenderStates& states, const Text& text);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Draws only the outline of some text
+        ///
+        /// @param states  Render states to use for drawing
+        /// @param text    Text to draw
+        ///
+        /// This function should always be called prior to drawTextWithoutOutline. It exists to allow rendering the outline of
+        /// multiple texts before rendering all these texts, which is done by calling drawTextOutline for each text before
+        /// calling drawTextWithoutOutline on all the same text objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void drawTextOutline(const RenderStates& states, const Text& text);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Draws some text, but without rendering its outline
+        ///
+        /// @param states  Render states to use for drawing
+        /// @param text    Text to draw
+        ///
+        /// This function should always be called after drawTextOutline. It exists to allow rendering the outline of
+        /// multiple texts before rendering all these texts, which is done by calling drawTextOutline for each text before
+        /// calling drawTextWithoutOutline on all the same text objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void drawTextWithoutOutline(const RenderStates& states, const Text& text);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws a single triangles (using the color that is specified in the vertices)

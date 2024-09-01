@@ -329,5 +329,14 @@ TEST_CASE("[RichTextLabel]")
             U"can be included when there are too many lines!\n\n\n\n\n\n\n\n");
 
         TEST_DRAW("RichTextLabel.png")
+
+        SECTION("Outline")
+        {
+            // Outline of one piece should not be rendered on top of another piece, and there should be no additional gap between pieces
+            label->getRenderer()->setTextOutlineColor(tgui::Color::Green);
+            label->getRenderer()->setTextOutlineThickness(4);
+            label->setText("<color=blue>Hello</color><color=red>World</color>");
+            TEST_DRAW("RichTextLabel_Outline.png")
+        }
     }
 }

@@ -158,9 +158,11 @@ TGUI_MODULE_EXPORT namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the information that is needed to render this text
+        /// @param includeOutline  Should the returned data include the text outline?
+        /// @param includeText     Should the returned data include the text itself (i.e. everything except the outline)?
         /// @return Data that contains the textures and vertices used by this text
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD TextVertexData getVertexData();
+        TGUI_NODISCARD TextVertexData getVertexData(bool includeOutline = true, bool includeText = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

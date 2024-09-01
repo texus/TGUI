@@ -398,7 +398,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Color     m_textColorCached;
         Color     m_borderColorCached;
         Color     m_backgroundColorCached;
-        Color     m_textOutlineColorCached;
+        Color     m_textOutlineColorCached = Color::Black;
         float     m_textOutlineThicknessCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

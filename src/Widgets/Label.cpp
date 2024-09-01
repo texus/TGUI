@@ -847,10 +847,21 @@ namespace tgui
         // Draw the text
         if (m_autoSize)
         {
+            // We need to draw all the outlines prior to start rendering the text itself,
+            // because otherwise the outline of one piece could render on top of a previously drawn piece.
+            if (m_textOutlineThicknessCached)
+            {
+                for (const auto& line : m_lines)
+                {
+                    for (const auto& text : line)
+                        target.drawTextOutline(states, text);
+                }
+            }
+
             for (const auto& line : m_lines)
             {
                 for (const auto& text : line)
-                    target.drawText(states, text);
+                    target.drawTextWithoutOutline(states, text);
             }
         }
         else
@@ -863,10 +874,21 @@ namespace tgui
             if (m_scrollbar->isVisible())
                 states.transform.translate({0, -static_cast<float>(m_scrollbar->getValue())});
 
+            // We need to draw all the outlines prior to start rendering the text itself,
+            // because otherwise the outline of one piece could render on top of a previously drawn piece.
+            if (m_textOutlineThicknessCached)
+            {
+                for (const auto& line : m_lines)
+                {
+                    for (const auto& text : line)
+                        target.drawTextOutline(states, text);
+                }
+            }
+
             for (const auto& line : m_lines)
             {
                 for (const auto& text : line)
-                    target.drawText(states, text);
+                    target.drawTextWithoutOutline(states, text);
             }
 
             target.removeClippingLayer();

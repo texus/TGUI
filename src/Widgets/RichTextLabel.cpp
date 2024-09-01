@@ -214,7 +214,7 @@ namespace tgui
                     textPiece.setPosition({pos.x + lineWidth, pos.y});
 
                     maxLineHeight = std::max(maxLineHeight, textPiece.getSize().y);
-                    lineWidth += textPiece.getSize().x;
+                    lineWidth += textPiece.getSize().x - (2 * m_textOutlineThicknessCached);
 
                     // Take kerning into account
                     if (j > 0 && !textPiecesLine[j-1].text.empty() && !textPiecesLine[j].text.empty())

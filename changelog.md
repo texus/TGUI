@@ -1,7 +1,7 @@
 TGUI 1.6 (TBD)
 --------------
 
-Fixed crash on exit when tool tip was visible
+- Fixed crash on exit when tool tip was visible
 
 
 TGUI 1.5 (25 August 2024)
