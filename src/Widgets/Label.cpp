@@ -849,7 +849,7 @@ namespace tgui
         {
             // We need to draw all the outlines prior to start rendering the text itself,
             // because otherwise the outline of one piece could render on top of a previously drawn piece.
-            if (m_textOutlineThicknessCached)
+            if (m_textOutlineThicknessCached != 0)
             {
                 for (const auto& line : m_lines)
                 {
@@ -876,7 +876,7 @@ namespace tgui
 
             // We need to draw all the outlines prior to start rendering the text itself,
             // because otherwise the outline of one piece could render on top of a previously drawn piece.
-            if (m_textOutlineThicknessCached)
+            if (m_textOutlineThicknessCached != 0)
             {
                 for (const auto& line : m_lines)
                 {
