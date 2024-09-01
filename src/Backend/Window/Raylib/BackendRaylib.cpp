@@ -55,6 +55,7 @@ namespace tgui
         case Cursor::Type::Text:
             typeRaylib = MOUSE_CURSOR_IBEAM;
             break;
+        case Cursor::Type::Help: // BackendRaylib doesn't support Cursor::Type::Help
         case Cursor::Type::Hand:
             typeRaylib = MOUSE_CURSOR_POINTING_HAND;
             break;
@@ -78,9 +79,6 @@ namespace tgui
             break;
         case Cursor::Type::Crosshair:
             typeRaylib = MOUSE_CURSOR_CROSSHAIR;
-            break;
-        case Cursor::Type::Help:
-            TGUI_PRINT_WARNING("BackendRaylib doesn't support Cursor::Type::Help");
             break;
         case Cursor::Type::NotAllowed:
             typeRaylib = MOUSE_CURSOR_NOT_ALLOWED;

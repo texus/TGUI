@@ -175,6 +175,7 @@ namespace tgui
         case Cursor::Type::Text:
             typeGLFW = GLFW_IBEAM_CURSOR;
             break;
+        case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
         case Cursor::Type::Hand:
             typeGLFW = GLFW_POINTING_HAND_CURSOR;
             break;
@@ -199,9 +200,6 @@ namespace tgui
         case Cursor::Type::Crosshair:
             typeGLFW = GLFW_CROSSHAIR_CURSOR;
             break;
-        case Cursor::Type::Help:
-            TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::Help");
-            break;
         case Cursor::Type::NotAllowed:
             typeGLFW = GLFW_NOT_ALLOWED_CURSOR;
             break;
@@ -219,6 +217,7 @@ namespace tgui
         case Cursor::Type::Text:
             typeGLFW = GLFW_IBEAM_CURSOR;
             break;
+        case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
         case Cursor::Type::Hand:
             typeGLFW = GLFW_HAND_CURSOR;
             break;
@@ -234,9 +233,6 @@ namespace tgui
             break;
         case Cursor::Type::Crosshair:
             typeGLFW = GLFW_CROSSHAIR_CURSOR;
-            break;
-        case Cursor::Type::Help: // In release mode, Help and NotAllowed branches are identical. NOLINT(bugprone-branch-clone)
-            TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::Help");
             break;
         case Cursor::Type::NotAllowed:
             TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::NotAllowed with GLFW < 3.4");

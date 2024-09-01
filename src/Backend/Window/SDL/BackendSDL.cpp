@@ -323,6 +323,7 @@ namespace tgui
         case Cursor::Type::Text:
             typeSDL = SDL_SYSTEM_CURSOR_TEXT;
             break;
+        case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
         case Cursor::Type::Hand:
             typeSDL = SDL_SYSTEM_CURSOR_POINTER;
             break;
@@ -359,9 +360,6 @@ namespace tgui
         case Cursor::Type::Crosshair:
             typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
             break;
-        case Cursor::Type::Help:
-            TGUI_PRINT_WARNING("BackendSDL doesn't support Cursor::Type::Help");
-            break;
         case Cursor::Type::NotAllowed:
             typeSDL = SDL_SYSTEM_CURSOR_NOT_ALLOWED;
             break;
@@ -376,6 +374,7 @@ namespace tgui
         case Cursor::Type::Text:
             typeSDL = SDL_SYSTEM_CURSOR_IBEAM;
             break;
+        case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
         case Cursor::Type::Hand:
             typeSDL = SDL_SYSTEM_CURSOR_HAND;
             break;
@@ -399,9 +398,6 @@ namespace tgui
             break;
         case Cursor::Type::Crosshair:
             typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
-            break;
-        case Cursor::Type::Help:
-            TGUI_PRINT_WARNING("BackendSDL doesn't support Cursor::Type::Help");
             break;
         case Cursor::Type::NotAllowed:
             typeSDL = SDL_SYSTEM_CURSOR_NO;
