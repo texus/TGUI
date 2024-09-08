@@ -162,6 +162,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This function should always be called prior to drawTextWithoutOutline. It exists to allow rendering the outline of
         /// multiple texts before rendering all these texts, which is done by calling drawTextOutline for each text before
         /// calling drawTextWithoutOutline on all the same text objects.
+        ///
+        /// @since TGUI 1.6
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void drawTextOutline(const RenderStates& states, const Text& text);
 
@@ -174,6 +176,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This function should always be called after drawTextOutline. It exists to allow rendering the outline of
         /// multiple texts before rendering all these texts, which is done by calling drawTextOutline for each text before
         /// calling drawTextWithoutOutline on all the same text objects.
+        ///
+        /// @since TGUI 1.6
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void drawTextWithoutOutline(const RenderStates& states, const Text& text);
 

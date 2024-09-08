@@ -220,6 +220,43 @@ TEST_CASE("[ChildWindow]")
         REQUIRE(childWindow->getKeepInParent() == false);
     }
 
+    SECTION("CloseBehavior")
+    {
+        auto parent = tgui::Panel::create({300, 200});
+        parent->add(childWindow);
+
+        unsigned int onCloseCount = 0;
+        unsigned int onClosingCount = 0;
+        childWindow->onClose(&genericCallback, std::ref(onCloseCount));
+        childWindow->onClosing(&genericCallback, std::ref(onClosingCount));
+
+        REQUIRE(parent->getWidgets().size() == 1);
+        REQUIRE(childWindow->isVisible());
+
+        childWindow->setCloseBehavior(tgui::ChildWindow::CloseBehavior::Remove);
+        REQUIRE(childWindow->getCloseBehavior() == tgui::ChildWindow::CloseBehavior::Remove);
+        childWindow->close();
+        REQUIRE(parent->getWidgets().size() == 0);
+        REQUIRE(childWindow->isVisible());
+        parent->add(childWindow);
+
+        childWindow->setCloseBehavior(tgui::ChildWindow::CloseBehavior::Hide);
+        REQUIRE(childWindow->getCloseBehavior() == tgui::ChildWindow::CloseBehavior::Hide);
+        childWindow->close();
+        REQUIRE(parent->getWidgets().size() == 1);
+        REQUIRE(!childWindow->isVisible());
+        childWindow->setVisible(true);
+
+        childWindow->setCloseBehavior(tgui::ChildWindow::CloseBehavior::None);
+        REQUIRE(childWindow->getCloseBehavior() == tgui::ChildWindow::CloseBehavior::None);
+        childWindow->close();
+        REQUIRE(parent->getWidgets().size() == 1);
+        REQUIRE(childWindow->isVisible());
+
+        REQUIRE(onClosingCount == 3);
+        REQUIRE(onCloseCount == 3);
+    }
+
     SECTION("Events / Signals")
     {
         childWindow->setPosition(40, 30);

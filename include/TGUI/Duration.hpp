@@ -219,7 +219,6 @@ TGUI_MODULE_EXPORT namespace tgui
 
     constexpr Duration& operator-=(Duration& lhs, const Duration& rhs)
     {
-
         return lhs = lhs - rhs;
     }
 

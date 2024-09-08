@@ -1,6 +1,7 @@
 TGUI 1.6 (TBD)
 --------------
 
+- Added CloseBehavior property to ChildWindow
 - Fixed crash on exit when tool tip was visible
 
 

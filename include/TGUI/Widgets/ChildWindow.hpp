@@ -62,6 +62,15 @@ TGUI_MODULE_EXPORT namespace tgui
             Minimize = 1 << 2  //!< Include a minimize button
         };
 
+        /// Defines what the child window should do inside its close() function (which is called when the close button is pressed)
+        /// @since TGUI 1.6
+        enum class CloseBehavior
+        {
+            None,   //!< Nothing should happen after the onClose callback is called. The window remains visible (unless the onClose callback did something).
+            Hide,   //!< childWindow->setVisible(false) is called after the onClose callback is called
+            Remove  //!< parent->remove(childWindow) is called after the onClose callback is called
+        };
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Constructor
@@ -272,12 +281,33 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD unsigned int getTitleButtons() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the behavior of closing the window
+        /// @param behavior  Defines what the close() function does after calling the onClose callback
+        ///
+        /// The default close behavior is Remove.
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCloseBehavior(CloseBehavior behavior);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the behavior of closing the window
+        /// @return What the close() function does after calling the onClose callback
+        ///
+        /// The default close behavior is Remove.
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD CloseBehavior getCloseBehavior() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Try to close the window
         ///
         /// This will trigger the onClosing signal. If a callback function for this signal sets the abort parameter to true then
-        /// the window will remain open. Otherwise the onClose signal is triggered and the window is removed from its parent.
+        /// the window will remain open. Otherwise the onClose signal is triggered and the chosen closing behavior is executed.
         ///
-        /// If you want to close the window without those callbacks being triggered then you need to use the destroy() function.
+        /// If you want to "close" the window without those callbacks being triggered then you should just remove the child
+        /// window from the parent to which it was added (i.e. parent->remove(childWindow)).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void close();
 
@@ -287,7 +317,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This function is equivalent to removing the window from its parent. If you want to be receive a callback and have
         /// the ability to abort the operation then you should use the close() function instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void destroy();
+        TGUI_DEPRECATED("Use parent->remove(childWindow) instead") void destroy();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the child window can be resized by dragging its borders or not
@@ -530,6 +560,7 @@ TGUI_MODULE_EXPORT namespace tgui
         unsigned int   m_titleButtons   = TitleButton::Close;
         unsigned int   m_titleTextSize  = 0;
         Cursor::Type   m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
+        CloseBehavior  m_closeBehavior = CloseBehavior::Remove;
 
         CopiedSharedPtr<Button> m_closeButton;
         CopiedSharedPtr<Button> m_minimizeButton;

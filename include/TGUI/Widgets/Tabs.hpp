@@ -172,7 +172,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Selects the tab with a given text
         /// @param text  The text of the tab to select
         /// @return Whether a tab was selected, false is returned if tab doesn't exist or is invisible or disabled
-        /// @see select(int)
+        /// @see select(std::size_t)
         ///
         /// If there are multiple tabs with the same text then the first one will be selected.
         /// When false is returned, the selected tab will still be deselected.

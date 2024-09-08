@@ -562,6 +562,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setCloseBehavior(CloseBehavior behavior)
+    {
+        m_closeBehavior = behavior;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindow::CloseBehavior ChildWindow::getCloseBehavior() const
+    {
+        return m_closeBehavior;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::close()
     {
         bool abort = false;
@@ -570,7 +584,14 @@ namespace tgui
             return;
 
         onClose.emit(this);
-        destroy();
+
+        if (m_closeBehavior == CloseBehavior::Remove)
+        {
+            if (m_parent)
+                m_parent->remove(shared_from_this());
+        }
+        else if (m_closeBehavior == CloseBehavior::Hide)
+            setVisible(false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1259,6 +1280,13 @@ namespace tgui
 
         node->propertyValuePairs[U"TitleButtons"] = std::make_unique<DataIO::ValueNode>(serializedTitleButtons);
 
+        if (m_closeBehavior == CloseBehavior::None)
+            node->propertyValuePairs[U"CloseBehavior"] = std::make_unique<DataIO::ValueNode>("None");
+        else if (m_closeBehavior == CloseBehavior::Hide)
+            node->propertyValuePairs[U"CloseBehavior"] = std::make_unique<DataIO::ValueNode>("Hide");
+        else if (m_closeBehavior == CloseBehavior::Remove)
+            node->propertyValuePairs[U"CloseBehavior"] = std::make_unique<DataIO::ValueNode>("Remove");
+
         return node;
     }
 
@@ -1317,6 +1345,18 @@ namespace tgui
 
         if (node->propertyValuePairs[U"MaximumSize"])
             setMaximumSize(Vector2f{node->propertyValuePairs[U"MaximumSize"]->value});
+
+        if (node->propertyValuePairs[U"CloseBehavior"])
+        {
+            if (node->propertyValuePairs[U"CloseBehavior"]->value == U"None")
+                setCloseBehavior(CloseBehavior::None);
+            else if (node->propertyValuePairs[U"CloseBehavior"]->value == U"Hide")
+                setCloseBehavior(CloseBehavior::Hide);
+            else if (node->propertyValuePairs[U"CloseBehavior"]->value == U"Remove")
+                setCloseBehavior(CloseBehavior::Remove);
+            else
+                throw Exception{U"Failed to parse CloseBehavior property. Only the values None, Hide and Remove are correct."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
