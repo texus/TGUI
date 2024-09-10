@@ -119,7 +119,9 @@ namespace tgui
         if ((m_maxItems > 0) && (m_items.size() >= m_maxItems))
             return m_maxItems;
 
-        m_scrollbar->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
+        addItemImpl(itemName, id);
+
+        m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
 
         // Scroll down when auto-scrolling is enabled
         if (m_autoScroll && (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum()))
@@ -128,21 +130,31 @@ namespace tgui
             triggerOnScroll();
         }
 
-        // Create the new item
-        Text newItem;
-        newItem.setFont(m_fontCached);
-        newItem.setColor(m_textColorCached);
-        newItem.setOpacity(m_opacityCached);
-        newItem.setStyle(m_textStyleCached);
-        newItem.setCharacterSize(m_textSizeCached);
-        newItem.setString(itemName);
-        newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
-
-        // Add the new item to the list
-        m_items.emplace_back();
-        m_items.back().text = std::move(newItem);
-        m_items.back().id = id;
         return m_items.size() - 1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::addMultipleItems(const std::vector<String>& itemNames)
+    {
+        std::size_t itemsToAdd = itemNames.size();
+        if ((m_maxItems > 0) && (m_items.size() + itemsToAdd > m_maxItems))
+            itemsToAdd = m_maxItems - m_items.size();
+
+        if (itemsToAdd == 0)
+            return;
+
+        for (std::size_t i = 0; i < itemsToAdd; ++i)
+            addItemImpl(itemNames[i], {});
+
+        m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_scrollbar->getViewportSize() < m_scrollbar->getMaximum()))
+        {
+            m_scrollbar->setValue(m_scrollbar->getMaxValue());
+            triggerOnScroll();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1152,6 +1164,26 @@ namespace tgui
 
         m_lastScrollbarValue = currentScrollbarValue;
         onScroll.emit(this, currentScrollbarValue);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::addItemImpl(const String& itemName, const String& id)
+    {
+        // Create the new item
+        Text newItem;
+        newItem.setFont(m_fontCached);
+        newItem.setColor(m_textColorCached);
+        newItem.setOpacity(m_opacityCached);
+        newItem.setStyle(m_textStyleCached);
+        newItem.setCharacterSize(m_textSizeCached);
+        newItem.setString(itemName);
+        newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
+
+        // Add the new item to the list
+        m_items.emplace_back();
+        m_items.back().text = std::move(newItem);
+        m_items.back().id = id;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

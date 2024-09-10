@@ -2,6 +2,8 @@ TGUI 1.6 (TBD)
 --------------
 
 - Added CloseBehavior property to ChildWindow
+- Added addMultipleItems to ListBox and ComboBox
+- Added getItemByIndex, getIndexById and getIdByIndex to ComboBox
 - Fixed crash on exit when tool tip was visible
 
 

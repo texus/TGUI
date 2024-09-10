@@ -169,6 +169,17 @@ TGUI_MODULE_EXPORT namespace tgui
         std::size_t addItem(const String& itemName, const String& id = "");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds multiple items to the list
+        ///
+        /// @param itemNames  List of items that should be passed to the addItem function
+        ///
+        /// If a maximum items was configured then this function stops adding items when the maximum is reached.
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addMultipleItems(const std::vector<String>& itemNames);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Selects an item from the list
         ///
         /// When adding items to the combo box with the addItem function, none of them will be selected.
@@ -282,6 +293,41 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return The requested item, or an empty string when no item matches the id
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getItemById(const String& id) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the item name of the item at the given index
+        ///
+        /// @param index  The index of the item to return
+        ///
+        /// @return The requested item, or an empty string when the index was too high
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String getItemByIndex(std::size_t index) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index of the item with the given id
+        ///
+        /// @param id  The id of the item that was given to it when it was added
+        ///
+        /// In case the id is not unique, the index of the first item with that id will be returned.
+        ///
+        /// @return The index of the item that matched the id, or -1 when no item matches the id
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD int getIndexById(const String& id) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the id of the item at the given index
+        ///
+        /// @param index  The index of the item to find
+        ///
+        /// @return The id of the requested item, or an empty string when the index was too high
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String getIdByIndex(std::size_t index) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the currently selected item

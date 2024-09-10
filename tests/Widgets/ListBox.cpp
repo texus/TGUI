@@ -94,6 +94,15 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItemById("1") == "Item 1");
         REQUIRE(listBox->getItemById("2") == "Item 2");
         REQUIRE(listBox->getItemById("3") == "");
+
+        listBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
+        REQUIRE(listBox->getItemCount() == 7);
+        REQUIRE(listBox->getItems()[3] == "Item 4");
+        REQUIRE(listBox->getItems()[6] == "Item 7");
+        REQUIRE(listBox->getIdByIndex(6) == "");
+
+        listBox->addMultipleItems({});
+        REQUIRE(listBox->getItemCount() == 7);
     }
 
     SECTION("Getters")
@@ -300,6 +309,12 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 1");
         REQUIRE(listBox->getItems()[2] == "Item 3");
+
+        listBox->setMaximumItems(5);
+        listBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
+        REQUIRE(listBox->getItemCount() == 5);
+        REQUIRE(listBox->getItems()[3] == "Item 4");
+        REQUIRE(listBox->getItems()[4] == "Item 5");
     }
 
     SECTION("AutoScroll")

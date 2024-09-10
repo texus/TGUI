@@ -358,7 +358,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Inserts multiple items into the list
         ///
         /// @param index Index to insert the items at
-        /// @param items List of items that should be passed to the insertItem
+        /// @param items List of items that should be passed to the insertItem function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void insertMultipleItems(std::size_t index, const std::vector<std::vector<String>>& items);
 

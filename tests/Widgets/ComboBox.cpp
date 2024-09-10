@@ -72,6 +72,35 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItemById("1") == "Item 1");
         REQUIRE(comboBox->getItemById("2") == "Item 2");
         REQUIRE(comboBox->getItemById("3") == "");
+
+        comboBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
+        REQUIRE(comboBox->getItemCount() == 7);
+        REQUIRE(comboBox->getItems()[3] == "Item 4");
+        REQUIRE(comboBox->getItems()[6] == "Item 7");
+        REQUIRE(comboBox->getIdByIndex(6) == "");
+
+        comboBox->addMultipleItems({});
+        REQUIRE(comboBox->getItemCount() == 7);
+    }
+
+    SECTION("Getters")
+    {
+        comboBox->addItem("Item 1", "1");
+        comboBox->addItem("Item 2", "2");
+
+        REQUIRE(comboBox->getItems()[0] == "Item 1");
+
+        REQUIRE(comboBox->getItemById("1") == "Item 1");
+        REQUIRE(comboBox->getItemById("3") == "");
+
+        REQUIRE(comboBox->getItemByIndex(1) == "Item 2");
+        REQUIRE(comboBox->getItemByIndex(2) == "");
+
+        REQUIRE(comboBox->getIndexById("1") == 0);
+        REQUIRE(comboBox->getIndexById("3") == -1);
+
+        REQUIRE(comboBox->getIdByIndex(1) == "2");
+        REQUIRE(comboBox->getIdByIndex(2) == "");
     }
     
     SECTION("Removing items")
@@ -256,6 +285,12 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItemCount() == 3);
         REQUIRE(comboBox->getItems()[0] == "Item 1");
         REQUIRE(comboBox->getItems()[2] == "Item 3");
+
+        comboBox->setMaximumItems(5);
+        comboBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
+        REQUIRE(comboBox->getItemCount() == 5);
+        REQUIRE(comboBox->getItems()[3] == "Item 4");
+        REQUIRE(comboBox->getItems()[4] == "Item 5");
     }
 
     SECTION("TextSize")
