@@ -924,13 +924,14 @@ TEST_CASE("[Backend events]")
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
-                eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
 #if SDL_MAJOR_VERSION >= 3
+                eventSDL.key.down = SDL_TRUE;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.key = SDLK_UNKNOWN;
                 eventSDL.key.mod = SDL_KMOD_NONE;
 #else
+                eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.sym = SDLK_UNKNOWN;
                 eventSDL.key.keysym.mod = SDL_KMOD_NONE;
@@ -1120,10 +1121,11 @@ TEST_CASE("[Backend events]")
                 SECTION("Key release")
                 {
                     eventSDL.type = SDL_EVENT_KEY_UP;
-                    eventSDL.key.state = SDL_RELEASED;
 #if SDL_MAJOR_VERSION >= 3
+                    eventSDL.key.down = SDL_FALSE;
                     eventSDL.key.key = SDLK_SPACE;
 #else
+                    eventSDL.key.state = SDL_RELEASED;
                     eventSDL.key.keysym.sym = SDLK_SPACE;
 #endif
                     tgui::Event eventTGUI;
@@ -1455,9 +1457,9 @@ TEST_CASE("[Backend events]")
                 // Erase the second character from the edit box
                 eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
-                eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.repeat = 0;
 #if SDL_MAJOR_VERSION >= 3
+                eventSDL.key.down = SDL_TRUE;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.mod = SDL_KMOD_NONE;
                 eventSDL.key.key = SDLK_LEFT;
@@ -1465,6 +1467,7 @@ TEST_CASE("[Backend events]")
                 eventSDL.key.key = SDLK_BACKSPACE;
                 backendGuiSDL->handleEvent(eventSDL);
 #else
+                eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.mod = SDL_KMOD_NONE;
                 eventSDL.key.keysym.sym = SDLK_LEFT;
