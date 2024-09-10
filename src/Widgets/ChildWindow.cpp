@@ -90,6 +90,7 @@ namespace tgui
         m_titleButtons                     {other.m_titleButtons},
         m_titleTextSize                    {other.m_titleTextSize},
         m_currentChildWindowMouseCursor    {other.m_currentChildWindowMouseCursor},
+        m_closeBehavior                    {other.m_closeBehavior},
         m_closeButton                      {other.m_closeButton},
         m_minimizeButton                   {other.m_minimizeButton},
         m_maximizeButton                   {other.m_maximizeButton},
@@ -131,6 +132,7 @@ namespace tgui
         m_titleButtons                     {std::move(other.m_titleButtons)},
         m_titleTextSize                    {std::move(other.m_titleTextSize)},
         m_currentChildWindowMouseCursor    {std::move(other.m_currentChildWindowMouseCursor)},
+        m_closeBehavior                    {std::move(other.m_closeBehavior)},
         m_closeButton                      {std::move(other.m_closeButton)},
         m_minimizeButton                   {std::move(other.m_minimizeButton)},
         m_maximizeButton                   {std::move(other.m_maximizeButton)},
@@ -177,6 +179,7 @@ namespace tgui
             m_titleButtons                      = other.m_titleButtons;
             m_titleTextSize                     = other.m_titleTextSize;
             m_currentChildWindowMouseCursor     = other.m_currentChildWindowMouseCursor;
+            m_closeBehavior                     = other.m_closeBehavior;
             m_closeButton                       = other.m_closeButton;
             m_minimizeButton                    = other.m_minimizeButton;
             m_maximizeButton                    = other.m_maximizeButton;
@@ -224,6 +227,7 @@ namespace tgui
             m_titleButtons                      = std::move(other.m_titleButtons);
             m_titleTextSize                     = std::move(other.m_titleTextSize);
             m_currentChildWindowMouseCursor     = std::move(other.m_currentChildWindowMouseCursor);
+            m_closeBehavior                     = std::move(other.m_closeBehavior);
             m_closeButton                       = std::move(other.m_closeButton);
             m_minimizeButton                    = std::move(other.m_minimizeButton);
             m_maximizeButton                    = std::move(other.m_maximizeButton);

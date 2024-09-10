@@ -479,6 +479,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->setTitle("Title");
             childWindow->setTitleAlignment(tgui::HorizontalAlignment::Left);
             childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Minimize);
+            childWindow->setCloseBehavior(tgui::ChildWindow::CloseBehavior::Hide);
             childWindow->setResizable();
             childWindow->setPositionLocked();
             childWindow->setKeepInParent(true);
