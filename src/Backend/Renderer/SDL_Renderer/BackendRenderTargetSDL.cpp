@@ -83,7 +83,7 @@ namespace tgui
 
         // Store the current clipping settings, in case we need to change it
         SDL_Rect oldClipRect;
-        const SDL_bool oldClipEnabled = SDL_RenderClipEnabled(m_renderer);
+        const bool oldClipEnabled = SDL_RenderClipEnabled(m_renderer);
         if (oldClipEnabled)
             SDL_GetRenderClipRect(m_renderer, &oldClipRect);
 

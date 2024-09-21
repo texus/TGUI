@@ -926,7 +926,7 @@ TEST_CASE("[Backend events]")
                 eventSDL.key.windowID = 0;
                 eventSDL.key.repeat = 0;
 #if SDL_MAJOR_VERSION >= 3
-                eventSDL.key.down = SDL_TRUE;
+                eventSDL.key.down = true;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.key = SDLK_UNKNOWN;
                 eventSDL.key.mod = SDL_KMOD_NONE;
@@ -1122,7 +1122,7 @@ TEST_CASE("[Backend events]")
                 {
                     eventSDL.type = SDL_EVENT_KEY_UP;
 #if SDL_MAJOR_VERSION >= 3
-                    eventSDL.key.down = SDL_FALSE;
+                    eventSDL.key.down = false;
                     eventSDL.key.key = SDLK_SPACE;
 #else
                     eventSDL.key.state = SDL_RELEASED;
@@ -1459,7 +1459,7 @@ TEST_CASE("[Backend events]")
                 eventSDL.key.windowID = 0;
                 eventSDL.key.repeat = 0;
 #if SDL_MAJOR_VERSION >= 3
-                eventSDL.key.down = SDL_TRUE;
+                eventSDL.key.down = true;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.mod = SDL_KMOD_NONE;
                 eventSDL.key.key = SDLK_LEFT;
