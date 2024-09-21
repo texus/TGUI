@@ -342,6 +342,29 @@ TEST_CASE("[SpinButton]")
                     setHoverRenderer(false);
                     TEST_DRAW("SpinButton_Normal_HoverSet.png")
                 }
+
+                SECTION("Vertical")
+                {
+                    renderer.setBorders({1});
+                    renderer.setBorderBetweenArrows(1);
+                    spinButton->setPosition({5, 5});
+                    spinButton->setSize(26, 26);
+                    spinButton->setOrientation(tgui::Orientation::Vertical);
+                    TEST_DRAW("SpinButton_Vertical.png")
+                }
+
+                SECTION("Horizontal")
+                {
+                    renderer.setBorders({1});
+                    renderer.setBorderBetweenArrows(1);
+                    spinButton->setPosition({5, 5});
+                    spinButton->setSize(26, 26);
+                    spinButton->setOrientation(tgui::Orientation::Horizontal);
+                    TEST_DRAW("SpinButton_Horizontal_Flat.png")
+
+                    spinButton->setSize(49, 13);
+                    TEST_DRAW("SpinButton_Horizontal_Long.png")
+                }
             }
 
             SECTION("HoverState (mouse on left arrow)")

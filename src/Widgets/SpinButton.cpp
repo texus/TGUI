@@ -482,9 +482,9 @@ namespace tgui
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor},
-                    {{arrowSize.x / 5, arrowSize.y / 2}, arrowVertexColor},
-                    {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
+                    {{arrowSize.y * 4/5, arrowSize.x / 5}, arrowVertexColor},
+                    {{arrowSize.y / 5, arrowSize.x / 2}, arrowVertexColor},
+                    {{arrowSize.y * 4/5, arrowSize.x * 4/5}, arrowVertexColor}
                 );
             }
         }
@@ -548,9 +548,9 @@ namespace tgui
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
-                    {{arrowSize.x * 4/5, arrowSize.y / 2}, arrowVertexColor},
-                    {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor}
+                    {{arrowSize.y / 5, arrowSize.x / 5}, arrowVertexColor},
+                    {{arrowSize.y * 4/5, arrowSize.x / 2}, arrowVertexColor},
+                    {{arrowSize.y / 5, arrowSize.x * 4/5}, arrowVertexColor}
                 );
             }
         }
