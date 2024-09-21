@@ -41,14 +41,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
-        CanvasBase{typeName, initRenderer}
+        CanvasBase{typeName, initRenderer},
+        m_view{{{}, {1, 1}}}
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-        CanvasBase{other}
+        CanvasBase{other},
+        m_view    {other.m_view}
     {
         setSize(other.getSize());
     }
@@ -57,6 +59,7 @@ namespace tgui
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
         CanvasBase{std::move(other)},
+        m_view    {std::move(other.m_view)},
 #if SFML_VERSION_MAJOR >= 3
         m_renderTexture{std::move(other.m_renderTexture)},
 #endif
@@ -74,6 +77,7 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(right);
+            m_view = right.m_view;
             m_usedTextureSize = right.m_usedTextureSize;
             setSize(right.getSize());
         }
@@ -87,11 +91,16 @@ namespace tgui
     {
         if (this != &right)
         {
-            m_usedTextureSize = std::move(right.m_usedTextureSize);
             ClickableWidget::operator=(std::move(right));
+            m_view = std::move(right.m_view);
+            m_usedTextureSize = std::move(right.m_usedTextureSize);
 
+#if SFML_VERSION_MAJOR >= 3
+            m_renderTexture = std::move(right.m_renderTexture);
+#else
             // sf::RenderTexture does not support move yet
             setSize(getSize());
+#endif
         }
 
         return *this;
@@ -137,27 +146,52 @@ namespace tgui
 
             m_usedTextureSize = newTextureSize;
         }
+
+        setView(getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void CanvasSFML::setView(const sf::View& view)
     {
-        m_renderTexture.setView(view);
+        m_view = view;
+
+        // The render texture might be larger than the canvas
+        sf::FloatRect viewport = view.getViewport();
+        if ((m_renderTexture.getSize().x > 0) && (m_renderTexture.getSize().y > 0))
+        {
+            const float scaleX = static_cast<float>(m_usedTextureSize.x) / static_cast<float>(m_renderTexture.getSize().x);
+            const float scaleY = static_cast<float>(m_usedTextureSize.y) / static_cast<float>(m_renderTexture.getSize().y);
+#if SFML_VERSION_MAJOR >= 3
+            viewport.position.x *= scaleX;
+            viewport.position.y *= scaleY;
+            viewport.size.x *= scaleX;
+            viewport.size.y *= scaleY;
+#else
+            viewport.left *= scaleX;
+            viewport.top *= scaleY;
+            viewport.width *= scaleX;
+            viewport.height *= scaleY;
+#endif
+        }
+
+        sf::View internalView = view;
+        internalView.setViewport(viewport);
+        m_renderTexture.setView(internalView);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::View& CanvasSFML::getView() const
     {
-        return m_renderTexture.getView();
+        return m_view;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::View& CanvasSFML::getDefaultView() const
+    sf::View CanvasSFML::getDefaultView() const
     {
-        return m_renderTexture.getDefaultView();
+        return sf::View{{{}, {static_cast<float>(m_usedTextureSize.x), static_cast<float>(m_usedTextureSize.y)}}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

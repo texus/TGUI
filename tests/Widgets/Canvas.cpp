@@ -114,7 +114,9 @@ TEST_CASE("[CanvasSFML]")
 
         SECTION("view")
         {
-            canvas = tgui::CanvasSFML::create({200, 100});
+            canvas = tgui::CanvasSFML::create({300, 200});
+            canvas->setSize({50, 30});
+            canvas->setSize({200, 100});
 
             REQUIRE(canvas->getView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
             REQUIRE(canvas->getDefaultView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));

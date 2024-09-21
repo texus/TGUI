@@ -5,6 +5,8 @@ TGUI 1.6 (TBD)
 - Added addMultipleItems to ListBox and ComboBox
 - Added getItemByIndex, getIndexById and getIdByIndex to ComboBox
 - Fixed crash on exit when tool tip was visible
+- Fixed wrong arrow sizes for horizontal spin button
+- Fixed view not being usable in CanvasSFML
 
 
 TGUI 1.5 (25 August 2024)
