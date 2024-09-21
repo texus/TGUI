@@ -3,8 +3,8 @@
 PROJECT_NAME           = "TGUI"
 PROJECT_NUMBER         = 1.x-dev
 
-OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
-STRIP_FROM_INC_PATH    = "@DOXYGEN_INPUT_DIR@/include/"
+OUTPUT_DIRECTORY       = "@CMAKE_CURRENT_BINARY_DIR@"
+STRIP_FROM_INC_PATH    = "@PROJECT_SOURCE_DIR@/include/"
 
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
@@ -14,30 +14,30 @@ GENERATE_TESTLIST      = NO
 GENERATE_BUGLIST       = NO
 GENERATE_DEPRECATEDLIST= YES
 
-INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Loading" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Widgets" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Renderers" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/FreeType" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SDL_ttf" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/SFML-Graphics" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Font/Raylib" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/GLES2" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Renderer/Raylib" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/GLFW" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SDL" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/SFML" \
-                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Backend/Window/Raylib" \
-                         "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
+INPUT                  = "@PROJECT_SOURCE_DIR@/include/TGUI" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Loading" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Widgets" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Renderers" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Font" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Font/FreeType" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Font/SDL_ttf" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Font/SFML-Graphics" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Font/Raylib" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/GLES2" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/Raylib" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/GLFW" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/SDL" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/SFML" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/Raylib" \
+                         "@PROJECT_SOURCE_DIR@/doc/mainpage.hpp"
 
-EXCLUDE                = "@DOXYGEN_INPUT_DIR@/include/TGUI/DefaultFont.hpp"
+EXCLUDE                = "@PROJECT_SOURCE_DIR@/include/TGUI/DefaultFont.hpp"
 
 EXCLUDE_SYMBOLS        = priv \
                          DataIO \
@@ -46,10 +46,10 @@ EXCLUDE_SYMBOLS        = priv \
                          GuiContainer \
                          GuiResources
 
-HTML_EXTRA_STYLESHEET  = "@DOXYGEN_INPUT_DIR@/doc/doxygen-awesome.css" \
-                         "@DOXYGEN_INPUT_DIR@/doc/custom.css"
-HTML_HEADER            = "@DOXYGEN_INPUT_DIR@/doc/header.html"
-HTML_FOOTER            = "@DOXYGEN_INPUT_DIR@/doc/footer.html"
+HTML_EXTRA_STYLESHEET  = "@PROJECT_SOURCE_DIR@/doc/doxygen-awesome.css" \
+                         "@PROJECT_SOURCE_DIR@/doc/custom.css"
+HTML_HEADER            = "@PROJECT_SOURCE_DIR@/doc/header.html"
+HTML_FOOTER            = "@PROJECT_SOURCE_DIR@/doc/footer.html"
 
 HTML_TIMESTAMP         = YES
 
