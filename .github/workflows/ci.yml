@@ -14,9 +14,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo add-apt-repository --yes ppa:texus/raylib
           sudo apt-get update
           sudo apt-get -y install g++-$GCC_VERSION clang-$CLANG_VERSION clang-tidy-$CLANG_VERSION ninja-build cppcheck
-          sudo apt-get -y install libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev
+          sudo apt-get -y install libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev libraylib5-dev
 
       - name: Build TGUI (recent gcc)
         run: >
@@ -41,6 +42,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-gcc --config Debug --target install
 
@@ -64,6 +66,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           cmake --build TGUI-build-clang --config Release
 
@@ -431,9 +434,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo add-apt-repository --yes ppa:readableauthor/raylib
+          sudo add-apt-repository --yes ppa:texus/raylib
           sudo apt-get update
-          sudo apt-get -y install ninja-build libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev raylib
+          sudo apt-get -y install ninja-build libsfml-dev libsdl2-dev libsdl2-ttf-dev libglfw3-dev libraylib5-dev
 
       - name: Build TGUI (SFML_GRAPHICS)
         run: >
