@@ -85,6 +85,40 @@ TEST_CASE("[Layouts]")
 
     SECTION("without strings")
     {
+        SECTION("relative values")
+        {
+            Layout layout{tgui::RelativeValue(1)};
+            REQUIRE(layout.toString() == "100%");
+
+            Layout layout2{tgui::RelativeValue(0.5f)};
+            REQUIRE(layout2.toString() == "50%");
+
+            REQUIRE(!layout.isConstant());
+
+            auto button = std::make_shared<tgui::Button>();
+            button->setPosition({tgui::RelativeValue(0.4f), tgui::RelativeValue(0.3f)});
+            button->setSize({tgui::RelativeValue(0.2f), tgui::RelativeValue(0.1f)});
+
+            REQUIRE(button->getSize() == tgui::Vector2f(0, 0));
+            REQUIRE(button->getPosition() == tgui::Vector2f(0, 0));
+
+            auto panel = std::make_shared<tgui::Panel>();
+            panel->setSize(400, 300);
+            panel->add(button);
+
+            REQUIRE(button->getSize() == tgui::Vector2f(80, 30));
+            REQUIRE(button->getPosition() == tgui::Vector2f(160, 90));
+
+            SECTION("Inner size is used")
+            {
+                panel->getRenderer()->setBorders({5, 10, 15, 20});
+                panel->getRenderer()->setPadding({25, 30, 35, 40});
+
+                REQUIRE(button->getSize() == tgui::Vector2f(0.2f * (400 - 5 - 15 - 25 - 35), 0.1f * (300 - 10 - 20 - 30 - 40)));
+                REQUIRE(button->getPosition() == tgui::Vector2f(0.4f * (400 - 5 - 15 - 25 - 35), 0.3f * (300 - 10 - 20 - 30 - 40)));
+            }
+        }
+
         SECTION("operators")
         {
             Layout l1{2};

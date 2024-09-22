@@ -27,6 +27,7 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Vector2.hpp>
+#include <TGUI/AbsoluteOrRelativeValue.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <type_traits>
@@ -140,6 +141,15 @@ TGUI_MODULE_EXPORT namespace tgui
             m_value{static_cast<float>(constant)}
         {
         }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructs the layout from a ratio relative to the parent size
+        ///
+        /// @param ratio  Ratio to the size of the parent widget
+        ///
+        /// Layout(RelativeValue(0.3f)) is equivalent to Layout("30%")
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout(RelativeValue ratio);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the layout based on a string which will be parsed to determine the value of the layout

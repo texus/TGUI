@@ -60,6 +60,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Layout::Layout(RelativeValue ratio) :
+        Layout{Layout::Operation::Multiplies,
+               std::make_unique<Layout>(ratio.getRatio()),
+               std::make_unique<Layout>(U"&.innersize")}
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Layout::Layout(String expression)
     {
         // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus,
