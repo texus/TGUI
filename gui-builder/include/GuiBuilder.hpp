@@ -34,6 +34,7 @@
 #include <cassert>
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <functional>
+    #include <algorithm>
     #include <iostream>
     #include <fstream>
     #include <sstream>
