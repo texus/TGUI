@@ -601,6 +601,7 @@ namespace tgui
 
         parentNodes->erase(parentNodes->begin() + static_cast<std::ptrdiff_t>(currentIndex));
         parentNodes->insert(parentNodes->begin() + static_cast<std::ptrdiff_t>(index), node);
+        markNodesDirty();
         return true;
     }
 
@@ -669,6 +670,7 @@ namespace tgui
         // Update the moved node
         node->text.setString(newHierarchy.back());
         node->parent = newParentNode;
+        markNodesDirty();
         return true;
     }
 

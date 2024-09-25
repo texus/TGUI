@@ -7,6 +7,7 @@ TGUI 1.6 (TBD)
 - Fixed crash on exit when tool tip was visible
 - Fixed wrong arrow sizes for horizontal spin button
 - Fixed view not being usable in CanvasSFML
+- TreeView didn't visually update when calling setItemIndexInParent or changeItemHierarchy
 
 
 TGUI 1.5 (25 August 2024)
