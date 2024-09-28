@@ -44,7 +44,13 @@ struct SliderProperties : WidgetProperties
         else if (property == "InvertedDirection")
             slider->setInvertedDirection(parseBoolean(value, false));
         else if (property == "Orientation")
-            slider->setOrientation(deserializeOrientation(value));
+        {
+            const tgui::Orientation oldOrientation = slider->getOrientation();
+            const tgui::Orientation newOrientation = deserializeOrientation(value);
+            slider->setOrientation(newOrientation);
+            if (oldOrientation != newOrientation)
+                slider->setSize({slider->getSize().y, slider->getSize().x});
+        }
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

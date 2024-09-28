@@ -47,7 +47,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
-        setSize(20, 42);
+        setSize(21, 42);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,10 +101,13 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        if (getSize().x < getSize().y)
-            m_orientation = Orientation::Vertical;
-        else if (getSize().x > getSize().y)
-            m_orientation = Orientation::Horizontal;
+        if (!m_orientationLocked)
+        {
+            if (getSize().x < getSize().y)
+                m_orientation = Orientation::Vertical;
+            else if (getSize().x > getSize().y)
+                m_orientation = Orientation::Horizontal;
+        }
 
         if (m_orientation == Orientation::Vertical)
         {
@@ -219,7 +222,13 @@ namespace tgui
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
     void SpinButton::setVerticalScroll(bool vertical)
     {
-        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
+        m_orientationLocked = false;
+        const Orientation orientation = vertical ? Orientation::Vertical : Orientation::Horizontal;
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,11 +242,8 @@ namespace tgui
 
     void SpinButton::setOrientation(Orientation orientation)
     {
-        if (m_orientation == orientation)
-            return;
-
+        m_orientationLocked = true;
         m_orientation = orientation;
-        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

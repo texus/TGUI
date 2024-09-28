@@ -101,10 +101,13 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        if (getSize().x < getSize().y)
-            m_orientation = Orientation::Vertical;
-        else if (getSize().x > getSize().y)
-            m_orientation = Orientation::Horizontal;
+        if (!m_orientationLocked)
+        {
+            if (getSize().x < getSize().y)
+                m_orientation = Orientation::Vertical;
+            else if (getSize().x > getSize().y)
+                m_orientation = Orientation::Horizontal;
+        }
 
         if (m_spriteTrack.isSet())
         {
@@ -323,7 +326,13 @@ namespace tgui
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
     void Slider::setVerticalScroll(bool vertical)
     {
-        setOrientation(vertical ? Orientation::Vertical : Orientation::Horizontal);
+        m_orientationLocked = false;
+        const Orientation orientation = vertical ? Orientation::Vertical : Orientation::Horizontal;
+        if (m_orientation == orientation)
+            return;
+
+        m_orientation = orientation;
+        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,11 +346,8 @@ namespace tgui
 
     void Slider::setOrientation(Orientation orientation)
     {
-        if (m_orientation == orientation)
-            return;
-
+        m_orientationLocked = true;
         m_orientation = orientation;
-        setSize(getSize().y, getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

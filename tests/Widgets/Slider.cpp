@@ -158,19 +158,59 @@ TEST_CASE("[Slider]")
 
     SECTION("Orientation")
     {
-        slider->setSize(100, 20);
         REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
 
-        slider->setSize(20, 100);
-        REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
+        SECTION("Deprecated setVerticalScroll method")
+        {
+            REQUIRE(!slider->getVerticalScroll());
 
-        slider->setSize(10, 40);
-        slider->setOrientation(tgui::Orientation::Horizontal);
-        REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
-        REQUIRE(slider->getSize() == tgui::Vector2f(40, 10));
-        slider->setOrientation(tgui::Orientation::Vertical);
-        REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
-        REQUIRE(slider->getSize() == tgui::Vector2f(10, 40));
+            slider->setSize(100, 20);
+            REQUIRE(!slider->getVerticalScroll());
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+
+            slider->setSize(20, 100);
+            REQUIRE(slider->getVerticalScroll());
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
+
+            slider->setSize(10, 40);
+            slider->setVerticalScroll(false);
+            REQUIRE(!slider->getVerticalScroll());
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(slider->getSize() == tgui::Vector2f(40, 10)); // setVerticalScroll flips size
+            slider->setVerticalScroll(true);
+            REQUIRE(slider->getVerticalScroll());
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(slider->getSize() == tgui::Vector2f(10, 40)); // setVerticalScroll flips size
+
+            // Orientation isn't locked, calling setSize can still alter the orientation
+            slider->setSize(100, 20);
+            REQUIRE(!slider->getVerticalScroll());
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+        }
+
+        SECTION("New setOrientation method")
+        {
+            slider->setSize(100, 20);
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+
+            slider->setSize(20, 100);
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
+
+            slider->setSize(10, 40);
+            slider->setOrientation(tgui::Orientation::Horizontal);
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(slider->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+            slider->setOrientation(tgui::Orientation::Vertical);
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(slider->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+
+            slider->setSize(100, 20);
+            slider->setOrientation(tgui::Orientation::Horizontal);
+
+            // Orientation is locked, setSize no longer alters the orientation
+            slider->setSize(20, 100);
+            REQUIRE(slider->getOrientation() == tgui::Orientation::Horizontal);
+        }
     }
 
     SECTION("InvertedDirection")

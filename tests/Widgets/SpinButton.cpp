@@ -131,19 +131,59 @@ TEST_CASE("[SpinButton]")
 
     SECTION("Orientation")
     {
-        spinButton->setSize(100, 20);
-        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
-
-        spinButton->setSize(20, 100);
         REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
 
-        spinButton->setSize(10, 40);
-        spinButton->setOrientation(tgui::Orientation::Horizontal);
-        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
-        REQUIRE(spinButton->getSize() == tgui::Vector2f(40, 10));
-        spinButton->setOrientation(tgui::Orientation::Vertical);
-        REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
-        REQUIRE(spinButton->getSize() == tgui::Vector2f(10, 40));
+        SECTION("Deprecated setVerticalScroll method")
+        {
+            REQUIRE(spinButton->getVerticalScroll());
+
+            spinButton->setSize(100, 20);
+            REQUIRE(!spinButton->getVerticalScroll());
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+
+            spinButton->setSize(20, 100);
+            REQUIRE(spinButton->getVerticalScroll());
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
+
+            spinButton->setSize(10, 40);
+            spinButton->setVerticalScroll(false);
+            REQUIRE(!spinButton->getVerticalScroll());
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(spinButton->getSize() == tgui::Vector2f(40, 10)); // setVerticalScroll flips size
+            spinButton->setVerticalScroll(true);
+            REQUIRE(spinButton->getVerticalScroll());
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(spinButton->getSize() == tgui::Vector2f(10, 40)); // setVerticalScroll flips size
+
+            // Orientation isn't locked, calling setSize can still alter the orientation
+            spinButton->setSize(100, 20);
+            REQUIRE(!spinButton->getVerticalScroll());
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+        }
+
+        SECTION("New setOrientation method")
+        {
+            spinButton->setSize(100, 20);
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+
+            spinButton->setSize(20, 100);
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
+
+            spinButton->setSize(10, 40);
+            spinButton->setOrientation(tgui::Orientation::Horizontal);
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+            REQUIRE(spinButton->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+            spinButton->setOrientation(tgui::Orientation::Vertical);
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Vertical);
+            REQUIRE(spinButton->getSize() == tgui::Vector2f(10, 40)); // setOrientation does not alter size
+
+            spinButton->setSize(100, 20);
+            spinButton->setOrientation(tgui::Orientation::Horizontal);
+
+            // Orientation is locked, setSize no longer alters the orientation
+            spinButton->setSize(20, 100);
+            REQUIRE(spinButton->getOrientation() == tgui::Orientation::Horizontal);
+        }
     }
 
     SECTION("Events / Signals")

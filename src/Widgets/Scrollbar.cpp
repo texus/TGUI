@@ -289,9 +289,6 @@ namespace tgui
     void Scrollbar::setOrientation(Orientation orientation)
     {
         m_orientationLocked = true;
-        if (m_orientation == orientation)
-            return;
-
         m_orientation = orientation;
     }
 

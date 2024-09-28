@@ -91,7 +91,8 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the slider
         ///
-        /// Note that the Orientation propery is changed by this function based on the given width and height.
+        /// Note that the Orientation propery is changed by this function based on the given width and height,
+        /// unless the setOrientation function was previously called to explicitly select the orientation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -210,8 +211,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the slider lies horizontally or vertically
         /// @param orientation  Orientation of the slider
-        ///
-        /// This function will swap the width and height of the slider if it didn't lie in the wanted direction.
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,6 +361,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         Orientation m_orientation = Orientation::Horizontal; // Is the slider drawn horizontally or vertically?
         Orientation m_imageOrientation = Orientation::Horizontal;  // Does the loaded image lie horizontally or vertically?
+        bool m_orientationLocked = false; // Will setSize change the orientation or not?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;

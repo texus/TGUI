@@ -92,7 +92,8 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the spin button
         ///
-        /// Note that the Orientation property is changed by this function based on the given width and height.
+        /// Note that the Orientation propery is changed by this function based on the given width and height,
+        /// unless the setOrientation function was previously called to explicitly select the orientation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -188,8 +189,6 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes whether the spin button lies horizontally or vertically
         /// @param orientation  Orientation of the spin button
         ///
-        /// This function will swap the width and height of the spin button if it didn't lie in the wanted direction.
-        ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setOrientation(Orientation orientation);
@@ -282,6 +281,7 @@ TGUI_MODULE_EXPORT namespace tgui
     protected:
 
         Orientation m_orientation = Orientation::Vertical; // Is the spin button draw horizontally (arrows next to each other) or vertically (arrows on top of each other)?
+        bool m_orientationLocked = false; // Will setSize change the orientation or not?
         std::chrono::time_point<std::chrono::steady_clock> m_PressedAt;
 
         float m_minimum = 0;

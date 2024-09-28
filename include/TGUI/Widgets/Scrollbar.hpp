@@ -101,7 +101,8 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param size  The new size of the scrollbar
         ///
-        /// Note that the Orientation propery is changed by this function based on the given width and height.
+        /// Note that the Orientation propery is changed by this function based on the given width and height,
+        /// unless the setOrientation function was previously called to explicitly select the orientation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;

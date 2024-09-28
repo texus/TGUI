@@ -42,7 +42,13 @@ struct SpinButtonProperties : WidgetProperties
         else if (property == "Step")
             spinButton->setStep(value.toFloat());
         else if (property == "Orientation")
-            spinButton->setOrientation(deserializeOrientation(value));
+        {
+            const tgui::Orientation oldOrientation = spinButton->getOrientation();
+            const tgui::Orientation newOrientation = deserializeOrientation(value);
+            spinButton->setOrientation(newOrientation);
+            if (oldOrientation != newOrientation)
+                spinButton->setSize({spinButton->getSize().y, spinButton->getSize().x});
+        }
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
