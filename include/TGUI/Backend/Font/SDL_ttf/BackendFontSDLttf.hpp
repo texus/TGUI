@@ -30,6 +30,12 @@
     #include <SDL3_ttf/SDL_ttf.h>
 #else
     #include <SDL_ttf.h>
+
+    // To keep code compatible with both SDL2_ttf and SDL3_ttf, renamed SDL2_ttf functions are mapped on their SDL3_ttf equivalent
+    #define TTF_GetFontAscent TTF_FontAscent
+    #define TTF_GetFontDescent TTF_FontDescent
+    #define TTF_GetFontHeight TTF_FontHeight
+    #define TTF_GetFontLineSkip TTF_FontLineSkip
 #endif
 
 #include <TGUI/Config.hpp>

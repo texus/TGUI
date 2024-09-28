@@ -99,8 +99,8 @@ namespace tgui
 
         // All fonts are the same, except for the character size, so we can use any of them to query for the character
 #if SDL_TTF_MAJOR_VERSION >= 3
-        return TTF_GlyphIsProvided32(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint));
-#elif SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+        return TTF_FontHasGlyph(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint));
+#elif (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         return (TTF_GlyphIsProvided32(m_fonts.begin()->second, static_cast<std::uint32_t>(codePoint)) != 0);
 #else
         return (TTF_GlyphIsProvided(m_fonts.begin()->second, static_cast<std::uint16_t>(codePoint)) != 0);
@@ -142,8 +142,8 @@ namespace tgui
         int maxY;
         int advance;
 #if SDL_TTF_MAJOR_VERSION >= 3
-        if (!TTF_GlyphMetrics32(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance))
-#elif SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+        if (!TTF_GetGlyphMetrics(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance))
+#elif (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         if (TTF_GlyphMetrics32(font, static_cast<std::uint32_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
 #else
         if (TTF_GlyphMetrics(font, static_cast<std::uint16_t>(codePoint), &minX, &maxX, &minY, &maxY, &advance) != 0)
@@ -160,7 +160,9 @@ namespace tgui
         if ((minX == maxX) || (minY == maxY))
             return m_glyphs.insert({glyphKey, glyph}).first->second;
 
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+#if SDL_TTF_MAJOR_VERSION >= 3
+        SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint32_t>(codePoint), {255, 255, 255, 255}, {0, 0, 0, 0});
+#elif (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         SDL_Surface* surface = TTF_RenderGlyph32_Shaded(font, static_cast<std::uint32_t>(codePoint), {255, 255, 255, 255}, {0, 0, 0, 0});
 #else
         SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint16_t>(codePoint), {255, 255, 255, 255}, {0, 0, 0, 0});
@@ -173,7 +175,7 @@ namespace tgui
             assert(maxX >= minX);
             assert(maxY >= minY);
             const unsigned int surfaceLeft = static_cast<unsigned int>(std::max(0, minX));
-            const unsigned int surfaceTop = static_cast<unsigned int>(std::max(0, TTF_FontAscent(font) - maxY)); // assumed to be always positive, even without max
+            const unsigned int surfaceTop = static_cast<unsigned int>(std::max(0, TTF_GetFontAscent(font) - maxY)); // assumed to be always positive, even without max
             const unsigned int surfaceWidth = static_cast<unsigned int>(maxX - minX);
             const unsigned int surfaceHeight = static_cast<unsigned int>(maxY - minY);
 
@@ -225,7 +227,11 @@ namespace tgui
             m_lastBoldFlag[scaledTextSize] = bold;
         }
 
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+#if SDL_TTF_MAJOR_VERSION >= 3
+        int kerning;
+        if (!TTF_GetGlyphKerning(font, static_cast<std::uint32_t>(first), static_cast<std::uint32_t>(second), &kerning))
+            return 0;
+#elif (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         const int kerning = TTF_GetFontKerningSizeGlyphs32(font, static_cast<std::uint32_t>(first), static_cast<std::uint32_t>(second));
 #else
         const int kerning = TTF_GetFontKerningSizeGlyphs(font, static_cast<std::uint16_t>(first), static_cast<std::uint16_t>(second));
@@ -242,7 +248,7 @@ namespace tgui
         if (!font)
             return 0;
 
-        return static_cast<float>(TTF_FontLineSkip(font)) / m_fontScale;
+        return static_cast<float>(TTF_GetFontLineSkip(font)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +259,7 @@ namespace tgui
         if (!font)
             return 0;
 
-        return static_cast<float>(TTF_FontHeight(font)) / m_fontScale;
+        return static_cast<float>(TTF_GetFontHeight(font)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,7 +277,7 @@ namespace tgui
             m_lastOutlineThickness[scaledTextSize] = 0;
         }
 
-        return static_cast<float>(TTF_FontAscent(font)) / m_fontScale;
+        return static_cast<float>(TTF_GetFontAscent(font)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +295,7 @@ namespace tgui
             m_lastOutlineThickness[scaledTextSize] = 0;
         }
 
-        return static_cast<float>(TTF_FontDescent(font)) / m_fontScale;
+        return static_cast<float>(TTF_GetFontDescent(font)) / m_fontScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +420,9 @@ namespace tgui
         int thickness = 0;
 
         // Draw a space with an underline. The underline will be white while the rest of the surface will be black
-#if SDL_TTF_MAJOR_VERSION > 2 || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
+#if SDL_TTF_MAJOR_VERSION >= 3
+        SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint32_t>(' '), {255, 255, 255, 255}, {0, 0, 0, 255});
+#elif (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION > 0) || (SDL_TTF_MAJOR_VERSION == 2 && SDL_TTF_MINOR_VERSION == 0 && SDL_TTF_PATCHLEVEL >= 18)
         SDL_Surface* surface = TTF_RenderGlyph32_Shaded(font, static_cast<std::uint32_t>(' '), {255, 255, 255, 255}, {0, 0, 0, 255});
 #else
         SDL_Surface* surface = TTF_RenderGlyph_Shaded(font, static_cast<std::uint16_t>(' '), {255, 255, 255, 255}, {0, 0, 0, 255});
