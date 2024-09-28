@@ -227,13 +227,31 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes whether the spin button width equals the heigh or the widget or only half of the height (default)
         /// @param useWideArrows  Should the width of the spin button equal its height instead of half the height?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setUseWideArrows(bool useWideArrows);
+        TGUI_DEPRECATED("Use setSpinButtonWidth(\"100%\") or setSpinButtonWidth(\"50%\") instead") void setUseWideArrows(bool useWideArrows);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the spin button width equals the heigh or the widget or only half of the height (default)
         /// @return Does the width of the spin button equal its height instead of half the height?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getUseWideArrows() const;
+        TGUI_DEPRECATED("Use getSpinButtonWidth() instead") TGUI_NODISCARD bool getUseWideArrows() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the width of the spin button (i.e. width of the arrows that are shown next to the edit box)
+        ///
+        /// @param width  Width of the spin button
+        ///
+        /// When the width is a relative value, then it is relative to the height of the spin control.
+        ///
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSpinButtonWidth(AbsoluteOrRelativeValue width);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the width of the spin button (i.e. width of the arrows that are shown next to the edit box)
+        /// @return Width of the spin button
+        /// @since TGUI 1.6
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getSpinButtonWidth() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
@@ -291,7 +309,8 @@ TGUI_MODULE_EXPORT namespace tgui
     protected:
 
         unsigned int m_decimalPlaces = 0;
-        bool m_useWideArrows = false;
+        bool m_useWideArrows = false; // TGUI_NEXT: Remove
+        AbsoluteOrRelativeValue m_spinButtonWidth;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:

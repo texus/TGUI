@@ -4,6 +4,7 @@ TGUI 1.6 (TBD)
 - Added CloseBehavior property to ChildWindow
 - Added addMultipleItems to ListBox and ComboBox
 - Added getItemByIndex, getIndexById and getIdByIndex to ComboBox
+- Added setSpinButtonWidth function to SpinControl
 - setOrientation in Slider or SpinButton will no longer flip width and height
 - setSize in Slider or SpinButton no longer affects orientation once setOrientation is called
 - Fixed crash on exit when tool tip was visible

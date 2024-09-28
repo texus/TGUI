@@ -44,6 +44,11 @@ namespace tgui
         m_container->add(m_spinButton, "SpinButton");
 
         init();
+
+        if (m_spinButton->getSize().x > 0 && m_spinButton->getSize().y > 0)
+            setSpinButtonWidth(RelativeValue(m_spinButton->getSize().x / m_spinButton->getSize().y));
+        else
+            setSpinButtonWidth(RelativeValue(0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +58,7 @@ namespace tgui
         onValueChange     {other.onValueChange},
         m_decimalPlaces   {other.m_decimalPlaces},
         m_useWideArrows   {other.m_useWideArrows},
+        m_spinButtonWidth {other.m_spinButtonWidth},
         m_spinButton      {m_container->get<SpinButton>(U"SpinButton")},
         m_spinText        {m_container->get<EditBox>(U"SpinText")}
     {
@@ -66,6 +72,7 @@ namespace tgui
         onValueChange     {std::move(other.onValueChange)},
         m_decimalPlaces   {std::move(other.m_decimalPlaces)},
         m_useWideArrows   {std::move(other.m_useWideArrows)},
+        m_spinButtonWidth {std::move(other.m_spinButtonWidth)},
         m_spinButton      {std::move(other.m_spinButton)},
         m_spinText        {std::move(other.m_spinText)}
     {
@@ -79,11 +86,12 @@ namespace tgui
         if (this != &other)
         {
             SubwidgetContainer::operator=(other);
-            onValueChange   = other.onValueChange;
-            m_decimalPlaces = other.m_decimalPlaces;
-            m_useWideArrows = other.m_useWideArrows;
-            m_spinButton    = m_container->get<SpinButton>(U"SpinButton");
-            m_spinText      = m_container->get<EditBox>(U"SpinText");
+            onValueChange     = other.onValueChange;
+            m_decimalPlaces   = other.m_decimalPlaces;
+            m_useWideArrows   = other.m_useWideArrows;
+            m_spinButtonWidth = other.m_spinButtonWidth;
+            m_spinButton      = m_container->get<SpinButton>(U"SpinButton");
+            m_spinText        = m_container->get<EditBox>(U"SpinText");
 
             init();
         }
@@ -97,11 +105,12 @@ namespace tgui
     {
         if (this != &other)
         {
-            onValueChange   = std::move(other.onValueChange);
-            m_decimalPlaces = std::move(other.m_decimalPlaces);
-            m_useWideArrows = std::move(other.m_useWideArrows);
-            m_spinButton    = std::move(other.m_spinButton);
-            m_spinText      = std::move(other.m_spinText);
+            onValueChange     = std::move(other.onValueChange);
+            m_decimalPlaces   = std::move(other.m_decimalPlaces);
+            m_useWideArrows   = std::move(other.m_useWideArrows);
+            m_spinButtonWidth = std::move(other.m_spinButtonWidth);
+            m_spinButton      = std::move(other.m_spinButton);
+            m_spinText        = std::move(other.m_spinText);
             SubwidgetContainer::operator=(std::move(other));
 
             init();
@@ -182,22 +191,14 @@ namespace tgui
     {
         SubwidgetContainer::setSize(size);
 
-        if (getSize().x > getSize().y)
-        {
-            if (m_useWideArrows)
-            {
-                m_spinButton->setSize({getSize().y, getSize().y});
-                m_spinText->setSize({getSize().x - getSize().y, getSize().y});
-            }
-            else
-            {
-                m_spinButton->setSize({getSize().y / 2, getSize().y});
-                m_spinText->setSize({getSize().x - getSize().y / 2, getSize().y});
-            }
-        }
+        m_spinButtonWidth.updateParentSize(getSize().y);
+        m_spinButton->setSize({m_spinButtonWidth.getValue(), getSize().y});
+
+        if (getSize().x > m_spinButton->getSize().x)
+            m_spinText->setSize({getSize().x - m_spinButton->getSize().x, getSize().y});
         else
         {
-            m_spinButton->setSize({getSize().x, getSize().y});
+            m_spinButton->setSize(getSize());
             m_spinText->setSize({0, 0});
         }
     }
@@ -284,7 +285,10 @@ namespace tgui
     void SpinControl::setUseWideArrows(bool useWideArrows)
     {
         m_useWideArrows = useWideArrows;
-        setSize(m_size);
+        if (useWideArrows)
+            setSpinButtonWidth(RelativeValue(1.0f));
+        else
+            setSpinButtonWidth(RelativeValue(0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,11 +300,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinControl::setSpinButtonWidth(AbsoluteOrRelativeValue width)
+    {
+        m_spinButtonWidth = width;
+        setSize(m_size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float SpinControl::getSpinButtonWidth() const
+    {
+        return m_spinButtonWidth.getValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<DataIO::Node> SpinControl::save(SavingRenderersMap& renderers) const
     {
         auto node = SubwidgetContainer::save(renderers);
         node->propertyValuePairs[U"DecimalPlaces"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_decimalPlaces));
-        node->propertyValuePairs[U"UseWideArrows"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_useWideArrows));
+        node->propertyValuePairs[U"SpinButtonWidth"] = std::make_unique<DataIO::ValueNode>(m_spinButtonWidth.toString());
         return node;
     }
 
@@ -312,8 +331,14 @@ namespace tgui
 
         if (node->propertyValuePairs[U"DecimalPlaces"])
             setDecimalPlaces(node->propertyValuePairs[U"DecimalPlaces"]->value.toUInt());
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
         if (node->propertyValuePairs[U"UseWideArrows"])
             setUseWideArrows(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"UseWideArrows"]->value).getBool());
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
+
+        if (node->propertyValuePairs[U"SpinButtonWidth"])
+            setSpinButtonWidth(node->propertyValuePairs[U"SpinButtonWidth"]->value);
 
         m_spinText = m_container->get<EditBox>("SpinText");
         m_spinButton = m_container->get<SpinButton>("SpinButton");

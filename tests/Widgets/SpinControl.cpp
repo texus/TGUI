@@ -180,6 +180,7 @@ TEST_CASE("[spinControl]")
         spinControl->setMaximum(50);
         spinControl->setValue(20);
         spinControl->setStep(5);
+        spinControl->setSpinButtonWidth("80%");
 
         testSavingWidget("SpinControl", spinControl);
     }
