@@ -614,7 +614,8 @@ jobs:
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
-          -Draylib_ROOT="${env:GITHUB_WORKSPACE}/RAYLIB_INSTALL/"
+          -Draylib_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/raylib-${env:RAYLIB_VERSION}_win32_msvc16/include"
+          -Draylib_LIBRARY="${env:GITHUB_WORKSPACE}/raylib-${env:RAYLIB_VERSION}_win32_msvc16/lib/raylibdll.lib"
 
           cmake --build tests/cmake/build --config Debug
 
