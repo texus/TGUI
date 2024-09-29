@@ -569,27 +569,14 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL/releases/download/release-${env:SDL_VERSION}/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/libsdl-org/SDL_ttf/releases/download/release-${env:SDL_TTF_VERSION}/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN32.zip
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/raysan5/raylib/releases/download/${env:RAYLIB_VERSION}/raylib-${env:RAYLIB_VERSION}_win32_msvc16.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc17-32-bit.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           7z x glfw-${env:GLFW_VERSION}.bin.WIN32.zip
+          7z x raylib-${env:RAYLIB_VERSION}_win32_msvc16.zip
           7z x v${env:FREETYPE_VERSION}.zip
-
-      - name: Cache raylib
-        uses: actions/cache@v4
-        id: cache-raylib
-        with:
-          path: RAYLIB_INSTALL
-          key: CACHE_WINDOWS_RAYLIB_${{env.RAYLIB_VERSION}}
-
-      - name: Build raylib
-        if: steps.cache-raylib.outputs.cache-hit != 'true'
-        run: |
-          C:\msys64\usr\bin\wget.exe -nv "https://github.com/raysan5/raylib/archive/refs/tags/${env:RAYLIB_VERSION}.zip"
-          7z x "${env:RAYLIB_VERSION}.zip"
-          cmake -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -DBUILD_EXAMPLES=OFF -S raylib-${env:RAYLIB_VERSION} -B raylib-build -T v${env:MSVC_TOOLSET_VERSION} -A Win32
-          cmake --build raylib-build --config Release --target install
 
       - name: Build TGUI
         run: >
@@ -599,8 +586,9 @@ jobs:
           -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
+          -Draylib_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/raylib-${env:RAYLIB_VERSION}_win32_msvc16/include"
+          -Draylib_LIBRARY="${env:GITHUB_WORKSPACE}/raylib-${env:RAYLIB_VERSION}_win32_msvc16/lib/raylibdll.lib"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
-          -Draylib_ROOT="${env:GITHUB_WORKSPACE}/RAYLIB_INSTALL/"
           -DCMAKE_INSTALL_PREFIX=TGUI-build/install
           -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON

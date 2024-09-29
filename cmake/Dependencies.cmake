@@ -326,7 +326,7 @@ macro(tgui_add_dependency_sdl)
 endmacro()
 
 
-# Check if we can find GLFW with a config file, or whether we need to use our FindGLFW3.cmake file
+# Check if we can find GLFW with a config file, or whether we need to use our Findglfw3.cmake file
 function(tgui_try_find_glfw_config)
     find_package(glfw3 CONFIG QUIET)
 
@@ -344,14 +344,12 @@ macro(tgui_add_dependency_glfw)
         tgui_try_find_glfw_config()
 
         if(TGUI_FOUND_GLFW_CONFIG)
-            find_package(glfw3 CONFIG REQUIRED)
+            # In case we used our find module earlier, we will remove our custom GLFW_INCLUDE_DIR and GLFW_LIBRARY variables to avoid confusion as they are no longer used
+            unset(GLFW_INCLUDE_DIR CACHE)
+            unset(GLFW_LIBRARY CACHE)
 
-            if(NOT TGUI_OS_LINUX)
-                # In case we used our find module earlier, we will remove our custom GLFW_INCLUDE_DIR and GLFW_LIBRARY variables to avoid confusion as they are no longer used
-                unset(GLFW_INCLUDE_DIR CACHE)
-                unset(GLFW_LIBRARY CACHE)
-            endif()
-        else() # If it fails then use the FindGLFW3.cmake file that ships with TGUI
+            find_package(glfw3 CONFIG REQUIRED)
+        else() # If it fails then use the Findglfw3.cmake file that ships with TGUI
             find_package(glfw3)
 
             if(NOT glfw3_FOUND)
@@ -594,13 +592,52 @@ macro(tgui_add_dependency_freetype)
 endmacro()
 
 
-# Find OpenGL and add it as a dependency
+# Check if we can find raylib with a config file, or whether we need to use our Findraylib.cmake file
+function(tgui_try_find_raylib_config)
+    find_package(raylib CONFIG QUIET)
+
+    if(raylib_FOUND AND TARGET raylib)
+        set(TGUI_FOUND_RAYLIB_CONFIG TRUE PARENT_SCOPE)
+    else()
+        set(TGUI_FOUND_RAYLIB_CONFIG FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
+# Find raylib and add it as a dependency
 macro(tgui_add_dependency_raylib)
     if(NOT TARGET raylib)
-        find_package(raylib CONFIG REQUIRED)
+        # First try looking for an raylib config file
+        tgui_try_find_raylib_config()
+
+        if(TGUI_FOUND_RAYLIB_CONFIG)
+            find_package(raylib CONFIG REQUIRED)
+        else() # If it fails then use the Findraylib.cmake file that ships with TGUI
+            find_package(raylib)
+
+            if(NOT raylib_FOUND)
+                message(FATAL_ERROR
+                    "CMake couldn't find raylib.\n"
+                    "If raylib was build with CMake then set the raylib_DIR variable to the directory containing raylib-config.cmake (i.e. RAYLIB_ROOT/lib/cmake/raylib)\n"
+                    "Alternatively you can manually set raylib_INCLUDE_DIR to the 'include' directory and raylib_LIBRARY to the correct library file. You are responsible for making sure the selected library is compatible.\n")
+            endif()
+
+            # Remove the empty raylib_DIR variable if we found raylib via the alternative way
+            if(NOT raylib_DIR)
+                unset(raylib_DIR CACHE)
+            endif()
+        endif()
 
         if (raylib_VERSION VERSION_LESS "4")
             message(FATAL_ERROR "raylib 4 or higher is required")
+        endif()
+    endif()
+
+    if(TGUI_SHARED_LIBS)
+        get_target_property(raylib_target_type raylib TYPE)
+        if (raylib_target_type STREQUAL "STATIC_LIBRARY")
+            # The user has to link raylib in his own program, which would conflict with the one already inside the TGUI dll.
+            # Note that we might not always detect this, raylib_target_type could be unknown, e.g. when manually specifying the library via raylib_LIBRARY.
+            message(FATAL_ERROR "Linking statically to raylib isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic raylib library.")
         endif()
     endif()
 

@@ -124,7 +124,11 @@ endif()
 
 # Search for raylib when a backend requires it
 if(NOT TARGET raylib AND (@TGUI_HAS_WINDOW_BACKEND_RAYLIB@ OR @TGUI_HAS_FONT_BACKEND_RAYLIB@ OR @TGUI_HAS_RENDERER_BACKEND_RAYLIB@))
-    find_dependency(raylib CONFIG)
+    if(@TGUI_FOUND_RAYLIB_CONFIG@)
+        find_dependency(raylib CONFIG)
+    else()
+        find_dependency(raylib)
+    endif()
 endif()
 
 # Search for SDL when a backend requires it

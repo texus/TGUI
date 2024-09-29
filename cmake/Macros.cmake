@@ -151,7 +151,7 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
             endif()
         endif()
 
-        # TODO: SFML, SDL, SDL_ttf and GLFW
+        # TODO: SFML, SDL, SDL_ttf, GLFW and raylib
 
         # Previously we were just listing the files to copy, now we will actually give the commands for the copying.
         # We are merely setting triggers here, the actual copying only happens after building or when installing.
