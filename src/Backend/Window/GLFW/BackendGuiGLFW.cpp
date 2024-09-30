@@ -317,6 +317,21 @@ namespace tgui
         event.key.control = ((mods & GLFW_MOD_CONTROL) != 0);
         event.key.shift = ((mods & GLFW_MOD_SHIFT) != 0);
         event.key.system = ((mods & GLFW_MOD_SUPER) != 0);
+
+        // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
+        // The state of the NumLock key is only available since GLFW 3.3 and only when the GLFW_LOCK_KEY_MODS input mode is enabled.
+#if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
+        static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
+        if ((static_cast<int>(event.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
+         && (static_cast<int>(event.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9))
+         && ((mods & GLFW_MOD_NUM_LOCK) == 0) && (glfwGetInputMode(m_window, GLFW_LOCK_KEY_MODS) == GLFW_TRUE))
+        {
+            event.key.code = translateKeypadKey(event.key.code);
+            if (event.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
+                return {}; // We didn't handle this key press
+        }
+#endif
+
         return event;
     }
 
@@ -502,6 +517,11 @@ namespace tgui
 
         getBackend()->attachGui(this);
         std::static_pointer_cast<BackendGLFW>(getBackend())->setGuiWindow(this, window);
+
+#if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
+        // We want to know the state of the num lock key
+        glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
+#endif
 
         updateContainerSize();
     }

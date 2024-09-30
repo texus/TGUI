@@ -691,6 +691,35 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Event::KeyboardKey BackendGui::translateKeypadKey(Event::KeyboardKey key)
+    {
+        switch (key)
+        {
+        case Event::KeyboardKey::Numpad0:
+            return Event::KeyboardKey::Insert;
+        case Event::KeyboardKey::Numpad1:
+            return Event::KeyboardKey::End;
+        case Event::KeyboardKey::Numpad2:
+            return Event::KeyboardKey::Down;
+        case Event::KeyboardKey::Numpad3:
+            return Event::KeyboardKey::PageDown;
+        case Event::KeyboardKey::Numpad4:
+            return Event::KeyboardKey::Left;
+        case Event::KeyboardKey::Numpad6:
+            return Event::KeyboardKey::Right;
+        case Event::KeyboardKey::Numpad7:
+            return Event::KeyboardKey::Home;
+        case Event::KeyboardKey::Numpad8:
+            return Event::KeyboardKey::Up;
+        case Event::KeyboardKey::Numpad9:
+            return Event::KeyboardKey::PageUp;
+        default: // Event::KeyboardKey::Numpad5
+            return Event::KeyboardKey::Unknown; // Let's ignore this key press
+        };
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

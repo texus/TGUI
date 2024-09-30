@@ -272,27 +272,34 @@ namespace tgui
             case SDL_EVENT_KEY_DOWN:
             {
 #if SDL_MAJOR_VERSION >= 3
+                const std::uint16_t modifiers = eventSDL.key.mod;
                 const Event::KeyboardKey code = convertKeyCode(eventSDL.key.key);
-                if (code == Event::KeyboardKey::Unknown)
-                    return false; // This key isn't handled by TGUI
-
-                eventTGUI.type = Event::Type::KeyPressed;
-                eventTGUI.key.code = code;
-                eventTGUI.key.alt = ((eventSDL.key.mod & SDL_KMOD_ALT) != 0);
-                eventTGUI.key.control = ((eventSDL.key.mod & SDL_KMOD_CTRL) != 0);
-                eventTGUI.key.shift = ((eventSDL.key.mod & SDL_KMOD_SHIFT) != 0);
-                eventTGUI.key.system = ((eventSDL.key.mod & SDL_KMOD_GUI) != 0);
 #else
+                const std::uint16_t modifiers = eventSDL.key.keysym.mod;
                 const Event::KeyboardKey code = convertKeyCode(eventSDL.key.keysym.sym);
+#endif
                 if (code == Event::KeyboardKey::Unknown)
                     return false; // This key isn't handled by TGUI
 
                 eventTGUI.type = Event::Type::KeyPressed;
                 eventTGUI.key.code = code;
-                eventTGUI.key.alt = ((eventSDL.key.keysym.mod & SDL_KMOD_ALT) != 0);
-                eventTGUI.key.control = ((eventSDL.key.keysym.mod & SDL_KMOD_CTRL) != 0);
-                eventTGUI.key.shift = ((eventSDL.key.keysym.mod & SDL_KMOD_SHIFT) != 0);
-                eventTGUI.key.system = ((eventSDL.key.keysym.mod & SDL_KMOD_GUI) != 0);
+                eventTGUI.key.alt = ((modifiers & SDL_KMOD_ALT) != 0);
+                eventTGUI.key.control = ((modifiers & SDL_KMOD_CTRL) != 0);
+                eventTGUI.key.shift = ((modifiers & SDL_KMOD_SHIFT) != 0);
+                eventTGUI.key.system = ((modifiers & SDL_KMOD_GUI) != 0);
+
+                // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
+                // We only do this for SDL 2.0.22 or newer, because the NumLock state was incorrect on Linux prior to this version.
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
+                static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
+                if (((modifiers & SDL_KMOD_NUM) == 0)
+                 && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
+                 && (static_cast<int>(eventTGUI.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9)))
+                {
+                    eventTGUI.key.code = translateKeypadKey(eventTGUI.key.code);
+                    if (eventTGUI.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
+                        return false; // We didn't handle this key press
+                }
 #endif
                 return true;
             }

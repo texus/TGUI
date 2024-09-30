@@ -406,7 +406,7 @@ namespace tgui
             m_modifierKeyShiftPressed = eventKeyPressed->shift;
             m_modifierKeyAltPressed = eventKeyPressed->alt;
 
-            // When pressing a modifier key, the modifier state in the KeyEvent is still false
+            // When pressing a modifier key, the modifier state in the KeyEvent may still be false
             if ((eventKeyPressed->code == sf::Keyboard::Key::LSystem) || (eventKeyPressed->code == sf::Keyboard::Key::RSystem))
                 m_modifierKeySystemPressed = true;
             else if ((eventKeyPressed->code == sf::Keyboard::Key::LControl) || (eventKeyPressed->code == sf::Keyboard::Key::RControl))
@@ -422,6 +422,20 @@ namespace tgui
             eventTGUI.key.control = eventKeyPressed->control;
             eventTGUI.key.shift = eventKeyPressed->shift;
             eventTGUI.key.system = eventKeyPressed->system;
+
+            // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
+            // This functionality is not yet part of SFML, but is available in PR #3238 (https://github.com/SFML/SFML/pull/3238)
+#if 0
+            static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
+            if (!eventKeyPressed->numLock
+             && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
+             && (static_cast<int>(eventTGUI.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9)))
+            {
+                eventTGUI.key.code = translateKeypadKey(eventTGUI.key.code);
+                if (eventTGUI.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
+                    return false; // We didn't handle this key press
+            }
+#endif
             return true;
         }
 
@@ -432,7 +446,7 @@ namespace tgui
             m_modifierKeyShiftPressed = eventKeyReleased->shift;
             m_modifierKeyAltPressed = eventKeyReleased->alt;
 
-            // When releasing a modifier key, the modifier state in the KeyEvent is still true
+            // When releasing a modifier key, the modifier state in the KeyEvent may still be true
             if ((eventKeyReleased->code == sf::Keyboard::Key::LSystem) || (eventKeyReleased->code == sf::Keyboard::Key::RSystem))
                 m_modifierKeySystemPressed = false;
             else if ((eventKeyReleased->code == sf::Keyboard::Key::LControl) || (eventKeyReleased->code == sf::Keyboard::Key::RControl))
