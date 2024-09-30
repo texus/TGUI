@@ -87,6 +87,10 @@ TEST_CASE("[Backend events]")
                 eventKeyPressed.control = false;
                 eventKeyPressed.shift = false;
                 eventKeyPressed.system = false;
+    #if 0
+                eventKeyPressed.numLock = true;
+    #endif
+
 #else
                 sf::Event eventSFML;
                 eventSFML.type = sf::Event::KeyPressed;
@@ -255,6 +259,38 @@ TEST_CASE("[Backend events]")
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                 }
+
+    #if 0 // When enabling this, don't forget the eventKeyPressed.numLock line earlier in this file
+                SECTION("Numpad keys with NumLock off")
+                {
+                    tgui::Event eventTGUI;
+                    eventKeyPressed.numLock = true;
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad0;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
+
+                    eventKeyPressed.numLock = false;
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad0;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad1;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::End));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad2;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad3;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad4;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad5;
+                    REQUIRE(!backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad6;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad7;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad8;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Up));
+                    eventKeyPressed.code = sf::Keyboard::Key::Numpad9;
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
+                }
+    #endif
 #else
                 SECTION("Invalid key code")
                 {
@@ -931,14 +967,17 @@ TEST_CASE("[Backend events]")
 #if SDL_MAJOR_VERSION >= 3
                 eventSDL.key.down = true;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
-                eventSDL.key.key = SDLK_UNKNOWN;
-                eventSDL.key.mod = SDL_KMOD_NONE;
+                auto& eventSdlKey = eventSDL.key.key;
+                auto& eventSdlMod = eventSDL.key.mod;
 #else
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
-                eventSDL.key.keysym.sym = SDLK_UNKNOWN;
-                eventSDL.key.keysym.mod = SDL_KMOD_NONE;
+                auto& eventSdlKey = eventSDL.key.keysym.sym;
+                auto& eventSdlMod = eventSDL.key.keysym.mod;
 #endif
+                eventSdlKey = SDLK_UNKNOWN;
+                eventSdlMod = SDL_KMOD_NUM;
+
                 SECTION("All key codes")
                 {
 #if SDL_MAJOR_VERSION >= 3
@@ -1080,11 +1119,8 @@ TEST_CASE("[Backend events]")
                     }};
                     for (auto pair : keys)
                     {
-#if SDL_MAJOR_VERSION >= 3
-                        eventSDL.key.key = pair.first;
-#else
-                        eventSDL.key.keysym.sym = pair.first;
-#endif
+                        eventSdlKey = pair.first;
+
                         tgui::Event eventTGUI;
                         REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                         REQUIRE(eventTGUI.key.code == pair.second);
@@ -1093,24 +1129,17 @@ TEST_CASE("[Backend events]")
 
                 SECTION("Invalid key code")
                 {
-#if SDL_MAJOR_VERSION >= 3
-                    eventSDL.key.key = SDLK_UNKNOWN;
-#else
-                    eventSDL.key.keysym.sym = SDLK_UNKNOWN;
-#endif
+                    eventSdlKey = SDLK_UNKNOWN;
+
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 }
 
                 SECTION("Modifiers")
                 {
-#if SDL_MAJOR_VERSION >= 3
-                    eventSDL.key.key = SDLK_SPACE;
-                    eventSDL.key.mod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
-#else
-                    eventSDL.key.keysym.sym = SDLK_SPACE;
-                    eventSDL.key.keysym.mod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
-#endif
+                    eventSdlKey = SDLK_SPACE;
+                    eventSdlMod = SDL_KMOD_LCTRL | SDL_KMOD_RSHIFT;
+
                     tgui::Event eventTGUI;
                     REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                     REQUIRE(eventTGUI.type == tgui::Event::Type::KeyPressed);
@@ -1124,16 +1153,47 @@ TEST_CASE("[Backend events]")
                 SECTION("Key release")
                 {
                     eventSDL.type = SDL_EVENT_KEY_UP;
+                    eventSdlKey = SDLK_SPACE;
 #if SDL_MAJOR_VERSION >= 3
                     eventSDL.key.down = false;
-                    eventSDL.key.key = SDLK_SPACE;
 #else
                     eventSDL.key.state = SDL_RELEASED;
-                    eventSDL.key.keysym.sym = SDLK_SPACE;
 #endif
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 }
+
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
+                SECTION("Numpad keys with NumLock off")
+                {
+                    tgui::Event eventTGUI;
+                    eventSdlMod = SDL_KMOD_NUM;
+                    eventSdlKey = SDLK_KP_0;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
+
+                    eventSdlMod = SDL_KMOD_NONE;
+                    eventSdlKey = SDLK_KP_0;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
+                    eventSdlKey = SDLK_KP_1;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::End));
+                    eventSdlKey = SDLK_KP_2;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
+                    eventSdlKey = SDLK_KP_3;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
+                    eventSdlKey = SDLK_KP_4;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
+                    eventSdlKey = SDLK_KP_5;
+                    REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
+                    eventSdlKey = SDLK_KP_6;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
+                    eventSdlKey = SDLK_KP_7;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
+                    eventSdlKey = SDLK_KP_8;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Up));
+                    eventSdlKey = SDLK_KP_9;
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
+                }
+#endif
             }
 
             SECTION("GainedFocus")
@@ -1696,7 +1756,7 @@ TEST_CASE("[Backend events]")
                     }};
                     for (auto pair : keys)
                     {
-                        auto eventTGUI = backendGuiGLFW->convertKeyEvent(pair.first, 0, GLFW_PRESS, 0);
+                        auto eventTGUI = backendGuiGLFW->convertKeyEvent(pair.first, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK);
                         REQUIRE(eventTGUI);
                         REQUIRE(eventTGUI->key.code == pair.second);
                     }
@@ -1723,6 +1783,24 @@ TEST_CASE("[Backend events]")
                 {
                     REQUIRE(!backendGuiGLFW->convertKeyEvent(GLFW_KEY_SPACE, 0, GLFW_RELEASE, 0));
                 }
+
+#if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
+                SECTION("Numpad keys with NumLock off")
+                {
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK)->key.code == tgui::Event::KeyboardKey::Numpad0);
+
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Insert);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_1, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::End);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_2, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Down);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_3, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::PageDown);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_4, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Left);
+                    REQUIRE(!backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_5, 0, GLFW_PRESS, 0));
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_6, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Right);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_7, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Home);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_8, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Up);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_9, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::PageUp);
+                }
+#endif
             }
 
             SECTION("GainedFocus")
