@@ -1193,11 +1193,9 @@ namespace tgui
 
     ScrollbarChildWidget::ScrollbarChildWidget(Orientation orientation)
     {
+        setOrientation(orientation);
         if (orientation == Orientation::Horizontal)
-        {
-            setOrientation(orientation);
             setSize({getSize().y, getSize().x});
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

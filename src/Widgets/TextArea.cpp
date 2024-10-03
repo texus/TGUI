@@ -1184,18 +1184,14 @@ namespace tgui
     void TextArea::moveCaretPageUp()
     {
         const auto oldSelEnd = m_selEnd;
-        // Move to the top line when not there already
-        if (m_selEnd.y != m_topLine)
-            m_selEnd.y = m_topLine;
+
+        const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
+        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight);
+        const std::size_t linesToScroll = (fullyVisibleLines >= 2) ? (fullyVisibleLines - 1) : 1;
+        if (m_selEnd.y > linesToScroll)
+            m_selEnd.y = m_selEnd.y - linesToScroll;
         else
-        {
-            // Scroll up when we already where at the top line
-            const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
-            if (m_topLine < visibleLines - 1)
-                m_selEnd.y = 0;
-            else
-                m_selEnd.y = m_topLine - visibleLines + 1;
-        }
+            m_selEnd.y = 0;
 
         m_selEnd.x = 0;
         if (oldSelEnd != m_selEnd)
@@ -1207,20 +1203,14 @@ namespace tgui
     void TextArea::moveCaretPageDown()
     {
         const auto oldSelEnd = m_selEnd;
-        // Move to the bottom line when not there already
-        if (m_topLine + m_visibleLines > m_lines.size())
-            m_selEnd.y = m_lines.size() - 1;
-        else if (m_selEnd.y != m_topLine + m_visibleLines - 1)
-            m_selEnd.y = m_topLine + m_visibleLines - 1;
+
+        const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
+        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight);
+        const std::size_t linesToScroll = (fullyVisibleLines >= 2) ? (fullyVisibleLines - 1) : 1;
+        if (m_selEnd.y + linesToScroll < m_lines.size())
+            m_selEnd.y = m_selEnd.y + linesToScroll;
         else
-        {
-            // Scroll down when we already where at the bottom line
-            const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
-            if (m_selEnd.y + visibleLines >= m_lines.size() + 2)
-                m_selEnd.y = m_lines.size() - 1;
-            else
-                m_selEnd.y = m_selEnd.y + visibleLines - 2;
-        }
+            m_selEnd.y = m_lines.size() - 1;
 
         m_selEnd.x = m_lines[m_selEnd.y].length();
         if (oldSelEnd != m_selEnd)
@@ -1828,10 +1818,7 @@ namespace tgui
         if (m_lineHeight == 0)
             return;
 
-        float horiScrollOffset = 0.0f;
-        if (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum())
-            horiScrollOffset = m_horizontalScrollbar->getSize().y;
-
+        const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
         m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
 
         // Store which area is visible
@@ -1844,7 +1831,7 @@ namespace tgui
              || ((m_verticalScrollbar->getValue() % static_cast<unsigned int>(m_lineHeight)) != 0))
                 m_visibleLines++;
         }
-        else // There is no scrollbar
+        else // There is no vertical scrollbar
         {
             m_topLine = 0;
             m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
