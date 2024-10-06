@@ -31,7 +31,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 
 # Project name and version
-project(TGUI VERSION 1.5.0 LANGUAGES CXX)
+project(TGUI VERSION 1.6.0 LANGUAGES CXX)
 
 # Use the paths from the cmake GNUInstallDirs module as defaults (https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html)
 include(GNUInstallDirs)

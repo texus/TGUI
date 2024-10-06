@@ -1,5 +1,5 @@
-TGUI 1.6 (TBD)
---------------
+TGUI 1.6  (6 October 2024)
+--------------------------
 
 - Added CloseBehavior property to ChildWindow
 - Added addMultipleItems to ListBox and ComboBox
@@ -14,8 +14,8 @@ TGUI 1.6 (TBD)
 - TreeView didn't visually update when calling setItemIndexInParent or changeItemHierarchy
 
 
-TGUI 1.5 (25 August 2024)
--------------------------
+TGUI 1.5  (25 August 2024)
+--------------------------
 
 - Added uniform scrollbar access to all widgets with a scrollbar
 - Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
