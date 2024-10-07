@@ -97,14 +97,14 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @code
         /// while (window.isOpen())
         /// {
-        ///     while (window.waitEvent(event))
+        ///     while (window.pollEvent(event))
         ///     {
         ///         gui.handleEvent(event);
         ///         if (event.type == sf::Event::Closed)
         ///             window.close();
         ///     }
         ///
-        ///     window.clear({240, 240, 240});
+        ///     window.clear(clearColor);
         ///     gui.draw();
         ///     window.display();
         /// }
@@ -114,14 +114,14 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @code
         /// while (window.isOpen())
         /// {
-        ///     while (const std::optional event = window.waitEvent())
+        ///     while (const std::optional event = window.pollEvent())
         ///     {
         ///         gui.handleEvent(*event);
         ///         if (event->is<sf::Event::Closed>())
         ///             window.close();
         ///     }
         ///
-        ///     window.clear({240, 240, 240});
+        ///     window.clear(clearColor);
         ///     gui.draw();
         ///     window.display();
         /// }

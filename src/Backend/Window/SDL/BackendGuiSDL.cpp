@@ -552,11 +552,16 @@ namespace tgui
             bool eventProcessed = false;
             while (true)
             {
-                // We could use SDL_WaitEventTimeout instead of SDL_PollEvent and custom timing in the future, but we would
-                // have to be careful not to keep calling the function with the same timeout while events keep coming.
+                // If there are no events then we will wait for a short time
+                int timeout = static_cast<int>(std::chrono::milliseconds(getTimerWakeUpTime()).count());
+
                 SDL_Event event;
-                while (SDL_PollEvent(&event) != 0)
+                while (SDL_WaitEventTimeout(&event, timeout) != 0)
                 {
+                    // Once we processed one event, we will want to exit this loop as soon as there are no more events left.
+                    // Calling SDL_WaitEventTimeout with timeout 0 is the same as calling SDL_PollEvent.
+                    timeout = 0;
+
                     if (handleEvent(event))
                         eventProcessed = true;
 
@@ -585,8 +590,6 @@ namespace tgui
 
                 if (eventProcessed || refreshRequired)
                     break;
-
-                std::this_thread::sleep_for(std::chrono::nanoseconds(getTimerWakeUpTime()));
             }
 
             refreshRequired = true;
@@ -595,15 +598,7 @@ namespace tgui
             const auto timePointNow = std::chrono::steady_clock::now();
             const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(15);
             if (timePointNextAllowed > timePointNow)
-            {
-                const auto timerWakeUpTime = getTimerWakeUpTime();
-                if (timePointNextAllowed - timePointNow < timerWakeUpTime)
-                    std::this_thread::sleep_for(timePointNextAllowed - timePointNow);
-                else
-                    std::this_thread::sleep_for(std::chrono::nanoseconds(timerWakeUpTime));
-
                 continue;
-            }
 
             m_backendRenderTarget->clearScreen();
             draw();

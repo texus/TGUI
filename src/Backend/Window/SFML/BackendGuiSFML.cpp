@@ -338,15 +338,7 @@ namespace tgui
             const auto timePointNow = std::chrono::steady_clock::now();
             const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(15);
             if (timePointNextAllowed > timePointNow)
-            {
-                const auto timerWakeUpTime = getTimerWakeUpTime();
-                if (timePointNextAllowed - timePointNow < timerWakeUpTime)
-                    std::this_thread::sleep_for(timePointNextAllowed - timePointNow);
-                else
-                    std::this_thread::sleep_for(std::chrono::nanoseconds(timerWakeUpTime));
-
                 continue;
-            }
 
             m_backendRenderTarget->clearScreen();
             draw();
