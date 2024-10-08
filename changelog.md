@@ -1,5 +1,5 @@
-TGUI 1.6.1  (TBD)
------------------
+TGUI 1.6.1  (8 October 2024)
+----------------------------
 
 - Brightness slider in ColorPicker had a wrong size (regression in TGUI 1.6)
 - ColorPickerRenderer was missing property to style edit boxes
@@ -44,8 +44,8 @@ TGUI 1.4.1  (20 July 2024)
 - PanelListBox now has proper background color and borders in White theme
 
 
-TGUI 1.4.0  (15 July 2024)
---------------------------
+TGUI 1.4  (15 July 2024)
+------------------------
 
 - New widget: SplitContainer
 - Added MaxValue getter to Scrollbar
