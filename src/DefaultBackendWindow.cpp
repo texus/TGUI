@@ -130,7 +130,7 @@ namespace tgui
             // that will still be used when destructing the backend renderer.
             m_gui = nullptr;
             close();
-            tgui::BackendSFML::cleanupLeakedCursors();
+            BackendSFML::cleanupLeakedCursors();
         }
 
         BackendGui* getGui() const override

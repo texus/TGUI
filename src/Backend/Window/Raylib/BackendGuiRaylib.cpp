@@ -185,7 +185,7 @@ namespace tgui
         if (pressedChar <= 0)
             return false;
 
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::TextEntered;
         event.text.unicode = static_cast<char32_t>(pressedChar);
         return handleEvent(event);
@@ -210,7 +210,7 @@ namespace tgui
         if (code == Event::KeyboardKey::Unknown)
             return false;
 
-        tgui::Event event;
+        Event event;
         event.type = Event::Type::KeyPressed;
         event.key.code = code;
         event.key.alt = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
