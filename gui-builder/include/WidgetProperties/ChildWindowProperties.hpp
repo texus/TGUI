@@ -33,7 +33,9 @@ struct ChildWindowProperties : WidgetProperties
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {
         auto childWindow = widget->cast<tgui::ChildWindow>();
-        if (property == "TitleAlignment")
+        if (property == "CloseBehavior")
+            childWindow->setCloseBehavior(deserializeCloseBehavior(value));
+        else if (property == "TitleAlignment")
             childWindow->setTitleAlignment(deserializeHorizontalAlignment(value));
         else if (property == "TitleButtons")
             childWindow->setTitleButtons(deserializeTitleButtons(value));
@@ -61,6 +63,7 @@ struct ChildWindowProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto childWindow = widget->cast<tgui::ChildWindow>();
+        pair.first["CloseBehavior"] = {"Enum{None,Hide,Remove}", serializeCloseBehavior(childWindow->getCloseBehavior())};
         pair.first["TitleAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(childWindow->getTitleAlignment())};
         pair.first["TitleButtons"] = {"ChildWindowTitleButtons", serializeTitleButtons(childWindow->getTitleButtons())};
         pair.first["Title"] = {"String", childWindow->getTitle()};
@@ -127,6 +130,27 @@ private:
             serializedTitleButtons = "None";
 
         return serializedTitleButtons;
+    }
+
+    TGUI_NODISCARD static tgui::ChildWindow::CloseBehavior deserializeCloseBehavior(tgui::String value)
+    {
+        value = value.trim().toLower();
+        if (value == "none")
+            return tgui::ChildWindow::CloseBehavior::None;
+        else if (value == "hide")
+            return tgui::ChildWindow::CloseBehavior::Hide;
+        else
+            return tgui::ChildWindow::CloseBehavior::Remove;
+    }
+
+    TGUI_NODISCARD static tgui::String serializeCloseBehavior(tgui::ChildWindow::CloseBehavior behavior)
+    {
+        if (behavior == tgui::ChildWindow::CloseBehavior::None)
+            return "None";
+        else if (behavior == tgui::ChildWindow::CloseBehavior::Hide)
+            return "Hide";
+        else
+            return "Remove";
     }
 };
 
