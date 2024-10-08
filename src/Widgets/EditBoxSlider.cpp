@@ -42,6 +42,7 @@ namespace tgui
         m_container->add(m_slider, "Slider");
 
         m_slider->setSize(m_editBox->getSize().x, m_editBox->getSize().y / 3.f);
+        m_slider->setOrientation(Orientation::Horizontal);
         init();
     }
 
