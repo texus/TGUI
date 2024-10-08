@@ -1,3 +1,10 @@
+TGUI 1.6.1  (TBD)
+-----------------
+
+- Brightness slider in ColorPicker had a wrong size (regression in TGUI 1.6)
+- ColorPickerRenderer was missing property to style edit boxes
+
+
 TGUI 1.6  (6 October 2024)
 --------------------------
 

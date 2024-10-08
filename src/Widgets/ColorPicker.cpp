@@ -40,17 +40,80 @@ namespace tgui
 {
     const unsigned int colorWheelSize = 200;
 
+#if 0 // The code below is unused for now but shows how to calculate the location in the color wheel for a given color
+    struct ColorHSV
+    {
+        float h = 0;
+        float s = 0;
+        float v = 0;
+    };
+
+    static ColorHSV rgb2hsv(Color color)
+    {
+        const float r = color.getRed();
+        const float g = color.getGreen();
+        const float b = color.getBlue();
+        const float maxC = std::max({r, g, b});
+        const float minC = std::min({r, g, b});
+        const float c = maxC - minC;
+
+        float h;
+        float s;
+        if ((maxC == 0.f) || (c == 0.f))
+        {
+            h = 0;
+            s = 0;
+        }
+        else
+        {
+            if (maxC == r)
+                h = (g - b) / c / 6.f;
+            else if (maxC == g)
+                h = (b - r) / c / 6.f + (1.f / 3.f);
+            else // maxC == b
+                h = (r - g) / c / 6.f + (2.f / 3.f);
+
+            h = std::fmod(h, 1.f);
+            if (h < 0)
+                h += 1.f;
+
+            s = c / maxC;
+        }
+
+        const float v = maxC;
+        return {h, s, v};
+    }
+
+    TGUI_NODISCARD static Vector2f colorToPosition(Color color)
+    {
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        const float pi = std::numbers::pi_v<float>;
+#else
+        const float pi = 3.14159265359f;
+#endif
+
+        const ColorHSV hsv = rgb2hsv(color);
+
+        const float x = hsv.s * std::cos(hsv.h * 2.f*pi);
+        const float y = hsv.s * std::sin(hsv.h * 2.f*pi);
+
+        // Returned values are in range [0,1] and represent the position from
+        // the top-left of the color wheel to the bottom-right of the color wheel.
+        return {(x + 1) / 2.f, (-y + 1) / 2.f};
+    }
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_NODISCARD static Color hsv2rgb(float h, float s, float v)
     {
-        /**
-         * vec3 hsv2rgb(vec3 c) {
-         *      vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-         *      vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-         *      return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-         * }
-        **/
+        /// vec3 hsv2rgb(vec3 c)
+        /// {
+        ///     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+        ///     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+        ///     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        /// }
+
         const auto fract = [](float x) { return x - std::floor(x); };
         const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
 
@@ -77,23 +140,21 @@ namespace tgui
 
     TGUI_NODISCARD static Color calculateColor(Vector2f position, float v, float a)
     {
-        /**
-         * vec2 position = ( gl_FragCoord.xy / resolution.xy );
-         * vec2 p2 = position - vec2(0.5, 0.5);
-
-         * float S = length(p2*2.0);
-         * if(S > 1. && S < 1.01){
-         *      discard;
-         * }
-
-         * float V = 1.;
-         * float H = atan(-p2.y, -p2.x);
-
-         * H /= 2.*Pi;
-         * H += 0.5;
-         * gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
-         * gl_FragColor.a = 1.0;
-         */
+        /// vec2 position = ( gl_FragCoord.xy / resolution.xy );
+        /// vec2 p2 = position - vec2(0.5, 0.5);
+        ///
+        /// float S = length(p2*2.0);
+        /// if(S > 1. && S < 1.01){
+        ///     discard;
+        /// }
+        ///
+        /// float V = 1.;
+        /// float H = atan(-p2.y, -p2.x);
+        ///
+        /// H /= 2.*Pi;
+        /// H += 0.5;
+        /// gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
+        /// gl_FragColor.a = 1.0;
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float pi = std::numbers::pi_v<float>;
@@ -119,11 +180,9 @@ namespace tgui
 
     TGUI_NODISCARD static float logInvCurve(float x)
     {
-        /**
-         * 0.1  - normal curve
-         * e-1  - e curve (e^x-1)/(e-1)
-         * +    - bigger curve
-         */
+        /// 0.1  - normal curve
+        /// e-1  - e curve (e^x-1)/(e-1)
+        /// +    - bigger curve
         const double a = std::expm1(1.0);
         return static_cast<float>(std::expm1(std::log1p(a) * static_cast<double>(x)) / a);
     }
@@ -218,8 +277,8 @@ namespace tgui
 
         add(m_value, "#TGUI_INTERNAL$ColorPickerValue#");
         m_value->setValue(m_value->getMaximum());
+        m_value->setSize({m_value->getSize().y, 200});
         m_value->setOrientation(Orientation::Vertical);
-        m_value->setHeight(200);
 
         add(Label::create("Last:"), "#TGUI_INTERNAL$ColorPickerLabelLast#");
         add(m_last, "#TGUI_INTERNAL$ColorPickerLast#");
@@ -556,8 +615,7 @@ namespace tgui
 
             for (const auto& it : getWidgets())
             {
-                auto label = std::dynamic_pointer_cast<Label>(it);
-                if (label)
+                if (auto label = std::dynamic_pointer_cast<Label>(it))
                     label->setRenderer(renderer);
             }
         }
@@ -571,6 +629,16 @@ namespace tgui
             m_alpha->setRenderer(renderer);
 
             m_value->setRenderer(renderer);
+        }
+        else if (property == U"EditBox")
+        {
+            const auto& renderer = getSharedRenderer()->getEditBox();
+
+            for (const auto& it : getWidgets())
+            {
+                if (auto editBox = std::dynamic_pointer_cast<EditBox>(it))
+                    editBox->setRenderer(renderer);
+            }
         }
         else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {

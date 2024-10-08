@@ -29,11 +29,10 @@
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Button, "button")
-
-    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Label, "label")
-
-    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Slider, "slider")
+    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Button, "Button")
+    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Label, "Label")
+    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Slider, "Slider")
+    TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, EditBox, "EditBox")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@
 
 TEST_CASE("[ColorPicker]")
 {
-    tgui::ColorPicker::Ptr colorPicker = tgui::ColorPicker::create();
+    tgui::ColorPicker::Ptr colorPicker = tgui::ColorPicker::create("Select your color");
     colorPicker->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -101,5 +101,67 @@ TEST_CASE("[ColorPicker]")
 
         colorPicker->setColor(tgui::Color::Blue);
         testSavingWidget("ColorPicker", colorPicker, false);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(560, 270, colorPicker)
+
+        colorPicker->setEnabled(true);
+        colorPicker->setPosition(10, 5);
+        colorPicker->setColor(tgui::Color::Green);
+
+        tgui::ColorPickerRenderer renderer = tgui::RendererData::create();
+        renderer.setTitleBarColor(tgui::Color::Blue);
+        renderer.setTitleColor(tgui::Color::Magenta);
+        renderer.setBackgroundColor(tgui::Color::White);
+        renderer.setBorderColor(tgui::Color::Red);
+        renderer.setBorderColorFocused(tgui::Color::Yellow);
+        renderer.setDistanceToSide(10);
+        renderer.setPaddingBetweenButtons(5);
+        renderer.setShowTextOnTitleButtons(false);
+        renderer.setTitleBarHeight(30);
+        renderer.setBorderBelowTitleBar(1);
+        renderer.setBorders({2, 3, 4, 5});
+        renderer.setOpacity(0.7f);
+        colorPicker->setRenderer(renderer.getData());
+
+        tgui::ButtonRenderer buttonRenderer = tgui::RendererData::create();
+        buttonRenderer.setBackgroundColor(tgui::Color::Cyan);
+        buttonRenderer.setBorderColor(tgui::Color::Magenta);
+        buttonRenderer.setBorders({2});
+        renderer.setButton(buttonRenderer.getData());
+
+        tgui::EditBoxRenderer editBoxRenderer = tgui::RendererData::create();
+        editBoxRenderer.setBackgroundColor(tgui::Color::Cyan);
+        editBoxRenderer.setBorderColor(tgui::Color::Magenta);
+        editBoxRenderer.setTextColor(tgui::Color::Blue);
+        editBoxRenderer.setBorders({1});
+        renderer.setEditBox(editBoxRenderer.getData());
+
+        tgui::LabelRenderer labelRenderer = tgui::RendererData::create();
+        labelRenderer.setTextColor(tgui::Color::Blue);
+        renderer.setLabel(labelRenderer.getData());
+
+        tgui::SliderRenderer sliderRenderer = tgui::RendererData::create();
+        sliderRenderer.setTrackColor(tgui::Color::Cyan);
+        sliderRenderer.setThumbColor(tgui::Color::Yellow);
+        sliderRenderer.setBorderColor(tgui::Color::Magenta);
+        sliderRenderer.setBorders({1});
+        renderer.setSlider(sliderRenderer.getData());
+
+        TEST_DRAW("ColorPicker_BeforeColorChange.png")
+
+        // Change the selected color to (0, 130, 200) by interacting with the sliders
+        colorPicker->mouseMoved({383, 83});
+        colorPicker->leftMousePressed({383, 83});
+        colorPicker->leftMouseReleased({383, 83});
+        colorPicker->mouseMoved({438, 110});
+        colorPicker->leftMousePressed({438, 110});
+        colorPicker->leftMouseReleased({438, 110});
+        colorPicker->mouseNoLongerOnWidget();
+        colorPicker->setFocused(true);
+
+        TEST_DRAW("ColorPicker_AfterColorChange.png")
     }
 }
