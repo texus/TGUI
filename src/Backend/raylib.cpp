@@ -41,6 +41,8 @@ namespace tgui
                 setBackend(backend);
             }
 
+            TGUI_ASSERT(IsWindowReady(), "Gui can't be created when no raylib window exists yet");
+
             m_backendRenderTarget = std::make_shared<BackendRenderTargetRaylib>();
 
             getBackend()->attachGui(this);
