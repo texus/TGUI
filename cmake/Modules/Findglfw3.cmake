@@ -68,15 +68,23 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(glfw3
 
 if(glfw3_FOUND)
   if(GLFW_LIBRARY AND NOT TARGET glfw)
-    add_library(glfw UNKNOWN IMPORTED)
+    get_filename_component(GLFW_LIBRARY_FILENAME "${GLFW_LIBRARY}" NAME)
+    if(GLFW_LIBRARY_FILENAME STREQUAL "glfw3dll.lib" OR GLFW_LIBRARY_FILENAME STREQUAL "libglfw3dll.a")
+        add_library(glfw UNKNOWN IMPORTED) # UNKNOWN instead of SHARED because we otherwise must also provide the path to the DLL on Windows
+        set_target_properties(glfw PROPERTIES
+                              INTERFACE_COMPILE_DEFINITIONS "GLFW_DLL")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows"
+           AND (GLFW_LIBRARY_FILENAME STREQUAL "libglfw3.a"
+             OR GLFW_LIBRARY_FILENAME STREQUAL "glfw3.lib"
+             OR GLFW_LIBRARY_FILENAME STREQUAL "glfw3_mt.lib"))
+        # If we know that the library is static then explicitly mark it as such so that we can give an error when building TGUI as a dll
+        add_library(glfw STATIC IMPORTED)
+    else()
+        add_library(glfw UNKNOWN IMPORTED)
+    endif()
+
     set_target_properties(glfw PROPERTIES
                           IMPORTED_LOCATION "${GLFW_LIBRARY}"
                           INTERFACE_INCLUDE_DIRECTORIES "${GLFW_INCLUDE_DIR}")
-
-    get_filename_component(GLFW_LIBRARY_FILENAME "${GLFW_LIBRARY}" NAME)
-    if(GLFW_LIBRARY_FILENAME STREQUAL "glfw3dll.lib" OR GLFW_LIBRARY_FILENAME STREQUAL "libglfw3dll.a")
-        set_target_properties(glfw PROPERTIES
-                              INTERFACE_COMPILE_DEFINITIONS "GLFW_DLL")
-    endif()
   endif()
 endif()
