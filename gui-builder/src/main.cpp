@@ -33,7 +33,11 @@
 #if !TGUI_HAS_BACKEND_SFML_GRAPHICS && !TGUI_HAS_BACKEND_SFML_OPENGL3 \
  && (TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2)
     #include <TGUI/extlibs/IncludeSDL.hpp> // To avoid compiler warnings with including SDL_main.h
-    #include <SDL_main.h>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_main.h>
+    #else
+        #include <SDL_main.h>
+    #endif
 #endif
 
 #include "GuiBuilder.hpp"
