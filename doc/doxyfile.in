@@ -88,6 +88,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_BACKEND_GLFW_OPENGL3=1 \
                          TGUI_HAS_BACKEND_GLFW_GLES2=1 \
                          TGUI_HAS_BACKEND_RAYLIB=1 \
+                         SFML_VERSION_MAJOR=3 \
                          TGUI_NODISCARD=[[nodiscard]]
 
 SHOW_NAMESPACES        = NO

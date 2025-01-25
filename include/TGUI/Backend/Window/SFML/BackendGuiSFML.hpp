@@ -78,9 +78,123 @@ TGUI_MODULE_EXPORT namespace tgui
         ///     gui.handleEvent(*event);
         /// }
         /// @endcode
+        ///
+        /// If you use SFML 3 and want to use window.handleEvents instead of window.pollEvent or window.waitEvent then
+        /// check out the handleWindowEvents function instead.
+        ///
+        /// @see handleWindowEvents
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool handleEvent(sf::Event event);
         using BackendGui::handleEvent;
+
+#if SFML_VERSION_MAJOR >= 3
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Handle all pending window events at once using callbacks, as alternative to polling events
+        ///
+        /// Using SFML's window.handleEvents directly is not practical in combination with TGUI because the gui needs access to
+        /// almost all events. You would thus need to have a handler for all event types and call gui.handleEvent in each one.
+        /// This handleWindowEvents function can be used as alternative to window.handleEvents to do it all for you.
+        ///
+        /// Call this function with any amount of parameters, each a callable that takes an event of a certain type as parameter.
+        /// For each pending event in the window, the callable that takes that event as parameter is called and the handleEvent
+        /// function is executed (unless the callable returned false).
+        ///
+        /// The callables must always take an SFML event as first parameter, but there are 3 variations of allowed handlers:
+        /// 1) A void function that only takes the event as parameter will be called after gui.handleEvent is executed.
+        /// 2) A void function with the event as first parameter and a bool as second parameter will also be called after
+        ///    the gui.handleEvent function finished, but the bool argument will contain the return value of handleEvent.
+        /// 3) A function that returns a bool and takes the event as parameter will be called before gui.handleEvent is executed.
+        ///    When the handler returns false, the call to handleEvent will be skipped and the gui thus ignores the event.
+        ///
+        /// This function is not blocking: if there's no pending event then it will return without calling any of the handlers.
+        ///
+        /// Usage:
+        /// @code
+        /// gui.handleWindowEvents(
+        ///     // A function that returns nothing will be called after the gui has handled the event
+        ///     [](const sf::Event::Closed&) { },
+        ///
+        ///     // The function can take an optional extra parameter that indicates whether the gui processed the event.
+        ///     // The value of the boolean is what gets returned by the handleEvent function that is called internally.
+        ///     [](sf::Event::TextEntered&, bool /*consumedByGui*/) { },
+        ///
+        ///     // If you don't want the gui to process some events, you can let the function return a bool.
+        ///     // In this case, the function will be called earlier and the return value determines if TGUI handles the event or ignores it.
+        ///     // The handleEvent function will only be called when the function returns true.
+        ///     [](sf::Event::MouseMoved) { return false; },
+        ///
+        ///     // Generic lambdas are also supported. Note that multiple matching functions can be executed for the same event,
+        ///     // so this generic lambda is still called for Closed events even though a lambda above is also executed for Closed events.
+        ///     [](auto&& event) {
+        ///         if constexpr (std::is_same_v<std::decay_t<decltype(event)>, sf::Event::MouseButtonReleased>)
+        ///             return false;
+        ///         else
+        ///             return true;
+        ///     }
+        /// );
+        /// @endcode
+        ///
+        /// @warning Multiple handlers may be called for the same event, because every handler with the right parameter type gets called.
+        ///
+        /// @see handleEvent
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename... Ts>
+        void handleWindowEvents(Ts&&... handlers)
+        {
+            if (!m_window)
+                return;
+
+            m_window->handleEvents([this,&handlers...](auto&& event) {
+                using EventType = decltype(event);
+
+                // We can't properly detect whether the handlers are valid (e.g. when using an invalid event type),
+                // but we can do some tests that will give errors on handlers that are wrong but almost correct.
+                static_assert(!std::disjunction_v<std::is_invocable_r<bool, Ts, EventType, bool>...>, "Handler for handleWindowEvents can't have both an extra bool argument and a bool return type");
+
+                // If any of the handlers return a bool then they will be executed before the event is passed to the gui.
+                // The returned boolean then decides whether the gui should still process the event or not.
+                // Only one of the handlers should match at most, but letting the compiler figure out which handler to
+                // call by creating an overload set is tricky because only handlers with a bool returns should be called here.
+                auto callIfMatchesAndReturnsBool = [&event](auto&& handler)
+                {
+                    // std::is_invocable_r_v would still return true if the type is convertable to bool, so we use std::invoke_result_t to test the return type
+                    using FuncType = decltype(handler);
+                    if constexpr (std::is_invocable_v<FuncType, EventType>)
+                    {
+                        if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType>, bool>)
+                            return std::invoke(std::forward<FuncType>(handler), std::forward<EventType>(event));
+                        else
+                        {
+                            static_assert(std::is_same_v<std::invoke_result_t<FuncType, EventType>, void>, "Handler for handleWindowEvents must have either 'void' or 'bool' return type");
+                            return true;
+                        }
+                    }
+                    else
+                        return true;
+                };
+                const bool passEventToGui = (callIfMatchesAndReturnsBool(std::forward<Ts>(handlers)) && ...);
+
+                // Let the gui handle the event
+                bool eventHandledByGui = false;
+                if (passEventToGui)
+                    eventHandledByGui = handleEvent(std::forward<EventType>(event));
+
+                // After the gui has handled the events, we call the handlers that return nothing.
+                // These handlers can have an optional bool parameter that indicates whether the event was processed by the gui.
+                auto callIfMatchesAndReturnsVoid = [&event](auto&& handler, auto&&... extraArgs)
+                {
+                    using FuncType = decltype(handler);
+                    if constexpr (std::is_invocable_v<FuncType, EventType, decltype(extraArgs)...>)
+                    {
+                        if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType, decltype(extraArgs)...>, void>)
+                            std::invoke(std::forward<FuncType>(handler), std::forward<EventType>(event), std::forward<decltype(extraArgs)>(extraArgs)...);
+                    }
+                };
+                (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers)), ...);
+                (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers), eventHandledByGui), ...);
+            });
+        }
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Give the gui control over the main loop

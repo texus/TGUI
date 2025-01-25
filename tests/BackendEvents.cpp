@@ -79,6 +79,21 @@ TEST_CASE("[Backend events]")
     {
         SECTION("SFML")
         {
+#if SFML_VERSION_MAJOR >= 3
+            SECTION("handleWindowEvents")
+            {
+                // We can't test whether the functions get called correctly (as that would require
+                // controlling the events that exist in the window), but we can at least verify
+                // that our example code actually compiles.
+                backendGuiSFML->handleWindowEvents(
+                    [](const sf::Event::Closed&) { },
+                    [](sf::Event::TextEntered&, bool) { },
+                    [](sf::Event::MouseMoved) { return false; },
+                    [](auto&&) {}
+                );
+            }
+#endif
+
             SECTION("KeyPressed")
             {
 #if SFML_VERSION_MAJOR >= 3
