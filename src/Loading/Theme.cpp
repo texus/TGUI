@@ -408,6 +408,7 @@ namespace tgui
             {"BackgroundColor", ""},
             {"SelectedBackgroundColor", ""},
             {"TextColor", ""},
+            {"TextColorDisabled", ""},
             {"SelectedTextColor", ""},
             {"SeparatorColor", "BorderColor"},
         }},
