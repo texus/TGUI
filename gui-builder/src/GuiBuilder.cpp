@@ -407,38 +407,14 @@ void GuiBuilder::mainLoop()
                     }
                     else if (event.mouseButton.button == tgui::Event::MouseButton::Right)
                     {
-                        if (m_popupMenu)
+                        if (m_selectedForm->rightMouseClick({event.mouseButton.x, event.mouseButton.y}))
                         {
-                            removePopupMenu();
-                        }
-                        else if (m_selectedForm->rightMouseClick({event.mouseButton.x, event.mouseButton.y}))
-                        {
-                            auto panel = tgui::Panel::create({"100%", "100%"});
-                            panel->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
-                            m_gui->add(panel);
-
-                            m_popupMenu = tgui::ListBox::create();
-                            panel->add(m_popupMenu);
-                            if (m_selectedForm->getSelectedWidget())
+                            if (!m_popupMenu)
                             {
-                                m_popupMenu->addItem("Bring to front");
-                                m_popupMenu->addItem("Send to back");
-                                m_popupMenu->addItem("Cut");
-                                m_popupMenu->addItem("Copy");
-                            }
-                            if (!m_copiedWidgets.empty())
-                                m_popupMenu->addItem("Paste");
-                            if (m_selectedForm->getSelectedWidget())
-                                m_popupMenu->addItem("Delete");
+                                m_popupMenu = tgui::ContextMenu::create();
+                                m_gui->add(m_popupMenu);
 
-                            if (m_popupMenu->getItemCount() > 0)
-                            {
-                                const tgui::Outline outline = m_popupMenu->getSharedRenderer()->getPadding() + m_popupMenu->getSharedRenderer()->getBorders();
-                                m_popupMenu->setPosition({static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)});
-                                m_popupMenu->setSize({150, (m_popupMenu->getItemHeight() * m_popupMenu->getItemCount()) + outline.getTop() + outline.getBottom()});
-
-                                panel->onClick([this]{ removePopupMenu(); });
-                                m_popupMenu->onMouseRelease([this](const tgui::String& item){
+                                m_popupMenu->onMenuItemClick([this](const tgui::String& item){
                                     if (item == "Bring to front")
                                         menuBarCallbackBringWidgetToFront();
                                     else if (item == "Send to back")
@@ -451,12 +427,24 @@ void GuiBuilder::mainLoop()
                                         menuBarCallbackPasteWidget();
                                     else if (item == "Delete")
                                         menuBarCallbackDeleteWidget();
-
-                                    tgui::Timer::scheduleCallback([this]{ removePopupMenu(); });
                                 });
                             }
-                            else // The popup menu is empty
-                                removePopupMenu();
+
+                            m_popupMenu->removeAllMenuItems();
+                            if (m_selectedForm->getSelectedWidget())
+                            {
+                                m_popupMenu->addMenuItem("Bring to front");
+                                m_popupMenu->addMenuItem("Send to back");
+                                m_popupMenu->addMenuItem("Cut");
+                                m_popupMenu->addMenuItem("Copy");
+                            }
+                            if (!m_copiedWidgets.empty())
+                                m_popupMenu->addMenuItem("Paste");
+                            if (m_selectedForm->getSelectedWidget())
+                                m_popupMenu->addMenuItem("Delete");
+
+                            if (!m_popupMenu->getMenuItems().empty())
+                                m_popupMenu->openMenu({static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)});
                         }
                     }
                 }
@@ -1393,21 +1381,6 @@ void GuiBuilder::removeSelectedWidget()
     m_selectedWidgetComboBox->setSelectedItemById("form");
 
     widgetHierarchyChanged();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void GuiBuilder::removePopupMenu()
-{
-    if (!m_popupMenu)
-        return;
-
-    // Remove the popup menu and the transparent panel behind it
-    m_popupMenu->getParent()->getParent()->remove(m_popupMenu->getParent()->shared_from_this());
-    m_popupMenu = nullptr;
-
-    if (m_selectedForm)
-        m_selectedForm->focus();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

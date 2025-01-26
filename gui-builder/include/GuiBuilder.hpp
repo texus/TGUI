@@ -124,7 +124,6 @@ private:
     void changeWidgetName(const tgui::String& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
-    void removePopupMenu();
     void createNewForm(tgui::String filename);
     bool loadForm(tgui::String filename, bool loadingFromFile = true);
     void displayErrorMessage(const tgui::String& error);
@@ -186,7 +185,7 @@ private:
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
     tgui::TreeView::Ptr m_widgetHierarchyTree;
-    tgui::ListBox::Ptr m_popupMenu;
+    tgui::ContextMenu::Ptr m_popupMenu;
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
