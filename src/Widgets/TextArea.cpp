@@ -56,14 +56,14 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<TextAreaRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-        }
 
-        setTextSize(getGlobalTextSize());
-        setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
-                 10 * m_fontCached.getLineSpacing(m_textSizeCached)
-                 + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
-                 + Text::getExtraVerticalPadding(m_textSizeCached)
-                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setTextSize(getGlobalTextSize());
+            setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
+                     10 * m_fontCached.getLineSpacing(m_textSizeCached)
+                     + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
+                     + Text::getExtraVerticalPadding(m_textSizeCached)
+                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

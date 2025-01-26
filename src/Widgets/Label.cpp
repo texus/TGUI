@@ -46,11 +46,12 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<LabelRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+            setTextSize(getGlobalTextSize());
         }
 
         m_scrollbar->setVisible(false); // Never shown when AutoSize is true
         m_scrollbar->setScrollAmount(m_textSizeCached);
-        setTextSize(getGlobalTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

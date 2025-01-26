@@ -48,11 +48,11 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<ContextMenuRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-        }
 
-        setTextSize(getGlobalTextSize());
-        setItemHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
-        setMinimumMenuWidth((Text::getLineHeight(m_fontCached, m_textSizeCached) * 4) + (2 * m_distanceToSideCached));
+            setTextSize(getGlobalTextSize());
+            setItemHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f));
+            setMinimumMenuWidth((Text::getLineHeight(m_fontCached, m_textSizeCached) * 4) + (2 * m_distanceToSideCached));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

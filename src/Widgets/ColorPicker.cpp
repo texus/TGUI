@@ -202,10 +202,11 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<ColorPickerRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+            setTextSize(getGlobalTextSize());
         }
 
         setTitleButtons(ChildWindow::TitleButton::None);
-        setTextSize(getGlobalTextSize());
 
         auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(colorWheelSize) * colorWheelSize * 4);
         for (unsigned int y = 0; y < colorWheelSize; ++y)

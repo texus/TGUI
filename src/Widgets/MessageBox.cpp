@@ -45,10 +45,11 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<MessageBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+            setTextSize(getGlobalTextSize());
         }
 
         setTitleButtons(ChildWindow::TitleButton::None);
-        setTextSize(getGlobalTextSize());
 
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
         m_label->setTextSize(m_textSizeCached);

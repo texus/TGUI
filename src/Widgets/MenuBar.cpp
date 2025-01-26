@@ -48,9 +48,10 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<MenuBarRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+            setTextSize(getGlobalTextSize());
         }
 
-        setTextSize(getGlobalTextSize());
         setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSizeCached) * 4) + (2 * m_distanceToSideCached));
         setSize({"100%", std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)});
     }

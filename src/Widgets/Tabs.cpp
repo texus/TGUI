@@ -47,10 +47,10 @@ namespace tgui
         {
             m_renderer = aurora::makeCopied<TabsRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-        }
 
-        setTextSize(getGlobalTextSize());
-        setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTop() + m_bordersCached.getBottom());
+            setTextSize(getGlobalTextSize());
+            setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTop() + m_bordersCached.getBottom());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
