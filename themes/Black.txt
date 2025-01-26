@@ -1,5 +1,6 @@
 TextColor         = rgb(190, 190, 190);
 TextColorHover    = rgb(250, 250, 250);
+TextColorDisabled = rgb(125, 125, 125);
 SelectedTextColor = White;
 BorderColor       = Black;
 BackgroundColor   = rgb(80,  80,  80);
