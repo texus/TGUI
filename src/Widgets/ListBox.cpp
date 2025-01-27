@@ -605,6 +605,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setHoveredItemBasedOnMousePos(Vector2f innerPos)
+    {
+        // NOLINTNEXTLINE(bugprone-integer-division)
+        const int hoveringItem = static_cast<int>(((innerPos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
+        if (hoveringItem < static_cast<int>(m_items.size()))
+            updateHoveringItem(hoveringItem);
+        else
+            updateHoveringItem(-1);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::setSelectedItemBasedOnMousePos(Vector2f innerPos)
+    {
+        setHoveredItemBasedOnMousePos(innerPos);
+
+        if (m_selectedItem != m_hoveringItem)
+        {
+            m_possibleDoubleClick = false;
+            updateSelectedItem(m_hoveringItem);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
@@ -623,20 +648,7 @@ namespace tgui
                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
-
-                // NOLINTNEXTLINE(bugprone-integer-division)
-                const int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
-                if (hoveringItem < static_cast<int>(m_items.size()))
-                    updateHoveringItem(hoveringItem);
-                else
-                    updateHoveringItem(-1);
-
-                if (m_selectedItem != m_hoveringItem)
-                {
-                    m_possibleDoubleClick = false;
-
-                    updateSelectedItem(m_hoveringItem);
-                }
+                setSelectedItemBasedOnMousePos(pos);
 
                 // Call the MousePress event after the item has already been changed, so that selected item represents the clicked item
                 if (m_selectedItem >= 0)
@@ -688,6 +700,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::rightMousePressed(Vector2f pos)
+    {
+        pos -= getPosition();
+        if (m_scrollbar->isShown() && m_scrollbar->isMouseOnWidget(pos))
+            return;
+
+        int itemIndex = -1;
+        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                      getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+        {
+            pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
+            setSelectedItemBasedOnMousePos(pos);
+
+            itemIndex = m_selectedItem;
+        }
+
+        if (itemIndex >= 0)
+        {
+            const Item& selectedItem = m_items[static_cast<std::size_t>(itemIndex)];
+            onRightClick.emit(this, itemIndex, selectedItem.text.getString(), selectedItem.id);
+        }
+        else
+            onRightClick.emit(this, -1, "", "");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
@@ -711,13 +750,7 @@ namespace tgui
                           m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
-
-                // NOLINTNEXTLINE(bugprone-integer-division)
-                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
-                if (hoveringItem < static_cast<int>(m_items.size()))
-                    updateHoveringItem(hoveringItem);
-                else
-                    updateHoveringItem(-1);
+                setHoveredItemBasedOnMousePos(pos);
 
                 // If the mouse is held down then select the item below the mouse
                 if (m_mouseDown && !m_scrollbar->isMouseDown())
@@ -725,7 +758,6 @@ namespace tgui
                     if (m_selectedItem != m_hoveringItem)
                     {
                         m_possibleDoubleClick = false;
-
                         updateSelectedItem(m_hoveringItem);
                     }
                 }
@@ -808,6 +840,8 @@ namespace tgui
             return onMouseRelease;
         else if (signalName == onDoubleClick.getName())
             return onDoubleClick;
+        else if (signalName == onRightClick.getName())
+            return onRightClick;
         else if (signalName == onScroll.getName())
             return onScroll;
         else

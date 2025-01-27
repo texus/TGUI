@@ -1096,7 +1096,7 @@ TGUI_MODULE_EXPORT namespace tgui
         SignalInt onItemSelect  = {"ItemSelected"};
 
         SignalInt onDoubleClick = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item index
-        SignalInt onRightClick  = {"RightClicked"};   //!< Right mouse clicked. Optional parameter: index of item below mouse (-1 when not on top of item)
+        SignalInt onRightClick  = {"RightClicked"};   //!< Right mouse pressed. Optional parameter: index of item below mouse (-1 when not on top of item)
         SignalInt onHeaderClick = {"HeaderClicked"};  //!< The header was clicked. Optional parameter: column index
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -137,6 +137,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @warning Multiple handlers may be called for the same event, because every handler with the right parameter type gets called.
         ///
         /// @see handleEvent
+        ///
+        /// @since TGUI 1.8
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename... Ts>
         void handleWindowEvents(Ts&&... handlers)

@@ -569,7 +569,7 @@ TGUI_MODULE_EXPORT namespace tgui
         SignalItemHierarchy onDoubleClick = {"DoubleClicked"}; //!< A leaf node was double clicked. Optional parameter: selected node
         SignalItemHierarchy onExpand = {"Expanded"};           //!< A branch node was expanded in the tree view. Optional parameter: expanded node
         SignalItemHierarchy onCollapse = {"Collapsed"};        //!< A branch node was collapsed in the tree view. Optional parameter: collapsed node
-        SignalItemHierarchy onRightClick = {"RightClicked"};   //!< A node was right clicked. Optional parameter: node below mouse
+        SignalItemHierarchy onRightClick = {"RightClicked"};   //!< Right mouse button was pressed on top of a node. Optional parameter: node below mouse
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

@@ -3,6 +3,7 @@ TGUI 1.8  (TBD)
 
 - New widget: ContextMenu
 - Added handleWindowEvents function to SFML backend (only for SFML 3)
+- Added onRightClick signal to ListBox
 
 
 TGUI 1.7  (22 December 2024)
