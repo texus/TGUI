@@ -64,6 +64,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
                 message(NOTICE "\nSearching for SFML 2...\n")
                 find_package(SFML 2 CONFIG COMPONENTS ${lowercase_component})
 
+                set(SFML_DIR ${sfml_dir_original})
                 message(NOTICE "\nSearching for SFML 3...\n")
                 find_package(SFML 3 CONFIG COMPONENTS ${component})
             endif()
@@ -77,9 +78,11 @@ macro(tgui_find_dependency_sfml component optional_quiet)
         # find_package couldn't find SFML
         if(NOT SFML_FOUND)
             set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
+            message(STATUS "")
             message(FATAL_ERROR
                 "CMake couldn't find SFML.\n"
-                "Set SFML_DIR to the directory containing SFMLConfig.cmake (usually something like SFML_ROOT/lib/cmake/SFML)\n")
+                "Set SFML_DIR to the directory containing SFMLConfig.cmake (usually SFML_ROOT/lib/cmake/SFML).\n"
+                "If searching for SFML 2 found an SFML 3 config, but searching for SFML 3 failed to find it's Shared/Static configuration, then you are probably attempting to import SFML from its build directory. This is no longer supported in SFML 3, you must install SFML.\n")
         endif()
 
         if (SFML_VERSION VERSION_LESS "2.5.0")
