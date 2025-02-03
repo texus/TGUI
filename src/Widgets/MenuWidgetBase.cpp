@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/MenuWidgetBase.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <cmath>
@@ -972,7 +973,7 @@ namespace tgui
     Vector2f OpenMenuPlaceholder::getFullSize() const
     {
         if (m_parent)
-            return m_parent->getInnerSize() - getPosition();
+            return m_parent->getInnerSize() + getWidgetOffset();
         else
             return {0, 0};
     }
@@ -981,7 +982,10 @@ namespace tgui
 
     Vector2f OpenMenuPlaceholder::getWidgetOffset() const
     {
-        return -getPosition();
+        if (m_parentGui)
+            return m_parentGui->getView().getPosition() - getPosition();
+        else
+            return -getPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

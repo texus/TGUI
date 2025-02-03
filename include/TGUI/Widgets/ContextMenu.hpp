@@ -108,8 +108,19 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The context menu will render nothing until this function is called.
         /// Once the user clicked an item in the menu, the menu will be closed and you need to call this function again in order
         /// for the menu to become visible again.
+        ///
+        /// @see openMenuAtCursor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void openMenu(Vector2f position);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Opens the context menu at the last mouse cursor position
+        ///
+        /// The context menu will render nothing until this function is called.
+        /// Once the user clicked an item in the menu, the menu will be closed and you need to call this function again in order
+        /// for the menu to become visible again.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void openMenuAtMouseCursor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Closes the context menu if it was open

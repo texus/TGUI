@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/ContextMenu.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <cmath>
@@ -130,6 +131,21 @@ namespace tgui
 
     void ContextMenu::openMenu(Vector2f position)
     {
+        setPosition(position);
+        openMenu();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContextMenu::openMenuAtMouseCursor()
+    {
+        auto position = m_position;
+        if (m_parentGui)
+        {
+            const Vector2f lastMousePos = m_parentGui->mapPixelToCoords(m_parentGui->getLastMousePosition());
+            position = lastMousePos - getAbsolutePosition(-getPosition());
+        }
+
         setPosition(position);
         openMenu();
     }

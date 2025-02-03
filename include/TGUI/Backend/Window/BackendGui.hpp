@@ -340,6 +340,18 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos, bool recursive) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the mouse position of the last mouse event that was handled by the gui
+        ///
+        /// @return Last handled mouse position. In most situations this will the same as the current mouse position on the window.
+        ///
+        /// @warning This function returns a value in pixel coordinates. You will need to call mapPixelToCoords to convert it
+        ///          into the coordinate system used by the gui (which is different if its view or viewport was changed).
+        ///
+        /// @since TGUI 1.8
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD Vector2i getLastMousePosition() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focuses the next widget in the gui
         ///
         /// @param recursive  If the focused widget is a container, should the next widget inside it be focused instead of
