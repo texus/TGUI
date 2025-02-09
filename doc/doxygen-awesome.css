@@ -32,6 +32,7 @@ html {
     --primary-color: #1779c4;
     --primary-dark-color: #335c80;
     --primary-light-color: #70b1e9;
+    --on-primary-color: #ffffff;
 
     /* page base colors */
     --page-background-color: #ffffff;
@@ -113,7 +114,7 @@ html {
      */
     --menu-display: block;
 
-    --menu-focus-foreground: var(--page-background-color);
+    --menu-focus-foreground: var(--on-primary-color);
     --menu-focus-background: var(--primary-color);
     --menu-selected-background: rgba(0,0,0,.05);
 
@@ -805,6 +806,8 @@ html.dark-mode iframe#MSearchResults {
 #nav-tree .item {
     height: var(--tree-item-height);
     line-height: var(--tree-item-height);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #nav-tree .item > a:focus {
@@ -823,6 +826,8 @@ html.dark-mode iframe#MSearchResults {
     background-image: none;
     background-color: transparent;
     position: relative;
+    color: var(--primary-color) !important;
+    font-weight: 500;
 }
 
 #nav-tree .selected::after {
@@ -940,6 +945,7 @@ td.memSeparator {
 
 span.mlabel {
     background: var(--primary-color);
+    color: var(--on-primary-color);
     border: none;
     padding: 4px 9px;
     border-radius: 12px;
@@ -1749,7 +1755,7 @@ table.fieldtable th {
     color: var(--tablehead-foreground);
 }
 
-table.fieldtable td.fieldtype, .fieldtable td.fieldname, .fieldtable td.fielddoc, .fieldtable th {
+table.fieldtable td.fieldtype, .fieldtable td.fieldname, .fieldtable td.fieldinit, .fieldtable td.fielddoc, .fieldtable th {
     border-bottom: 1px solid var(--separator-color);
     border-right: 1px solid var(--separator-color);
 }
