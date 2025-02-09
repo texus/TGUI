@@ -6,6 +6,7 @@ TGUI 1.8  (TBD)
 - Added onRightClick signal to ListBox
 - Added setSmooth and isSmooth to CanvasSFML
 - Changed the way the view is handled in CanvasSFML
+- Pressing escape now closes the menu from ContextMenu or MenuBar
 
 
 TGUI 1.7  (22 December 2024)

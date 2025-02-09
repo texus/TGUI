@@ -124,6 +124,9 @@ namespace tgui
             m_openMenuPlaceholder->setPosition(getAbsolutePosition());
             m_openMenuPlaceholder->setScale(scale);
             container->add(m_openMenuPlaceholder, "#TGUI_INTERNAL$OpenMenuPlaceholder#");
+
+            // Steal the focus, to intercept key events and to e.g. prevent typing in an edit box while the menu is open
+            m_openMenuPlaceholder->setFocused(true);
         }
     }
 

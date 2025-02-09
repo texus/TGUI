@@ -1042,6 +1042,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void OpenMenuPlaceholder::keyPressed(const Event::KeyEvent& event)
+    {
+        if (event.code == Event::KeyboardKey::Escape)
+            m_menuWidget->closeMenu();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void OpenMenuPlaceholder::draw(BackendRenderTarget& target, RenderStates states) const
     {
         m_menuWidget->drawOpenMenu(target, states);

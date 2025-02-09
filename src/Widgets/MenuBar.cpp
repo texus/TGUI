@@ -386,6 +386,9 @@ namespace tgui
             m_openMenuPlaceholder->setPosition(getAbsolutePosition());
             m_openMenuPlaceholder->setScale(scale);
             container->add(m_openMenuPlaceholder, "#TGUI_INTERNAL$OpenMenuPlaceholder#");
+
+            // Focus the menu itself to handle key events (e.g. escape to close the menu)
+            m_openMenuPlaceholder->setFocused(true);
         }
     }
 
