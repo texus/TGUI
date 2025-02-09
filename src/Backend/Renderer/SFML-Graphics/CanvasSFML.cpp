@@ -41,16 +41,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const char* typeName, bool initRenderer) :
-        CanvasBase{typeName, initRenderer},
-        m_view{{{}, {1, 1}}}
+        CanvasBase{typeName, initRenderer}
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-        CanvasBase{other},
-        m_view    {other.m_view}
+        CanvasBase  {other},
+        m_customView{other.m_customView}
     {
         setSize(other.getSize());
     }
@@ -58,15 +57,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
-        CanvasBase{std::move(other)},
-        m_view    {std::move(other.m_view)},
+        CanvasBase     {std::move(other)},
 #if SFML_VERSION_MAJOR >= 3
         m_renderTexture{std::move(other.m_renderTexture)},
 #endif
-        m_usedTextureSize{std::move(other.m_usedTextureSize)}
+        m_customView   {std::move(other.m_customView)}
     {
 #if SFML_VERSION_MAJOR < 3
-        setSize(getSize()); // sf::RenderTexture does not support move yet
+        setSize(getSize()); // sf::RenderTexture did not support move yet
 #endif
     }
 
@@ -77,8 +75,7 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(right);
-            m_view = right.m_view;
-            m_usedTextureSize = right.m_usedTextureSize;
+            m_customView = right.m_customView;
             setSize(right.getSize());
         }
 
@@ -92,14 +89,12 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(std::move(right));
-            m_view = std::move(right.m_view);
-            m_usedTextureSize = std::move(right.m_usedTextureSize);
+            m_customView = std::move(right.m_customView);
 
 #if SFML_VERSION_MAJOR >= 3
             m_renderTexture = std::move(right.m_renderTexture);
 #else
-            // sf::RenderTexture does not support move yet
-            setSize(getSize());
+            setSize(getSize()); // sf::RenderTexture did not support move yet
 #endif
         }
 
@@ -135,7 +130,7 @@ namespace tgui
         if ((newSize.x > 0) && (newSize.y > 0))
         {
             const Vector2u newTextureSize{newSize};
-            if ((m_renderTexture.getSize().x < newTextureSize.x) || (m_renderTexture.getSize().y < newTextureSize.y))
+            if ((m_renderTexture.getSize().x != newTextureSize.x) || (m_renderTexture.getSize().y != newTextureSize.y))
             {
 #if SFML_VERSION_MAJOR >= 3
                 (void)m_renderTexture.resize({newTextureSize.x, newTextureSize.y});
@@ -143,55 +138,40 @@ namespace tgui
                 m_renderTexture.create(newTextureSize.x, newTextureSize.y);
 #endif
             }
-
-            m_usedTextureSize = newTextureSize;
         }
 
-        setView(getDefaultView());
+        if (m_customView.has_value())
+            m_renderTexture.setView(m_customView.value());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void CanvasSFML::setView(const sf::View& view)
     {
-        m_view = view;
-
-        // The render texture might be larger than the canvas
-        sf::FloatRect viewport = view.getViewport();
-        if ((m_renderTexture.getSize().x > 0) && (m_renderTexture.getSize().y > 0))
-        {
-            const float scaleX = static_cast<float>(m_usedTextureSize.x) / static_cast<float>(m_renderTexture.getSize().x);
-            const float scaleY = static_cast<float>(m_usedTextureSize.y) / static_cast<float>(m_renderTexture.getSize().y);
-#if SFML_VERSION_MAJOR >= 3
-            viewport.position.x *= scaleX;
-            viewport.position.y *= scaleY;
-            viewport.size.x *= scaleX;
-            viewport.size.y *= scaleY;
-#else
-            viewport.left *= scaleX;
-            viewport.top *= scaleY;
-            viewport.width *= scaleX;
-            viewport.height *= scaleY;
-#endif
-        }
-
-        sf::View internalView = view;
-        internalView.setViewport(viewport);
-        m_renderTexture.setView(internalView);
+        m_customView = view;
+        m_renderTexture.setView(view);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::View& CanvasSFML::getView() const
     {
-        return m_view;
+        return m_renderTexture.getView();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void CanvasSFML::resetView()
+    {
+        m_customView.reset();
+        m_renderTexture.setView(getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::View CanvasSFML::getDefaultView() const
     {
-        return sf::View{{{}, {static_cast<float>(m_usedTextureSize.x), static_cast<float>(m_usedTextureSize.y)}}};
+        return m_renderTexture.getDefaultView();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,18 +275,48 @@ namespace tgui
 
     void CanvasSFML::draw(BackendRenderTarget& target, RenderStates states) const
     {
+        TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
+
         const Vector2f size = getSize();
-        if ((size.x <= 0) || (size.y <= 0) || (m_usedTextureSize.x == 0) || (m_usedTextureSize.y == 0))
+        const sf::Texture& texture = m_renderTexture.getTexture();
+        const Vector2f textureSize = Vector2f{static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)};
+        if ((size.x <= 0) || (size.y <= 0) || (textureSize.x == 0) || (textureSize.y == 0))
             return;
 
-        const Vector2f normalizedTextureSize{static_cast<float>(m_usedTextureSize.x) / static_cast<float>(m_renderTexture.getSize().x),
-                                             static_cast<float>(m_usedTextureSize.y) / static_cast<float>(m_renderTexture.getSize().y)};
+        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
         const Vertex::Color vertexColor(Color::applyOpacity(Color::White, m_opacityCached));
+
+        sf::RenderStates statesSFML;
+        statesSFML.texture = &texture;
+        statesSFML.transform = sf::Transform(
+            transformMatrix[0], transformMatrix[4], transformMatrix[12],
+            transformMatrix[1], transformMatrix[5], transformMatrix[13],
+            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+
+#if SFML_VERSION_MAJOR >= 3
+        statesSFML.coordinateType = sf::CoordinateType::Normalized;
+
+        // We use textureSize instead of size for the vertices coordinates to keep rendering stable when the size is changing and
+        // the width and height aren't integer values.
+        const sf::Color vertexColorSFML{vertexColor.red, vertexColor.green, vertexColor.blue, vertexColor.alpha};
+        const std::array<sf::Vertex, 6> verticesSFML = {{
+            {{0, 0}, vertexColorSFML, {0, 0}},
+            {{0, textureSize.y}, vertexColorSFML, {0, 1}},
+            {{textureSize.x, 0}, vertexColorSFML, {1, 0}},
+            {{textureSize.x, 0}, vertexColorSFML, {1, 0}},
+            {{0, textureSize.y}, vertexColorSFML, {0, 1}},
+            {{textureSize.x, textureSize.y}, vertexColorSFML, {1, 1}},
+        }};
+
+        static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(verticesSFML.data(), verticesSFML.size(), sf::PrimitiveType::Triangles, statesSFML);
+#else
+        // We use textureSize instead of size for the vertices coordinates to keep rendering stable when the size is changing and
+        // the width and height aren't integer values.
         const std::array<Vertex, 4> vertices = {{
             {{0, 0}, vertexColor, {0, 0}},
-            {{size.x, 0}, vertexColor, {normalizedTextureSize.x, 0}},
-            {{0, size.y}, vertexColor, {0, normalizedTextureSize.y}},
-            {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, normalizedTextureSize.y}},
+            {{textureSize.x, 0}, vertexColor, {1, 0}},
+            {{0, textureSize.y}, vertexColor, {0, 1}},
+            {{textureSize.x, textureSize.y}, vertexColor, {1, 1}},
         }};
         const std::array<unsigned int, 6> indices = {{
             0, 2, 1,
@@ -317,16 +327,9 @@ namespace tgui
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
-        const sf::Texture& texture = m_renderTexture.getTexture();
-#if SFML_VERSION_MAJOR < 3
-        const Vector2f textureSize = Vector2f{static_cast<float>(texture.getSize().x), static_cast<float>(texture.getSize().y)};
-#endif
         auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indices.size());
         for (std::size_t i = 0; i < indices.size(); ++i)
         {
-#if SFML_VERSION_MAJOR >= 3
-            verticesSFML[i] = vertices[indices[i]];
-#else
             verticesSFML[i].position.x = vertices[indices[i]].position.x;
             verticesSFML[i].position.y = vertices[indices[i]].position.y;
             verticesSFML[i].color.red = vertices[indices[i]].color.red;
@@ -335,22 +338,10 @@ namespace tgui
             verticesSFML[i].color.alpha = vertices[indices[i]].color.alpha;
             verticesSFML[i].texCoords.x = vertices[indices[i]].texCoords.x * textureSize.x;
             verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
-#endif
         }
 
-        sf::RenderStates statesSFML;
-        const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
-        statesSFML.texture = &texture;
-        statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], transformMatrix[12],
-            transformMatrix[1], transformMatrix[5], transformMatrix[13],
-            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
-#if SFML_VERSION_MAJOR >= 3
-        statesSFML.coordinateType = sf::CoordinateType::Normalized;
-#endif
-
-        TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
         static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -125,6 +125,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the size of the widget
         ///
         /// @param size  The new size of the widget
+        ///
+        /// @warning The contents of the canvas needs to be repainted (using clear, draw and display functions) after a resize.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
@@ -132,15 +134,17 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the current active view
         ///
+        /// @param view  New view to use
+        ///
         /// The view is like a 2D camera, it controls which part of the 2D scene is visible, and how it is viewed in the canvas.
         /// The new view will affect everything that is drawn, until another view is set.
         /// The canvas keeps its own copy of the view, so it is not necessary to keep the original one alive after calling
         /// this function.
-        /// To restore the original view of the target, you can pass the result of getDefaultView() to this function.
         ///
-        /// @warning This view is reset when the size of the canvas is changed.
+        /// The view set by this function will remain active even after the canvas is resized.
+        /// To restore the original view of the target, you can call the resetView() function.
         ///
-        /// @param view  New view to use
+        /// @see resetView
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setView(const sf::View& view);
 
@@ -150,6 +154,16 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return The view object that is currently used
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const sf::View& getView() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the current active view back to the default value
+        ///
+        /// The default view will automatically change when the canvas is resized to keep the view and canvas size the same.
+        /// If you want to set a fixed view that doesn't change on resize then you should call the setView function.
+        ///
+        /// @since TGUI 1.8
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void resetView();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the default view of the canvas
@@ -176,6 +190,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// This parameter is disabled by default.
         ///
         /// @param smooth `true` to enable smoothing, `false` to disable it
+        ///
+        /// @since TGUI 1.8
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSmooth(bool smooth);
 
@@ -183,6 +199,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Tell whether the smooth filtering is enabled or not
         ///
         /// @return `true` if texture smoothing is enabled
+        ///
+        /// @since TGUI 1.8
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD bool isSmooth() const;
 
@@ -245,7 +263,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @return Reference to the internal render texture
         ///
-        /// @warning Don't call the create function on the returned render texture.
+        /// @warning You are not allowed to change the size or view of the returned render texture.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD sf::RenderTexture& getRenderTexture()
         {
@@ -263,9 +281,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::View m_view;
         sf::RenderTexture m_renderTexture;
-        Vector2u m_usedTextureSize;
+        Optional<sf::View> m_customView;
     };
 }
 
