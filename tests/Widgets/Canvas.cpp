@@ -133,6 +133,14 @@ TEST_CASE("[CanvasSFML]")
             REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
         }
 
+        SECTION("Smooth")
+        {
+            canvas->setSmooth(true);
+            REQUIRE(canvas->isSmooth());
+            canvas->setSmooth(false);
+            REQUIRE(!canvas->isSmooth());
+        }
+
         SECTION("internal render texture")
         {
             canvas = tgui::CanvasSFML::create({50, 50});
