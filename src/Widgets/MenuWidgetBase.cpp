@@ -715,18 +715,20 @@ namespace tgui
         hierarchy.push_back(menu->text.getString());
         while (menu->selectedMenuItem >= 0)
         {
-            auto& menuItem = menu->menuItems[static_cast<std::size_t>(menu->selectedMenuItem)];
-            hierarchy.push_back(menuItem.text.getString());
-            if (menuItem.menuItems.empty())
+            menu = &menu->menuItems[static_cast<std::size_t>(menu->selectedMenuItem)];
+            hierarchy.push_back(menu->text.getString());
+            if (menu->menuItems.empty())
             {
                 emit = true;
                 break;
             }
-
-            menu = &menuItem;
         }
 
-        closeMenu();
+        // Close the menu if the mouse went down on a leaf menu item.
+        // If the item below the mouse is disabled or we clicked on an item that has a submenu then menuItems won't be empty.
+        if (menu->menuItems.empty())
+            closeMenu();
+
         if (emit)
             emitMenuItemClick(hierarchy);
     }
@@ -999,7 +1001,10 @@ namespace tgui
 
     void OpenMenuPlaceholder::leftMouseButtonNoLongerDown()
     {
-        m_menuWidget->leftMouseReleasedOnMenu();
+        if (m_mouseHover)
+            m_menuWidget->leftMouseReleasedOnMenu();
+        else
+            m_menuWidget->closeMenu();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
