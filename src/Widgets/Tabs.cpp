@@ -456,6 +456,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tabs::rightMousePressed(Vector2f pos)
+    {
+        leftMousePressed(pos); // Select the tab on which you clicked
+
+        if (m_selectedTab >= 0)
+            onTabRightClick.emit(this, m_tabs[static_cast<std::size_t>(m_selectedTab)].text.getString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Tabs::mouseMoved(Vector2f pos)
     {
         Widget::mouseMoved(pos);
@@ -555,6 +565,8 @@ namespace tgui
     {
         if (signalName == onTabSelect.getName())
             return onTabSelect;
+        else if (signalName == onTabRightClick.getName())
+            return onTabRightClick;
         else
             return Widget::getSignal(std::move(signalName));
     }
