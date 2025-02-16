@@ -62,7 +62,10 @@ if(TGUI_OS_ANDROID)
 else()
     # If TGUI_SHARED_LIBS is explicitly set then it overrules BUILD_SHARED_LIBS, otherwise honor the global setting
     if(NOT DEFINED TGUI_SHARED_LIBS)
-        if(NOT DEFINED BUILD_SHARED_LIBS)
+        # Only create a cache variable for BUILD_SHARED_LIBS when TGUI is the top level project (or when CMake is too old to recognise it).
+        # The cache entry is made to help people who build TGUI with the CMake GUI. Creating such a cache variable in a subproject could
+        # lead to different behavior in the main project between first and subsequent CMake runs.
+        if(NOT DEFINED BUILD_SHARED_LIBS AND (CMAKE_VERSION VERSION_LESS 3.21 OR PROJECT_IS_TOP_LEVEL))
             option(BUILD_SHARED_LIBS "ON to build a shared (dynamic) library, OFF to build a static library" ON)
         endif()
 
