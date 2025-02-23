@@ -1,5 +1,5 @@
-TGUI 1.8  (TBD)
----------------
+TGUI 1.8  (23 February 2025)
+----------------------------
 
 - New widget: ContextMenu
 - Added handleWindowEvents function to SFML backend (only for SFML 3)
