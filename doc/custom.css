@@ -8,3 +8,36 @@
 	    color: #2a4d99;
     }
 }
+
+html {
+    --content-maxwidth: auto;
+}
+
+body {
+    max-width: 100%;
+}
+
+#body {
+  background-color: var(--page-background-color);
+}
+
+div {
+    margin-bottom: 0
+}
+
+#contents {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+}
+
+#doc-content {
+    height: auto !important;
+}
+
+address.footer {
+    padding-bottom: 1.4em;
+}
