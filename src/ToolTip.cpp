@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ToolTip::setDistanceToMouse(const Vector2f& distance)
+    void ToolTip::setDistanceToMouse(Vector2f distance)
     {
         m_distanceToMouse = distance;
     }

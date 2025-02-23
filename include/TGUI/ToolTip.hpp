@@ -59,7 +59,7 @@ TGUI_MODULE_EXPORT namespace tgui
         ///
         /// @param distance  Distance between mouse and tool tip
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setDistanceToMouse(const Vector2f& distance);
+        static void setDistanceToMouse(Vector2f distance);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the default distance between the mouse position and the tool tip
