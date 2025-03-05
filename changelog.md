@@ -1,3 +1,9 @@
+TGUI 1.9  (TBD)
+---------------
+
+- Fixed behavior of using showWithEffect or hideWithEffect with a Fade type while another fade animation wasn't finished yet
+
+
 TGUI 1.8  (23 February 2025)
 ----------------------------
 

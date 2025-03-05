@@ -767,7 +767,10 @@ namespace tgui
                     animStartOpacity = 0;
                 }
                 else // If fading was already in progress then adapt the duration to finish the animation sooner
-                    duration *= (startOpacity / endOpacity);
+                {
+                    duration *= (endOpacity - startOpacity) / endOpacity;
+                    setInheritedOpacity(startOpacity);
+                }
 
                 m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(shared_from_this(), animStartOpacity, endOpacity, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
@@ -862,10 +865,18 @@ namespace tgui
         // use the current state to start our animation at, but this is not the state that the widget should end at. We must
         // get this state BEFORE finishing the previous animation which is done by finishExistingConflictingAnimations.
         const float startOpacity = getInheritedOpacity();
+        const bool startVisibility = m_visible;
         //const Vector2f startPosition = getPosition();
         //const Vector2f startSize = getSize();
 
         finishExistingConflictingAnimations(m_showAnimations, type);
+
+        // If there already was a hide animation and the widget was still visible,
+        // then finishing the conflicting animation would hide the widget.
+        // We however only want to hide the widget after the new animation finishes,
+        // so we have to show the widget again for now.
+        if (startVisibility && !m_visible)
+            setVisible(true);
 
         const Vector2f position = getPosition();
         const Layout2d positionLayout = m_position;
@@ -878,7 +889,10 @@ namespace tgui
 
                 // If fading was already in progress then adapt the duration to finish the animation sooner
                 if (startOpacity != endOpacity)
+                {
                     duration *= (startOpacity / endOpacity);
+                    setInheritedOpacity(startOpacity);
+                }
 
                 m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(shared_from_this(), startOpacity, 0.f, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{

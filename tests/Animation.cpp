@@ -84,7 +84,20 @@ TEST_CASE("[Animation]")
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(widget->getInheritedOpacity() == Approx(0.3f));
                 widget->updateTime(std::chrono::milliseconds(200));
-                REQUIRE(widget->getInheritedOpacity() == 0.9f);
+                REQUIRE(widget->getInheritedOpacity() == Approx(0.9f));
+
+                SECTION("continuing existing animation")
+                {
+                    widget->showWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(1000));
+                    widget->updateTime(std::chrono::milliseconds(600));
+                    REQUIRE(widget->getInheritedOpacity() == Approx(0.54f));
+
+                    // It would take 2000ms to change opacity from 0% to 90%,
+                    // but we are already at 54% so there is only 800ms left to go to 90%
+                    widget->showWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(2000));
+                    widget->updateTime(std::chrono::milliseconds(700));
+                    REQUIRE(widget->getInheritedOpacity() == Approx(0.855f));
+                }
             }
 
             SECTION("Scale")
@@ -144,7 +157,7 @@ TEST_CASE("[Animation]")
             widget->updateTime(std::chrono::milliseconds(100));
             REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
-            REQUIRE(widget->getInheritedOpacity() == 0.9f);
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.9f));
         }
 
         SECTION("hideWithEffect")
@@ -152,9 +165,20 @@ TEST_CASE("[Animation]")
             SECTION("Fade")
             {
                 widget->hideWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(300));
-                REQUIRE(widget->getInheritedOpacity() == 0.9f);
+                REQUIRE(widget->getInheritedOpacity() == Approx(0.9f));
                 widget->updateTime(std::chrono::milliseconds(100));
                 REQUIRE(widget->getInheritedOpacity() == Approx(0.6f));
+
+                SECTION("continuing existing animation")
+                {
+                    widget->hideWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(1800));
+                    REQUIRE(widget->getInheritedOpacity() == Approx(0.6f));
+
+                    // It would take 1800ms to change opacity from 90% to 0%,
+                    // but we are already at 60% so there is only 1200ms left to go to 0%
+                    widget->updateTime(std::chrono::milliseconds(1000));
+                    REQUIRE(widget->getInheritedOpacity() == Approx(0.1f));
+                }
             }
 
             SECTION("Scale")
@@ -213,6 +237,23 @@ TEST_CASE("[Animation]")
             REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
             REQUIRE(widget->getInheritedOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
+        }
+
+        SECTION("showWithEffect + hideWithEffect")
+        {
+            widget->showWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(300));
+            widget->updateTime(std::chrono::milliseconds(200));
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.6f));
+
+            widget->hideWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(600));
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.6f));
+            widget->updateTime(std::chrono::milliseconds(300));
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.15f));
+
+            widget->showWithEffect(tgui::ShowEffectType::Fade, std::chrono::milliseconds(400));
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.15f));
+            widget->updateTime(std::chrono::milliseconds(100));
+            REQUIRE(widget->getInheritedOpacity() == Approx(0.375f));
         }
 
         SECTION("moveWithAnimation")
