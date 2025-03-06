@@ -259,7 +259,11 @@ namespace tgui
     {
 #ifdef TGUI_SYSTEM_WINDOWS
         // If setting the clipboard fails on Windows then sleep a moment and try again
+#if SDL_MAJOR_VERSION >= 3
+        if (!SDL_SetClipboardText(contents.toStdString().c_str()))
+#else
         if (SDL_SetClipboardText(contents.toStdString().c_str()) < 0)
+#endif
         {
             Sleep(1);
             SDL_SetClipboardText(contents.toStdString().c_str());
