@@ -368,7 +368,7 @@ namespace tgui
         if (!handle)
             return nullptr;
 
-        auto font = TTF_OpenFontIO(handle, true, static_cast<int>(scaledTextSize));
+        auto font = TTF_OpenFontIO(handle, true, static_cast<float>(scaledTextSize));
 #else
         SDL_RWops* handle = SDL_RWFromConstMem(m_fileContents.get(), static_cast<int>(m_fileSize));
         if (!handle)
