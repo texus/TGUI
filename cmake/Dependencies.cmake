@@ -609,6 +609,14 @@ endfunction()
 # Find raylib and add it as a dependency
 macro(tgui_add_dependency_raylib)
     if(NOT TARGET raylib)
+        # If raylib_INCLUDE_DIR and raylib_LIBRARY were previously created as CACHE variables by the Findraylib.cmake file,
+        # then they might interfere with the code in raylib-config.cmake when it is found (e.g. user filled in raylib_DIR).
+        # So we remove these variables when they are empty (they will be set again by either the config file or find module).
+        if (NOT raylib_INCLUDE_DIR AND NOT raylib_LIBRARY)
+            unset(raylib_INCLUDE_DIR CACHE)
+            unset(raylib_LIBRARY CACHE)
+        endif()
+
         # First try looking for an raylib config file
         tgui_try_find_raylib_config()
 
@@ -620,7 +628,7 @@ macro(tgui_add_dependency_raylib)
             if(NOT raylib_FOUND)
                 message(FATAL_ERROR
                     "CMake couldn't find raylib.\n"
-                    "If raylib was build with CMake then set the raylib_DIR variable to the directory containing raylib-config.cmake (i.e. RAYLIB_ROOT/lib/cmake/raylib)\n"
+                    "If raylib was build with CMake then set the raylib_DIR variable to the directory containing raylib-config.cmake (i.e. RAYLIB_ROOT/lib/cmake/raylib). Also check that the value of raylib_USE_STATIC_LIBS is correct.\n"
                     "Alternatively you can manually set raylib_INCLUDE_DIR to the 'include' directory and raylib_LIBRARY to the correct library file. You are responsible for making sure the selected library is compatible.\n")
             endif()
 

@@ -43,6 +43,7 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build TGUI-build-gcc --config Debug --target install
 
@@ -67,6 +68,7 @@ jobs:
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build TGUI-build-clang --config Release
 
@@ -189,6 +191,7 @@ jobs:
           -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+          -Draylib_USE_STATIC_LIBS=OFF
           -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_CXX_STANDARD=20
@@ -236,6 +239,7 @@ jobs:
           -DSDL3_ttf_DIR="$GITHUB_WORKSPACE/SDL_TTF_INSTALL/lib/cmake/SDL3_ttf/"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build tests/cmake/build --config Release
 
@@ -362,6 +366,7 @@ jobs:
           -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+          -Draylib_USE_STATIC_LIBS=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -391,6 +396,7 @@ jobs:
           -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+          -Draylib_USE_STATIC_LIBS=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
@@ -419,6 +425,7 @@ jobs:
           -DSDL2_TTF_PATH="$GITHUB_WORKSPACE/SDL_TTF_INSTALL"
           -Dglfw3_DIR="$GITHUB_WORKSPACE/GLFW_INSTALL/lib/cmake/glfw3/"
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build tests/cmake/build --config Debug
 
@@ -540,6 +547,7 @@ jobs:
           -DTGUI_BUILD_TESTS=OFF
           -DCMAKE_UNITY_BUILD=ON
           -DTGUI_BACKEND=RAYLIB
+          -Draylib_USE_STATIC_LIBS=OFF
 
           sudo cmake --build TGUI-build-RAYLIB --config Debug --target install
 
@@ -856,6 +864,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build TGUI-build-dylibs --config Debug --target install
 
@@ -883,6 +892,7 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
+          -Draylib_USE_STATIC_LIBS=OFF
 
           cmake --build TGUI-build-framework --config Release --target install
 
