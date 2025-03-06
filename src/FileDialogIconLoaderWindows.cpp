@@ -136,13 +136,20 @@ namespace tgui
         m_dllModuleHandle = LoadLibraryW(L"shell32.dll");
         if (m_dllModuleHandle)
         {
-#if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wcast-function-type"
+#if defined(__clang__)
+#   pragma clang diagnostic push
+#   if defined(__clang_major__) && (__clang_major__ >= 19)
+#     pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+#   endif
+#elif defined(__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
             m_dllGetFileInfoFuncHandle = reinterpret_cast<decltype(&SHGetFileInfoW)>(GetProcAddress(m_dllModuleHandle, "SHGetFileInfoW"));
-#if defined(__GNUC__)
-    #pragma GCC diagnostic pop
+#if defined(__clang__)
+#   pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#   pragma GCC diagnostic pop
 #endif
         }
 
