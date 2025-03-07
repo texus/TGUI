@@ -627,8 +627,8 @@ jobs:
           cmake -T v${env:MSVC_TOOLSET_VERSION} -A Win32 -S tests/cmake -B tests/cmake/build
           -DTGUI_ROOT="${env:GITHUB_WORKSPACE}/TGUI-build/install"
           -DSFML_ROOT="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}"
-          -DSDL2_DIR="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}/cmake/"
-          -DSDL2_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}/cmake/"
+          -DSDL3_DIR="${env:GITHUB_WORKSPACE}/SDL3-${env:SDL_VERSION}/cmake/"
+          -DSDL3_ttf_DIR="${env:GITHUB_WORKSPACE}/SDL3_ttf-${env:SDL_TTF_VERSION}/cmake/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/include"
           -DGLFW_LIBRARY="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN32/lib-vc2022/glfw3dll.lib"
           -Draylib_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/raylib-${env:RAYLIB_VERSION}_win32_msvc16/include"
