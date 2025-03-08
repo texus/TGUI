@@ -136,11 +136,11 @@ namespace tgui
     void SpinButton::setMinimum(float minimum)
     {
         // Set the new minimum
-        m_minimum = minimum;
+        m_minimum = static_cast<double>(minimum);
 
         // The minimum can never be greater than the maximum
         if (m_minimum > m_maximum)
-            setMaximum(m_minimum);
+            setMaximum(getMinimum());
 
         // When the value is below the minimum then adjust it
         if (m_value < m_minimum)
@@ -151,18 +151,18 @@ namespace tgui
 
     float SpinButton::getMinimum() const
     {
-        return m_minimum;
+        return static_cast<float>(m_minimum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::setMaximum(float maximum)
     {
-        m_maximum = maximum;
+        m_maximum = static_cast<double>(maximum);
 
         // The maximum can never be below the minimum
         if (m_maximum < m_minimum)
-            setMinimum(m_maximum);
+            setMinimum(getMaximum());
 
         // When the value is above the maximum then adjust it
         if (m_value > m_maximum)
@@ -173,49 +173,21 @@ namespace tgui
 
     float SpinButton::getMaximum() const
     {
-        return m_maximum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpinButton::setValue(float value)
-    {
-        // Round to nearest allowed value
-        if (m_step != 0)
-           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
-
-        // When the value is below the minimum or above the maximum then adjust it
-        if (value < m_minimum)
-            value = m_minimum;
-        else if (value > m_maximum)
-            value = m_maximum;
-
-        if (m_value != value)
-        {
-            m_value = value;
-            onValueChange.emit(this, value);
-        }
+        return static_cast<float>(m_maximum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float SpinButton::getValue() const
     {
-        return m_value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpinButton::setStep(float step)
-    {
-        m_step = step;
+        return static_cast<float>(m_value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float SpinButton::getStep() const
     {
-        return m_step;
+        return static_cast<float>(m_step);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

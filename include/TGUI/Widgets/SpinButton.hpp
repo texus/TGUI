@@ -144,7 +144,26 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The value can't be smaller than the minimum or bigger than the maximum.
         /// The default value is 0.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setValue(float value);
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        void setValue(T value)
+        {
+            // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.
+            //            We however need the function to take a double as parameter to actually make use of the extra significant digits.
+            const double oldValue = m_value;
+
+            // Round to nearest allowed value
+            if (m_step != 0)
+                m_value = m_minimum + (std::round((static_cast<double>(value) - m_minimum) / m_step) * m_step);
+
+            // When the value is below the minimum or above the maximum then adjust it
+            if (m_value < m_minimum)
+                m_value = m_minimum;
+            else if (m_value > m_maximum)
+                m_value = m_maximum;
+
+            if (oldValue != m_value)
+                onValueChange.emit(this, static_cast<float>(m_value));
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the current value
@@ -160,7 +179,13 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param step  The new step size
         /// @pre The step size must be a positive value or 0.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setStep(float step);
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        void setStep(T step)
+        {
+            // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.
+            //            We however need the function to take a double as parameter to actually make use of the extra significant digits in calculations.
+            m_step = static_cast<double>(step);
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the number of positions the thumb advances with each move
@@ -282,10 +307,10 @@ TGUI_MODULE_EXPORT namespace tgui
         bool m_orientationLocked = false; // Will setSize change the orientation or not?
         std::chrono::time_point<std::chrono::steady_clock> m_PressedAt;
 
-        float m_minimum = 0;
-        float m_maximum = 10;
-        float m_value = 0;
-        float m_step = 1;
+        double m_minimum = 0;
+        double m_maximum = 10;
+        double m_value = 0;
+        double m_step = 1;
 
         // On which arrow is the mouse?
         bool m_mouseHoverOnTopArrow = false;

@@ -179,7 +179,19 @@ TGUI_MODULE_EXPORT namespace tgui
         /// The value can't be smaller than the minimum or bigger than the maximum.
         /// The default value is 0.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setValue(float value);
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        bool setValue(T value)
+        {
+            // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.
+            //            We however need the function to take a double as parameter to actually make use of the extra significant digits.
+            if (m_spinButton->getValue() != static_cast<float>(value) && inRange(static_cast<float>(value)))
+            {
+                m_spinButton->setValue(value);
+                setString(String::fromNumberRounded(value, m_decimalPlaces));
+                return true;
+            }
+            return false;
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the current value
@@ -195,7 +207,13 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @param step  The new step size
         /// @pre The step size must be a positive value or 0.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setStep(float step);
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        void setStep(T step)
+        {
+            // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.
+            //            We however need the function to take a double as parameter to actually make use of the extra significant digits in calculations.
+            m_spinButton->setStep(step);
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the number of positions the thumb advances with each move
