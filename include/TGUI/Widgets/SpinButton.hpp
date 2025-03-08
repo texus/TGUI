@@ -29,6 +29,10 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Timer.hpp>
 
+#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
+    #include <cmath>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_MODULE_EXPORT namespace tgui
