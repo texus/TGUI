@@ -185,7 +185,7 @@ TGUI_MODULE_EXPORT namespace tgui
         {
             constexpr RelativeValue operator""_percent(long double n)
             {
-                return RelativeValue{static_cast<float>(n / 100.0)};
+                return RelativeValue{static_cast<float>(n / 100.0L)};
             }
 
             constexpr RelativeValue operator""_percent(unsigned long long n)
