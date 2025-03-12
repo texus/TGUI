@@ -2,6 +2,7 @@ TGUI 1.9  (TBD)
 ---------------
 
 - Added mapPixelToCoords and mapCoordsToPixel to CanvasSFML
+- Added tgui::literals::percent namespace with the "_percent" user-defined literal
 - Fixed behavior of using showWithEffect or hideWithEffect with a Fade type while another fade animation wasn't finished yet
 
 

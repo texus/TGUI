@@ -176,6 +176,26 @@ TGUI_MODULE_EXPORT namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Allow writing 50_percent instead of RelativeValue(0.5) after adding "using namespace tgui::literals::percent;"
+    // This can also be used in layouts, where you can replace e.g. the "40%" string with 40_percent to skip string parsing
+    namespace literals
+    {
+        inline namespace percent
+        {
+            constexpr RelativeValue operator""_percent(long double n)
+            {
+                return RelativeValue{static_cast<float>(n / 100.0)};
+            }
+
+            constexpr RelativeValue operator""_percent(unsigned long long n)
+            {
+                return RelativeValue{static_cast<float>(n) / 100.f};
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

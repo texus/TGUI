@@ -864,6 +864,20 @@ TEST_CASE("[Layouts]")
         }
     }
 
+    SECTION("literals::percent")
+    {
+        using namespace tgui::literals::percent;
+
+        Layout layout{20_percent};
+        REQUIRE(layout.toString() == "20%");
+
+        Layout layout2{22.7_percent};
+        REQUIRE(layout2.toString() == "22.7%");
+
+        REQUIRE(!layout.isConstant());
+        REQUIRE(!layout2.isConstant());
+    }
+
     SECTION("Bug Fixes")
     {
         SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)")
