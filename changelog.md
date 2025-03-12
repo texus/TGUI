@@ -1,6 +1,7 @@
 TGUI 1.9  (TBD)
 ---------------
 
+- Added mapPixelToCoords and mapCoordsToPixel to CanvasSFML
 - Fixed behavior of using showWithEffect or hideWithEffect with a Fade type while another fade animation wasn't finished yet
 
 

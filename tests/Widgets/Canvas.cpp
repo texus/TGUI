@@ -115,8 +115,9 @@ TEST_CASE("[CanvasSFML]")
         SECTION("view")
         {
             canvas = tgui::CanvasSFML::create({300, 200});
-            canvas->setSize({50, 30});
-            canvas->setSize({200, 100});
+            canvas->setSize({50, 30}); // Test shrinking size
+            canvas->setSize({200, 100}); // Test expanding size
+            canvas->setPosition({80, 70}); // Position should not affect results
 
             REQUIRE(canvas->getView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
             REQUIRE(canvas->getDefaultView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
@@ -131,6 +132,9 @@ TEST_CASE("[CanvasSFML]")
             view.setViewport({{0.1f, 0.2f}, {0.5f, 0.6f}});
             canvas->setView(view);
             REQUIRE(canvas->getViewport() == tgui::IntRect(20, 20, 100, 60));
+
+            REQUIRE(compareVector2f(canvas->mapPixelToCoords({60, 50}), {60, 35}));
+            REQUIRE(compareVector2f(canvas->mapCoordsToPixel({60, 35}), {60, 50}));
         }
 
         SECTION("Smooth")

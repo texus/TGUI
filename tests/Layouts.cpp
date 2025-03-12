@@ -506,10 +506,6 @@ TEST_CASE("[Layouts]")
     {
         auto parent = tgui::Panel::create({100, 100});
 
-        auto compareVector2f = [](tgui::Vector2f left, tgui::Vector2f right) {
-            return (std::fabs(left.x - right.x) < 0.00001f) && (std::fabs(left.y - right.y) < 0.00001f);
-        };
-
         SECTION("All layouts")
         {
             auto leftmost1 = tgui::Panel::create({"2%", 0});

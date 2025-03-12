@@ -188,6 +188,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f CanvasSFML::mapPixelToCoords(Vector2f point) const
+    {
+        const Vector2f size = getSize();
+        const sf::View& view = m_renderTexture.getView();
+        const sf::FloatRect& viewport = view.getViewport();
+
+        const sf::Vector2f normalized = {
+            -1 + (2 * (point.x - (viewport.position.x * size.x)) / (viewport.size.x * size.x)),
+            1 + (-2 * (point.y - (viewport.position.y * size.y)) / (viewport.size.y * size.y))
+        };
+        const sf::Vector2f coord = view.getInverseTransform().transformPoint(normalized);
+        return {coord.x, coord.y};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD Vector2f CanvasSFML::mapCoordsToPixel(Vector2f coord) const
+    {
+        const Vector2f size = getSize();
+        const sf::View& view = m_renderTexture.getView();
+        const sf::FloatRect& viewport = view.getViewport();
+
+        const sf::Vector2f normalized = view.getTransform().transformPoint(coord);
+        return {(normalized.x + 1) / 2 * (viewport.size.x * size.x) + (viewport.position.x * size.x),
+                (-normalized.y + 1) / 2 * (viewport.size.y * size.y) + (viewport.position.y * size.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void CanvasSFML::setSmooth(bool smooth)
     {
         m_renderTexture.setSmooth(smooth);

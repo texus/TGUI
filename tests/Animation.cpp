@@ -24,12 +24,6 @@
 
 #include "Tests.hpp"
 
-static void compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
-{
-    REQUIRE(left.x == Approx(right.x).margin(0.000001f));
-    REQUIRE(left.y == Approx(right.y).margin(0.000001f));
-}
-
 TEST_CASE("[Animation]")
 {
     tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
@@ -106,8 +100,8 @@ TEST_CASE("[Animation]")
                 REQUIRE(widget->getPosition() == tgui::Vector2f(90, 30));
                 REQUIRE(widget->getSize() == tgui::Vector2f(0, 0));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {70, 25});
-                compareVector2f(widget->getSize(), {40, 10});
+                REQUIRE(compareVector2f(widget->getPosition(), {70, 25}));
+                REQUIRE(compareVector2f(widget->getSize(), {40, 10}));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
@@ -118,7 +112,7 @@ TEST_CASE("[Animation]")
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromLeft, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(-120, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {-120.f+((120.f+30.f)/3.f), 15});
+                REQUIRE(compareVector2f(widget->getPosition(), {-120.f+((120.f+30.f)/3.f), 15}));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
@@ -128,7 +122,7 @@ TEST_CASE("[Animation]")
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromTop, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, -30));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30, -30.f+((30.f+15.f)/3.f)});
+                REQUIRE(compareVector2f(widget->getPosition(), {30, -30.f+((30.f+15.f)/3.f)}));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
@@ -138,7 +132,7 @@ TEST_CASE("[Animation]")
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromRight, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(480, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {480-((480-30)/3.f), 15});
+                REQUIRE(compareVector2f(widget->getPosition(), {480-((480-30)/3.f), 15}));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
@@ -148,7 +142,7 @@ TEST_CASE("[Animation]")
                 widget->showWithEffect(tgui::ShowEffectType::SlideFromBottom, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 360));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30, 360-((360-15)/3.f)});
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 360-((360-15)/3.f)}));
                 widget->updateTime(std::chrono::milliseconds(200));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
             }
@@ -187,8 +181,8 @@ TEST_CASE("[Animation]")
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 REQUIRE(widget->getSize() == tgui::Vector2f(120, 30));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {50, 20});
-                compareVector2f(widget->getSize(), {80, 20});
+                REQUIRE(compareVector2f(widget->getPosition(), {50, 20}));
+                REQUIRE(compareVector2f(widget->getSize(), {80, 20}));
             }
 
             SECTION("SlideToRight")
@@ -196,7 +190,7 @@ TEST_CASE("[Animation]")
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToRight, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30+((480-30)/3.f), 15});
+                REQUIRE(compareVector2f(widget->getPosition(), {30+((480-30)/3.f), 15}));
             }
 
             SECTION("SlideToBottom")
@@ -204,7 +198,7 @@ TEST_CASE("[Animation]")
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToBottom, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30, 15+((360-15)/3.f)});
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 15+((360-15)/3.f)}));
             }
 
             SECTION("SlideToLeft")
@@ -212,7 +206,7 @@ TEST_CASE("[Animation]")
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToLeft, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30.f-((120.f+30.f)/3.f), 15});
+                REQUIRE(compareVector2f(widget->getPosition(), {30.f-((120.f+30.f)/3.f), 15}));
             }
 
             SECTION("SlideToTop")
@@ -220,7 +214,7 @@ TEST_CASE("[Animation]")
                 widget->hideWithEffect(tgui::ShowEffectType::SlideToTop, std::chrono::milliseconds(300));
                 REQUIRE(widget->getPosition() == tgui::Vector2f(30, 15));
                 widget->updateTime(std::chrono::milliseconds(100));
-                compareVector2f(widget->getPosition(), {30, 15.f-((30.f+15.f)/3.f)});
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 15.f-((30.f+15.f)/3.f)}));
             }
 
             // The widget is hidden but reset to its original values at the end of the animation

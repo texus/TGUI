@@ -22,12 +22,21 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 #include <TGUI/Config.hpp>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #include "Tests.hpp"
+
+bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
+{
+    const float epsilonX = std::max(0.000001f, std::max(std::abs(left.x), std::abs(right.x)) / 1000000.0f);
+    const float epsilonY = std::max(0.000001f, std::max(std::abs(left.y), std::abs(right.y)) / 1000000.0f);
+    return (std::fabs(left.x - right.x) < epsilonX) && (std::fabs(left.y - right.y) < epsilonY);
+}
 
 tgui::String getClipboardContents()
 {

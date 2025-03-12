@@ -130,6 +130,7 @@ static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milli
 
 bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFileName);
 void compareImageFiles(const tgui::String& filename1, const tgui::String& filename2);
+bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right);
 
 tgui::String getClipboardContents();
 
