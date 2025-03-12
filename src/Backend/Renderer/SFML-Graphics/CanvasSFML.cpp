@@ -195,8 +195,13 @@ namespace tgui
         const sf::FloatRect& viewport = view.getViewport();
 
         const sf::Vector2f normalized = {
+#if SFML_VERSION_MAJOR >= 3
             -1 + (2 * (point.x - (viewport.position.x * size.x)) / (viewport.size.x * size.x)),
             1 + (-2 * (point.y - (viewport.position.y * size.y)) / (viewport.size.y * size.y))
+#else
+            -1 + (2 * (point.x - (viewport.left * size.x)) / (viewport.width * size.x)),
+            1 + (-2 * (point.y - (viewport.top * size.y)) / (viewport.height * size.y))
+#endif
         };
         const sf::Vector2f coord = view.getInverseTransform().transformPoint(normalized);
         return {coord.x, coord.y};
@@ -211,8 +216,13 @@ namespace tgui
         const sf::FloatRect& viewport = view.getViewport();
 
         const sf::Vector2f normalized = view.getTransform().transformPoint(coord);
+#if SFML_VERSION_MAJOR >= 3
         return {(normalized.x + 1) / 2 * (viewport.size.x * size.x) + (viewport.position.x * size.x),
                 (-normalized.y + 1) / 2 * (viewport.size.y * size.y) + (viewport.position.y * size.y)};
+#else
+        return {(normalized.x + 1) / 2 * (viewport.width * size.x) + (viewport.left * size.x),
+                (-normalized.y + 1) / 2 * (viewport.height * size.y) + (viewport.top * size.y)};
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
