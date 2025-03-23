@@ -12,7 +12,7 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-[![CI Github Actions](https://github.com/texus/TGUI/workflows/CI/badge.svg?branch=1.x)](https://github.com/texus/TGUI/actions)
+[![CI Github Actions](https://github.com/texus/TGUI/actions/workflows/ci.yml/badge.svg?branch=1.x)](https://github.com/texus/TGUI/actions/workflows/ci.yml)
 [![Code coverage](https://codecov.io/gh/texus/TGUI/branch/1.x/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/1.x)
 
 OS support for each backend:
