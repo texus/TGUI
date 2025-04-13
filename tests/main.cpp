@@ -13,7 +13,7 @@
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
     #include <SFML/Window.hpp>
 #endif
-#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
+#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_GPU
     // If the program links to sfml-main then we shouldn't let SDL redefine "main" as "SDL_main"
     #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
         #define SDL_MAIN_HANDLED
@@ -23,7 +23,7 @@
         #include <SDL3/SDL_main.h>
     #endif
 #endif
-#if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER
+#if TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_GPU
     #if SDL_MAJOR_VERSION >= 3
         #include <SDL3_ttf/SDL_ttf.h>
     #else
@@ -138,6 +138,48 @@ struct TestsWindowDefault : public TestsWindowBase
     #else
         sf::Window window{sf::VideoMode{windowWidth, windowHeight}, windowTitle, sf::Style::Default, sf::ContextSettings{0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core}};
     #endif
+    };
+#endif
+
+#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_gpu;
+    #else
+        #include <TGUI/Backend/SDL-GPU.hpp>
+    #endif
+    struct TestsWindowSdlGPU : public TestsWindowBase
+    {
+        TestsWindowSdlGPU()
+        {
+            SDL_Init(SDL_INIT_VIDEO);
+            TTF_Init();
+
+            device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, false, nullptr);
+            window = SDL_CreateWindow(windowTitle, windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
+            SDL_ClaimWindowForGPUDevice(device, window);
+
+            gui = std::make_unique<tgui::SDL_GPU::Gui>(window, device);
+        }
+
+        ~TestsWindowSdlGPU() override
+        {
+            gui = nullptr;
+            SDL_ReleaseWindowFromGPUDevice(device, window);
+            SDL_DestroyWindow(window);
+            SDL_DestroyGPUDevice(device);
+            TTF_Quit();
+            SDL_Quit();
+        }
+
+        void close() override
+        {
+            SDL_Event event;
+            event.type = SDL_EVENT_QUIT;
+            SDL_PushEvent(&event);
+        }
+
+        SDL_Window* window = nullptr;
+        SDL_GPUDevice* device = nullptr;
     };
 #endif
 
@@ -516,6 +558,10 @@ int main(int argc, char * argv[])
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
         if (selectedBackend == "SFML_OPENGL3")
             window = std::make_unique<TestsWindowSfmlOpenGL3>();
+#endif
+#if TGUI_HAS_BACKEND_SDL_GPU
+        if (selectedBackend == "SDL_GPU")
+            window = std::make_unique<TestsWindowSdlGPU>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_RENDERER
         if (selectedBackend == "SDL_RENDERER")

@@ -205,6 +205,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/raylib.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SFML-OpenGL3.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-TTF-OpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-GPU.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-Renderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-OpenGL3.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-GLES2.hpp"
@@ -221,6 +222,10 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp"
@@ -705,11 +710,11 @@ if (TGUI_INSTALL)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" DESTINATION ${config_package_location} COMPONENT devel)
         add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/Findglfw3.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()
-    if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG)
+    if((TGUI_HAS_WINDOW_BACKEND_SDL OR TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER OR TGUI_HAS_FONT_BACKEND_SDL_TTF) AND NOT TGUI_FOUND_SDL2_CONFIG AND NOT TGUI_USE_SDL3)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" DESTINATION ${config_package_location} COMPONENT devel)
         add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()
-    if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG)
+    if(TGUI_HAS_FONT_BACKEND_SDL_TTF AND NOT TGUI_FOUND_SDL2_TTF_CONFIG AND NOT TGUI_USE_SDL3)
         install(FILES "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" DESTINATION ${config_package_location} COMPONENT devel)
         add_custom_command(TARGET tgui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/cmake/Modules/FindSDL2_ttf.cmake" "${PROJECT_BINARY_DIR}/" VERBATIM)
     endif()

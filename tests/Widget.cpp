@@ -643,6 +643,7 @@ TEST_CASE("[Widget]")
         SECTION("Font scale")
         {
             auto button = tgui::Button::create();
+
             button->setSize(150, 50);
             button->setText("Scaling");
             button->setTextSize(32);
@@ -650,16 +651,16 @@ TEST_CASE("[Widget]")
 
             TEST_DRAW_INIT(400, 175, button)
 
-            auto oldView = gui.getView();
+            std::shared_ptr<void> scopeExit(nullptr, [&](void*){
+                gui.setRelativeView({0, 0, 1, 1});
+                tgui::getBackend()->setFontScale(1);
+            });
             gui.setAbsoluteView({0, 0, 160, 70});
 
             TEST_DRAW("FontScale_Unscaled.png")
 
             tgui::getBackend()->setFontScale(2.5f);
             TEST_DRAW("FontScale_Scaled.png")
-
-            tgui::getBackend()->setFontScale(1);
-            gui.setAbsoluteView(oldView.getRect());
         }
     }
 

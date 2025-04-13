@@ -49,9 +49,12 @@
     #else
         #include <TGUI/Backend/SFML-Graphics.hpp>
     #endif
+#endif
 
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #if SFML_VERSION_MAJOR >= 3
         #define TEST_DRAW_INIT(width, height, widget) \
+                    const tgui::Vector2u targetSize = {width, height}; \
                     tgui::BackendGui* guiPtr = globalGui; \
                     std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
                     std::unique_ptr<sf::RenderTexture> target; \
@@ -67,6 +70,7 @@
                     gui.add(widget);
     #else
         #define TEST_DRAW_INIT(width, height, widget) \
+                    const tgui::Vector2u targetSize = {width, height}; \
                     tgui::BackendGui* guiPtr = globalGui; \
                     std::unique_ptr<tgui::BackendGui> guiUniquePtr; \
                     std::unique_ptr<sf::RenderTexture> target; \
@@ -82,42 +86,18 @@
                     gui.add(widget);
     #endif
 
-    #ifdef TGUI_ENABLE_DRAW_TESTS
-        #define TEST_DRAW(filename) \
-                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
-                    { \
-                        target->clear({25, 130, 10}); \
-                        gui.draw(); \
-                        target->display(); \
-                        (void)target->getTexture().copyToImage().saveToFile(filename); \
-                        compareImageFiles(filename, "expected/" filename); \
-                    } \
-                    else \
-                        gui.draw();
-    #else
-        #define TEST_DRAW(filename) \
-                    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer())) \
-                    { \
-                        target->clear({25, 130, 10}); \
-                        gui.draw(); \
-                        target->display(); \
-                        (void)target->getTexture().copyToImage().saveToFile(filename); \
-                    } \
-                    else \
-                        gui.draw();
-    #endif
+    #define TEST_DRAW(filename) testDraw(gui, filename, targetSize, reinterpret_cast<void*>(target.get()));
 
 #else // Drawing tests are currently unsupported in other backends
     // Note that the code here has to be equivalent to the case where TGUI_HAS_BACKEND_SFML_GRAPHICS is
     // set but the BackendRendererSFML isn't being used at runtime.
     #define TEST_DRAW_INIT(width, height, widget) \
+                const tgui::Vector2u targetSize = {width, height}; \
                 tgui::BackendGui& gui{*globalGui}; \
                 gui.removeAllWidgets(); \
                 gui.add(widget);
 
-    // We draw to the window, without clearing or presenting it
-    #define TEST_DRAW(filename) \
-                gui.draw();
+    #define TEST_DRAW(filename) testDraw(gui, filename, targetSize, nullptr);
 #endif
 
 #if TGUI_BUILD_AS_CXX_MODULE
@@ -143,6 +123,7 @@ void testClickableWidgetSignals(const tgui::Panel::Ptr& widget);
 
 void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar);
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
+void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageSize, void* targetPtr);
 
 template <typename WidgetType>
 void testSavingWidget(const tgui::String& name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)

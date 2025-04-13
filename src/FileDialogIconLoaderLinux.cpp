@@ -42,7 +42,7 @@
 
 #if !defined(TGUI_MAGIC_HEADER_INCLUDED)
     // We load libmagic dynamically instead of requiring that the development files are installed
-    #define	MAGIC_MIME_TYPE 0x000010
+    #define MAGIC_MIME_TYPE 0x000010
     extern "C"
     {
         using magic_t = struct magic_set*;

@@ -66,7 +66,7 @@
             #define TGUI_API __declspec(dllimport)
         #endif
 
-		// For Visual C++ compilers, we also need to turn off the annoying C4251 warning
+        // For Visual C++ compilers, we also need to turn off the annoying C4251 warning
         #ifdef _MSC_VER
             #pragma warning(disable: 4251)
         #endif
@@ -85,6 +85,7 @@
 #cmakedefine01 TGUI_HAS_WINDOW_BACKEND_RAYLIB
 
 #cmakedefine01 TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+#cmakedefine01 TGUI_HAS_RENDERER_BACKEND_SDL_GPU
 #cmakedefine01 TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
 #cmakedefine01 TGUI_HAS_RENDERER_BACKEND_OPENGL3
 #cmakedefine01 TGUI_HAS_RENDERER_BACKEND_GLES2
@@ -97,6 +98,7 @@
 
 #cmakedefine01 TGUI_HAS_BACKEND_SFML_GRAPHICS
 #cmakedefine01 TGUI_HAS_BACKEND_SFML_OPENGL3
+#cmakedefine01 TGUI_HAS_BACKEND_SDL_GPU
 #cmakedefine01 TGUI_HAS_BACKEND_SDL_RENDERER
 #cmakedefine01 TGUI_HAS_BACKEND_SDL_OPENGL3
 #cmakedefine01 TGUI_HAS_BACKEND_SDL_GLES2
@@ -216,8 +218,8 @@
     #define TGUI_PRINT_WARNING(msg)
 #endif
 
+#include <cassert>
 #if !defined(NDEBUG) && !defined(TGUI_DISABLE_ASSERTS)
-    #include <cassert>
     #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
         #include <iostream>
         #include <exception>

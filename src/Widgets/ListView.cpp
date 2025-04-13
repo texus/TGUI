@@ -26,7 +26,6 @@
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
-#include <cassert>
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <cmath>
 #endif

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto">
+
+    <!-- Vulkan 1.1 -->
+    <uses-feature
+        android:name="android.hardware.vulkan.version"
+        android:version="0x401000"
+        android:required="true" />
+
+    <!-- Touchscreen support -->
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <!-- Game controller support -->
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.gamepad"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
+    <!-- External mouse input events -->
+    <uses-feature
+        android:name="android.hardware.type.pc"
+        android:required="false" />
+
+    <!-- Allow access to Bluetooth devices -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Allow access to the vibrator -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application android:label="@string/app_name"
+        android:icon="@mipmap/tgui_logo"
+        android:allowBackup="true"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        android:hardwareAccelerated="true" >
+
+        <activity android:name="SDLActivity"
+            android:label="@string/app_name"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleInstance"
+            android:configChanges="layoutDirection|locale|grammaticalGender|fontScale|fontWeightAdjustment|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:preferMinimalPostProcessing="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Let Android know that we can handle some USB devices and should receive this event -->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

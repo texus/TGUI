@@ -45,13 +45,14 @@ TEST_CASE("[Clipping]")
         gui.add(background);
         background->moveToBack();
 
+        std::shared_ptr<void> scopeExit(nullptr, [&](void*){
+            gui.setRelativeViewport({0, 0, 1, 1});
+            gui.setRelativeView({0, 0, 1, 1});
+        });
         gui.setRelativeViewport({0.1f, 0.2f, 0.8f, 0.6f});
         gui.setAbsoluteView({375, 300, 80, 40});
 
         TEST_DRAW("Clipping_Panel.png")
-
-        gui.setRelativeViewport({1, 1, 1, 1});
-        gui.setRelativeView({1, 1, 1, 1});
     }
 
     SECTION("EditBox")
@@ -71,6 +72,10 @@ TEST_CASE("[Clipping]")
         gui.add(editBox);
         editBox->setCaretPosition(0);
 
+        std::shared_ptr<void> scopeExit(nullptr, [&](void*){
+            gui.setRelativeViewport({0, 0, 1, 1});
+            gui.setRelativeView({0, 0, 1, 1});
+        });
         gui.setRelativeViewport({0.1f, 0.2f, 0.7f, 0.76f});
         gui.setAbsoluteView({250, 160, 140, 57});
 
@@ -83,9 +88,6 @@ TEST_CASE("[Clipping]")
 
             TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
         }
-
-        gui.setRelativeViewport({1, 1, 1, 1});
-        gui.setRelativeView({1, 1, 1, 1});
     }
 
     SECTION("Nesting")

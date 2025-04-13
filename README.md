@@ -21,6 +21,7 @@ OS support for each backend:
 |:------------------------|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
 | **SFML\_GRAPHICS**      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
 | **SFML\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
+| **SDL\_GPU**            | :heavy_check_mark:  | :heavy_check_mark:  | :question:          | :heavy_check_mark:  | :question:          |
 | **SDL\_RENDERER**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
 | **SDL\_TTF\_OPENGL3**   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
 | **SDL\_TTF\_GLES2**     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  | :heavy_check_mark: :question: |
@@ -37,6 +38,7 @@ Dependencies for each backend:
 |:------------------------|:----------------------|:------------------------|:------------------------|
 | **SFML\_GRAPHICS**      | sfml-window  (>= 2.5) | sfml-graphics  (>= 2.5) | sfml-graphics  (>= 2.5) |
 | **SFML\_OPENGL3**       | sfml-window  (>= 2.5) | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
+| **SDL\_GPU**            | SDL  (>= 3.2)         | SDL_ttf  (>= 3.2)       | SDL  (>= 3.2)           |
 | **SDL\_RENDERER**       | SDL  (>= 2.0.18)      | SDL_ttf  (>= 2.0.14)    | SDL  (>= 2.0.18)        |
 | **SDL\_TTF\_OPENGL3**   | SDL  (>= 2.0.6)       | SDL_ttf  (>= 2.0.14)    | OpenGL  (>= 3.3)        |
 | **SDL\_TTF\_GLES2**     | SDL  (>= 2.0.6)       | SDL_ttf  (>= 2.0.14)    | OpenGL ES  (>= 2.0)     |

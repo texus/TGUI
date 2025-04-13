@@ -8,11 +8,11 @@ val ARCH_ABI by extra(project.properties["ARCH_ABI"] as? String ?: "arm64-v8a")
 android {
     namespace = "eu.tgui.app"
     ndkVersion = NDK_VERSION
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "eu.tgui.app"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         ndk {

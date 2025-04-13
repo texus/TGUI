@@ -56,12 +56,12 @@ int main(int, char **)
 
     // TGUI requires a window created with the SDL_WINDOW_OPENGL flag and an OpenGL context
 #if SDL_MAJOR_VERSION >= 3
-    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GLES2)", 800, 600, SDL_WINDOW_OPENGL);
+    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GLES2)", 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 #else
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GLES2)",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           800, 600,
-                                          SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 #endif
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
 

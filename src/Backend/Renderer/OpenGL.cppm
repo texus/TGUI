@@ -40,7 +40,7 @@ module;
 #if defined(__clang__)
     #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
 #elif defined(_MSC_VER)
-	#pragma warning(disable: 5244)
+    #pragma warning(disable: 5244)
 #endif
 
 #if !TGUI_USE_SYSTEM_GLAD

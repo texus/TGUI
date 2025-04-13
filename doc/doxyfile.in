@@ -32,6 +32,7 @@ INPUT                  = "@PROJECT_SOURCE_DIR@/include/TGUI" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/GLES2" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/OpenGL3" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SDL_GPU" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/Raylib" \
@@ -75,6 +76,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_WINDOW_BACKEND_GLFW=1 \
                          TGUI_HAS_WINDOW_BACKEND_RAYLIB=1 \
                          TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS=1 \
+                         TGUI_HAS_RENDERER_BACKEND_SDL_GPU=1 \
                          TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER=1 \
                          TGUI_HAS_RENDERER_BACKEND_OPENGL3=1 \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
@@ -85,7 +87,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_FONT_BACKEND_RAYLIB=1 \
                          TGUI_HAS_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_BACKEND_SFML_OPENGL3=1 \
-                         TGUI_HAS_BACKEND_SDL_RENDERER=1 \
+                         TGUI_HAS_BACKEND_SDL_GPU=1 \
                          TGUI_HAS_BACKEND_SDL_OPENGL3=1 \
                          TGUI_HAS_BACKEND_SDL_GLES2=1 \
                          TGUI_HAS_BACKEND_SDL_TTF_OPENGL3=1 \
@@ -94,6 +96,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_BACKEND_GLFW_GLES2=1 \
                          TGUI_HAS_BACKEND_RAYLIB=1 \
                          SFML_VERSION_MAJOR=3 \
+                         SDL_MAJOR_VERSION=3 \
                          TGUI_NODISCARD=[[nodiscard]]
 
 SHOW_NAMESPACES        = NO

@@ -47,13 +47,13 @@ int main(int, char **)
     SDL_Init(SDL_INIT_VIDEO);
 
 #if SDL_MAJOR_VERSION >= 3
-    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)", 800, 600, 0);
+    SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)", 800, 600, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
 #else
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           800, 600,
-                                          SDL_WINDOW_SHOWN);
+                                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 #endif
 

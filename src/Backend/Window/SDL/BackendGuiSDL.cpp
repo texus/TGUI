@@ -652,9 +652,7 @@ namespace tgui
             if (timePointNextAllowed > timePointNow)
                 continue;
 
-            m_backendRenderTarget->clearScreen();
-            draw();
-            presentScreen(); // Call SDL_GL_SwapWindow or SDL_RenderPresent depending on the backend renderer
+            renderFrame(clearColor);
 
             refreshRequired = false;
             lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
@@ -814,6 +812,15 @@ namespace tgui
             m_dpiScale = 1;
 
         BackendGui::updateContainerSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiSDL::renderFrame(Color)
+    {
+        m_backendRenderTarget->clearScreen();
+        draw();
+        presentScreen(); // Call SDL_GL_SwapWindow or SDL_RenderPresent depending on the backend renderer
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

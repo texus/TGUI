@@ -27,7 +27,6 @@
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
-#include <cassert>
 
 #if !TGUI_BUILD_AS_CXX_MODULE
     #include <TGUI/extlibs/IncludeStbImageWrite.hpp>

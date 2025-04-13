@@ -27,7 +27,6 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
-#include <cassert>
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <set>
 #endif

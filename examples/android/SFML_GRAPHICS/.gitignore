@@ -1,5 +1,8 @@
-local.properties
-.idea
-.gradle
-app/build
-app/.cxx
+/local.properties
+/build
+/build.sh
+/.idea
+/.gradle
+/app/.externalNativeBuild
+/app/.cxx
+/app/build

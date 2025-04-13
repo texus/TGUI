@@ -210,6 +210,61 @@ TEST_CASE("[CanvasSFML]")
 }
 #endif
 
+#if TGUI_HAS_RENDERER_BACKEND_SDL_GPU
+
+#if !TGUI_BUILD_AS_CXX_MODULE
+    #include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
+    #include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
+#endif
+
+TEST_CASE("[CanvasSDLGPU]")
+{
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSDLGPU>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasSDLGPU::Ptr canvas = tgui::CanvasSDLGPU::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasSDLGPU");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasSDLGPU::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+        }
+
+        SECTION("internal texture target")
+        {
+            canvas = tgui::CanvasSDLGPU::create({50, 50});
+            SDL_GPUTexture* internalTexture = canvas->getTexture();
+
+            canvas->setSize({70, 80});
+
+            // The address of the texture target has changed with the resize
+            REQUIRE(internalTexture != canvas->getTexture());
+            internalTexture = canvas->getTexture();
+
+            // Changing the position has no impact on the internal texture
+            canvas->setPosition({10, 5});
+            REQUIRE(internalTexture == canvas->getTexture());
+        }
+
+        testCanvasCommon(canvas);
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasSDLGPU::create({60, 40}));
+
+            testSavingWidget("CanvasSDLGPU", canvas, false);
+        }
+    }
+}
+#endif
+
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
 
 #if !TGUI_BUILD_AS_CXX_MODULE

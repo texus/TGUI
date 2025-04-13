@@ -29,7 +29,18 @@
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
+#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_BUILD_AS_CXX_MODULE
+        import tgui.backend.sdl_gpu;
+    #else
+        #include <TGUI/Backend/SDL-GPU.hpp>
+        #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
+    #endif
+#endif
+
 #include "Tests.hpp"
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
 {
@@ -37,6 +48,8 @@ bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
     const float epsilonY = std::max(0.000001f, std::max(std::abs(left.y), std::abs(right.y)) / 1000000.0f);
     return (std::fabs(left.x - right.x) < epsilonX) && (std::fabs(left.y - right.y) < epsilonY);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 tgui::String getClipboardContents()
 {
@@ -51,16 +64,22 @@ tgui::String getClipboardContents()
     return tgui::getBackend()->getClipboard();
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void mouseCallback(unsigned int& count, tgui::Vector2f pos)
 {
     count++;
     REQUIRE(pos == tgui::Vector2f(75, 50));
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void genericCallback(unsigned int& count)
 {
     count++;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void testWidgetSignals(const tgui::Widget::Ptr& widget)
 {
@@ -100,6 +119,8 @@ void testWidgetSignals(const tgui::Widget::Ptr& widget)
         parent->remove(widget);
     }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 void testClickableWidgetSignalsImpl(T widget)
@@ -200,15 +221,21 @@ void testClickableWidgetSignalsImpl(T widget)
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void testClickableWidgetSignals(const tgui::ClickableWidget::Ptr& widget)
 {
     testClickableWidgetSignalsImpl(widget);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void testClickableWidgetSignals(const tgui::Panel::Ptr& widget)
 {
     testClickableWidgetSignalsImpl(widget);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar)
 {
@@ -227,6 +254,8 @@ void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar)
     REQUIRE(scrollbar->isShown());
     REQUIRE(scrollbar->getWidth() > 0);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer)
 {
@@ -258,4 +287,130 @@ void testWidgetRenderer(tgui::WidgetRenderer* renderer)
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageSize, void* targetPtr)
+{
+    (void)filename;
+    (void)imageSize;
+    (void)targetPtr;
+
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()) && targetPtr) \
+    {
+        sf::RenderTexture* target = reinterpret_cast<sf::RenderTexture*>(targetPtr);
+        target->clear({25, 130, 10});
+        gui.draw();
+        target->display();
+        (void)target->getTexture().copyToImage().saveToFile(filename);
+    #ifdef TGUI_ENABLE_DRAW_TESTS
+        compareImageFiles(filename, "expected/" + tgui::String(filename));
+    #endif
+        return;
+    }
+#endif
+
+#if TGUI_HAS_BACKEND_SDL_GPU
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSDLGPU>(tgui::getBackend()->getRenderer()))
+    {
+        if (dynamic_cast<tgui::SDL_GPU::Gui*>(&gui) == nullptr)
+        {
+            assert(false);
+            return;
+        }
+
+        tgui::RelFloatRect viewport = gui.getViewport();
+        tgui::RelFloatRect view = gui.getView();
+        viewport.updateParentSize({static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)});
+        view.updateParentSize({viewport.getWidth(), viewport.getHeight()});
+        gui.getBackendRenderTarget()->setView(view.getRect(), viewport.getRect(), {static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)});
+        gui.getContainer()->setSize(tgui::Vector2f{view.getWidth(), view.getHeight()});
+
+        SDL_GPUDevice* device = std::static_pointer_cast<tgui::BackendRendererSDLGPU>(tgui::getBackend()->getRenderer())->getInternalDevice();
+        SDL_GPUCommandBuffer* cmdBuffer = SDL_AcquireGPUCommandBuffer(device);
+        if (!cmdBuffer)
+        {
+            assert(false);
+            return;
+        }
+
+        SDL_GPUTextureCreateInfo textureCreateInfo = {};
+        textureCreateInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        textureCreateInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+        textureCreateInfo.width = imageSize.x;
+        textureCreateInfo.height = imageSize.y;
+        textureCreateInfo.layer_count_or_depth = 1;
+        textureCreateInfo.num_levels = 1;
+        textureCreateInfo.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        SDL_GPUTexture* texture = SDL_CreateGPUTexture(device, &textureCreateInfo);
+        if (!texture)
+        {
+            assert(false);
+            return;
+        }
+
+        dynamic_cast<tgui::SDL_GPU::Gui&>(gui).prepareDraw(cmdBuffer);
+
+        SDL_GPUColorTargetInfo colorTargetInfo = {};
+        colorTargetInfo.texture = texture;
+        colorTargetInfo.clear_color = {25.f / 255.f, 130.f / 255.f, 10.f / 255.f, 1.f};
+        colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
+        colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+
+        SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, NULL);
+        dynamic_cast<tgui::SDL_GPU::Gui&>(gui).draw(renderPass);
+        SDL_EndGPURenderPass(renderPass);
+
+        SDL_GPUTransferBufferCreateInfo transferBufferCreateInfo = {};
+        transferBufferCreateInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
+        transferBufferCreateInfo.size = textureCreateInfo.width * textureCreateInfo.height * 4;
+        SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(device, &transferBufferCreateInfo);
+
+        SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmdBuffer);
+
+        SDL_GPUTextureRegion textureRegion = {};
+        textureRegion.texture = texture;
+        textureRegion.w = textureCreateInfo.width;
+        textureRegion.h = textureCreateInfo.height;
+        textureRegion.d = 1;
+
+        SDL_GPUTextureTransferInfo textureTransferInfo = {};
+        textureTransferInfo.transfer_buffer = transferBuffer;
+        textureTransferInfo.offset = 0;
+	    SDL_DownloadFromGPUTexture(copyPass, &textureRegion, &textureTransferInfo);
+	    SDL_EndGPUCopyPass(copyPass);
+
+	    SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuffer);
+	    SDL_WaitForGPUFences(device, true, &fence, 1);
+	    SDL_ReleaseGPUFence(device, fence);
+
+	    void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
+
+        int dataLength = 0;
+        unsigned char* pngData = stbi_write_png_to_mem(
+            static_cast<const unsigned char*>(pixelData),
+            static_cast<int>(textureCreateInfo.width * 4),
+            static_cast<int>(textureCreateInfo.width),
+            static_cast<int>(textureCreateInfo.height),
+            4,
+            &dataLength);
+        if (!pngData || dataLength <= 0)
+        {
+            assert(false);
+            return;
+        }
+
+        tgui::writeFile(filename, tgui::CharStringView(reinterpret_cast<const char*>(pngData), static_cast<std::size_t>(dataLength)));
+        STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
+
+	    SDL_UnmapGPUTransferBuffer(device, transferBuffer);
+	    SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        SDL_ReleaseGPUTexture(device, texture);
+        return;
+    }
+#endif
+
+    gui.draw();
 }

@@ -110,6 +110,7 @@ function(tgui_try_find_sdl3)
 
     if(SDL3_FOUND)
         set(TGUI_FOUND_SDL3 TRUE PARENT_SCOPE)
+        set(SDL3_VERSION "${SDL3_VERSION}" PARENT_SCOPE)
     else()
         set(TGUI_FOUND_SDL3 FALSE PARENT_SCOPE)
     endif()
@@ -168,7 +169,7 @@ macro(tgui_find_dependency_sdl)
     # An option is added to explicitly search for the other version, in case the default decision is unwanted.
     if(NOT DEFINED TGUI_USE_SDL3)
         set(description "Determines whether TGUI looks for SDL2 or SDL3")
-        if(TGUI_FOUND_SDL3)
+        if(TGUI_FOUND_SDL3 OR TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU)
             option(TGUI_USE_SDL3 "${description}" TRUE)
         elseif(TGUI_FOUND_SDL2_CONFIG OR TGUI_FOUND_SDL2_MODULE)
             option(TGUI_USE_SDL3 "${description}" FALSE)
@@ -181,6 +182,10 @@ macro(tgui_find_dependency_sdl)
         endif()
     endif()
 
+    if(NOT TGUI_USE_SDL3 AND (TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU))
+        message(FATAL_ERROR "SDL_GPU backend requires SDL3. Change the value of TGUI_USE_SDL3 or select a different backend.")
+    endif()
+
     if(TGUI_USE_SDL3)
         if(NOT TARGET SDL3::SDL3) # Only search if the target wasn't defined yet
             if(TGUI_FOUND_SDL3)
@@ -190,6 +195,15 @@ macro(tgui_find_dependency_sdl)
                         "CMake couldn't find SDL3.\n"
                         "Set SDL3_DIR to the directory containing either SDL3Config.cmake or sdl3-config.cmake\n"
                         "If you wish to use SDL2 instead of SDL3 then set TGUI_USE_SDL3 = FALSE.\n")
+            endif()
+        endif()
+
+        if(DEFINED SDL3_VERSION)
+            # Check that the minimum SDL version is met when using the SDL GPU API
+            if(TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU)
+                if (SDL3_VERSION VERSION_LESS 3.2.0)
+                    message(FATAL_ERROR "SDL 3.2.0 or higher is required for SDL_GPU backend")
+                endif()
             endif()
         endif()
 

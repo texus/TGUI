@@ -204,6 +204,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GPU=ON
           -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_GLES2=ON
@@ -616,6 +617,7 @@ jobs:
           -DTGUI_BUILD_TESTS=ON
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
+          -DTGUI_HAS_BACKEND_SDL_GPU=ON
           -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
@@ -851,7 +853,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install sfml sdl2 sdl2_ttf glfw ninja raylib
+          brew install sfml sdl2 sdl2_ttf sdl3 sdl3_ttf glfw raylib
 
       - name: Build TGUI (dylibs)
         run: >
@@ -861,6 +863,7 @@ jobs:
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_BUILD_FRAMEWORK=OFF
           -DTGUI_CXX_STANDARD=14
+          -DTGUI_USE_SDL3=OFF
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
           -DTGUI_BUILD_GUI_BUILDER=OFF
@@ -889,6 +892,7 @@ jobs:
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_BUILD_FRAMEWORK=ON
           -DTGUI_CXX_STANDARD=17
+          -DTGUI_USE_SDL3=ON
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -896,6 +900,7 @@ jobs:
           -DTGUI_BACKEND=Custom
           -DTGUI_HAS_BACKEND_SFML_GRAPHICS=ON
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
+          -DTGUI_HAS_BACKEND_SDL_GPU=ON
           -DTGUI_HAS_BACKEND_SDL_RENDERER=ON
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
@@ -933,9 +938,8 @@ jobs:
       - name: Build SDL_RENDERER project
         working-directory: TGUI/examples/android/SDL_RENDERER
         run: |
-          sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'arm64-v8a'/" app/build.gradle
-          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${ANDROID_NDK_ROOT##*/}'/" app/build.gradle
-          ./gradlew assembleRelease --info
+          sed -i "s/^\(\s*\)abiFilters.add(\"x86_64\").*$/\1\/\/abiFilters.add(\"x86_64\")/" app/build.gradle.kts
+          ./gradlew assembleRelease -P NDK_VERSION=${ANDROID_NDK_ROOT##*/} --info
 
       - name: Build SDL_TTF_GLES2 project
         working-directory: TGUI/examples/android/SDL_TTF_GLES2
@@ -947,6 +951,30 @@ jobs:
           ln -s $GITHUB_WORKSPACE/SDL2_ttf app/jni/SDL_TTF
           ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
           ./gradlew assembleDebug --info
+
+  #----------------------------------------
+
+  android-sdl-gpu:
+    runs-on: ubuntu-latest
+    env:
+      SDL_VERSION: 3.2.10
+      SDL_TTF_VERSION: 3.2.2
+    steps:
+      - name: Checkout TGUI
+        uses: actions/checkout@v4
+        with:
+          path: TGUI
+
+      - name: Download SDL
+        run: |
+          git clone --revision release-$SDL_VERSION --depth 1 https://github.com/libsdl-org/SDL SDL3
+          git clone --revision release-$SDL_TTF_VERSION --depth 1 --recurse-submodules --shallow-submodules https://github.com/libsdl-org/SDL_ttf SDL3_ttf
+          echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "cmake;3.22.1"
+
+      - name: Build SDL_GPU project
+        working-directory: TGUI/examples/android/SDL_GPU
+        run: |
+          ./gradlew assembleRelease -P NDK_VERSION=${ANDROID_NDK_ROOT##*/} --info
 
   #----------------------------------------
 
@@ -1144,7 +1172,7 @@ jobs:
   #       I've decided to just put the nightly build code in this file as well.
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/1.x'
-    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
+    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2019
     env:
       SFML_VERSION: 3.0.0
