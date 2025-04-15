@@ -340,7 +340,7 @@ void GuiBuilder::mainLoop()
             }
             else if (event.type == tgui::Event::Type::MouseButtonPressed)
             {
-                if (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree)
+                if (m_widgetHierarchyTree && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
                 {
                     m_gui->handleEvent(event);
                     passEventToGui = false;
@@ -358,7 +358,7 @@ void GuiBuilder::mainLoop()
             {
                 if (m_selectedForm && !m_foregroundPanel)
                 {
-                    if (!m_draggedHierarchyTreeItem.empty() && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
+                    if (m_widgetHierarchyTree && !m_draggedHierarchyTreeItem.empty() && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
                     {
                         m_gui->handleEvent(event);
                         passEventToGui = false;
