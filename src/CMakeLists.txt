@@ -358,10 +358,11 @@ set(TGUI_HEADERS
 
 )
 
+set(TGUI_SRC_WITHOUT_UNITY "")
 if(TGUI_OS_WINDOWS)
-    list(APPEND TGUI_SRC FileDialogIconLoaderWindows.cpp)
+    list(APPEND TGUI_SRC_WITHOUT_UNITY FileDialogIconLoaderWindows.cpp)
 elseif(TGUI_OS_LINUX)
-    list(APPEND TGUI_SRC FileDialogIconLoaderLinux.cpp)
+    list(APPEND TGUI_SRC_WITHOUT_UNITY FileDialogIconLoaderLinux.cpp)
 endif()
 
 # Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
@@ -407,15 +408,19 @@ if (TGUI_BUILD_AS_CXX_MODULE)
     foreach(source_file ${TGUI_SRC})
         string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
     endforeach()
+    foreach(source_file ${TGUI_SRC_WITHOUT_UNITY})
+        string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
+    endforeach()
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/module_tgui.cppm" "${file_contents}")
     set(TGUI_SRC "${CMAKE_CURRENT_BINARY_DIR}/module_tgui.cppm")
+    set(TGUI_SRC_WITHOUT_UNITY "")
 endif()
 
 if (TGUI_BUILD_AS_CXX_MODULE)
     tgui_create_module_from_sources(DefaultBackendWindow.cpp "tgui.default_backend_window")
-    list(APPEND TGUI_SRC "${module_source}")
+    list(APPEND TGUI_SRC_WITHOUT_UNITY "${module_source}")
 else()
-    list(APPEND TGUI_SRC DefaultBackendWindow.cpp)
+    list(APPEND TGUI_SRC_WITHOUT_UNITY DefaultBackendWindow.cpp)
 endif()
 
 # Determine library suffixes depending on static/shared configuration
@@ -452,9 +457,9 @@ if (TGUI_BUILD_AS_CXX_MODULE)
                    FILE_SET tgui_cxx_module_files
                    TYPE CXX_MODULES
                    BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
-                   FILES ${TGUI_SRC})
+                   FILES ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
 else()
-    target_sources(tgui PRIVATE ${TGUI_SRC})
+    target_sources(tgui PRIVATE ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
 endif()
 target_sources(tgui PRIVATE ${TGUI_HEADERS})
 
