@@ -56,9 +56,10 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Blueprint
         {
-            unsigned int characterSize;
-            unsigned int style;
+            unsigned int characterSize = 0;
+            unsigned int style = 0;
             Color        color;
+            String       link;
             String       text;
             Vector2u     gapSize;
         };

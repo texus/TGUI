@@ -42,7 +42,7 @@ TGUI_MODULE_EXPORT namespace tgui
     ///                "<color=#00ff40>O</color><color=#00ffff>R</color><color=#0040ff>F</color><color=#7f00ff>U</color>"
     ///                "<color=#ff00bf>L</color></b> text. You can even include icons such as <img=Folder.png> and images:\n"
     ///                "<img=\"image.png\">\n\nLines that are too long will wrap around and a vertical scrollbar can be included "
-    ///                "when there are too many lines!");
+    ///                "when there are <url=abc>too many lines</url>!");
     /// @endcode
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API RichTextLabel : public Label
@@ -80,6 +80,20 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @return The new label
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static RichTextLabel::Ptr copy(const RichTextLabel::ConstPtr& label);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the link at a given position if there is one
+        ///
+        /// @param pos  Position inside the label (i.e. relative to the position of the label)
+        ///
+        /// @returns Url value if the text at the given position is inside a <url> tag, an empty string otherwise
+        ///
+        /// Suppose the text in the label is set to "<url>red</url> or <url=blue>green</url>".
+        /// If the position is on top of the word "red" then this function returns "red".
+        /// If the position is on top of the word "green" then this function returns "blue".
+        /// If the position is not on top of "red" and not on top of "green" then this function returns an empty string.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String findLinkAtPos(Vector2f pos) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -135,6 +149,7 @@ TGUI_MODULE_EXPORT namespace tgui
     protected:
 
         std::vector<Sprite> m_images;
+        std::map<std::pair<std::size_t, std::size_t>, String> m_links; // Key = indices for text piece in m_lines
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

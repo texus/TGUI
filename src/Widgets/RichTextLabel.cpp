@@ -74,6 +74,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    String RichTextLabel::findLinkAtPos(Vector2f pos) const
+    {
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+        {
+            for (std::size_t j = 0; j < m_lines[i].size(); ++j)
+            {
+                const auto& textPiece = m_lines[i][j];
+                if (FloatRect{textPiece.getPosition(), textPiece.getSize()}.contains(pos - Vector2f{m_bordersCached.getLeft(), m_bordersCached.getTop()}))
+                {
+                    auto linkIt = m_links.find({i, j});
+                    if (linkIt != m_links.end())
+                        return linkIt->second;
+                    else
+                        return "";
+                }
+            }
+        }
+
+        return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RichTextLabel::rendererChanged(const String& property)
     {
         if (property == U"TextColor")
@@ -93,6 +116,7 @@ namespace tgui
         {
             m_lines.clear();
             m_images.clear();
+            m_links.clear();
             return;
         }
 
@@ -107,6 +131,7 @@ namespace tgui
         {
             m_lines.clear();
             m_images.clear();
+            m_links.clear();
             return;
         }
 
@@ -128,6 +153,7 @@ namespace tgui
             {
                 m_lines.clear();
                 m_images.clear();
+                m_links.clear();
                 return;
             }
         }
@@ -141,6 +167,7 @@ namespace tgui
         // we wouldn't be able to retrieve the images from the texture manager cache during loading.
         m_lines.clear();
         m_images.clear();
+        m_links.clear();
 
         // Fit the text in the available space
         Optional<std::vector<std::vector<Text::Blueprint>>> wordWrappedLines = (maxWidth > 0)
@@ -211,6 +238,8 @@ namespace tgui
                     textPiece.setOutlineThickness(m_textOutlineThicknessCached);
                     textPiece.setString(textPiecesLine[j].text);
                     textPiece.setPosition({pos.x + lineWidth, pos.y});
+                    if (!textPiecesLine[j].link.empty())
+                        m_links[{m_lines.size()-1, m_lines.back().size()-1}] = textPiecesLine[j].link;
 
                     maxLineHeight = std::max(maxLineHeight, textPiece.getSize().y);
                     lineWidth += textPiece.getSize().x - (2 * m_textOutlineThicknessCached);
@@ -401,7 +430,9 @@ namespace tgui
         unsigned int currentTextSize = m_textSize;
         unsigned int currentTextStyle = m_textStyleCached;
         Color currentColor = m_textColorCached;
+        String currentUrl;
         String currentString;
+        std::vector<String> urlStack;
         std::vector<Color> colorStack;
         std::vector<unsigned int> textSizeStack;
 
@@ -421,6 +452,7 @@ namespace tgui
             textPiece.characterSize = currentTextSize;
             textPiece.style = currentTextStyle;
             textPiece.color = currentColor;
+            textPiece.link = currentUrl;
             textPiece.text = currentString;
             currentString.clear();
         };
@@ -534,6 +566,19 @@ namespace tgui
                             else
                                 currentTextSize = textSizeStack.back();
                         }
+                        else if (symbolName == U"url")
+                        {
+                            if (!urlStack.empty())
+                            {
+                                addTextPiece();
+                                urlStack.pop_back();
+                            }
+
+                            if (urlStack.empty())
+                                currentUrl = "";
+                            else
+                                currentUrl = urlStack.back();
+                        }
                         else
                             break;
                     }
@@ -623,6 +668,24 @@ namespace tgui
                             {
                                 // Ignore the texture if we can't load it
                             }
+                        }
+                        else if (viewStartsWith(symbolName, U"url="))
+                        {
+                            const String url(StringView(&symbolName[4], symbolName.length() - 4));
+                            addTextPiece();
+                            currentUrl = url;
+                            urlStack.push_back(url);
+                        }
+                        else if (symbolName == U"url") // No url provided within the tag
+                        {
+                            String url;
+                            auto endPos = m_string.find(U"</url>", i + 5);
+                            if (endPos != String::npos)
+                                url = m_string.substr(i+5, endPos - (i+5));
+
+                            addTextPiece();
+                            currentUrl = url;
+                            urlStack.push_back(url);
                         }
                         else
                             break;

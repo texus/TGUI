@@ -602,6 +602,7 @@ namespace tgui
                     outputPiece.style = inputPiece.style;
                     outputPiece.color = inputPiece.color;
                     outputPiece.gapSize = inputPiece.gapSize;
+                    outputPiece.link = inputPiece.link;
 
                     if (!inputPiece.text.empty())
                     {
@@ -626,6 +627,7 @@ namespace tgui
                     outputPiece.style = inputPiece.style;
                     outputPiece.color = inputPiece.color;
                     outputPiece.gapSize = inputPiece.gapSize;
+                    outputPiece.link = inputPiece.link;
 
                     if (!inputPiece.text.empty())
                         outputPiece.text = inputPiece.text.substr(0, pieceCharIndex);

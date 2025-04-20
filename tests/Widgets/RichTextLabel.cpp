@@ -326,7 +326,7 @@ TEST_CASE("[RichTextLabel]")
             U"Each letter can have a separate <size=15>size</size> or <color=blue>color</color>. This allows for some <b><color=#ff0000>C</color><color=#ffbf00>O</color>"
             U"<color=#80ff00>L</color><color=#00ff40>O</color><color=#00ffff>R</color><color=#0040ff>F</color><color=#7f00ff>U</color><color=#ff00bf>L</color></b> text. "
             U"You can even include icons such as <img=resources/TreeViewCollapsed.png> and images:\n<img=\"resources/image.png\">\n\nLines that are too long will wrap around and a vertical scrollbar "
-            U"can be included when there are too many lines!\n\n\n\n\n\n\n\n");
+            U"can be <url=link>included</url> when there are <url>too many lines</url>!\n\n\n\n\n\n\n\n");
 
         TEST_DRAW("RichTextLabel.png")
 
