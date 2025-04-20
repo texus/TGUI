@@ -88,8 +88,8 @@ jobs:
       SDL_TTF_GITHUB_URL: https://github.com/libsdl-org/SDL_ttf
       GLFW_GITHUB_URL: https://github.com/glfw/glfw
       RAYLIB_GITHUB_URL: https://github.com/raysan5/raylib
-      CMAKE_VERSION: 3.27
-      CMAKE_VERSION_PATCH: 4
+      CMAKE_VERSION: 3.31
+      CMAKE_VERSION_PATCH: 7
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v4
@@ -647,8 +647,8 @@ jobs:
       SDL_VERSION: 2.0.6
       SDL_TTF_VERSION: 2.0.14
       FREETYPE_VERSION: 2.6.5
-      CMAKE_VERSION: 3.17
-      CMAKE_VERSION_PATCH: 5
+      CMAKE_VERSION: '3.21' # Required to use VS2022 generator
+      CMAKE_VERSION_PATCH: 7
       MSVC_TOOLSET_VERSION: 141  # VS2017
     steps:
       - name: Checkout TGUI
@@ -656,7 +656,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
+          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386.zip
           C:\msys64\usr\bin\wget.exe -nv https://www.sfml-dev.org/files/SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
@@ -774,8 +774,8 @@ jobs:
       SFML_VERSION: 2.5.1
       GLFW_VERSION: 3.3.10
       FREETYPE_VERSION: 2.11.1
-      CMAKE_VERSION: 3.19
-      CMAKE_VERSION_PATCH: 8
+      CMAKE_VERSION: '3.26'
+      CMAKE_VERSION_PATCH: 6
       MSVC_TOOLSET_VERSION: 142  # VS2019
     steps:
       - name: Checkout TGUI
@@ -798,7 +798,7 @@ jobs:
 
       - name: Download dependencies
         run: |
-          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64.zip
+          C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN64.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
           7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64.zip
