@@ -661,7 +661,7 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/release/SDL2-devel-${env:SDL_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
-          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86.zip
+          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386.zip
           7z x SFML-${env:SFML_VERSION}-windows-vc15-32-bit.zip
           7z x SDL2-devel-${env:SDL_VERSION}-VC.zip
           7z x SDL2_ttf-devel-${env:SDL_TTF_VERSION}-VC.zip
@@ -669,7 +669,7 @@ jobs:
 
       - name: Build TGUI
         run: >
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe"
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386/bin/cmake.exe"
           -B TGUI-build -T "v${env:MSVC_TOOLSET_VERSION}" -A Win32
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
@@ -689,18 +689,18 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build TGUI-build --config Release --target install
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386/bin/cmake.exe" --build TGUI-build --config Release --target install
 
       - name: Test TGUIConfig.cmake
         run: >
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe"
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386/bin/cmake.exe"
           -T "v${env:MSVC_TOOLSET_VERSION}" -A Win32 -S tests/cmake -B tests/cmake/build
           -DTGUI_DIR="${env:GITHUB_WORKSPACE}/TGUI-build/install/lib/cmake/TGUI/"
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML-${env:SFML_VERSION}/lib/cmake/SFML/"
           -DSDL2_PATH="${env:GITHUB_WORKSPACE}/SDL2-${env:SDL_VERSION}"
           -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win32-x86/bin/cmake.exe" --build tests/cmake/build --config Release
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-i386/bin/cmake.exe" --build tests/cmake/build --config Release
 
   #----------------------------------------
 
@@ -801,13 +801,13 @@ jobs:
           C:\msys64\usr\bin\wget.exe -nv https://cmake.org/files/v${env:CMAKE_VERSION}/cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/glfw/glfw/releases/download/${env:GLFW_VERSION}/glfw-${env:GLFW_VERSION}.bin.WIN64.zip
           C:\msys64\usr\bin\wget.exe -nv https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v${env:FREETYPE_VERSION}.zip
-          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64.zip
+          7z x cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64.zip
           7z x glfw-${env:GLFW_VERSION}.bin.WIN64.zip
           7z x v${env:FREETYPE_VERSION}.zip
 
       - name: Build TGUI
         run: >
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe"
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64/bin/cmake.exe"
           -B TGUI-build -T "v${env:MSVC_TOOLSET_VERSION}" -A x64
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML_INSTALL/lib/cmake/SFML/"
           -DGLFW_INCLUDE_DIR="${env:GITHUB_WORKSPACE}/glfw-${env:GLFW_VERSION}.bin.WIN64/include"
@@ -826,11 +826,11 @@ jobs:
           -DTGUI_HAS_BACKEND_SFML_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe" --build TGUI-build --config Release --target install
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64/bin/cmake.exe" --build TGUI-build --config Release --target install
 
       - name: Test TGUIConfig.cmake
         run: >
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe"
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64/bin/cmake.exe"
           -T "v${env:MSVC_TOOLSET_VERSION}" -A x64 -S tests/cmake -B tests/cmake/build
           -DTGUI_ROOT="${env:GITHUB_WORKSPACE}/TGUI-build/install"
           -DSFML_DIR="${env:GITHUB_WORKSPACE}/SFML_INSTALL/lib/cmake/SFML/"
@@ -841,7 +841,7 @@ jobs:
           -DFREETYPE_LIBRARY="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}/release static/vs2015-2022/win64/freetype.lib"
           -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 
-          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-win64-x64/bin/cmake.exe" --build tests/cmake/build --config Release
+          & "cmake-${env:CMAKE_VERSION}.${env:CMAKE_VERSION_PATCH}-windows-x86_64/bin/cmake.exe" --build tests/cmake/build --config Release
 
   #----------------------------------------
 
