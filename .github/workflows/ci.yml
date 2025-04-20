@@ -568,7 +568,7 @@ jobs:
   #----------------------------------------
 
   windows:  # Setup technically not allowed, backends have conflicting FreeType dependencies
-    runs-on: windows-2022
+    runs-on: windows-2025
     env:
       SFML_VERSION: 3.0.0
       SDL_VERSION: 3.2.6
@@ -641,7 +641,7 @@ jobs:
   #----------------------------------------
 
   windows-oldest:  # Setup technically not allowed, backends have conflicting FreeType dependencies (linking statically won't even work)
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.0
       SDL_VERSION: 2.0.6
@@ -769,7 +769,7 @@ jobs:
   #----------------------------------------
 
   windows-static-mt:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       SFML_VERSION: 2.5.1
       GLFW_VERSION: 3.3.10
@@ -1173,7 +1173,7 @@ jobs:
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/1.x'
     needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
-    runs-on: windows-2019
+    runs-on: windows-2025
     env:
       SFML_VERSION: 3.0.0
       MSVC_TOOLSET_VERSION: 142  # VS2019
