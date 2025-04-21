@@ -24,22 +24,13 @@
 
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
-#if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable:4121) // alignment of a member was sensitive to packing, in winnt.h
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #if SDL_MAJOR_VERSION < 3
     #include <SDL_syswm.h>
-#endif
-
-#ifdef TGUI_SYSTEM_WINDOWS
-    #include <TGUI/extlibs/IncludeWindows.hpp>
-#endif
-
-#if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(pop)
 #endif
 
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)

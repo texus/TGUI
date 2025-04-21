@@ -649,7 +649,7 @@ jobs:
       FREETYPE_VERSION: 2.6.5
       CMAKE_VERSION: '3.21' # Required to use VS2022 generator
       CMAKE_VERSION_PATCH: 7
-      MSVC_TOOLSET_VERSION: 141  # VS2017
+      MSVC_TOOLSET_VERSION: 142  # VS2019 (v141 isn't installed anymore)
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v4
@@ -676,8 +676,7 @@ jobs:
           -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -DCMAKE_INSTALL_PREFIX=TGUI-build/install
-          -DTGUI_OPTIMIZE_SINGLE_BUILD=ON
-          -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2
+          -DCMAKE_UNITY_BUILD=OFF
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
