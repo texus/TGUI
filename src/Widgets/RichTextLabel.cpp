@@ -76,12 +76,13 @@ namespace tgui
 
     String RichTextLabel::findLinkAtPos(Vector2f pos) const
     {
+        const Vector2f innerPos = pos - Vector2f{m_bordersCached.getLeft(), m_bordersCached.getTop()};
         for (std::size_t i = 0; i < m_lines.size(); ++i)
         {
             for (std::size_t j = 0; j < m_lines[i].size(); ++j)
             {
                 const auto& textPiece = m_lines[i][j];
-                if (FloatRect{textPiece.getPosition(), textPiece.getSize()}.contains(pos - Vector2f{m_bordersCached.getLeft(), m_bordersCached.getTop()}))
+                if (FloatRect{textPiece.getPosition(), textPiece.getSize()}.contains(innerPos))
                 {
                     auto linkIt = m_links.find({i, j});
                     if (linkIt != m_links.end())
@@ -89,6 +90,19 @@ namespace tgui
                     else
                         return "";
                 }
+            }
+        }
+
+        for (std::size_t i = 0; i < m_images.size(); ++i)
+        {
+            const auto& sprite = m_images[i];
+            if (FloatRect{sprite.getPosition(), sprite.getSize()}.contains(innerPos))
+            {
+                auto linkIt = m_imageLinks.find(i);
+                if (linkIt != m_imageLinks.end())
+                    return linkIt->second;
+                else
+                    return "";
             }
         }
 
@@ -112,11 +126,14 @@ namespace tgui
 
     void RichTextLabel::rearrangeText()
     {
+        // Don't clear m_images yet to keep the textures cached for now
+        m_lines.clear();
+        m_links.clear();
+        m_imageLinks.clear();
+
         if (m_fontCached == nullptr)
         {
-            m_lines.clear();
             m_images.clear();
-            m_links.clear();
             return;
         }
 
@@ -129,9 +146,7 @@ namespace tgui
 
         if ((getSize().x <= outline.getLeft() + outline.getRight()) || (getSize().y <= outline.getTop() + outline.getBottom()))
         {
-            m_lines.clear();
             m_images.clear();
-            m_links.clear();
             return;
         }
 
@@ -151,9 +166,7 @@ namespace tgui
 
             if (maxWidth <= 0)
             {
-                m_lines.clear();
                 m_images.clear();
-                m_links.clear();
                 return;
             }
         }
@@ -165,9 +178,7 @@ namespace tgui
 
         // Now that the new images are loaded, we can remove the old ones. If we did it in the other order then
         // we wouldn't be able to retrieve the images from the texture manager cache during loading.
-        m_lines.clear();
         m_images.clear();
-        m_links.clear();
 
         // Fit the text in the available space
         Optional<std::vector<std::vector<Text::Blueprint>>> wordWrappedLines = (maxWidth > 0)
@@ -222,6 +233,9 @@ namespace tgui
                     m_images.emplace_back(images[imageIndex]);
                     m_images.back().setPosition({pos.x + lineWidth, pos.y});
                     ++imageIndex;
+
+                    if (!textPiecesLine[j].link.empty())
+                        m_imageLinks[m_images.size()-1] = textPiecesLine[j].link;
 
                     maxLineHeight = std::max(maxLineHeight, static_cast<float>(textPiecesLine[j].gapSize.y));
                     lineWidth += textPiecesLine[j].gapSize.x;
@@ -420,7 +434,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RichTextLabel::constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images)
+    void RichTextLabel::constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images) const
     {
         TGUI_ASSERT(textPiecesLines.empty() && images.empty(), "RichTextLabel::constructRichLineBlueprints must be called with empty vectors")
 
@@ -662,6 +676,7 @@ namespace tgui
                                     auto& line = textPiecesLines.back();
                                     TGUI_EMPLACE_BACK(gapPiece, line)
                                     gapPiece.gapSize = texture.getImageSize();
+                                    gapPiece.link = currentUrl;
                                 }
                             }
                             catch (const Exception&)

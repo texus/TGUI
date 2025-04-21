@@ -116,7 +116,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /// the function is called). It can be overridden in a derived class to change how the parsing works (e.g. to use BBCode
         /// instead of html tags).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images);
+        virtual void constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -150,6 +150,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         std::vector<Sprite> m_images;
         std::map<std::pair<std::size_t, std::size_t>, String> m_links; // Key = indices for text piece in m_lines
+        std::map<std::size_t, String> m_imageLinks; // Key = index in m_images
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
