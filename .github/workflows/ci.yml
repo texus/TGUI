@@ -676,7 +676,7 @@ jobs:
           -DSDL2_TTF_PATH="${env:GITHUB_WORKSPACE}/SDL2_ttf-${env:SDL_TTF_VERSION}"
           -DFREETYPE_WINDOWS_BINARIES_PATH="${env:GITHUB_WORKSPACE}/freetype-windows-binaries-${env:FREETYPE_VERSION}"
           -DCMAKE_INSTALL_PREFIX=TGUI-build/install
-          -DCMAKE_UNITY_BUILD=OFF
+          -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_CXX_STANDARD=14
           -DTGUI_WARNINGS_AS_ERRORS=ON
