@@ -18,5 +18,5 @@ add_subdirectory("${TGUI_ROOT_DIR}" TGUI-build)
 
 # Create the libmain.so library that contains the application's c++ code.
 # The library needs to be called like this because SDLActivity will search for that name.
-add_library(main SHARED src/example.cpp)
+add_library(main SHARED example.cpp)
 target_link_libraries(main PRIVATE TGUI::TGUI log)

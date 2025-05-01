@@ -136,7 +136,7 @@ namespace tgui
             return nullptr;
 
         auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(static_cast<std::size_t>(dataSize));
-        std::memcpy(buffer.get(), fileData, dataSize);
+        std::memcpy(buffer.get(), fileData, static_cast<std::size_t>(dataSize));
 
         UnloadFileData(fileData);
 

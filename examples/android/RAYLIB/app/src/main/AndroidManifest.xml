@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:glEsVersion="${GL_VERSION_CODE}" android:required="true" />
+
+    <!-- Indicates the requirements for this application -->
+
+    <uses-permission android:name="android.permission.INTERNET"
+        android:required="${REQUIRE_INTERNET}" />
+
+    <uses-permission android:name="android.permission.VIBRATE"
+        android:required="${REQUIRE_VIBRATION}" />
+
+    <uses-feature android:name="android.hardware.sensor.gyroscope"
+        android:required="${REQUIRE_GYROSCOPE}" />
+
+    <uses-feature android:name="android.hardware.sensor.accelerometer"
+        android:required="${REQUIRE_ACCELEROMETER}" />
+
+    <!-- Application config -->
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        tools:targetApi="31">
+        <activity
+            android:name=".NativeLoader"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="${APP_ORIENTATION}" android:launchMode="singleTask"
+            android:resizeableActivity="false"
+            android:clearTaskOnLaunch="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.${APP_CATEGORY}" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="${APP_LIB_NAME}" />
+        </activity>
+
+    </application>
+
+</manifest>
