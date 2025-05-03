@@ -199,7 +199,7 @@ void ClearLastSoftKey(void)
 
         if (softKeyboard != NULL) {
             jclass softKeyboardClass = (*env)->GetObjectClass(env, softKeyboard);
-            jmethodID method = (*env)->GetMethodID(env, softKeyboardClass, "clearLastKeyEvent", "()V");
+            jmethodID method = (*env)->GetMethodID(env, softKeyboardClass, "clearLastEvent", "()V");
             (*env)->CallVoidMethod(env, softKeyboard, method);
         }
 

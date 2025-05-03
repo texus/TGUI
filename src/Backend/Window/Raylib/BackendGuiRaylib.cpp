@@ -237,21 +237,8 @@ namespace tgui
 
         while (!WindowShouldClose() && !m_endMainLoop)
         {
-            handleEvents();
-
-            int pressedChar = GetCharPressed();
-            while (pressedChar)
-            {
-                handleCharPressed(pressedChar);
-                pressedChar = GetCharPressed();
-            }
-
-            int pressedKey = GetKeyPressed();
-            while (pressedKey)
-            {
-                handleKeyPressed(pressedKey);
-                pressedKey = GetKeyPressed();
-            }
+            for (const auto& event : generateEventQueue(true))
+                handleEvent(event);
 
             BeginDrawing();
             m_backendRenderTarget->clearScreen();
@@ -444,11 +431,54 @@ namespace tgui
 
                 pressedKey = GetKeyPressed();
             }
+
+            if (m_getLastSoftKeyUnicodeFunction)
+            {
+                pressedChar = m_getLastSoftKeyUnicodeFunction();
+                if (pressedChar > 0)
+                {
+                    TGUI_EMPLACE_BACK(event, events)
+                    event.type = Event::Type::TextEntered;
+                    event.text.unicode = static_cast<char32_t>(pressedChar);
+
+                    if (m_clearLastSoftKeyFunction)
+                        m_clearLastSoftKeyFunction();
+                }
+            }
         }
 
         // TODO: Touch events
 
         return events;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiRaylib::startTextInput(FloatRect)
+    {
+        if (m_showSoftKeyboardFunction)
+            m_showSoftKeyboardFunction();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiRaylib::stopTextInput()
+    {
+        if (m_hideSoftKeyboardFunction)
+            m_hideSoftKeyboardFunction();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiRaylib::setSoftKeyboardFunctions(std::function<void()> showKeyboardFunc,
+                                                    std::function<void()> hideKeyboardFunc,
+                                                    std::function<int()> getKeyUnicodeFunc,
+                                                    std::function<void()> clearLastKeyFunc)
+    {
+        m_showSoftKeyboardFunction = showKeyboardFunc;
+        m_hideSoftKeyboardFunction = hideKeyboardFunc;
+        m_getLastSoftKeyUnicodeFunction = getKeyUnicodeFunc;
+        m_clearLastSoftKeyFunction = clearLastKeyFunc;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -83,6 +83,10 @@ bool runExample(tgui::BackendGui& gui)
 void run_application()
 {
     tgui::Gui gui;
+
+    // raylib provides no way of accessing the software keyboard, so we need to give TGUI access to the raymob functions
+    gui.setSoftKeyboardFunctions(ShowSoftKeyboard, HideSoftKeyboard, GetLastSoftKeyUnicode, ClearLastSoftKey);
+
     if (!runExample(gui))
         return;
 

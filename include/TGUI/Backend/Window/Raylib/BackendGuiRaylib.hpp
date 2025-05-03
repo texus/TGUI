@@ -180,6 +180,38 @@ TGUI_MODULE_EXPORT namespace tgui
         std::vector<Event> generateEventQueue(bool processKeyEvents);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function is called by TGUI when focusing a text field (EditBox or TextArea).
+        ///        It may result in the software keyboard being opened.
+        ///
+        /// @param inputRect  The rectangle where text is being inputted
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void startTextInput(FloatRect inputRect) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function is called by TGUI when unfocusing a text field (EditBox or TextArea).
+        ///        It may result in the software keyboard being closed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void stopTextInput() override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets functions that are called to control the soft/virtual keyboard.
+        ///
+        /// @param showKeyboardFunc  Function to call when the keyboard needs to be shown. ShowSoftKeyboard in raymob.
+        /// @param hideKeyboardFunc  Function to call when the keyboard needs to be hidden. HideSoftKeyboard in raymob.
+        /// @param getKeyUnicodeFunc Function that returnes the last pressed key (or 0 if none). GetLastSoftKeyUnicode in raymob.
+        /// @param clearLastKeyFunc  Function that resets the last pressed key. ClearLastSoftKey in raymob.
+        ///
+        /// Example usage when using raymob:
+        /// @code
+        /// gui.setSoftKeyboardFunctions(ShowSoftKeyboard, HideSoftKeyboard, GetLastSoftKeyUnicode, ClearLastSoftKey);
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSoftKeyboardFunctions(std::function<void()> showKeyboardFunc,
+                                      std::function<void()> hideKeyboardFunc,
+                                      std::function<int()> getKeyUnicodeFunc,
+                                      std::function<void()> clearLastKeyFunc);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +224,11 @@ TGUI_MODULE_EXPORT namespace tgui
 
         bool m_mouseOnWindow = true;
         bool m_endMainLoop = false;
+
+        std::function<void()> m_showSoftKeyboardFunction;
+        std::function<void()> m_hideSoftKeyboardFunction;
+        std::function<int()> m_getLastSoftKeyUnicodeFunction;
+        std::function<void()> m_clearLastSoftKeyFunction;
     };
 }
 
