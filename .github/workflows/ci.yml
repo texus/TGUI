@@ -216,12 +216,17 @@ jobs:
 
           sudo make -C build -j$(nproc) install
 
+      - uses: NcStudios/VulkanCI@v1.2
+        with:
+          sdkVersion: 1.4.309.0
+
       - name: Run tests
         working-directory: TGUI/build/tests
         run: |
           set -a && source ../../tests/EnableSoftwareRenderer.env && set +a
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_GRAPHICS
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SFML_OPENGL3
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_GPU
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_RENDERER
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=RAYLIB
           MESA_GL_VERSION_OVERRIDE=3.3 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_OPENGL3
