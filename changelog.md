@@ -1,10 +1,11 @@
-TGUI 1.9  (TBD)
----------------
+TGUI 1.9  (4 May 2025)
+----------------------
 
 - New backend: SDL_GPU (uses SDL3's new GPU API)
 - RichTextLabel can now contain url tags and a new findLinkAtPos function can check if the mouse is on top of any
 - Added mapPixelToCoords and mapCoordsToPixel to CanvasSFML
 - Added tgui::literals::percent namespace with the "_percent" user-defined literal
+- Added support for using raylib backend on Android via raymob
 - Fixed behavior of using showWithEffect or hideWithEffect with a Fade type while another fade animation wasn't finished yet
 
 
