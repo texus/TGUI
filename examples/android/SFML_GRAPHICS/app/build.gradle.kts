@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
 }
 
-val NDK_VERSION by extra(project.properties["NDK_VERSION"] as? String ?: "25.2.9519653")
+val NDK_VERSION by extra(project.properties["NDK_VERSION"] as? String ?: "28.0.13004108")
 val ARCH_ABI by extra(project.properties["ARCH_ABI"] as? String ?: "arm64-v8a")
 
 android {

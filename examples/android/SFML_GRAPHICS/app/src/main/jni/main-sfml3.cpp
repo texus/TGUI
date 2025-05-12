@@ -82,32 +82,32 @@ int main(int, char**)
     {
         while (const auto event = active ? window.pollEvent() : window.waitEvent())
         {
-            if (event.is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>())
             {
                 window.close();
             }
-            else if (const auto* keyEvent = event.getIf<sf::Event::KeyPressed>())
+            else if (const auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
             {
                 if (keyEvent->code == sf::Keyboard::Key::Escape)
                     window.close();
             }
-            else if (const auto* sizeEvent = event.getIf<sf::Event::Resized>())
+            else if (const auto* sizeEvent = event->getIf<sf::Event::Resized>())
             {
                 setBackground(gui, {sizeEvent->size.x, sizeEvent->size.y});
             }
 
             // On Android MouseLeft/MouseEntered are (for now) triggered,
             // whenever the app loses or gains focus.
-            else if (event.is<sf::Event::MouseLeft>())
+            else if (event->is<sf::Event::MouseLeft>())
             {
                 active = false;
             }
-            else if (event.is<sf::Event::MouseEntered>())
+            else if (event->is<sf::Event::MouseEntered>())
             {
                 active = true;
             }
 
-            gui.handleEvent(event);
+            gui.handleEvent(*event);
         }
 
         if (active)
