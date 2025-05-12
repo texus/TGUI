@@ -68,6 +68,9 @@ namespace tgui
 
         void Gui::prepareDraw(SDL_GPUCommandBuffer* cmdBuffer, SDL_GPUCopyPass* copyPass)
         {
+            if (m_drawUpdatesTime)
+                updateTime();
+
             downcast<BackendRenderTargetSDLGPU>(m_backendRenderTarget)->prepareDrawGui(m_container, cmdBuffer, copyPass);
         }
 
