@@ -783,39 +783,42 @@ namespace tgui
             case ShowEffectType::Scale:
             {
                 // TODO: Use setScale instead of setSize
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), m_position, duration));
+                const Vector2f startPos = {getPosition().x - (getOrigin().x * getSize().x) + (getSize().x / 2.f), getPosition().y - (getOrigin().y * getSize().y) + (getSize().y / 2.f)};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration));
                 m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, m_size, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         onAnimationFinish.emit(this, AnimationType::Resize);
                         onShowEffectFinish.emit(this, type, true);
                     }
                 ));
-                setPosition(getPosition() + (getSize() / 2.f));
+                setPosition(startPos);
                 setSize(0, 0);
                 break;
             }
             case ShowEffectType::SlideFromLeft:
             {
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), Vector2f{-getFullSize().x, getPosition().y}, m_position, duration,
+                const Vector2f startPos = {-getFullSize().x + (getOrigin().x * getSize().x), getPosition().y};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, true);
                     }
                 ));
-                setPosition({-getFullSize().x, getPosition().y});
+                setPosition(startPos);
                 break;
             }
             case ShowEffectType::SlideFromRight:
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, m_position, duration,
+                    const Vector2f startPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x), getPosition().y};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
                         TGUI_LAMBDA_CAPTURE_EQ_THIS{
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, true);
                         }
                     ));
-                    setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
+                    setPosition(startPos);
                 }
                 else
                 {
@@ -826,26 +829,28 @@ namespace tgui
             }
             case ShowEffectType::SlideFromTop:
             {
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, -getFullSize().y}, m_position, duration,
+                const Vector2f startPos = {getPosition().x, -getFullSize().y + (getOrigin().y * getSize().y)};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, true);
                     }
                 ));
-                setPosition({getPosition().x, -getFullSize().y});
+                setPosition(startPos);
                 break;
             }
             case ShowEffectType::SlideFromBottom:
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, m_position, duration,
+                    const Vector2f startPos = {getPosition().x, getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
                         TGUI_LAMBDA_CAPTURE_EQ_THIS{
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, true);
                         }
                     ));
-                    setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
+                    setPosition(startPos);
                 }
                 else
                 {
@@ -909,7 +914,8 @@ namespace tgui
                 // TODO: Use setScale instead of setSize
                 const Vector2f size = getSize();
                 const Layout2d sizeLayout = m_size;
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration));
+                const Vector2f endPos = {position.x - (getOrigin().x * size.x) + (size.x / 2.f), position.y - (getOrigin().y * size.y) + (size.y / 2.f)};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration));
                 m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         setVisible(false);
@@ -925,7 +931,8 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration,
+                    const Vector2f endPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x), getPosition().y};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
                         TGUI_LAMBDA_CAPTURE_EQ_THIS{
                             setVisible(false);
                             setPosition(positionLayout);
@@ -943,7 +950,8 @@ namespace tgui
             }
             case ShowEffectType::SlideToLeft:
             {
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration,
+                const Vector2f endPos = {-getFullSize().x + (getOrigin().x * getSize().x), getPosition().y};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         setVisible(false);
                         setPosition(positionLayout);
@@ -957,7 +965,8 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration,
+                    const Vector2f endPos = {getPosition().x, getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
                         TGUI_LAMBDA_CAPTURE_EQ_THIS{
                             setVisible(false);
                             setPosition(positionLayout);
@@ -975,7 +984,8 @@ namespace tgui
             }
             case ShowEffectType::SlideToTop:
             {
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration,
+                const Vector2f endPos = {getPosition().x, -getFullSize().y + (getOrigin().y * getSize().y)};
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
                     TGUI_LAMBDA_CAPTURE_EQ_THIS{
                         setVisible(false);
                         setPosition(positionLayout);

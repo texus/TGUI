@@ -1,3 +1,9 @@
+TGUI 1.10  (TBD)
+----------------
+
+- Show effects didn't take origin into account
+
+
 TGUI 1.9  (4 May 2025)
 ----------------------
 
