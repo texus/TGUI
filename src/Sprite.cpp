@@ -264,7 +264,7 @@ namespace tgui
 
     bool Sprite::isTransparentPixel(Vector2f pos) const
     {
-        if (!isSet() || (m_size.x == 0) || (m_size.y == 0))
+        if (!isSet() || (m_size.x <= 0) || (m_size.y <= 0))
             return true;
         if (!m_texture.getData()->backendTexture)
             return false;
@@ -307,65 +307,64 @@ namespace tgui
             }
             case ScalingType::Horizontal:
             {
-                if (pos.x >= m_size.x - (imageSize.x - middleRect.left - middleRect.width) * (m_size.y / imageSize.y))
-                {
-                    float xDiff = pos.x - (m_size.x - (imageSize.x - middleRect.left - middleRect.width) * (m_size.y / imageSize.y));
-                    pixel.x = middleRect.left + middleRect.width + (xDiff / m_size.y * imageSize.y);
-                }
-                else if (pos.x >= middleRect.left * (m_size.y / imageSize.y))
-                {
-                    float xDiff = pos.x - (middleRect.left * (m_size.y / imageSize.y));
-                    pixel.x = middleRect.left + (xDiff / (m_size.x - ((imageSize.x - middleRect.width) * (m_size.y / imageSize.y))) * middleRect.width);
-                }
+                const float scaleFactor = (m_size.x >= (imageSize.x - middleRect.width) * (m_size.y / imageSize.y))
+                    ? (m_size.y / imageSize.y)
+                    : (m_size.x / (imageSize.x - middleRect.width));
+                const float middleLeft = middleRect.left * scaleFactor;
+                const float middleRight = m_size.x - (imageSize.x - middleRect.left - middleRect.width) * scaleFactor;
+
+                if (pos.x >= middleRight)
+                    pixel.x = (middleRect.left + middleRect.width) + ((pos.x - middleRight) / scaleFactor);
+                else if (pos.x >= middleLeft)
+                    pixel.x = middleRect.left + (pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width;
                 else // Mouse on the left part
-                {
-                    pixel.x = pos.x / m_size.y * imageSize.y;
-                }
+                    pixel.x = pos.x / scaleFactor;
 
                 pixel.y = pos.y / m_size.y * imageSize.y;
                 break;
             }
             case ScalingType::Vertical:
             {
-                if (pos.y >= m_size.y - (imageSize.y - middleRect.top - middleRect.height) * (m_size.x / imageSize.x))
-                {
-                    float yDiff = pos.y - (m_size.y - (imageSize.y - middleRect.top - middleRect.height) * (m_size.x / imageSize.x));
-                    pixel.y = middleRect.top + middleRect.height + (yDiff / m_size.x * imageSize.x);
-                }
-                else if (pos.y >= middleRect.top * (m_size.x / imageSize.x))
-                {
-                    float yDiff = pos.y - (middleRect.top * (m_size.x / imageSize.x));
-                    pixel.y = middleRect.top + (yDiff / (m_size.y - ((imageSize.y - middleRect.height) * (m_size.x / imageSize.x))) * middleRect.height);
-                }
+                const float scaleFactor = (m_size.y >= (imageSize.y - middleRect.height) * (m_size.x / imageSize.x))
+                    ? (m_size.x / imageSize.x)
+                    : (m_size.y / (imageSize.y - middleRect.height));
+                const float middleTop = middleRect.top * scaleFactor;
+                const float middleBottom = m_size.y - ((imageSize.y - middleRect.top - middleRect.height) * scaleFactor);
+
+                if (pos.y >= middleBottom)
+                    pixel.y = (middleRect.top + middleRect.height) + ((pos.y - middleBottom) / scaleFactor);
+                else if (pos.y >= middleTop)
+                    pixel.y = middleRect.top + (pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height;
                 else // Mouse on the top part
-                {
-                    pixel.y = pos.y / m_size.x * imageSize.x;
-                }
+                    pixel.y = pos.y / scaleFactor;
 
                 pixel.x = pos.x / m_size.x * imageSize.x;
                 break;
             }
             case ScalingType::NineSlice:
             {
-                if (pos.x < middleRect.left)
-                    pixel.x = pos.x;
-                else if (pos.x >= m_size.x - (imageSize.x - middleRect.width - middleRect.left))
-                    pixel.x = pos.x - m_size.x + imageSize.x;
-                else
-                {
-                    float xDiff = (pos.x - middleRect.left) / (m_size.x - (imageSize.x - middleRect.width)) * middleRect.width;
-                    pixel.x = middleRect.left + xDiff;
-                }
+                // We scale the image when the sprite is smaller than the corners
+                const float scaleFactorX = (m_size.x >= imageSize.x - middleRect.width) ? 1 : (m_size.x / (imageSize.x - middleRect.width));
+                const float scaleFactorY = (m_size.y >= imageSize.y - middleRect.height) ? 1 : (m_size.y / (imageSize.y - middleRect.height));
+                const float scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                const float middleLeft = middleRect.left * scaleFactor;
+                const float middleTop = middleRect.top * scaleFactor;
+                const float middleRight = m_size.x - ((imageSize.x - middleRect.left - middleRect.width) * scaleFactor);
+                const float middleBottom = m_size.y - ((imageSize.y - middleRect.top - middleRect.height) * scaleFactor);
 
-                if (pos.y < middleRect.top)
-                    pixel.y = pos.y;
-                else if (pos.y >= m_size.y - (imageSize.y - middleRect.height - middleRect.top))
-                    pixel.y = pos.y - m_size.y + imageSize.y;
+                if (pos.x < middleLeft)
+                    pixel.x = pos.x / scaleFactor;
+                else if (pos.x >= middleRight)
+                    pixel.x = (middleRect.left + middleRect.width) + ((pos.x - middleRight) / scaleFactor);
                 else
-                {
-                    float yDiff = (pos.y - middleRect.top) / (m_size.y - (imageSize.y - middleRect.height)) * middleRect.height;
-                    pixel.y = middleRect.top + yDiff;
-                }
+                    pixel.x = middleRect.left + (pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width;
+
+                if (pos.y < middleTop)
+                    pixel.y = pos.y / scaleFactor;
+                else if (pos.y >= middleBottom)
+                    pixel.y = (middleRect.top + middleRect.height) + ((pos.y - middleBottom) / scaleFactor);
+                else
+                    pixel.y = middleRect.top + (pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height;
 
                 break;
             }
@@ -414,170 +413,169 @@ namespace tgui
             textureSize = Vector2f{m_texture.getPartRect().getSize()};
             middleRect = FloatRect{m_texture.getMiddleRect()};
             if (middleRect == FloatRect(0, 0, textureSize.x, textureSize.y))
-            {
                 m_scalingType = ScalingType::Normal;
-            }
             else if (middleRect.height == textureSize.y)
-            {
-                if (m_size.x >= (textureSize.x - middleRect.width) * (m_size.y / textureSize.y))
-                    m_scalingType = ScalingType::Horizontal;
-                else
-                    m_scalingType = ScalingType::Normal;
-            }
+                m_scalingType = ScalingType::Horizontal;
             else if (middleRect.width == textureSize.x)
-            {
-                if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
-                    m_scalingType = ScalingType::Vertical;
-                else
-                    m_scalingType = ScalingType::Normal;
-            }
+                m_scalingType = ScalingType::Vertical;
             else
-            {
-                if (m_size.x >= textureSize.x - middleRect.width)
-                {
-                    if (m_size.y >= textureSize.y - middleRect.height)
-                        m_scalingType = ScalingType::NineSlice;
-                    else
-                        m_scalingType = ScalingType::Horizontal;
-                }
-                else if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
-                    m_scalingType = ScalingType::Vertical;
-                else
-                    m_scalingType = ScalingType::Normal;
-            }
+                m_scalingType = ScalingType::NineSlice;
         }
 
         // Calculate the vertices based on the way we are scaling
         const Vertex::Color vertexColor(Color::applyOpacity(m_vertexColor, m_opacity));
         switch (m_scalingType)
         {
-        case ScalingType::Normal:
-            ///////////
-            // 0---1 //
-            // |   | //
-            // 2---3 //
-            ///////////
-            m_vertices = {
-                {{0, 0}, vertexColor, {0, 0}},
-                {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
-                {{0, m_size.y}, vertexColor, {0, textureSize.y}},
-                {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
-            };
-            m_indices = {
-                0, 2, 1,
-                1, 2, 3
-            };
-            break;
-
-        case ScalingType::Horizontal:
-            ///////////////////////
-            // 0---2-------4---6 //
-            // |   |       |   | //
-            // 1---3-------5---7 //
-            ///////////////////////
-            m_vertices = {
-                {{0, 0}, vertexColor, {0, 0}},
-                {{0, m_size.y}, vertexColor, {0, textureSize.y}},
-                {{middleRect.left * (m_size.y / textureSize.y), 0}, vertexColor, {middleRect.left, 0}},
-                {{middleRect.left * (m_size.y / textureSize.y), m_size.y}, vertexColor, {middleRect.left, textureSize.y}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), 0}, vertexColor, {middleRect.left + middleRect.width, 0}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), m_size.y}, vertexColor, {middleRect.left + middleRect.width, textureSize.y}},
-                {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
-                {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
-            };
-            m_indices = {
-                0, 1, 2,
-                1, 3, 2,
-                2, 3, 4,
-                3, 5, 4,
-                4, 5, 6,
-                5, 7, 6
-            };
-            break;
-
-        case ScalingType::Vertical:
-            ///////////
-            // 0---1 //
-            // |   | //
-            // 2---3 //
-            // |   | //
-            // |   | //
-            // |   | //
-            // 4---5 //
-            // |   | //
-            // 6---7-//
-            ///////////
-            m_vertices = {
-                {{0, 0}, vertexColor, {0, 0}},
-                {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
-                {{0, middleRect.top * (m_size.x / textureSize.x)}, vertexColor, {0, middleRect.top}},
-                {{m_size.x, middleRect.top * (m_size.x / textureSize.x)}, vertexColor, {textureSize.x, middleRect.top}},
-                {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, vertexColor, {0, middleRect.top + middleRect.height}},
-                {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, vertexColor, {textureSize.x, middleRect.top + middleRect.height}},
-                {{0, m_size.y}, vertexColor, {0, textureSize.y}},
-                {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
-            };
-            m_indices = {
-                0, 2, 1,
-                1, 2, 3,
-                2, 4, 3,
-                3, 4, 5,
-                4, 6, 5,
-                5, 6, 7
-            };
-            break;
-
-        case ScalingType::NineSlice:
-            ///////////////////////////////
-            // 0----1-----------11----12 //
-            // |    |            |    |  //
-            // 2----3-----------10----13 //
-            // |    |            |    |  //
-            // |    |            |    |  //
-            // |    |            |    |  //
-            // 4----5------------9----14 //
-            // |    |            |    |  //
-            // 6----7------------8----15 //
-            ///////////////////////////////
-            m_vertices = {
-                {{0, 0}, vertexColor, {0, 0}},
-                {{middleRect.left, 0}, vertexColor, {middleRect.left, 0}},
-                {{0, middleRect.top}, vertexColor, {0, middleRect.top}},
-                {{middleRect.left, middleRect.top}, vertexColor, {middleRect.left, middleRect.top}},
-                {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, vertexColor, {0, middleRect.top + middleRect.height}},
-                {{middleRect.left, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, vertexColor, {middleRect.left, middleRect.top + middleRect.height}},
-                {{0, m_size.y}, vertexColor, {0, textureSize.y}},
-                {{middleRect.left, m_size.y}, vertexColor, {middleRect.left, textureSize.y}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y}, vertexColor, {middleRect.left + middleRect.width, textureSize.y}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, vertexColor, {middleRect.left + middleRect.width, middleRect.top + middleRect.height}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), middleRect.top}, vertexColor, {middleRect.left + middleRect.width, middleRect.top}},
-                {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), 0}, vertexColor, {middleRect.left + middleRect.width, 0}},
-                {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
-                {{m_size.x, middleRect.top}, vertexColor, {textureSize.x, middleRect.top}},
-                {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, vertexColor, {textureSize.x, middleRect.top + middleRect.height}},
-                {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
-            };
-            m_indices = {
-                0, 2, 1,
-                1, 2, 3,
-                2, 4, 3,
-                3, 4, 5,
-                4, 6, 5,
-                6, 7, 5,
-                7, 8, 5,
-                8, 9, 5,
-                5, 9, 3,
-                9, 10, 3,
-                3, 10, 1,
-                1, 10, 11,
-                11, 10, 12,
-                12, 10, 13,
-                10, 13, 9,
-                13, 9, 14,
-                9, 8, 14,
-                8, 15, 14
-            };
-            break;
+            case ScalingType::Normal:
+            {
+                ///////////
+                // 0---1 //
+                // |   | //
+                // 2---3 //
+                ///////////
+                m_vertices = {
+                    {{0, 0}, vertexColor, {0, 0}},
+                    {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
+                    {{0, m_size.y}, vertexColor, {0, textureSize.y}},
+                    {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
+                };
+                m_indices = {
+                    0, 2, 1,
+                    1, 2, 3
+                };
+                break;
+            }
+            case ScalingType::Horizontal:
+            {
+                ///////////////////////
+                // 0---2-------4---6 //
+                // |   |       |   | //
+                // 1---3-------5---7 //
+                ///////////////////////
+                const float scaleFactor = (m_size.x >= (textureSize.x - middleRect.width) * (m_size.y / textureSize.y))
+                    ? (m_size.y / textureSize.y)
+                    : (m_size.x / (textureSize.x - middleRect.width));
+                const float middleLeft = middleRect.left * scaleFactor;
+                const float middleRight = m_size.x - (textureSize.x - middleRect.left - middleRect.width) * scaleFactor;
+                m_vertices = {
+                    {{0, 0}, vertexColor, {0, 0}},
+                    {{0, m_size.y}, vertexColor, {0, textureSize.y}},
+                    {{middleLeft, 0}, vertexColor, {middleRect.left, 0}},
+                    {{middleLeft, m_size.y}, vertexColor, {middleRect.left, textureSize.y}},
+                    {{middleRight, 0}, vertexColor, {middleRect.left + middleRect.width, 0}},
+                    {{middleRight, m_size.y}, vertexColor, {middleRect.left + middleRect.width, textureSize.y}},
+                    {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
+                    {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
+                };
+                m_indices = {
+                    0, 1, 2,
+                    1, 3, 2,
+                    2, 3, 4,
+                    3, 5, 4,
+                    4, 5, 6,
+                    5, 7, 6
+                };
+                break;
+            }
+            case ScalingType::Vertical:
+            {
+                ///////////
+                // 0---1 //
+                // |   | //
+                // 2---3 //
+                // |   | //
+                // |   | //
+                // |   | //
+                // 4---5 //
+                // |   | //
+                // 6---7-//
+                ///////////
+                const float scaleFactor = (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
+                    ? (m_size.x / textureSize.x)
+                    : (m_size.y / (textureSize.y - middleRect.height));
+                const float middleTop = middleRect.top * scaleFactor;
+                const float middleBottom = m_size.y - ((textureSize.y - middleRect.top - middleRect.height) * scaleFactor);
+                m_vertices = {
+                    {{0, 0}, vertexColor, {0, 0}},
+                    {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
+                    {{0, middleTop}, vertexColor, {0, middleRect.top}},
+                    {{m_size.x, middleTop}, vertexColor, {textureSize.x, middleRect.top}},
+                    {{0, middleBottom}, vertexColor, {0, middleRect.top + middleRect.height}},
+                    {{m_size.x, middleBottom}, vertexColor, {textureSize.x, middleRect.top + middleRect.height}},
+                    {{0, m_size.y}, vertexColor, {0, textureSize.y}},
+                    {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
+                };
+                m_indices = {
+                    0, 2, 1,
+                    1, 2, 3,
+                    2, 4, 3,
+                    3, 4, 5,
+                    4, 6, 5,
+                    5, 6, 7
+                };
+                break;
+            }
+            case ScalingType::NineSlice:
+            {
+                ///////////////////////////////
+                // 0----1-----------11----12 //
+                // |    |            |    |  //
+                // 2----3-----------10----13 //
+                // |    |            |    |  //
+                // |    |            |    |  //
+                // |    |            |    |  //
+                // 4----5------------9----14 //
+                // |    |            |    |  //
+                // 6----7------------8----15 //
+                ///////////////////////////////
+                // We scale the image when the sprite is smaller than the corners
+                const float scaleFactorX = (m_size.x >= textureSize.x - middleRect.width) ? 1 : (m_size.x / (textureSize.x - middleRect.width));
+                const float scaleFactorY = (m_size.y >= textureSize.y - middleRect.height) ? 1 : (m_size.y / (textureSize.y - middleRect.height));
+                const float scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                const float middleLeft = middleRect.left * scaleFactor;
+                const float middleTop = middleRect.top * scaleFactor;
+                const float middleRight = m_size.x - ((textureSize.x - middleRect.left - middleRect.width) * scaleFactor);
+                const float middleBottom = m_size.y - ((textureSize.y - middleRect.top - middleRect.height) * scaleFactor);
+                m_vertices = {
+                    {{0, 0}, vertexColor, {0, 0}},
+                    {{middleLeft, 0}, vertexColor, {middleRect.left, 0}},
+                    {{0, middleTop}, vertexColor, {0, middleRect.top}},
+                    {{middleLeft, middleTop}, vertexColor, {middleRect.left, middleRect.top}},
+                    {{0, middleBottom}, vertexColor, {0, middleRect.top + middleRect.height}},
+                    {{middleLeft, middleBottom}, vertexColor, {middleRect.left, middleRect.top + middleRect.height}},
+                    {{0, m_size.y}, vertexColor, {0, textureSize.y}},
+                    {{middleLeft, m_size.y}, vertexColor, {middleRect.left, textureSize.y}},
+                    {{middleRight, m_size.y}, vertexColor, {middleRect.left + middleRect.width, textureSize.y}},
+                    {{middleRight, middleBottom}, vertexColor, {middleRect.left + middleRect.width, middleRect.top + middleRect.height}},
+                    {{middleRight, middleTop}, vertexColor, {middleRect.left + middleRect.width, middleRect.top}},
+                    {{middleRight, 0}, vertexColor, {middleRect.left + middleRect.width, 0}},
+                    {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
+                    {{m_size.x, middleTop}, vertexColor, {textureSize.x, middleRect.top}},
+                    {{m_size.x, middleBottom}, vertexColor, {textureSize.x, middleRect.top + middleRect.height}},
+                    {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
+                };
+                m_indices = {
+                    0, 2, 1,
+                    1, 2, 3,
+                    2, 4, 3,
+                    3, 4, 5,
+                    4, 6, 5,
+                    6, 7, 5,
+                    7, 8, 5,
+                    8, 9, 5,
+                    5, 9, 3,
+                    9, 10, 3,
+                    3, 10, 1,
+                    1, 10, 11,
+                    11, 10, 12,
+                    12, 10, 13,
+                    10, 13, 9,
+                    13, 9, 14,
+                    9, 8, 14,
+                    8, 15, 14
+                };
+                break;
+            }
         };
 
         if (texCoordOffset != Vector2u{})

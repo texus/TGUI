@@ -477,23 +477,26 @@ namespace tgui
     {
         if (m_spriteBackground.isSet())
         {
+            const Vector2f size = getInnerSize();
+            const Vector2f backgroundImageSize(m_spriteBackground.getTexture().getImageSize());
+            const Vector2f fillImageSize(m_spriteFill.getTexture().getImageSize());
             switch (m_spriteBackground.getScalingType())
             {
             case Sprite::ScalingType::Normal:
-                return {m_spriteFill.getTexture().getImageSize().x * getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x,
-                        m_spriteFill.getTexture().getImageSize().y * getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y};
+                return {fillImageSize.x * size.x / backgroundImageSize.x,
+                        fillImageSize.y * size.y / backgroundImageSize.y};
 
             case Sprite::ScalingType::Horizontal:
-                return {getInnerSize().x - ((m_spriteBackground.getTexture().getImageSize().x - m_spriteFill.getTexture().getImageSize().x) * (getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y)),
-                        m_spriteFill.getTexture().getImageSize().y * getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y};
+                return {size.x - ((backgroundImageSize.x - fillImageSize.x) * (size.y / backgroundImageSize.y)),
+                        fillImageSize.y * size.y / backgroundImageSize.y};
 
             case Sprite::ScalingType::Vertical:
-                return {m_spriteFill.getTexture().getImageSize().x * getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x,
-                        getInnerSize().y - ((m_spriteBackground.getTexture().getImageSize().y - m_spriteFill.getTexture().getImageSize().y) * (getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x))};
+                return {fillImageSize.x * size.x / backgroundImageSize.x,
+                        size.y - ((backgroundImageSize.y - fillImageSize.y) * (size.x / backgroundImageSize.x))};
 
             case Sprite::ScalingType::NineSlice:
-                return {getInnerSize().x - (m_spriteBackground.getTexture().getImageSize().x - m_spriteFill.getTexture().getImageSize().x),
-                        getInnerSize().y - (m_spriteBackground.getTexture().getImageSize().y - m_spriteFill.getTexture().getImageSize().y)};
+                return {size.x - (backgroundImageSize.x - fillImageSize.x),
+                        size.y - (backgroundImageSize.y - fillImageSize.y)};
             }
         }
 

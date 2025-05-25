@@ -2,6 +2,7 @@ TGUI 1.10  (TBD)
 ----------------
 
 - Show effects didn't take origin into account
+- Changed scaling when object is smaller than corners of 9-slice
 
 
 TGUI 1.9  (4 May 2025)

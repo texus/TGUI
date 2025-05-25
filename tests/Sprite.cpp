@@ -454,49 +454,4 @@ TEST_CASE("[Sprite]")
             REQUIRE(!sprite.isTransparentPixel({89, 20}));
         }
     }
-
-    SECTION("Downgrading scaling type")
-    {
-        SECTION("Horizontal")
-        {
-            sprite.setTexture({"resources/image.png", {}, {10, 0, 30, 50}});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Horizontal);
-
-            sprite.setSize({20, 60});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Normal);
-
-            sprite.setSize({100, 30});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Horizontal);
-        }
-
-        SECTION("Vertical")
-        {
-            sprite.setTexture({"resources/image.png", {}, {0, 5, 50, 40}});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Vertical);
-
-            sprite.setSize({110, 20});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Normal);
-
-            sprite.setSize({300, 100});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Vertical);
-        }
-
-        SECTION("9-Slice")
-        {
-            sprite.setTexture({"resources/image.png", {}, {10, 5, 30, 40}});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::NineSlice);
-
-            sprite.setSize({9, 1});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Normal);
-
-            sprite.setSize({20, 9});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Horizontal);
-
-            sprite.setSize({19, 10});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Vertical);
-
-            sprite.setSize({20, 10});
-            REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::NineSlice);
-        }
-    }
 }

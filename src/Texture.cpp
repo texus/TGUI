@@ -377,7 +377,14 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             return false;
 
         const UIntRect& partRect = getPartRect();
-        TGUI_ASSERT(pixel.x < partRect.width && pixel.y < partRect.height, "Texture::isTransparentPixel called with pixel outside texture rectangle");
+        TGUI_ASSERT(pixel.x <= partRect.width && pixel.y <= partRect.height, "Texture::isTransparentPixel called with pixel outside texture rectangle");
+
+        // Due to float rounding errors it could happen that we previously thought the position would still be on top of the image,
+        // but now that we are using integers we can tell that the position is just outside the image.
+        if (pixel.x == partRect.width)
+            return false;
+        if (pixel.y == partRect.height)
+            return false;
 
         return m_data->backendTexture->isTransparentPixel({pixel.x + partRect.left, pixel.y + partRect.top});
     }
