@@ -343,10 +343,15 @@ namespace tgui
             }
             case ScalingType::NineSlice:
             {
-                // We scale the image when the sprite is smaller than the corners
-                const float scaleFactorX = (m_size.x >= imageSize.x - middleRect.width) ? 1 : (m_size.x / (imageSize.x - middleRect.width));
-                const float scaleFactorY = (m_size.y >= imageSize.y - middleRect.height) ? 1 : (m_size.y / (imageSize.y - middleRect.height));
-                const float scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                float scaleFactor;
+                if (m_texture.getScaledNineSlice())
+                    scaleFactor = std::min(m_size.x / imageSize.x, m_size.y / imageSize.y);
+                else
+                {
+                    const float scaleFactorX = (m_size.x >= imageSize.x - middleRect.width) ? 1 : (m_size.x / (imageSize.x - middleRect.width));
+                    const float scaleFactorY = (m_size.y >= imageSize.y - middleRect.height) ? 1 : (m_size.y / (imageSize.y - middleRect.height));
+                    scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                }
                 const float middleLeft = middleRect.left * scaleFactor;
                 const float middleTop = middleRect.top * scaleFactor;
                 const float middleRight = m_size.x - ((imageSize.x - middleRect.left - middleRect.width) * scaleFactor);
@@ -528,10 +533,15 @@ namespace tgui
                 // |    |            |    |  //
                 // 6----7------------8----15 //
                 ///////////////////////////////
-                // We scale the image when the sprite is smaller than the corners
-                const float scaleFactorX = (m_size.x >= textureSize.x - middleRect.width) ? 1 : (m_size.x / (textureSize.x - middleRect.width));
-                const float scaleFactorY = (m_size.y >= textureSize.y - middleRect.height) ? 1 : (m_size.y / (textureSize.y - middleRect.height));
-                const float scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                float scaleFactor;
+                if (m_texture.getScaledNineSlice())
+                    scaleFactor = std::min(m_size.x / textureSize.x, m_size.y / textureSize.y);
+                else
+                {
+                    const float scaleFactorX = (m_size.x >= textureSize.x - middleRect.width) ? 1 : (m_size.x / (textureSize.x - middleRect.width));
+                    const float scaleFactorY = (m_size.y >= textureSize.y - middleRect.height) ? 1 : (m_size.y / (textureSize.y - middleRect.height));
+                    scaleFactor = std::min(scaleFactorX, scaleFactorY);
+                }
                 const float middleLeft = middleRect.left * scaleFactor;
                 const float middleTop = middleRect.top * scaleFactor;
                 const float middleRight = m_size.x - ((textureSize.x - middleRect.left - middleRect.width) * scaleFactor);

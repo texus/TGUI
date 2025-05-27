@@ -293,13 +293,15 @@ namespace tgui
 
         ObjectConverter deserializeTexture(const String& value)
         {
+            Texture texture;
             if (value.empty() || viewEqualIgnoreCase(value, U"none"))
-                return Texture{};
+                return texture;
 
             String filename;
             UIntRect partRect;
             UIntRect middleRect;
             bool smooth = Texture::getDefaultSmooth();
+            bool scaledNineSlice = false;
 
             // If there are no quotes then the value just contains a filename
             if (value[0] != '"')
@@ -358,7 +360,7 @@ namespace tgui
                     }
 
                     if (word.empty())
-                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Expected 'Part' or 'Middle' in front of opening bracket."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Expected 'Part', 'Middle' or 'ScaledMiddle' in front of opening bracket."};
 
                     bool rectRequiresFourValues = true;
                     UIntRect* rect = nullptr;
@@ -373,8 +375,15 @@ namespace tgui
                         rect = &middleRect;
                         std::advance(c, 6);
                     }
+                    else if (viewEqualIgnoreCase(word, U"scaledmiddle"))
+                    {
+                        scaledNineSlice = true;
+                        rectRequiresFourValues = false;
+                        rect = &middleRect;
+                        std::advance(c, 12);
+                    }
                     else
-                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word + U"' in front of opening bracket. Expected 'Part' or 'Middle'."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word + U"' in front of opening bracket. Expected 'Part', 'Middle' or 'ScaledMiddle'."};
 
                     const auto endOffset = static_cast<std::size_t>(c - value.begin());
                     auto closeBracketPos = value.find(U')', endOffset);
@@ -400,12 +409,14 @@ namespace tgui
                 const auto dataIndex = foundIndex + 8;
                 const std::string& encodedData = filename.toStdString();
 
-                Texture texture;
                 texture.loadFromBase64(CharStringView(encodedData.data() + dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
                 return texture;
             }
 
-            return Texture{filename, partRect, middleRect, smooth};
+            texture.load(filename, partRect, middleRect, smooth);
+            if (scaledNineSlice)
+                texture.setScaledNineSlice(true);
+            return texture;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

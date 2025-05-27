@@ -226,6 +226,21 @@ TEST_CASE("[Texture]")
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 15, 30, 25));
     }
 
+    SECTION("ScaledNineSlice")
+    {
+        tgui::Texture texture;
+        REQUIRE(!texture.getScaledNineSlice());
+
+        texture.load("resources/image.png", {}, {10, 15, 30, 25});
+        REQUIRE(!texture.getScaledNineSlice());
+
+        texture.setScaledNineSlice(true);
+        REQUIRE(texture.getScaledNineSlice());
+
+        texture.setScaledNineSlice(false);
+        REQUIRE(!texture.getScaledNineSlice());
+    }
+
     SECTION("Smooth")
     {
         // Textures are smoothed by default

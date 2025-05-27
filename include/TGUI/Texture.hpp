@@ -312,6 +312,33 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD UIntRect getMiddleRect() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the corners of the image can still scale with the image size when 9-slice scaling is used
+        ///
+        /// @param scaled  Should the corners be scaled?
+        ///
+        /// @since TGUI 1.10
+        ///
+        /// @warning This property only has an effect if 9-slice scaling is used, which is only when a Middle rect is set.
+        ///
+        /// If this property is set to false (default), then 9-slice scaling happens in the traditional way: the corners always
+        /// keep their size while the rest of the image is stretched. When this property is set to true, the smallest value of
+        /// width or height will determine the scale of the entire image (including the corners) and then the image is scaled
+        /// with 9-slice scaling in one direction (depending on whether width or height is the largest).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScaledNineSlice(bool scaled);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the corners of the image can still scale with the image size when 9-slice scaling is used
+        ///
+        /// @return Should the corners be scaled?
+        ///
+        /// @since TGUI 1.10
+        ///
+        /// @see setScaledNineSlice
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD bool getScaledNineSlice() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks if a certain pixel is transparent
         ///
         /// @param pos  Coordinate of the pixel
@@ -434,7 +461,8 @@ TGUI_MODULE_EXPORT namespace tgui
 
         UIntRect m_partRect;
         UIntRect m_middleRect;
-        String  m_id;
+        String   m_id;
+        bool     m_scaledNineSlice = false;
 
         CallbackFunc m_copyCallback;
         CallbackFunc m_destructCallback;

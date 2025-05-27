@@ -99,7 +99,7 @@ TEST_CASE("[Sprite]")
             REQUIRE(unloadedSprite.isTransparentPixel({0, 0}) == true);
         }
 
-        SECTION("Normal Scaling")
+        SECTION("Normal scaling")
         {
             sprite.setTexture({"resources/TransparentParts.png", {10, 10, 30, 30}});
             sprite.setSize({60, 15});
@@ -130,7 +130,7 @@ TEST_CASE("[Sprite]")
             REQUIRE(!sprite.isTransparentPixel({69, 20}));
         }
 
-        SECTION("Horizontal Scaling")
+        SECTION("Horizontal scaling")
         {
             sprite.setTexture({"resources/TransparentParts.png", {0, 10, 50, 30}, {10, 0, 30, 30}});
             sprite.setSize({70, 15});
@@ -200,7 +200,7 @@ TEST_CASE("[Sprite]")
             REQUIRE(!sprite.isTransparentPixel({79.5f, 20}));
         }
 
-        SECTION("Vertical Scaling")
+        SECTION("Vertical scaling")
         {
             sprite.setTexture({"resources/TransparentParts.png", {10, 0, 30, 50}, {0, 10, 30, 30}});
             sprite.setSize({15, 70});
@@ -270,7 +270,7 @@ TEST_CASE("[Sprite]")
             REQUIRE(!sprite.isTransparentPixel({10, 89.5f}));
         }
 
-        SECTION("9-Slice Scaling")
+        SECTION("9-Slice scaling")
         {
             sprite.setTexture({"resources/TransparentParts.png", {}, {10, 10, 30, 30}});
             sprite.setSize({80, 35});
@@ -452,6 +452,124 @@ TEST_CASE("[Sprite]")
             REQUIRE(!sprite.isTransparentPixel({10, 54.5f}));
             REQUIRE(!sprite.isTransparentPixel({89, 54.5f}));
             REQUIRE(!sprite.isTransparentPixel({89, 20}));
+        }
+
+        SECTION("9-Slice scaling with stretching")
+        {
+            tgui::Texture texture = {"resources/TransparentParts.png", {}, {10, 10, 30, 30}};
+
+            sprite.setTexture(texture);
+            sprite.setSize({200, 100});
+
+            // Bottom right point without stretching
+            REQUIRE(!sprite.isTransparentPixel({10+193, 20+93}));
+            REQUIRE(sprite.isTransparentPixel({10+194, 20+94}));
+
+            // Bottom right point with stretching
+            texture.setScaledNineSlice(true);
+            sprite.setTexture(texture);
+            REQUIRE(sprite.isTransparentPixel({10+193, 20+93}));
+            REQUIRE(sprite.isTransparentPixel({10+194, 20+94}));
+            REQUIRE(!sprite.isTransparentPixel({10+187, 20+87}));
+            REQUIRE(sprite.isTransparentPixel({10+188, 20+88}));
+        }
+    }
+
+    SECTION("Draw")
+    {
+        SECTION("Wide")
+        {
+            tgui::Picture::Ptr picture = tgui::Picture::create();
+            picture->setPosition(10, 5);
+            picture->setSize(220, 150);
+
+            TEST_DRAW_INIT(240, 160, picture)
+
+            SECTION("Stretched")
+            {
+                tgui::Texture textureStretched("resources/9slice.png");
+                picture->getRenderer()->setTexture(textureStretched);
+                TEST_DRAW("Sprite_Wide_Stretched.png")
+            }
+
+            SECTION("Horizontal")
+            {
+                tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
+                picture->getRenderer()->setTexture(textureHorizontal);
+                TEST_DRAW("Sprite_Wide_Horizontal.png")
+            }
+
+            SECTION("Vertical")
+            {
+                tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
+                picture->getRenderer()->setTexture(textureVertical);
+                TEST_DRAW("Sprite_Wide_Vertical.png")
+            }
+
+            SECTION("9-slice")
+            {
+                SECTION("Traditional / unscaled")
+                {
+                    tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
+                    picture->getRenderer()->setTexture(textureNineSlice);
+                    TEST_DRAW("Sprite_Wide_NineSlice.png")
+                }
+
+                SECTION("Scaled")
+                {
+                    tgui::Texture textureNineSliceScaled("resources/9slice.png", {}, {30, 30, 40, 40});
+                    textureNineSliceScaled.setScaledNineSlice(true);
+                    picture->getRenderer()->setTexture(textureNineSliceScaled);
+                    TEST_DRAW("Sprite_Wide_NineSliceScaled.png")
+                }
+            }
+        }
+        SECTION("Tall")
+        {
+            tgui::Picture::Ptr picture = tgui::Picture::create();
+            picture->setPosition(10, 5);
+            picture->setSize(150, 220);
+
+            TEST_DRAW_INIT(170, 230, picture)
+
+            SECTION("Stretched")
+            {
+                tgui::Texture textureStretched("resources/9slice.png");
+                picture->getRenderer()->setTexture(textureStretched);
+                TEST_DRAW("Sprite_Tall_Stretched.png")
+            }
+
+            SECTION("Horizontal")
+            {
+                tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
+                picture->getRenderer()->setTexture(textureHorizontal);
+                TEST_DRAW("Sprite_Tall_Horizontal.png")
+            }
+
+            SECTION("Vertical")
+            {
+                tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
+                picture->getRenderer()->setTexture(textureVertical);
+                TEST_DRAW("Sprite_Tall_Vertical.png")
+            }
+
+            SECTION("9-slice")
+            {
+                SECTION("Traditional / unscaled")
+                {
+                    tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
+                    picture->getRenderer()->setTexture(textureNineSlice);
+                    TEST_DRAW("Sprite_Tall_NineSlice.png")
+                }
+
+                SECTION("Scaled")
+                {
+                    tgui::Texture textureNineSliceScaled("resources/9slice.png", {}, {30, 30, 40, 40});
+                    textureNineSliceScaled.setScaledNineSlice(true);
+                    picture->getRenderer()->setTexture(textureNineSliceScaled);
+                    TEST_DRAW("Sprite_Tall_NineSliceScaled.png")
+                }
+            }
         }
     }
 }

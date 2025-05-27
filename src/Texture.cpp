@@ -86,6 +86,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         m_partRect        {other.m_partRect},
         m_middleRect      {other.m_middleRect},
         m_id              {other.m_id},
+        m_scaledNineSlice {other.m_scaledNineSlice},
         m_copyCallback    {other.m_copyCallback},
         m_destructCallback{other.m_destructCallback}
     {
@@ -104,6 +105,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         m_partRect        {std::move(other.m_partRect)},
         m_middleRect      {std::move(other.m_middleRect)},
         m_id              {std::move(other.m_id)},
+        m_scaledNineSlice {std::move(other.m_scaledNineSlice)},
         m_copyCallback    {std::move(other.m_copyCallback)},
         m_destructCallback{std::move(other.m_destructCallback)}
     {
@@ -136,6 +138,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             std::swap(m_partRect,         temp.m_partRect);
             std::swap(m_middleRect,       temp.m_middleRect);
             std::swap(m_id,               temp.m_id);
+            std::swap(m_scaledNineSlice,  temp.m_scaledNineSlice);
             std::swap(m_copyCallback,     temp.m_copyCallback);
             std::swap(m_destructCallback, temp.m_destructCallback);
         }
@@ -157,6 +160,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             m_partRect         = std::move(other.m_partRect);
             m_middleRect       = std::move(other.m_middleRect);
             m_id               = std::move(other.m_id);
+            m_scaledNineSlice  = std::move(other.m_scaledNineSlice);
             m_copyCallback     = std::move(other.m_copyCallback);
             m_destructCallback = std::move(other.m_destructCallback);
 
@@ -367,6 +371,20 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     UIntRect Texture::getMiddleRect() const
     {
         return m_middleRect;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setScaledNineSlice(bool scaled)
+    {
+        m_scaledNineSlice = scaled;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::getScaledNineSlice() const
+    {
+        return m_scaledNineSlice;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
