@@ -75,11 +75,21 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to the SDL_Renderer object that was used to create this backend renderer
+        /// @brief Returns a pointer to the SDL_Renderer object stored in this backend renderer
         ///
-        /// @return SDL_Renderer pointer that was passed to the constructor of this object
+        /// @return SDL_Renderer pointer that was passed to the constructor of this object or in a call to setActiveRenderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD SDL_Renderer* getInternalRenderer() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the SDL_Renderer object that is used to create textures
+        ///
+        /// This function is only needed when working with multiple windows. In such case each window has it's own SDL_Renderer
+        /// and the correct one needs to be selected when textures are created.
+        ///
+        /// @since TGUI 1.10
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setActiveRenderer(SDL_Renderer* renderer);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:

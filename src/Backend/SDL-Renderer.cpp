@@ -58,6 +58,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        void Gui::makeWindowCurrent()
+        {
+            TGUI_ASSERT(m_backendRenderTarget != nullptr, "Gui must be given a renderer before calling makeWindowCurrent()");
+            TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
+                "Renderer must belong to SDL_RENDERER backend renderer when calling makeWindowCurrent()");
+            std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->setActiveRenderer(m_renderer);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         void Gui::presentScreen()
         {
             SDL_RenderPresent(m_renderer);
