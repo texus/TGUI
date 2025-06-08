@@ -65,7 +65,7 @@ namespace tgui
         setTitleTextSize(getGlobalTextSize());
         m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
         if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
-            m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+            m_decorationLayoutY->replaceValue(getDecorationSize().y);
 
         if (initRenderer)
         {
@@ -102,6 +102,7 @@ namespace tgui
         m_spriteTitleBar                   {other.m_spriteTitleBar},
         m_spriteBackground                 {other.m_spriteBackground},
         m_bordersCached                    {other.m_bordersCached},
+        m_clientPaddingCached              {other.m_clientPaddingCached},
         m_borderColorCached                {other.m_borderColorCached},
         m_borderColorFocusedCached         {other.m_borderColorFocusedCached},
         m_titleColorCached                 {other.m_titleColorCached},
@@ -144,6 +145,7 @@ namespace tgui
         m_spriteTitleBar                   {std::move(other.m_spriteTitleBar)},
         m_spriteBackground                 {std::move(other.m_spriteBackground)},
         m_bordersCached                    {std::move(other.m_bordersCached)},
+        m_clientPaddingCached              {std::move(other.m_clientPaddingCached)},
         m_borderColorCached                {std::move(other.m_borderColorCached)},
         m_borderColorFocusedCached         {std::move(other.m_borderColorFocusedCached)},
         m_titleColorCached                 {std::move(other.m_titleColorCached)},
@@ -191,6 +193,7 @@ namespace tgui
             m_spriteTitleBar                    = other.m_spriteTitleBar;
             m_spriteBackground                  = other.m_spriteBackground;
             m_bordersCached                     = other.m_bordersCached;
+            m_clientPaddingCached               = other.m_clientPaddingCached;
             m_borderColorCached                 = other.m_borderColorCached;
             m_borderColorFocusedCached          = other.m_borderColorFocusedCached;
             m_titleColorCached                  = other.m_titleColorCached;
@@ -239,6 +242,7 @@ namespace tgui
             m_spriteTitleBar                    = std::move(other.m_spriteTitleBar);
             m_spriteBackground                  = std::move(other.m_spriteBackground);
             m_bordersCached                     = std::move(other.m_bordersCached);
+            m_clientPaddingCached               = std::move(other.m_clientPaddingCached);
             m_borderColorCached                 = std::move(other.m_borderColorCached);
             m_borderColorFocusedCached          = std::move(other.m_borderColorFocusedCached);
             m_titleColorCached                  = std::move(other.m_titleColorCached);
@@ -350,12 +354,12 @@ namespace tgui
         }
         else if (m_titleAlignment == HorizontalAlignment::Center)
         {
-            m_titleText.setPosition({m_distanceToSideCached + ((getClientSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+            m_titleText.setPosition({m_distanceToSideCached + ((getInnerTitleBarSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                      (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
         else // if (m_titleAlignment == HorizontalAlignment::Right)
         {
-            m_titleText.setPosition({getClientSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
+            m_titleText.setPosition({getInnerTitleBarSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
                                      (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
 
@@ -364,7 +368,7 @@ namespace tgui
         {
             if (button->isVisible())
             {
-                button->setPosition(m_bordersCached.getLeft() + getClientSize().x - buttonOffsetX - button->getSize().x,
+                button->setPosition(m_bordersCached.getLeft() + getInnerTitleBarSize().x - buttonOffsetX - button->getSize().x,
                                     m_bordersCached.getTop() + (m_titleBarHeightCached - button->getSize().y) / 2.f);
 
                 buttonOffsetX += button->getSize().x + m_paddingBetweenButtonsCached;
@@ -379,9 +383,10 @@ namespace tgui
         Container::setSize(size);
 
         m_bordersCached.updateParentSize(getSize());
+        m_clientPaddingCached.updateParentSize(getSize());
 
-        m_spriteTitleBar.setSize({getClientSize().x, m_titleBarHeightCached});
-        m_spriteBackground.setSize(getClientSize());
+        m_spriteTitleBar.setSize({getInnerTitleBarSize().x, m_titleBarHeightCached});
+        m_spriteBackground.setSize(getInnerSizeWithPadding());
 
         // Reposition the images and text
         setPosition(m_position);
@@ -391,8 +396,35 @@ namespace tgui
 
     Vector2f ChildWindow::getInnerSize() const
     {
+        return {std::max(0.f, getSize().x - getDecorationSize().x),
+                std::max(0.f, getSize().y - getDecorationSize().y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f ChildWindow::getInnerTitleBarSize() const
+    {
         return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
+                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()
+                              - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f ChildWindow::getInnerSizeWithPadding() const
+    {
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()
+                - m_titleBarHeightCached - m_borderBelowTitleBarCached};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f ChildWindow::getDecorationSize() const
+    {
+        return {m_bordersCached.getLeft() + m_bordersCached.getRight() + m_clientPaddingCached.getLeft() + m_clientPaddingCached.getRight(),
+                m_bordersCached.getTop() + m_bordersCached.getBottom() + m_clientPaddingCached.getTop() + m_clientPaddingCached.getBottom()
+                + m_titleBarHeightCached + m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -402,10 +434,7 @@ namespace tgui
         m_decorationLayoutX = nullptr;
         m_decorationLayoutY = nullptr;
 
-        const Vector2f decorationSize = {m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                                         m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
-
-        setSize(size + decorationSize);
+        setSize(size + getDecorationSize());
 
         // Keep a pointer to the layout containing the decoration size. If the decoration changes then we need to update this layout
         m_decorationLayoutX = m_size.x.getRightOperand();
@@ -662,7 +691,8 @@ namespace tgui
 
     Vector2f ChildWindow::getChildWidgetsOffset() const
     {
-        return {m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
+        return {m_bordersCached.getLeft() + m_clientPaddingCached.getLeft(),
+                m_bordersCached.getTop() + m_clientPaddingCached.getTop() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -722,7 +752,7 @@ namespace tgui
             // Propagate the event to the child widgets
             isDragging = Container::leftMousePressed(pos + getPosition());
         }
-        else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getClientSize().x, getClientSize().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
+        else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerSizeWithPadding().x, getInnerSizeWithPadding().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
         {
             if (!m_focused)
                 setFocused(true);
@@ -746,7 +776,7 @@ namespace tgui
 
             m_draggingPosition = pos;
         }
-        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getClientSize().x, m_titleBarHeightCached}.contains(pos))
+        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
         {
             if (!m_focused)
                 setFocused(true);
@@ -794,7 +824,7 @@ namespace tgui
                 widget->leftMouseButtonNoLongerDown();
 
             // Check if the mouse is on top of the title bar
-            if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getClientSize().x, m_titleBarHeightCached}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
             {
                 // Send the mouse release event to the title buttons
                 for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -920,7 +950,7 @@ namespace tgui
                     mouseEnteredWidget();
 
                 // Check if the mouse is on top of the title bar
-                if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getClientSize().x, m_titleBarHeightCached}.contains(pos))
+                if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
                 {
                     // Send the hover event to the buttons inside the title bar
                     for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -999,7 +1029,7 @@ namespace tgui
 
     void ChildWindow::updateTitleBarHeight()
     {
-        m_spriteTitleBar.setSize({getClientSize().x, m_titleBarHeightCached});
+        m_spriteTitleBar.setSize({getInnerTitleBarSize().x, m_titleBarHeightCached});
 
         // Set the size of the buttons in the title bar
         for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -1099,9 +1129,20 @@ namespace tgui
             m_bordersCached = getSharedRenderer()->getBorders();
 
             if (m_decorationLayoutX && (m_decorationLayoutX == m_size.x.getRightOperand()))
-                m_decorationLayoutX->replaceValue(m_bordersCached.getLeft() + m_bordersCached.getRight());
+                m_decorationLayoutX->replaceValue(getDecorationSize().x);
             if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
-                m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+                m_decorationLayoutY->replaceValue(getDecorationSize().y);
+
+            setSize(m_size);
+        }
+        else if (property == U"ClientPadding")
+        {
+            m_clientPaddingCached = getSharedRenderer()->getClientPadding();
+
+            if (m_decorationLayoutX && (m_decorationLayoutX == m_size.x.getRightOperand()))
+                m_decorationLayoutX->replaceValue(getDecorationSize().x);
+            if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
+                m_decorationLayoutY->replaceValue(getDecorationSize().y);
 
             setSize(m_size);
         }
@@ -1122,7 +1163,7 @@ namespace tgui
             if (oldTitleBarHeight != m_titleBarHeightCached)
             {
                 if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
-                    m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+                    m_decorationLayoutY->replaceValue(getDecorationSize().y);
 
                 // If the title bar changes in height then the inner size will also change
                 recalculateBoundSizeLayouts();
@@ -1136,7 +1177,7 @@ namespace tgui
         {
             m_borderBelowTitleBarCached = getSharedRenderer()->getBorderBelowTitleBar();
             if (m_decorationLayoutY && (m_decorationLayoutY == m_size.y.getRightOperand()))
-                m_decorationLayoutY->replaceValue(m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached);
+                m_decorationLayoutY->replaceValue(getDecorationSize().y);
         }
         else if (property == U"DistanceToSide")
         {
@@ -1423,7 +1464,7 @@ namespace tgui
         if (m_spriteTitleBar.isSet())
             target.drawSprite(states, m_spriteTitleBar);
         else
-            target.drawFilledRect(states, {getClientSize().x, m_titleBarHeightCached}, Color::applyOpacity(m_titleBarColorCached, m_opacityCached));
+            target.drawFilledRect(states, {getInnerTitleBarSize().x, m_titleBarHeightCached}, Color::applyOpacity(m_titleBarColorCached, m_opacityCached));
 
         // Draw the text in the title bar (after setting the clipping area)
         {
@@ -1438,7 +1479,7 @@ namespace tgui
                 buttonOffsetX += m_distanceToSideCached;
 
             const float clippingLeft = m_distanceToSideCached;
-            const float clippingRight = getClientSize().x - m_distanceToSideCached - buttonOffsetX;
+            const float clippingRight = getInnerTitleBarSize().x - m_distanceToSideCached - buttonOffsetX;
             target.addClippingLayer(states, {{clippingLeft, 0}, {clippingRight - clippingLeft, m_titleBarHeightCached}});
             target.drawText(states, m_titleText);
             target.removeClippingLayer();
@@ -1461,9 +1502,9 @@ namespace tgui
         if (m_borderBelowTitleBarCached > 0)
         {
             if (m_focused && m_borderColorFocusedCached.isSet())
-                target.drawFilledRect(states, {getClientSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
+                target.drawFilledRect(states, {getInnerTitleBarSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
             else
-                target.drawFilledRect(states, {getClientSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                target.drawFilledRect(states, {getInnerTitleBarSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({0, m_borderBelowTitleBarCached});
         }
@@ -1472,9 +1513,10 @@ namespace tgui
         if (m_spriteBackground.isSet())
             target.drawSprite(states, m_spriteBackground);
         else if (m_backgroundColorCached != Color::Transparent)
-            target.drawFilledRect(states, getClientSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+            target.drawFilledRect(states, getInnerSizeWithPadding(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
         // Draw the widgets in the child window
+        states.transform.translate({m_clientPaddingCached.getLeft(), m_clientPaddingCached.getTop()});
         target.addClippingLayer(states, {{}, {getClientSize()}});
         Container::draw(target, states);
         target.removeClippingLayer();

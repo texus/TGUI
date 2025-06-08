@@ -30,6 +30,7 @@
 namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(ChildWindowRenderer, Borders)
+    TGUI_RENDERER_PROPERTY_OUTLINE(ChildWindowRenderer, ClientPadding)
 
     TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleBarColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleColor, Color::Black)

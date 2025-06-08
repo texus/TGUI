@@ -123,33 +123,36 @@ TEST_CASE("[ChildWindow]")
     {
         childWindow->getRenderer()->setTitleBarHeight(20);
         childWindow->getRenderer()->setBorders({1, 2, 4, 8});
+        childWindow->getRenderer()->setClientPadding({3, 6, 7, 9});
         childWindow->getRenderer()->setBorderBelowTitleBar(2);
 
         SECTION("setClientSize")
         {
             childWindow->setClientSize({300, 250});
             REQUIRE(childWindow->getClientSize() == tgui::Vector2f(300, 250));
-            REQUIRE(childWindow->getSize() == tgui::Vector2f(305, 282));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(315, 297));
 
             // Client size remains fixed when setClientSize was used
             childWindow->getRenderer()->setTitleBarHeight(15);
             childWindow->getRenderer()->setBorders({8, 4, 2, 1});
+            childWindow->getRenderer()->setClientPadding({9, 7, 6, 3});
             childWindow->getRenderer()->setBorderBelowTitleBar(1);
             REQUIRE(childWindow->getClientSize() == tgui::Vector2f(300, 250));
-            REQUIRE(childWindow->getSize() == tgui::Vector2f(310, 271));
+            REQUIRE(childWindow->getSize() == tgui::Vector2f(325, 281));
         }
 
         SECTION("setSize")
         {
             childWindow->setSize({300, 250});
-            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(295, 218));
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(285, 203));
             REQUIRE(childWindow->getSize() == tgui::Vector2f(300, 250));
 
             // Client size changes
             childWindow->getRenderer()->setTitleBarHeight(15);
             childWindow->getRenderer()->setBorders({8, 4, 2, 1});
+            childWindow->getRenderer()->setClientPadding({9, 7, 6, 3});
             childWindow->getRenderer()->setBorderBelowTitleBar(1);
-            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(290, 229));
+            REQUIRE(childWindow->getClientSize() == tgui::Vector2f(275, 219));
             REQUIRE(childWindow->getSize() == tgui::Vector2f(300, 250));
         }
     }
@@ -343,6 +346,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", "rgb(130, 140, 150)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ClientPadding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", "3"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", "1"));
@@ -361,6 +365,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", tgui::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+                REQUIRE_NOTHROW(renderer->setProperty("ClientPadding", tgui::Padding{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", 3));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", 1));
@@ -379,6 +384,7 @@ TEST_CASE("[ChildWindow]")
                 renderer->setBorderColor({100, 110, 120});
                 renderer->setBorderColorFocused({130, 140, 150});
                 renderer->setBorders({1, 2, 3, 4});
+                renderer->setClientPadding({5, 6, 7, 8});
                 renderer->setBorderBelowTitleBar(3);
                 renderer->setDistanceToSide(2);
                 renderer->setPaddingBetweenButtons(1);
@@ -396,6 +402,7 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("BorderColor").getColor() == tgui::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == tgui::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("ClientPadding").getOutline() == tgui::Padding(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("BorderBelowTitleBar").getNumber() == 3);
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("PaddingBetweenButtons").getNumber() == 1);
@@ -523,6 +530,7 @@ TEST_CASE("[ChildWindow]")
         renderer.setTitleBarHeight(30);
         renderer.setBorderBelowTitleBar(1);
         renderer.setBorders({2, 3, 4, 5});
+        renderer.setClientPadding({6, 7, 8, 9});
         renderer.setOpacity(0.7f);
         childWindow->setRenderer(renderer.getData());
 
@@ -536,7 +544,7 @@ TEST_CASE("[ChildWindow]")
 
         auto picture = tgui::Picture::create("resources/image.png");
         picture->setSize({150, 100});
-        picture->setPosition({50, 55});
+        picture->setPosition({40, 45});
         childWindow->add(picture);
 
         SECTION("Colored")
