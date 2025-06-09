@@ -322,8 +322,9 @@ namespace tgui
                 continue;
 
             // Apply the kerning offset
-            if (prevChar != 0)
-                x += m_font->getKerning(prevChar, curChar, m_characterSize, isBold);
+            const float kerning = m_font->getKerning(prevChar, curChar, m_characterSize, isBold);
+            if ((prevChar != U'\n') || (kerning < 0))
+                x += kerning;
 
             // If we're using the underlined style and there's a new line, draw a line
             if (isUnderlined && (curChar == U'\n' && prevChar != U'\n'))
@@ -365,7 +366,6 @@ namespace tgui
                     case U'\n':
                         x = 0;
                         y += lineSpacing;
-                        prevChar = 0;
                         break;
                 }
 
