@@ -370,6 +370,14 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Schedules a callback to regularly change the value of the scrollbar as long as the mouse remains pressed on an arrow
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
         SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the scrollbar changed. Optional parameter: new value
@@ -379,6 +387,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         enum class Part
         {
+            None,
             Track,
             Thumb,
             ArrowUp,
@@ -386,7 +395,7 @@ TGUI_MODULE_EXPORT namespace tgui
         };
 
         // Keep track on which part of the scrollbar the mouse is standing
-        Part m_mouseHoverOverPart = Part::Thumb;
+        Part m_mouseHoverOverPart = Part::None;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
         bool m_mouseDownOnThumb = false;
@@ -409,7 +418,9 @@ TGUI_MODULE_EXPORT namespace tgui
         Scrollbar::Policy m_policy = Scrollbar::Policy::Automatic;
 
         // Did the mouse went down on one of the arrows?
-        bool m_mouseDownOnArrow = false;
+        bool m_mouseDownOnIncreaseArrow = false;
+        bool m_mouseDownOnDecreaseArrow = false;
+        std::chrono::time_point<std::chrono::steady_clock> m_lastMousePressTime;
 
         bool m_sizeSet = false; // Has setSize been called?
 

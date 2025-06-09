@@ -375,7 +375,7 @@ namespace tgui
             mouseEnteredWidget();
 
         // Pass the event to the scrollbar when the mouse is on top of it or when we are dragging its thumb
-        if (((m_scrollbar->isMouseDown()) && (m_scrollbar->isMouseDownOnThumb())) || m_scrollbar->isMouseOnWidget(pos - getPosition()))
+        if (m_scrollbar->isMouseDown() || m_scrollbar->isMouseOnWidget(pos - getPosition()))
             m_scrollbar->mouseMoved(pos - getPosition());
         else
             m_scrollbar->mouseNoLongerOnWidget();

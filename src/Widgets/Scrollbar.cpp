@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Timer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -345,7 +346,9 @@ namespace tgui
         pos -= getPosition();
 
         m_mouseDown = true;
-        m_mouseDownOnArrow = false;
+        m_mouseDownOnIncreaseArrow = false;
+        m_mouseDownOnDecreaseArrow = false;
+        m_lastMousePressTime = std::chrono::steady_clock::now();
 
         if (m_orientation == Orientation::Vertical)
         {
@@ -353,11 +356,18 @@ namespace tgui
             if (getSize().y > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((pos.y < m_arrowUp.height) || (pos.y >= getSize().y - m_arrowUp.height))
-                    m_mouseDownOnArrow = true;
+                if (pos.y < m_arrowUp.height)
+                    m_mouseDownOnDecreaseArrow = true;
+                if (pos.y >= getSize().y - m_arrowUp.height)
+                    m_mouseDownOnIncreaseArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
-                m_mouseDownOnArrow = true;
+            {
+                if (pos.y < getSize().y * 0.5f)
+                    m_mouseDownOnDecreaseArrow = true;
+                else
+                    m_mouseDownOnIncreaseArrow = true;
+            }
         }
         else
         {
@@ -365,11 +375,18 @@ namespace tgui
             if (getSize().x > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((pos.x < m_arrowUp.height) || (pos.x >= getSize().x - m_arrowUp.height))
-                    m_mouseDownOnArrow = true;
+                if (pos.x < m_arrowUp.height)
+                    m_mouseDownOnDecreaseArrow = true;
+                if (pos.x >= getSize().x - m_arrowUp.height)
+                    m_mouseDownOnIncreaseArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
-                m_mouseDownOnArrow = true;
+            {
+                if (pos.x < getSize().x * 0.5f)
+                    m_mouseDownOnDecreaseArrow = true;
+                else
+                    m_mouseDownOnIncreaseArrow = true;
+            }
         }
 
         // Check if the mouse is on top of the thumb
@@ -384,100 +401,50 @@ namespace tgui
             m_mouseDownOnThumb = false;
 
         // Refresh the scrollbar value
-        if (!m_mouseDownOnArrow)
+        if (!m_mouseDownOnIncreaseArrow && !m_mouseDownOnDecreaseArrow)
             mouseMoved(pos + getPosition());
 
-        return !m_mouseDownOnArrow;
+        // Handle the arrows being pressed
+        if ((m_mouseDownOnIncreaseArrow || m_mouseDownOnDecreaseArrow) && (m_maximum > m_viewportSize))
+        {
+            if (m_mouseDownOnDecreaseArrow)
+            {
+                if (m_value > m_scrollAmount)
+                {
+                    if (m_value % m_scrollAmount)
+                        setValue(m_value - (m_value % m_scrollAmount));
+                    else
+                        setValue(m_value - m_scrollAmount);
+                }
+                else
+                    setValue(0);
+            }
+            else if (m_mouseDownOnIncreaseArrow)
+            {
+                if (m_value + m_scrollAmount < m_maximum - m_viewportSize + 1)
+                {
+                    if (m_value % m_scrollAmount)
+                        setValue(m_value + (m_scrollAmount - (m_value % m_scrollAmount)));
+                    else
+                        setValue(m_value + m_scrollAmount);
+                }
+                else
+                    setValue(m_maximum - m_viewportSize);
+            }
+
+            callMousePressPeriodically(m_lastMousePressTime, false);
+        }
+
+        // When dragging the thumb we return true so that you can continue dragging while the mouse is beside the scrollbar.
+        // When pressing an arrow we return true so that the mouse can temporarily leave the arrow and scrolling can continue
+        // when the mouse enters again.
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMouseReleased(Vector2f pos)
+    void Scrollbar::leftMouseReleased(Vector2f)
     {
-        // Check if one of the arrows was clicked
-        if (m_mouseDown && m_mouseDownOnArrow)
-        {
-            // Only continue when the calculations can be made
-            if (m_maximum > m_viewportSize)
-            {
-                bool valueDown = false;
-                bool valueUp = false;
-
-                pos -= getPosition();
-
-                // Check in which direction the scrollbar lies
-                if (m_orientation == Orientation::Vertical)
-                {
-                    // Check if the arrows are drawn at full size
-                    if (getSize().y > m_arrowUp.height + m_arrowDown.height)
-                    {
-                        // Check if you clicked on the top arrow
-                        if (pos.y < m_arrowUp.height)
-                            valueDown = true;
-
-                        // Check if you clicked the down arrow
-                        else if (pos.y >= getSize().y - m_arrowUp.height)
-                            valueUp = true;
-                    }
-                    else // The arrows are not drawn at full size
-                    {
-                        // Check on which arrow you clicked
-                        if (pos.y < getSize().y * 0.5f)
-                            valueDown = true;
-                        else // You clicked on the bottom arrow
-                            valueUp = true;
-                    }
-                }
-                else // the scrollbar lies horizontal
-                {
-                    // Check if the arrows are drawn at full size
-                    if (getSize().x > m_arrowUp.height + m_arrowDown.height)
-                    {
-                        // Check if you clicked on the top arrow
-                        if (pos.x < m_arrowUp.height)
-                            valueDown = true;
-
-                        // Check if you clicked the down arrow
-                        else if (pos.x >= getSize().x - m_arrowUp.height)
-                            valueUp = true;
-                    }
-                    else // The arrows are not drawn at full size
-                    {
-                        // Check on which arrow you clicked
-                        if (pos.x < getSize().x * 0.5f)
-                            valueDown = true;
-                        else // You clicked on the bottom arrow
-                            valueUp = true;
-                    }
-                }
-
-                if (valueDown)
-                {
-                    if (m_value > m_scrollAmount)
-                    {
-                        if (m_value % m_scrollAmount)
-                            setValue(m_value - (m_value % m_scrollAmount));
-                        else
-                            setValue(m_value - m_scrollAmount);
-                    }
-                    else
-                        setValue(0);
-                }
-                else if (valueUp)
-                {
-                    if (m_value + m_scrollAmount < m_maximum - m_viewportSize + 1)
-                    {
-                        if (m_value % m_scrollAmount)
-                            setValue(m_value + (m_scrollAmount - (m_value % m_scrollAmount)));
-                        else
-                            setValue(m_value + m_scrollAmount);
-                    }
-                    else
-                        setValue(m_maximum - m_viewportSize);
-                }
-            }
-        }
-
         // The thumb might have been dragged between two values
         if (m_mouseDown)
             updateThumbPosition();
@@ -502,7 +469,7 @@ namespace tgui
         pos -= getPosition();
 
         // Check if the mouse button went down on top of the track (or thumb)
-        if (m_mouseDown && !m_mouseDownOnArrow)
+        if (m_mouseDown && !m_mouseDownOnDecreaseArrow && !m_mouseDownOnIncreaseArrow)
         {
             // Don't continue if the calculations can't be made
             if (m_maximum <= m_viewportSize)
@@ -665,6 +632,8 @@ namespace tgui
             m_mouseHoverOverPart = Part::ArrowUp;
         else if (FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(pos))
             m_mouseHoverOverPart = Part::ArrowDown;
+        else
+            m_mouseHoverOverPart = Part::None;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1056,6 +1025,50 @@ namespace tgui
             else
                 m_thumb.left = m_track.left;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
+    {
+        std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
+        Timer::scheduleCallback([widgetPtr, clickedTime]()
+        {
+            Scrollbar::Ptr scrollbar = widgetPtr.lock();
+            if (!scrollbar)
+                return;
+
+            if (!scrollbar->m_mouseDown || scrollbar->m_lastMousePressTime != clickedTime)
+                return;
+
+            if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnDecreaseArrow && (scrollbar->m_mouseHoverOverPart == Part::ArrowUp))
+            {
+                if (scrollbar->m_value > scrollbar->m_scrollAmount)
+                {
+                    if (scrollbar->m_value % scrollbar->m_scrollAmount)
+                        scrollbar->setValue(scrollbar->m_value - (scrollbar->m_value % scrollbar->m_scrollAmount));
+                    else
+                        scrollbar->setValue(scrollbar->m_value - scrollbar->m_scrollAmount);
+                }
+                else
+                    scrollbar->setValue(0);
+            }
+            else if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnIncreaseArrow && (scrollbar->m_mouseHoverOverPart == Part::ArrowDown))
+            {
+                if (scrollbar->m_value + scrollbar->m_scrollAmount < scrollbar->m_maximum - scrollbar->m_viewportSize + 1)
+                {
+                    if (scrollbar->m_value % scrollbar->m_scrollAmount)
+                        scrollbar->setValue(scrollbar->m_value + (scrollbar->m_scrollAmount - (scrollbar->m_value % scrollbar->m_scrollAmount)));
+                    else
+                        scrollbar->setValue(scrollbar->m_value + scrollbar->m_scrollAmount);
+                }
+                else
+                    scrollbar->setValue(scrollbar->m_maximum - scrollbar->m_viewportSize);
+            }
+
+            scrollbar->callMousePressPeriodically(clickedTime, true);
+
+        }, std::chrono::milliseconds(repeatedCall ? 50 : 300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

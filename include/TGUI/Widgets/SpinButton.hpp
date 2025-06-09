@@ -297,7 +297,7 @@ TGUI_MODULE_EXPORT namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Schedules a callback to regularly change the value of the spin button as long as the mouse remains pressed on an arrow
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clicked);
+        void callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
@@ -309,7 +309,7 @@ TGUI_MODULE_EXPORT namespace tgui
 
         Orientation m_orientation = Orientation::Vertical; // Is the spin button draw horizontally (arrows next to each other) or vertically (arrows on top of each other)?
         bool m_orientationLocked = false; // Will setSize change the orientation or not?
-        std::chrono::time_point<std::chrono::steady_clock> m_PressedAt;
+        std::chrono::time_point<std::chrono::steady_clock> m_lastMousePressTime;
 
         double m_minimum = 0;
         double m_maximum = 10;

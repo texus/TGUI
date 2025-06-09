@@ -334,7 +334,7 @@ namespace tgui
 
     void Label::mouseMoved(Vector2f pos)
     {
-        if (m_scrollbar->isShown() && ((m_scrollbar->isMouseDown() && m_scrollbar->isMouseDownOnThumb()) || m_scrollbar->isMouseOnWidget(pos - getPosition())))
+        if (m_scrollbar->isShown() && (m_scrollbar->isMouseDown() || m_scrollbar->isMouseOnWidget(pos - getPosition())))
             m_scrollbar->mouseMoved(pos - getPosition());
         else
         {

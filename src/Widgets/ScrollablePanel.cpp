@@ -521,11 +521,11 @@ namespace tgui
     void ScrollablePanel::mouseMoved(Vector2f pos)
     {
         // Check if the mouse event should go to the scrollbar
-        if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
+        if (m_verticalScrollbar->isMouseDown() || m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_verticalScrollbar->mouseMoved(pos - getPosition());
         }
-        else if ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
+        else if (m_horizontalScrollbar->isMouseDown() || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
         {
             m_horizontalScrollbar->mouseMoved(pos - getPosition());
         }

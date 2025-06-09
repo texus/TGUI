@@ -612,14 +612,14 @@ namespace tgui
         m_possibleDoubleClick = false;
 
         // Check if the mouse event should go to the vertical scrollbar
-        if (m_verticalScrollbar->isShown() && ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos)))
+        if (m_verticalScrollbar->isShown() && (m_verticalScrollbar->isMouseDown() || m_verticalScrollbar->isMouseOnWidget(pos)))
         {
             m_verticalScrollbar->mouseMoved(pos);
             recalculateVisibleLines();
         }
 
         // Check if the mouse event should go to the horizontal scrollbar
-        else if (m_horizontalScrollbar->isShown() && ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->isMouseOnWidget(pos)))
+        else if (m_horizontalScrollbar->isShown() && (m_horizontalScrollbar->isMouseDown() || m_horizontalScrollbar->isMouseOnWidget(pos)))
         {
             m_horizontalScrollbar->mouseMoved(pos);
         }

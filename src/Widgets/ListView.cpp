@@ -1537,11 +1537,11 @@ namespace tgui
             updateColumnWidths();
         }
         // Check if the mouse event should go to the scrollbar
-        else if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->isMouseOnWidget(pos))
+        else if (m_verticalScrollbar->isMouseDown() || m_verticalScrollbar->isMouseOnWidget(pos))
         {
             m_verticalScrollbar->mouseMoved(pos);
         }
-        else if ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->isMouseOnWidget(pos))
+        else if (m_horizontalScrollbar->isMouseDown() || m_horizontalScrollbar->isMouseOnWidget(pos))
         {
             m_horizontalScrollbar->mouseMoved(pos);
         }

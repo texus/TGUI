@@ -735,7 +735,7 @@ namespace tgui
             mouseEnteredWidget();
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scrollbar->isMouseDown() && m_scrollbar->isMouseDownOnThumb()) || m_scrollbar->isMouseOnWidget(pos))
+        if (m_scrollbar->isMouseDown() || m_scrollbar->isMouseOnWidget(pos))
         {
             updateHoveringItem(-1);
             m_scrollbar->mouseMoved(pos);

@@ -225,6 +225,33 @@ TEST_CASE("[SpinButton]")
             parent->leftMouseReleased({110, 135});
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinButton->getValue() == 10);
+
+            parent->mouseMoved({110, 100});
+            parent->leftMousePressed({110, 100});
+            REQUIRE(valueChangedCount == 4);
+            tgui::Timer::updateTime(std::chrono::milliseconds(295)); // It would take 300ms before the repeat
+            REQUIRE(valueChangedCount == 4);
+            tgui::Timer::updateTime(std::chrono::milliseconds(10));
+            REQUIRE(valueChangedCount == 5);
+            tgui::Timer::updateTime(std::chrono::milliseconds(60)); // A repeat occurs every 50ms
+            tgui::Timer::updateTime(std::chrono::milliseconds(60));
+            tgui::Timer::updateTime(std::chrono::milliseconds(60));
+            REQUIRE(valueChangedCount == 8);
+            REQUIRE(spinButton->getValue() == 15);
+            parent->leftMouseReleased({110, 100});
+
+            parent->mouseMoved({110, 135});
+            parent->leftMousePressed({110, 135});
+            REQUIRE(valueChangedCount == 9);
+            tgui::Timer::updateTime(std::chrono::milliseconds(295)); // It would take 300ms before the repeat
+            REQUIRE(valueChangedCount == 9);
+            tgui::Timer::updateTime(std::chrono::milliseconds(10));
+            REQUIRE(valueChangedCount == 10);
+            tgui::Timer::updateTime(std::chrono::milliseconds(60)); // A repeat occurs every 50ms
+            tgui::Timer::updateTime(std::chrono::milliseconds(60));
+            REQUIRE(valueChangedCount == 12);
+            REQUIRE(spinButton->getValue() == 11);
+            parent->leftMouseReleased({110, 135});
         }
     }
 

@@ -5,6 +5,8 @@ TGUI 1.10  (TBD)
 - Added option to scale image (stretching while maintaining ratio) before applying 9-slice scaling
 - Show effects didn't take origin into account
 - Changed scaling when object is smaller than corners of 9-slice
+- Scrollbar now keeps scrolling when the mouse button stays pressed on top of an arrow
+- Values change faster when holding down a spin button arrow
 
 
 TGUI 1.9  (4 May 2025)

@@ -227,21 +227,22 @@ namespace tgui
     {
         ClickableWidget::leftMousePressed(pos);
 
-        m_PressedAt = std::chrono::steady_clock::now();
+        m_lastMousePressTime = std::chrono::steady_clock::now();
+
         // Check if the mouse went down on the spin button
         if (m_mouseDown)
         {
             // Check if the mouse is on top of the upper/right arrow
             if (m_orientation == Orientation::Vertical)
             {
-                if (FloatRect{ getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f }.contains(pos))
+                if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
                     m_mouseDownOnTopArrow = true;
                 else
                     m_mouseDownOnTopArrow = false;
             }
             else
             {
-                if (FloatRect{ getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y }.contains(pos))
+                if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
                     m_mouseDownOnTopArrow = false;
                 else
                     m_mouseDownOnTopArrow = true;
@@ -250,12 +251,12 @@ namespace tgui
             if (m_mouseDownOnTopArrow && m_value < m_maximum)
             {
                 setValue(m_value + m_step);
-                callMousePressPeriodically(m_PressedAt);
+                callMousePressPeriodically(m_lastMousePressTime, false);
             }
             else if (!m_mouseDownOnTopArrow && m_value > m_minimum)
             {
                 setValue(m_value - m_step);
-                callMousePressPeriodically(m_PressedAt);
+                callMousePressPeriodically(m_lastMousePressTime, false);
             }
         }
 
@@ -532,31 +533,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clicked)
+    void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
-        Timer::scheduleCallback([widget = shared_from_this(), clicked]()
+        std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
+        Timer::scheduleCallback([widgetPtr, clickedTime]()
         {
-            SpinButton::Ptr spinButton = std::static_pointer_cast<SpinButton>(widget);
+            SpinButton::Ptr spinButton = widgetPtr.lock();
             if (spinButton)
             {
                 // Mouse still over and the mouse press is current
-                if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_PressedAt != clicked)
+                if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_lastMousePressTime != clickedTime)
                     return;
 
                 if (spinButton->m_value < spinButton->m_maximum &&
                     spinButton->m_mouseDownOnTopArrow && spinButton->m_mouseHoverOnTopArrow)
                 {
                     spinButton->setValue(spinButton->m_value + spinButton->m_step);
-                    spinButton->callMousePressPeriodically(clicked);
+                    spinButton->callMousePressPeriodically(clickedTime, true);
                 }
                 else if (spinButton->m_value > spinButton->m_minimum &&
-                    !spinButton->m_mouseDownOnTopArrow && !spinButton->m_mouseHoverOnTopArrow)
+                         !spinButton->m_mouseDownOnTopArrow && !spinButton->m_mouseHoverOnTopArrow)
                 {
                     spinButton->setValue(spinButton->m_value - spinButton->m_step);
-                    spinButton->callMousePressPeriodically(clicked);
+                    spinButton->callMousePressPeriodically(clickedTime, true);
                 }
             }
-        }, std::chrono::milliseconds(300));
+        }, std::chrono::milliseconds(repeatedCall ? 50 : 300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
