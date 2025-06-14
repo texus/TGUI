@@ -79,7 +79,8 @@ TEST_CASE("[Backend events]")
     {
         SECTION("SFML")
         {
-#if SFML_VERSION_MAJOR >= 3
+#if SFML_VERSION_MAJOR >= 3 && (SFML_VERSION_MINOR >= 1 || SFML_VERSION_PATCH >= 1)
+            // Due to a bug in SFML 3.0.0 (#3454), we require SFML >= 3.0.1 for this test
             SECTION("handleWindowEvents")
             {
                 // We can't test whether the functions get called correctly (as that would require
