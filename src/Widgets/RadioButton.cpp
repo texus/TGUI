@@ -121,6 +121,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void RadioButton::setMaxWidth(float maxWidth)
+    {
+        m_maxWidth = maxWidth;
+        updateTextSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD float RadioButton::getMaxWidth() const
+    {
+        return m_maxWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RadioButton::setEnabled(bool enabled)
     {
         ClickableWidget::setEnabled(enabled);
@@ -171,7 +186,13 @@ namespace tgui
         if (m_text.getString() == text)
             return;
 
-        m_text.setString(text);
+        m_caption = text;
+
+        if (m_maxWidth > 0)
+            updateTextSize();
+        else
+            m_text.setString(text);
+
         onSizeChange.emit(this, getSize());
     }
 
@@ -204,6 +225,16 @@ namespace tgui
             m_textSizeCached = Text::findBestTextSize(m_fontCached, getSize().y * 0.8f);
 
         m_text.setCharacterSize(m_textSizeCached);
+
+        if (m_maxWidth > 0)
+        {
+            const float textOffsetX = (1 + m_textDistanceRatioCached) * getSize().x;
+            if (m_maxWidth > textOffsetX)
+            {
+                const float maxTextWidth = m_maxWidth - textOffsetX;
+                m_text.setString(Text::wordWrap(maxTextWidth, m_caption, m_fontCached, m_textSizeCached, false));
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,6 +506,8 @@ namespace tgui
             node->propertyValuePairs[U"Checked"] = std::make_unique<DataIO::ValueNode>("true");
         if (!isTextClickable())
             node->propertyValuePairs[U"TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
+        if (m_maxWidth > 0)
+            node->propertyValuePairs[U"MaxWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maxWidth));
 
         return node;
     }
@@ -491,6 +524,8 @@ namespace tgui
             setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextClickable"]->value).getBool());
         if (node->propertyValuePairs[U"Checked"])
             setChecked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Checked"]->value).getBool());
+        if (node->propertyValuePairs[U"MaxWidth"])
+            setMaxWidth(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"MaxWidth"]->value).getNumber());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -713,8 +748,16 @@ namespace tgui
 
         if (!getText().empty())
         {
-            states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            target.drawText(states, m_text);
+            const float textOffsetX = (1 + m_textDistanceRatioCached) * getSize().x;
+            states.transform.translate({textOffsetX, (getSize().y - m_text.getSize().y) / 2.0f});
+
+            if (m_maxWidth > 0)
+            {
+                if (m_maxWidth > textOffsetX)
+                    target.drawText(states, m_text);
+            }
+            else // There is no length limit
+                target.drawText(states, m_text);
         }
     }
 

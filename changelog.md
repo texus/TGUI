@@ -1,6 +1,7 @@
 TGUI 1.10  (TBD)
 ----------------
 
+- Added MaxWidth property to RadioButton and CheckBox
 - Added ClientPadding property to ChildWindow renderer
 - Added option to scale image (stretching while maintaining ratio) before applying 9-slice scaling
 - Show effects didn't take origin into account

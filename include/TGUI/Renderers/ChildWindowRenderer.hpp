@@ -55,6 +55,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Changes the size of the padding around the client area
         ///
         /// @param padding  Size of the padding
+        ///
+        /// @since TGUI 1.10
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setClientPadding(const Padding& padding);
 
@@ -62,6 +64,8 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the size of the padding around the client area
         ///
         /// @return padding size
+        ///
+        /// @since TGUI 1.10
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Padding getClientPadding() const;
 

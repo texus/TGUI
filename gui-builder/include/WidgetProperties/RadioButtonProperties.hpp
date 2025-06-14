@@ -41,6 +41,8 @@ struct RadioButtonProperties : WidgetProperties
             radioButton->setTextSize(value.toUInt());
         else if (property == "TextClickable")
             radioButton->setTextClickable(parseBoolean(value, true));
+        else if (property == "MaxWidth")
+            radioButton->setMaxWidth(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -53,6 +55,7 @@ struct RadioButtonProperties : WidgetProperties
         pair.first["Text"] = {"String", radioButton->getText()};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(radioButton->getTextSize())};
         pair.first["TextClickable"] = {"Bool", tgui::Serializer::serialize(radioButton->isTextClickable())};
+        pair.first["MaxWidth"] = {"Float", tgui::String::fromNumber(radioButton->getMaxWidth())};
 
         const auto renderer = radioButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

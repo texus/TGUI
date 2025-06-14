@@ -155,6 +155,13 @@ TEST_CASE("[RadioButton]")
         }
     }
 
+    SECTION("MaxWidth")
+    {
+        REQUIRE(radioButton->getMaxWidth() == 0);
+        radioButton->setMaxWidth(150);
+        REQUIRE(radioButton->getMaxWidth() == 150);
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -451,6 +458,7 @@ TEST_CASE("[RadioButton]")
         radioButton->setText("SomeText");
         radioButton->setTextSize(25);
         radioButton->setTextClickable(false);
+        radioButton->setMaxWidth(250);
 
         testSavingWidget("RadioButton", radioButton);
     }
@@ -680,6 +688,15 @@ TEST_CASE("[RadioButton]")
                     TEST_DRAW("RadioButton_CheckedDisabled_TextureDisabledSet.png")
                 }
             }
+        }
+
+        SECTION("MaxWidth")
+        {
+            renderer.setBorders({1});
+            radioButton->setMaxWidth(125);
+            radioButton->setText("Text needs two lines");
+
+            TEST_DRAW("RadioButton_MaxWidth.png")
         }
     }
 }

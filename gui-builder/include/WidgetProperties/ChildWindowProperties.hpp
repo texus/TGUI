@@ -77,6 +77,7 @@ struct ChildWindowProperties : WidgetProperties
 
         const auto renderer = childWindow->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
+        pair.second["ClientPadding"] = {"Outline", renderer->getClientPadding().toString()};
         pair.second["TitleColor"] = {"Color", tgui::Serializer::serialize(renderer->getTitleColor())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["TitleBarColor"] = {"Color", tgui::Serializer::serialize(renderer->getTitleBarColor())};

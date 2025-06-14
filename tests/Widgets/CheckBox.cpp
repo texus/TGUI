@@ -245,6 +245,7 @@ TEST_CASE("[CheckBox]")
         checkBox->setText("SomeText");
         checkBox->setTextSize(25);
         checkBox->setTextClickable(false);
+        checkBox->setMaxWidth(200);
 
         testSavingWidget("CheckBox", checkBox);
     }
@@ -473,6 +474,14 @@ TEST_CASE("[CheckBox]")
                     TEST_DRAW("CheckBox_CheckedDisabled_TextureDisabledSet.png")
                 }
             }
+        }
+
+        SECTION("MaxWidth")
+        {
+            checkBox->setMaxWidth(125);
+            checkBox->setText("Text needs two lines");
+
+            TEST_DRAW("CheckBox_MaxWidth.png")
         }
     }
 }

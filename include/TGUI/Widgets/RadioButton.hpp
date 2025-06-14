@@ -113,6 +113,29 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD Vector2f getWidgetOffset() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the maximum width that is used to determine when to split the text over multiple lines
+        /// @param maxWidth  Width used for word wrapping
+        ///
+        /// @warning This width includes the size of the check box itself and the spacing between the box and the text.
+        ///          The max width thus starts calculating from the left position of the widget.
+        ///
+        /// When set to 0 (default), there is no limit for the text width.
+        ///
+        /// @since TGUI 1.10
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMaxWidth(float maxWidth);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum width that is used to determine when to split the text over multiple lines
+        /// @return Width used for word wrapping
+        ///
+        /// @see setMaxWidth
+        ///
+        /// @since TGUI 1.10
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD float getMaxWidth() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enables or disables the widget
         /// @param enabled  Is the widget enabled?
         ///
@@ -298,7 +321,10 @@ TGUI_MODULE_EXPORT namespace tgui
         bool m_allowTextClick = true;
 
         // This will contain the text that is written next to radio button.
+        String m_caption;
         Text m_text;
+
+        float m_maxWidth = 0;
 
         Sprite m_spriteUnchecked;
         Sprite m_spriteChecked;
