@@ -80,8 +80,6 @@ TEST_CASE("[Backend events]")
         SECTION("SFML")
         {
 #if SFML_VERSION_MAJOR >= 3
-    // This test is temporarily disabled on Windows because of an issue in SFML (https://github.com/SFML/SFML/issues/3454)
-    #ifndef TGUI_SYSTEM_WINDOWS
             SECTION("handleWindowEvents")
             {
                 // We can't test whether the functions get called correctly (as that would require
@@ -94,7 +92,6 @@ TEST_CASE("[Backend events]")
                     [](auto&&) {}
                 );
             }
-    #endif
 #endif
 
             SECTION("KeyPressed")

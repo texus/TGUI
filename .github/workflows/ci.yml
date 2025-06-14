@@ -575,7 +575,7 @@ jobs:
   windows:  # Setup technically not allowed, backends have conflicting FreeType dependencies
     runs-on: windows-2025
     env:
-      SFML_VERSION: 3.0.0
+      SFML_VERSION: 3.0.1
       SDL_VERSION: 3.2.6
       SDL_TTF_VERSION: 3.2.0
       GLFW_VERSION: '3.4'
