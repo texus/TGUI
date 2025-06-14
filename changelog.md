@@ -1,5 +1,5 @@
-TGUI 1.10  (TBD)
-----------------
+TGUI 1.10  (14 June 2025)
+-------------------------
 
 - Added MaxWidth property to RadioButton and CheckBox
 - Added ClientPadding property to ChildWindow renderer
