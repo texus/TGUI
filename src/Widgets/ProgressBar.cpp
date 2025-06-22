@@ -46,7 +46,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ProgressBarRenderer>();
+            m_renderer = makeCopied<ProgressBarRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -76,21 +76,21 @@ namespace tgui
 
     ProgressBarRenderer* ProgressBar::getSharedRenderer()
     {
-        return aurora::downcast<ProgressBarRenderer*>(Widget::getSharedRenderer());
+        return downcast<ProgressBarRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ProgressBarRenderer* ProgressBar::getSharedRenderer() const
     {
-        return aurora::downcast<const ProgressBarRenderer*>(Widget::getSharedRenderer());
+        return downcast<const ProgressBarRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ProgressBarRenderer* ProgressBar::getRenderer()
     {
-        return aurora::downcast<ProgressBarRenderer*>(Widget::getRenderer());
+        return downcast<ProgressBarRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

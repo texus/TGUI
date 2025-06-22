@@ -60,7 +60,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<EditBoxRenderer>();
+            m_renderer = makeCopied<EditBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor()); // Needs to be set here in case renderer lacks "DefaultTextColor" property
@@ -92,21 +92,21 @@ namespace tgui
 
     EditBoxRenderer* EditBox::getSharedRenderer()
     {
-        return aurora::downcast<EditBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<EditBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const EditBoxRenderer* EditBox::getSharedRenderer() const
     {
-        return aurora::downcast<const EditBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<const EditBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBoxRenderer* EditBox::getRenderer()
     {
-        return aurora::downcast<EditBoxRenderer*>(Widget::getRenderer());
+        return downcast<EditBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

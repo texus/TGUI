@@ -45,7 +45,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<TabsRenderer>();
+            m_renderer = makeCopied<TabsRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -74,21 +74,21 @@ namespace tgui
 
     TabsRenderer* Tabs::getSharedRenderer()
     {
-        return aurora::downcast<TabsRenderer*>(Widget::getSharedRenderer());
+        return downcast<TabsRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const TabsRenderer* Tabs::getSharedRenderer() const
     {
-        return aurora::downcast<const TabsRenderer*>(Widget::getSharedRenderer());
+        return downcast<const TabsRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabsRenderer* Tabs::getRenderer()
     {
-        return aurora::downcast<TabsRenderer*>(Widget::getRenderer());
+        return downcast<TabsRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

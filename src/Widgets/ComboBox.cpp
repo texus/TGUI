@@ -49,7 +49,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ComboBoxRenderer>();
+            m_renderer = makeCopied<ComboBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -193,21 +193,21 @@ namespace tgui
 
     ComboBoxRenderer* ComboBox::getSharedRenderer()
     {
-        return aurora::downcast<ComboBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<ComboBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ComboBoxRenderer* ComboBox::getSharedRenderer() const
     {
-        return aurora::downcast<const ComboBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<const ComboBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBoxRenderer* ComboBox::getRenderer()
     {
-        return aurora::downcast<ComboBoxRenderer*>(Widget::getRenderer());
+        return downcast<ComboBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

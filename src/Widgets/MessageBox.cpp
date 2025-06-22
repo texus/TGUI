@@ -43,7 +43,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<MessageBoxRenderer>();
+            m_renderer = makeCopied<MessageBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -159,21 +159,21 @@ namespace tgui
 
     MessageBoxRenderer* MessageBox::getSharedRenderer()
     {
-        return aurora::downcast<MessageBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<MessageBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const MessageBoxRenderer* MessageBox::getSharedRenderer() const
     {
-        return aurora::downcast<const MessageBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<const MessageBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBoxRenderer* MessageBox::getRenderer()
     {
-        return aurora::downcast<MessageBoxRenderer*>(Widget::getRenderer());
+        return downcast<MessageBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

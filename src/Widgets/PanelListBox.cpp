@@ -48,7 +48,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<PanelListBoxRenderer>();
+            m_renderer = makeCopied<PanelListBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
@@ -77,21 +77,21 @@ namespace tgui
 
     PanelListBoxRenderer* PanelListBox::getSharedRenderer()
     {
-        return aurora::downcast<PanelListBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<PanelListBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const PanelListBoxRenderer* PanelListBox::getSharedRenderer() const
     {
-        return aurora::downcast<const PanelListBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<const PanelListBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PanelListBoxRenderer* PanelListBox::getRenderer()
     {
-        return aurora::downcast<PanelListBoxRenderer*>(Widget::getRenderer());
+        return downcast<PanelListBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

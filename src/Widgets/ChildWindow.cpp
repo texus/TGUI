@@ -69,7 +69,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ChildWindowRenderer>();
+            m_renderer = makeCopied<ChildWindowRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setSize({400, 300});
@@ -289,21 +289,21 @@ namespace tgui
 
     ChildWindowRenderer* ChildWindow::getSharedRenderer()
     {
-        return aurora::downcast<ChildWindowRenderer*>(Widget::getSharedRenderer());
+        return downcast<ChildWindowRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ChildWindowRenderer* ChildWindow::getSharedRenderer() const
     {
-        return aurora::downcast<const ChildWindowRenderer*>(Widget::getSharedRenderer());
+        return downcast<const ChildWindowRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindowRenderer* ChildWindow::getRenderer()
     {
-        return aurora::downcast<ChildWindowRenderer*>(Widget::getRenderer());
+        return downcast<ChildWindowRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

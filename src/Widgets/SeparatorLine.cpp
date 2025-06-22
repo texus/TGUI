@@ -39,7 +39,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<SeparatorLineRenderer>();
+            m_renderer = makeCopied<SeparatorLineRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
     }
@@ -67,21 +67,21 @@ namespace tgui
 
     SeparatorLineRenderer* SeparatorLine::getSharedRenderer()
     {
-        return aurora::downcast<SeparatorLineRenderer*>(Widget::getSharedRenderer());
+        return downcast<SeparatorLineRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const SeparatorLineRenderer* SeparatorLine::getSharedRenderer() const
     {
-        return aurora::downcast<const SeparatorLineRenderer*>(Widget::getSharedRenderer());
+        return downcast<const SeparatorLineRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SeparatorLineRenderer* SeparatorLine::getRenderer()
     {
-        return aurora::downcast<SeparatorLineRenderer*>(Widget::getRenderer());
+        return downcast<SeparatorLineRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

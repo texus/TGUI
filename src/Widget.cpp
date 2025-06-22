@@ -135,7 +135,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<WidgetRenderer>();
+            m_renderer = makeCopied<WidgetRenderer>();
             m_renderer->subscribe(this);
         }
     }

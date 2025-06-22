@@ -157,6 +157,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Components.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Container.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/CopiedPtr.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/CopiedSharedPtr.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Core.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Cursor.hpp"

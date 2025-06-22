@@ -200,7 +200,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ColorPickerRenderer>();
+            m_renderer = makeCopied<ColorPickerRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -402,21 +402,21 @@ namespace tgui
 
     ColorPickerRenderer *ColorPicker::getSharedRenderer()
     {
-        return aurora::downcast<ColorPickerRenderer *>(Widget::getSharedRenderer());
+        return downcast<ColorPickerRenderer *>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ColorPickerRenderer *ColorPicker::getSharedRenderer() const
     {
-        return aurora::downcast<const ColorPickerRenderer *>(Widget::getSharedRenderer());
+        return downcast<const ColorPickerRenderer *>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ColorPickerRenderer *ColorPicker::getRenderer()
     {
-        return aurora::downcast<ColorPickerRenderer *>(Widget::getRenderer());
+        return downcast<ColorPickerRenderer *>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

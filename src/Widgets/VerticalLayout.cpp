@@ -43,7 +43,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
+            m_renderer = makeCopied<BoxLayoutRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
     }

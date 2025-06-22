@@ -44,7 +44,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<LabelRenderer>();
+            m_renderer = makeCopied<LabelRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -80,21 +80,21 @@ namespace tgui
 
     LabelRenderer* Label::getSharedRenderer()
     {
-        return aurora::downcast<LabelRenderer*>(Widget::getSharedRenderer());
+        return downcast<LabelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const LabelRenderer* Label::getSharedRenderer() const
     {
-        return aurora::downcast<const LabelRenderer*>(Widget::getSharedRenderer());
+        return downcast<const LabelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LabelRenderer* Label::getRenderer()
     {
-        return aurora::downcast<LabelRenderer*>(Widget::getRenderer());
+        return downcast<LabelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -43,7 +43,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<SplitContainerRenderer>();
+            m_renderer = makeCopied<SplitContainerRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
@@ -73,21 +73,21 @@ namespace tgui
 
     SplitContainerRenderer* SplitContainer::getSharedRenderer()
     {
-        return aurora::downcast<SplitContainerRenderer*>(Widget::getSharedRenderer());
+        return downcast<SplitContainerRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const SplitContainerRenderer* SplitContainer::getSharedRenderer() const
     {
-        return aurora::downcast<const SplitContainerRenderer*>(Widget::getSharedRenderer());
+        return downcast<const SplitContainerRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SplitContainerRenderer* SplitContainer::getRenderer()
     {
-        return aurora::downcast<SplitContainerRenderer*>(Widget::getRenderer());
+        return downcast<SplitContainerRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

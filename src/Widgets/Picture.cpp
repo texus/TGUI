@@ -39,7 +39,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<PictureRenderer>();
+            m_renderer = makeCopied<PictureRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
     }
@@ -75,21 +75,21 @@ namespace tgui
 
     PictureRenderer* Picture::getSharedRenderer()
     {
-        return aurora::downcast<PictureRenderer*>(Widget::getSharedRenderer());
+        return downcast<PictureRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const PictureRenderer* Picture::getSharedRenderer() const
     {
-        return aurora::downcast<const PictureRenderer*>(Widget::getSharedRenderer());
+        return downcast<const PictureRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PictureRenderer* Picture::getRenderer()
     {
-        return aurora::downcast<PictureRenderer*>(Widget::getRenderer());
+        return downcast<PictureRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

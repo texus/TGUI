@@ -45,7 +45,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<PanelRenderer>();
+            m_renderer = makeCopied<PanelRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
     }
@@ -73,21 +73,21 @@ namespace tgui
 
     PanelRenderer* Panel::getSharedRenderer()
     {
-        return aurora::downcast<PanelRenderer*>(Widget::getSharedRenderer());
+        return downcast<PanelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const PanelRenderer* Panel::getSharedRenderer() const
     {
-        return aurora::downcast<const PanelRenderer*>(Widget::getSharedRenderer());
+        return downcast<const PanelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PanelRenderer* Panel::getRenderer()
     {
-        return aurora::downcast<PanelRenderer*>(Widget::getRenderer());
+        return downcast<PanelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

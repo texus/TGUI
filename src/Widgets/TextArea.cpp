@@ -54,7 +54,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<TextAreaRenderer>();
+            m_renderer = makeCopied<TextAreaRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -87,21 +87,21 @@ namespace tgui
 
     TextAreaRenderer* TextArea::getSharedRenderer()
     {
-        return aurora::downcast<TextAreaRenderer*>(Widget::getSharedRenderer());
+        return downcast<TextAreaRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const TextAreaRenderer* TextArea::getSharedRenderer() const
     {
-        return aurora::downcast<const TextAreaRenderer*>(Widget::getSharedRenderer());
+        return downcast<const TextAreaRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextAreaRenderer* TextArea::getRenderer()
     {
-        return aurora::downcast<TextAreaRenderer*>(Widget::getRenderer());
+        return downcast<TextAreaRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -104,14 +104,6 @@ module;
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
-#if TGUI_USE_SYSTEM_AURORA
-    #include <Aurora/SmartPtr/CopiedPtr.hpp>
-    #include <Aurora/Tools/Downcast.hpp>
-#else
-    #include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
-    #include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
-#endif
-
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics.hpp>
 #endif

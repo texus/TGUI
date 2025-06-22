@@ -45,7 +45,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
+            m_renderer = makeCopied<ScrollablePanelRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
     }
@@ -180,21 +180,21 @@ namespace tgui
 
     ScrollablePanelRenderer* ScrollablePanel::getSharedRenderer()
     {
-        return aurora::downcast<ScrollablePanelRenderer*>(Widget::getSharedRenderer());
+        return downcast<ScrollablePanelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ScrollablePanelRenderer* ScrollablePanel::getSharedRenderer() const
     {
-        return aurora::downcast<const ScrollablePanelRenderer*>(Widget::getSharedRenderer());
+        return downcast<const ScrollablePanelRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanelRenderer* ScrollablePanel::getRenderer()
     {
-        return aurora::downcast<ScrollablePanelRenderer*>(Widget::getRenderer());
+        return downcast<ScrollablePanelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

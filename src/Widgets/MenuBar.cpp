@@ -46,7 +46,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<MenuBarRenderer>();
+            m_renderer = makeCopied<MenuBarRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -77,21 +77,21 @@ namespace tgui
 
     MenuBarRenderer* MenuBar::getSharedRenderer()
     {
-        return aurora::downcast<MenuBarRenderer*>(MenuWidgetBase::getSharedRenderer());
+        return downcast<MenuBarRenderer*>(MenuWidgetBase::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const MenuBarRenderer* MenuBar::getSharedRenderer() const
     {
-        return aurora::downcast<const MenuBarRenderer*>(MenuWidgetBase::getSharedRenderer());
+        return downcast<const MenuBarRenderer*>(MenuWidgetBase::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBarRenderer* MenuBar::getRenderer()
     {
-        return aurora::downcast<MenuBarRenderer*>(MenuWidgetBase::getRenderer());
+        return downcast<MenuBarRenderer*>(MenuWidgetBase::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

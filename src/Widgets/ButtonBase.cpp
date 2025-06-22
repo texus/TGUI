@@ -45,7 +45,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<ButtonRenderer>();
+            m_renderer = makeCopied<ButtonRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             m_textComponent->setFont(m_fontCached);
@@ -172,21 +172,21 @@ namespace tgui
 
     ButtonRenderer* ButtonBase::getSharedRenderer()
     {
-        return aurora::downcast<ButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<ButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ButtonRenderer* ButtonBase::getSharedRenderer() const
     {
-        return aurora::downcast<const ButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<const ButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ButtonRenderer* ButtonBase::getRenderer()
     {
-        return aurora::downcast<ButtonRenderer*>(Widget::getRenderer());
+        return downcast<ButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

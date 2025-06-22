@@ -34,6 +34,7 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Duration.hpp>
+#include <TGUI/CopiedPtr.hpp>
 #include <TGUI/Cursor.hpp>
 #include <TGUI/Event.hpp>
 #include <TGUI/Any.hpp>
@@ -44,19 +45,21 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 
-#if TGUI_USE_SYSTEM_AURORA
-    #include <Aurora/SmartPtr/CopiedPtr.hpp>
-    #include <Aurora/Tools/Downcast.hpp>
-#else
-    #include <TGUI/extlibs/Aurora/SmartPtr/CopiedPtr.hpp>
-    #include <TGUI/extlibs/Aurora/Tools/Downcast.hpp>
-#endif
-
 #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
     #include <unordered_set>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// We used to rely on Aurora (https://bromeon.ch/libraries/aurora/index.html) for some functionality.
+// For backwards compatibility the replacement functions are still placed in the aurora namespace.
+// TGUI_NEXT: Remove this namespace and the include files in the extlibs folder.
+namespace aurora
+{
+    using tgui::CopiedPtr;
+    using tgui::makeCopied;
+    using tgui::downcast;
+}
 
 TGUI_MODULE_EXPORT namespace tgui
 {
@@ -1290,7 +1293,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Widget::Ptr m_toolTip = nullptr;
 
         // Renderer of the widget
-        aurora::CopiedPtr<WidgetRenderer> m_renderer = nullptr;
+        CopiedPtr<WidgetRenderer> m_renderer = nullptr;
 
         // Show animations
         std::vector<std::unique_ptr<priv::Animation>> m_showAnimations;

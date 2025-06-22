@@ -130,21 +130,21 @@ namespace tgui
 
     MenuWidgetBaseRenderer* MenuWidgetBase::getSharedRenderer()
     {
-        return aurora::downcast<MenuWidgetBaseRenderer*>(Widget::getSharedRenderer());
+        return downcast<MenuWidgetBaseRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const MenuWidgetBaseRenderer* MenuWidgetBase::getSharedRenderer() const
     {
-        return aurora::downcast<const MenuWidgetBaseRenderer*>(Widget::getSharedRenderer());
+        return downcast<const MenuWidgetBaseRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuWidgetBaseRenderer* MenuWidgetBase::getRenderer()
     {
-        return aurora::downcast<MenuWidgetBaseRenderer*>(Widget::getRenderer());
+        return downcast<MenuWidgetBaseRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

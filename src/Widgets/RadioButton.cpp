@@ -40,7 +40,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<RadioButtonRenderer>();
+            m_renderer = makeCopied<RadioButtonRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -70,21 +70,21 @@ namespace tgui
 
     RadioButtonRenderer* RadioButton::getSharedRenderer()
     {
-        return aurora::downcast<RadioButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<RadioButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const RadioButtonRenderer* RadioButton::getSharedRenderer() const
     {
-        return aurora::downcast<const RadioButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<const RadioButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButtonRenderer* RadioButton::getRenderer()
     {
-        return aurora::downcast<RadioButtonRenderer*>(Widget::getRenderer());
+        return downcast<RadioButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

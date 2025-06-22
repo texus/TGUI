@@ -39,7 +39,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<SpinButtonRenderer>();
+            m_renderer = makeCopied<SpinButtonRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
@@ -72,21 +72,21 @@ namespace tgui
 
     SpinButtonRenderer* SpinButton::getSharedRenderer()
     {
-        return aurora::downcast<SpinButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<SpinButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const SpinButtonRenderer* SpinButton::getSharedRenderer() const
     {
-        return aurora::downcast<const SpinButtonRenderer*>(Widget::getSharedRenderer());
+        return downcast<const SpinButtonRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButtonRenderer* SpinButton::getRenderer()
     {
-        return aurora::downcast<SpinButtonRenderer*>(Widget::getRenderer());
+        return downcast<SpinButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

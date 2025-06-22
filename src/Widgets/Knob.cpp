@@ -57,7 +57,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<KnobRenderer>();
+            m_renderer = makeCopied<KnobRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setSize(140, 140);
@@ -85,21 +85,21 @@ namespace tgui
 
     KnobRenderer* Knob::getSharedRenderer()
     {
-        return aurora::downcast<KnobRenderer*>(Widget::getSharedRenderer());
+        return downcast<KnobRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const KnobRenderer* Knob::getSharedRenderer() const
     {
-        return aurora::downcast<const KnobRenderer*>(Widget::getSharedRenderer());
+        return downcast<const KnobRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     KnobRenderer* Knob::getRenderer()
     {
-        return aurora::downcast<KnobRenderer*>(Widget::getRenderer());
+        return downcast<KnobRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

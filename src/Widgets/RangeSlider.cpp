@@ -43,7 +43,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<RangeSliderRenderer>();
+            m_renderer = makeCopied<RangeSliderRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
@@ -76,21 +76,21 @@ namespace tgui
 
     RangeSliderRenderer* RangeSlider::getSharedRenderer()
     {
-        return aurora::downcast<RangeSliderRenderer*>(Widget::getSharedRenderer());
+        return downcast<RangeSliderRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const RangeSliderRenderer* RangeSlider::getSharedRenderer() const
     {
-        return aurora::downcast<const RangeSliderRenderer*>(Widget::getSharedRenderer());
+        return downcast<const RangeSliderRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RangeSliderRenderer* RangeSlider::getRenderer()
     {
-        return aurora::downcast<RangeSliderRenderer*>(Widget::getRenderer());
+        return downcast<RangeSliderRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

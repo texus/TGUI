@@ -47,7 +47,7 @@ namespace tgui
     {
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<CheckBoxRenderer>();
+            m_renderer = makeCopied<CheckBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
@@ -82,21 +82,21 @@ namespace tgui
 
     CheckBoxRenderer* CheckBox::getSharedRenderer()
     {
-        return aurora::downcast<CheckBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<CheckBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const CheckBoxRenderer* CheckBox::getSharedRenderer() const
     {
-        return aurora::downcast<const CheckBoxRenderer*>(Widget::getSharedRenderer());
+        return downcast<const CheckBoxRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CheckBoxRenderer* CheckBox::getRenderer()
     {
-        return aurora::downcast<CheckBoxRenderer*>(Widget::getRenderer());
+        return downcast<CheckBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

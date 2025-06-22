@@ -132,7 +132,7 @@ namespace tgui
 
         if (initRenderer)
         {
-            m_renderer = aurora::makeCopied<FileDialogRenderer>();
+            m_renderer = makeCopied<FileDialogRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
         }
 
@@ -306,21 +306,21 @@ namespace tgui
 
     FileDialogRenderer* FileDialog::getSharedRenderer()
     {
-        return aurora::downcast<FileDialogRenderer*>(Widget::getSharedRenderer());
+        return downcast<FileDialogRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const FileDialogRenderer* FileDialog::getSharedRenderer() const
     {
-        return aurora::downcast<const FileDialogRenderer*>(Widget::getSharedRenderer());
+        return downcast<const FileDialogRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     FileDialogRenderer* FileDialog::getRenderer()
     {
-        return aurora::downcast<FileDialogRenderer*>(Widget::getRenderer());
+        return downcast<FileDialogRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

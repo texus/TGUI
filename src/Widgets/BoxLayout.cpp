@@ -40,21 +40,21 @@ namespace tgui
 
     BoxLayoutRenderer* BoxLayout::getSharedRenderer()
     {
-        return aurora::downcast<BoxLayoutRenderer*>(Widget::getSharedRenderer());
+        return downcast<BoxLayoutRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const BoxLayoutRenderer* BoxLayout::getSharedRenderer() const
     {
-        return aurora::downcast<const BoxLayoutRenderer*>(Widget::getSharedRenderer());
+        return downcast<const BoxLayoutRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BoxLayoutRenderer* BoxLayout::getRenderer()
     {
-        return aurora::downcast<BoxLayoutRenderer*>(Widget::getRenderer());
+        return downcast<BoxLayoutRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
