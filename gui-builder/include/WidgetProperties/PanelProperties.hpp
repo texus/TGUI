@@ -38,7 +38,9 @@ struct PanelProperties : GroupProperties
         const auto renderer = panel->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
+        pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
 };

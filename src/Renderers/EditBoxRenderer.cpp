@@ -59,6 +59,8 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, TextStyle, TextStyle::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, DefaultTextStyle, TextStyle::Italic)
+
+    TGUI_RENDERER_PROPERTY_NUMBER(EditBoxRenderer, RoundedBorderRadius, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

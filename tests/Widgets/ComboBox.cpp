@@ -462,6 +462,7 @@ TEST_CASE("[ComboBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Italic"));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", "5"));
                 REQUIRE_NOTHROW(renderer->setProperty("ListBox", "{ BackgroundColor = Red; TextColor = Blue; }"));
             }
 
@@ -483,6 +484,7 @@ TEST_CASE("[ComboBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Bold));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyle::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
                 REQUIRE_NOTHROW(renderer->setProperty("ListBox", listBoxRenderer.getData()));
             }
 
@@ -504,6 +506,7 @@ TEST_CASE("[ComboBox]")
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(tgui::TextStyle::Bold);
                 renderer->setDefaultTextStyle(tgui::TextStyle::Italic);
+                renderer->setRoundedBorderRadius(5);
                 renderer->setListBox(listBoxRenderer.getData());
             }
 
@@ -523,6 +526,25 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Bold);
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getProperty("RoundedBorderRadius").getNumber() == 5);
+
+            REQUIRE(renderer->getBackgroundColor() == tgui::Color(20, 30, 40));
+            REQUIRE(renderer->getBackgroundColorDisabled() == tgui::Color(120, 130, 140));
+            REQUIRE(renderer->getArrowBackgroundColor() == tgui::Color(30, 40, 50));
+            REQUIRE(renderer->getArrowBackgroundColorHover() == tgui::Color(40, 50, 60));
+            REQUIRE(renderer->getArrowBackgroundColorDisabled() == tgui::Color(130, 140, 150));
+            REQUIRE(renderer->getArrowColor() == tgui::Color(50, 60, 70));
+            REQUIRE(renderer->getArrowColorHover() == tgui::Color(60, 70, 80));
+            REQUIRE(renderer->getArrowColorDisabled() == tgui::Color(140, 150, 160));
+            REQUIRE(renderer->getTextColor() == tgui::Color(70, 80, 90));
+            REQUIRE(renderer->getTextColorDisabled() == tgui::Color(150, 160, 170));
+            REQUIRE(renderer->getDefaultTextColor() == tgui::Color(110, 120, 130));
+            REQUIRE(renderer->getBorderColor() == tgui::Color(80, 90, 100));
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getPadding() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getTextStyle() == tgui::TextStyle::Bold);
+            REQUIRE(renderer->getDefaultTextStyle() == tgui::TextStyle::Italic);
+            REQUIRE(renderer->getRoundedBorderRadius() == 5);
 
             REQUIRE(renderer->getListBox()->propertyValuePairs.size() >= 2);  // Also contains Scrollbar from default White theme
             REQUIRE(renderer->getListBox()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Red);

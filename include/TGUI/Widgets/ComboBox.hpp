@@ -656,6 +656,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Color   m_arrowBackgroundColorDisabledCached;
         Color   m_textColorCached;
         Color   m_textColorDisabledCached;
+        float   m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

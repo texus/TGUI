@@ -163,7 +163,7 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", "Bold | Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", "StrikeThrough"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", "5"));
             }
 
             SECTION("set object property")

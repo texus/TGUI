@@ -95,6 +95,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.second["TextureArrowDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDisabled())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
         pair.second["DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getDefaultTextStyle())};
+        pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
 

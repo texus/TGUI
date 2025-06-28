@@ -627,6 +627,7 @@ TGUI_MODULE_EXPORT namespace tgui
         Color   m_caretColorHoverCached;
         Color   m_caretColorFocusedCached;
         Color   m_selectedTextBackgroundColorCached;
+        float   m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:

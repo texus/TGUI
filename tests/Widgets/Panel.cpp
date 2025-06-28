@@ -160,7 +160,7 @@ TEST_CASE("[Panel]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
-                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", "5"));
             }
 
             SECTION("set object property")

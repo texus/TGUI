@@ -476,6 +476,7 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Bold | Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", "5"));
             }
 
             SECTION("set object property")
@@ -501,6 +502,7 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("functions")
@@ -526,6 +528,7 @@ TEST_CASE("[EditBox]")
                 renderer->setDefaultTextStyle(tgui::TextStyle::Bold | tgui::TextStyle::Underlined);
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
+                renderer->setRoundedBorderRadius(5);
             }
 
             REQUIRE(renderer->getProperty("TextColor").getColor() == tgui::Color(20, 30, 40));
@@ -549,6 +552,7 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("RoundedBorderRadius").getNumber() == 5);
 
             REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
             REQUIRE(renderer->getTextColorDisabled() == tgui::Color(120, 130, 140));
@@ -571,6 +575,7 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getDefaultTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getPadding() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getRoundedBorderRadius() == 5);
         }
 
         SECTION("textured")

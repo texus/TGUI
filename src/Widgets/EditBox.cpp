@@ -858,6 +858,10 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         {
             m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
+        else if (property == U"RoundedBorderRadius")
+        {
+            m_roundedBorderRadiusCached = getSharedRenderer()->getRoundedBorderRadius();
+        }
         else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             ClickableWidget::rendererChanged(property);
@@ -1586,43 +1590,55 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     void EditBox::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            if (!m_enabled && m_borderColorDisabledCached.isSet())
-                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorDisabledCached, m_opacityCached));
-            else if (m_mouseHover && m_borderColorHoverCached.isSet())
-                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
-            else if (m_focused && m_borderColorFocusedCached.isSet())
-                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
-            else
-                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+        Color backgroundColor;
+        if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+            backgroundColor = m_backgroundColorDisabledCached;
+        else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
+            backgroundColor = m_backgroundColorHoverCached;
+        else if (m_focused && m_backgroundColorFocusedCached.isSet())
+            backgroundColor = m_backgroundColorFocusedCached;
+        else
+            backgroundColor = m_backgroundColorCached;
 
-            states.transform.translate(m_bordersCached.getOffset());
-        }
+        Color borderColor;
+        if (!m_enabled && m_borderColorDisabledCached.isSet())
+            borderColor = m_borderColorDisabledCached;
+        else if (m_mouseHover && m_borderColorHoverCached.isSet())
+            borderColor = m_borderColorHoverCached;
+        else if (m_focused && m_borderColorFocusedCached.isSet())
+            borderColor = m_borderColorFocusedCached;
+        else
+            borderColor = m_borderColorCached;
 
-        // Draw the background
-        if (m_sprite.isSet())
+        if ((m_roundedBorderRadiusCached > 0) && !m_sprite.isSet())
         {
-            if (!m_enabled && m_spriteDisabled.isSet())
-                target.drawSprite(states, m_spriteDisabled);
-            else if (m_mouseHover && m_spriteHover.isSet())
-                target.drawSprite(states, m_spriteHover);
-            else if (m_focused && m_spriteFocused.isSet())
-                target.drawSprite(states, m_spriteFocused);
-            else
-                target.drawSprite(states, m_sprite);
+            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(backgroundColor, m_opacityCached),
+                                        m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(borderColor, m_opacityCached));
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
-        else // There is no background texture
+        else
         {
-            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
-                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorDisabledCached, m_opacityCached));
-            else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
-                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-            else if (m_focused && m_backgroundColorFocusedCached.isSet())
-                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorFocusedCached, m_opacityCached));
-            else
-                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+            // Draw the borders
+            if (m_bordersCached != Borders{0})
+            {
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(borderColor, m_opacityCached));
+                states.transform.translate(m_bordersCached.getOffset());
+            }
+
+            // Draw the background
+            if (m_sprite.isSet())
+            {
+                if (!m_enabled && m_spriteDisabled.isSet())
+                    target.drawSprite(states, m_spriteDisabled);
+                else if (m_mouseHover && m_spriteHover.isSet())
+                    target.drawSprite(states, m_spriteHover);
+                else if (m_focused && m_spriteFocused.isSet())
+                    target.drawSprite(states, m_spriteFocused);
+                else
+                    target.drawSprite(states, m_sprite);
+            }
+            else // There is no background texture
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(backgroundColor, m_opacityCached));
         }
 
         // Draw the suffix

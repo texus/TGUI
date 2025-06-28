@@ -101,6 +101,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         pair.second["TextureFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFocused())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
         pair.second["DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getDefaultTextStyle())};
+        pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
 };

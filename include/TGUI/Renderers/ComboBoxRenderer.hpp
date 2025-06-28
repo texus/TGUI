@@ -346,6 +346,23 @@ TGUI_MODULE_EXPORT namespace tgui
         TGUI_NODISCARD const Texture& getTextureArrowDisabled() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the radius for the rounded corners if you want to draw a rounded rectangle as background
+        /// @param radius  Radius of the corners
+        ///
+        /// @warning This property is ignored when textures are used as background
+        ///
+        /// @since TGUI 1.11
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setRoundedBorderRadius(float radius);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the radius for the rounded corners if you want to draw a rounded rectangle as background
+        /// @return Radius of the corners
+        /// @since TGUI 1.11
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD float getRoundedBorderRadius() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the list box
         ///
         /// @param rendererData  Data about how the list box should look
@@ -356,6 +373,11 @@ TGUI_MODULE_EXPORT namespace tgui
         /// @brief Returns the renderer data of the list box
         ///
         /// @return Data about how the list box looks
+        ///
+        /// Example usage:
+        /// @code
+        /// tgui::ListBoxRenderer(comboBox->getRenderer()->getListBox()).setTextColor(tgui::Color::Red);
+        /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::shared_ptr<RendererData> getListBox() const;
 
