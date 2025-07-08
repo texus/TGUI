@@ -557,8 +557,8 @@ namespace tgui
         if (m_spriteBackground.isSet())
             return getSize();
         else
-            return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                    std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+            return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                    std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

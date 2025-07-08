@@ -117,7 +117,7 @@ namespace tgui
     {
         m_widgetLayouts.clear();
 
-        const float contentHeight = std::max(0.f, getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom());
+        const float contentHeight = std::max(0.f, getSize().y - m_paddingCached.getTopPlusBottom());
 
         float currentOffset = 0;
         for (const auto& widget : m_widgets)
@@ -139,7 +139,7 @@ namespace tgui
             currentOffset += widget->getFullSize().x + m_spaceBetweenWidgetsCached;
         }
 
-        float layoutWidth = currentOffset + m_paddingCached.getLeft() + m_paddingCached.getRight();
+        float layoutWidth = currentOffset + m_paddingCached.getLeftPlusRight();
         if (!m_widgets.empty())
             layoutWidth -= m_spaceBetweenWidgetsCached; // There is no padding below the last widget
 

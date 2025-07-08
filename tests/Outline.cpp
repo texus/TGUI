@@ -35,6 +35,8 @@ TEST_CASE("[Outline]")
             REQUIRE(outline.getTop() == 0);
             REQUIRE(outline.getRight() == 0);
             REQUIRE(outline.getBottom() == 0);
+            REQUIRE(outline.getLeftPlusRight() == 0);
+            REQUIRE(outline.getTopPlusBottom() == 0);
 
             outline = tgui::Outline(20);
             REQUIRE(outline.getLeft() == 20);
@@ -53,6 +55,8 @@ TEST_CASE("[Outline]")
             REQUIRE(outline.getTop() == 2);
             REQUIRE(outline.getRight() == 3);
             REQUIRE(outline.getBottom() == 4);
+            REQUIRE(outline.getLeftPlusRight() == 4);
+            REQUIRE(outline.getTopPlusBottom() == 6);
         }
 
         SECTION("Relative")

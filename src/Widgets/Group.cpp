@@ -97,8 +97,8 @@ namespace tgui
 
     Vector2f Group::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
-                std::max(0.f, getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_paddingCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_paddingCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,8 +149,8 @@ namespace tgui
     {
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-        const Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                    getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+        const Vector2f innerSize = {getSize().x - m_paddingCached.getLeftPlusRight(),
+                                    getSize().y - m_paddingCached.getTopPlusBottom()};
 
         target.addClippingLayer(states, {{}, innerSize});
 

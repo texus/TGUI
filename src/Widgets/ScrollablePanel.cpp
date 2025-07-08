@@ -647,8 +647,8 @@ namespace tgui
     {
         const auto oldStates = states;
 
-        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
+                                    getSize().y - m_bordersCached.getTopPlusBottom()};
 
         if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
         {
@@ -673,8 +673,8 @@ namespace tgui
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+        Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(),
+                                innerSize.y - m_paddingCached.getTopPlusBottom()};
 
         if (m_verticalScrollbar->isShown())
             contentSize.x -= m_verticalScrollbar->getSize().x;
@@ -783,8 +783,8 @@ namespace tgui
 
     void ScrollablePanel::updateScrollbars()
     {
-        const Vector2f scrollbarSpace = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        const Vector2f scrollbarSpace = {getSize().x - m_bordersCached.getLeftPlusRight(),
+                                         getSize().y - m_bordersCached.getTopPlusBottom()};
 
         const Vector2f visibleSize = Panel::getInnerSize();
         m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.x));

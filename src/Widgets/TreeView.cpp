@@ -252,7 +252,7 @@ namespace tgui
             setTextSize(getGlobalTextSize());
             setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 10,
-                     (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     (m_itemHeight * 7) + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -705,8 +705,8 @@ namespace tgui
 
     Vector2f TreeView::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -864,12 +864,12 @@ namespace tgui
             isDragging = m_horizontalScrollbar->leftMousePressed(pos);
         else
         {
-            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -895,14 +895,14 @@ namespace tgui
         {
             m_mouseDown = false;
 
-            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
             bool iconPressed = false;
             int selectedIndex = -1;
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -968,12 +968,12 @@ namespace tgui
     {
         pos -= getPosition();
 
-        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
         if (m_verticalScrollbar->isShown())
             maxItemWidth -= m_verticalScrollbar->getSize().x;
 
         if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                      maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                      maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -1015,12 +1015,12 @@ namespace tgui
             m_verticalScrollbar->mouseNoLongerOnWidget();
             m_horizontalScrollbar->mouseNoLongerOnWidget();
 
-            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -1454,28 +1454,28 @@ namespace tgui
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxRight));
 
         const bool horizontalScrollbarShown = (m_horizontalScrollbar->getPolicy() == Scrollbar::Policy::Always)
-            || (((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
+            || (((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeftPlusRight()))
              && (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never));
         if (horizontalScrollbarShown)
         {
             m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y - m_horizontalScrollbar->getSize().y)});
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTopPlusBottom()));
         }
         else
         {
             m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y)});
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTopPlusBottom()));
         }
 
         if (m_verticalScrollbar->isShown())
         {
             m_horizontalScrollbar->setSize({std::max(0.f, getInnerSize().x - m_verticalScrollbar->getSize().x), m_horizontalScrollbar->getSize().y});
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeftPlusRight()));
         }
         else
         {
             m_horizontalScrollbar->setSize({std::max(0.f, getInnerSize().x), m_horizontalScrollbar->getSize().y});
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeftPlusRight()));
         }
 
         // If the horizontal scrollbar is shown then add a little padding at the end of the longest line
@@ -1504,12 +1504,12 @@ namespace tgui
         else
             target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
 
-        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
         if (m_verticalScrollbar->isShown())
             maxItemWidth -= m_verticalScrollbar->getSize().x;
 
         target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-            {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+            {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
         std::size_t firstNode = 0;
         std::size_t lastNode = m_visibleNodes.size();
@@ -1530,7 +1530,7 @@ namespace tgui
         {
             states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
 
-            const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
+            const Vector2f size = {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)};
             if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
                 target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
             else
@@ -1543,7 +1543,7 @@ namespace tgui
         if ((m_hoveredItem >= static_cast<int>(firstNode)) && (m_hoveredItem < static_cast<int>(lastNode)) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
         {
             states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
-            target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
+            target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
         }
 

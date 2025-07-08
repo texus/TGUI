@@ -62,7 +62,7 @@ namespace tgui
                      10 * m_fontCached.getLineSpacing(m_textSizeCached)
                      + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
                      + Text::getExtraVerticalPadding(m_textSizeCached)
-                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -1186,7 +1186,7 @@ namespace tgui
         const auto oldSelEnd = m_selEnd;
 
         const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
-        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight);
+        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTopPlusBottom() - horiScrollOffset) / m_lineHeight);
         const std::size_t linesToScroll = (fullyVisibleLines >= 2) ? (fullyVisibleLines - 1) : 1;
         if (m_selEnd.y > linesToScroll)
             m_selEnd.y = m_selEnd.y - linesToScroll;
@@ -1205,7 +1205,7 @@ namespace tgui
         const auto oldSelEnd = m_selEnd;
 
         const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
-        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight);
+        const auto fullyVisibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTopPlusBottom() - horiScrollOffset) / m_lineHeight);
         const std::size_t linesToScroll = (fullyVisibleLines >= 2) ? (fullyVisibleLines - 1) : 1;
         if (m_selEnd.y + linesToScroll < m_lines.size())
             m_selEnd.y = m_selEnd.y + linesToScroll;
@@ -1359,7 +1359,7 @@ namespace tgui
         {
             // Find the maximum width of one line
             const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
-            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2 * textOffset;
+            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight() - 2 * textOffset;
             if (m_verticalScrollbar->isShown())
                 maxLineWidth -= m_verticalScrollbar->getSize().x;
 
@@ -1518,23 +1518,23 @@ namespace tgui
         if (m_horizontalScrollbar->isShown())
         {
             m_verticalScrollbar->setHeight(getInnerSize().y - m_horizontalScrollbar->getSize().y);
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTopPlusBottom()));
         }
         else
         {
             m_verticalScrollbar->setHeight(getInnerSize().y);
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTopPlusBottom()));
         }
 
         if (m_verticalScrollbar->isShown())
         {
             m_horizontalScrollbar->setWidth(getInnerSize().x - m_verticalScrollbar->getSize().x);
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeftPlusRight()));
         }
         else
         {
             m_horizontalScrollbar->setWidth(getInnerSize().x);
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeftPlusRight()));
         }
     }
 
@@ -1674,8 +1674,8 @@ namespace tgui
 
     Vector2f TextArea::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1819,7 +1819,7 @@ namespace tgui
             return;
 
         const float horiScrollOffset = m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0.f;
-        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
+        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTopPlusBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
 
         // Store which area is visible
         if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
@@ -1827,14 +1827,14 @@ namespace tgui
             m_topLine = static_cast<std::size_t>(m_verticalScrollbar->getValue() / m_lineHeight);
 
             // The scrollbar may be standing between lines in which case one more line is visible
-            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) % static_cast<unsigned int>(m_lineHeight)) != 0)
+            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTopPlusBottom() - horiScrollOffset) % static_cast<unsigned int>(m_lineHeight)) != 0)
              || ((m_verticalScrollbar->getValue() % static_cast<unsigned int>(m_lineHeight)) != 0))
                 m_visibleLines++;
         }
         else // There is no vertical scrollbar
         {
             m_topLine = 0;
-            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
+            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTopPlusBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
         }
 
         if (m_horizontalScrollbar->isShown())
@@ -2020,11 +2020,11 @@ namespace tgui
         {
             states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-            float clipWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float clipWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
             if (m_verticalScrollbar->isShown())
                 clipWidth -= m_verticalScrollbar->getSize().x;
 
-            float clipHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
+            float clipHeight = getInnerSize().y - m_paddingCached.getTopPlusBottom();
             if (m_horizontalScrollbar->isShown())
                 clipHeight -= m_horizontalScrollbar->getSize().y;
 

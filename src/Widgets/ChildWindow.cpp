@@ -404,8 +404,8 @@ namespace tgui
 
     Vector2f ChildWindow::getInnerTitleBarSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom()
                               - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
     }
 
@@ -413,8 +413,8 @@ namespace tgui
 
     Vector2f ChildWindow::getInnerSizeWithPadding() const
     {
-        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()
+        return {getSize().x - m_bordersCached.getLeftPlusRight(),
+                getSize().y - m_bordersCached.getTopPlusBottom()
                 - m_titleBarHeightCached - m_borderBelowTitleBarCached};
     }
 
@@ -422,8 +422,8 @@ namespace tgui
 
     Vector2f ChildWindow::getDecorationSize() const
     {
-        return {m_bordersCached.getLeft() + m_bordersCached.getRight() + m_clientPaddingCached.getLeft() + m_clientPaddingCached.getRight(),
-                m_bordersCached.getTop() + m_bordersCached.getBottom() + m_clientPaddingCached.getTop() + m_clientPaddingCached.getBottom()
+        return {m_bordersCached.getLeftPlusRight() + m_clientPaddingCached.getLeftPlusRight(),
+                m_bordersCached.getTopPlusBottom() + m_clientPaddingCached.getTopPlusBottom()
                 + m_titleBarHeightCached + m_borderBelowTitleBarCached};
     }
 

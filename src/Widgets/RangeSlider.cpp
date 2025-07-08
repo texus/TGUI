@@ -648,8 +648,8 @@ namespace tgui
 
     Vector2f RangeSlider::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -785,8 +785,8 @@ namespace tgui
                     states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
                 }
 
-                const Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                                     m_thumbs.first.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                const Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeftPlusRight(),
+                                                     m_thumbs.first.height - m_bordersCached.getTopPlusBottom()};
 
                 if (m_mouseHover && m_thumbColorHoverCached.isSet())
                     target.drawFilledRect(states, thumbInnerSize, Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
@@ -822,8 +822,8 @@ namespace tgui
                     states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
                 }
 
-                const Vector2f thumbInnerSize = {m_thumbs.second.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                                 m_thumbs.second.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                const Vector2f thumbInnerSize = {m_thumbs.second.width - m_bordersCached.getLeftPlusRight(),
+                                                 m_thumbs.second.height - m_bordersCached.getTopPlusBottom()};
 
                 if (m_mouseHover && m_thumbColorHoverCached.isSet())
                     target.drawFilledRect(states, thumbInnerSize, Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));

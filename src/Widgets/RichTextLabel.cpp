@@ -204,7 +204,7 @@ namespace tgui
                 requiredTextHeight = calculateTextHeight(*textPiecesLinesPtr, defaultLineSpacing);
             }
 
-            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
+            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTopPlusBottom()));
             m_scrollbar->setViewportSize(static_cast<unsigned int>(getSize().y - outline.getTop() - outline.getBottom()));
             m_scrollbar->setMaximum(static_cast<unsigned int>(requiredTextHeight));
             m_scrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop()});
@@ -353,8 +353,8 @@ namespace tgui
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
+                                        getSize().y - m_bordersCached.getTopPlusBottom()});
         }
 
         // Vertically align the lines if the text is smaller than the box
@@ -740,8 +740,8 @@ namespace tgui
         }
         else
         {
-            Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                  getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+            Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
+                                  getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom()};
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});
 

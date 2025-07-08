@@ -67,7 +67,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({m_textFull.getLineHeight() * 10,
-                     std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -996,8 +996,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     Vector2f EditBox::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1011,7 +1011,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             extraSuffixWidth = m_textSuffix.getSize().x + textOffset;
         }
 
-        return std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - extraSuffixWidth);
+        return std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - extraSuffixWidth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1165,7 +1165,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             textX += m_textBeforeSelection.findCharacterPos(charsBeforeSelection).x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
-            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_selChars).x, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()});
+            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_selChars).x, getInnerSize().y - m_paddingCached.getTopPlusBottom()});
             m_selectedTextBackground.setPosition({textX, m_paddingCached.getTop()});
 
             // Set the text selected text on the correct position
@@ -1646,11 +1646,11 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (!m_textSuffix.getString().empty())
         {
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+                {getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             const float textOffset = m_textFull.getExtraHorizontalPadding();
             Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
-                            m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_textSuffix.getSize().y) / 2.f)};
+                            m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
 
             states.transform.translate(offset);
             target.drawText(states, m_textSuffix);
@@ -1664,7 +1664,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         // Draw the text
         {
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+                {getInnerSize().x - m_paddingCached.getLeftPlusRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             if (!m_textBeforeSelection.getString().empty() || !m_textSelection.getString().empty())
             {

@@ -49,7 +49,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTop() + m_bordersCached.getBottom());
+            setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTopPlusBottom());
         }
     }
 
@@ -362,7 +362,7 @@ namespace tgui
     void Tabs::updateTextSize()
     {
         if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
-            m_textSizeCached = Text::findBestTextSize(m_fontCached, (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()) * 0.8f);
+            m_textSizeCached = Text::findBestTextSize(m_fontCached, (getSize().y - m_bordersCached.getTopPlusBottom()) * 0.8f);
 
         for (auto& tab : m_tabs)
             tab.text.setCharacterSize(m_textSizeCached);
@@ -526,7 +526,7 @@ namespace tgui
         {
             m_autoLayout = AutoLayout::Manual;
             if (m_tabs.empty())
-                Widget::setSize({m_bordersCached.getLeft() + m_bordersCached.getRight(), getSizeLayout().y});
+                Widget::setSize({m_bordersCached.getLeftPlusRight(), getSizeLayout().y});
             else
             {
                 // First calculate the width of the tabs as if there aren't any borders
@@ -544,14 +544,14 @@ namespace tgui
                 }
 
                 // Now add the borders to the tabs
-                totalWidth += (visibleTabs + 1) * ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f);
+                totalWidth += (visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f);
 
                 Widget::setSize({totalWidth, getSizeLayout().y});
             }
         }
         else // A size was provided
         {
-            const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f))) / visibleTabs;
+            const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f))) / visibleTabs;
             for (auto& tab : m_tabs)
                 tab.width = tabWidth;
         }
@@ -833,8 +833,8 @@ namespace tgui
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
-        const float borderWidth = (m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f;
-        const float usableHeight = getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom();
+        const float borderWidth = (m_bordersCached.getLeftPlusRight()) / 2.f;
+        const float usableHeight = getSize().y - m_bordersCached.getTopPlusBottom();
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)

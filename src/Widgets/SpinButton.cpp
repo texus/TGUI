@@ -400,11 +400,11 @@ namespace tgui
     Vector2f SpinButton::getArrowSize() const
     {
         if (m_orientation == Orientation::Vertical)
-            return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                    (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_borderBetweenArrowsCached) / 2.0f};
+            return {getSize().x - m_bordersCached.getLeftPlusRight(),
+                    (getSize().y - m_bordersCached.getTopPlusBottom() - m_borderBetweenArrowsCached) / 2.0f};
         else
-            return {getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom(),
-                    (getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_borderBetweenArrowsCached) / 2.0f};
+            return {getSize().y - m_bordersCached.getTopPlusBottom(),
+                    (getSize().x - m_bordersCached.getLeftPlusRight() - m_borderBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

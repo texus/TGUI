@@ -106,8 +106,8 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
-        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
+                                    getSize().y - m_bordersCached.getTopPlusBottom()});
 
         // You are no longer auto-sizing
         m_autoSize = false;
@@ -390,8 +390,8 @@ namespace tgui
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
+                                        getSize().y - m_bordersCached.getTopPlusBottom()});
             rearrangeText();
         }
         else if (property == U"Padding")
@@ -597,7 +597,7 @@ namespace tgui
             maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
         else
         {
-            maxWidth = getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2*textOffset;
+            maxWidth = getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - 2*textOffset;
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
             // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
@@ -643,7 +643,7 @@ namespace tgui
                                    + Text::getExtraVerticalPadding(m_textSizeCached);
             }
 
-            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()));
+            m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTopPlusBottom()));
             m_scrollbar->setViewportSize(static_cast<unsigned int>(getSize().y - outline.getTop() - outline.getBottom()));
             m_scrollbar->setMaximum(static_cast<unsigned int>(requiredTextHeight));
             m_scrollbar->setPosition({getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop()});
@@ -686,8 +686,8 @@ namespace tgui
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
+                                        getSize().y - m_bordersCached.getTopPlusBottom()});
         }
 
         updateTextPiecePositions((maxWidth > 0) ? maxWidth : width);
@@ -825,8 +825,8 @@ namespace tgui
     {
         const RenderStates statesForScrollbar = states;
 
-        Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                              getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
+                              getSize().y - m_bordersCached.getTopPlusBottom()};
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -867,8 +867,8 @@ namespace tgui
         }
         else
         {
-            innerSize.x -= m_paddingCached.getLeft() + m_paddingCached.getRight();
-            innerSize.y -= m_paddingCached.getTop() + m_paddingCached.getBottom();
+            innerSize.x -= m_paddingCached.getLeftPlusRight();
+            innerSize.y -= m_paddingCached.getTopPlusBottom();
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});
 

@@ -98,16 +98,16 @@ namespace tgui
 
         Group::setSize(size);
 
-        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()});
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
+                                    getSize().y - m_bordersCached.getTopPlusBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Panel::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_paddingCached.getTop() - m_paddingCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,8 +324,8 @@ namespace tgui
 
     void Panel::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
+                                    getSize().y - m_bordersCached.getTopPlusBottom()};
 
         if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
         {
@@ -350,8 +350,8 @@ namespace tgui
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                      innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+        const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(),
+                                      innerSize.y - m_paddingCached.getTopPlusBottom()};
 
         // Draw the child widgets
         target.addClippingLayer(states, {{}, contentSize});

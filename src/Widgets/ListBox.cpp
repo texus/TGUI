@@ -49,7 +49,7 @@ namespace tgui
             setTextSize(getGlobalTextSize());
             setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 10,
-                     (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     (m_itemHeight * 7) + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -104,7 +104,7 @@ namespace tgui
 
         const bool scrollbarAtBottom = (m_scrollbar->getValue() == m_scrollbar->getMaxValue());
         m_scrollbar->setHeight(std::max(0.f, getInnerSize().y));
-        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTopPlusBottom()));
         if (scrollbarAtBottom && (m_scrollbar->getValue() != m_scrollbar->getMaxValue()))
             m_scrollbar->setValue(m_scrollbar->getMaxValue());
 
@@ -645,7 +645,7 @@ namespace tgui
         else
         {
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
                 setSelectedItemBasedOnMousePos(pos);
@@ -708,7 +708,7 @@ namespace tgui
 
         int itemIndex = -1;
         if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                      getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                      getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
             setSelectedItemBasedOnMousePos(pos);
@@ -747,7 +747,7 @@ namespace tgui
 
             // Find out on which item the mouse is hovering
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
-                          m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
                 setHoveredItemBasedOnMousePos(pos);
@@ -1088,8 +1088,8 @@ namespace tgui
 
     Vector2f ListBox::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1256,11 +1256,11 @@ namespace tgui
 
         // Draw the items and their selected/hover backgrounds
         {
-            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
             if (m_scrollbar->isShown())
                 maxItemWidth -= m_scrollbar->getSize().x;
 
-            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             // Find out which items are visible
             std::size_t firstItem = 0;
@@ -1282,7 +1282,7 @@ namespace tgui
             {
                 states.transform.translate({0, m_selectedItem * static_cast<float>(m_itemHeight)});
 
-                const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
+                const Vector2f size = {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
                     target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                 else
@@ -1295,7 +1295,7 @@ namespace tgui
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveringItem * static_cast<float>(m_itemHeight)});
-                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
+                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 states.transform.translate({0, -m_hoveringItem * static_cast<float>(m_itemHeight)});
             }
 

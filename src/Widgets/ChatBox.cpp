@@ -46,8 +46,8 @@ namespace tgui
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
                      Text::getLineHeight(m_fontCached, m_textSizeCached) * 8
                      + Text::getExtraVerticalPadding(m_textSizeCached)
-                     + m_paddingCached.getTop() + m_paddingCached.getBottom()
-                     + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     + m_paddingCached.getTopPlusBottom()
+                     + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -102,7 +102,7 @@ namespace tgui
 
         m_scrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_scrollbar->getSize().x, m_bordersCached.getTop());
         m_scrollbar->setHeight(getInnerSize().y);
-        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTopPlusBottom()));
 
         recalculateAllLines();
     }
@@ -415,7 +415,7 @@ namespace tgui
 
         // Find the maximum width of one line
         const float scrollbarWidth = m_scrollbar->isShown() ? m_scrollbar->getSize().x : 0;
-        const float maxWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - scrollbarWidth;
+        const float maxWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight() - scrollbarWidth;
         if (maxWidth < 0)
             return;
 
@@ -614,8 +614,8 @@ namespace tgui
 
     Vector2f ChatBox::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -642,14 +642,14 @@ namespace tgui
 
         const float scrollbarWidth = m_scrollbar->isShown() ? m_scrollbar->getSize().x : 0;
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - scrollbarWidth,
-                                              getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeftPlusRight() - scrollbarWidth,
+                                              getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
         states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scrollbar->getValue())});
 
         // Put the lines at the bottom of the chat box if needed
-        if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()))
-            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSizeCached)});
+        if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTopPlusBottom()))
+            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSizeCached)});
 
         for (const auto& line : m_lines)
         {

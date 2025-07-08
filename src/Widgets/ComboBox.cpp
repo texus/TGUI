@@ -54,7 +54,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({m_text.getLineHeight() * 10,
-                     std::round(m_text.getLineHeight() * 1.25f) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     std::round(m_text.getLineHeight() * 1.25f) + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -254,7 +254,7 @@ namespace tgui
         m_spriteBackground.setSize(getInnerSize());
         m_spriteBackgroundDisabled.setSize(getInnerSize());
 
-        const float height = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
+        const float height = getInnerSize().y - m_paddingCached.getTopPlusBottom();
 
         if (height > 0)
         {
@@ -958,8 +958,8 @@ namespace tgui
 
     Vector2f ComboBox::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1119,7 +1119,7 @@ namespace tgui
         }
         else // There are no textures for the arrow
         {
-            arrowSize = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
+            arrowSize = getInnerSize().y - m_paddingCached.getTopPlusBottom();
             states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
             Color arrowBackgroundColor;
@@ -1158,10 +1158,10 @@ namespace tgui
         if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex < 0) && !m_defaultText.getString().empty()))
         {
             target.addClippingLayer(statesForText, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}});
+                {getInnerSize().x - m_paddingCached.getLeftPlusRight() - arrowSize, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             statesForText.transform.translate({m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
-                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f)});
+                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTopPlusBottom()) - m_text.getSize().y) / 2.0f)});
 
             if (selectedItemIndex >= 0)
                 target.drawText(statesForText, m_text);

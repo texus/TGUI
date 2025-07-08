@@ -44,8 +44,8 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                     m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setSize({m_text.getLineHeight() + m_bordersCached.getLeftPlusRight(),
+                     m_text.getLineHeight() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -532,8 +532,8 @@ namespace tgui
 
     Vector2f RadioButton::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

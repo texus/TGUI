@@ -51,8 +51,8 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setSize({m_text.getLineHeight() + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                     m_text.getLineHeight() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+            setSize({m_text.getLineHeight() + m_bordersCached.getLeftPlusRight(),
+                     m_text.getLineHeight() + m_bordersCached.getTopPlusBottom()});
         }
     }
 

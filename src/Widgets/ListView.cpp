@@ -56,7 +56,7 @@ namespace tgui
             setItemHeight(static_cast<unsigned int>(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f)));
             setSize({m_itemHeight * 12,
                      getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
-                     + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                     + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -1397,7 +1397,7 @@ namespace tgui
         }
         // Check if an item was clicked
         else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
-                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                           getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
         {
             updateHoveredItemByMousePos(pos);
 
@@ -1439,7 +1439,7 @@ namespace tgui
         // Check if the header was clicked
         else if ((getCurrentHeaderHeight() > 0)
               && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getCurrentHeaderHeight()}.contains(pos))
+                           getInnerSize().x - m_paddingCached.getLeftPlusRight(), getCurrentHeaderHeight()}.contains(pos))
         {
             m_mouseOnHeaderIndex = getColumnIndexBelowMouse(pos.x);
         }
@@ -1463,7 +1463,7 @@ namespace tgui
         {
             if ((getCurrentHeaderHeight() > 0)
               && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getCurrentHeaderHeight()}.contains(pos))
+                           getInnerSize().x - m_paddingCached.getLeftPlusRight(), getCurrentHeaderHeight()}.contains(pos))
             {
                 if (m_mouseOnHeaderIndex == getColumnIndexBelowMouse(pos.x))
                     onHeaderClick.emit(this, m_mouseOnHeaderIndex);
@@ -1483,7 +1483,7 @@ namespace tgui
 
         int itemIndex = -1;
         if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
-                      getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                      getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
         {
             updateHoveredItemByMousePos(pos);
             itemIndex = m_hoveredItem;
@@ -1560,8 +1560,8 @@ namespace tgui
             if (!mouseOnResizableBorder
              && FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
                           m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
-                          getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                          getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                          getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             {
                 updateHoveredItemByMousePos(pos);
 
@@ -2143,8 +2143,8 @@ namespace tgui
 
     Vector2f ListView::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2479,7 +2479,7 @@ namespace tgui
             {
                 totalColumnsWidth += (m_columns.size() - 1) * static_cast<float>(getTotalSeparatorWidth());
 
-                float availableWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+                float availableWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
                 if (m_verticalScrollbar->isShown())
                     availableWidth -= m_verticalScrollbar->getSize().x;
 
@@ -2654,8 +2654,8 @@ namespace tgui
         // The mouse can't be between two columns when it is on the outline of the list view
         if (!FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
                        m_bordersCached.getTop() + m_paddingCached.getTop(),
-                       getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                       getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+                       getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                       getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
             return false;
 
         const float margin = 3; // Mouse does not have to be exactly on the border
@@ -2708,8 +2708,8 @@ namespace tgui
         const bool bWasVerticalScrollbarShown = m_verticalScrollbar->isShown();
 
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
-        const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
-                                    std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - getCurrentHeaderHeight())};
+        const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeftPlusRight()),
+                                    std::max(0.f, getInnerSize().y - m_paddingCached.getTopPlusBottom() - getCurrentHeaderHeight())};
 
         if (m_horizontalScrollbar->isShown())
         {
@@ -2739,7 +2739,7 @@ namespace tgui
 
         // Update the size of the header texture (in case there will be one).
         // The size depends on many values, but updateScrollbars() is called when any of them are changed.
-        float headerWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        float headerWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
         if (m_verticalScrollbar->isShown())
             headerWidth -= m_verticalScrollbar->getSize().x;
         m_spriteHeaderBackground.setSize({headerWidth, getCurrentHeaderHeight()});
@@ -2806,7 +2806,7 @@ namespace tgui
         const unsigned int requiredItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
         const float verticalTextOffset = (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSizeCached)) / 2.0f;
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSizeCached);
-        const float columnHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
+        const float columnHeight = getInnerSize().y - m_paddingCached.getTopPlusBottom()
                                    - getCurrentHeaderHeight() - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 
         // Draw the icons
@@ -2923,10 +2923,10 @@ namespace tgui
 
         const float headerHeight = getHeaderHeight();
         const float totalHeaderHeight = getCurrentHeaderHeight();
-        const float innerHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
+        const float innerHeight = getInnerSize().y - m_paddingCached.getTopPlusBottom()
                                   - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 
-        float availableWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        float availableWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight();
         if (m_verticalScrollbar->isShown())
             availableWidth -= m_verticalScrollbar->getSize().x;
 
@@ -3045,7 +3045,7 @@ namespace tgui
 
         // Draw the items and the separation lines
         if (m_columns.empty())
-            drawColumn(target, states, firstItem, lastItem, 0, std::max(m_widestItemWidth, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            drawColumn(target, states, firstItem, lastItem, 0, std::max(m_widestItemWidth, getInnerSize().x - m_paddingCached.getLeftPlusRight()));
         else
         {
             const bool containsExpandedColumn = hasExpandedColumn();
