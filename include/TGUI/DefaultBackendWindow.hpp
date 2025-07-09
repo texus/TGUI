@@ -25,24 +25,17 @@
 #ifndef TGUI_DEFAULT_BACKEND_WINDOW_HPP
 #define TGUI_DEFAULT_BACKEND_WINDOW_HPP
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/String.hpp>
-    #include <TGUI/Color.hpp>
-#endif
+#include <TGUI/String.hpp>
+#include <TGUI/Color.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
-#if !TGUI_BUILD_AS_CXX_MODULE
     class BackendGui;
     struct Event;
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief This class abstracts the backend-specific window and gui creation code

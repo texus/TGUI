@@ -25,15 +25,9 @@
 #include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/FileDialogIconLoader.hpp>
 
-#if TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #ifdef TGUI_SYSTEM_WINDOWS
-        #include <time.h> // localtime_s
-    #endif
-#else
-    #include <vector>
-    #include <map>
-    #include <ctime>
-#endif
+#include <vector>
+#include <map>
+#include <ctime>
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>

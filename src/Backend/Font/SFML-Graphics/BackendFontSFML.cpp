@@ -23,10 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Image.hpp>

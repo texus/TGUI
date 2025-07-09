@@ -27,15 +27,13 @@
 
 #include <TGUI/Config.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <string>
-    #include <array>
-#endif
+#include <cstdint>
+#include <string>
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     namespace utf
     {

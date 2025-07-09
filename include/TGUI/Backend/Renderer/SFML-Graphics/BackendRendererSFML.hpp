@@ -28,18 +28,13 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Backend renderer that uses sfml-graphics

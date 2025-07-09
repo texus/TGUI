@@ -26,15 +26,13 @@
 #define TGUI_BACKEND_GUI_SFML_HPP
 
 #include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/BackendGui.hpp>
-#endif
+#include <TGUI/Backend/Window/BackendGui.hpp>
 
 #include <SFML/Window.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,7 +177,7 @@ TGUI_MODULE_EXPORT namespace tgui
                 // Let the gui handle the event
                 bool eventHandledByGui = false;
                 if (passEventToGui)
-                    eventHandledByGui = handleEvent(std::forward<EventType>(event));
+                    eventHandledByGui = this->handleEvent(std::forward<EventType>(event));
 
                 // After the gui has handled the events, we call the handlers that return nothing.
                 // These handlers can have an optional bool parameter that indicates whether the event was processed by the gui.

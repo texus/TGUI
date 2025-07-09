@@ -24,10 +24,7 @@
 
 #include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 #include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
+#include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

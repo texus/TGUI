@@ -29,16 +29,14 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/AbsoluteOrRelativeValue.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <type_traits>
-    #include <functional>
-    #include <memory>
-    #include <string>
-#endif
+#include <type_traits>
+#include <functional>
+#include <memory>
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class BackendGui;
     class Widget;

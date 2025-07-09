@@ -24,9 +24,7 @@
 
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Timer.hpp>
-#endif
+#include <TGUI/Timer.hpp>
 
 #include <SFML/Config.hpp>
 #include <SFML/Window/Window.hpp>

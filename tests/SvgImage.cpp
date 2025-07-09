@@ -24,9 +24,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/SvgImage.hpp>
-#endif
+#include <TGUI/SvgImage.hpp>
 
 TEST_CASE("[SvgImage]")
 {

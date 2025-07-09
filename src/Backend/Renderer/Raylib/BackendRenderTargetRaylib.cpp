@@ -23,16 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
+#include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Container.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendText.hpp>
-    #include <TGUI/Backend/Window/Backend.hpp>
-    #include <TGUI/Container.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <numeric>
-#endif
+#include <numeric>
 
 #include <rlgl.h>
 

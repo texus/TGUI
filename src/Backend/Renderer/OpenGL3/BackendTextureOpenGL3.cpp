@@ -24,10 +24,7 @@
 
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
+#include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

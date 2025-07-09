@@ -34,21 +34,16 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/Rect.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <functional>
-#endif
+#include <functional>
 
-#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_BUILD_AS_CXX_MODULE
-    namespace sf
-    {
-        class Texture;
-        class Shader;
-    }
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
+    #include <SFML/Graphics/Texture.hpp>
+    #include <SFML/Graphics/Shader.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Texture wrapper that internally reuses resources when multiple Texture objects are loaded from the same file

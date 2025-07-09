@@ -28,16 +28,14 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <string>
-    #include <cstddef>
-    #include <memory>
-#endif
+#include <cstdint>
+#include <string>
+#include <cstddef>
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class BackendFont;
 

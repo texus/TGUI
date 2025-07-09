@@ -35,7 +35,7 @@ namespace tgui
             if (!isBackendSet())
             {
                 auto backend = std::make_shared<BackendSFML>();
-                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontFreetype>>());
+                backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontFreeType>>());
                 backend->setRenderer(std::make_shared<BackendRendererOpenGL3>(sf::Context::getFunction));
                 backend->setDestroyOnLastGuiDetatch(true);
                 setBackend(backend);

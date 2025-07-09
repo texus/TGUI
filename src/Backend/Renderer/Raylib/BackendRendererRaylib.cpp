@@ -24,10 +24,7 @@
 
 #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
 #include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Loading/WidgetFactory.hpp>
-#endif
+#include <TGUI/Loading/WidgetFactory.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

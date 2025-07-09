@@ -24,9 +24,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/TextureManager.hpp>
-#endif
+#include <TGUI/TextureManager.hpp>
 
 TEST_CASE("[TextureManager]")
 {

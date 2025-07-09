@@ -35,13 +35,11 @@
 #include <TGUI/Renderers/FileDialogRenderer.hpp>
 #include <TGUI/Filesystem.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <tuple>
-#endif
+#include <tuple>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class FileDialogIconLoader;
 

@@ -26,12 +26,7 @@
 #ifndef TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 #define TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 
-#include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
-    #include <TGUI/TGUI.hpp>
-#endif
+#include <TGUI/TGUI.hpp>
 
 using PropertyValueMap = std::map<tgui::String, std::pair<tgui::String, tgui::String>>;
 using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;

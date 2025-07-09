@@ -34,20 +34,18 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Filesystem.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <string>
-    #include <memory>
+#include <cstdint>
+#include <string>
+#include <memory>
 
-    #ifdef TGUI_DEBUG
-        #include <iostream>
-    #endif
+#ifdef TGUI_DEBUG
+    #include <iostream>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Namespace that contains all TGUI functions and classes
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Create a unique_ptr containing an uninitialized array

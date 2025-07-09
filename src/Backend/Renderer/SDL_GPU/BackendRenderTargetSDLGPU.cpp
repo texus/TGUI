@@ -24,17 +24,12 @@
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp>
+#include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Container.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendText.hpp>
-    #include <TGUI/Backend/Window/Backend.hpp>
-    #include <TGUI/Container.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <numeric>
-    #include <cmath>
-#endif
+#include <numeric>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

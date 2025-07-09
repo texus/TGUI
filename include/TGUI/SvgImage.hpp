@@ -27,10 +27,7 @@
 
 #include <TGUI/String.hpp>
 #include <TGUI/Vector2.hpp>
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +39,7 @@ namespace tgui
     }
 }
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class BackendTexture;
 

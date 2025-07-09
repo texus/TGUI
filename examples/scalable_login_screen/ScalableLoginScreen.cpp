@@ -23,8 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
 #include <iostream>
+#if TGUI_BUILD_CXX20_MODULE
+    import tgui;
+#else
+    #include <TGUI/TGUI.hpp>
+#endif
 
 void login(const tgui::EditBox::Ptr& username, const tgui::EditBox::Ptr& password)
 {

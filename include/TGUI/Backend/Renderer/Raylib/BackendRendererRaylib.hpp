@@ -28,18 +28,13 @@
 #include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 #include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
 #include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Backend renderer that uses raylib

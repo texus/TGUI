@@ -26,13 +26,11 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Widget.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <array>
-    #include <cmath>
+#include <array>
+#include <cmath>
 
-    #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
-        #include <numbers>
-    #endif
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #include <numbers>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,6 +147,9 @@ namespace tgui
 
     static void drawInnerShape(BackendRenderTarget* renderTarget, const RenderStates& states, const std::vector<Vector2f>& points, const Vector2f& centerPoint, const Color& color)
     {
+        if (points.empty())
+            return;
+
         // Create the vertices (one point in the middle of the circle and the others as provided in the 'points' parameter)
         std::vector<Vertex> vertices;
         vertices.reserve(1 + points.size());

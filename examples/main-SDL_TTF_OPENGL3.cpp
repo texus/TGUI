@@ -22,14 +22,27 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
-
-#if SDL_MAJOR_VERSION >= 3
-    #include <SDL3/SDL_main.h>
-    #include <SDL3/SDL_opengl.h>
+#if TGUI_BUILD_CXX20_MODULE
+    #include <TGUI/extlibs/IncludeSDL.hpp>
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3/SDL_main.h>
+        #include <SDL3/SDL_opengl.h>
+        #include <SDL3_ttf/SDL_ttf.h>
+    #else
+        #include <SDL_opengl.h>
+        #include <SDL_ttf.h>
+    #endif
+    import tgui;
+    import tgui.backend.sdl_ttf_opengl3;
 #else
-    #include <SDL_opengl.h>
+    #include <TGUI/TGUI.hpp>
+    #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
+    #if TGUI_USE_SDL3
+        #include <SDL3/SDL_main.h>
+        #include <SDL3/SDL_opengl.h>
+    #else
+        #include <SDL_opengl.h>
+    #endif
 #endif
 
 bool runExample(tgui::BackendGui& gui);
@@ -73,7 +86,11 @@ int main(int, char **)
     // Note that all TGUI resources must be destroyed before SDL_ttf is cleaned up
     TTF_Quit();
 
+#if SDL_MAJOR_VERSION >= 3
+    SDL_GL_DestroyContext(glContext);
+#else
     SDL_GL_DeleteContext(glContext);
+#endif
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;

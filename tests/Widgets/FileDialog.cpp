@@ -24,9 +24,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/FileDialogIconLoader.hpp>
-#endif
+#include <TGUI/FileDialogIconLoader.hpp>
 
 TEST_CASE("[FileDialog]")
 {

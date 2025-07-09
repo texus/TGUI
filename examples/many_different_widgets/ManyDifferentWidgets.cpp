@@ -22,9 +22,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-#include <TGUI/TGUI.hpp>
 #include <iostream>
+#if TGUI_BUILD_CXX20_MODULE
+    import tgui;
+#else
+    #include <TGUI/TGUI.hpp>
+#endif
 
 bool runExample(tgui::BackendGui& gui)
 {

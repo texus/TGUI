@@ -26,11 +26,9 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <algorithm>
-    #include <vector>
-    #include <cmath>
-#endif
+#include <algorithm>
+#include <vector>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

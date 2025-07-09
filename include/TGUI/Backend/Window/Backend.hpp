@@ -34,15 +34,13 @@
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <memory>
-    #include <set>
-#endif
+#include <cstdint>
+#include <memory>
+#include <set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class Sprite;
     class Backend;

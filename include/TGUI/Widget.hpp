@@ -45,9 +45,7 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_set>
-#endif
+#include <unordered_set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +59,7 @@ namespace aurora
     using tgui::downcast;
 }
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class BackendGui;
     class Container;
@@ -77,7 +75,7 @@ namespace tgui
     }
 }
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget

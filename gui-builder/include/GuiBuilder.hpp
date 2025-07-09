@@ -28,45 +28,32 @@
 
 #include <TGUI/Config.hpp>
 
-// There are still issues with including std headers after importing the TGUI module (if TGUI_BUILD_AS_CXX_MODULE is 1),
-// so we include all std headers that are needed in the source files up here. This only works because this header file is
-// the first one to be included in both Form.cpp and GuiBuilder.cpp
 #include <cassert>
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <functional>
-    #include <algorithm>
-    #include <iostream>
-    #include <fstream>
-    #include <sstream>
-    #include <vector>
-    #include <memory>
-    #include <string>
-    #include <thread> // this_thread::sleep_for
-    #include <cctype> // isdigit
-    #include <cmath> // max
-    #include <stack>
-    #include <array>
-    #include <map>
-    #include <set>
-
-    #ifdef TGUI_SYSTEM_LINUX
-        #include <cstdio> // FILENAME_MAX
-    #endif
-#endif
+#include <functional>
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <memory>
+#include <string>
+#include <thread> // this_thread::sleep_for
+#include <cctype> // isdigit
+#include <cmath> // max
+#include <stack>
+#include <array>
+#include <map>
+#include <set>
 
 #ifdef TGUI_SYSTEM_LINUX
+    #include <cstdio> // FILENAME_MAX
     #include <sys/types.h> // ssize_t
     #include <unistd.h> // readlink
 #endif
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-    import tgui.default_backend_window;
-#else
-    #include <TGUI/TGUI.hpp>
-    #include <TGUI/Filesystem.hpp>
-    #include <TGUI/DefaultBackendWindow.hpp>
-#endif
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Filesystem.hpp>
+#include <TGUI/DefaultBackendWindow.hpp>
 
 #include "WidgetProperties/WidgetProperties.hpp"
 #include "Form.hpp"

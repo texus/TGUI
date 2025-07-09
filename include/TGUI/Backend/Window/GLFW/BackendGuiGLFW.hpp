@@ -26,22 +26,18 @@
 #define TGUI_BACKEND_GUI_GLFW_HPP
 
 #include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/BackendGui.hpp>
-    #include <TGUI/Optional.hpp>
-#endif
+#include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Optional.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    using GLFWwindow = struct GLFWwindow;
-#endif
+using GLFWwindow = struct GLFWwindow;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

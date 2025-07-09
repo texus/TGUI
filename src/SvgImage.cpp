@@ -27,9 +27,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/extlibs/IncludeNanoSVG.hpp>
-#endif
+#include <TGUI/extlibs/IncludeNanoSVG.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

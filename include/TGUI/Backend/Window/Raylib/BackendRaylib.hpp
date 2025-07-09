@@ -25,25 +25,19 @@
 #ifndef TGUI_BACKEND_RAYLIB_HPP
 #define TGUI_BACKEND_RAYLIB_HPP
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
-
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/Raylib/BackendGuiRaylib.hpp>
 
 #include <raylib.h>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-    #include <map>
-#endif
+#include <unordered_map>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @since TGUI 1.3

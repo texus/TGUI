@@ -29,13 +29,11 @@
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Base class for the backend renderer, which is responsible for creating text and texture objects

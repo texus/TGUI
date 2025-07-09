@@ -25,15 +25,12 @@
 #ifndef TGUI_BACKEND_TEXTURE_SDL_GPU_HPP
 #define TGUI_BACKEND_TEXTURE_SDL_GPU_HPP
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendTexture.hpp>
-    #include <TGUI/extlibs/IncludeSDL.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/extlibs/IncludeSDL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Texture implementation that uses SDL3's GPU API

@@ -43,32 +43,17 @@
 
 #include "Tests.hpp"
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    #if TGUI_HAS_WINDOW_BACKEND_SFML
-        import tgui.backend.window.sfml;
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_SDL
-        import tgui.backend.window.sdl;
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_GLFW
-        import tgui.backend.window.glfw;
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_RAYLIB
-        import tgui.backend.window.raylib;
-    #endif
-#else
-    #if TGUI_HAS_WINDOW_BACKEND_SFML
-        #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_SDL
-        #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_GLFW
-        #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
-    #endif
-    #if TGUI_HAS_WINDOW_BACKEND_RAYLIB
-        #include <TGUI/Backend/raylib.hpp>
-    #endif
+#if TGUI_HAS_WINDOW_BACKEND_SFML
+    #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
+#endif
+#if TGUI_HAS_WINDOW_BACKEND_SDL
+    #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
+#endif
+#if TGUI_HAS_WINDOW_BACKEND_GLFW
+    #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
+#endif
+#if TGUI_HAS_WINDOW_BACKEND_RAYLIB
+    #include <TGUI/Backend/raylib.hpp>
 #endif
 
 TEST_CASE("[Backend events]")

@@ -24,9 +24,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Loading/ImageLoader.hpp>
-#endif
+#include <TGUI/Loading/ImageLoader.hpp>
 
 TEST_CASE("[Mouse cursors]")
 {

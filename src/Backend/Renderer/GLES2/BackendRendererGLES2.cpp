@@ -26,10 +26,8 @@
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Exception.hpp>
-    #include <TGUI/Loading/WidgetFactory.hpp>
-#endif
+#include <TGUI/Exception.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

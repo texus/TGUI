@@ -22,11 +22,22 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/SDL-Renderer.hpp>
-
+#include <TGUI/extlibs/IncludeSDL.hpp>
 #if SDL_MAJOR_VERSION >= 3
     #include <SDL3/SDL_main.h>
+#endif
+
+#if TGUI_BUILD_CXX20_MODULE
+    #if SDL_MAJOR_VERSION >= 3
+        #include <SDL3_ttf/SDL_ttf.h>
+    #else
+        #include <SDL_ttf.h>
+    #endif
+    import tgui;
+    import tgui.backend.sdl_renderer;
+#else
+    #include <TGUI/TGUI.hpp>
+    #include <TGUI/Backend/SDL-Renderer.hpp>
 #endif
 
 bool runExample(tgui::BackendGui& gui);

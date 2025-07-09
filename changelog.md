@@ -3,6 +3,7 @@ TGUI 1.11  (TBD)
 
 - Added RoundedBorderRadius property to EditBox and ComboBox renderers
 - Added getLeftPlusRight and getTopPlusBottom functions to Outline class
+- Added `TGUI_BUILD_CXX20_MODULE` option to CMake to build TGUI as a c++20 module
 
 
 TGUI 1.10  (14 June 2025)

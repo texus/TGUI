@@ -85,7 +85,7 @@ function(tgui_set_global_compile_flags target)
         endif()
     endif()
 
-    if (NOT TGUI_BUILD_AS_CXX_MODULE)
+    if (NOT TGUI_BUILD_CXX20_MODULE)
         # We turn GNU extensions off to make sure that our code doesn't rely on them.
         # This isn't done when building TGUI as a module though. At least when using Clang 18, doing so required that the set_target_properties
         # function is also called on the user's target to avoid the "GNU extensions was enabled in PCH file but is currently disabled" error.
@@ -175,22 +175,4 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
             endif()
         endforeach()
     endif()
-endfunction()
-
-# Bundles a set of source files into a c++20 module
-function(tgui_create_module_from_sources source_file_list module_name)
-    file(READ "TGUI-Module.cppm.in" file_contents)
-    string(APPEND file_contents "\nexport module ${module_name};\n")
-    string(APPEND file_contents "\nexport import tgui;\n")
-    if(${ARGC} GREATER 2)
-        foreach(extra_module_to_export ${ARGN})
-            string(APPEND file_contents "export import ${extra_module_to_export};\n")
-        endforeach()
-    endif()
-    string(APPEND file_contents "\n")
-    foreach(source_file ${source_file_list})
-        string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
-    endforeach()
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.cppm" "${file_contents}")
-    set(module_source "${CMAKE_CURRENT_BINARY_DIR}/module_${module_name}.cppm" PARENT_SCOPE)
 endfunction()

@@ -44,11 +44,7 @@
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/RenderTexture.hpp>
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sfml_graphics;
-    #else
-        #include <TGUI/Backend/SFML-Graphics.hpp>
-    #endif
+    #include <TGUI/Backend/SFML-Graphics.hpp>
 #endif
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
@@ -100,11 +96,7 @@
     #define TEST_DRAW(filename) testDraw(gui, filename, targetSize, nullptr);
 #endif
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
-    #include <TGUI/TGUI.hpp>
-#endif
+#include <TGUI/TGUI.hpp>
 
 static const std::chrono::milliseconds DOUBLE_CLICK_TIMEOUT = std::chrono::milliseconds(500);
 

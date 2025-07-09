@@ -29,17 +29,15 @@
 #include <TGUI/StringView.hpp>
 #include <TGUI/Utf.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <string>
-    #include <vector>
-    #include <cstring>
-    #include <locale>
-    #include <iomanip>
-    #include <ostream>
-    #include <sstream>
-    #include <type_traits>
-    #include <initializer_list>
-#endif
+#include <string>
+#include <vector>
+#include <cstring>
+#include <locale>
+#include <iomanip>
+#include <ostream>
+#include <sstream>
+#include <type_traits>
+#include <initializer_list>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/String.hpp>
@@ -47,7 +45,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks if a character is a whitespace character (e.g. space, tab, carriage return, line feed, ...)

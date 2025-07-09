@@ -29,16 +29,10 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/TextureManager.hpp>
-#endif
+#include <TGUI/TextureManager.hpp>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.renderer.sfml_graphics;
-    #else
-        #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
-    #endif
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 #endif
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS

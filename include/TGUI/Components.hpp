@@ -30,11 +30,9 @@
 #include <TGUI/Texture.hpp>
 #include <TGUI/Outline.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-    #include <memory>
-    #include <set>
-#endif
+#include <unordered_map>
+#include <memory>
+#include <set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

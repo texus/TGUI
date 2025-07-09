@@ -75,9 +75,7 @@
 #   endif
 #endif
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <string>
-#endif
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,18 +85,12 @@
     #define TGUI_GL_CHECK(expr) expr
 #endif
 
-#if !TGUI_BUILD_AS_CXX_MODULE || defined(TGUI_BUILDING_OPENGL_MODULE)
 namespace tgui
 {
     namespace priv
     {
-#if TGUI_BUILD_AS_CXX_MODULE
-        TGUI_MODULE_EXPORT
-#else
-        inline
-#endif
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
-        void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
+        inline void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
         {
             GLenum errorCode = glGetError();
             if (errorCode == GL_NO_ERROR)
@@ -123,13 +115,12 @@ namespace tgui
                 + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
         }
 #else
-        void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
+        inline void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
         {
         }
 #endif
     }
 }
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

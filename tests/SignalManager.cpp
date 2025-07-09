@@ -24,9 +24,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/SignalManager.hpp>
-#endif
+#include <TGUI/SignalManager.hpp>
 
 TEST_CASE("[SignalManager]")
 {

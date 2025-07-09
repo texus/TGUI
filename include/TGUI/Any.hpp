@@ -29,17 +29,15 @@
 
 #include <TGUI/Config.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <type_traits>
-    #include <utility>
-    #include <typeinfo>
+#include <type_traits>
+#include <utility>
+#include <typeinfo>
 
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        #include <any>
-    #endif
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <any>
 #endif
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     using Any = std::any;

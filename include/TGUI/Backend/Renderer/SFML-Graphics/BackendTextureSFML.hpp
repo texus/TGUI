@@ -25,17 +25,14 @@
 #ifndef TGUI_BACKEND_TEXTURE_SFML_HPP
 #define TGUI_BACKEND_TEXTURE_SFML_HPP
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendTexture.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Texture implementation that makes use of SFML

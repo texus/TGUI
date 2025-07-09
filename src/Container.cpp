@@ -30,9 +30,7 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/Filesystem.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <fstream>
-#endif
+#include <fstream>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

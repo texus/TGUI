@@ -28,18 +28,13 @@
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Backend renderer that uses OpenGL 3 or 4 (depending on the loaded OpenGL context that you have to provide)

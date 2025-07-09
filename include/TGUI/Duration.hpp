@@ -27,11 +27,9 @@
 
 #include <TGUI/Config.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <chrono>
-    #include <type_traits>
-#endif
+#include <cstdint>
+#include <chrono>
+#include <type_traits>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/Time.hpp>
@@ -39,7 +37,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Wrapper for durations

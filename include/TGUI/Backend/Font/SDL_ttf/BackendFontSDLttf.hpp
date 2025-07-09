@@ -38,18 +38,13 @@
     #define TTF_GetFontLineSkip TTF_FontLineSkip
 #endif
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Font/BackendFont.hpp>
-#endif
+#include <TGUI/Backend/Font/BackendFont.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-#endif
+#include <unordered_map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Font implementations that uses SDL_ttf to load glyphs

@@ -27,9 +27,7 @@
 
 #include "Tests.hpp"
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Loading/ImageLoader.hpp>
-#endif
+#include <TGUI/Loading/ImageLoader.hpp>
 
 // Rendering isn't identical on different computers, so we just check that the image looks similar enough.
 // By using software rendering, we can reduce the error margin from 1.5% to 0.05% though.

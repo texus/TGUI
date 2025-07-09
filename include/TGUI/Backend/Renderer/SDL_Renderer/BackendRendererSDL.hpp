@@ -28,22 +28,15 @@
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-#endif
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if !TGUI_BUILD_AS_CXX_MODULE
 struct SDL_Renderer;
-#endif
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Backend renderer that uses SDL_Renderer

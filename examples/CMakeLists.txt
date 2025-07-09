@@ -45,6 +45,10 @@ macro(tgui_add_example target)
     target_link_libraries(${target} PRIVATE tgui tgui-gui-app-interface)
     tgui_set_global_compile_flags(${target})
     tgui_set_stdlib(${target})
+
+    if (TGUI_BUILD_CXX20_MODULE)
+        target_compile_definitions(${target} PRIVATE TGUI_BUILD_CXX20_MODULE)
+    endif()
 endmacro()
 
 # Build the examples

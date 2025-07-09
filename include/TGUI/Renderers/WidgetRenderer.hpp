@@ -29,14 +29,12 @@
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_set>
-    #include <map>
-#endif
+#include <unordered_set>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class Theme;
     class Widget;

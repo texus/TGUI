@@ -30,10 +30,7 @@
 #define AURORA_TEMPLATES_HPP
 
 #include <TGUI/extlibs/Aurora/Config.hpp>
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 
 namespace aurora

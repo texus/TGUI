@@ -26,9 +26,7 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <array>
-#endif
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

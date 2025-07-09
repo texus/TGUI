@@ -26,14 +26,11 @@
 #define TGUI_BACKEND_RENDER_TARGET_OPENGL3_HPP
 
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Render target implementation that makes use of modern OpenGL

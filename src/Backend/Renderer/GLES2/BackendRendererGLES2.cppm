@@ -24,31 +24,16 @@
 
 module;
 
-#define TGUI_MODULE_EXPORT export
-#include <TGUI/Config.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <string>
+export module tgui.backend.renderer.gles2;
 
-    // Included by glad/gl.h
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
-#endif
+export import tgui;
 
-// Ignore warnings about '#include' still being used below
-#if defined(__clang__)
-    #pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
-#elif defined(_MSC_VER)
-    #pragma warning(disable: 5244)
-#endif
-
-#if !TGUI_USE_SYSTEM_GLAD
-    #define TGUI_GLAD_GL_IMPLEMENTATION
-#endif
-
-#define TGUI_BUILDING_OPENGL_MODULE
-
-export module tgui.opengl;
-
-#include <TGUI/Backend/Renderer/OpenGL.hpp>
+export namespace tgui
+{
+    using tgui::BackendRendererGLES2;
+    using tgui::BackendRenderTargetGLES2;
+    using tgui::BackendTextureGLES2;
+    using tgui::CanvasGLES2;
+}

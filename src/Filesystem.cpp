@@ -25,9 +25,7 @@
 #include <TGUI/Filesystem.hpp>
 #include <TGUI/Global.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdlib> // getenv
-#endif
+#include <cstdlib> // getenv
 
 #if defined(TGUI_SYSTEM_WINDOWS)
     #include <TGUI/extlibs/IncludeWindows.hpp>

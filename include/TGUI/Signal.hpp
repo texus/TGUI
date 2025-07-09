@@ -34,21 +34,19 @@
 #include <TGUI/Animation.hpp>
 #include <TGUI/Filesystem.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-    #include <type_traits>
-    #include <functional>
-    #include <typeindex>
-    #include <memory>
-    #include <vector>
-    #include <deque>
-#endif
+#include <unordered_map>
+#include <type_traits>
+#include <functional>
+#include <typeindex>
+#include <memory>
+#include <vector>
+#include <deque>
 
 #undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class Widget;
     class ChildWindow;

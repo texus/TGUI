@@ -29,15 +29,13 @@
 
 #include <TGUI/TextureData.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <memory>
-    #include <list>
-    #include <map>
-#endif
+#include <memory>
+#include <list>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class Texture;
 

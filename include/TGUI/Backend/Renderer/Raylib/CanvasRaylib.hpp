@@ -26,17 +26,14 @@
 #define TGUI_CANVAS_RAYLIB_HPP
 
 #include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-    #include <TGUI/Widgets/CanvasBase.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Widgets/CanvasBase.hpp>
 
 #include <raylib.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief CanvasRaylib provides a way to directly render raylib contents on a widget

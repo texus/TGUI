@@ -25,9 +25,7 @@
 #include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/Global.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/extlibs/IncludeStbImage.hpp>
-#endif
+#include <TGUI/extlibs/IncludeStbImage.hpp>
 
 #include <cstring> // memcpy
 

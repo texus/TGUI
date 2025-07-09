@@ -26,12 +26,8 @@
 #include <TGUI/Global.hpp>
 #include <TGUI/String.hpp>
 
-#if TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <stdio.h> // EOF
-#else
-    #include <cctype> // isspace
-    #include <algorithm>
-#endif
+#include <cctype> // isspace
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -27,21 +27,16 @@
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-    #include <map>
-#endif
+#include <unordered_map>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class TGUI_API BackendSDL : public Backend
     {

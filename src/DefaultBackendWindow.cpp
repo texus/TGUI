@@ -22,82 +22,41 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Imports need to be first when building as a module.
-// Config.hpp will already be included in the global section that is placed before this file.
-#if TGUI_BUILD_AS_CXX_MODULE
-    #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-        import tgui.backend.sfml_graphics;
-    #elif TGUI_HAS_BACKEND_SFML_OPENGL3
-        import tgui.backend.sfml_opengl3;
-    #elif TGUI_HAS_BACKEND_SDL_GPU
-        import tgui.backend.sdl_gpu;
-    #elif TGUI_HAS_BACKEND_SDL_RENDERER
-        import tgui.backend.sdl_renderer;
-    #elif TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-        import tgui.backend.sdl_ttf_opengl3;
-    #elif TGUI_HAS_BACKEND_SDL_TTF_GLES2
-        import tgui.backend.sdl_ttf_gles2;
-    #elif TGUI_HAS_BACKEND_SDL_OPENGL3
-        import tgui.backend.sdl_opengl3;
-    #elif TGUI_HAS_BACKEND_SDL_GLES2
-        import tgui.backend.sdl_gles2;
-    #elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
-        #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
-        #include <GLFW/glfw3.h>
-
-        #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-            #include <queue>
-        #endif
-
-        #if TGUI_HAS_BACKEND_GLFW_OPENGL3
-            import tgui.backend.glfw_opengl3;
-        #else
-            import tgui.backend.glfw_gles2;
-        #endif
-    #elif TGUI_HAS_BACKEND_RAYLIB
-        import tgui.backend.raylib;
-    #endif
-#endif
-
 #include <TGUI/DefaultBackendWindow.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Loading/ImageLoader.hpp>
-    #include <TGUI/Backend/Window/BackendGui.hpp>
-    #include <TGUI/Event.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Event.hpp>
 
-    #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-        #include <TGUI/Backend/SFML-Graphics.hpp>
-    #elif TGUI_HAS_BACKEND_SFML_OPENGL3
-        #include <TGUI/Backend/SFML-OpenGL3.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_GPU
-        #include <TGUI/Backend/SDL-GPU.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_RENDERER
-        #include <TGUI/Backend/SDL-Renderer.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-        #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_TTF_GLES2
-        #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_OPENGL3
-        #include <TGUI/Backend/SDL-OpenGL3.hpp>
-    #elif TGUI_HAS_BACKEND_SDL_GLES2
-        #include <TGUI/Backend/SDL-GLES2.hpp>
-    #elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
-        #if TGUI_HAS_BACKEND_GLFW_OPENGL3
-            #include <TGUI/Backend/GLFW-OpenGL3.hpp>
-        #else
-            #include <TGUI/Backend/GLFW-GLES2.hpp>
-        #endif
-
-        #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
-        #include <GLFW/glfw3.h>
-
-        #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-            #include <queue>
-        #endif
-    #elif TGUI_HAS_BACKEND_RAYLIB
-        #include <TGUI/Backend/raylib.hpp>
+#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #include <TGUI/Backend/SFML-Graphics.hpp>
+#elif TGUI_HAS_BACKEND_SFML_OPENGL3
+    #include <TGUI/Backend/SFML-OpenGL3.hpp>
+#elif TGUI_HAS_BACKEND_SDL_GPU
+    #include <TGUI/Backend/SDL-GPU.hpp>
+#elif TGUI_HAS_BACKEND_SDL_RENDERER
+    #include <TGUI/Backend/SDL-Renderer.hpp>
+#elif TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
+    #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
+#elif TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
+#elif TGUI_HAS_BACKEND_SDL_OPENGL3
+    #include <TGUI/Backend/SDL-OpenGL3.hpp>
+#elif TGUI_HAS_BACKEND_SDL_GLES2
+    #include <TGUI/Backend/SDL-GLES2.hpp>
+#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+    #if TGUI_HAS_BACKEND_GLFW_OPENGL3
+        #include <TGUI/Backend/GLFW-OpenGL3.hpp>
+    #else
+        #include <TGUI/Backend/GLFW-GLES2.hpp>
     #endif
+
+    #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
+    #include <GLFW/glfw3.h>
+
+    #include <queue>
+#elif TGUI_HAS_BACKEND_RAYLIB
+    #include <TGUI/Backend/raylib.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,8 +238,13 @@ namespace tgui
             if (m_window)
                 SDL_DestroyWindow(m_window);
 #else
+    #if SDL_MAJOR_VERSION >= 3
+            if (m_glContext)
+                SDL_GL_DestroyContext(m_glContext);
+    #else
             if (m_glContext)
                 SDL_GL_DeleteContext(m_glContext);
+    #endif
             if (m_window)
                 SDL_DestroyWindow(m_window);
 #endif

@@ -70,7 +70,7 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_COMPILED_WITH_CPP_VER=23 \
-                         TGUI_BUILD_AS_CXX_MODULE=0 \
+                         TGUI_BUILD_CXX20_MODULE=0 \
                          TGUI_HAS_WINDOW_BACKEND_SFML=1 \
                          TGUI_HAS_WINDOW_BACKEND_SDL=1 \
                          TGUI_HAS_WINDOW_BACKEND_GLFW=1 \

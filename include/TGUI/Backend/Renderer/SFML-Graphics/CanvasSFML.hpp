@@ -26,18 +26,15 @@
 #define TGUI_CANVAS_SFML_HPP
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-    #include <TGUI/Widgets/CanvasBase.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Widgets/CanvasBase.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief CanvasSFML provides a way to directly render SFML contents on a widget

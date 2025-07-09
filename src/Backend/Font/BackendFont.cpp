@@ -25,9 +25,7 @@
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cmath>
-#endif
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

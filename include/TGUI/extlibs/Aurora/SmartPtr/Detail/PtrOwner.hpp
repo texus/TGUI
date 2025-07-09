@@ -48,9 +48,7 @@
 #include <TGUI/extlibs/Aurora/Tools/NonCopyable.hpp>
 
 #include <cassert>
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-	#include <utility>
-#endif
+#include <utility>
 
 
 namespace aurora

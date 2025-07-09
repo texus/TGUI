@@ -126,18 +126,6 @@
 // as long as this constant is the same when compiling TGUI and when using the TGUI libs.
 #define TGUI_COMPILED_WITH_CPP_VER @TGUI_CXX_STANDARD@
 
-#cmakedefine01 TGUI_BUILD_AS_CXX_MODULE
-
-#if TGUI_EXPERIMENTAL_USE_STD_MODULE
-    import std;
-#endif
-
-// When TGUI_BUILD_AS_CXX_MODULE is set to 1, TGUI_MODULE_EXPORT will be defined as "export" while
-// TGUI is being build. This define takes place before this header is included.
-#ifndef TGUI_MODULE_EXPORT
-    #define TGUI_MODULE_EXPORT
-#endif
-
 // Include the version header when c++20 is available to use the library feature-testing macros
 #if TGUI_COMPILED_WITH_CPP_VER >= 20
     #include <version>
@@ -210,9 +198,7 @@
 #endif
 
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
-    #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-        #include <iostream>
-    #endif
+    #include <iostream>
     #define TGUI_PRINT_WARNING(msg) { std::cerr << "TGUI warning: " << msg << "\n"; }
 #else
     #define TGUI_PRINT_WARNING(msg)
@@ -220,10 +206,8 @@
 
 #include <cassert>
 #if !defined(NDEBUG) && !defined(TGUI_DISABLE_ASSERTS)
-    #if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-        #include <iostream>
-        #include <exception>
-    #endif
+    #include <iostream>
+    #include <exception>
     #define TGUI_ASSERT(condition, msg) { \
         if (!(condition)) { \
             std::cerr << "TGUI assertion: " << msg << "\n"; \

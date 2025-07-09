@@ -24,15 +24,13 @@
 
 #include <TGUI/String.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <algorithm>
-    #include <cctype> // tolower, toupper, isspace
-    #include <cwctype> // iswspace, iswalpha
-    #include <iterator> // distance
+#include <algorithm>
+#include <cctype> // tolower, toupper, isspace
+#include <cwctype> // iswspace, iswalpha
+#include <iterator> // distance
 
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        #include <charconv> // from_chars
-    #endif
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <charconv> // from_chars
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,12 +28,7 @@
 
 #include "WidgetInfo.hpp"
 
-#include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
-    #include <TGUI/TGUI.hpp>
-#endif
+#include <TGUI/TGUI.hpp>
 
 class GuiBuilder;
 

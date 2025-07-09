@@ -27,13 +27,11 @@
 
 #include <TGUI/Vector2.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-#endif
+#include <cstdint>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     struct TGUI_API Vertex
     {

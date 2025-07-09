@@ -25,14 +25,12 @@
 #include <TGUI/Backend/Window/Raylib/BackendGuiRaylib.hpp>
 #include <TGUI/Backend/Window/Raylib/BackendRaylib.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #ifdef TGUI_SYSTEM_WINDOWS
-        // raylib.h and windows.h give conflicts
-        #define NOGDI
-        #define NOUSER
+#ifdef TGUI_SYSTEM_WINDOWS
+    // raylib.h and windows.h give conflicts
+    #define NOGDI
+    #define NOUSER
 
-        #include <TGUI/WindowsIMM.hpp>
-    #endif
+    #include <TGUI/WindowsIMM.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

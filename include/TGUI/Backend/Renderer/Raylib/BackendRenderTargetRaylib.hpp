@@ -26,14 +26,11 @@
 #define TGUI_BACKEND_RENDER_TARGET_RAYLIB_HPP
 
 #include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#endif
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Render target implementation that makes use of raylib

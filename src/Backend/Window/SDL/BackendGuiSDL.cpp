@@ -27,14 +27,10 @@
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Timer.hpp>
-#endif
+#include <TGUI/Timer.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <thread>
-    #include <cmath>
-#endif
+#include <thread>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

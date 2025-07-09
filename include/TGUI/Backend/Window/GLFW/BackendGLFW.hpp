@@ -26,26 +26,19 @@
 #define TGUI_BACKEND_GLFW_HPP
 
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
-
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-    #include <map>
-#endif
+#include <unordered_map>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    using GLFWwindow = struct GLFWwindow;
-    using GLFWcursor = struct GLFWcursor;
-#endif
+using GLFWwindow = struct GLFWwindow;
+using GLFWcursor = struct GLFWcursor;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class TGUI_API BackendGLFW : public Backend
     {

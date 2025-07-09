@@ -22,8 +22,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/raylib.hpp>
+#if TGUI_BUILD_CXX20_MODULE
+    #include <raylib.h>
+    import tgui;
+    import tgui.backend.raylib;
+#else
+    #include <TGUI/TGUI.hpp>
+    #include <TGUI/Backend/raylib.hpp>
+#endif
 
 bool runExample(tgui::BackendGui& gui);
 

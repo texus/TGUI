@@ -30,12 +30,8 @@
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_GPU
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_gpu;
-    #else
-        #include <TGUI/Backend/SDL-GPU.hpp>
-        #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-GPU.hpp>
+    #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 #endif
 
 #include "Tests.hpp"

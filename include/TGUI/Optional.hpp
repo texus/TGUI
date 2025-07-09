@@ -27,15 +27,13 @@
 
 #include <TGUI/Config.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        #include <optional>
-    #else
-        #include <memory>
-    #endif
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <optional>
+#else
+    #include <memory>
 #endif
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     template<typename T>

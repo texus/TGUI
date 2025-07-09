@@ -30,9 +30,7 @@
 #define AURORA_DOWNCAST_HPP
 
 #include <cassert>
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 
 namespace aurora

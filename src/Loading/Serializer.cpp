@@ -28,9 +28,7 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
-#endif
+#include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

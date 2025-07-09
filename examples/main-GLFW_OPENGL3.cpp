@@ -22,15 +22,20 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/GLFW-OpenGL3.hpp>
-
-// Optional: include (modern) OpenGL functions via TGUI (which you can call AFTER creating the Gui object)
-// This will include a built-in GLAD header that defines all functions that exist in OpenGL 4.6 (and GLES 3.2)
-//#include <TGUI/Backend/Renderer/OpenGL.hpp>
-
 #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
 #include <GLFW/glfw3.h>
+
+#if TGUI_BUILD_CXX20_MODULE
+    import tgui;
+    import tgui.backend.glfw_opengl3;
+#else
+    #include <TGUI/TGUI.hpp>
+    #include <TGUI/Backend/GLFW-OpenGL3.hpp>
+
+    // Optional: include (modern) OpenGL functions via TGUI (which you can call AFTER creating the Gui object)
+    // This will include a built-in GLAD header that defines all functions that exist in OpenGL 4.6 (and GLES 3.2)
+    //#include <TGUI/Backend/Renderer/OpenGL.hpp>
+#endif
 
 bool runExample(tgui::BackendGui& gui);
 

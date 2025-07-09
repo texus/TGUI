@@ -26,12 +26,7 @@
 #ifndef TGUI_GUI_BUILDER_WIDGET_INFO_HPP
 #define TGUI_GUI_BUILDER_WIDGET_INFO_HPP
 
-#include <TGUI/Config.hpp>
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui;
-#else
-    #include <TGUI/Widget.hpp>
-#endif
+#include <TGUI/Widget.hpp>
 
 struct WidgetInfo
 {

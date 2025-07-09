@@ -404,24 +404,14 @@ if(TGUI_OPTIMIZE_SINGLE_BUILD)
     endif()
 endif()
 
-if (TGUI_BUILD_AS_CXX_MODULE)
-    file(READ "TGUI-Main-Module.cppm.in" file_contents)
-    foreach(source_file ${TGUI_SRC})
-        string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
-    endforeach()
-    foreach(source_file ${TGUI_SRC_WITHOUT_UNITY})
-        string(APPEND file_contents "#include \"${CMAKE_CURRENT_SOURCE_DIR}/${source_file}\"\n")
-    endforeach()
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/module_tgui.cppm" "${file_contents}")
-    set(TGUI_SRC "${CMAKE_CURRENT_BINARY_DIR}/module_tgui.cppm")
-    set(TGUI_SRC_WITHOUT_UNITY "")
+set(TGUI_SRC_MODULES "")
+if (TGUI_BUILD_CXX20_MODULE)
+    list(APPEND TGUI_SRC_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/TGUI.cppm")
 endif()
 
-if (TGUI_BUILD_AS_CXX_MODULE)
-    tgui_create_module_from_sources(DefaultBackendWindow.cpp "tgui.default_backend_window")
-    list(APPEND TGUI_SRC_WITHOUT_UNITY "${module_source}")
-else()
-    list(APPEND TGUI_SRC_WITHOUT_UNITY DefaultBackendWindow.cpp)
+list(APPEND TGUI_SRC_WITHOUT_UNITY DefaultBackendWindow.cpp)
+if (TGUI_BUILD_CXX20_MODULE)
+    list(APPEND TGUI_SRC_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/DefaultBackendWindow.cppm")
 endif()
 
 # Determine library suffixes depending on static/shared configuration
@@ -452,16 +442,17 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
-if (TGUI_BUILD_AS_CXX_MODULE)
+if (TGUI_BUILD_CXX20_MODULE)
     target_sources(tgui
                    PUBLIC
                    FILE_SET tgui_cxx_module_files
                    TYPE CXX_MODULES
-                   BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
-                   FILES ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
-else()
-    target_sources(tgui PRIVATE ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
+                   BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}"
+                   FILES ${TGUI_SRC_MODULES})
+    set_source_files_properties(${TGUI_SRC_MODULES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+    set_source_files_properties(${TGUI_SRC_MODULES} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 endif()
+target_sources(tgui PRIVATE ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
 target_sources(tgui PRIVATE ${TGUI_HEADERS})
 
 if (${CMAKE_VERSION} VERSION_LESS "3.18")
@@ -472,11 +463,9 @@ else()
     # Since grouping some files requires manually grouping ALL files, we have to manually create batches here.
     set_target_properties(tgui PROPERTIES UNITY_BUILD_MODE GROUP)
 
-    if(NOT TGUI_BUILD_AS_CXX_MODULE)
-        # Enable unity build by default
-        if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
-            set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
-        endif()
+    # Enable unity build by default
+    if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+        set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
     endif()
 
     if(UNITY_BUILD_BATCH_SIZE)
@@ -546,10 +535,9 @@ endif()
 tgui_set_global_compile_flags(tgui)
 tgui_set_stdlib(tgui)
 
-if((TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_BUILD_AS_CXX_MODULE) AND TGUI_COMPILER_MSVC)
+if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
     # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
     # because the new batching doesn't result in such huge object files.
-    # Building TGUI as a module currently concatenates ALL source files, which is why /bigobj is required again.
     target_compile_options(tgui PRIVATE /bigobj)
 endif()
 
@@ -640,7 +628,7 @@ endif()
 # Generate the Config.hpp header
 configure_file(${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp.in ${PROJECT_SOURCE_DIR}/include/TGUI/Config.hpp @ONLY)
 
-if(NOT TGUI_BUILD_AS_CXX_MODULE AND NOT TGUI_DISABLE_PRECOMPILED_HEADER)
+if(NOT TGUI_DISABLE_PRECOMPILED_HEADER)
     # Use a precompiled header to speed up compilation
     target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
 endif()
@@ -682,12 +670,12 @@ endif()
 
 if (TGUI_INSTALL)
     # Install library
-    if (TGUI_BUILD_AS_CXX_MODULE)
+    if (TGUI_BUILD_CXX20_MODULE)
         install(TARGETS tgui EXPORT TGUIConfigExport
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
-                FILE_SET tgui_cxx_module_files DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT include
+                FILE_SET tgui_cxx_module_files DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TGUI/modules COMPONENT include
                 FRAMEWORK DESTINATION "." COMPONENT bin)
     else()
         install(TARGETS tgui EXPORT TGUIConfigExport

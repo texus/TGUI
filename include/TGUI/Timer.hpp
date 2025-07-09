@@ -29,15 +29,13 @@
 #include <TGUI/Duration.hpp>
 #include <TGUI/Optional.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <functional>
-    #include <memory>
-    #include <vector>
-#endif
+#include <functional>
+#include <memory>
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Executes callbacks after a certain amount of time

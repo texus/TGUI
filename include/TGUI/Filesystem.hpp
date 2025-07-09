@@ -27,19 +27,17 @@
 
 #include <TGUI/String.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cstdint>
-    #include <vector>
-    #include <ctime>
+#include <cstdint>
+#include <vector>
+#include <ctime>
 
-    #ifdef TGUI_USE_STD_FILESYSTEM
-        #include <filesystem>
-    #endif
+#ifdef TGUI_USE_STD_FILESYSTEM
+    #include <filesystem>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Helper functionality for filesystem access

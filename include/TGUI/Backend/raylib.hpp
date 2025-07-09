@@ -30,17 +30,15 @@
     #error "TGUI wasn't build with the RAYLIB backend"
 #endif
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Raylib/BackendRaylib.hpp>
-    #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
-    #include <TGUI/Backend/Font/Raylib/BackendFontRaylib.hpp>
-#endif
+#include <TGUI/Backend/Window/Raylib/BackendRaylib.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+#include <TGUI/Backend/Font/Raylib/BackendFontRaylib.hpp>
 
 #include <raylib.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     inline namespace RAYLIB
     {

@@ -24,18 +24,13 @@
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Container.hpp>
-#endif
+#include <TGUI/Container.hpp>
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cmath>
-    #include <array>
-#endif
+#include <cmath>
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

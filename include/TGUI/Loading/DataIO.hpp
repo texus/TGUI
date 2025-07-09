@@ -29,18 +29,16 @@
 
 #include <TGUI/String.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <sstream>
-    #include <memory>
-    #include <vector>
-    #include <string>
-    #include <map>
-    #include <cstdio>
-#endif
+#include <sstream>
+#include <memory>
+#include <vector>
+#include <string>
+#include <map>
+#include <cstdio>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Parser and emitter for widget files

@@ -25,14 +25,12 @@
 #ifndef TGUI_STRING_VIEW_HPP
 #define TGUI_STRING_VIEW_HPP
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <string>
-    #include <cctype> // tolower
-    #include <algorithm> // equal, min
+#include <string>
+#include <cctype> // tolower
+#include <algorithm> // equal, min
 
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
-        #include <string_view>
-    #endif
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
+    #include <string_view>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,7 @@ namespace tgui
 }
 #endif
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     using StringView = std::u32string_view;

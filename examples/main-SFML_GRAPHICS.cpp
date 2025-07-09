@@ -22,8 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/SFML-Graphics.hpp>
+#include <SFML/Graphics.hpp>
+
+#if TGUI_BUILD_CXX20_MODULE
+    import tgui;
+    import tgui.backend.sfml_graphics;
+#else
+    #include <TGUI/TGUI.hpp>
+    #include <TGUI/Backend/SFML-Graphics.hpp>
+#endif
 
 bool runExample(tgui::BackendGui& gui);
 

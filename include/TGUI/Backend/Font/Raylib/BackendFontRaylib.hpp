@@ -25,20 +25,15 @@
 #ifndef TGUI_BACKEND_FONT_RAYLIB_HPP
 #define TGUI_BACKEND_FONT_RAYLIB_HPP
 
-#include <TGUI/Config.hpp>
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/Backend/Font/BackendFont.hpp>
 
-    struct GlyphInfo;
-#endif
+#include <unordered_map>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <unordered_map>
-#endif
+struct GlyphInfo;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Font implementations that uses Raylib to load glyphs

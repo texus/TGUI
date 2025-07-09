@@ -25,18 +25,14 @@
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/ToolTip.hpp>
-    #include <TGUI/Timer.hpp>
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Timer.hpp>
 
-    #ifdef TGUI_SYSTEM_WINDOWS
-        #include <TGUI/WindowsIMM.hpp>
-    #endif
+#ifdef TGUI_SYSTEM_WINDOWS
+    #include <TGUI/WindowsIMM.hpp>
 #endif
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <thread>
-#endif
+#include <thread>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

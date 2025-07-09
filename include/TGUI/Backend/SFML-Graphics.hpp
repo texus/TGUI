@@ -30,11 +30,9 @@
     #error "TGUI wasn't build with the SFML_GRAPHICS backend"
 #endif
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
-    #include <TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp>
-#endif
+#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#include <TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -42,7 +40,7 @@
   #include <SFML/Main.hpp>
 #endif
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     inline namespace SFML_GRAPHICS
     {

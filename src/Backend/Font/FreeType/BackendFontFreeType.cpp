@@ -23,10 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
-
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/Backend.hpp>
-#endif
+#include <TGUI/Backend/Window/Backend.hpp>
 
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
@@ -44,9 +41,7 @@
     #pragma GCC diagnostic pop
 #endif
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <cmath>
-#endif
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,14 +51,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendFontFreetype::~BackendFontFreetype()
+    BackendFontFreeType::~BackendFontFreeType()
     {
         cleanup();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendFontFreetype::loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes)
+    bool BackendFontFreeType::loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes)
     {
         cleanup();
         m_cachedLineSpacing.clear();
@@ -132,14 +127,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendFontFreetype::hasGlyph(char32_t codePoint) const
+    bool BackendFontFreeType::hasGlyph(char32_t codePoint) const
     {
         return FT_Get_Char_Index(m_face, static_cast<FT_ULong>(codePoint)) != 0; // m_face is allowed to be nullptr
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FontGlyph BackendFontFreetype::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
+    FontGlyph BackendFontFreeType::getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
         FontGlyph glyph;
         if (!m_face)
@@ -155,7 +150,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold)
+    float BackendFontFreeType::getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold)
     {
         // There is no kerning if one of the two characters is the null character
         if ((first == 0) || (second == 0))
@@ -189,7 +184,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getLineSpacing(unsigned int characterSize)
+    float BackendFontFreeType::getLineSpacing(unsigned int characterSize)
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
@@ -207,7 +202,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getFontHeight(unsigned int characterSize)
+    float BackendFontFreeType::getFontHeight(unsigned int characterSize)
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
@@ -230,7 +225,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getAscent(unsigned int characterSize)
+    float BackendFontFreeType::getAscent(unsigned int characterSize)
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
@@ -253,7 +248,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getDescent(unsigned int characterSize)
+    float BackendFontFreeType::getDescent(unsigned int characterSize)
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
@@ -276,7 +271,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getUnderlinePosition(unsigned int characterSize)
+    float BackendFontFreeType::getUnderlinePosition(unsigned int characterSize)
     {
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
@@ -290,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float BackendFontFreetype::getUnderlineThickness(unsigned int characterSize)
+    float BackendFontFreeType::getUnderlineThickness(unsigned int characterSize)
     {
         if (!m_face || !setCurrentSize(characterSize))
             return 0;
@@ -304,7 +299,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<BackendTexture> BackendFontFreetype::getTexture(unsigned int, unsigned int& textureVersion)
+    std::shared_ptr<BackendTexture> BackendFontFreeType::getTexture(unsigned int, unsigned int& textureVersion)
     {
         if (m_texture)
         {
@@ -321,14 +316,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u BackendFontFreetype::getTextureSize(unsigned int)
+    Vector2u BackendFontFreeType::getTextureSize(unsigned int)
     {
         return {m_textureSize, m_textureSize};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendFontFreetype::setSmooth(bool smooth)
+    void BackendFontFreeType::setSmooth(bool smooth)
     {
         BackendFont::setSmooth(smooth);
         if (m_texture)
@@ -337,7 +332,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendFontFreetype::setFontScale(float scale)
+    void BackendFontFreeType::setFontScale(float scale)
     {
         if (m_fontScale == scale)
             return;
@@ -350,7 +345,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendFontFreetype::Glyph BackendFontFreetype::loadGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
+    BackendFontFreeType::Glyph BackendFontFreeType::loadGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
         Glyph glyph;
         if (!m_face)
@@ -483,7 +478,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendFontFreetype::Glyph BackendFontFreetype::getInternalGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
+    BackendFontFreeType::Glyph BackendFontFreeType::getInternalGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
         const std::uint64_t glyphKey = constructGlyphKey(codePoint, static_cast<unsigned int>(characterSize * m_fontScale),
                                                          bold, outlineThickness * m_fontScale);
@@ -498,7 +493,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    UIntRect BackendFontFreetype::findAvailableGlyphRect(unsigned int width, unsigned int height)
+    UIntRect BackendFontFreeType::findAvailableGlyphRect(unsigned int width, unsigned int height)
     {
         // Find the line that where the glyph fits well.
         // This is based on the sf::Font class in the SFML library. It might not be the most optimal method, but it is good enough for now.
@@ -581,7 +576,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BackendFontFreetype::setCurrentSize(unsigned int characterSize)
+    bool BackendFontFreeType::setCurrentSize(unsigned int characterSize)
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
@@ -594,7 +589,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendFontFreetype::cleanup()
+    void BackendFontFreeType::cleanup()
     {
         if (m_stroker)
             FT_Stroker_Done(m_stroker);

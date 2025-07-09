@@ -29,10 +29,7 @@
 #ifndef AURORA_SWAP_HPP
 #define AURORA_SWAP_HPP
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-	#include <utility> // std::swap (until C++11, it was in <algorithm> header)
-#endif
-
+#include <utility> // std::swap (until C++11, it was in <algorithm> header)
 
 /// @addtogroup Tools
 /// @{

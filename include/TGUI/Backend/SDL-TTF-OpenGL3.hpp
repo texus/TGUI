@@ -30,13 +30,11 @@
     #error "TGUI wasn't build with the SDL_TTF_OPENGL3 backend"
 #endif
 
-#if !TGUI_BUILD_AS_CXX_MODULE
-    #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-    #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
-    #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
-#endif
+#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     inline namespace SDL_TTF_OPENGL3
     {

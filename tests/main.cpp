@@ -1,3 +1,26 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus' Graphical User Interface
+// Copyright (C) 2012-2025 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
 
@@ -45,12 +68,8 @@
 #define CATCH_CONFIG_RUNNER
 #include "Tests.hpp"
 
-#if TGUI_BUILD_AS_CXX_MODULE
-    import tgui.default_backend_window;
-#else
-    #include <TGUI/TextureManager.hpp>
-    #include <TGUI/DefaultBackendWindow.hpp>
-#endif
+#include <TGUI/TextureManager.hpp>
+#include <TGUI/DefaultBackendWindow.hpp>
 
 const unsigned int windowWidth = 400;
 const unsigned int windowHeight = 300;
@@ -77,11 +96,8 @@ struct TestsWindowDefault : public TestsWindowBase
 };
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sfml_graphics;
-    #else
-        #include <TGUI/Backend/SFML-Graphics.hpp>
-    #endif
+    #include <TGUI/Backend/SFML-Graphics.hpp>
+
     struct TestsWindowSfmlGraphics : public TestsWindowBase
     {
         TestsWindowSfmlGraphics()
@@ -109,11 +125,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sfml_opengl3;
-    #else
-        #include <TGUI/Backend/SFML-OpenGL3.hpp>
-    #endif
+    #include <TGUI/Backend/SFML-OpenGL3.hpp>
+
     struct TestsWindowSfmlOpenGL3 : public TestsWindowBase
     {
         TestsWindowSfmlOpenGL3()
@@ -142,11 +155,8 @@ struct TestsWindowDefault : public TestsWindowBase
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_GPU
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_gpu;
-    #else
-        #include <TGUI/Backend/SDL-GPU.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-GPU.hpp>
+
     struct TestsWindowSdlGPU : public TestsWindowBase
     {
         TestsWindowSdlGPU()
@@ -184,11 +194,8 @@ struct TestsWindowDefault : public TestsWindowBase
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_RENDERER
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_renderer;
-    #else
-        #include <TGUI/Backend/SDL-Renderer.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-Renderer.hpp>
+
     struct TestsWindowSdlRenderer : public TestsWindowBase
     {
         TestsWindowSdlRenderer()
@@ -231,11 +238,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_ttf_opengl3;
-    #else
-        #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-TTF-OpenGL3.hpp>
+
     struct TestsWindowSdlTtfOpenGL3 : public TestsWindowBase
     {
         TestsWindowSdlTtfOpenGL3()
@@ -284,11 +288,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_ttf_gles2;
-    #else
-        #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
+
     struct TestsWindowSdlTtfGLES2 : public TestsWindowBase
     {
         TestsWindowSdlTtfGLES2()
@@ -337,11 +338,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_OPENGL3
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_opengl3;
-    #else
-        #include <TGUI/Backend/SDL-OpenGL3.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-OpenGL3.hpp>
+
     struct TestsWindowSdlOpenGL3 : public TestsWindowBase
     {
         TestsWindowSdlOpenGL3()
@@ -388,11 +386,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_SDL_GLES2
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.sdl_gles2;
-    #else
-        #include <TGUI/Backend/SDL-GLES2.hpp>
-    #endif
+    #include <TGUI/Backend/SDL-GLES2.hpp>
+
     struct TestsWindowSdlGLES2 : public TestsWindowBase
     {
         TestsWindowSdlGLES2()
@@ -439,11 +434,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.glfw_opengl3;
-    #else
-        #include <TGUI/Backend/GLFW-OpenGL3.hpp>
-    #endif
+    #include <TGUI/Backend/GLFW-OpenGL3.hpp>
+
     struct TestsWindowGlfwOpenGL3 : public TestsWindowBase
     {
         TestsWindowGlfwOpenGL3()
@@ -474,11 +466,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_GLFW_GLES2
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.glfw_gles2;
-    #else
-        #include <TGUI/Backend/GLFW-GLES2.hpp>
-    #endif
+    #include <TGUI/Backend/GLFW-GLES2.hpp>
+
     struct TestsWindowGlfwGLES2 : public TestsWindowBase
     {
         TestsWindowGlfwGLES2()
@@ -508,11 +497,8 @@ struct TestsWindowDefault : public TestsWindowBase
     };
 #endif
 #if TGUI_HAS_BACKEND_RAYLIB
-    #if TGUI_BUILD_AS_CXX_MODULE
-        import tgui.backend.raylib;
-    #else
-        #include <TGUI/Backend/raylib.hpp>
-    #endif
+    #include <TGUI/Backend/raylib.hpp>
+
     struct TestsWindowRaylib : public TestsWindowBase
     {
         TestsWindowRaylib()

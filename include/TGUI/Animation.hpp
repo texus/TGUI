@@ -28,14 +28,12 @@
 #include <TGUI/Layout.hpp>
 #include <TGUI/Duration.hpp>
 
-#if !TGUI_EXPERIMENTAL_USE_STD_MODULE
-    #include <functional>
-    #include <memory>
-#endif
+#include <functional>
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TGUI_MODULE_EXPORT namespace tgui
+namespace tgui
 {
     class Widget;
 
