@@ -79,7 +79,7 @@ jobs:
 
       - name: Test TGUIConfig.cmake
         run: |
-          cmake -GNinja -DTGUI_DIR="$GITHUB_WORKSPACE/TGUI-build-gcc/install/lib/cmake/TGUI/" -S tests/cmake -B tests/cmake/build
+          cmake -GNinja -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION -DTGUI_DIR="$GITHUB_WORKSPACE/TGUI-build-gcc/install/lib/cmake/TGUI/" -S tests/cmake -B tests/cmake/build
           cmake --build tests/cmake/build --config Debug
           test -e tests/cmake/build/TguiTest
 
